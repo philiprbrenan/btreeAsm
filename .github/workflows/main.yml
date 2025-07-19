@@ -1,0 +1,70 @@
+# Test 2025-07-19 at 11:36:50
+
+name: Test
+run-name: btreeAsm
+
+on:
+  push:
+    paths:
+      - '**/main.yml'
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+
+  test:
+    permissions: write-all
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        task: [Btree, Layout, Stuck, Test]
+
+    steps:
+    - uses: actions/checkout@v4
+      with:
+        ref: 'main'
+
+    - name: 'JDK 24'
+      uses: oracle-actions/setup-java@v1
+      with:
+        website: jdk.java.net
+
+    - name: Java release
+      run: |
+        java -version
+
+    - name: Position files in package
+      run: |
+        mkdir -p com/AppaApps/Silicon
+        cp *.java com/AppaApps/Silicon
+
+    - name: Java
+      run: |
+        javac -g -d Classes -cp Classes com/AppaApps/Silicon/*.java
+
+    - name: Test Btree
+      if: matrix.task == 'Btree'
+      run: |
+        java -cp Classes com/AppaApps/Silicon/Btree
+
+
+    - name: Test Layout
+      if: matrix.task == 'Layout'
+      run: |
+        java -cp Classes com/AppaApps/Silicon/Layout
+
+
+    - name: Test Stuck
+      if: matrix.task == 'Stuck'
+      run: |
+        java -cp Classes com/AppaApps/Silicon/Stuck
+
+
+    - name: Test Test
+      if: matrix.task == 'Test'
+      run: |
+        java -cp Classes com/AppaApps/Silicon/Test
+
