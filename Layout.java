@@ -184,7 +184,7 @@ class Layout extends Test                                                       
       Integer readAt;                                                           // Step at which read result was made available
       int     value;                                                            // Value held in memory at the indexed location. As this legister is unique to this request it has just one writer - the memory controller
 
-      Reader()                                                                  // Create a read request for this field
+      Reader()                                                                  // Create a read request for this field.  The memory controller actually executes the read requiest - all we are doing here is requesting the read.
        {P.readers.push(this);
        }
 
