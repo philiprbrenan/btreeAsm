@@ -12,6 +12,7 @@ class Chip extends Test                                                         
   boolean running;                                                              // True when the chip is running
   int step;                                                                     // Step we are executing in the run
   int maxSteps = 10;                                                            // Maximum number of steps
+  int returnCode;                                                               // The return code from the first process to finish
 
   class Process                                                                 // A process consists of memory, registers and a program
    {final String             processName;                                       // The name of the process
@@ -60,7 +61,10 @@ class Chip extends Test                                                         
         instructionNumber = code.size();
         code.push(this);
        }
-      abstract void action();                                                   // The action to be performed bythe instruction
+
+      abstract void action();                                                   // The action to be performed by the instruction
+
+      void remainOnThisInstruction() {nextPc = instructionNumber;}              // Keep looping on this instruction
      }
 
     class Label                                                                 // Lable jump targets in the program
@@ -218,6 +222,11 @@ class Chip extends Test                                                         
      }
    }
 
+  void stopProgram(int ReturnCode)                                              // Return code
+   {running = false;
+    returnCode = ReturnCode;
+   }
+
   static void test_memory()
    {final int B = 8, N = 16;
     Chip c = new Chip();
@@ -243,7 +252,7 @@ class Chip extends Test                                                         
             t.transactionFinishedAt = c.step;
            }
          }
-        m.nextPc = instructionNumber;                                         // Keep looping on this instruction
+        remainOnThisInstruction();                                              // Keep looping on this instruction
        }
      };
 
@@ -255,9 +264,9 @@ class Chip extends Test                                                         
           t.transactionRequestedAt = c.step;                                    // Request value of memory at the index
          }
         else if (t.transactionFinished())                                       // Wait for memory request to finish
-         {c.running = false;
+         {c.stopProgram(1);                                                       // Halt the run
          }
-        r.nextPc = instructionNumber;                                         // Keep looping on this instruction
+        remainOnThisInstruction();                                              // Keep looping on this instruction
        }
      };
 
@@ -273,6 +282,7 @@ Transaction   : Get value from memory
   Outputs     :
     Register: value, value: 2
 """);
+    ok(c.returnCode, 1);
    }
 
   static void oldTests()                                                        // Tests thought to be in good shape
