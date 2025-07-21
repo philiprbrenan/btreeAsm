@@ -14,6 +14,8 @@ class Chip extends Test                                                         
   int maxSteps = 10;                                                            // Maximum number of steps
   int returnCode;                                                               // The return code from the first process to finish
 
+  static Chip chip() {return new Chip();}                                       // Create a new chip
+
   class Process                                                                 // A process consists of memory, registers and a program
    {final String             processName;                                       // The name of the process
     final int                processNumber;                                     // The unique number of this process
@@ -118,6 +120,10 @@ class Chip extends Test                                                         
        }
      } // Register
 
+    Register register(String RegisterName, int RegisterBits)                    // Create the register
+     {return new Register(RegisterName, RegisterBits);
+     }
+
     void initProgram()                                                          // Get ready to execute the program
      {pc = 0;                                                                   // Program always starts at the first instruction
      }
@@ -201,7 +207,7 @@ class Chip extends Test                                                         
          }
 
         s.append("  Outputs     :\n");                                          // Transaction outputs
-        for (Process.Register r : transactionRegisters)                         //
+        for (Process.Register r : transactionRegisters)
          {if (r.registerProcess() == transactionProcess())                      // Output register because it is owned by this process
            {s.append("    "+r+"\n");
            }
@@ -209,7 +215,16 @@ class Chip extends Test                                                         
         return ""+s;
        }
      } // Transaction
+
+    Transaction transaction(String Name, Process CallingProcess, String OpCode, // Transactions allow one process to request services from another process
+        Process.Register...Registers)
+     {return new Transaction(Name, CallingProcess, OpCode, Registers);
+     }
    } // Process
+
+  Process process(String ProcessName, int MemoryWidth, int MemorySize)          // Create a process
+   {return new Process(ProcessName, MemoryWidth, MemorySize);
+   }
 
   void runPrograms()                                                            // Run the processes == programs efined on this chip
    {for(Process p : processes) p.initProgram();                                 // Initialize each program                                               //
@@ -229,13 +244,12 @@ class Chip extends Test                                                         
 
   static void test_memory()
    {final int B = 8, N = 16;
-    Chip c = new Chip();
-    Chip.Process m = c.new Process("Memory", B, N);
-    Chip.Process r = c.new Process("Request value from memory", B, 1);
-    Chip.Process.Register ri = r.new Register("index", B);
-    Chip.Process.Register mo = m.new Register("value", B);
-    Chip.Process.Transaction t = m.new Transaction
-     ("Get value from memory", r, "get", ri, mo);
+    var c  = chip();
+    var m  = c.process("Memory", B, N);
+    var r  = c.process("Request value from memory", B, 1);
+    var ri = r.register("index", B);
+    var mo = m.register("value", B);
+    var t  = m.transaction("Get value from memory", r, "get", ri, mo);
 
     for (int i = 0; i < N; i++)                                                 // Preload memory
      {m.memoryRegister.setRegister(i+1);
@@ -244,7 +258,7 @@ class Chip extends Test                                                         
 
     m.new Instruction()                                                         // Process mmeory requests
      {void action()
-       {for (Process.Transaction t : m.transactions)
+       {for (var t : m.transactions)
          {if (t.transactionExecutable())
            {final int i = t.transactionRegisters.elementAt(0).getRegister();    // Index of memory requested
             m.memoryGet(i);
