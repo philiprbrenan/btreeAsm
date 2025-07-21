@@ -140,6 +140,15 @@ public class Test                                                               
    {return Integer.toHexString(System.identityHashCode(obj));
    }
 
+  static void replaceAll(StringBuilder S, String s, String t)                   // Replace all instances of a source string with a target string on a string builder
+   {if (S == null || s == null || s.isEmpty() || t == null) return;
+    int i = 0;
+    while((i = S.indexOf(s, i)) != -1)
+     {S.replace(i, i + s.length(), t);
+      i += t.length();
+     }
+   }
+
 //D2 Numeric routines                                                           // Numeric routines
 
   static int abs(int i) {return i >= 0 ? +i : -i;}                              // Absolute value of integer
@@ -1222,6 +1231,21 @@ ccc cccc  ccccc
 """);
    }
 
+  static void test_replaceAll()
+   {final StringBuilder s = new StringBuilder();
+    s.append("""
+a   aa    aaa
+bb  bbb   bbbb
+a   aa    aaa
+""");
+    replaceAll(s, "aaa", "AAA");
+    ok(s, """
+a   aa    AAA
+bb  bbb   bbbb
+a   aa    AAA
+""");
+   }
+
   static void oldTests()                                                        // Tests thought to be in good shape
    {test_log_two();
     test_power_two();
@@ -1240,6 +1264,7 @@ ccc cccc  ccccc
     test_fileNames();
     test_executed();
     test_squeezeVerticalSpaces();
+    test_replaceAll();
    }
 
   static void newTests()                                                        // Tests being worked on
