@@ -7,14 +7,19 @@ package com.AppaApps.Silicon;                                                   
 import java.util.*;
 
 class Chip extends Test                                                         // A chip designed to manipulate a btree in a block of memory
- {final Map<String, Process> processesByName = new TreeMap<>();                 // A fixed set of processes for this chip by name
+ {final String chipName;                                                        // The name of the chip
+  final Map<String, Process> processesByName = new TreeMap<>();                 // A fixed set of processes for this chip by name
   final Stack<Process>       processes       = new Stack<>();                   // A fixed set of processes for this chip in definition order
   boolean running;                                                              // True when the chip is running
   int step;                                                                     // Step we are executing in the run
-  int maxSteps = 10;                                                            // Maximum number of steps
-  int returnCode;                                                               // The return code from the first process to finish
+  int maxSteps = 10;                                                            // Maximum number of steps to executre in the simulation
+  int returnCode;                                                               // The return code from the first process to finish which effectively terminates the simulation
 
-  static Chip chip() {return new Chip();}                                       // Create a new chip
+  Chip(String Name)                                                             // Create a new chip
+   {chipName = Name;
+   }
+
+  static Chip chip(String Name) {return new Chip(Name);}                        // Create a new chip
 
   class Process                                                                 // A process consists of memory, registers and a program
    {final String             processName;                                       // The name of the process
@@ -65,6 +70,7 @@ class Chip extends Test                                                         
        }
 
       abstract void action();                                                   // The action to be performed by the instruction
+      String verilog() {return "";}                                             // Verilog equivalent of the action implementing this instruction
 
       void remainOnThisInstruction() {nextPc = instructionNumber;}              // Keep looping on this instruction
      }
@@ -102,16 +108,18 @@ class Chip extends Test                                                         
          }
        }
 
-      void copy(Register Source)                                                // Copy a source register into this register which we c an do becuase this process can write to its own registers
+      void copy(Register Source)                                                // Copy a source register into this register which we can do because each  and only each process can write to its own registers
        {if (registerBits != Source.registerBits)                                // Make sure the registers have the same size
          {stop("Different sized registers cannot be assigned to each other.",
-           "Target register:", registerName, "has a size of:", registerBits,    //
+           "Target register:", registerName, "has a size of:", registerBits,
            "while source register:", Source.registerName, "has a size of:",
             Source.registerBits);
          }
 
         value= (BitSet)Source.value.clone();                                    // Copy the source value into the target
        }
+
+      String registerName() {return processName + "_" + registerName;}          // Create a name for a register that includes its register name
 
       Process registerProcess() {return Process.this;}                          // Process associated with this register
 
@@ -200,14 +208,14 @@ class Chip extends Test                                                         
         if (fa != null) s.append("  finished  at: "+fa+"\n");
 
         s.append("  Inputs      :\n");                                          // Transaction inputs
-        for (Process.Register r : transactionRegisters)                         //
+        for (Process.Register r : transactionRegisters)                         // Input registers are not owned by the process processing the transaction
          {if (r.registerProcess() != transactionProcess())                      // Input register because it is not owned by this process
            {s.append("    "+r+"\n");
            }
          }
 
         s.append("  Outputs     :\n");                                          // Transaction outputs
-        for (Process.Register r : transactionRegisters)
+        for (Process.Register r : transactionRegisters)                         // Output registers are owned by the process processing the transaction
          {if (r.registerProcess() == transactionProcess())                      // Output register because it is owned by this process
            {s.append("    "+r+"\n");
            }
@@ -219,6 +227,44 @@ class Chip extends Test                                                         
     Transaction transaction(String Name, Process CallingProcess, String OpCode, // Transactions allow one process to request services from another process
         Process.Register...Registers)
      {return new Transaction(Name, CallingProcess, OpCode, Registers);
+     }
+
+    String processPcName()     {return processName+"_pc";}                      // Program counter
+    String processNextPcName() {return processName+"_next_pc";}                 // Next program counter
+
+    String generateProcessVerilog()                                             // Verilog representing a process
+     {final StringBuilder v = new StringBuilder();
+      for (String n: registers.keySet())
+       {final Register r = registers.get(n);
+        v.append("  reg ["+r.registerBits+"] "+r.registerName()+";\n");
+       }
+
+      v.append("""
+  integer $pc;                                                                  // Program counter
+  integer $next_pc;                                                             // Next program counter
+  always @ (posedge clock) begin                                                // Execute next step in program
+    if (step == 0) begin
+       $pc = 0;
+    end
+    else begin
+      $next_pc = -1;
+      case($pc)
+""");
+      for(Instruction i: code)
+       {final StringBuilder s = new StringBuilder();
+        s.append("        "+i.instructionNumber+": begin\n");
+        s.append("        "+i.verilog()+"\n");
+        s.append("        end\n");
+        v.append(s);
+       }
+      v.append("        default: stop <= 1;\n");
+      v.append("      endcase\n");
+      v.append("      if ($next_pc != -1) $pc = $next_pc; else $pc = $pc + 1;   // Interpret next program counter as either a redirection or continuation of flow\n");
+      v.append("    end\n");
+      v.append("  end\n");
+      replaceAll(v, "$pc",      processPcName());
+      replaceAll(v, "$next_pc", processNextPcName());
+      return ""+v;
      }
    } // Process
 
@@ -242,11 +288,43 @@ class Chip extends Test                                                         
     returnCode = ReturnCode;
    }
 
+  String generateVerilog()                                                      // Generate verilog describing the chip
+   {final StringBuilder v = new StringBuilder();
+    v.append("""
+//-----------------------------------------------------------------------------
+// Database on a chip test bench
+// Philip R Brenan at appaapps dot com, Appa Apps Ltd Inc., 2025
+//------------------------------------------------------------------------------
+`timescale 10ps/1ps
+module $chip_name;                                                              // Test bench for database on a chip
+  reg                    stop;                                                  // Program has stopped when this goes high
+  reg                   clock;                                                  // Clock
+  integer                step;                                                  // Step of the simulation
+
+  initial begin
+    stop = 0;
+    for(step = 0; step < $max_steps && !stop; step = step + 1) begin
+      clock = 0; #1; clock = 1; #1;
+    end
+  end
+""");
+
+    for(Process p: processes) v.append(p.generateProcessVerilog());             // Generate
+
+    v.append("""
+endmodule
+""");
+    replaceAll(v, "$chip_name", chipName);
+    replaceAll(v, "$max_steps", ""+maxSteps);
+    writeFile(fne(Verilog.folder, chipName, Verilog.ext),  ""+v);
+    return ""+v;
+   }
+
   static void test_memory()
    {final int B = 8, N = 16;
-    var c  = chip();
+    var c  = chip("Test");
     var m  = c.process("Memory", B, N);
-    var r  = c.process("Request value from memory", B, 1);
+    var r  = c.process("RequestMemory", B, 1);
     var ri = r.register("index", B);
     var mo = m.register("value", B);
     var t  = m.transaction("Get value from memory", r, "get", ri, mo);
@@ -268,6 +346,11 @@ class Chip extends Test                                                         
          }
         remainOnThisInstruction();                                              // Keep looping on this instruction
        }
+      String verilog()
+       {return """
+      $display("11");
+""";
+       }
      };
 
     r.new Instruction()                                                         // Request the value of an indexed element of memory
@@ -278,9 +361,14 @@ class Chip extends Test                                                         
           t.transactionRequestedAt = c.step;                                    // Request value of memory at the index
          }
         else if (t.transactionFinished())                                       // Wait for memory request to finish
-         {c.stopProgram(1);                                                       // Halt the run
+         {c.stopProgram(1);                                                     // Halt the run
          }
         remainOnThisInstruction();                                              // Keep looping on this instruction
+       }
+      String verilog()
+       {return """
+      $display("22");
+""";
        }
      };
 
@@ -297,6 +385,7 @@ Transaction   : Get value from memory
     Register: value, value: 2
 """);
     ok(c.returnCode, 1);
+    say(c.generateVerilog());
    }
 
   static void oldTests()                                                        // Tests thought to be in good shape
