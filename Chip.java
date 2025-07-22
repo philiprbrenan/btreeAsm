@@ -113,10 +113,6 @@ class Chip extends Test                                                         
       String registerName() {return processName + "_" + registerName;}          // Create a name for a register that includes its register name
 
       Process registerProcess() {return Process.this;}                          // Process associated with this register
-
-      public String toString()                                                  // Register as string
-       {return "Register: "+registerName+", value: "+getRegister();
-       }
      } // Register
 
     Register register(String RegisterName, int RegisterBits)                    // Create the register
@@ -158,21 +154,32 @@ class Chip extends Test                                                         
 
     class Transaction                                                           // Transactions allow one process to request services from another process
      {final String transactionName;                                             // Name of the transaction
-      final Children<Process.Register> transactionRegisters = new Children<>(); // The registers used to record the detasils of the transaction: its inputs and outputs
+      final Children<Process.Register> transactionInputRegisters  = new Children<>(); // The registers used to provide inputs to this transaction. As they are only going to be read during the transaction they can be owned by any process
+      final Children<Process.Register> transactionOutputRegisters = new Children<>(); // The registers used as outputs by this transaction. As they are going to be written into bythe transaction they have to be owned by the process executing the transaction
       Integer transactionRequestedAt;                                           // The step at which the transaction started
       Integer transactionFinishedAt;                                            // The step at which the transaction finished
       int     transactionRc;                                                    // Return code from executing ransaction
       final Process transactionCallingProcess;                                  // The process requesting a service provided by this process via this transaction
       final String  transactionOpCode;                                          // The service requested by the caller
 
-      Transaction(String Name, Process CallingProcess, String OpCode,           // Transactions allow one process to request services from another process
-        Process.Register...Registers)
+      Transaction(String Name, Process CallingProcess, String OpCode)           // Transactions allow one process to request services from another process
        {transactionName = Name;
         transactionCallingProcess = CallingProcess;
         transactionOpCode = OpCode;
         transactions.put(transactionName, this);
-        for(Process.Register r : registers)                                     // Save parameter registers
-         {transactionRegisters.put(r.registerName(), r);
+       }
+
+      void transactionInputRegisters(Process.Register...InputRegisters)         // The registers used to provide inputs to this transaction. As they are only going to be read during the transaction they can be owned by any process
+       {for(Process.Register r : InputRegisters)                                // Save input registers
+         {transactionInputRegisters.put(r.registerName(), r);
+         }
+       }
+
+      void transactionOutputRegisters(Process.Register...OutputRegisters)       // The registers used as outputs by this transaction. As they are going to be written into bythe transaction they have to be owned by the process executing the transaction
+       {for(Process.Register r : OutputRegisters)                               // Save output registers
+         {if (r.registerProcess() != transactionProcess()) stop("Output transaction register:",
+           r.registerName()+" must be owned by process: "+transactionProcess().processName+"\n");
+          transactionOutputRegisters.put(r.registerName(), r);
          }
        }
 
@@ -190,36 +197,10 @@ class Chip extends Test                                                         
 
       Process transactionProcess() {return Process.this;}                       // Process associated with this transaction
 
-      public String toString()                                                  // Transaction as string
-       {final StringBuilder s = new StringBuilder();
-        final Integer ra = transactionRequestedAt;
-        final Integer fa = transactionFinishedAt;
-        s.append("Transaction   : "+transactionName+ "\n");
-        s.append("  executable  : "+transactionExecutable()+ "\n");
-        s.append("  finished    : "+transactionFinished()+ "\n");
-        if (ra != null) s.append("  requested at: "+ra+"\n");
-        if (fa != null) s.append("  finished  at: "+fa+"\n");
-
-        s.append("  Inputs      :\n");                                          // Transaction inputs
-        for (Process.Register r : transactionRegisters)                         // Input registers are not owned by the process processing the transaction
-         {if (r.registerProcess() != transactionProcess())                      // Input register because it is not owned by this process
-           {s.append("    "+r+"\n");
-           }
-         }
-
-        s.append("  Outputs     :\n");                                          // Transaction outputs
-        for (Process.Register r : transactionRegisters)                         // Output registers are owned by the process processing the transaction
-         {if (r.registerProcess() == transactionProcess())                      // Output register because it is owned by this process
-           {s.append("    "+r+"\n");
-           }
-         }
-        return ""+s;
-       }
      } // Transaction
 
-    Transaction transaction(String Name, Process CallingProcess, String OpCode, // Transactions allow one process to request services from another process
-        Process.Register...Registers)
-     {return new Transaction(Name, CallingProcess, OpCode, Registers);
+    Transaction transaction(String Name, Process CallingProcess, String OpCode) // Transactions allow one process to request services from another process
+     {return new Transaction(Name, CallingProcess, OpCode);
      }
 
     String processPcName()     {return processName+"_pc";}                      // Program counter
@@ -248,7 +229,7 @@ class Chip extends Test                                                         
     if (step == 0) begin
        $pc = 0;
 """);
-      for (Transaction t: transactions)                                         // initilzie transaction Declare transactions
+      for (Transaction t: transactions)                                         // Initialize transaction
        {final String n = t.transactionName;
         v.append("       "+n+"_finishedAt = -1;\n");
        }
@@ -289,6 +270,41 @@ class Chip extends Test                                                         
    {return new Process(ProcessName, MemoryWidth, MemorySize);
    }
 
+  public String toString()                                                      // Print a description of the chip
+   {final StringBuilder s = new StringBuilder();
+        s.append("Chip: "+chipName+"\n");
+        s.append("  Processes:\n");
+    for (Process p: processes)
+     {  s.append("    Process: "+p.processName+"\n");
+        s.append("      Registers:\n");
+      for (Process.Register r: p.registers)
+       {s.append("        Register: "+r.registerName+", process: "+r.registerProcess().processName+", value: "+r.getRegister()+"\n");
+       }
+        s.append("      Transactions:\n");
+      for (Process.Transaction t: p.transactions)
+       {final Integer ra = t.transactionRequestedAt;
+        final Integer fa = t.transactionFinishedAt;
+        s.append("        Transaction   : "+t.transactionName+ "\n");
+        s.append("          executable  : "+t.transactionExecutable()+ "\n");
+        s.append("          finished    : "+t.transactionFinished()+ "\n");
+        if (ra != null) s.append("          requested at: "+ra+"\n");
+        if (fa != null) s.append("          finished  at: "+fa+"\n");
+
+        s.append("          Inputs      :\n");                                  // Transaction inputs
+        for (Process.Register r : t.transactionInputRegisters)
+         {s.append("            "+r.registerName()+"\n");
+         }
+
+        s.append("          Outputs     :\n");                                  // Transaction outputs
+        for (Process.Register r : t.transactionOutputRegisters)
+         {s.append("            "+r.registerName()+"\n");
+         }
+       }
+     }
+
+    return ""+s;
+   }
+
   void runPrograms()                                                            // Run the processes == programs efined on this chip
    {for(Process p : processes) p.initProgram();                                 // Initialize each program                                               //
     running = true;                                                             // Show the program as running
@@ -296,7 +312,7 @@ class Chip extends Test                                                         
      {for(Process p : processes) p.stepProgram();                               // Step each program
      }
     if (running)                                                                // Still running after too many steps
-     {stop("out of steps after:", maxSteps);
+     {stop("Out of steps after:", maxSteps);
      }
    }
 
@@ -341,11 +357,12 @@ endmodule
    {final int B = 8, N = 16;
     var c  = chip("Test");
     var m  = c.process("Memory", B, N);
-    var r  = c.process("RequestMemory", B, 1);
+    var r  = c.process("Request", B, 1);
     var ri = r.register("index", B);
     var mo = m.register("value", B);
-    var t  = m.transaction("GetValueFromMemory", r, "get", ri, mo);
-
+    var t  = m.transaction("GetValueFromMemory", r, "get");
+             t.transactionInputRegisters (ri);
+             t.transactionOutputRegisters(mo);
     for (int i = 0; i < N; i++)                                                 // Preload memory
      {m.memoryRegister.setRegister(i+1);
       m.memorySet(i);
@@ -355,9 +372,9 @@ endmodule
      {void action()
        {for (var t : m.transactions)
          {if (t.transactionExecutable())
-           {final int i = t.transactionRegisters.elementAt(0).getRegister();    // Index of memory requested
+           {final int i = t.transactionInputRegisters.elementAt(0).getRegister(); // Index of memory requested
             m.memoryGet(i);
-            t.transactionRegisters.elementAt(1).copy(m.memoryRegister);         // Index of memory requested
+            t.transactionOutputRegisters.elementAt(0).copy(m.memoryRegister);   // Register to hold value at index
             t.transactionFinishedAt = c.step;
            }
          }
@@ -369,8 +386,8 @@ endmodule
         for (Process.Transaction t: m.transactions)                             // Declare transactions
          {final String n = t.transactionName;
           final String p = m.processName;
-          final Process.Register i = t.transactionRegisters.elementAt(0);       // Register 0 is the register that contains the input index
-          final Process.Register o = t.transactionRegisters.elementAt(1);       // Register 1 is the target register
+          final Process.Register i = t.transactionInputRegisters.elementAt(0);  // Register 0 is the register that contains the input index
+          final Process.Register o = t.transactionOutputRegisters.elementAt(0); // Register 1 is the target register
           if (t.transactionOpCode.equals("get"))
            {s.append("             if ("+n+"_requestedAt > "+n+"_finishedAt) begin\n");
             s.append("               "+r.processName+"_"+o.registerName+" = "+p+"_memory["+r.processName+"_"+i.registerName+"];\n");
@@ -403,16 +420,29 @@ endmodule
      };
 
     c.runPrograms();
-    ok(t, """
-Transaction   : GetValueFromMemory
-  executable  : false
-  finished    : true
-  requested at: 2
-  finished  at: 3
-  Inputs      :
-    Register: index, value: 1
-  Outputs     :
-    Register: value, value: 2
+    //stop(c);
+    ok(c, """
+Chip: Test
+  Processes:
+    Process: Memory
+      Registers:
+        Register: Memory_Value, process: Memory, value: 2
+        Register: value, process: Memory, value: 2
+      Transactions:
+        Transaction   : GetValueFromMemory
+          executable  : false
+          finished    : true
+          requested at: 2
+          finished  at: 3
+          Inputs      :
+            Request_index
+          Outputs     :
+            Memory_value
+    Process: Request
+      Registers:
+        Register: Memory_Value, process: Request, value: 0
+        Register: index, process: Request, value: 1
+      Transactions:
 """);
     ok(c.returnCode, 1);
     say(c.generateVerilog());
