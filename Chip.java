@@ -116,7 +116,7 @@ class Chip extends Test                                                         
             Source.registerBits);
          }
 
-        value= (BitSet)Source.value.clone();                                    // Copy the source value into the target
+        value = (BitSet)Source.value.clone();                                   // Copy the source value into the target
        }
 
       String registerName() {return processName + "_" + registerName;}          // Create a name for a register that includes its register name
@@ -234,9 +234,19 @@ class Chip extends Test                                                         
 
     String generateProcessVerilog()                                             // Verilog representing a process
      {final StringBuilder v = new StringBuilder();
+
+      v.append("\n// Process: "+processName+"\n\n");
+      v.append("  reg ["+memoryWidth+"] "+processName+"_memory["+memorySize+"];\n");
+
       for (String n: registers.keySet())
        {final Register r = registers.get(n);
         v.append("  reg ["+r.registerBits+"] "+r.registerName()+";\n");
+       }
+
+      for (Transaction t: transactions)                                        // Declare transactions
+       {final String n = t.transactionName;
+        v.append("  integer "+n+"_requestedAt;\n");
+        v.append("  integer "+n+"_finishedAt;\n");
        }
 
       v.append("""
@@ -245,15 +255,30 @@ class Chip extends Test                                                         
   always @ (posedge clock) begin                                                // Execute next step in program
     if (step == 0) begin
        $pc = 0;
+""");
+      for (Transaction t: transactions)                                         // initilzie transaction Declare transactions
+       {final String n = t.transactionName;
+        v.append("       "+n+"_finishedAt = -1;\n");
+       }
+      for (Process p: processes)                                                // Find transactions of which we are the source
+       {for (Transaction t: p.transactions)
+         {if (t.transactionCallingProcess == Process.this)                      // This transaction is a source of requests against this process                                                          //
+           {final String n = t.transactionName;
+            v.append("       "+n+"_requestedAt = -1;\n");                       // Clear step at which the transaction was requested
+           }
+         }
+       }
+
+      v.append("""
     end
     else begin
       $next_pc = -1;
-      case($pc)
+      case($pc)                                                                 // Execute instructions
 """);
       for(Instruction i: code)
        {final StringBuilder s = new StringBuilder();
         s.append("        "+i.instructionNumber+": begin\n");
-        s.append("        "+i.verilog()+"\n");
+        s.append(i.verilog()+"\n");
         s.append("        end\n");
         v.append(s);
        }
@@ -327,7 +352,7 @@ endmodule
     var r  = c.process("RequestMemory", B, 1);
     var ri = r.register("index", B);
     var mo = m.register("value", B);
-    var t  = m.transaction("Get value from memory", r, "get", ri, mo);
+    var t  = m.transaction("GetValueFromMemory", r, "get", ri, mo);
 
     for (int i = 0; i < N; i++)                                                 // Preload memory
      {m.memoryRegister.setRegister(i+1);
@@ -346,10 +371,23 @@ endmodule
          }
         remainOnThisInstruction();                                              // Keep looping on this instruction
        }
-      String verilog()
-       {return """
-      $display("11");
-""";
+      String verilog()                                                          // Process memory requests
+       {final StringBuilder s = new StringBuilder();
+
+        for (Process.Transaction t: m.transactions)                             // Declare transactions
+         {final String n = t.transactionName;
+          final String p = m.processName;
+          final Process.Register i = t.transactionRegisters.elementAt(0);       // Register 0 is the register that contains the input index
+          final Process.Register o = t.transactionRegisters.elementAt(1);       // Register 1 is the target register
+          if (t.transactionOpCode.equals("get"))
+           {s.append("             if ("+n+"_requestedAt > "+n+"_finishedAt) begin\n");
+            s.append("               "+r.processName+"_"+o.registerName+" = "+p+"_memory["+r.processName+"_"+i.registerName+"];\n");
+            s.append("               "+n+"_finishedAt = $pc;\n");
+            s.append("             end\n");
+           }
+         }
+
+        return ""+s;
        }
      };
 
@@ -374,7 +412,7 @@ endmodule
 
     c.runPrograms();
     ok(t, """
-Transaction   : Get value from memory
+Transaction   : GetValueFromMemory
   executable  : false
   finished    : true
   requested at: 2
