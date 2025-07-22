@@ -280,7 +280,8 @@ class Chip extends Test                                                         
       for (Process.Register r: p.registers)
        {s.append("        Register: "+r.registerName+", process: "+r.registerProcess().processName+", value: "+r.getRegister()+"\n");
        }
-        s.append("      Transactions:\n");
+      if (p.transactions.size() > 0)
+       {s.append("      Transactions:\n");
       for (Process.Transaction t: p.transactions)
        {final Integer ra = t.transactionRequestedAt;
         final Integer fa = t.transactionFinishedAt;
@@ -292,13 +293,14 @@ class Chip extends Test                                                         
 
         s.append("          Inputs      :\n");                                  // Transaction inputs
         for (Process.Register r : t.transactionInputRegisters)
-         {s.append("            "+r.registerName()+"\n");
+         {s.append("            "+r.registerName()+" = "+r.getRegister()+"\n");
          }
 
         s.append("          Outputs     :\n");                                  // Transaction outputs
         for (Process.Register r : t.transactionOutputRegisters)
-         {s.append("            "+r.registerName()+"\n");
+         {s.append("            "+r.registerName()+" = "+r.getRegister()+"\n");
          }
+       }
        }
      }
 
@@ -435,14 +437,13 @@ Chip: Test
           requested at: 2
           finished  at: 3
           Inputs      :
-            Request_index
+            Request_index = 1
           Outputs     :
-            Memory_value
+            Memory_value = 2
     Process: Request
       Registers:
         Register: Memory_Value, process: Request, value: 0
         Register: index, process: Request, value: 1
-      Transactions:
 """);
     ok(c.returnCode, 1);
     say(c.generateVerilog());
