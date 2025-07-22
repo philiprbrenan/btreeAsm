@@ -8,8 +8,7 @@ import java.util.*;
 
 class Chip extends Test                                                         // A chip designed to manipulate a btree in a block of memory
  {final String chipName;                                                        // The name of the chip
-  final Map<String, Process> processesByName = new TreeMap<>();                 // A fixed set of processes for this chip by name
-  final Stack<Process>       processes       = new Stack<>();                   // A fixed set of processes for this chip in definition order
+  final Children<Process> processes = new Children<>();                         // A fixed set of processes for this chip in definition order
   boolean running;                                                              // True when the chip is running
   int step;                                                                     // Step we are executing in the run
   int maxSteps = 10;                                                            // Maximum number of steps to executre in the simulation
@@ -28,27 +27,23 @@ class Chip extends Test                                                         
     final int                memorySize;                                        // The number of memory elements in the memory available to this process
     final BitSet[]           memory;                                            // Memory is an array of elements of bits
     final Register           memoryRegister;                                    // A register that is used to interact with memory
-    final Stack<Transaction> transactions   = new Stack<>();                    // Transactions to watch for work requests
-    final Map<String, Register> registers   = new TreeMap<>();                  // Registers used in this process
-    final Stack<Instruction> code           = new Stack<>();                    // A fixed set of instructions for this process
-    final Stack<Label>       labels         = new Stack<>();                    // Labels for instructions in this process
-    int                      step           = 0;                                // Step in the program
-    int                      maxSteps       = 200;                              // Maximum number of steps to execute
-    int                      pc             = 0;                                // The index of the next instruction to be executed
-    Integer                  nextPc         = null;                             // The next program counter requested
-    String                   rc             = null;                             // The result of executing the program.  If null then no problems were detected
+    final Children<Transaction> transactions = new Children<>();                // Transactions to watch for work requests
+    final Children<Register> registers       = new Children<>();                // Registers used in this process
+    final Stack<Instruction> code            = new Stack<>();                   // A fixed set of instructions for this process
+    final Stack<Label>       labels          = new Stack<>();                   // Labels for instructions in this process
+    int                      step            = 0;                               // Step in the program
+    int                      maxSteps        = 200;                             // Maximum number of steps to execute
+    int                      pc              = 0;                               // The index of the next instruction to be executed
+    Integer                  nextPc          = null;                            // The next program counter requested
+    String                   rc              = null;                            // The result of executing the program.  If null then no problems were detected
 
     Process(String ProcessName, int MemoryWidth, int MemorySize)                // Create a process
      {if (running)
        {stop("Cannot define process:", ProcessName, "when the chip is running");
        }
-      processName = ProcessName;
-      if (processesByName.containsKey(processName))                             // Processes by name
-       {stop("Process:", processName, "already defined");
-       }
-      processNumber = processesByName.size();
-      processesByName.put(processName, this);
-      processes.push(this);
+      processName   = ProcessName;
+      processNumber = processes.size();
+      processes.put(processName, this);
 
       memorySize    = MemorySize;
       memoryWidth   = MemoryWidth;
@@ -89,10 +84,6 @@ class Chip extends Test                                                         
          {stop("Cannot define register:", RegisterName, "when the chip is running");
          }
         registerName = RegisterName; registerBits = RegisterBits;
-        if (registers.containsKey(registerName))
-         {stop("Register:", registerName, "already defined in process:",
-           processName);
-         }
         registers.put(registerName, this);
        }
 
@@ -167,7 +158,7 @@ class Chip extends Test                                                         
 
     class Transaction                                                           // Transactions allow one process to request services from another process
      {final String transactionName;                                             // Name of the transaction
-      final Stack<Process.Register> transactionRegisters = new Stack<>();       // The registers used to record the detasils of the transaction: its inputs and outputs
+      final Children<Process.Register> transactionRegisters = new Children<>(); // The registers used to record the detasils of the transaction: its inputs and outputs
       Integer transactionRequestedAt;                                           // The step at which the transaction started
       Integer transactionFinishedAt;                                            // The step at which the transaction finished
       int     transactionRc;                                                    // Return code from executing ransaction
@@ -179,8 +170,10 @@ class Chip extends Test                                                         
        {transactionName = Name;
         transactionCallingProcess = CallingProcess;
         transactionOpCode = OpCode;
-        transactions.push(this);
-        for(Process.Register r : Registers) transactionRegisters.push(r);       // Save parameter registers
+        transactions.put(transactionName, this);
+        for(Process.Register r : registers)                                     // Save parameter registers
+         {transactionRegisters.put(r.registerName(), r);
+         }
        }
 
       boolean transactionExecutable()                                           // Whether the transaction is executable or not
@@ -238,9 +231,8 @@ class Chip extends Test                                                         
       v.append("\n// Process: "+processName+"\n\n");
       v.append("  reg ["+memoryWidth+"] "+processName+"_memory["+memorySize+"];\n");
 
-      for (String n: registers.keySet())
-       {final Register r = registers.get(n);
-        v.append("  reg ["+r.registerBits+"] "+r.registerName()+";\n");
+      for (Register r: registers)
+       {v.append("  reg ["+r.registerBits+"] "+r.registerName()+";\n");
        }
 
       for (Transaction t: transactions)                                        // Declare transactions
