@@ -12,7 +12,7 @@ public class Children<E> extends Test implements Iterable<E>                  //
 
   public void put(String key, E value)                                          // Add a key-value pair if key is not already present
    {if (map.containsKey(key))
-     {stop("Entry with key '" + key + "' already exists.");
+     {stop(value.getClass().getName()+" with name '" + key + "' already exists.");
      }
     stack.push(value);
     map.put(key, value);
@@ -21,6 +21,9 @@ public class Children<E> extends Test implements Iterable<E>                  //
   public Iterator<E> iterator()                                                 // Iterator over the entries in insertion order
    {return stack.iterator();
    }
+
+  public int size() {return stack.size();}                                      // String representation of the map in insertion order
+  public E   elementAt(int p) {return stack.elementAt(p);}                      // Entry by index
 
   public String toString()                                                      // String representation of the map in insertion order
    {if (stack.size() == 0) return "Empty";
@@ -47,6 +50,16 @@ public class Children<E> extends Test implements Iterable<E>                  //
     ok(s, "123");
    }
 
+  protected static void test_at()
+   {final Children<Integer> m = new Children<>();
+    m.put("c", 1);
+    m.put("b", 2);
+    m.put("a", 3);
+    ok(m.elementAt(0), 1);
+    ok(m.elementAt(1), 2);
+    ok(m.elementAt(2), 3);
+   }
+
   protected static void test_dup()
    {final Children<Integer> m = new Children<>();
     m.put("a", 1);
@@ -56,6 +69,7 @@ public class Children<E> extends Test implements Iterable<E>                  //
   protected static void oldTests()                                              // Tests thought to be in good shape
    {test_put();
     test_iter();
+    test_at();
     //test_dup();
    }
 
