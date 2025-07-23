@@ -18,6 +18,8 @@ class Chip extends Test                                                         
    {chipName = Name;
    }
 
+//D1 Chip                                                                       // A chip is constructed from a fixed number of communicating proceeses that execute code on the chip to produce the desired outputs rfomn the inputs to the chip
+
   static Chip chip(String Name) {return new Chip(Name);}                        // Create a new chip
 
   class Process                                                                 // A process consists of memory, registers and a program
@@ -52,6 +54,8 @@ class Chip extends Test                                                         
       memoryRegister = new Register("Memory_Value", memoryWidth);
      }
 
+//D2 Instruction                                                                // An instruction rpresents code to be executed by a process in a single clock cycle == process step
+
     abstract class Instruction                                                  // Instructions implement the action of a program
      {final int instructionNumber;                                              // The number of this instruction
       final String traceBack = traceBack();                                     // Line at which this instruction was created
@@ -68,11 +72,16 @@ class Chip extends Test                                                         
       String verilog() {return "";}                                             // Verilog equivalent of the action implementing this instruction
 
       void remainOnThisInstruction() {nextPc = instructionNumber;}              // Keep looping on this instruction
+      String remainOnThisInstructionV()                                         // Keep looping on this instruction in verilog
+       {return processNextPcName()+" = "+processPcName()+";";
+       }
      }
 
     class Label                                                                 // Lable jump targets in the program
      {
      }
+
+//D2 Register                                                                   // A register is an unindeaxable bloxk of memory associated with a process
 
     class Register                                                              // A register is a non indexable block of memory that can be read by any process but written to only by its owning process
      {final String registerName;                                                // The name of the register
@@ -152,6 +161,8 @@ class Chip extends Test                                                         
        }
      }
 
+//D2 Transaction                                                                // A transaction allows other processes on the chip to request services from this process
+
     class Transaction                                                           // Transactions allow one process to request services from another process
      {final String transactionName;                                             // Name of the transaction
       final Children<Process.Register> transactionInputRegisters  = new Children<>(); // The registers used to provide inputs to this transaction. As they are only going to be read during the transaction they can be owned by any process
@@ -195,6 +206,21 @@ class Chip extends Test                                                         
         return f != null && !transactionExecutable();                           // The transaction has been finished and is not currently executing
        }
 
+      String transactionRequestedAt() {return transactionName+"_requestedAt";}  // Name of the requested at field for a transaction
+      String transactionFinishedAt()  {return transactionName+"_finishedAt";}    // Name of the finished at field for a transaction
+      String transactionExecutableV()                                           // Whether the transaction is executable or not in verilog
+       {return transactionRequestedAt()+" > "+transactionFinishedAt();
+       }
+      String transactionFinishedV()                                             // Whether the transaction has finished or not in verilog
+       {return transactionRequestedAt()+" <= "+transactionFinishedAt();
+       }
+      String transactionSetExecutableV()                                        // Mark a transaction as executable
+       {return transactionRequestedAt()+" = step;";
+       }
+      String transactionSetFinishedV()                                          // Mark a transaction as finished
+       {return transactionFinishedAt()+" = step;";
+       }
+
       Process transactionProcess() {return Process.this;}                       // Process associated with this transaction
 
      } // Transaction
@@ -203,14 +229,17 @@ class Chip extends Test                                                         
      {return new Transaction(Name, CallingProcess, OpCode);
      }
 
+//D2 Process                                                                    // A process represents a thread of execution on the chip
+
     String processPcName()     {return processName+"_pc";}                      // Program counter
     String processNextPcName() {return processName+"_next_pc";}                 // Next program counter
+    String processMemoryName() {return processName+"_memory";}                  // Name of memory
 
     String generateProcessVerilog()                                             // Verilog representing a process
      {final StringBuilder v = new StringBuilder();
 
       v.append("\n// Process: "+processName+"\n\n");
-      v.append("  reg ["+memoryWidth+"] "+processName+"_memory["+memorySize+"];\n");
+      v.append("  reg ["+memoryWidth+"] "+processMemoryName()+"["+memorySize+"];\n");
 
       for (Register r: registers)
        {v.append("  reg ["+r.registerBits+"] "+r.registerName()+";\n");
@@ -227,6 +256,7 @@ class Chip extends Test                                                         
   integer $next_pc;                                                             // Next program counter
   always @ (posedge clock) begin                                                // Execute next step in program
     if (step == 0) begin
+       integer i;
        $pc = 0;
 """);
       for (Transaction t: transactions)                                         // Initialize transaction
@@ -242,6 +272,7 @@ class Chip extends Test                                                         
          }
        }
 
+      v.append("       for(i = 0; i < "+memorySize+"; i = i + 1) "+processMemoryName()+"[i] = i+1;\n");
       v.append("""
     end
     else begin
@@ -255,7 +286,7 @@ class Chip extends Test                                                         
         s.append("        end\n");
         v.append(s);
        }
-      v.append("        default: stop <= 1;\n");
+      v.append("        default: stop = 1;\n");
       v.append("      endcase\n");
       v.append("      if ($next_pc != -1) $pc = $next_pc; else $pc = $pc + 1;   // Interpret next program counter as either a redirection or continuation of flow\n");
       v.append("    end\n");
@@ -270,13 +301,15 @@ class Chip extends Test                                                         
    {return new Process(ProcessName, MemoryWidth, MemorySize);
    }
 
+//D2 Print                                                                      // Print the state of a chip
+
   public String toString()                                                      // Print a description of the chip
    {final StringBuilder s = new StringBuilder();
         s.append("Chip: "+chipName+"\n");
         s.append("  Processes:\n");
     for (Process p: processes)
      {  s.append("    Process: "+p.processName+"\n");
-        s.append("      Registers:\n");
+        s.append("      Registers :\n");
       for (Process.Register r: p.registers)
        {s.append("        Register: "+r.registerName+", process: "+r.registerProcess().processName+", value: "+r.getRegister()+"\n");
        }
@@ -341,6 +374,7 @@ module $chip_name;                                                              
     for(step = 0; step < $max_steps && !stop; step = step + 1) begin
       clock = 0; #1; clock = 1; #1;
     end
+    if (!stop) $finish(1); else $finish(0);                                     // Set return code depending on whether the simulation halted
   end
 """);
 
@@ -374,7 +408,7 @@ endmodule
      {void action()
        {for (var t : m.transactions)
          {if (t.transactionExecutable())
-           {final int i = t.transactionInputRegisters.elementAt(0).getRegister(); // Index of memory requested
+           {final int i = t.transactionInputRegisters.elementAt(0).getRegister();// Index of memory requested
             m.memoryGet(i);
             t.transactionOutputRegisters.elementAt(0).copy(m.memoryRegister);   // Register to hold value at index
             t.transactionFinishedAt = c.step;
@@ -382,22 +416,22 @@ endmodule
          }
         remainOnThisInstruction();                                              // Keep looping on this instruction
        }
+
       String verilog()                                                          // Process memory requests
        {final StringBuilder s = new StringBuilder();
 
         for (Process.Transaction t: m.transactions)                             // Declare transactions
-         {final String n = t.transactionName;
-          final String p = m.processName;
-          final Process.Register i = t.transactionInputRegisters.elementAt(0);  // Register 0 is the register that contains the input index
+         {final Process.Register i = t.transactionInputRegisters.elementAt(0);  // Register 0 is the register that contains the input index
           final Process.Register o = t.transactionOutputRegisters.elementAt(0); // Register 1 is the target register
           if (t.transactionOpCode.equals("get"))
-           {s.append("             if ("+n+"_requestedAt > "+n+"_finishedAt) begin\n");
-            s.append("               "+r.processName+"_"+o.registerName+" = "+p+"_memory["+r.processName+"_"+i.registerName+"];\n");
-            s.append("               "+n+"_finishedAt = $pc;\n");
+           {s.append("             if ("+t.transactionExecutableV()+") begin\n");
+            s.append("               "+o.registerName()+" = "+m.processMemoryName()+"["+i.registerName()+"];\n");
+            s.append("               "+t.transactionSetFinishedV()+"\n");
             s.append("             end\n");
            }
          }
 
+        s.append("             "+remainOnThisInstructionV()+"\n");
         return ""+s;
        }
      };
@@ -414,10 +448,24 @@ endmodule
          }
         remainOnThisInstruction();                                              // Keep looping on this instruction
        }
+
       String verilog()
-       {return """
-      $display("22");
-""";
+       {final StringBuilder s = new StringBuilder();
+        s.append("             if (step <  2) begin end\n");
+        s.append("             else if (step == 2) begin\n");
+        s.append("               "+ri.registerName()+" = 1;\n");
+        s.append("               "+t.transactionSetExecutableV()+"\n");
+        s.append("             end\n");
+        s.append("             else if ("+t.transactionFinishedV()+") begin\n");
+        s.append("               integer o;\n");
+        s.append("               o = $fopen(\"result.txt\", \"w\");\n");
+        s.append("               $display(  \"Step=%d\\nValue=%d\\n\", step, "+mo.registerName()+" );\n");
+        s.append("               $fwrite(o, \"Step=%d\\nValue=%d\\n\", step, "+mo.registerName()+" );\n");
+        s.append("               $fclose(o);\n");
+        s.append("               stop = 1;\n");
+        s.append("             end\n");
+        s.append("             "+remainOnThisInstructionV()+"\n");
+        return ""+s;
        }
      };
 
@@ -427,7 +475,7 @@ endmodule
 Chip: Test
   Processes:
     Process: Memory
-      Registers:
+      Registers :
         Register: Memory_Value, process: Memory, value: 2
         Register: value, process: Memory, value: 2
       Transactions:
@@ -441,7 +489,7 @@ Chip: Test
           Outputs     :
             Memory_value = 2
     Process: Request
-      Registers:
+      Registers :
         Register: Memory_Value, process: Request, value: 0
         Register: index, process: Request, value: 1
 """);
