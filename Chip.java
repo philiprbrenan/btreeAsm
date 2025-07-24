@@ -1,24 +1,24 @@
 //------------------------------------------------------------------------------
-// Btree using block, asynchronous memory.
+// B-tree implemented using block-based asynchronous memory.
 // Philip R Brenan at appaapps dot com, Appa Apps Ltd Inc., 2025
 //------------------------------------------------------------------------------
-package com.AppaApps.Silicon;                                                   // Btree in a block on the surface of a silicon chip.
+package com.AppaApps.Silicon;                                                   // B-tree implemented in a memory block on a silicon chip.
 
 import java.util.*;
 
-class Chip extends Test                                                         // A chip designed to manipulate a btree in a block of memory
+class Chip extends Test                                                         // A chip designed to manipulate a B-tree stored in a memory block
  {final String chipName;                                                        // The name of the chip
   final Children<Process> processes = new Children<>();                         // A fixed set of processes for this chip in definition order
   boolean running;                                                              // True when the chip is running
-  int step;                                                                     // Step we are executing in the run
-  int maxSteps = 10;                                                            // Maximum number of steps to executre in the simulation
+  int step;                                                                     // Current simulation step being executed
+  int maxSteps = 10;                                                            // Maximum number of steps to execute in the simulation
   int returnCode;                                                               // The return code from the first process to finish which effectively terminates the simulation
 
   Chip(String Name)                                                             // Create a new chip
    {chipName = Name;
    }
 
-//D1 Chip                                                                       // A chip is constructed from a fixed number of communicating proceeses that execute code on the chip to produce the desired outputs rfomn the inputs to the chip
+//D1 Chip                                                                       // A chip is constructed from a fixed number of communicating processes that execute code on the chip to produce the desired outputs from the inputs to the chip
 
   static Chip chip(String Name) {return new Chip(Name);}                        // Create a new chip
 
@@ -27,17 +27,14 @@ class Chip extends Test                                                         
     final int                processNumber;                                     // The unique number of this process
     final int                memoryWidth;                                       // The width of each memory element in bits
     final int                memorySize;                                        // The number of memory elements in the memory available to this process
-    final BitSet[]           memory;                                            // Memory is an array of elements of bits
+    final BitSet[]           memory;                                            // Memory is represented as an array of bit vectors
     final Register           memoryRegister;                                    // A register that is used to interact with memory
-    final Children<Transaction> transactions = new Children<>();                // Transactions to watch for work requests
+    final Children<Transaction> transactions = new Children<>();                // Transactions representing work requests to this process
     final Children<Register> registers       = new Children<>();                // Registers used in this process
     final Stack<Instruction> code            = new Stack<>();                   // A fixed set of instructions for this process
     final Stack<Label>       labels          = new Stack<>();                   // Labels for instructions in this process
-    int                      step            = 0;                               // Step in the program
-    int                      maxSteps        = 200;                             // Maximum number of steps to execute
-    int                      pc              = 0;                               // The index of the next instruction to be executed
-    Integer                  nextPc          = null;                            // The next program counter requested
-    String                   rc              = null;                            // The result of executing the program.  If null then no problems were detected
+    int                      processPc       = 0;                               // The index of the next instruction to be executed
+    Integer                  processNextPc   = null;                            // The next program counter requested
 
     Process(String ProcessName, int MemoryWidth, int MemorySize)                // Create a process
      {if (running)
@@ -54,13 +51,13 @@ class Chip extends Test                                                         
       memoryRegister = new Register("Memory_Value", memoryWidth);
      }
 
-//D2 Instruction                                                                // An instruction rpresents code to be executed by a process in a single clock cycle == process step
+//D2 Instruction                                                                // An instruction represents code to be executed by a process in a single clock cycle == process step
 
     abstract class Instruction                                                  // Instructions implement the action of a program
      {final int instructionNumber;                                              // The number of this instruction
       final String traceBack = traceBack();                                     // Line at which this instruction was created
 
-      Instruction()                                                             // Add the instruction to the code
+      Instruction()                                                             // Add this instruction to the process's code
        {if (running)
          {stop("Cannot define instructions when the chip is running");
          }
@@ -71,17 +68,17 @@ class Chip extends Test                                                         
       abstract void action();                                                   // The action to be performed by the instruction
       String verilog() {return "";}                                             // Verilog equivalent of the action implementing this instruction
 
-      void remainOnThisInstruction() {nextPc = instructionNumber;}              // Keep looping on this instruction
-      String remainOnThisInstructionV()                                         // Keep looping on this instruction in verilog
+      void instructionIterate() {processNextPc = instructionNumber;}            // Keep looping on this instruction
+      String instructionIterateV()                                              // Keep looping on this instruction in verilog
        {return processNextPcName()+" = "+processPcName()+";";
        }
      }
 
-    class Label                                                                 // Lable jump targets in the program
+    class Label                                                                 // Label jump targets in the program
      {
      }
 
-//D2 Register                                                                   // A register is an unindeaxable bloxk of memory associated with a process
+//D2 Register                                                                   // A register is an unindexable block of memory associated with a process
 
     class Register                                                              // A register is a non indexable block of memory that can be read by any process but written to only by its owning process
      {final String registerName;                                                // The name of the register
@@ -96,8 +93,8 @@ class Chip extends Test                                                         
         registers.put(registerName, this);
        }
 
-      int getRegister()                                                         // Get a register as an integer
-       {return value.length() == 0 ? 0 : (int) value.toLongArray()[0];          // Relying on the fact that the Java is only ever test code unlike the Verilog.
+      int getRegister()                                                         // Return the registerâs value as an integer
+       {return value.length() == 0 ? 0 : (int) value.toLongArray()[0];          // Relies on the fact that this Java code is only used for testing, unlike the Verilog version
        }
 
       void setRegister(int Value)                                               // Set the value of the register from an integer
@@ -129,17 +126,17 @@ class Chip extends Test                                                         
      }
 
     void initProgram()                                                          // Get ready to execute the program
-     {pc = 0;                                                                   // Program always starts at the first instruction
+     {processPc = 0;                                                            // Program always starts at the first instruction
      }
 
     void stepProgram()                                                          // Execute one step in the program
-     {nextPc = null;                                                            // The executed instruction can optionally set this variable to change the execution flow
-      if (pc >= code.size())
+     {processNextPc = null;                                                     // The executed instruction can optionally set this variable to change the execution flow
+      if (processPc >= code.size())
        {running = false;
         return;
        }
-      code.elementAt(pc).action();
-      if (nextPc != null) pc = nextPc; else pc++;                               // Interpret next program counter as either a redirection or continuation of flow
+      code.elementAt(processPc).action();
+      if (processNextPc != null) processPc = processNextPc; else processPc++;   // Interpret next program counter as either a redirection or continuation of flow
      }
 
     int memoryGet(int Index)                                                    // Get a memory element as an integer setting the memory register associated with the memory as well
@@ -166,10 +163,10 @@ class Chip extends Test                                                         
     class Transaction                                                           // Transactions allow one process to request services from another process
      {final String transactionName;                                             // Name of the transaction
       final Children<Process.Register> transactionInputRegisters  = new Children<>(); // The registers used to provide inputs to this transaction. As they are only going to be read during the transaction they can be owned by any process
-      final Children<Process.Register> transactionOutputRegisters = new Children<>(); // The registers used as outputs by this transaction. As they are going to be written into bythe transaction they have to be owned by the process executing the transaction
+      final Children<Process.Register> transactionOutputRegisters = new Children<>(); // The registers used as outputs by this transaction. As they are going to be written into by the transaction they have to be owned by the process executing the transaction
       Integer transactionRequestedAt;                                           // The step at which the transaction started
       Integer transactionFinishedAt;                                            // The step at which the transaction finished
-      int     transactionRc;                                                    // Return code from executing ransaction
+      int     transactionRc;                                                    // Return code from executing transaction
       final Process transactionCallingProcess;                                  // The process requesting a service provided by this process via this transaction
       final String  transactionOpCode;                                          // The service requested by the caller
 
@@ -186,10 +183,13 @@ class Chip extends Test                                                         
          }
        }
 
-      void transactionOutputRegisters(Process.Register...OutputRegisters)       // The registers used as outputs by this transaction. As they are going to be written into bythe transaction they have to be owned by the process executing the transaction
+      void transactionOutputRegisters(Process.Register...OutputRegisters)       // The registers used as outputs by this transaction. As they are going to be written into by the transaction they have to be owned by the process executing the transaction
        {for(Process.Register r : OutputRegisters)                               // Save output registers
-         {if (r.registerProcess() != transactionProcess()) stop("Output transaction register:",
-           r.registerName()+" must be owned by process: "+transactionProcess().processName+"\n");
+         {if (r.registerProcess() != transactionProcess())                      // Check that the putput registers are owned by the target process of the transaction as that process is the only process that can write into them
+           {stop("Output transaction register:",
+             r.registerName()+" must be owned by process: "+
+             transactionProcess().processName+"\n");
+           }
           transactionOutputRegisters.put(r.registerName(), r);
          }
        }
@@ -200,22 +200,28 @@ class Chip extends Test                                                         
         return r != null && (f == null || f < r);                               // The transaction has been requested and has not yet completed
        }
 
-      boolean transactionFinished()                                             // Whether the transaction hs finished executing
+      boolean transactionFinished()                                             // Whether the transaction has finished executing
        {final Integer r = transactionRequestedAt;
         final Integer f = transactionFinishedAt;
         return f != null && !transactionExecutable();                           // The transaction has been finished and is not currently executing
        }
 
       String transactionRequestedAt() {return transactionName+"_requestedAt";}  // Name of the requested at field for a transaction
-      String transactionFinishedAt()  {return transactionName+"_finishedAt";}    // Name of the finished at field for a transaction
+      String transactionFinishedAt()  {return transactionName+"_finishedAt";}   // Name of the finished at field for a transaction
       String transactionExecutableV()                                           // Whether the transaction is executable or not in verilog
        {return transactionRequestedAt()+" > "+transactionFinishedAt();
        }
       String transactionFinishedV()                                             // Whether the transaction has finished or not in verilog
        {return transactionRequestedAt()+" <= "+transactionFinishedAt();
        }
+      void transactionSetExecutable()                                           // Mark a transaction as executable
+       {transactionRequestedAt = step;
+       }
       String transactionSetExecutableV()                                        // Mark a transaction as executable
        {return transactionRequestedAt()+" = step;";
+       }
+      void transactionSetFinished()                                             // Mark a transaction as finished
+       {transactionFinishedAt = step;
        }
       String transactionSetFinishedV()                                          // Mark a transaction as finished
        {return transactionFinishedAt()+" = step;";
@@ -233,9 +239,9 @@ class Chip extends Test                                                         
 
     String processPcName()     {return processName+"_pc";}                      // Program counter
     String processNextPcName() {return processName+"_next_pc";}                 // Next program counter
-    String processMemoryName() {return processName+"_memory";}                  // Name of memory
+    String processMemoryName() {return processName+"_memory";}                  // Name of the memory block used by this process
 
-    String generateProcessVerilog()                                             // Verilog representing a process
+    String generateProcessVerilog()                                             // Generate Verilog code for this process
      {final StringBuilder v = new StringBuilder();
 
       v.append("\n// Process: "+processName+"\n\n");
@@ -245,7 +251,7 @@ class Chip extends Test                                                         
        {v.append("  reg ["+r.registerBits+"] "+r.registerName()+";\n");
        }
 
-      for (Transaction t: transactions)                                        // Declare transactions
+      for (Transaction t: transactions)                                         // Declare transactions
        {final String n = t.transactionName;
         v.append("  integer "+n+"_requestedAt;\n");
         v.append("  integer "+n+"_finishedAt;\n");
@@ -301,11 +307,65 @@ class Chip extends Test                                                         
    {return new Process(ProcessName, MemoryWidth, MemorySize);
    }
 
+//D2 Memory Process                                                             // Processes that maintain the state of a memory
+
+  class MemoryProcess extends Process                                           // A process whose sole purpose is to maintain memory
+   {static int memoryProcessTransactionNumber = 0;                              // Make transaction names unique
+    MemoryProcess(String ProcessName, int MemoryWidth, int MemorySize)          // Create a process
+     {super(ProcessName, MemoryWidth, MemorySize);
+     }
+    class Get extends Process.Transaction                                       // Get a value from the memory controlled by this process
+     {final Process  process;                                                   // The calling process
+      final Register index;                                                     // The index of the element whose value is required
+      final Register result;                                                    // The value of the memory at the specified index
+      Get(Process Process)                                                      // Get the value from memory at the indicated index
+       {super(processName+"_"+(++memoryProcessTransactionNumber),
+          MemoryProcess.this, "get");
+        process = Process;                                                      // The calling process requesting a value from the memory of this memory process
+        index   = register(transactionName+"_index", logTwo(memorySize));       // A register that will index the memory managed by this process
+        result  = register(transactionName+"_result", memoryWidth);             // The register that will contain the result
+        transactionInputRegisters(index);                                       // Make the index an input register
+        transactionOutputRegisters(result);                                     // Make the result an output register
+       }
+
+      void execute(Register Index)                                              // Execute the request
+       {
+       }
+      void waitResult()                                                         // Wait for the request to finish
+       {
+       }
+     } // Get
+    void generate()                                                             // Generate the code needed to support the transactions against this memory process
+     {
+     }
+   }
+
+//D2 Chip                                                                       // Actions that affect the whole chip
+
+  void chipRunPrograms()                                                        // Run the processes == programs defined on this chip
+   {for(Process p : processes) p.initProgram();                                 // Initialize each program                                               //
+    running = true;                                                             // Show the program as running
+    for(step = 0; running && step < maxSteps; ++step)                           // Run each program
+     {for(Process p : processes) p.stepProgram();                               // Step each program
+     }
+    if (running)                                                                // Still running after too many steps
+     {stop("Out of steps after:", maxSteps);
+     }
+   }
+
+  void chipStop(int ReturnCode)                                                 // Stop the chip
+   {returnCode = ReturnCode; running = false;
+   }
+
+  String chipStopV(int ReturnCode)                                              // Stop the chip in verilog
+   {return "stop = 1;";
+   }
+
 //D2 Print                                                                      // Print the state of a chip
 
   public String toString()                                                      // Print a description of the chip
    {final StringBuilder s = new StringBuilder();
-        s.append("Chip: "+chipName+"\n");
+        s.append("Chip: "+chipName+" step: "+step+", maxSteps: "+maxSteps+", running: "+running+", returnCode: "+returnCode+"\n");
         s.append("  Processes:\n");
     for (Process p: processes)
      {  s.append("    Process: "+p.processName+"\n");
@@ -340,21 +400,7 @@ class Chip extends Test                                                         
     return ""+s;
    }
 
-  void runPrograms()                                                            // Run the processes == programs efined on this chip
-   {for(Process p : processes) p.initProgram();                                 // Initialize each program                                               //
-    running = true;                                                             // Show the program as running
-    for(step = 0; running && step < maxSteps; ++step)                           // Run each program
-     {for(Process p : processes) p.stepProgram();                               // Step each program
-     }
-    if (running)                                                                // Still running after too many steps
-     {stop("Out of steps after:", maxSteps);
-     }
-   }
-
-  void stopProgram(int ReturnCode)                                              // Return code
-   {running = false;
-    returnCode = ReturnCode;
-   }
+//D2 Verilog                                                                    // Verilog describing the chip
 
   String generateVerilog()                                                      // Generate verilog describing the chip
    {final StringBuilder v = new StringBuilder();
@@ -365,7 +411,7 @@ class Chip extends Test                                                         
 //------------------------------------------------------------------------------
 `timescale 10ps/1ps
 module $chip_name;                                                              // Test bench for database on a chip
-  reg                    stop;                                                  // Program has stopped when this goes high
+  integer                stop;                                                  // Program has stopped when this goes high
   reg                   clock;                                                  // Clock
   integer                step;                                                  // Step of the simulation
 
@@ -399,22 +445,26 @@ endmodule
     var t  = m.transaction("GetValueFromMemory", r, "get");
              t.transactionInputRegisters (ri);
              t.transactionOutputRegisters(mo);
+
     for (int i = 0; i < N; i++)                                                 // Preload memory
      {m.memoryRegister.setRegister(i+1);
       m.memorySet(i);
      }
 
-    m.new Instruction()                                                         // Process mmeory requests
+    m.new Instruction()                                                         // Process memory requests
      {void action()
        {for (var t : m.transactions)
-         {if (t.transactionExecutable())
-           {final int i = t.transactionInputRegisters.elementAt(0).getRegister();// Index of memory requested
-            m.memoryGet(i);
-            t.transactionOutputRegisters.elementAt(0).copy(m.memoryRegister);   // Register to hold value at index
-            t.transactionFinishedAt = c.step;
+         {if (t.transactionOpCode.equals("get"))
+           {if (t.transactionExecutable())
+             {final int i =                                                     // Index of memory requested
+                t.transactionInputRegisters.elementAt(0).getRegister();
+              m.memoryGet(i);
+              t.transactionOutputRegisters.elementAt(0).copy(m.memoryRegister); // Register to hold value at index
+              t.transactionSetFinished();
+             }
            }
          }
-        remainOnThisInstruction();                                              // Keep looping on this instruction
+        instructionIterate();                                                   // Keep looping on this instruction
        }
 
       String verilog()                                                          // Process memory requests
@@ -424,55 +474,58 @@ endmodule
          {final Process.Register i = t.transactionInputRegisters.elementAt(0);  // Register 0 is the register that contains the input index
           final Process.Register o = t.transactionOutputRegisters.elementAt(0); // Register 1 is the target register
           if (t.transactionOpCode.equals("get"))
-           {s.append("             if ("+t.transactionExecutableV()+") begin\n");
-            s.append("               "+o.registerName()+" = "+m.processMemoryName()+"["+i.registerName()+"];\n");
-            s.append("               "+t.transactionSetFinishedV()+"\n");
-            s.append("             end\n");
+           {final String in = "             ";                                  // Indentation
+            final String vl = m.processMemoryName()+"["+i.registerName()+"]";   // Reference to memory to get the value of the indexed element
+            s.append(in+"if ("+t.transactionExecutableV()+") begin\n");         // Check that this transaction is executable
+            s.append(in+"  "+o.registerName()+" = "+vl+";\n");                  // Get the indexed value
+            s.append(in+"  "+t.transactionSetFinishedV()+"\n");                 // Mark the transaction as complete
+            s.append(in+"end\n");
            }
          }
 
-        s.append("             "+remainOnThisInstructionV()+"\n");
-        return ""+s;
+        s.append("             "+instructionIterateV()+"\n");                   // Stay on this instruction indefinitely as long as the chip is running
+        return ""+s;                                                            // Generated verilog to get a value from the memory of this process
        }
      };
 
     r.new Instruction()                                                         // Request the value of an indexed element of memory
      {void action()
        {if      (c.step <  2) {}                                                // Wait a bit
-        else if (c.step == 2)                                                   // Wait a bit
+        else if (c.step == 2)                                                   // Make memeory request
          {ri.setRegister(1);                                                    // Index of memory requested
-          t.transactionRequestedAt = c.step;                                    // Request value of memory at the index
+          t.transactionSetExecutable();                                    // Request value of memory at the index
          }
         else if (t.transactionFinished())                                       // Wait for memory request to finish
-         {c.stopProgram(1);                                                     // Halt the run
+         {c.chipStop(1);                                                        // Halt the run
          }
-        remainOnThisInstruction();                                              // Keep looping on this instruction
+        instructionIterate();                                                   // Keep looping on this instruction
        }
 
       String verilog()
        {final StringBuilder s = new StringBuilder();
-        s.append("             if (step <  2) begin end\n");
-        s.append("             else if (step == 2) begin\n");
-        s.append("               "+ri.registerName()+" = 1;\n");
-        s.append("               "+t.transactionSetExecutableV()+"\n");
-        s.append("             end\n");
-        s.append("             else if ("+t.transactionFinishedV()+") begin\n");
-        s.append("               integer o;\n");
-        s.append("               o = $fopen(\"result.txt\", \"w\");\n");
-        s.append("               $display(  \"Step=%d\\nValue=%d\\n\", step, "+mo.registerName()+" );\n");
-        s.append("               $fwrite(o, \"Step=%d\\nValue=%d\\n\", step, "+mo.registerName()+" );\n");
-        s.append("               $fclose(o);\n");
-        s.append("               stop = 1;\n");
-        s.append("             end\n");
-        s.append("             "+remainOnThisInstructionV()+"\n");
+        final String in = "             ";
+        s.append(in+"if (step <  2) begin end\n");
+        s.append(in+"else if (step == 2) begin\n");
+        s.append(in+"  "+ri.registerName()+" = 1;\n");
+        s.append(in+"  "+t.transactionSetExecutableV()+"\n");
+        s.append(in+"end\n");
+        s.append(in+"else if ("+t.transactionFinishedV()+") begin\n");
+        s.append(in+"  integer o;\n");
+        s.append(in+"  o = $fopen(\"result.txt\", \"w\");\n");
+        s.append(in+"  $display(  \"Step=%d\\nValue=%d\\n\", step, "+mo.registerName()+" );\n");
+        s.append(in+"  $fwrite(o, \"Step=%d\\nValue=%d\\n\", step, "+mo.registerName()+" );\n");
+        s.append(in+"  $fclose(o);\n");
+        s.append(in+"  "+c.chipStopV(1)+";\n");
+        s.append(in+"end\n");
+        s.append(in+""+instructionIterateV()+"\n");
         return ""+s;
        }
      };
 
-    c.runPrograms();
+    c.chipRunPrograms();
     //stop(c);
     ok(c, """
-Chip: Test
+Chip: Test step: 4, maxSteps: 10, running: false, returnCode: 1
   Processes:
     Process: Memory
       Registers :
