@@ -6,9 +6,9 @@ package com.AppaApps.Silicon;                                                   
 
 import java.util.*;
 
-public class Children<E> extends Test implements Iterable<E>                  // An ordered map that prevents duplicates while preserving insertion order
- {private final Stack<E>       stack = new Stack<>();
-  private final Map<String, E> map   = new TreeMap<>();
+public class Children<E> extends Test implements Iterable<E>                    // An ordered map that prevents duplicates while preserving insertion order
+ {private final Stack<E>       stack = new Stack<>();                           // Order of entries
+  private final Map<String, E> map   = new TreeMap<>();                         // Prebent duplication of entries
 
   public void put(String key, E value)                                          // Add a key-value pair if key is not already present
    {if (map.containsKey(key))
@@ -31,6 +31,8 @@ public class Children<E> extends Test implements Iterable<E>                  //
     for(E e : stack) s.append(""+e+", ");
     return ("{"+s).substring(0, s.length()-1)+"}";
    }
+
+//D1 Tests                                                                      // Tests
 
   protected static void test_put()
    {final Children<Integer> m = new Children<>();
