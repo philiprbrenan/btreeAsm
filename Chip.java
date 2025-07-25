@@ -132,6 +132,7 @@ static boolean  debug = false;
 
     void stepProgram()                                                          // Execute one step in the program
      {processNextPc = null;                                                     // The executed instruction can optionally set this variable to change the execution flow
+      if (code.size() == 0) return;                                             // No code to run
       if (processPc >= code.size())
        {running = false;
         return;
@@ -344,12 +345,41 @@ static boolean  debug = false;
        }
      } // Get
 
+    class Set extends Process.Transaction                                       // Set an indexed memory element to a specified value
+     {final Process  process;                                                   // The calling process
+      final Register index;                                                     // The index of the element whose value is required
+      final Register value;                                                     // The value to be written into memory
+      Set(Process Process)                                                      // Get the value from memory at the indicated index
+       {super(processName+"_"+(++memoryProcessTransactionNumber),
+          MemoryProcess.this, "set");
+        process = Process;                                                      // The calling process requesting a value from the memory of this memory process
+        index   = register(transactionName+"_index", logTwo(memorySize));       // A register that will index the memory managed by this process
+        value   = register(transactionName+"_value", memoryWidth);              // The register that will contain the result
+        transactionInputRegisters(index);                                       // Make the index an input register
+        transactionInputRegisters(value);                                       // Make the value an input register
+       }
+
+      void execute(Register Index, Register Value)                              // Execute the request
+       {index.copy(Index);
+        value.copy(Value);
+        transactionSetExecutable();
+       }
+
+      void waitResult()                                                         // Wait for the request to finish
+       {process.new Instruction()
+         {void action()
+           {if (!transactionFinished()) instructionIterate();
+           }
+         };
+       }
+     } // Set
+
     void memoryProcessGenerate()                                                // Generate the code needed to support the transactions against this memory process
      {new Instruction()                                                         // Process memory requests
        {void action()
          {for (var t : transactions)
-           {if (t.transactionOpCode.equals("get"))
-             {if (t.transactionExecutable())
+           {if (t.transactionExecutable())
+             {if (t.transactionOpCode.equals("get"))
                {final Register I = t.transactionInputRegisters.elementAt(0);    // Address index register
                 final int      i = I.registerGet();                             // Value of index register
                 final int      v = memoryGet(i);                                // Value of memory at index
@@ -357,6 +387,16 @@ static boolean  debug = false;
                 O.registerSet(v);                                               // Set output register with value of memory at index
                 t.transactionSetFinished();                                     // Mark the transaction as complete
                }
+              else if (t.transactionOpCode.equals("set"))                       // Set an indexed memory element to a specified value
+               {final var I = t.transactionInputRegisters.elementAt(0);         // Address index register
+                final var V = t.transactionInputRegisters.elementAt(1);         // Address value register
+                final int i = I.registerGet();                                  // Value of index register
+                final int v = V.registerGet();                                  // Value of memory at index
+                memoryRegister.copy(V);                                         // Set output register with value of memory at index
+                memorySet(i);                                                   // Register to hold value of memory at index
+                t.transactionSetFinished();                                     // Mark the transaction as complete
+               }
+              else stop("Unknown memory process transaction request:", t.transactionOpCode); // Set an indexed memory element to a specified value
              }
            }
           instructionIterate();                                                 // Keep looping on this instruction
@@ -427,10 +467,11 @@ static boolean  debug = false;
          {final Integer ra = t.transactionRequestedAt;
           final Integer fa = t.transactionFinishedAt;
           final String in = "        ";
-          s.append(in+"Transaction   : "+t.transactionName+
-            ", requested at: "+ra+", finished at: "+fa);
-          s.append(", executable: "+t.transactionExecutable());
-          s.append(", finished: "  +t.transactionFinished()+"\n");
+          s.append(in+"Transaction   : "+t.transactionOpCode+" - "+t.transactionName+
+            ", requested at: "+ra+", finished at: "+fa+
+            ", return code: "+t.transactionRc+
+            ", executable: "+t.transactionExecutable()+
+            ", finished: "  +t.transactionFinished()+"\n");
 
           s.append(in+"  Inputs      :\n");                                     // Transaction inputs
           for (Process.Register r : t.transactionInputRegisters)
@@ -502,8 +543,8 @@ endmodule
     m.new Instruction()                                                         // Process memory requests
      {void action()
        {for (var t : m.transactions)
-         {if (t.transactionOpCode.equals("get"))
-           {if (t.transactionExecutable())
+         {if (t.transactionExecutable())                                        // Each transaction that is currently ready to be executed
+           {if (t.transactionOpCode.equals("get"))                              // Get a value from memory
              {final var I = t.transactionInputRegisters.elementAt(0);           // Address index register
               final int i = I.registerGet();                                    // Value of index register
               final int v = m.memoryGet(i);                                     // Value of memory at index
@@ -581,7 +622,7 @@ Chip: Test step: 4, maxSteps: 10, running: false, returnCode: 1
         Register: Memory_Value = 16
         Register: value = 2
       Transactions:
-        Transaction   : GetValueFromMemory, requested at: 2, finished at: 3, executable: false, finished: true
+        Transaction   : get - GetValueFromMemory, requested at: 2, finished at: 3, return code: 0, executable: false, finished: true
           Inputs      :
             Request_index = 1
           Outputs     :
@@ -599,12 +640,16 @@ Chip: Test step: 4, maxSteps: 10, running: false, returnCode: 1
    {final int B = 8, N = 16;
     var c  = chip("Test");
     var m  = c.new MemoryProcess("Memory", B, N);
-    var r  = c.process("Request1", B, 1);
-    var ri = r.register("index",  B);
+    var r  = c.process("Requests", B, 1);
+
+    var ri = r.register("index1",  B);
     var rt = m.new Get(r);
-    var s  = c.process("Request2", B, 1);
-    var si = s.register("index",  B);
-    var st = m.new Get(s);
+
+    var si = r.register("index2",  B);
+    var st = m.new Get(r);
+
+    var tv = r.register("value",   B);
+    var tt = m.new Set(r);
 
     for (int i = 0; i < N; i++)                                                 // Preload memory
      {m.memoryRegister.registerSet(i+1);
@@ -614,13 +659,27 @@ Chip: Test step: 4, maxSteps: 10, running: false, returnCode: 1
     r.new Instruction()                                                         // Request the value of an indexed element of memory
      {void action()
        {ri.registerSet(1);                                                      // Index of memory requested
-        si.registerSet(2);                                                      // Index of memory requested
-        st.execute(si);                                                         // Request value of memory at the index
         rt.execute(ri);                                                         // Request value of memory at the index
+       }
+     };
+
+    r.new Instruction()                                                         // Request the value of an indexed element of memory
+     {void action()
+       {si.registerSet(2);                                                      // Index of memory requested
+        st.execute(si);                                                         // Request value of memory at the index
        }
      };
     st.waitResult();                                                            // Request value of memory at the index
     rt.waitResult();                                                            // Request value of memory at the index
+
+    r.new Instruction()                                                         // Request the value of an indexed element of memory
+     {void action()
+       {tv.registerSet(33);                                                     // Value to set into memory
+        tt.execute(si, tv);                                                     // Request value of memory at the index
+       }
+     };
+    tt.waitResult();                                                            // Request value of memory at the index
+
     r.new Instruction()                                                         // Request the value of an indexed element of memory
      {void action()
        {c.chipStop(1);                                                          // Halt the run
@@ -629,38 +688,44 @@ Chip: Test step: 4, maxSteps: 10, running: false, returnCode: 1
 
     m.memoryProcessGenerate();
     c.chipRunPrograms();
+
     ok(rt.transactionOutputRegisters.firstElement().registerGet(), 2);
     ok(st.transactionOutputRegisters.firstElement().registerGet(), 3);
     //stop(c);
     ok(c, """
-Chip: Test step: 3, maxSteps: 10, running: false, returnCode: 1
+Chip: Test step: 7, maxSteps: 10, running: false, returnCode: 1
   Processes:
-    Process: Memory, 0, Instructions: 2, pc: 0, nextPc: 0, memory: 16 * 8 = 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16
+    Process: Memory, 0, Instructions: 2, pc: 0, nextPc: 0, memory: 16 * 8 = 1, 2, 33, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16
       Registers :
-        Register: Memory_Value = 16
+        Register: Memory_Value = 33
         Register: Memory_1_index = 1
         Register: Memory_1_result = 2
         Register: Memory_2_index = 2
         Register: Memory_2_result = 3
+        Register: Memory_3_index = 2
+        Register: Memory_3_value = 33
       Transactions:
-        Transaction   : Memory_1, requested at: 0, finished at: 1, executable: false, finished: true
+        Transaction   : get - Memory_1, requested at: 0, finished at: 1, return code: 0, executable: false, finished: true
           Inputs      :
             Memory_Memory_1_index = 1
           Outputs     :
             Memory_Memory_1_result = 2
-        Transaction   : Memory_2, requested at: 0, finished at: 1, executable: false, finished: true
+        Transaction   : get - Memory_2, requested at: 1, finished at: 2, return code: 0, executable: false, finished: true
           Inputs      :
             Memory_Memory_2_index = 2
           Outputs     :
             Memory_Memory_2_result = 3
-    Process: Request1, 1, Instructions: 3, pc: 3, nextPc: null, memory: 1 * 8 = 0
+        Transaction   : set - Memory_3, requested at: 4, finished at: 5, return code: 0, executable: false, finished: true
+          Inputs      :
+            Memory_Memory_3_index = 2
+            Memory_Memory_3_value = 33
+          Outputs     :
+    Process: Requests, 1, Instructions: 7, pc: 7, nextPc: null, memory: 1 * 8 = 0
       Registers :
         Register: Memory_Value = 0
-        Register: index = 1
-    Process: Request2, 2, Instructions: 1, pc: 1, nextPc: null, memory: 1 * 8 = 0
-      Registers :
-        Register: Memory_Value = 0
-        Register: index = 2
+        Register: index1 = 1
+        Register: index2 = 2
+        Register: value = 33
 """);
    }
 
@@ -671,7 +736,6 @@ Chip: Test step: 3, maxSteps: 10, running: false, returnCode: 1
 
   static void newTests()                                                        // Tests being worked on
    {oldTests();
-    //test_memoryProcess();
    }
 
   public static void main(String[] args)                                        // Test if called as a program
