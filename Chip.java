@@ -312,7 +312,7 @@ static boolean  debug = false;
 //D2 Memory Process                                                             // Processes that maintain the state of a memory
 
   class MemoryProcess extends Process                                           // A process whose sole purpose is to maintain memory
-   {static int memoryProcessTransactionNumber = 0;                              // Make transaction names unique
+   {private static int memoryProcessTransactionNumber = 0;                      // Make transaction names unique
     MemoryProcess(String ProcessName, int MemoryWidth, int MemorySize)          // Create a process
      {super(ProcessName, MemoryWidth, MemorySize);
       memoryProcessGenerate();                                                  // Generate the code to execute this process
@@ -423,7 +423,7 @@ static boolean  debug = false;
 
         s.append("      Registers :\n");
       for (Process.Register r: p.registers)
-       {s.append("        Register: "+r.registerName+", process: "+r.registerProcess().processName+", value: "+r.registerGet()+"\n");
+       {s.append("        Register: "+r.registerName+" = "+r.registerGet()+"\n");
        }
       if (p.transactions.size() > 0)
        {s.append("      Transactions:\n");
@@ -431,11 +431,10 @@ static boolean  debug = false;
          {final Integer ra = t.transactionRequestedAt;
           final Integer fa = t.transactionFinishedAt;
           final String in = "        ";
-          s.append(in+"Transaction   : "+t.transactionName+", Requested at: "+t.transactionRequestedAt+", Finished at: "+t.transactionFinishedAt+"\n");
-          s.append(in+"  executable  : "+t.transactionExecutable()+"\n");
-          s.append(in+"  finished    : "+t.transactionFinished()+"\n");
-          if (ra != null) s.append("          requested at: "+ra+"\n");
-          if (fa != null) s.append("          finished  at: "+fa+"\n");
+          s.append(in+"Transaction   : "+t.transactionName+
+            ", requested at: "+ra+", finished at: "+fa);
+          s.append(", executable: "+t.transactionExecutable());
+          s.append(", finished: "  +t.transactionFinished()+"\n");
 
           s.append(in+"  Inputs      :\n");                                     // Transaction inputs
           for (Process.Register r : t.transactionInputRegisters)
@@ -577,40 +576,39 @@ endmodule
      };
 
     c.chipRunPrograms();
-    //stop(c);                                       //
+    //stop(c);
     ok(c, """
 Chip: Test step: 4, maxSteps: 10, running: false, returnCode: 1
   Processes:
     Process: Memory, 0, Instructions: 1, pc: 0, nextPc: 0, memory: 16 * 8 = 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16
       Registers :
-        Register: Memory_Value, process: Memory, value: 16
-        Register: value, process: Memory, value: 2
+        Register: Memory_Value = 16
+        Register: value = 2
       Transactions:
-        Transaction   : GetValueFromMemory, Requested at: 2, Finished at: 3
-          executable  : false
-          finished    : true
-          requested at: 2
-          finished  at: 3
+        Transaction   : GetValueFromMemory, requested at: 2, finished at: 3, executable: false, finished: true
           Inputs      :
             Request_index = 1
           Outputs     :
             Memory_value = 2
     Process: Request, 1, Instructions: 1, pc: 0, nextPc: 0, memory: 1 * 8 = 0
       Registers :
-        Register: Memory_Value, process: Request, value: 0
-        Register: index, process: Request, value: 1
+        Register: Memory_Value = 0
+        Register: index = 1
 """);
     ok(c.returnCode, 1);
-    say(c.generateVerilog());
+    //say(c.generateVerilog());
    }
 
   static void test_memoryProcess()
    {final int B = 8, N = 16;
-    var c = chip("Test");
-    var m = c.new MemoryProcess("Memory", B, N);
-    var r = c.process("Request", B, 1);
+    var c  = chip("Test");
+    var m  = c.new MemoryProcess("Memory", B, N);
+    var r  = c.process("Request1", B, 1);
     var ri = r.register("index",  B);
-    var t = m.new Get(r);
+    var rt = m.new Get(r);
+    var s  = c.process("Request2", B, 1);
+    var si = s.register("index",  B);
+    var st = m.new Get(s);
 
     for (int i = 0; i < N; i++)                                                 // Preload memory
      {m.memoryRegister.registerSet(i+1);
@@ -620,10 +618,13 @@ Chip: Test step: 4, maxSteps: 10, running: false, returnCode: 1
     r.new Instruction()                                                         // Request the value of an indexed element of memory
      {void action()
        {ri.registerSet(1);                                                      // Index of memory requested
+        si.registerSet(2);                                                      // Index of memory requested
        }
      };
-    t.execute(ri);                                                              // Request value of memory at the index
-    t.waitResult();                                                             // Request value of memory at the index
+    st.execute(si);                                                             // Request value of memory at the index
+    st.waitResult();                                                            // Request value of memory at the index
+    rt.execute(ri);                                                             // Request value of memory at the index
+    rt.waitResult();                                                            // Request value of memory at the index
     r.new Instruction()                                                         // Request the value of an indexed element of memory
      {void action()
        {c.chipStop(1);                                                          // Halt the run
@@ -634,27 +635,34 @@ Chip: Test step: 4, maxSteps: 10, running: false, returnCode: 1
     c.chipRunPrograms();
     //stop(c);
     ok(c, """
-Chip: Test step: 4, maxSteps: 10, running: false, returnCode: 1
+Chip: Test step: 3, maxSteps: 10, running: false, returnCode: 0
   Processes:
     Process: Memory, 0, Instructions: 2, pc: 0, nextPc: 0, memory: 16 * 8 = 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16
       Registers :
-        Register: Memory_Value, process: Memory, value: 16
-        Register: Memory_1_index, process: Memory, value: 1
-        Register: Memory_1_result, process: Memory, value: 2
+        Register: Memory_Value = 16
+        Register: Memory_1_index = 1
+        Register: Memory_1_result = 2
+        Register: Memory_2_index = 2
+        Register: Memory_2_result = 3
       Transactions:
-        Transaction   : Memory_1, Requested at: 1, Finished at: 2
-          executable  : false
-          finished    : true
-          requested at: 1
-          finished  at: 2
+        Transaction   : Memory_1, requested at: 1, finished at: 2, executable: false, finished: true
           Inputs      :
             Memory_Memory_1_index = 1
           Outputs     :
             Memory_Memory_1_result = 2
-    Process: Request, 1, Instructions: 4, pc: 4, nextPc: null, memory: 1 * 8 = 0
+        Transaction   : Memory_2, requested at: 0, finished at: 1, executable: false, finished: true
+          Inputs      :
+            Memory_Memory_2_index = 2
+          Outputs     :
+            Memory_Memory_2_result = 3
+    Process: Request1, 1, Instructions: 4, pc: 3, nextPc: null, memory: 1 * 8 = 0
       Registers :
-        Register: Memory_Value, process: Request, value: 0
-        Register: index, process: Request, value: 1
+        Register: Memory_Value = 0
+        Register: index = 1
+    Process: Request2, 2, Instructions: 2, pc: 2, nextPc: null, memory: 1 * 8 = 0
+      Registers :
+        Register: Memory_Value = 0
+        Register: index = 2
 """);
    }
 
