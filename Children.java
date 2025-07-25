@@ -24,6 +24,8 @@ public class Children<E> extends Test implements Iterable<E>                    
 
   public int size() {return stack.size();}                                      // String representation of the map in insertion order
   public E   elementAt(int p) {return stack.elementAt(p);}                      // Entry by index
+  public E   firstElement()   {return stack.firstElement();}                      // Entry by index
+  public E   lastElement ()   {return stack.lastElement();}                      // Entry by index
 
   public String toString()                                                      // String representation of the map in insertion order
    {if (stack.size() == 0) return "Empty";
@@ -57,9 +59,11 @@ public class Children<E> extends Test implements Iterable<E>                    
     m.put("c", 1);
     m.put("b", 2);
     m.put("a", 3);
-    ok(m.elementAt(0), 1);
-    ok(m.elementAt(1), 2);
-    ok(m.elementAt(2), 3);
+    ok(m.firstElement(), 1);
+    ok(m.elementAt(0),   1);
+    ok(m.elementAt(1),   2);
+    ok(m.elementAt(2),   3);
+    ok(m.lastElement(),  3);
    }
 
   protected static void test_dup()
