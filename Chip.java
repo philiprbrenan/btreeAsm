@@ -332,12 +332,8 @@ static boolean  debug = false;
        }
 
       void execute(Register Index)                                              // Execute the request
-       {process.new Instruction()
-         {void action()
-           {index.copy(Index);
-            transactionSetExecutable();
-           }
-         };
+       {index.copy(Index);
+        transactionSetExecutable();
        }
       void waitResult()                                                         // Wait for the request to finish
        {process.new Instruction()
@@ -619,11 +615,11 @@ Chip: Test step: 4, maxSteps: 10, running: false, returnCode: 1
      {void action()
        {ri.registerSet(1);                                                      // Index of memory requested
         si.registerSet(2);                                                      // Index of memory requested
+        st.execute(si);                                                         // Request value of memory at the index
+        rt.execute(ri);                                                         // Request value of memory at the index
        }
      };
-    st.execute(si);                                                             // Request value of memory at the index
     st.waitResult();                                                            // Request value of memory at the index
-    rt.execute(ri);                                                             // Request value of memory at the index
     rt.waitResult();                                                            // Request value of memory at the index
     r.new Instruction()                                                         // Request the value of an indexed element of memory
      {void action()
@@ -633,9 +629,11 @@ Chip: Test step: 4, maxSteps: 10, running: false, returnCode: 1
 
     m.memoryProcessGenerate();
     c.chipRunPrograms();
+    ok(rt.transactionOutputRegisters.firstElement().registerGet(), 2);
+    ok(st.transactionOutputRegisters.firstElement().registerGet(), 3);
     //stop(c);
     ok(c, """
-Chip: Test step: 3, maxSteps: 10, running: false, returnCode: 0
+Chip: Test step: 3, maxSteps: 10, running: false, returnCode: 1
   Processes:
     Process: Memory, 0, Instructions: 2, pc: 0, nextPc: 0, memory: 16 * 8 = 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16
       Registers :
@@ -645,7 +643,7 @@ Chip: Test step: 3, maxSteps: 10, running: false, returnCode: 0
         Register: Memory_2_index = 2
         Register: Memory_2_result = 3
       Transactions:
-        Transaction   : Memory_1, requested at: 1, finished at: 2, executable: false, finished: true
+        Transaction   : Memory_1, requested at: 0, finished at: 1, executable: false, finished: true
           Inputs      :
             Memory_Memory_1_index = 1
           Outputs     :
@@ -655,11 +653,11 @@ Chip: Test step: 3, maxSteps: 10, running: false, returnCode: 0
             Memory_Memory_2_index = 2
           Outputs     :
             Memory_Memory_2_result = 3
-    Process: Request1, 1, Instructions: 4, pc: 3, nextPc: null, memory: 1 * 8 = 0
+    Process: Request1, 1, Instructions: 3, pc: 3, nextPc: null, memory: 1 * 8 = 0
       Registers :
         Register: Memory_Value = 0
         Register: index = 1
-    Process: Request2, 2, Instructions: 2, pc: 2, nextPc: null, memory: 1 * 8 = 0
+    Process: Request2, 2, Instructions: 1, pc: 1, nextPc: null, memory: 1 * 8 = 0
       Registers :
         Register: Memory_Value = 0
         Register: index = 2
