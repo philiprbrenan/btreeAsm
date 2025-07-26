@@ -761,25 +761,25 @@ endmodule
     c.chipRunPrograms();
     //stop(c);
     ok(c, """
-Chip: Test step: 4, maxSteps: 10, running: false, returnCode: 1
+Chip: Test             step:    4, maxSteps:   10, running: 0, returnCode: 1
   Processes:
-    Process: Memory, 0, Instructions: 1, pc: 0, nextPc: 0, memory: 16 * 8 = 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16
+    Process:    0 - Memory           instructions:    1, pc:    0, nextPc:    0, memory:   16 *    8 = 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16
       Registers :
-        Register: Memory_Value = 16
-        Register: value = 2
+        Register: Memory_Value                     =   16
+        Register: value                            =    2
       Transactions:
-        Transaction   : get - GetValueFromMemory, requested at: 2, finished at: 3, return code: 0, executable: false, finished: true
+        Transaction   : get      - GetValueFromMemory  requested at:    2, finished at:    3, returnCode:  0, executable: 0, finished: 1
           Inputs      :
-            Request_index = 1
+            Request_index          =    1
           Outputs     :
-            Memory_value = 2
-    Process: Request, 1, Instructions: 1, pc: 0, nextPc: 0, memory: 1 * 8 = 0
+            Memory_value           =    2
+    Process:    1 - Request          instructions:    1, pc:    0, nextPc:    0, memory:    1 *    8 = 0
       Registers :
-        Register: Memory_Value = 0
-        Register: index = 1
+        Register: Memory_Value                     =    0
+        Register: index                            =    1
 """);
     ok(c.returnCode, 1);
-    say(c.generateVerilog());
+    //say(c.generateVerilog());
    }
 
   static void test_memoryProcess()
@@ -885,7 +885,7 @@ Chip: Test             step:    7, maxSteps:   10, running: 0, returnCode: 1
         Register: index2                           =    2
         Register: value                            =   33
 """);
-    c.generateVerilog();
+    //c.generateVerilog();
    }
 
   static void oldTests()                                                        // Tests thought to be in good shape
@@ -894,8 +894,9 @@ Chip: Test             step:    7, maxSteps:   10, running: 0, returnCode: 1
    }
 
   static void newTests()                                                        // Tests being worked on
-   {//oldTests();
-    test_memoryProcess();
+   {oldTests();
+    //test_memory();
+    //test_memoryProcess();
    }
 
   public static void main(String[] args)                                        // Test if called as a program
