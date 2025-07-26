@@ -208,13 +208,13 @@ class Chip extends Test                                                         
       boolean transactionExecutable()                                           // Whether the transaction is executable or not
        {final int r = transactionRequestedAt;
         final int f = transactionFinishedAt;
-        return r >= 0 && (f < 0 || f < r);                                      // The transaction has been requested and has not yet completed
+        return r > f && r != step;                                              // The transaction has been requested in an earlier step and has not yet completed
        }
 
       boolean transactionFinished()                                             // Whether the transaction has finished executing
        {final int r = transactionRequestedAt;
         final int f = transactionFinishedAt;
-        return f >= 0 && !transactionExecutable();                              // The transaction has been finished and is not currently executing
+        return r < f;                                                           // The transaction has been finished and is not currently executing
        }
 
       int transactionExecutableAsInt() {return transactionExecutable() ? 1 : 0;}// Whether the transaction is executable or not as an integer
@@ -222,12 +222,19 @@ class Chip extends Test                                                         
 
       String transactionRequestedAt() {return transactionName+"_requestedAt";}  // Name of the requested at field for a transaction
       String transactionFinishedAt()  {return transactionName+"_finishedAt";}   // Name of the finished at field for a transaction
+
       String transactionExecutableV()                                           // Whether the transaction is executable or not in verilog
-       {return transactionRequestedAt()+" > "+transactionFinishedAt();
+       {final String r = transactionRequestedAt();
+        final String f = transactionFinishedAt();
+        return r+" > "+f + " && "+r + " != step";
        }
+
       String transactionFinishedV()                                             // Whether the transaction has finished or not in verilog
-       {return transactionRequestedAt()+" <= "+transactionFinishedAt();
+       {final String r = transactionRequestedAt();
+        final String f = transactionFinishedAt();
+        return r+" < "+f;
        }
+
       void transactionSetExecutable()                                           // Mark a transaction as executable
        {transactionRequestedAt = step;
        }
@@ -245,7 +252,6 @@ class Chip extends Test                                                         
        }
 
       Process transactionProcess() {return Process.this;}                       // Process associated with this transaction
-
      } // Transaction
 
     Transaction transaction(String Name, Process CallingProcess, String OpCode) // Transactions allow one process to request services from another process
@@ -561,62 +567,67 @@ class Chip extends Test                                                         
    {final StringBuilder s = new StringBuilder();
         s.append(" task chipPrint;\n");
         s.append("   begin\n");
+        s.append("   string  O;\n");
+        s.append("   integer o;\n");
+        s.append("   $sformat(O, \"out/%0d.txt\", step);\n");
+        s.append("   o = $fopen(O, \"w\");\n");
 
         s.append(
-         "$write(\"Chip: %-16s step: %4d, maxSteps: %4d, running: %1d, returnCode: %2d\\n\", "+
+         "$fwrite(o, \"Chip: %-16s step: %4d, maxSteps: %4d, running: %1d, returnCode: %2d\\n\", "+
          "\""+chipName+"\", step, maxSteps, !stop, returnCode);\n");
 
-        s.append("$write(\"  Processes:\\n\");\n");
+        s.append("$fwrite(o, \"  Processes:\\n\");\n");
 
       for (Process p: processes)                                                  // Each process
        {s.append(
-         "$write(\"    Process: %4d - %-16s instructions: %4d, pc: %4d, nextPc: %4d, memory: %4d * %4d\", "+
+         "$fwrite(o, \"    Process: %4d - %-16s instructions: %4d, pc: %4d, nextPc: %4d, memory: %4d * %4d\", "+
          " "+p.processNumber+", \""+p.processName+"\", "+p.code.size()+", "+p.processPcName()+", "+p.processNextPcName()+", "+
          " "+p.memorySize+", "+p.memoryWidth+");\n");
 
         if (p.memory.length > 0)                                                // Print memory
          {final StringBuilder m = new StringBuilder();
-          m.append("$write(\" = %d\", "+p.processMemoryName()+"[0]);\n");
+          m.append("$fwrite(o, \" = %d\", "+p.processMemoryName()+"[0]);\n");
           for (int i = 1; i < p.memory.length; i++)
-           {m.append("$write(\", %d\", "+p.processMemoryName()+"["+i+"]);\n");
+           {m.append("$fwrite(o, \", %d\", "+p.processMemoryName()+"["+i+"]);\n");
            }
-          m.append("$write(\"\\n\");\n");
+          m.append("$fwrite(o, \"\\n\");\n");
           s.append(m);
          }
 
-        s.append("$write(\"      Registers :\\n\");\n");
+        s.append("$fwrite(o, \"      Registers :\\n\");\n");
       for (Process.Register r: p.registers)
        {s.append(
-         "$write(\"        Register: %-32s = %4d\\n\", "+
+         "$fwrite(o, \"        Register: %-32s = %4d\\n\", "+
          " \""+r.registerName()+"\", "+r.registerName()+");\n");
        }
       if (p.transactions.size() > 0)
-       {s.append("$write(\"      Transactions:\\n\");\n");
+       {s.append("$fwrite(o, \"      Transactions:\\n\");\n");
         for (Process.Transaction t: p.transactions)
          {final String ra = t.transactionRequestedAt();
           final String fa = t.transactionFinishedAt();
-          s.append("$write(\"        Transaction   : %-8s - %-16s  requested at: %4d, finished at: %4d, returnCode: %2d, executable: %1d, finished: %1d\\n\""+
+          s.append("$fwrite(o, \"        Transaction   : %-8s - %-16s  requested at: %4d, finished at: %4d, returnCode: %2d, executable: %1d, finished: %1d\\n\""+
             ", \""+t.transactionOpCode+"\", \""+t.transactionName+"\""+
             ", "+ra+", "+fa+", "+t.transactionRcName()+
             ", "+t.transactionExecutableV()+", "+t.transactionFinishedV()+");\n");
 
-          s.append("$write(\"          Inputs      :\\n\");\n");                // Transaction inputs
+          s.append("$fwrite(o, \"          Inputs      :\\n\");\n");                // Transaction inputs
           for (Process.Register r : t.transactionInputRegisters)
            {s.append(
-             "$write(\"            %-22s = %4d\\n\", \""+
+             "$fwrite(o, \"            %-22s = %4d\\n\", \""+
              r.registerName()+"\", "+r.registerName()+");\n");
            }
 
-          s.append("$write(\"          Outputs     :\\n\");\n");                // Transaction outputs
+          s.append("$fwrite(o, \"          Outputs     :\\n\");\n");                // Transaction outputs
           for (Process.Register r : t.transactionOutputRegisters)
            {s.append(
-             "$write(\"            %-22s = %4d\\n\", \""+
+             "$fwrite(o, \"            %-22s = %4d\\n\", \""+
              r.registerName()+"\", "+r.registerName()+");\n");
            }
          }
        }
      }
     s.append("""
+      $fclose(o);
     end
   endtask
 """);
@@ -625,7 +636,7 @@ class Chip extends Test                                                         
 
 //D2 Verilog                                                                    // Verilog describing the chip
 
-  String generateVerilog()                                                      // Generate verilog describing the chip
+  String chipGenerateVerilog()                                                      // Generate verilog describing the chip
    {final StringBuilder v = new StringBuilder();
     v.append("""
 //-----------------------------------------------------------------------------
@@ -646,8 +657,8 @@ module $chip_name;                                                              
     maxSteps = $max_steps;
     for(step = 0; step < maxSteps && !stop; step = step + 1) begin
       clock = 0; #1; clock = 1; #1;
+      chipPrint();
     end
-    chipPrint();
     if (!stop) $finish(1); else $finish(0);                                     // Set return code depending on whether the simulation halted
   end
 """);
@@ -779,7 +790,7 @@ Chip: Test             step:    4, maxSteps:   10, running: 0, returnCode: 1
         Register: index                            =    1
 """);
     ok(c.returnCode, 1);
-    //say(c.generateVerilog());
+    //say(c.chipGenerateVerilog());
    }
 
   static void test_memoryProcess()
@@ -885,7 +896,7 @@ Chip: Test             step:    7, maxSteps:   10, running: 0, returnCode: 1
         Register: index2                           =    2
         Register: value                            =   33
 """);
-    //c.generateVerilog();
+    c.chipGenerateVerilog();
    }
 
   static void oldTests()                                                        // Tests thought to be in good shape
@@ -894,9 +905,9 @@ Chip: Test             step:    7, maxSteps:   10, running: 0, returnCode: 1
    }
 
   static void newTests()                                                        // Tests being worked on
-   {oldTests();
+   {//oldTests();
     //test_memory();
-    //test_memoryProcess();
+    test_memoryProcess();
    }
 
   public static void main(String[] args)                                        // Test if called as a program
