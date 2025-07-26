@@ -9,6 +9,7 @@ import java.util.*;
 class Chip extends Test                                                         // A chip designed to manipulate a B-tree stored in a memory block
  {final String chipName;                                                        // The name of the chip
   final Children<Process> processes = new Children<>();                         // A fixed set of processes for this chip in definition order
+  final String verilogTraceFolder   = fn(Verilog.folder, "v");                  // Folder into which verilog trace output will be written
   boolean running;                                                              // True when the chip is running
   int step;                                                                     // Current simulation step being executed
   int maxSteps = 10;                                                            // Maximum number of steps to execute in the simulation
@@ -226,13 +227,13 @@ class Chip extends Test                                                         
       String transactionExecutableV()                                           // Whether the transaction is executable or not in verilog
        {final String r = transactionRequestedAt();
         final String f = transactionFinishedAt();
-        return r+" > "+f + " && "+r + " != step";
+        return "("+r+" > "+f + " && "+r + " != step)";
        }
 
       String transactionFinishedV()                                             // Whether the transaction has finished or not in verilog
        {final String r = transactionRequestedAt();
         final String f = transactionFinishedAt();
-        return r+" < "+f;
+        return "("+r+" < "+f+")";
        }
 
       void transactionSetExecutable()                                           // Mark a transaction as executable
@@ -285,9 +286,10 @@ class Chip extends Test                                                         
   integer $pc;                                                                  // Program counter
   integer $next_pc;                                                             // Next program counter
   always @ (posedge clock) begin                                                // Execute next step in program
-    if (step == 0) begin
+    if (step < 0) begin                                                         // Steps less than zero are used for initilization
       integer i;
       $pc = 0;
+      $next_pc = 0;                                                             // Next program counter
 """);
       for (Register r: registers)
        {v.append("      "+r.registerName()+" = 0;\n");
@@ -301,7 +303,7 @@ class Chip extends Test                                                         
        {for (Transaction t: p.transactions)
          {if (t.transactionCallingProcess == Process.this)                      // This transaction is a source of requests against this process                                                          //
            {final String n = t.transactionName;
-            v.append("      "+n+"_requestedAt = -1;\n");                       // Clear step at which the transaction was requested
+            v.append("      "+n+"_requestedAt = -1;\n");                        // Clear step at which the transaction was requested
            }
          }
        }
@@ -357,16 +359,16 @@ class Chip extends Test                                                         
         transactionOutputRegisters(result);                                     // Make the result an output register
        }
 
-      void executeTransaction(Register Index)                                   // Execute the request
+      void executeTransaction(Register Index)                                   // Execute the request in java
        {index.copy(Index);
         transactionSetExecutable();
        }
 
-      String executeTransactionV(Register Index)                                // Execute the request
+      String executeTransactionV(Register Index)                                // Execute the request in verilog
        {return index.copyV(Index) + "  " + transactionSetExecutableV();
        }
 
-      void waitResultOfTransaction(int indent)                                            // Wait for the request to finish
+      void waitResultOfTransaction(int indent)                                  // Wait for the request to finish
        {process.new Instruction()
          {void action()
            {if (!transactionFinished()) instructionIterate();
@@ -481,6 +483,7 @@ class Chip extends Test                                                         
     running = true;                                                             // Show the program as running
     for(step = 0; running && step < maxSteps; ++step)                           // Run each program
      {for(Process p : processes) p.stepProgram();                               // Step each program
+      chipPrint();
      }
     if (running)                                                                // Still running after too many steps
      {say(this);
@@ -525,7 +528,7 @@ class Chip extends Test                                                         
       for (Process.Register r: p.registers)
        {s.append(String.format(
          "        Register: %-32s = %4d\n",
-          r.registerName, r.registerGet()));
+          r.registerName(), r.registerGet()));
        }
       if (p.transactions.size() > 0)
        {s.append("      Transactions:\n");
@@ -559,7 +562,7 @@ class Chip extends Test                                                         
    }
 
   void chipPrint()                                                              // Print the current state of the java emulation of the chip to a file
-   {final String f = fne(Verilog.folder, "out", "j", ""+step, "txt");
+   {final String f = fne(Verilog.folder, "j", ""+step, "txt");
     writeFile(f, toString());
    }
 
@@ -569,16 +572,17 @@ class Chip extends Test                                                         
         s.append("   begin\n");
         s.append("   string  O;\n");
         s.append("   integer o;\n");
-        s.append("   $sformat(O, \"out/%0d.txt\", step);\n");
+        s.append("   $sformat(O, \""+verilogTraceFolder+"/%0d.txt\", step);\n");
         s.append("   o = $fopen(O, \"w\");\n");
+        s.append("   if (!o) $display(\"Cannot create trace folder\");");
 
         s.append(
-         "$fwrite(o, \"Chip: %-16s step: %4d, maxSteps: %4d, running: %1d, returnCode: %2d\\n\", "+
+         "$fwrite(o, \"Chip: %-16s step: %4d, maxSteps: %4d, running: %1d, returnCode: %0d\\n\", "+
          "\""+chipName+"\", step, maxSteps, !stop, returnCode);\n");
 
         s.append("$fwrite(o, \"  Processes:\\n\");\n");
 
-      for (Process p: processes)                                                  // Each process
+      for (Process p: processes)                                                // Each process
        {s.append(
          "$fwrite(o, \"    Process: %4d - %-16s instructions: %4d, pc: %4d, nextPc: %4d, memory: %4d * %4d\", "+
          " "+p.processNumber+", \""+p.processName+"\", "+p.code.size()+", "+p.processPcName()+", "+p.processNextPcName()+", "+
@@ -586,21 +590,21 @@ class Chip extends Test                                                         
 
         if (p.memory.length > 0)                                                // Print memory
          {final StringBuilder m = new StringBuilder();
-          m.append("$fwrite(o, \" = %d\", "+p.processMemoryName()+"[0]);\n");
+          m.append("$fwrite(o, \" = %0d\", "+p.processMemoryName()+"[0]);\n");
           for (int i = 1; i < p.memory.length; i++)
-           {m.append("$fwrite(o, \", %d\", "+p.processMemoryName()+"["+i+"]);\n");
+           {m.append("$fwrite(o, \", %0d\", "+p.processMemoryName()+"["+i+"]);\n");
            }
           m.append("$fwrite(o, \"\\n\");\n");
           s.append(m);
          }
 
         s.append("$fwrite(o, \"      Registers :\\n\");\n");
-      for (Process.Register r: p.registers)
+      for (Process.Register r: p.registers)                                     // Registers
        {s.append(
          "$fwrite(o, \"        Register: %-32s = %4d\\n\", "+
          " \""+r.registerName()+"\", "+r.registerName()+");\n");
        }
-      if (p.transactions.size() > 0)
+      if (p.transactions.size() > 0)                                            // Transactions
        {s.append("$fwrite(o, \"      Transactions:\\n\");\n");
         for (Process.Transaction t: p.transactions)
          {final String ra = t.transactionRequestedAt();
@@ -610,14 +614,14 @@ class Chip extends Test                                                         
             ", "+ra+", "+fa+", "+t.transactionRcName()+
             ", "+t.transactionExecutableV()+", "+t.transactionFinishedV()+");\n");
 
-          s.append("$fwrite(o, \"          Inputs      :\\n\");\n");                // Transaction inputs
+          s.append("$fwrite(o, \"          Inputs      :\\n\");\n");            // Transaction inputs
           for (Process.Register r : t.transactionInputRegisters)
            {s.append(
              "$fwrite(o, \"            %-22s = %4d\\n\", \""+
              r.registerName()+"\", "+r.registerName()+");\n");
            }
 
-          s.append("$fwrite(o, \"          Outputs     :\\n\");\n");                // Transaction outputs
+          s.append("$fwrite(o, \"          Outputs     :\\n\");\n");            // Transaction outputs
           for (Process.Register r : t.transactionOutputRegisters)
            {s.append(
              "$fwrite(o, \"            %-22s = %4d\\n\", \""+
@@ -636,7 +640,7 @@ class Chip extends Test                                                         
 
 //D2 Verilog                                                                    // Verilog describing the chip
 
-  String chipGenerateVerilog()                                                      // Generate verilog describing the chip
+  String chipGenerateVerilog()                                                  // Generate verilog describing the chip
    {final StringBuilder v = new StringBuilder();
     v.append("""
 //-----------------------------------------------------------------------------
@@ -655,7 +659,7 @@ module $chip_name;                                                              
     stop = 0;
     returnCode = 0;
     maxSteps = $max_steps;
-    for(step = 0; step < maxSteps && !stop; step = step + 1) begin
+    for(step = -1; step < maxSteps && !stop; step = step + 1) begin             // Steps below zero are used for initilization so that Java and Verilog start in synch at step zero
       clock = 0; #1; clock = 1; #1;
       chipPrint();
     end
@@ -672,7 +676,9 @@ endmodule
 """);
     replaceAll(v, "$chip_name", chipName);
     replaceAll(v, "$max_steps", ""+maxSteps);
-    writeFile(fne(Verilog.folder, chipName, Verilog.ext),  ""+v);
+    final String source = fne(Verilog.folder, chipName, Verilog.ext);           // Source code in verilog
+    writeFile(source,  ""+v);
+    final var e = new ExecCommand("rm -f "+chipName+"; iverilog -g2012 -o "+chipName+" "+source+"  && timeout 1m ./"+chipName);
     return ""+v;
    }
 
@@ -812,6 +818,7 @@ Chip: Test             step:    4, maxSteps:   10, running: 0, returnCode: 1
      {m.memoryRegister.registerSet(i+1);
       m.memorySet(i);
      }
+    m.memoryRegister.registerSet(0);                                            // Clean up dtate after loading memory to match verilog
 
     r.new Instruction()                                                         // Request the value of an indexed element of memory
      {void action()
@@ -866,13 +873,13 @@ Chip: Test             step:    7, maxSteps:   10, running: 0, returnCode: 1
   Processes:
     Process:    0 - Memory           instructions:    2, pc:    0, nextPc:    0, memory:   16 *    8 = 1, 2, 33, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16
       Registers :
-        Register: Memory_Value                     =   33
-        Register: Memory_1_index                   =    1
-        Register: Memory_1_result                  =    2
-        Register: Memory_2_index                   =    2
-        Register: Memory_2_result                  =    3
-        Register: Memory_3_index                   =    2
-        Register: Memory_3_value                   =   33
+        Register: Memory_Memory_Value              =   33
+        Register: Memory_Memory_1_index            =    1
+        Register: Memory_Memory_1_result           =    2
+        Register: Memory_Memory_2_index            =    2
+        Register: Memory_Memory_2_result           =    3
+        Register: Memory_Memory_3_index            =    2
+        Register: Memory_Memory_3_value            =   33
       Transactions:
         Transaction   : get      - Memory_1          requested at:    0, finished at:    1, returnCode:  0, executable: 0, finished: 1
           Inputs      :
@@ -891,10 +898,10 @@ Chip: Test             step:    7, maxSteps:   10, running: 0, returnCode: 1
           Outputs     :
     Process:    1 - Requests         instructions:    7, pc:    7, nextPc:   -1, memory:    1 *    8 = 0
       Registers :
-        Register: Memory_Value                     =    0
-        Register: index1                           =    1
-        Register: index2                           =    2
-        Register: value                            =   33
+        Register: Requests_Memory_Value            =    0
+        Register: Requests_index1                  =    1
+        Register: Requests_index2                  =    2
+        Register: Requests_value                   =   33
 """);
     c.chipGenerateVerilog();
    }
