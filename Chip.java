@@ -956,7 +956,7 @@ Chip: Test             step:    7, maxSteps:   10, running: 0, returnCode: 1
 
     p.new Instruction()                                                         // Initialize
      {void action()
-       {a.zero(); b.one(); i.zero();
+       {a.zero(); b.one();  i.zero();
        }
       String verilog()
        {return "";
@@ -993,7 +993,13 @@ Chip: Test             step:    7, maxSteps:   10, running: 0, returnCode: 1
     ok(""+C, """
 Chip: Test             step:   50, maxSteps:  100, running: 0, returnCode: 0
   Processes:
-    Process:    0 - Memory           instructions:    2, pc:    0, nextPc:    0, memory:   16 *   16 = 1, 2, 3, 5, 8, 13, 21, 34, 55, 89, 144, 233, 377, 610, 987, 1597
+    Process:    0 - Main             instructions:   49, pc:   49, nextPc:   -1, memory:    0 *    0      Registers :
+        Register: Main_Memory_Value                =    0
+        Register: Main_a                           =  987
+        Register: Main_b                           = 1597
+        Register: Main_c                           = 1597
+        Register: Main_i                           =   16
+    Process:    1 - Memory           instructions:    2, pc:    0, nextPc:    0, memory:   16 *   16 = 1, 2, 3, 5, 8, 13, 21, 34, 55, 89, 144, 233, 377, 610, 987, 1597
       Registers :
         Register: Memory_Memory_Value              = 1597
         Register: Memory_Memory_1_index            =   15
@@ -1004,12 +1010,6 @@ Chip: Test             step:   50, maxSteps:  100, running: 0, returnCode: 0
             Memory_Memory_1_index  =   15
             Memory_Memory_1_value  = 1597
           Outputs     :
-    Process:    1 - Main             instructions:   49, pc:   49, nextPc:   -1, memory:    0 *    0      Registers :
-        Register: Main_Memory_Value                =    0
-        Register: Main_a                           =  987
-        Register: Main_b                           = 1597
-        Register: Main_c                           = 1597
-        Register: Main_i                           =   16
 """);
     //c.chipGenerateVerilog();
    }
