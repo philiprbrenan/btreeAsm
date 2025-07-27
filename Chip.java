@@ -885,9 +885,7 @@ Chip: Test             step:    4, maxSteps:   10, running: 0, returnCode: 1
      };
 
     m.memoryProcessGenerate();
-debug = true;
     c.chipRunPrograms();
-debug = false;
 
     ok(rt.transactionOutputRegisters.firstElement().registerGet(), 2);
     ok(st.transactionOutputRegisters.firstElement().registerGet(), 3);
