@@ -151,8 +151,14 @@ class Chip extends Test                                                         
       if (processNextPc >= 0) processPc = processNextPc; else processPc++;      // Interpret next program counter as either a redirection or continuation of flow
      }
 
-    int memoryGet(int Index)                                                    // Get a memory element as an integer
+    protected int memoryGetNoSet(int Index)                                     // Get a memory element as an integer withoiut setting the memory cache register
      {final BitSet b = memory[Index];                                           // Read memory as bit set
+      final long[]V = b.toLongArray();                                          // Convert bitset to long
+      return V.length > 0 ? (int)b.toLongArray()[0] : 0;                        // Take the first element if it exists relying on the fact that in the java code we test with just sufficiently large numbers to test the verilog in priniple
+     }
+
+    int memoryGet(int Index)                                                    // Get a memory element as an integer setting the memory cache register to the value of the element retrieved
+     {final BitSet b = memoryRegister.value = (BitSet)memory[Index].clone();    // Read memory as bit set
       final long[]V = b.toLongArray();                                          // Convert bitset to long
       return V.length > 0 ? (int)b.toLongArray()[0] : 0;                        // Take the first element if it exists relying on the fact that in the java code we test with just sufficiently large numbers to test the verilog in priniple
      }
@@ -499,7 +505,7 @@ class Chip extends Test                                                         
    }
 
   String chipStopV(int ReturnCode)                                              // Stop the chip in verilog
-   {return "stop = 1;";
+   {return "returnCode = "+ReturnCode+"; stop = 1;";
    }
 
 //D2 Print                                                                      // Print the state of a chip
@@ -521,7 +527,7 @@ class Chip extends Test                                                         
         if (p.memory.length > 0)                                                // Print memory
          {final StringBuilder m = new StringBuilder();
           for (int i = 0; i < p.memory.length; i++)
-           {final int v =  p.memoryGet(i);
+           {final int v =  p.memoryGetNoSet(i);
             m.append(", "+v);
            }
           s.append(" = "+m.substring(2)+"\n");
@@ -810,10 +816,10 @@ Chip: Test             step:    4, maxSteps:   10, running: 0, returnCode: 1
    }
 
   static void test_memoryProcess()
-   {final int B = 8, N = 16;
+   {final int B = 8, M = 1, N = 16;
     var c  = chip("Test");
     var m  = c.new MemoryProcess("Memory", B, N);
-    var r  = c.process("Requests", B, 1);
+    var r  = c.process("Requests", B, M);
 
     var ri = r.register("index1",  B);
     var rt = m.new Get(r);
@@ -829,6 +835,12 @@ Chip: Test             step:    4, maxSteps:   10, running: 0, returnCode: 1
       m.memorySet(i);
      }
     m.memoryRegister.registerSet(0);                                            // Clean up dtate after loading memory to match verilog
+
+    for (int i = 0; i < M; i++)                                                 // Preload memory
+     {r.memoryRegister.registerSet(i+1);
+      r.memorySet(i);
+     }
+    r.memoryRegister.registerSet(0);                                            // Clean up dtate after loading memory to match verilog
 
     r.new Instruction()                                                         // Request the value of an indexed element of memory
      {void action()
@@ -873,7 +885,9 @@ Chip: Test             step:    4, maxSteps:   10, running: 0, returnCode: 1
      };
 
     m.memoryProcessGenerate();
+debug = true;
     c.chipRunPrograms();
+debug = false;
 
     ok(rt.transactionOutputRegisters.firstElement().registerGet(), 2);
     ok(st.transactionOutputRegisters.firstElement().registerGet(), 3);
@@ -906,7 +920,7 @@ Chip: Test             step:    7, maxSteps:   10, running: 0, returnCode: 1
             Memory_Memory_3_index  =    2
             Memory_Memory_3_value  =   33
           Outputs     :
-    Process:    1 - Requests         instructions:    7, pc:    7, nextPc:   -1, memory:    1 *    8 = 0
+    Process:    1 - Requests         instructions:    7, pc:    7, nextPc:   -1, memory:    1 *    8 = 1
       Registers :
         Register: Requests_Memory_Value            =    0
         Register: Requests_index1                  =    1
