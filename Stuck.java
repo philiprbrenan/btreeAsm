@@ -36,7 +36,7 @@ Stuck        array  %d
 """, logTwo(maxStuckSize)+1, maxStuckSize, bitsPerKey, bitsPerData));
    }
 
-  Stuck duplicate()                                                             // Duplicate this struck
+  Stuck duplicate()                                                             // Duplicate this stuck
    {final Stuck s = new Stuck(maxStuckSize, bitsPerKey, bitsPerData);
     s.copy(this);
     s.L.P = L.P;
