@@ -88,9 +88,9 @@ jobs:
       with:
         website: jdk.java.net
 
-    - name: Java release
+    - name: Verilog install
       run: |
-        java -version
+        sudo apt install iverilog
 
     - name: Position files in package
       run: |
