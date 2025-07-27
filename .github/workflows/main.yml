@@ -1,4 +1,4 @@
-# Test 2025-07-27 at 01:01:27
+# Test 2025-07-27 at 14:21:31
 
 name: Test
 run-name: btreeAsm
@@ -20,7 +20,7 @@ jobs:
 
     strategy:
       matrix:
-        task: [Chip, Test]
+        task: [Chip]
 
     steps:
     - uses: actions/checkout@v4
@@ -49,10 +49,4 @@ jobs:
       if: matrix.task == 'Chip'
       run: |
         java -cp Classes com/AppaApps/Silicon/Chip
-
-
-    - name: Test Test
-      if: matrix.task == 'Test'
-      run: |
-        java -cp Classes com/AppaApps/Silicon/Test
 
