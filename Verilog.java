@@ -9,7 +9,7 @@ class Verilog extends Test                                                      
   static final String ext     = "v";                                            // File extension recognized by Vivado
   static final String header  = "vh";                                           // Header file extension name recognized by Vivado
   static final String testExt = "tb";                                           // Extension for test bench
-  static final String constraintsExt = ".xdc";                                  // Extension for constraints file
+  static final String constraintsExt = "xdc";                                   // Extension for constraints file
 
 //D0 Tests                                                                      // Testing
 
