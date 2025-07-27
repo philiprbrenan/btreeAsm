@@ -555,7 +555,7 @@ class Chip extends Test                                                         
 
 //D2 Chip                                                                       // Actions that affect the whole chip
 
-  void chipRunPrograms()                                                        // Run the processes == programs defined on this chip using thekr Java implementation
+  void chipRunJava()                                                        // Run the processes == programs defined on this chip using thekr Java implementation
    {for(Process p : processes) p.initProgram();                                 // Initialize each program
     running = true;                                                             // Show the program as running
     deleteFile(javaTraceFile);                                                  // Remove java trace file
@@ -723,7 +723,7 @@ class Chip extends Test                                                         
 
 //D2 Verilog                                                                    // Verilog describing the chip
 
-  String chipGenerateVerilog()                                                  // Generate verilog describing the chip
+  String chipRunVerilog()                                                  // Generate verilog describing the chip
    {final StringBuilder v = new StringBuilder();
     v.append("""
 //-----------------------------------------------------------------------------
@@ -876,7 +876,7 @@ endmodule
        }
      };
 
-    c.chipRunPrograms();
+    c.chipRunJava();
     //stop(c);
     ok(c, """
 Chip: Test             step:    4, maxSteps:   10, running: 0, returnCode: 1
@@ -895,7 +895,7 @@ Chip: Test             step:    4, maxSteps:   10, running: 0, returnCode: 1
         Register: Request_index                    =    1
 """);
     ok(c.returnCode, 1);
-    c.chipGenerateVerilog();
+    c.chipRunVerilog();
    }
 
   static void test_memoryProcess()
@@ -976,7 +976,7 @@ Chip: Test             step:    4, maxSteps:   10, running: 0, returnCode: 1
      };
 
     m.memoryProcessGenerate();
-    c.chipRunPrograms();
+    c.chipRunJava();
 
     ok(rt.transactionOutputRegisters.firstElement().registerGet(), 2);
     ok(st.transactionOutputRegisters.firstElement().registerGet(), 3);
@@ -1013,7 +1013,7 @@ Chip: Test             step:    8, maxSteps:   10, running: 0, returnCode: 1
         Register: Requests_index2                  =    2
         Register: Requests_value                   =   33
 """);
-    c.chipGenerateVerilog();
+    c.chipRunVerilog();
    }
 
   static void test_arithmeticFibonacci()
@@ -1074,7 +1074,7 @@ Chip: Test             step:    8, maxSteps:   10, running: 0, returnCode: 1
     m.memoryProcessGenerate();
 
     C.maxSteps = 100;
-    C.chipRunPrograms();
+    C.chipRunJava();
     //stop(C);
     ok(""+C, """
 Chip: Test             step:   50, maxSteps:  100, running: 0, returnCode: 1
@@ -1095,7 +1095,7 @@ Chip: Test             step:   50, maxSteps:  100, running: 0, returnCode: 1
             Memory_Memory_1_index  =   15
             Memory_Memory_1_value  = 1597
 """);
-    C.chipGenerateVerilog();
+    C.chipRunVerilog();
    }
 
   static void oldTests()                                                        // Tests thought to be in good shape
@@ -1105,10 +1105,10 @@ Chip: Test             step:   50, maxSteps:  100, running: 0, returnCode: 1
    }
 
   static void newTests()                                                        // Tests being worked on
-   {//oldTests();
-    test_memory();
-    test_memoryProcess();
-    test_arithmeticFibonacci();
+   {oldTests();
+    //test_memory();
+    //test_memoryProcess();
+    //test_arithmeticFibonacci();
    }
 
   public static void main(String[] args)                                        // Test if called as a program
