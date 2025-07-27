@@ -534,6 +534,22 @@ public class Test                                                               
     return null;
    }
 
+  static void appendFile(String filePath, StringBuilder string)                 // Append a string builder to a file
+   {try
+     {makePath(folderName(filePath));
+      Files.write(Paths.get(filePath), string.toString().getBytes(),
+        StandardOpenOption.CREATE, StandardOpenOption.APPEND);
+      filesWritten.add(filePath);
+     }
+    catch (Exception e)
+     {stop("Cannot append to file", filePath, e);
+     }
+   }
+
+  static void appendFile(String filePath, String string)                        // Append a string to a file
+   {appendFile(filePath, new StringBuilder(string));
+   }
+
   static void writeFile(String filePath, StringBuilder string)                  // Write a string builder to a file
    {try
      {makePath(folderName(filePath));
