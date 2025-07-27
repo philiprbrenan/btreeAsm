@@ -528,6 +528,10 @@ public class Test                                                               
     return null;
    }
 
+  static String readFileAsString(String filePath)                               // Read a file into a string
+   {return joinLines(readFile(filePath));
+   }
+
   static String tempFile()                                                      // Create a temporary file
    {try  {return ""+File.createTempFile("zzz", "111");}
     catch(Exception e) {stop(e);}
