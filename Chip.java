@@ -944,7 +944,6 @@ Chip: Test             step:    7, maxSteps:   10, running: 0, returnCode: 1
   static void test_arithmeticFibonacci()
    {final int B = 16, N = 16;
     var C  = chip("Test");
-    var m  = C.new MemoryProcess("Memory", B, N);
     var p  = C.process("Main", 0, 0);
 
     var a  = p.register("a",  B);
@@ -952,6 +951,7 @@ Chip: Test             step:    7, maxSteps:   10, running: 0, returnCode: 1
     var c  = p.register("c",  B);
     var i  = p.register("i",  B);
 
+    var m  = C.new MemoryProcess("Memory", B, N);                               // Mmeory controller
     var t  = m.new Set(p);                                                      // Create a transaction to update memory
 
     p.new Instruction()                                                         // Initialize
