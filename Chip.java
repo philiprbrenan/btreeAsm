@@ -8,14 +8,15 @@ import java.util.*;
 
 class Chip extends Test                                                         // A chip designed to manipulate a B-tree stored in a memory block
  {final String chipName;                                                        // The name of the chip
-  final Children<Process> processes = new Children<>();                         // A fixed set of processes for this chip in definition order
-  final String     verilogTraceFile = fn(Verilog.folder, "v.txt");              // Verilog trace file
-  final String        javaTraceFile = fn(Verilog.folder, "j.txt");              // Java trace file for comparison with verilog
-  boolean                   running;                                            // True when the chip is running
-  int                          step;                                            // Current simulation step being executed
-  int                      maxSteps = 10;                                       // Maximum number of steps to execute in the simulation
-  int                    returnCode;                                            // The return code from the first process to finish which effectively terminates the simulation
-  static boolean              debug = false;                                    // Debug when true
+  final Children<Process>  processes = new Children<>();                        // A fixed set of processes for this chip in definition order
+  final String      verilogTraceFile = fn(Verilog.folder, "v.txt");             // Verilog trace file
+  final String         javaTraceFile = fn(Verilog.folder, "j.txt");             // Java trace file for comparison with verilog
+  int memoryProcessTransactionNumber = 0;                                       // Make transaction names unique
+  boolean                    running;                                           // True when the chip is running
+  int                           step;                                           // Current simulation step being executed
+  int                       maxSteps = 10;                                      // Maximum number of steps to execute in the simulation
+  int                     returnCode;                                           // The return code from the first process to finish which effectively terminates the simulation
+  static boolean               debug = false;                                   // Debug when true
 
   Chip(String Name)                                                             // Create a new chip
    {chipName = Name;
@@ -78,7 +79,9 @@ class Chip extends Test                                                         
      }
 
     class Label                                                                 // Label jump targets in the program
-     {
+     {int instruction;                                                          // The instruction location to which this labels applies
+      Label()    {set(); labels.push(this);}                                    // A label assigned to an instruction location
+      void set() {instruction = code.size();}                                   // Reassign the label to an instruction
      }
 
 //D2 Register                                                                   // A register is an unindexable block of memory associated with a process
@@ -130,6 +133,17 @@ class Chip extends Test                                                         
       String registerName() {return processName + "_" + registerName;}          // Create a name for a register that includes its register name
 
       Process registerProcess() {return Process.this;}                          // Process associated with this register
+
+//D3 Arithmetic                                                                 // Operations on registers
+
+      void zero() {registerSet(0);}                                             // Zero a register
+      void one () {registerSet(1);}                                             // One a register
+      void inc () {registerSet(registerGet()+1);}                               // Increment a register
+      void dec () {registerSet(registerGet()-1);}                               // Decrement a register
+      void not () {registerSet(registerGet() != 0 ? 0 : 1);}                    // Not a register
+      void add (Register source)                                                // Add a register to the current register
+       {registerSet(registerGet()+source.registerGet());
+       }
      } // Register
 
     Register register(String RegisterName, int RegisterBits)                    // Create the register
@@ -348,8 +362,7 @@ class Chip extends Test                                                         
 //D2 Memory Process                                                             // Processes that maintain the state of a memory
 
   class MemoryProcess extends Process                                           // A process whose sole purpose is to maintain memory
-   {private static int memoryProcessTransactionNumber = 0;                      // Make transaction names unique
-    MemoryProcess(String ProcessName, int MemoryWidth, int MemorySize)          // Create a process
+   {MemoryProcess(String ProcessName, int MemoryWidth, int MemorySize)          // Create a process
      {super(ProcessName, MemoryWidth, MemorySize);
       memoryProcessGenerate();                                                  // Generate the code to execute this process
      }
@@ -412,7 +425,7 @@ class Chip extends Test                                                         
        {return index.copyV(Index) + "  " +value.copyV(Value) + "  " + transactionSetExecutableV();
        }
 
-      void waitResult(int indent)                                               // Wait for the request to finish
+      void waitResultOfTransaction(int indent)                                  // Wait for the request to finish
        {process.new Instruction()
          {void action()
            {if (!transactionFinished()) instructionIterate();
@@ -873,7 +886,7 @@ Chip: Test             step:    4, maxSteps:   10, running: 0, returnCode: 1
        {return "          "+tv.registerSetV(33) + "  " + tt.executeTransactionV(si, tv);
        }
      };
-    tt.waitResult(5);                                                           // Request value of memory at the index
+    tt.waitResultOfTransaction(5);                                              // Request value of memory at the index
 
     r.new Instruction()                                                         // Request the value of an indexed element of memory
      {void action()
@@ -928,15 +941,90 @@ Chip: Test             step:    7, maxSteps:   10, running: 0, returnCode: 1
     c.chipGenerateVerilog();
    }
 
+  static void test_arithmeticFibonacci()
+   {final int B = 16, N = 16;
+    var C  = chip("Test");
+    var m  = C.new MemoryProcess("Memory", B, N);
+    var p  = C.process("Main", 0, 0);
+
+    var a  = p.register("a",  B);
+    var b  = p.register("b",  B);
+    var c  = p.register("c",  B);
+    var i  = p.register("i",  B);
+
+    var t  = m.new Set(p);                                                      // Create a transaction to update memory
+
+    p.new Instruction()                                                         // Initialize
+     {void action()
+       {a.zero(); b.one(); i.zero();
+       }
+      String verilog()
+       {return "";
+       }
+     };
+
+    for (int j = 0; j < N; j++)                                                 // Fibonacci numbers
+     {p.new Instruction()
+       {void action()
+         {c.copy(a); c.add(b); a.copy(b); b.copy(c);
+          t.executeTransaction(i, c);
+         }
+        String verilog()
+         {return "";
+         }
+       };
+      p.new Instruction()
+       {void action()
+         {i.inc();
+         }
+        String verilog()
+         {return "";
+         }
+       };
+
+      t.waitResultOfTransaction(5);                                             // Request value of memory at the index
+     }
+
+    m.memoryProcessGenerate();
+
+    C.maxSteps = 100;
+    C.chipRunPrograms();
+    //stop(C);
+    ok(""+C, """
+Chip: Test             step:   50, maxSteps:  100, running: 0, returnCode: 0
+  Processes:
+    Process:    0 - Memory           instructions:    2, pc:    0, nextPc:    0, memory:   16 *   16 = 1, 2, 3, 5, 8, 13, 21, 34, 55, 89, 144, 233, 377, 610, 987, 1597
+      Registers :
+        Register: Memory_Memory_Value              = 1597
+        Register: Memory_Memory_1_index            =   15
+        Register: Memory_Memory_1_value            = 1597
+      Transactions:
+        Transaction   : set      - Memory_1          requested at:   46, finished at:   47, returnCode:  0, executable: 0, finished: 1
+          Inputs      :
+            Memory_Memory_1_index  =   15
+            Memory_Memory_1_value  = 1597
+          Outputs     :
+    Process:    1 - Main             instructions:   49, pc:   49, nextPc:   -1, memory:    0 *    0      Registers :
+        Register: Main_Memory_Value                =    0
+        Register: Main_a                           =  987
+        Register: Main_b                           = 1597
+        Register: Main_c                           = 1597
+        Register: Main_i                           =   16
+""");
+    //c.chipGenerateVerilog();
+   }
+
   static void oldTests()                                                        // Tests thought to be in good shape
    {test_memory();
     test_memoryProcess();
+    test_arithmeticFibonacci();
    }
 
   static void newTests()                                                        // Tests being worked on
    {oldTests();
     //test_memory();
     //test_memoryProcess();
+    //test_arithmeticFibonacci();
    }
 
   public static void main(String[] args)                                        // Test if called as a program
