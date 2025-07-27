@@ -40,7 +40,9 @@ class Chip extends Test                                                         
     int                      processPc       = 0;                               // The index of the next instruction to be executed
     int                      processNextPc   = -1;                              // The next program counter requested
 
-    Process(String ProcessName, int MemoryWidth, int MemorySize)                // Create a process
+    Process(String ProcessName) {this(ProcessName, 0, 0);}                      // Create a process without any memory attached to it
+
+    Process(String ProcessName, int MemoryWidth, int MemorySize)                // Create a process with the specified memory atatched to it
      {if (running)
        {stop("Cannot define process:", ProcessName, "when the chip is running");
        }
@@ -52,7 +54,10 @@ class Chip extends Test                                                         
       memoryWidth   = MemoryWidth;
       memory        = new BitSet[memorySize];
       for (int i = 0; i < memorySize; i++) memory[i] = new BitSet(memoryWidth);
-      memoryRegister = new Register("Memory_Value", memoryWidth);
+      if (memoryWidth > 0)                                                      // Only add memory cache register if there is some memory associated with this process
+       {memoryRegister = new Register("Memory_Value", memoryWidth);
+       }
+      else memoryRegister = null;
      }
 
 //D2 Instruction                                                                // An instruction represents code to be executed by a process in a single clock cycle == process step
@@ -285,12 +290,15 @@ class Chip extends Test                                                         
     String processPcName()     {return processName+"_pc";}                      // Program counter
     String processNextPcName() {return processName+"_next_pc";}                 // Next program counter
     String processMemoryName() {return processName+"_memory";}                  // Name of the memory block used by this process
+    boolean hasMemory()        {return memoryWidth > 0 && memorySize > 0;}      // Whether this process has any memory attached directly to it
 
     String generateProcessVerilog()                                             // Generate Verilog code for this process
      {final StringBuilder v = new StringBuilder();
 
       v.append("\n// Process: "+processName+"\n\n");
-      v.append("  reg ["+memoryWidth+"] "+processMemoryName()+"["+memorySize+"];\n");
+      if (hasMemory())
+       {v.append("  reg ["+memoryWidth+"] "+processMemoryName()+"["+memorySize+"];\n");
+       }
 
       for (Register r: registers)
        {v.append("  reg ["+r.registerBits+"] "+r.registerName()+";\n");
@@ -329,7 +337,10 @@ class Chip extends Test                                                         
          }
        }
 
-      v.append("       for(i = 0; i < "+memorySize+"; i = i + 1) "+processMemoryName()+"[i] = i+1;\n");
+      if (hasMemory())
+       {v.append("       for(i = 0; i < "+memorySize+"; i = i + 1) "+processMemoryName()+"[i] = i+1;\n");
+       }
+
       v.append("""
     end
     else if (processCurrent == $processNumber) begin                            // Run the process if it is the current one
@@ -563,18 +574,22 @@ class Chip extends Test                                                         
             ra, fa, t.transactionRc,
             t.transactionExecutableAsInt(), t.transactionFinishedAsInt()));
 
-          s.append(in+"  Inputs      :\n");                                     // Transaction inputs
-          for (Process.Register r : t.transactionInputRegisters)
-           {s.append(String.format(
-             "%s    %-22s = %4d\n",
-             in, r.registerName(), r.registerGet()));
+          if (t.transactionInputRegisters.size() > 0)                           // Transaction inputs
+           {s.append(in+"  Inputs      :\n");
+            for (Process.Register r : t.transactionInputRegisters)
+             {s.append(String.format(
+               "%s    %-22s = %4d\n",
+               in, r.registerName(), r.registerGet()));
+             }
            }
 
-          s.append(in+"  Outputs     :\n");                                     // Transaction outputs
-          for (Process.Register r : t.transactionOutputRegisters)
-           {s.append(String.format(
-             "%s    %-22s = %4d\n",
-             in, r.registerName(), r.registerGet()));
+          if (t.transactionOutputRegisters.size() > 0)                          // Transaction outputs
+           {s.append(in+"  Outputs     :\n");
+            for (Process.Register r : t.transactionOutputRegisters)
+             {s.append(String.format(
+               "%s    %-22s = %4d\n",
+               in, r.registerName(), r.registerGet()));
+             }
            }
          }
        }
@@ -930,7 +945,6 @@ Chip: Test             step:    7, maxSteps:   10, running: 0, returnCode: 1
           Inputs      :
             Memory_Memory_3_index  =    2
             Memory_Memory_3_value  =   33
-          Outputs     :
     Process:    1 - Requests         instructions:    7, pc:    7, nextPc:   -1, memory:    1 *    8 = 1
       Registers :
         Register: Requests_Memory_Value            =    0
@@ -994,7 +1008,6 @@ Chip: Test             step:    7, maxSteps:   10, running: 0, returnCode: 1
 Chip: Test             step:   50, maxSteps:  100, running: 0, returnCode: 0
   Processes:
     Process:    0 - Main             instructions:   49, pc:   49, nextPc:   -1, memory:    0 *    0      Registers :
-        Register: Main_Memory_Value                =    0
         Register: Main_a                           =  987
         Register: Main_b                           = 1597
         Register: Main_c                           = 1597
@@ -1009,9 +1022,8 @@ Chip: Test             step:   50, maxSteps:  100, running: 0, returnCode: 0
           Inputs      :
             Memory_Memory_1_index  =   15
             Memory_Memory_1_value  = 1597
-          Outputs     :
 """);
-    //c.chipGenerateVerilog();
+    C.chipGenerateVerilog();
    }
 
   static void oldTests()                                                        // Tests thought to be in good shape
@@ -1024,7 +1036,7 @@ Chip: Test             step:   50, maxSteps:  100, running: 0, returnCode: 0
    {oldTests();
     //test_memory();
     //test_memoryProcess();
-    //test_arithmeticFibonacci();
+    test_arithmeticFibonacci();
    }
 
   public static void main(String[] args)                                        // Test if called as a program
