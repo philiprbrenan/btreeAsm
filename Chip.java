@@ -1,5 +1,5 @@
 //------------------------------------------------------------------------------
-// B-tree implemented using block-based asynchronous memory.
+// B-tree implemented using block-based, asynchronous memory.
 // Philip R Brenan at appaapps dot com, Appa Apps Ltd Inc., 2025
 //------------------------------------------------------------------------------
 package com.AppaApps.Silicon;                                                   // B-tree implemented in a memory block on a silicon chip.
@@ -798,7 +798,7 @@ Chip: Test             step:    4, maxSteps:   10, running: 0, returnCode: 1
   Processes:
     Process:    0 - Memory           instructions:    1, pc:    0, nextPc:    0, memory:   16 *    8 = 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16
       Registers :
-        Register: Memory_Memory_Value              =   16
+        Register: Memory_Memory_Value              =    2
         Register: Memory_value                     =    2
       Transactions:
         Transaction   : get      - GetValueFromMemory  requested at:    2, finished at:    3, returnCode:  0, executable: 0, finished: 1
@@ -936,9 +936,9 @@ Chip: Test             step:    7, maxSteps:   10, running: 0, returnCode: 1
    }
 
   static void newTests()                                                        // Tests being worked on
-   {//oldTests();
+   {oldTests();
     //test_memory();
-    test_memoryProcess();
+    //test_memoryProcess();
    }
 
   public static void main(String[] args)                                        // Test if called as a program
