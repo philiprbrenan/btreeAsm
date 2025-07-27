@@ -9,12 +9,13 @@ import java.util.*;
 class Chip extends Test                                                         // A chip designed to manipulate a B-tree stored in a memory block
  {final String chipName;                                                        // The name of the chip
   final Children<Process> processes = new Children<>();                         // A fixed set of processes for this chip in definition order
-  final String verilogTraceFolder   = fn(Verilog.folder, "v");                  // Folder into which verilog trace output will be written
-  boolean running;                                                              // True when the chip is running
-  int step;                                                                     // Current simulation step being executed
-  int maxSteps = 10;                                                            // Maximum number of steps to execute in the simulation
-  int returnCode;                                                               // The return code from the first process to finish which effectively terminates the simulation
-  static boolean debug = false;                                                 // Debug when true
+  final String     verilogTraceFile = fn(Verilog.folder, "v.txt");              // Verilog trace file
+  final String        javaTraceFile = fn(Verilog.folder, "j.txt");              // Java trace file for comparison with verilog
+  boolean                   running;                                            // True when the chip is running
+  int                          step;                                            // Current simulation step being executed
+  int                      maxSteps = 10;                                       // Maximum number of steps to execute in the simulation
+  int                    returnCode;                                            // The return code from the first process to finish which effectively terminates the simulation
+  static boolean              debug = false;                                    // Debug when true
 
   Chip(String Name)                                                             // Create a new chip
    {chipName = Name;
@@ -311,7 +312,7 @@ class Chip extends Test                                                         
       v.append("       for(i = 0; i < "+memorySize+"; i = i + 1) "+processMemoryName()+"[i] = i+1;\n");
       v.append("""
     end
-    else begin
+    else if (processCurrent == $processNumber) begin                            // Run the process if it is the current one
       $next_pc = -1;
       case($pc)                                                                 // Execute instructions
 """);
@@ -329,6 +330,7 @@ class Chip extends Test                                                         
       v.append("  end\n");
       replaceAll(v, "$pc",      processPcName());
       replaceAll(v, "$next_pc", processNextPcName());
+      replaceAll(v, "$processNumber", ""+processNumber);
       return ""+v;
      }
    } // Process
@@ -478,9 +480,10 @@ class Chip extends Test                                                         
 
 //D2 Chip                                                                       // Actions that affect the whole chip
 
-  void chipRunPrograms()                                                        // Run the processes == programs defined on this chip
-   {for(Process p : processes) p.initProgram();                                 // Initialize each program                                               //
+  void chipRunPrograms()                                                        // Run the processes == programs defined on this chip using thekr Java implementation
+   {for(Process p : processes) p.initProgram();                                 // Initialize each program
     running = true;                                                             // Show the program as running
+    deleteFile(javaTraceFile);                                                  // Remove java trace file
     for(step = 0; running && step < maxSteps; ++step)                           // Run each program
      {for(Process p : processes) p.stepProgram();                               // Step each program
       chipPrint();
@@ -562,19 +565,16 @@ class Chip extends Test                                                         
    }
 
   void chipPrint()                                                              // Print the current state of the java emulation of the chip to a file
-   {final String f = fne(Verilog.folder, "j", ""+step, "txt");
-    writeFile(f, toString());
+   {appendFile(javaTraceFile, toString());
    }
 
   public String generateChipPrintV()                                            // Verilog to print the state of the chip as a callable Verilog task
    {final StringBuilder s = new StringBuilder();
         s.append(" task chipPrint;\n");
         s.append("   begin\n");
-        s.append("   string  O;\n");
         s.append("   integer o;\n");
-        s.append("   $sformat(O, \""+verilogTraceFolder+"/%0d.txt\", step);\n");
-        s.append("   o = $fopen(O, \"w\");\n");
-        s.append("   if (!o) $display(\"Cannot create trace folder\");");
+        s.append("   o = $fopen(\""+verilogTraceFile+"\", \"a\");\n");
+        s.append("   if (!o) $display(\"Cannot create trace folder: "+verilogTraceFile+"\");");
 
         s.append(
          "$fwrite(o, \"Chip: %-16s step: %4d, maxSteps: %4d, running: %1d, returnCode: %0d\\n\", "+
@@ -654,14 +654,23 @@ module $chip_name;                                                              
   integer                step;                                                  // Step of the simulation
   integer            maxSteps;                                                  // Maximum number of steps to execute
   integer          returnCode;                                                  // Return code
+  integer      processCurrent;                                                  // To ensure we get the same results in Java and Verilog we have to run the processes single threaded in a constant order
 
   initial begin
     stop = 0;
     returnCode = 0;
     maxSteps = $max_steps;
     for(step = -1; step < maxSteps && !stop; step = step + 1) begin             // Steps below zero are used for initilization so that Java and Verilog start in synch at step zero
+""");
+
+    for(Process p: processes)                                                   // Single thread the processes in a constant order
+     {v.append("processCurrent = "+p.processNumber+";");
+      v.append("""
       clock = 0; #1; clock = 1; #1;
-      chipPrint();
+""");
+     }
+    v.append("""
+      if (step >= 0) chipPrint();                                               // Steps prior to zero are for initialization to make Java and Verilog match
     end
     if (!stop) $finish(1); else $finish(0);                                     // Set return code depending on whether the simulation halted
   end
@@ -676,15 +685,16 @@ endmodule
 """);
     replaceAll(v, "$chip_name", chipName);
     replaceAll(v, "$max_steps", ""+maxSteps);
+
     final String source = fne(Verilog.folder, chipName, Verilog.ext);           // Source code in verilog
     writeFile(source,  ""+v);
-    final var e = new ExecCommand("rm -f "+chipName+"; iverilog -g2012 -o "+chipName+" "+source+"  && timeout 1m ./"+chipName);
-    return ""+v;
-   }
+    final String trace  = fne(Verilog.folder, "v", "txt");                      // Verilog execution trace
 
-  void chipWriteVerilog()
-   {final String f = fne(Verilog.folder, chipName, Verilog.ext);
-    writeFile(f, toString());
+    final var c = "rm -f "+chipName+" "+verilogTraceFile+
+                  " ;  iverilog -g2012 -o "+chipName+" "+source+
+                  " && timeout 1m ./"      +chipName;
+    final var e = new ExecCommand(c);
+    return ""+v;
    }
 
   static void test_memory()
@@ -913,7 +923,7 @@ Chip: Test             step:    7, maxSteps:   10, running: 0, returnCode: 1
 
   static void newTests()                                                        // Tests being worked on
    {//oldTests();
-    test_memory();
+    //test_memory();
     test_memoryProcess();
    }
 
