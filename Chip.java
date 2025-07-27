@@ -338,7 +338,7 @@ class Chip extends Test                                                         
        }
 
       if (hasMemory())
-       {v.append("       for(i = 0; i < "+memorySize+"; i = i + 1) "+processMemoryName()+"[i] = i+1;\n");
+       {v.append("       for(i = 0; i < "+memorySize+"; i = i + 1) "+processMemoryName()+"[i] = 0;\n");
        }
 
       v.append("""
@@ -868,7 +868,7 @@ Chip: Test             step:    4, maxSteps:   10, running: 0, returnCode: 1
      {r.memoryRegister.registerSet(i+1);
       r.memorySet(i);
      }
-    r.memoryRegister.registerSet(0);                                            // Clean up dtate after loading memory to match verilog
+    r.memoryRegister.registerSet(0);                                            // Clean up state after loading memory to match verilog
 
     r.new Instruction()                                                         // Request the value of an indexed element of memory
      {void action()
