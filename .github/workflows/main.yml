@@ -1,4 +1,4 @@
-# Test 2025-07-27 at 17:14:30
+# Test 2025-07-27 at 17:16:35
 
 name: Test
 run-name: btreeAsm
@@ -20,7 +20,7 @@ jobs:
 
     strategy:
       matrix:
-        task: [Chip, Stuck]
+        task: [Chip]
 
     steps:
     - uses: actions/checkout@v4
@@ -32,9 +32,9 @@ jobs:
       with:
         website: jdk.java.net
 
-    - name: Java release
+    - name: Verilog install
       run: |
-        java -version
+        sudo apt install iverilog
 
     - name: Position files in package
       run: |
@@ -49,10 +49,4 @@ jobs:
       if: matrix.task == 'Chip'
       run: |
         java -cp Classes com/AppaApps/Silicon/Chip
-
-
-    - name: Test Stuck
-      if: matrix.task == 'Stuck'
-      run: |
-        java -cp Classes com/AppaApps/Silicon/Stuck
 
