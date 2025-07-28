@@ -20,9 +20,11 @@ my @ext       = qw(.java .pl);                                                  
 
 say STDERR timeStamp,  " push to github $repo";
 
-push my @files, searchDirectoryTreesForMatchingFiles($home, @ext);              # Files to upload
-        @files = grep {!/experiments/}  @files;                                 # Filter out experimental files
-        @files = changedFiles $shaFile, @files;                                 # Filter out files that have not changed
+my @files = searchDirectoryTreesForMatchingFiles($home, @ext);                  # Files to upload
+say STDERR "AAAA ", dump(\@files);
+   @files = grep {!/experiments/}  @files;                                      # Filter out experimental files
+my @java  = grep {fe($_) =~ m(java)is} @files;                                  # Java files
+   @files = changedFiles $shaFile, @files;                                      # Filter out files that have not changed
 
 if (!@files)                                                                    # No new files
  {say "Everything up to date";
@@ -48,12 +50,11 @@ writeFileUsingSavedToken($user, $repo, q(.config/geany/keybindings.conf),       
 writeFileUsingSavedToken($user, $repo, q(.config/MakeWithPerl.pm),              # Save make with perl for the same reason
                   readFile(q(/home/phil/perl/cpan/MakeWithPerl/lib/MakeWithPerl.pm)));
 
-if (my @java = grep {m/\.java\Z/} @files)                                       # Write workflow to test java files
+if (@java)                                                                      # Write workflow to test java files
  {my @j = map {fn $_} @java;
   my $d = dateTimeStamp;
   my $c = q(com/AppaApps/Silicon);                                              # Package to classes folder
   my $j = join ', ', @j;                                                        # Java files
-say STDERR "AAAA $j";
   my $y = <<"END";
 # Test $d
 
