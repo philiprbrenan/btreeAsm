@@ -11,6 +11,8 @@ class Btree extends Chip                                                        
   final int maxStuckSize;                                                       // The maximum number of entries in the stuck.
   final int bitsPerKey;                                                         // The number of bits needed to define a key
   final int bitsPerData;                                                        // The number of bits needed to define a data field
+  final int btreeAddressSize;                                                   // The number of bits needed to address a field in memory holding btree
+  final int stuckAddressSize;                                                   // The number of bits needed to address a field in a stuck
   final Memory stuckIsLeaf;                                                     // Whether the current stuck is acting as a leaf or a branch in the btree.
   final Memory stuckIsFree;                                                     // Whether the stuck is on the free chain
   final Memory freeNext;                                                        // Next stuck on the free chain. If this stuck is not on the free chain then this field is zero to show that this stuck in use. If the stuck is the root stuck which is never freed, then its next pointer points to the first free stuck on the free chain.
@@ -23,62 +25,36 @@ class Btree extends Chip                                                        
 //D1 Construction                                                               // Construct and layout a btree
 
   Btree(int Size, int MaxStuckSize, int BitsPerKey, int BitsPerData)            // Create the Btree
-   {if (MaxStuckSize % 2 == 1) stop("The stuck size must be even, not:", MaxStuckSize);
+   {super("Btree");
+    if (MaxStuckSize % 2 == 1) stop("The stuck size must be even, not:", MaxStuckSize);
     if (MaxStuckSize < 4)      stop("The stuck size must be greater than equal to 4, not:", MaxStuckSize);
     size         = Size;                                                        // The maximum number of entries in the btree.
     maxStuckSize = MaxStuckSize;                                                // The maximum number of entries in the stuck.
     bitsPerKey   = BitsPerKey;                                                  // The number of bits needed to define a key
     bitsPerData  = BitsPerData;                                                 // The number of bits needed to define a data field
-    stuckIsLeaf  = new Memory("stuckIsLeaf", 1, Size);                          // Whether the stuck is a leaf
-    stuckIsFree  = new Memory("stuckIsFree", 1, Size);                          // Whether the stuck is on the free chain
-    freeNext     = new Memory("freeNext"   , logTwo(Size)+1, Size);                             // Next element refernce on free chain
-    stuckSize    = new Memory("stuckSize"  , logTwo(MaxStuckSize)+1);                            // Current size of stuck up to the maximum size
-    stuckKeys    = new Memory("stuckKeys"  , bitsPerKey);                            // Keys field
-    stuckData    = new Memory("stuckData"  , bitsPerKey);                            // Data field
+    btreeAddressSize = logTwo(Size)+1;                                          // Bits needed to address a field in the btree
+    stuckAddressSize = logTwo(MaxStuckSize)+1;                                  // Bits needed to address a field in a stuck
+    stuckIsLeaf  = new Memory("stuckIsLeaf", Size, 1);                          // Whether the stuck is a leaf
+    stuckIsFree  = new Memory("stuckIsFree", Size, 1);                          // Whether the stuck is on the free chain
+    freeNext     = new Memory("freeNext"   , Size, btreeAddressSize);           // Next element referwnce on free chain
+    stuckSize    = new Memory("stuckSize"  , Size, stuckAddressSize);           // Current size of stuck up to the maximum size
+    stuckKeys    = new Memory("stuckKeys"  , Size, bitsPerKey);                 // Keys field
+    stuckData    = new Memory("stuckData"  , Size, bitsPerData);                // Data field
 
-    iCreateFreeChain();                                                         // Create the free chain
+    //iCreateFreeChain();                                                         // Create the free chain
    }
 
-  Layout layout()                                                               // Layout describing Btree.
-   {if (logTwo(size) >= bitsPerData)                                            // The data field must be big enought to act as a node pointer in branches and a data pointer in leaves to locate the actual dfata held else where
-     {stop("Bits per data too small for tree of this size");
-     }
-    return new Layout(String.format("""
-freeStart      var    %d
-stucks         array  %d
-  stuckIsLeaf  bit
-  stuckIsFree  bit
-  freeNext     var    %d
-  stuckSize    var    %d
-  stuck        array  %d
-    stuckKeys  var    %d
-    stuckData  var    %d
-""", logTwo(size)+1, size, logTwo(size)+1, logTwo(maxStuckSize)+1, maxStuckSize, bitsPerKey, bitsPerData));
-   }
-
-  Layout.Field variable(String name, int size)                                  // Create a variable
-   {final Layout.Field v = L.variable(name, size);
-    v.layout.P = L.P;
-    return v;
-   }
-
-  Layout.Field index()        {return variable("index", logTwo(size)+1);}       // Create an index for a stuck in a btree
-  Layout.Field isLeaf()       {return variable("isLeaf",             1);}       // Create a bit for is leaf
-  Layout.Field isFull()       {return variable("isFull",             1);}       // Create a bit for is full
-  Layout.Field isFullButOne() {return variable("isFullButOne",       1);}       // Create a bit for is full but one
-  Layout.Field within()       {return variable("within",             1);}       // Create a bit for is within the body of the stuck and not at the top
-  Layout.Field found()        {return variable("found",              1);}       // Create a bit for whether a key has been found
-  Layout.Field leafFull()     {return variable("leafFull",           1);}       // Create a bit for a leaf is full
-  Layout.Field branchFull()   {return variable("branchFull",         1);}       // Create a bit for a branch is full
-
-  void runProgram()                      {L.runProgram();}
-  void clearProgram()                    {L.clearProgram();}
-  void stopProgram(String message)       {L.stopProgram(message);}
-  Layout.Program startNewProgram()       {return L.startNewProgram();}
-  void continueProgram(Layout.Program p) {L.continueProgram(p);}
+  Process.Register index       (Process P) {return P.register("index", logTwo(size)+1);} // Create an index for a stuck in a btree
+  Process.Register isLeaf      (Process P) {return P.register("isLeaf",             1);} // Create a bit for is leaf
+  Process.Register isFull      (Process P) {return P.register("isFull",             1);} // Create a bit for is full
+  Process.Register isFullButOne(Process P) {return P.register("isFullButOne",       1);} // Create a bit for is full but one
+  Process.Register within      (Process P) {return P.register("within",             1);} // Create a bit for is within the body of the stuck and not at the top
+  Process.Register found       (Process P) {return P.register("found",              1);} // Create a bit for whether a key has been found
+  Process.Register leafFull    (Process P) {return P.register("leafFull",           1);} // Create a bit for a leaf is full
+  Process.Register branchFull  (Process P) {return P.register("branchFull",         1);} // Create a bit for a branch is full
 
 //D2 Allocation                                                                 // Allocate stucks from the free chain
-
+/*
   void createFreeChain()                                                        // Create the free chain
    {final Layout.Field index = index();
     for (int i = 1; i < size; i++)
@@ -103,7 +79,7 @@ stucks         array  %d
     L.continueProgram(p);
    }
 
-  private void allocate(Layout.Field ref, boolean leaf)                         // Allocate a stuck and set a ref to the allocated node
+  private void allocate(Process.Register ref, boolean leaf)                         // Allocate a stuck and set a ref to the allocated node
    {final Layout.Field index = index();
     if (freeStart.value == 0)                                                   // Check memory
      {stopProgram("Out of memory");
@@ -118,7 +94,7 @@ stucks         array  %d
     if (leaf) setLeaf(ref); else setBranch(ref);
    }
 
-  private void iAllocate(Layout.Field ref, boolean leaf)                        // Allocate a stuck and set a ref to the allocated node
+  private void iAllocate(Process.Register ref, boolean leaf)                        // Allocate a stuck and set a ref to the allocated node
    {L.P.new Instruction()
      {void action()
        {allocate(ref, leaf);
@@ -126,13 +102,13 @@ stucks         array  %d
      };
    }
 
-  private void  allocateLeaf  (Layout.Field ref) { allocate(ref, true);}        // Allocate a stuck, set a ref to the allocated node and mark it a leaf
-  private void  allocateBranch(Layout.Field ref) { allocate(ref, false);}       // Allocate a stuck, set a ref to the allocated node and mark it a branch
+  private void  allocateLeaf  (Process.Register ref) { allocate(ref, true);}        // Allocate a stuck, set a ref to the allocated node and mark it a leaf
+  private void  allocateBranch(Process.Register ref) { allocate(ref, false);}       // Allocate a stuck, set a ref to the allocated node and mark it a branch
 
-  private void iAllocateLeaf  (Layout.Field ref) {iAllocate(ref, true);}        // Allocate a stuck, set a ref to the allocated node and mark it a leaf
-  private void iAllocateBranch(Layout.Field ref) {iAllocate(ref, false);}       // Allocate a stuck, set a ref to the allocated node and mark it a branch
+  private void iAllocateLeaf  (Process.Register ref) {iAllocate(ref, true);}        // Allocate a stuck, set a ref to the allocated node and mark it a leaf
+  private void iAllocateBranch(Process.Register ref) {iAllocate(ref, false);}       // Allocate a stuck, set a ref to the allocated node and mark it a branch
 
-  private void free(Layout.Field ref)                                           // Free the indicated stuck to make it available for reuse
+  private void free(Process.Register ref)                                           // Free the indicated stuck to make it available for reuse
    {if (ref.value == 0)                                                         // The root stuck cannot be freed
      {stopProgram("Cannot free the root stuck");
       return;
@@ -143,16 +119,20 @@ stucks         array  %d
     stuckIsFree.one  (ref);                                                     // Show as free
    }
 
-  private void iFree(Layout.Field ref)                                          // Free the indicated stuck to make it available for reuse
+  private void iFree(Process.Register ref)                                          // Free the indicated stuck to make it available for reuse
    {L.P.new Instruction()
      {void action()
        {free(ref);
        }
      };
    }
-
+*/
 //D2 Stuck                                                                      // Get and set stucks within btree
 
+  class Stuck extends Process                                                   // A stuck is comprised of refernces to fields in the btree memory
+   {Stuck() {super("Stuck");}                                                                                //
+   }
+/*
   Stuck stuck()                                                                 // Make a temporary stuck we can copy into or out of as needed
    {final Stuck s = new Stuck(maxStuckSize, bitsPerKey, bitsPerData);
     s.L.P = L.P;
@@ -2813,33 +2793,33 @@ stuckData: value=2, 0=1, 1=2, 2=0, 3=0
 =0 |
 """);
    }
-
+*/
   static void oldTests()                                                        // Tests thought to be in good shape
-   {test_create();
-    test_leaf();
-    test_allocFree();
-    test_btree();
-    test_find();
-    test_findAndInsert();
-    test_isLeaf();
-    test_splitLeafRoot();
-    test_splitBranchRoot();
-    test_splitLeafNotTop();
-    test_splitLeafAtTop();
-    test_splitBranchNotTop();
-    test_splitBranchAtTop();
-    test_isRootLeafFull();
-    test_put();
-    test_putReverse();
-    test_putRandom();
-    test_mergeLeavesIntoRoot();
-    test_mergeLeavesAtTop();
-    test_mergeLeavesNotTop();
-    test_mergeBranchesIntoRoot();
-    test_mergeBranchesAtTop();
-    test_mergeBranchesNotTop();
-    test_merge();
-    test_delete();
+   {//test_create();
+    //test_leaf();
+    //test_allocFree();
+    //test_btree();
+    //test_find();
+    //test_findAndInsert();
+    //test_isLeaf();
+    //test_splitLeafRoot();
+    //test_splitBranchRoot();
+    //test_splitLeafNotTop();
+    //test_splitLeafAtTop();
+    //test_splitBranchNotTop();
+    //test_splitBranchAtTop();
+    //test_isRootLeafFull();
+    //test_put();
+    //test_putReverse();
+    //test_putRandom();
+    //test_mergeLeavesIntoRoot();
+    //test_mergeLeavesAtTop();
+    //test_mergeLeavesNotTop();
+    //test_mergeBranchesIntoRoot();
+    //test_mergeBranchesAtTop();
+    //test_mergeBranchesNotTop();
+    //test_merge();
+    //test_delete();
    }
 
   static void newTests()                                                        // Tests being worked on
