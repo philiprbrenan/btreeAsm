@@ -579,30 +579,31 @@ class Chip extends Test                                                         
   public String toString()                                                      // Print a description of the java emulation of the chip
    {final StringBuilder s = new StringBuilder();
         s.append(String.format(
-         "Chip: %-16s step: %4d, maxSteps: %4d, running: %d, returnCode: %d\n",
+         "Chip: %-16s step: %1d, maxSteps: %1d, running: %1d, returnCode: %1d\n",
           chipName, step, maxSteps, (running ? 1 : 0), returnCode));
 
         s.append("  Processes:\n");
 
     for (Process p: processes)                                                  // Each process
      {  s.append(String.format(
-         "    Process: %4d - %-16s instructions: %4d, pc: %4d, nextPc: %4d, memory: %4d * %4d",
-          p.processNumber, p.processName, p.code.size(), p.processPc, p.processNextPc,
-          p.memorySize, p.memoryWidth));
+         "    Process: %1d - %-21s instructions: %1d, pc: %1d, nextPc: %1d",
+          p.processNumber, p.processName, p.code.size(), p.processPc, p.processNextPc));
 
-        if (p.memory.length > 0)                                                // Print memory
+        if (p.hasMemory())                                                      // Print memory if this process has memory attached to it
          {final StringBuilder m = new StringBuilder();
-          for (int i = 0; i < p.memory.length; i++)
-           {final int v =  p.memoryGetNoSet(i);
-            m.append(", "+v);
+          for (int i = 1; i < p.memorySize; i++)
+           {m.append(", "+p.memoryGetNoSet(i));
            }
-          s.append(" = "+m.substring(2)+"\n");
+          s.append(String.format(
+         ", memory: %1d * %1d = %1d",
+          p.memorySize, p.memoryWidth, p.memoryGetNoSet(0)));
+          s.append(m);
          }
 
-        s.append("      Registers :\n");
+        s.append("\n      Registers :\n");
       for (Process.Register r: p.registers)                                     // Print registers associated with this process
        {s.append(String.format(
-         "        Register: %-32s = %4d\n",
+         "        Register: %-32s = %1d\n",
           r.registerName(), r.registerGet()));
        }
       if (p.transactions.size() > 0)                                            // There are transactions associated with this process
@@ -611,7 +612,7 @@ class Chip extends Test                                                         
          {final int ra = t.transactionRequestedAt;
           final int fa = t.transactionFinishedAt;
           final String in = "        ";
-          s.append(String.format("%sTransaction   : %-8s - %-16s  requested at: %4d, finished at: %4d, returnCode: %2d, executable: %1d, finished: %1d\n",
+          s.append(String.format("%sTransaction   : %-8s - %-16s  requested at: %1d, finished at: %1d, returnCode: %1d, executable: %1d, finished: %1d\n",
             in, t.transactionOpCode, t.transactionName,
             ra, fa, t.transactionRc,
             t.transactionExecutableAsInt(), t.transactionFinishedAsInt()));
@@ -620,7 +621,7 @@ class Chip extends Test                                                         
            {s.append(in+"  Inputs      :\n");
             for (Process.Register r : t.transactionInputRegisters)
              {s.append(String.format(
-               "%s    %-22s = %4d\n",
+               "%s    %-38s = %1d\n",
                in, r.registerName(), r.registerGet()));
              }
            }
@@ -629,7 +630,7 @@ class Chip extends Test                                                         
            {s.append(in+"  Outputs     :\n");
             for (Process.Register r : t.transactionOutputRegisters)
              {s.append(String.format(
-               "%s    %-22s = %4d\n",
+               "%s    %-38s = %1d\n",
                in, r.registerName(), r.registerGet()));
              }
            }
@@ -644,7 +645,7 @@ class Chip extends Test                                                         
    {appendFile(javaTraceFile, toString());
    }
 
-  public String generateChipPrintV()                                            // Verilog to print the state of the chip as a callable Verilog task
+  String chipPrintV()                                                           // Verilog to print the state of the chip as a callable Verilog task
    {final StringBuilder s = new StringBuilder();
         s.append(" task chipPrint;\n");
         s.append("   begin\n");
@@ -653,31 +654,31 @@ class Chip extends Test                                                         
         s.append("   if (!o) $display(\"Cannot create trace folder: "+verilogTraceFile+"\");");
 
         s.append(
-         "$fwrite(o, \"Chip: %-16s step: %4d, maxSteps: %4d, running: %1d, returnCode: %0d\\n\", "+
+         "$fwrite(o, \"Chip: %-16s step: %1d, maxSteps: %1d, running: %1d, returnCode: %1d\\n\", "+
          "\""+chipName+"\", step, maxSteps, !stop, returnCode);\n");
 
         s.append("$fwrite(o, \"  Processes:\\n\");\n");
 
       for (Process p: processes)                                                // Each process
        {s.append(
-         "$fwrite(o, \"    Process: %4d - %-16s instructions: %4d, pc: %4d, nextPc: %4d, memory: %4d * %4d\", "+
-         " "+p.processNumber+", \""+p.processName+"\", "+p.code.size()+", "+p.processPcName()+", "+p.processNextPcName()+", "+
-         " "+p.memorySize+", "+p.memoryWidth+");\n");
+         "$fwrite(o, \"    Process: %1d - %-21s instructions: %1d, pc: %1d, nextPc: %1d\", "+
+         " "+p.processNumber+", \""+p.processName+"\", "+p.code.size()+", "+p.processPcName()+", "+p.processNextPcName()+");\n");
 
         if (p.memory.length > 0)                                                // Print memory
          {final StringBuilder m = new StringBuilder();
-          m.append("$fwrite(o, \" = %0d\", "+p.processMemoryName()+"[0]);\n");
+          s.append(
+         "$fwrite(o, \", memory: %1d * %1d\", "+p.memorySize+", "+p.memoryWidth+");\n");
+          m.append("$fwrite(o, \" = %1d\", "+p.processMemoryName()+"[0]);\n");
           for (int i = 1; i < p.memory.length; i++)
-           {m.append("$fwrite(o, \", %0d\", "+p.processMemoryName()+"["+i+"]);\n");
+           {m.append("$fwrite(o, \", %1d\", "+p.processMemoryName()+"["+i+"]);\n");
            }
-          m.append("$fwrite(o, \"\\n\");\n");
           s.append(m);
          }
 
-        s.append("$fwrite(o, \"      Registers :\\n\");\n");
+        s.append("$fwrite(o, \"\\n      Registers :\\n\");\n");
       for (Process.Register r: p.registers)                                     // Registers
        {s.append(
-         "$fwrite(o, \"        Register: %-32s = %4d\\n\", "+
+         "$fwrite(o, \"        Register: %-32s = %1d\\n\", "+
          " \""+r.registerName()+"\", "+r.registerName()+");\n");
        }
       if (p.transactions.size() > 0)                                            // Transactions
@@ -685,7 +686,7 @@ class Chip extends Test                                                         
         for (Process.Transaction t: p.transactions)
          {final String ra = t.transactionRequestedAt();
           final String fa = t.transactionFinishedAt();
-          s.append("$fwrite(o, \"        Transaction   : %-8s - %-16s  requested at: %4d, finished at: %4d, returnCode: %2d, executable: %1d, finished: %1d\\n\""+
+          s.append("$fwrite(o, \"        Transaction   : %-8s - %-16s  requested at: %1d, finished at: %1d, returnCode: %1d, executable: %1d, finished: %1d\\n\""+
             ", \""+t.transactionOpCode+"\", \""+t.transactionName+"\""+
             ", "+ra+", "+fa+", "+t.transactionRcName()+
             ", "+t.transactionExecutableV()+", "+t.transactionFinishedV()+");\n");
@@ -694,7 +695,7 @@ class Chip extends Test                                                         
            {s.append("$fwrite(o, \"          Inputs      :\\n\");\n");
             for (Process.Register r : t.transactionInputRegisters)
              {s.append(
-               "$fwrite(o, \"            %-22s = %4d\\n\", \""+
+               "$fwrite(o, \"            %-38s = %1d\\n\", \""+
                r.registerName()+"\", "+r.registerName()+");\n");
              }
            }
@@ -703,7 +704,7 @@ class Chip extends Test                                                         
            {s.append("$fwrite(o, \"          Outputs     :\\n\");\n");
             for (Process.Register r : t.transactionOutputRegisters)
              {s.append(
-               "$fwrite(o, \"            %-22s = %4d\\n\", \""+
+               "$fwrite(o, \"            %-38s = %1d\\n\", \""+
                r.registerName()+"\", "+r.registerName()+");\n");
              }
            }
@@ -758,7 +759,7 @@ module $chip_name;                                                              
 
     for(Process p: processes) v.append(p.generateProcessVerilog());             // Generate
 
-    v.append(generateChipPrintV());
+    v.append(chipPrintV());
 
     v.append("""
 endmodule
@@ -878,20 +879,21 @@ endmodule
     c.chipRunJava();
     //stop(c);
     ok(c, """
-Chip: Test             step:    4, maxSteps:   10, running: 0, returnCode: 1
+Chip: Test             step: 4, maxSteps: 10, running: 0, returnCode: 1
   Processes:
-    Process:    0 - Memory           instructions:    2, pc:    1, nextPc:    1, memory:   16 *    8 = 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16
+    Process: 0 - Memory                instructions: 2, pc: 1, nextPc: 1, memory: 16 * 8 = 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16
       Registers :
-        Register: Memory_Memory_Value              =    2
-        Register: Memory_value                     =    2
+        Register: Memory_Memory_Value              = 2
+        Register: Memory_value                     = 2
       Transactions:
-        Transaction   : get      - GetValueFromMemory  requested at:    2, finished at:    3, returnCode:  0, executable: 0, finished: 1
+        Transaction   : get      - GetValueFromMemory  requested at: 2, finished at: 3, returnCode: 0, executable: 0, finished: 1
           Inputs      :
-            Request_index          =    1
+            Request_index                          = 1
           Outputs     :
-            Memory_value           =    2
-    Process:    1 - Request          instructions:    1, pc:    0, nextPc:    0, memory:    0 *    0      Registers :
-        Register: Request_index                    =    1
+            Memory_value                           = 2
+    Process: 1 - Request               instructions: 1, pc: 0, nextPc: 0
+      Registers :
+        Register: Request_index                    = 1
 """);
     ok(c.returnCode, 1);
     c.chipRunVerilog();
@@ -981,36 +983,37 @@ Chip: Test             step:    4, maxSteps:   10, running: 0, returnCode: 1
     ok(st.transactionOutputRegisters.firstElement().registerGet(), 3);
     //stop(c);
     ok(""+c, """
-Chip: Test             step:    8, maxSteps:   10, running: 0, returnCode: 1
+Chip: Test             step: 8, maxSteps: 10, running: 0, returnCode: 1
   Processes:
-    Process:    0 - Memory           instructions:    2, pc:    0, nextPc:    0, memory:   16 *    8 = 1, 2, 33, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16
+    Process: 0 - Memory                instructions: 2, pc: 0, nextPc: 0, memory: 16 * 8 = 1, 2, 33, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16
       Registers :
-        Register: Memory_Memory_Value              =   33
-        Register: Memory_Memory_1_index            =    1
-        Register: Memory_Memory_1_result           =    2
-        Register: Memory_Memory_2_index            =    2
-        Register: Memory_Memory_2_result           =    3
-        Register: Memory_Memory_3_index            =    2
-        Register: Memory_Memory_3_value            =   33
+        Register: Memory_Memory_Value              = 33
+        Register: Memory_Memory_1_index            = 1
+        Register: Memory_Memory_1_result           = 2
+        Register: Memory_Memory_2_index            = 2
+        Register: Memory_Memory_2_result           = 3
+        Register: Memory_Memory_3_index            = 2
+        Register: Memory_Memory_3_value            = 33
       Transactions:
-        Transaction   : get      - Memory_1          requested at:    1, finished at:    2, returnCode:  0, executable: 0, finished: 1
+        Transaction   : get      - Memory_1          requested at: 1, finished at: 2, returnCode: 0, executable: 0, finished: 1
           Inputs      :
-            Memory_Memory_1_index  =    1
+            Memory_Memory_1_index                  = 1
           Outputs     :
-            Memory_Memory_1_result =    2
-        Transaction   : get      - Memory_2          requested at:    2, finished at:    3, returnCode:  0, executable: 0, finished: 1
+            Memory_Memory_1_result                 = 2
+        Transaction   : get      - Memory_2          requested at: 2, finished at: 3, returnCode: 0, executable: 0, finished: 1
           Inputs      :
-            Memory_Memory_2_index  =    2
+            Memory_Memory_2_index                  = 2
           Outputs     :
-            Memory_Memory_2_result =    3
-        Transaction   : set      - Memory_3          requested at:    5, finished at:    6, returnCode:  0, executable: 0, finished: 1
+            Memory_Memory_2_result                 = 3
+        Transaction   : set      - Memory_3          requested at: 5, finished at: 6, returnCode: 0, executable: 0, finished: 1
           Inputs      :
-            Memory_Memory_3_index  =    2
-            Memory_Memory_3_value  =   33
-    Process:    1 - Requests         instructions:    8, pc:    8, nextPc:   -1, memory:    0 *    0      Registers :
-        Register: Requests_index1                  =    1
-        Register: Requests_index2                  =    2
-        Register: Requests_value                   =   33
+            Memory_Memory_3_index                  = 2
+            Memory_Memory_3_value                  = 33
+    Process: 1 - Requests              instructions: 8, pc: 8, nextPc: -1
+      Registers :
+        Register: Requests_index1                  = 1
+        Register: Requests_index2                  = 2
+        Register: Requests_value                   = 33
 """);
     c.chipRunVerilog();
    }
@@ -1076,23 +1079,24 @@ Chip: Test             step:    8, maxSteps:   10, running: 0, returnCode: 1
     C.chipRunJava();
     //stop(C);
     ok(""+C, """
-Chip: Test             step:   50, maxSteps:  100, running: 0, returnCode: 1
+Chip: Test             step: 50, maxSteps: 100, running: 0, returnCode: 1
   Processes:
-    Process:    0 - Main             instructions:   50, pc:   50, nextPc:   -1, memory:    0 *    0      Registers :
-        Register: Main_a                           =  987
+    Process: 0 - Main                  instructions: 50, pc: 50, nextPc: -1
+      Registers :
+        Register: Main_a                           = 987
         Register: Main_b                           = 1597
         Register: Main_c                           = 1597
-        Register: Main_i                           =   16
-    Process:    1 - Memory           instructions:    2, pc:    0, nextPc:    0, memory:   16 *   16 = 1, 2, 3, 5, 8, 13, 21, 34, 55, 89, 144, 233, 377, 610, 987, 1597
+        Register: Main_i                           = 16
+    Process: 1 - Memory                instructions: 2, pc: 0, nextPc: 0, memory: 16 * 16 = 1, 2, 3, 5, 8, 13, 21, 34, 55, 89, 144, 233, 377, 610, 987, 1597
       Registers :
         Register: Memory_Memory_Value              = 1597
-        Register: Memory_Memory_1_index            =   15
+        Register: Memory_Memory_1_index            = 15
         Register: Memory_Memory_1_value            = 1597
       Transactions:
-        Transaction   : set      - Memory_1          requested at:   46, finished at:   47, returnCode:  0, executable: 0, finished: 1
+        Transaction   : set      - Memory_1          requested at: 46, finished at: 47, returnCode: 0, executable: 0, finished: 1
           Inputs      :
-            Memory_Memory_1_index  =   15
-            Memory_Memory_1_value  = 1597
+            Memory_Memory_1_index                  = 15
+            Memory_Memory_1_value                  = 1597
 """);
     C.chipRunVerilog();
    }
