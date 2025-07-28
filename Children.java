@@ -1,5 +1,5 @@
 //------------------------------------------------------------------------------
-// An ordered map that prevents duplicates while preserving insertion order
+// An ordered map that prevents duplicates while preserving insertion order.
 // Philip R Brenan at appaapps dot com, Appa Apps Ltd Inc., 2025
 //------------------------------------------------------------------------------
 package com.AppaApps.Silicon;                                                   // Btree in a block on the surface of a silicon chip.
