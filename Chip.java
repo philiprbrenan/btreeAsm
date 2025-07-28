@@ -614,7 +614,10 @@ endmodule
        }
 
       void transactionSetExecutable()                                           // Mark a transaction as executable
-       {transactionRequestedAt = step;
+       {if (transactionRequestedAt > transactionFinishedAt)
+         {stop("Transaction already running");
+         }
+        transactionRequestedAt = step;
        }
       String transactionSetExecutableV()                                        // Mark a transaction as executable in verilog
        {return transactionRequestedAt()+" = step;";
@@ -675,13 +678,13 @@ endmodule
        {return index.copyV(Index) + "  " + transactionSetExecutableV();
        }
 
-      void waitResultOfTransaction(int indent)                                  // Wait for the request to finish
+      void waitResultOfTransaction()                                            // Wait for the request to finish
        {process.new Instruction()
          {void action()
            {if (!transactionFinished()) instructionIterate();
            }
           String verilog()
-           {return "  ".repeat(indent)+"if (!"+transactionFinishedV()+") "+instructionIterateV()+";";
+           {return "if (!"+transactionFinishedV()+") "+instructionIterateV()+";";
            }
          };
        }
@@ -711,13 +714,13 @@ endmodule
        {return index.copyV(Index) + "  " +value.copyV(Value) + "  " + transactionSetExecutableV();
        }
 
-      void waitResultOfTransaction(int indent)                                  // Wait for the update request to finish
+      void waitResultOfTransaction()                                            // Wait for the update request to finish
        {process.new Instruction()
          {void action()
            {if (!transactionFinished()) instructionIterate();
            }
           String verilog()
-           {return "  ".repeat(indent)+"if (!"+transactionFinishedV()+") "+instructionIterateV()+";";
+           {return "if (!"+transactionFinishedV()+") "+instructionIterateV()+";";
            }
          };
        }
@@ -952,8 +955,8 @@ Chip: Test             step: 4, maxSteps: 10, running: 0, returnCode: 1
        {return in+si.registerSetV(2) + "  " + st.executeTransactionV(si);
        }
      };
-    st.waitResultOfTransaction(5);                                              // Request value of memory at the index
-    rt.waitResultOfTransaction(5);                                              // Request value of memory at the index
+    st.waitResultOfTransaction();                                               // Request value of memory at the index
+    rt.waitResultOfTransaction();                                               // Request value of memory at the index
 
     r.new Instruction()                                                         // Request the value of an indexed element of memory
      {void action()
@@ -964,7 +967,7 @@ Chip: Test             step: 4, maxSteps: 10, running: 0, returnCode: 1
        {return in+"$display(\"AAA %d\", "+si.registerName()+");"+tv.registerSetV(33) + "  " + tt.executeTransactionV(si, tv);
        }
      };
-    tt.waitResultOfTransaction(5);                                              // Request value of memory at the index
+    tt.waitResultOfTransaction();                                               // Request value of memory at the index
 
     r.new Instruction()                                                         // Request the value of an indexed element of memory
      {void action()
@@ -1062,7 +1065,7 @@ Chip: Test             step: 8, maxSteps: 10, running: 0, returnCode: 1
          }
        };
 
-      t.waitResultOfTransaction(5);                                             // Request value of memory at the index
+      t.waitResultOfTransaction();                                              // Request value of memory at the index
      }
 
     p.new Instruction()                                                         // Request the value of an indexed element of memory
