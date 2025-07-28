@@ -520,6 +520,7 @@ class Chip extends Test                                                         
            }
           instructionIterate();                                                 // Keep looping on this instruction
          }
+
         String verilog()                                                        // Process memory requests in verilog
          {final StringBuilder s = new StringBuilder();
           final String m = memoryRegister.registerName();
@@ -528,20 +529,16 @@ class Chip extends Test                                                         
            {s.append("if ("+t.transactionExecutableV()+") begin\n");
             if (t.transactionOpCode.equals("get"))                              // Memory get requests
              {final Register I = t.transactionInputRegisters.elementAt(0);      // Address index register
-              final String   i = I.registerName();                              // Value of index register
               final Register O = t.transactionOutputRegisters.elementAt(0);     // Register to hold value of memory at index
-              final String   o = O.registerName();                              // Value of index register
-              s.append(" "+o+" = "+M+"["+i+"];");                               // Set output register with value of memory at index
-              s.append(" "+m+" = "+o+";");                                      // Set output register with value of memory at index
+              s.append(" "+memoryGetV(I)+";");                                  // Set output register with value of memory at index
+              s.append(" "+O.copyV(memoryRegister)+";");                        // Set output register with value of memory at index
               s.append(" "+t.transactionSetFinishedV());                        // Mark the transaction as complete
              }
             else if (t.transactionOpCode.equals("set"))                         // Set an indexed memory element to a specified value
              {final var I = t.transactionInputRegisters.elementAt(0);           // Address index register
               final var V = t.transactionInputRegisters.elementAt(1);           // Address value register
-              final String i = I.registerName();                                // Value of index register
-              final String v = V.registerName();                                // Value of memory at index
-              s.append(" "+M+"["+i+"] = "+v+";");                               // Set output register with value of memory at index
-              s.append(" "+m+" = "+v+";");                                      // Set output register with value of memory at index
+              s.append(" "+memoryRegister.copyV(V)+";");                        // Set output register with value of memory at index
+              s.append(" "+memorySetV(I)+";");                                  // Set output register with value of memory at index
               s.append(" "+t.transactionSetFinishedV());                        // Mark the transaction as complete
              }
             s.append("\nend\n");
