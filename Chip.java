@@ -537,8 +537,8 @@ class Chip extends Test                                                         
             else if (t.transactionOpCode.equals("set"))                         // Set an indexed memory element to a specified value
              {final var I = t.transactionInputRegisters.elementAt(0);           // Address index register
               final var V = t.transactionInputRegisters.elementAt(1);           // Address value register
-              s.append(" "+memoryRegister.copyV(V)+";");                        // Set output register with value of memory at index
-              s.append(" "+memorySetV(I)+";");                                  // Set output register with value of memory at index
+              s.append(" "+memoryRegister.copyV(V)+";");                        // Set memory cache register
+              s.append(" "+memorySetV(I)+";");                                  // Update memory at indexed location
               s.append(" "+t.transactionSetFinishedV());                        // Mark the transaction as complete
              }
             s.append("\nend\n");
@@ -552,13 +552,13 @@ class Chip extends Test                                                         
 
 //D2 Chip                                                                       // Actions that affect the whole chip
 
-  void chipRunJava()                                                        // Run the processes == programs defined on this chip using thekr Java implementation
+  void chipRunJava()                                                            // Run the processes == programs defined on this chip using the Java implementation
    {for(Process p : processes) p.initProgram();                                 // Initialize each program
     running = true;                                                             // Show the program as running
     deleteFile(javaTraceFile);                                                  // Remove java trace file
     for(step = 0; running && step < maxSteps; ++step)                           // Run each program
      {for(Process p : processes) p.stepProgram();                               // Step each program
-      chipPrint();
+      chipPrint();                                                              // Print chip state after each step
      }
     if (running)                                                                // Still running after too many steps
      {say(this);
@@ -600,14 +600,14 @@ class Chip extends Test                                                         
          }
 
         s.append("      Registers :\n");
-      for (Process.Register r: p.registers)
+      for (Process.Register r: p.registers)                                     // Print registers associated with this process
        {s.append(String.format(
          "        Register: %-32s = %4d\n",
           r.registerName(), r.registerGet()));
        }
-      if (p.transactions.size() > 0)
+      if (p.transactions.size() > 0)                                            // There are transactions associated with this process
        {s.append("      Transactions:\n");
-        for (Process.Transaction t: p.transactions)
+        for (Process.Transaction t: p.transactions)                             // Transactions associated with this process
          {final int ra = t.transactionRequestedAt;
           final int fa = t.transactionFinishedAt;
           final String in = "        ";
@@ -720,7 +720,7 @@ class Chip extends Test                                                         
 
 //D2 Verilog                                                                    // Verilog describing the chip
 
-  String chipRunVerilog()                                                  // Generate verilog describing the chip
+  String chipRunVerilog()                                                       // Generate verilog describing the chip
    {final StringBuilder v = new StringBuilder();
     v.append("""
 //-----------------------------------------------------------------------------
@@ -778,6 +778,8 @@ endmodule
     return ""+v;
    }
 
+//D2 Tests                                                                      // Run tests
+
   static void test_memory()
    {final int B = 8, N = 16;
     var c  = chip("Test");
@@ -814,7 +816,7 @@ endmodule
              {final var I = t.transactionInputRegisters.elementAt(0);           // Address index register
               final var O = t.transactionOutputRegisters.elementAt(0);          // Register to hold value of memory at index
               m.memoryGet(I);                                                   // Set output register with value of memory at index
-              O.copy(m.memoryRegister);                                           // Copy memory cache tregister into target register
+              O.copy(m.memoryRegister);                                         // Copy memory cache tregister into target register
               t.transactionSetFinished();                                       // Mark the transaction as complete
              }
            }
@@ -949,8 +951,8 @@ Chip: Test             step:    4, maxSteps:   10, running: 0, returnCode: 1
        {return "          "+si.registerSetV(2) + "  " + st.executeTransactionV(si);
        }
      };
-    st.waitResultOfTransaction(5);                                               // Request value of memory at the index
-    rt.waitResultOfTransaction(5);                                               // Request value of memory at the index
+    st.waitResultOfTransaction(5);                                              // Request value of memory at the index
+    rt.waitResultOfTransaction(5);                                              // Request value of memory at the index
 
     r.new Instruction()                                                         // Request the value of an indexed element of memory
      {void action()
