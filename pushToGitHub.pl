@@ -53,6 +53,7 @@ if (my @java = grep {m/\.java\Z/} @files)                                       
   my $d = dateTimeStamp;
   my $c = q(com/AppaApps/Silicon);                                              # Package to classes folder
   my $j = join ', ', @j;                                                        # Java files
+say STDERR "AAAA $j";
   my $y = <<"END";
 # Test $d
 
