@@ -913,6 +913,7 @@ Chip: Test             step: 4, maxSteps: 10, running: 0, returnCode: 1
 
     var tv = r.register("value",   B);
     var tt = m.new Set(r);
+    var in = "          ";
 
     r.new Instruction()                                                         // Preload memory
      {void action()
@@ -940,7 +941,7 @@ Chip: Test             step: 4, maxSteps: 10, running: 0, returnCode: 1
         rt.executeTransaction(ri);                                              // Request value of memory at the index
        }
       String verilog()
-       {return "          "+ri.registerSetV(1) + "  " + rt.executeTransactionV(ri);
+       {return in+ri.registerSetV(1) + "  " + rt.executeTransactionV(ri);
        }
      };
 
@@ -950,7 +951,7 @@ Chip: Test             step: 4, maxSteps: 10, running: 0, returnCode: 1
         st.executeTransaction(si);                                              // Request value of memory at the index
        }
       String verilog()
-       {return "          "+si.registerSetV(2) + "  " + st.executeTransactionV(si);
+       {return in+si.registerSetV(2) + "  " + st.executeTransactionV(si);
        }
      };
     st.waitResultOfTransaction(5);                                              // Request value of memory at the index
@@ -962,7 +963,7 @@ Chip: Test             step: 4, maxSteps: 10, running: 0, returnCode: 1
         tt.executeTransaction(si, tv);                                          // Request value of memory at the index
        }
       String verilog()
-       {return "          $display(\"AAA %d\", "+si.registerName()+");"+tv.registerSetV(33) + "  " + tt.executeTransactionV(si, tv);
+       {return in+"$display(\"AAA %d\", "+si.registerName()+");"+tv.registerSetV(33) + "  " + tt.executeTransactionV(si, tv);
        }
      };
     tt.waitResultOfTransaction(5);                                              // Request value of memory at the index
@@ -1030,13 +1031,15 @@ Chip: Test             step: 8, maxSteps: 10, running: 0, returnCode: 1
 
     var m  = C.new MemoryProcess("Memory", B, N);                               // Mmeory controller
     var t  = m.new Set(p);                                                      // Create a transaction to update memory
+    var i1 = "             ";
+    var i2 = "          ";
 
     p.new Instruction()                                                         // Initialize
      {void action()
        {a.zero(); b.one(); i.zero();
        }
       String verilog()
-       {return "             "+a.zeroV()+" "+b.oneV()+" "+i.zeroV()+"\n";
+       {return i1+a.zeroV()+" "+b.oneV()+" "+i.zeroV()+"\n";
        }
      };
 
@@ -1047,7 +1050,7 @@ Chip: Test             step: 8, maxSteps: 10, running: 0, returnCode: 1
           t.executeTransaction(i, c);
          }
         String verilog()
-         {return "             "+c.copyV(a)+" "+c.addV(b)+" "+a.copyV(b)+" "+b.copyV(c)+"\n"+
+         {return i1+c.copyV(a)+" "+c.addV(b)+" "+a.copyV(b)+" "+b.copyV(c)+"\n"+
           t.executeTransactionV(i, c);
          }
        };
@@ -1069,7 +1072,7 @@ Chip: Test             step: 8, maxSteps: 10, running: 0, returnCode: 1
        {C.chipStop(1);                                                          // Halt the run
        }
       String verilog()
-       {return "          "+C.chipStopV(1);
+       {return i2+C.chipStopV(1);
        }
      };
 
