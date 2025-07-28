@@ -1,4 +1,4 @@
-# Test 2025-07-28 at 03:11:42
+# Test 2025-07-28 at 03:19:03
 
 name: Test
 run-name: btreeAsm
@@ -20,7 +20,7 @@ jobs:
 
     strategy:
       matrix:
-        task: [Children]
+        task: [Btree, Children, Chip, Layout, Stuck, Test, Verilog]
 
     steps:
     - uses: actions/checkout@v4
@@ -45,8 +45,44 @@ jobs:
       run: |
         javac -g -d Classes -cp Classes com/AppaApps/Silicon/*.java
 
+    - name: Test Btree
+      if: matrix.task == 'Btree'
+      run: |
+        java -cp Classes com/AppaApps/Silicon/Btree
+
+
     - name: Test Children
       if: matrix.task == 'Children'
       run: |
         java -cp Classes com/AppaApps/Silicon/Children
+
+
+    - name: Test Chip
+      if: matrix.task == 'Chip'
+      run: |
+        java -cp Classes com/AppaApps/Silicon/Chip
+
+
+    - name: Test Layout
+      if: matrix.task == 'Layout'
+      run: |
+        java -cp Classes com/AppaApps/Silicon/Layout
+
+
+    - name: Test Stuck
+      if: matrix.task == 'Stuck'
+      run: |
+        java -cp Classes com/AppaApps/Silicon/Stuck
+
+
+    - name: Test Test
+      if: matrix.task == 'Test'
+      run: |
+        java -cp Classes com/AppaApps/Silicon/Test
+
+
+    - name: Test Verilog
+      if: matrix.task == 'Verilog'
+      run: |
+        java -cp Classes com/AppaApps/Silicon/Verilog
 
