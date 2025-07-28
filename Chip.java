@@ -973,7 +973,7 @@ Chip: Test             step: 4, maxSteps: 10, running: 0, returnCode: 1
        {c.chipStop(1);                                                          // Halt the run
        }
       String verilog()
-       {return "          "+c.chipStopV(1);
+       {return in+c.chipStopV(1);
        }
      };
 
