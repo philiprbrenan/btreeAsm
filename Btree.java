@@ -13,12 +13,12 @@ class Btree extends Chip                                                        
   final int bitsPerData;                                                        // The number of bits needed to define a data field
   final int btreeAddressSize;                                                   // The number of bits needed to address a field in memory holding btree
   final int stuckAddressSize;                                                   // The number of bits needed to address a field in a stuck
-  final Memory stuckIsLeaf;                                                     // Whether the current stuck is acting as a leaf or a branch in the btree.
-  final Memory stuckIsFree;                                                     // Whether the stuck is on the free chain
-  final Memory freeNext;                                                        // Next stuck on the free chain. If this stuck is not on the free chain then this field is zero to show that this stuck in use. If the stuck is the root stuck which is never freed, then its next pointer points to the first free stuck on the free chain.
-  final Memory stuckSize;                                                       // Current size of stuck up to the maximum size
-  final Memory stuckKeys;                                                       // Keys field
-  final Memory stuckData;                                                       // Data field
+  final Memory  stuckIsLeaf;                                                    // Whether the current stuck is acting as a leaf or a branch in the btree.
+  final Memory  stuckIsFree;                                                    // Whether the stuck is on the free chain
+  final Memory  freeNext;                                                       // Next stuck on the free chain. If this stuck is not on the free chain then this field is zero to show that this stuck in use. If the stuck is the root stuck which is never freed, then its next pointer points to the first free stuck on the free chain.
+  final Memory  stuckSize;                                                      // Current size of stuck up to the maximum size
+  final Memory[]stuckKeys;                                                      // Keys field
+  final Memory[]stuckData;                                                      // Data field
   boolean supressMerge = false;                                                 // Supress merges during put to allow merge steps to be tested individually.  If this is on the trees built for testing are already merged so there is nothing to test.
   static boolean debug = false;                                                 // Debug if enabled
 
@@ -36,12 +36,18 @@ class Btree extends Chip                                                        
     stuckAddressSize = logTwo(MaxStuckSize)+1;                                  // Bits needed to address a field in a stuck
     stuckIsLeaf  = new Memory("stuckIsLeaf", Size, 1);                          // Whether the stuck is a leaf
     stuckIsFree  = new Memory("stuckIsFree", Size, 1);                          // Whether the stuck is on the free chain
-    freeNext     = new Memory("freeNext"   , Size, btreeAddressSize);           // Next element referwnce on free chain
+    freeNext     = new Memory("freeNext"   , Size, btreeAddressSize);           // Next element reference on free chain
     stuckSize    = new Memory("stuckSize"  , Size, stuckAddressSize);           // Current size of stuck up to the maximum size
-    stuckKeys    = new Memory("stuckKeys"  , Size, bitsPerKey);                 // Keys field
-    stuckData    = new Memory("stuckData"  , Size, bitsPerData);                // Data field
+    stuckKeys    = new Memory[MaxStuckSize];                                    // Keys field
+    stuckData    = new Memory[MaxStuckSize];                                    // Data field
 
-    //iCreateFreeChain();                                                         // Create the free chain
+    for (int i = 0; i < MaxStuckSize; i++)
+     {stuckKeys[i] = new Memory("stuckKeys_"+i, Size, bitsPerKey);              // Keys field
+      stuckData[i] = new Memory("stuckData_"+i, Size, bitsPerData);             // Data field
+     }
+
+
+    //iCreateFreeChain();                                                       // Create the free chain
    }
 
   Process.Register index       (Process P) {return P.register("index", logTwo(size)+1);} // Create an index for a stuck in a btree
@@ -129,8 +135,59 @@ class Btree extends Chip                                                        
 */
 //D2 Stuck                                                                      // Get and set stucks within btree
 
-  class Stuck extends Process                                                   // A stuck is comprised of refernces to fields in the btree memory
-   {Stuck() {super("Stuck");}                                                                                //
+  class Stuck extends Process                                                   // A reference to a stuck in the memory of the btree plus a copy of its size, keys and data
+   {final Register index     = register("index",    btreeAddressSize);          // The address of the stuck in main memory
+    final Register size      = register("size",     stuckAddressSize);          // Size of the stuck locally
+    final Register isLeaf    = register("isLeaf",   1);                         // Whether the stuck is a leaf
+    final Register nextFree  = register("nextFree", btreeAddressSize);          // Free chain from root
+    final Register[]keys     = new Register[maxStuckSize];                      // Keys in the stuck copied out of memory
+    final Register[]data     = new Register[maxStuckSize];                      // Data in the stuck copied out of memory
+    final Memory.Get gSize   = stuckSize.new Get(this);                         // Transaction to get the current size of the stuck
+    final Memory.Get gLeaf   = stuckIsLeaf.new Get(this);                       // Transaction to find out whether this stuck is acting as a leaf
+    final Memory.Get[]gKeys  = new Memory.Get[maxStuckSize];                    // Transactions to get each ley in the stuck
+    final Memory.Get[]gData  = new Memory.Get[maxStuckSize];                    // Transactions to get each ley in the stuck
+
+    Stuck(String Name, Register Index)                                          // Copy a stuck out of memory into its local memeory
+     {super(Name);
+
+      for (int i = 0; i < maxStuckSize; i++)                                    // Create registers to hold stuck
+       {keys[i]  = new Register("Key_"+i, bitsPerKey);                          // Keys in the stuck copied out of the memory of the btree into local registers
+        data[i]  = new Register("Data_"+i, bitsPerData);                        // Data in the stuck copied out of the memory of the btree into local registers
+        gKeys[i] = stuckKeys[i].new Get(this);                                  // Transactions to get each key in the stuck
+        gData[i] = stuckData[i].new Get(this);                                   // Transactions to get each data element in the stuck
+      }
+
+      new Instruction()                                                         // Request the details of the stuck from memory
+       {void action()
+         {index.copy(Index);
+          gSize.executeTransaction(index);
+          gLeaf.executeTransaction(index);
+          for (int i = 0; i < maxStuckSize; i++)
+           {gKeys[i].executeTransaction(index);
+            gData[i].executeTransaction(index);
+           }
+         }
+       };
+
+      gSize.waitResultOfTransaction();                                          // Wait for size from memory
+      gLeaf.waitResultOfTransaction();                                          // Wait for leaf status from memeory
+
+      for (int i = 0; i < maxStuckSize; i++)                                    // Wait for registers to load
+       {gKeys[i].waitResultOfTransaction();
+        gData[i].waitResultOfTransaction();
+       }
+
+      new Instruction()                                                         // Load results from transactions
+       {void action()
+         {size.copy(gSize.transactionOutputRegisters.firstElement());
+          isLeaf.copy(gSize.transactionOutputRegisters.firstElement());
+          for (int i = 0; i < maxStuckSize; i++)
+           {keys[i].copy(gKeys[i].transactionOutputRegisters.firstElement());
+            data[i].copy(gData[i].transactionOutputRegisters.firstElement());
+           }
+         }
+       };
+     }
    }
 /*
   Stuck stuck()                                                                 // Make a temporary stuck we can copy into or out of as needed
