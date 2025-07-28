@@ -11,14 +11,12 @@ class Btree extends Chip                                                        
   final int maxStuckSize;                                                       // The maximum number of entries in the stuck.
   final int bitsPerKey;                                                         // The number of bits needed to define a key
   final int bitsPerData;                                                        // The number of bits needed to define a data field
-  final Layout L;                                                               // Layout of the stuck
-  final Layout.Field freeStart;                                                 // Start of free chain. Initially all stucks are on the free chain except the root stuck
-  final Layout.Field stuckIsLeaf;                                               // Whether the current stuck is acting as a leaf or a branch in the btree.
-  final Layout.Field stuckIsFree;                                               // Whether the stuck is on the free chain
-  final Layout.Field freeNext;                                                  // Next stuck on the free chain. If this stuck is not on the free chain then this field is zero to show that this stuck in use
-  final Layout.Field stuckSize;                                                 // Current size of stuck up to the maximum size
-  final Layout.Field stuckKeys;                                                 // Keys field
-  final Layout.Field stuckData;                                                 // Data field
+  final Memory stuckIsLeaf;                                                     // Whether the current stuck is acting as a leaf or a branch in the btree.
+  final Memory stuckIsFree;                                                     // Whether the stuck is on the free chain
+  final Memory freeNext;                                                        // Next stuck on the free chain. If this stuck is not on the free chain then this field is zero to show that this stuck in use. If the stuck is the root stuck which is never freed, then its next pointer points to the first free stuck on the free chain.
+  final Memory stuckSize;                                                       // Current size of stuck up to the maximum size
+  final Memory stuckKeys;                                                       // Keys field
+  final Memory stuckData;                                                       // Data field
   boolean supressMerge = false;                                                 // Supress merges during put to allow merge steps to be tested individually.  If this is on the trees built for testing are already merged so there is nothing to test.
   static boolean debug = false;                                                 // Debug if enabled
 
@@ -31,14 +29,12 @@ class Btree extends Chip                                                        
     maxStuckSize = MaxStuckSize;                                                // The maximum number of entries in the stuck.
     bitsPerKey   = BitsPerKey;                                                  // The number of bits needed to define a key
     bitsPerData  = BitsPerData;                                                 // The number of bits needed to define a data field
-    L            = layout();                                                    // Layout of the btree
-    freeStart    = L.locateFieldByName("freeStart");                            // Start of free chain. Initially all sticks are on the free chain except the root stuck
-    stuckIsLeaf  = L.locateFieldByName("stuckIsLeaf");                          // Whether the stuck is a leaf
-    stuckIsFree  = L.locateFieldByName("stuckIsFree");                          // Whether the stuck is on the free chain
-    freeNext     = L.locateFieldByName("freeNext");                             // Next element refernce on free chain
-    stuckSize    = L.locateFieldByName("stuckSize");                            // Current size of stuck up to the maximum size
-    stuckKeys    = L.locateFieldByName("stuckKeys");                            // Keys field
-    stuckData    = L.locateFieldByName("stuckData");                            // Data field
+    stuckIsLeaf  = new Memory("stuckIsLeaf", 1, Size);                          // Whether the stuck is a leaf
+    stuckIsFree  = new Memory("stuckIsFree", 1, Size);                          // Whether the stuck is on the free chain
+    freeNext     = new Memory("freeNext"   , logTwo(Size)+1, Size);                             // Next element refernce on free chain
+    stuckSize    = new Memory("stuckSize"  , logTwo(MaxStuckSize)+1);                            // Current size of stuck up to the maximum size
+    stuckKeys    = new Memory("stuckKeys"  , bitsPerKey);                            // Keys field
+    stuckData    = new Memory("stuckData"  , bitsPerKey);                            // Data field
 
     iCreateFreeChain();                                                         // Create the free chain
    }
