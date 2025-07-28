@@ -6,7 +6,7 @@ package com.AppaApps.Silicon;                                                   
 
 import java.util.*;
 
-class Btree extends Test                                                        // Manipulate a btree in a block of memory
+class Btree extends Chip                                                        // Manipulate a btree in a block of memory
  {final int size;                                                               // The maximum number of nodes == branches or leaves in the btree
   final int maxStuckSize;                                                       // The maximum number of entries in the stuck.
   final int bitsPerKey;                                                         // The number of bits needed to define a key
