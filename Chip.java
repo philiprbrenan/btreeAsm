@@ -149,11 +149,12 @@ class Chip extends Test                                                         
        {registerSet(registerGet()+source.registerGet());
        }
 
-      String zeroV() {return registerName() + " = 0;";}                         // Zero a register in Verilog
-      String oneV () {return registerName() + " = 1;";}                         // One a register in Verilog
-      String incV () {return registerName() + " = " + registerName()+"+1;";}    // Increment a register in Verilog
-      String decV () {return registerName() + " = " + registerName()+"-1;";}    // Decrement a register in Verilog
-      String notV () {return registerName() + " = " + registerName()+" != 0 ? 0 : 1;";} // Not a register in Verilog
+      private String rn() {return registerName();}                              // The shorter is his daughter
+      String zeroV() {return rn() + " = 0;";}                                   // Zero a register in Verilog
+      String oneV () {return rn() + " = 1;";}                                   // One a register in Verilog
+      String incV () {return rn() + " = " + rn()+"+1;";}                        // Increment a register in Verilog
+      String decV () {return rn() + " = " + rn()+"-1;";}                        // Decrement a register in Verilog
+      String notV () {return rn() + " = " + rn()+" != 0 ? 0 : 1;";}             // Not a register in Verilog
       String addV (Register source)                                             // Add the source register to the current register in Verilog
        {return registerName() + " = " + registerName() + " + " +source.registerName() + ";";
        }
@@ -420,8 +421,8 @@ class Chip extends Test                                                         
 
 //D2 Memory Process                                                             // Processes that manage memory used by other processes
 
-  class MemoryProcess extends Process                                           // A process whose main purpose is to maintain memory
-   {MemoryProcess(String ProcessName, int MemoryWidth, int MemorySize)          // Create a memory process
+  class Memory extends Process                                           // A process whose main purpose is to maintain memory
+   {Memory(String ProcessName, int MemoryWidth, int MemorySize)          // Create a memory process
      {super(ProcessName, MemoryWidth, MemorySize);
       memoryProcessGenerate();                                                  // Generate the code to execute this process
      }
@@ -431,7 +432,7 @@ class Chip extends Test                                                         
       final Register result;                                                    // The value of the memory at the specified index
       Get(Process Process)                                                      // Get the value from memory at the indicated index
        {super(processName+"_"+(++memoryProcessTransactionNumber),
-          MemoryProcess.this, "get");
+          Memory.this, "get");
         process = Process;                                                      // The calling process requesting a value from the memory of this memory process
         index   = register(transactionName+"_index", logTwo(memorySize));       // A register that will index the memory managed by this process
         result  = register(transactionName+"_result", memoryWidth);             // The register that will contain the result
@@ -466,7 +467,7 @@ class Chip extends Test                                                         
       final Register value;                                                     // The value to be written into memory
       Set(Process Process)                                                      // Get the value from memory at the indicated index
        {super(processName+"_"+(++memoryProcessTransactionNumber),
-          MemoryProcess.this, "set");
+          Memory.this, "set");
         process = Process;                                                      // The calling process requesting that a value be written into the memory of this process
         index   = register(transactionName+"_index", logTwo(memorySize));       // A register that will index the memory managed by this process
         value   = register(transactionName+"_value", memoryWidth);              // The register that will contain the value to be written into memory
@@ -902,7 +903,7 @@ Chip: Test             step: 4, maxSteps: 10, running: 0, returnCode: 1
   static void test_memoryProcess()
    {final int B = 8, N = 16;
     var c  = chip("Test");
-    var m  = c.new MemoryProcess("Memory", B, N);
+    var m  = c.new Memory("Memory", B, N);
     var r  = c.process("Requests");
 
     var ri = r.register("index1",  B);
@@ -1029,7 +1030,7 @@ Chip: Test             step: 8, maxSteps: 10, running: 0, returnCode: 1
     var c  = p.register("c",  B);
     var i  = p.register("i",  B);
 
-    var m  = C.new MemoryProcess("Memory", B, N);                               // Mmeory controller
+    var m  = C.new Memory("Memory", B, N);                               // Mmeory controller
     var t  = m.new Set(p);                                                      // Create a transaction to update memory
     var i1 = "             ";
     var i2 = "          ";
