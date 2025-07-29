@@ -46,7 +46,7 @@ class Btree extends Chip                                                        
       stuckData[i] = new Memory("stuckData_"+i, Size, bitsPerData);             // Data field
      }
 
-
+chipStop = true;
     //iCreateFreeChain();                                                       // Create the free chain
    }
 //
@@ -544,7 +544,7 @@ class Btree extends Chip                                                        
        };
      }
 
-    void splitLow(Stuck Left)                                                   // Split a full stuck with an even number of elements so thatthe fors half is moved in the left stuck leaving the remainmder moved down in the current stuck
+    void splitLow(Stuck Left)                                                   // Split a full stuck with an even number of elements so that the first half is moved into the left stuck leaving the remainder moved down in the current stuck
      {new Instruction()
        {void action()
          {if (maxStuckSize % 2 == 1)
@@ -565,6 +565,35 @@ class Btree extends Chip                                                        
           for (int i = 0; i < N; ++i)
            {keys[i].copy(keys[N+i]);
             data[i].copy(data[N+i]);
+           }
+          size.registerSet(N);
+         }
+       };
+     }
+
+    void splitLowButOne(Stuck Left, Register Key)                               // Split an almost full stuck with an odd number of elements so that the first half is moved into the left stuck extended by the data of the central element, while the remainder beyond the central element are moved down.  The central key is returned as it would otherwiose be lost.
+     {new Instruction()
+       {void action()
+         {if (maxStuckSize % 2 == 1)
+           {chipStop(18);
+            return;
+           }
+          if (maxStuckSize-1 != size.registerGet())
+           {chipStop(19);
+            return;
+           }
+          final int N = (maxStuckSize-1) / 2;
+          for (int i = 0; i < N; ++i)
+           {Left.keys[i].copy(keys[i]);
+            Left.data[i].copy(data[i]);
+           }
+          Left.size.registerSet(N);
+          Left.data[N].copy(data[N]);
+          Key.copy(keys[N]);
+
+          for (int i = 0; i < N; ++i)
+           {keys[i].copy(keys[N+i+1]);
+            data[i].copy(data[N+i+1]);
            }
           size.registerSet(N);
          }
@@ -2354,51 +2383,54 @@ Stuck: Left size: 4, leaf: 0
    {final Btree b = test_push();
 
     Stuck s = (Stuck)b.processes.get("Stuck");
+    final Process.Register k = s.registers.get("k");
+    final Process.Register d = s.registers.get("d");
     Stuck l = b.new Stuck("Left");
     Stuck r = b.new Stuck("Right");
 
     s.processClear();
     s.new Instruction()
      {void action()
-       {s.size.dec();
+       {s.size.zero();
        }
      };
 
-    //s.splitLowButOne(l, r, 1);
+    for (int i = 0; i < b.maxStuckSize-1; i++)
+     {final int I = i;
+      s.new Instruction()
+       {void action()
+         {k.registerSet(I); d.registerSet(I+1);
+         }
+       };
+      s.push(k, d);
+     }
+
+    s.splitLowButOne(l, k);
 
     b.maxSteps = 100;
     b.chipRunJava();
     //stop(s);
     ok(s, """
 Stuck: Stuck size: 3, leaf: 0
+ 0     4 =>    5
+ 1     5 =>    6
+ 2     6 =>    7
+""");
+
+    //stop(l.dump());
+    ok(l.dump(), """
+Stuck: Left size: 3, leaf: 0
  0     0 =>    1
  1     1 =>    2
  2     2 =>    3
-""");
-    //stop(l.dump());
-    ok(l.dump(), """
-Stuck: Left size: 1, leaf: 0
- 0     0 =>    1
- 1     0 =>    2
- 2     0 =>    0
- 3     0 =>    0
+ 3     0 =>    4
  4     0 =>    0
  5     0 =>    0
  6     0 =>    0
  7     0 =>    0
 """);
-    //stop(r.dump());
-    ok(r.dump(), """
-Stuck: Right size: 2, leaf: 0
- 0     2 =>    3
- 1     0 =>    4
- 2     0 =>    0
- 3     0 =>    0
- 4     0 =>    0
- 5     0 =>    0
- 6     0 =>    0
- 7     0 =>    0
-""");
+
+    ok(k, "Stuck_k = 3");
    }
 
 /*
@@ -3876,8 +3908,8 @@ stuckData: value=2, 0=1, 1=2, 2=0, 3=0
 
   static void newTests()                                                        // Tests being worked on
    {//oldTests();
-    test_splitLow();
-    //test_splitLowButOne();
+    //test_splitLow();
+    test_splitLowButOne();
    }
 
   public static void main(String[] args)                                        // Test if called as a program
