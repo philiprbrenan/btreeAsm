@@ -261,7 +261,22 @@ class Btree extends Chip                                                        
           data[N].copy(Data);
           size.inc();
          }
-       };                                                                         //
+       };
+     }
+
+    void pop(Register Key, Register Data)                                       // Pop a key, data pair from the local copy of the stuck
+     {new Instruction()
+       {void action()
+         {final int N = size.registerGet();
+          if (N == 0)
+           {chipStop(2);
+            return;
+           }
+          Key.copy (keys[N-1]);
+          Data.copy(data[N-1]);
+          size.dec();
+         }
+       };
      }
    } // Stuck
 /*
@@ -1488,13 +1503,13 @@ Chip: Btree            step: 12, maxSteps: 20, running: 0, returnCode: 0
 """);
    }
 
-  static void test_push()
+  static Btree test_push()
    {final int B = 8, S = 4, K = 8, D = 8;
     final Btree b = new Btree(B, S+S, K, D);
 
     Stuck s = b.new Stuck("Stuck");
-    final Process.Register k = s.register("k", 8);
-    final Process.Register d = s.register("d", 8);
+    final Process.Register k = s.register("k", K);
+    final Process.Register d = s.register("d", D);
 
     s.getRoot();
     for (int i = 0; i < S; i++)
@@ -1517,6 +1532,30 @@ Stuck: Stuck size: 4, leaf: 0
  2     2 =>    3
  3     3 =>    4
 """);
+
+     return b;
+   }
+
+  static Btree test_pop()
+   {final Btree b = test_push();
+
+    Stuck s = (Stuck)b.processes.get("Stuck");
+    final Process.Register k = s.registers.get("k");
+    final Process.Register d = s.registers.get("d");
+
+    s.processClear();
+    s.pop(k, d);
+
+    b.maxSteps = 10;
+    b.chipRunJava();
+
+    ok(s, """
+Stuck: Stuck size: 3, leaf: 0
+ 0     0 =>    1
+ 1     1 =>    2
+ 2     2 =>    3
+""");
+     return b;
    }
 
 /*
@@ -2950,6 +2989,7 @@ stuckData: value=2, 0=1, 1=2, 2=0, 3=0
   static void oldTests()                                                        // Tests thought to be in good shape
    {test_create1();
     test_push();
+    test_pop();
     //test_create();
     //test_leaf();
     //test_allocFree();
@@ -2978,8 +3018,9 @@ stuckData: value=2, 0=1, 1=2, 2=0, 3=0
    }
 
   static void newTests()                                                        // Tests being worked on
-   {//oldTests();
-    test_push();
+   {oldTests();
+    //test_push();
+    //test_pop();
    }
 
   public static void main(String[] args)                                        // Test if called as a program
