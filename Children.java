@@ -10,6 +10,11 @@ public class Children<E> extends Test implements Iterable<E>                    
  {private final Stack<E>       stack = new Stack<>();                           // Order of entries
   private final Map<String, E> map   = new TreeMap<>();                         // Prebent duplication of entries
 
+  public E get(String key)                                                      // Get the data asscoiated with a key
+   {if (!map.containsKey(key)) stop("No such key: " + key);
+    return map.get(key);
+   }
+
   public void put(String key, E value)                                          // Add a key-value pair if key is not already present
    {if (map.containsKey(key))
      {stop(value.getClass().getName()+" with name '" + key + "' already exists.");
@@ -36,12 +41,20 @@ public class Children<E> extends Test implements Iterable<E>                    
 
 //D1 Tests                                                                      // Tests
 
-  protected static void test_put()
+  protected static Children<Integer> test_put()
    {final Children<Integer> m = new Children<>();
     m.put("c", 1);
     m.put("b", 2);
     m.put("a", 3);
     ok(m, "{1, 2, 3}");
+    return m;
+   }
+
+  protected static void test_get()
+   {final Children<Integer> m = test_put();
+    ok(m.get("c"), 1);
+    ok(m.get("b"), 2);
+    ok(m.get("a"), 3);
    }
 
   protected static void test_iter()
@@ -74,6 +87,7 @@ public class Children<E> extends Test implements Iterable<E>                    
 
   protected static void oldTests()                                              // Tests thought to be in good shape
    {test_put();
+    test_get();
     test_iter();
     test_at();
     //test_dup();
