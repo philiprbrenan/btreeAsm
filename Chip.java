@@ -378,6 +378,8 @@ endmodule
 
       String copyV(Register Source) {N(); return rn() + " = "+ Source.rn()+";";}// Copy a source register into this register which we can do because each and only each process can write to its own registers
 
+      public String toString() {return registerName()+" = "+registerGet();}     // Print the register
+
 //D3 Arithmetic                                                                 // Operations on registers
 
       void zero() {R(); registerSet(0);}                                        // Zero a register in Java
@@ -1147,6 +1149,8 @@ Chip: Test             step: 50, maxSteps: 100, running: 0, returnCode: 1
   Processes:
     Memory                , memory: 16 * 16 = 1, 2, 3, 5, 8, 13, 21, 34, 55, 89, 144, 233, 377, 610, 987, 1597
 """);
+
+    ok(a, "Main_a = 987");
    }
 
   static void oldTests()                                                        // Tests thought to be in good shape
