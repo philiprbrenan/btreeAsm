@@ -1032,7 +1032,7 @@ Chip: Test             step: 8, maxSteps: 10, running: 0, returnCode: 1
     var c  = p.register("c",  B);
     var i  = p.register("i",  B);
 
-    var m  = C.new Memory("Memory", B, N);                               // Mmeory controller
+    var m  = C.new Memory("Memory", B, N);                                      // Memory controller
     var t  = m.new Set(p);                                                      // Create a transaction to update memory
     var i1 = "             ";
     var i2 = "          ";
