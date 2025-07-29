@@ -143,21 +143,28 @@ class Btree extends Chip                                                        
     final Register[]keys     = new Register[maxStuckSize];                      // Keys in the stuck copied out of memory
     final Register[]data     = new Register[maxStuckSize];                      // Data in the stuck copied out of memory
     final Memory.Get gSize   = stuckSize.new Get(this);                         // Transaction to get the current size of the stuck
-    final Memory.Get gLeaf   = stuckIsLeaf.new Get(this);                       // Transaction to find out whether this stuck is acting as a leaf
-    final Memory.Get[]gKeys  = new Memory.Get[maxStuckSize];                    // Transactions to get each ley in the stuck
-    final Memory.Get[]gData  = new Memory.Get[maxStuckSize];                    // Transactions to get each ley in the stuck
+    final Memory.Set sSize   = stuckSize.new Set(this);                         // Transaction to set the current size of the stuck
+    final Memory.Get gLeaf   = stuckIsLeaf.new Get(this);                       // Transaction to discoeve whether this stuck is acting as a leaf or a branch
+    final Memory.Set sLeaf   = stuckIsLeaf.new Set(this);                       // Transaction to set the stuck in memory to  a leaf or a branch
+    final Memory.Get[]gKeys  = new Memory.Get[maxStuckSize];                    // Transactions to get each key in the stuck
+    final Memory.Set[]sKeys  = new Memory.Set[maxStuckSize];                    // Transactions to set each key in the stuck
+    final Memory.Get[]gData  = new Memory.Get[maxStuckSize];                    // Transactions to get each data element in the stuck
+    final Memory.Set[]sData  = new Memory.Set[maxStuckSize];                    // Transactions to set each data element in the stuck
 
-    Stuck(String Name, Register Index)                                          // Copy a stuck out of memory into its local memeory
-     {super(Name);
-
+    Stuck(String Name)                                                          // Mirror a stuck in memory with one in registers.
+     {super(Name); N();
       for (int i = 0; i < maxStuckSize; i++)                                    // Create registers to hold stuck
        {keys[i]  = new Register("Key_"+i, bitsPerKey);                          // Keys in the stuck copied out of the memory of the btree into local registers
         data[i]  = new Register("Data_"+i, bitsPerData);                        // Data in the stuck copied out of the memory of the btree into local registers
         gKeys[i] = stuckKeys[i].new Get(this);                                  // Transactions to get each key in the stuck
-        gData[i] = stuckData[i].new Get(this);                                   // Transactions to get each data element in the stuck
-      }
+        sKeys[i] = stuckKeys[i].new Set(this);                                  // Transactions to get each key in the stuck
+        gData[i] = stuckData[i].new Get(this);                                  // Transactions to get each data element in the stuck
+        sData[i] = stuckData[i].new Set(this);                                  // Transactions to get each data element in the stuck
+       }
+     }
 
-      new Instruction()                                                         // Request the details of the stuck from memory
+    void get(Register Index)                                                    // Copy a stuck out of memory into a set of registers. Currently this is done sequentially, but multiple stuck loads could be overlapped if this method was fragmented into smaller steps.  Most stuck methods do not actually require the retriveal of a full stuck from memory but doing so makes it easier to write an initial version of the btree algorithm at the cost of considerable inefficiency.
+     {new Instruction()                                                         // Request the details of the indexed stuck from memory
        {void action()
          {index.copy(Index);
           gSize.executeTransaction(index);
@@ -172,12 +179,12 @@ class Btree extends Chip                                                        
       gSize.waitResultOfTransaction();                                          // Wait for size from memory
       gLeaf.waitResultOfTransaction();                                          // Wait for leaf status from memeory
 
-      for (int i = 0; i < maxStuckSize; i++)                                    // Wait for registers to load
+      for (int i = 0; i < maxStuckSize; i++)                                    // Wait for transactions for keys and data from memmory to complete
        {gKeys[i].waitResultOfTransaction();
         gData[i].waitResultOfTransaction();
        }
 
-      new Instruction()                                                         // Load results from transactions
+      new Instruction()                                                         // Load results from transactions into local registers
        {void action()
          {size.copy(gSize.transactionOutputRegisters.firstElement());
           isLeaf.copy(gSize.transactionOutputRegisters.firstElement());
@@ -187,6 +194,27 @@ class Btree extends Chip                                                        
            }
          }
        };
+     }
+
+    void set()                                                                  // Update a stuck in memory fromthe registers describing his stuck
+     {new Instruction()                                                         // Save registers into memory
+       {void action()
+         {sSize.executeTransaction(index, size);
+          sLeaf.executeTransaction(index, isLeaf);
+          for (int i = 0; i < maxStuckSize; i++)
+           {sKeys[i].executeTransaction(index, keys[i]);
+            sData[i].executeTransaction(index, data[i]);
+           }
+         }
+       };
+
+      sSize.waitResultOfTransaction();                                          // Wait for size to complete
+      sLeaf.waitResultOfTransaction();                                          // Wait for leaf status to complete
+
+      for (int i = 0; i < maxStuckSize; i++)                                    // Wait for transactions for keys and data from memmory to complete
+       {sKeys[i].waitResultOfTransaction();
+        sData[i].waitResultOfTransaction();
+       }
      }
    }
 /*
