@@ -405,6 +405,32 @@ class Btree extends Chip                                                        
          }
        };
      }
+
+    void insertElementAt(Register Index, Register Key, Register Data)              // Set the indexed key, data pair
+     {new Instruction()
+       {void action()
+         {final int N = Index.registerGet();
+          final int M = size.registerGet();
+          if (N >= maxStuckSize-1)
+           {chipStop(11);
+            return;
+           }
+          if (N > M)
+           {chipStop(12);
+            return;
+           }
+          if (N != M)
+           {size.inc();
+           }
+          for (int i = M; i > N; i--)
+           {keys[i].copy(keys[i-1]);
+            data[i].copy(data[i-1]);
+           }
+          keys[N].copy(Key);
+          data[N].copy(Data);
+         }
+       };
+     }
    } // Stuck
 /*
 
@@ -1873,6 +1899,38 @@ Stuck: Stuck size: 4, leaf: 0
 """);
    }
 
+  static void test_insertElementAt()
+   {final Btree b = test_push();
+
+    Stuck s = (Stuck)b.processes.get("Stuck");
+    final Process.Register k = s.registers.get("k");
+    final Process.Register d = s.registers.get("d");
+    final Process.Register i = s.register("i", b.stuckAddressSize);
+
+    s.processClear();
+
+    s.new Instruction()
+     {void action()
+       {i.registerSet(1);
+        k.registerSet(5);
+        d.registerSet(55);
+       }
+     };
+    s.insertElementAt(i, k, d);
+
+    b.maxSteps = 100;
+    b.chipRunJava();
+    //stop(s);
+    ok(s, """
+Stuck: Stuck size: 5, leaf: 0
+ 0     0 =>    1
+ 1     5 =>   55
+ 2     1 =>    2
+ 3     2 =>    3
+ 4     3 =>    4
+""");
+   }
+
 /*
   static Btree test_create()
    {final Btree b = new Btree(32, 4, 8, 8);
@@ -3310,6 +3368,7 @@ stuckData: value=2, 0=1, 1=2, 2=0, 3=0
     test_setElementAt();
     test_setDataAt();
     test_setPastLastElement();
+    test_insertElementAt();
 
     //test_create();
     //test_leaf();
@@ -3340,7 +3399,7 @@ stuckData: value=2, 0=1, 1=2, 2=0, 3=0
 
   static void newTests()                                                        // Tests being worked on
    {//oldTests();
-    test_setPastLastElement();
+    test_insertElementAt();
    }
 
   public static void main(String[] args)                                        // Test if called as a program
