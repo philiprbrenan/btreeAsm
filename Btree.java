@@ -472,6 +472,27 @@ class Btree extends Chip                                                        
        };
      }
 
+
+    void search_le(Register Key, Register Found, Register Index,                // Find the first key in the stuck so that the search key is less than or equal to this key
+      Register FoundKey, Register FoundData)
+     {new Instruction()
+       {void action()
+         {final int N = size.registerGet();
+          Found.zero();
+          for (int i = 0; i < N; ++i)
+           {final int I = i;
+             if (Key.registerGet() <= keys[i].registerGet())
+             {Found.one();
+              Index.registerSet(I);
+              FoundKey .copy(keys[I]);
+              FoundData.copy(data[I]);
+              return;
+             }
+           }
+         }
+       };
+     }
+
    } // Stuck
 /*
 
@@ -2018,7 +2039,7 @@ Stuck: Stuck size: 3, leaf: 0
        {k.registerSet(11);
        }
      };
-    s.search_eq(f, i, k, d);
+    s.search_eq(k, f, i, d);
 
     b.maxSteps = 100;
     b.chipRunJava();
@@ -2042,7 +2063,57 @@ Stuck: Stuck size: 3, leaf: 0
       ok(i, "Stuck_i = "+J);
       ok(k, "Stuck_k = "+J);
       ok(d, "Stuck_d = "+(J+1));
-    }
+     }
+   }
+
+  static void test_search_le()
+   {final int B = 8, S = 4, K = 8, D = 8;
+    final Btree b = new Btree(B, S+S, K, D);
+
+    Stuck s = b.new Stuck("Stuck");
+    final Process.Register k = s.register("k", K);
+    final Process.Register l = s.register("l", K);
+    final Process.Register d = s.register("d", D);
+    final Process.Register i = s.register("i", b.stuckAddressSize);
+    final Process.Register f = s.register("f", 1);
+
+    s.getRoot();
+    for (int j = 0; j < S; j++)
+     {final int J = j*10;
+      s.new Instruction()
+       {void action()
+         {k.registerSet(J); d.registerSet(J+1);
+         }
+       };
+      s.push(k, d);
+     }
+
+    b.maxSteps = 30;
+    b.chipRunJava();
+    ok(s, """
+Stuck: Stuck size: 4, leaf: 0
+ 0     0 =>    1
+ 1    10 =>   11
+ 2    20 =>   21
+ 3    30 =>   31
+""");
+    s.processClear();
+
+    s.new Instruction()
+     {void action()
+       {k.registerSet(11);
+       }
+     };
+    s.search_le(k, f, i, l, d);
+
+    b.maxSteps = 100;
+    b.chipRunJava();
+
+    ok(k, "Stuck_k = 11");
+    ok(f, "Stuck_f = 1");
+    ok(i, "Stuck_i = 2");
+    ok(l, "Stuck_l = 20");
+    ok(d, "Stuck_d = 21");
    }
 
 /*
@@ -3515,7 +3586,7 @@ stuckData: value=2, 0=1, 1=2, 2=0, 3=0
 
   static void newTests()                                                        // Tests being worked on
    {//oldTests();
-    test_search_eq();
+    test_search_le();
    }
 
   public static void main(String[] args)                                        // Test if called as a program
