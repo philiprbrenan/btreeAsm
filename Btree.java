@@ -638,6 +638,52 @@ chipStop = true;
       merge(Right, Success);
      }
 
+    void mergeButOne(Register Key, Stuck Source, Register Success)              // Concatenate the indicated stuck with a past last data element on to the end of the current stuck with a past last data element with the specified key inserted over the central past last data element separating the two.
+     {new Instruction()
+       {void action()
+         {final int S = Source.size.registerGet();
+          final int T =        size.registerGet();
+          Success.zero();
+          if (S + T > maxStuckSize)
+           {return;
+           }
+
+          keys[T].copy(Key);                                                    // Add key over past last data element of target
+          for (int i = 0; i < S; ++i)                                           // Concatenate each key, data pair from source
+           {keys[T+i+1].copy(Source.keys[i]);
+            data[T+i+1].copy(Source.data[i]);
+           }
+          data[S+T+1].copy(Source.data[S]);                                     // Past last data element from source
+          size.add(Source.size);                                                // New size of target
+          size.inc();
+          Success.one();
+         }
+       };
+     }
+
+    void mergeButOne(Stuck Left, Register Key, Stuck Right, Register Success)   // Concatenate the past last left and right stucks separated by the key over the past last data element of the left stuck into the target
+     {final int L = Left .size.registerGet();
+      final int R = Right.size.registerGet();
+      Success.zero();
+      if (L + R + 1 >= maxStuckSize)                                            // Check size
+       {return;
+       }
+
+      for (int i = 0; i < L; ++i)                                               // Concatenate each key, data pair from source
+       {keys[i].copy(Left.keys[i]);
+        data[i].copy(Left.data[i]);
+       }
+      keys[L].copy(Key);                                                        // Place key over past last data element from left
+      data[L].copy(Left.data[L]);
+
+      for (int i = 0; i < R; ++i)                                               // Concatenate each key, data pair from right
+       {keys[L+i+1].copy(Right.keys[i]);
+        data[L+i+1].copy(Right.data[i]);
+       }
+      data[L+R+1].copy(Right.data[R]);                                          // Past last data element from right
+      size.registerSet(L+R+1);                                                  // New size of target
+      Success.one();
+     }
    } // Stuck
 /*
 
@@ -2051,7 +2097,7 @@ Stuck: Stuck size: 5, leaf: 0
     s.processClear();
 
     final int N = 4;
-    for (int j = 0; j <= N; j++)
+    for (int j = 0; j < N; j++)
      {final int J = j;
       s.new Instruction()
        {void action()
@@ -2503,6 +2549,105 @@ Stuck: Stuck size: 8, leaf: 0
  5     1 =>    2
  6     2 =>    3
  7     3 =>    4
+""");
+
+    ok(o, "Stuck_o = 1");
+   }
+
+  static void test_mergeButOne()
+   {final Btree b = test_push();
+    final Btree B = test_push();
+
+    Stuck s = (Stuck)b.processes.get("Stuck");
+    Stuck S = (Stuck)B.processes.get("Stuck");
+    final Process.Register k = s.registers.get("k");
+    final Process.Register o = s.register("o", 1);
+
+    S.processClear();
+    S.new Instruction()
+     {void action()
+       {S.size.dec();
+       }
+     };
+    B.chipRunJava();
+
+    s.processClear();
+    s.new Instruction()
+     {void action()
+       {k.registerSet(11);
+        s.size.dec();
+       }
+     };
+
+    s.mergeButOne(k, S, o);
+
+    b.maxSteps = 100;
+    b.chipRunJava();
+    //stop(s.dump());
+    ok(s.dump(), """
+Stuck: Stuck size: 7, leaf: 0
+ 0     0 =>    1
+ 1     1 =>    2
+ 2     2 =>    3
+ 3    11 =>    4
+ 4     0 =>    1
+ 5     1 =>    2
+ 6     2 =>    3
+ 7     0 =>    4
+""");
+
+    ok(o, "Stuck_o = 1");
+   }
+
+  static void test_mergeButOne2()
+   {final Btree b = test_push();
+    final Btree L = test_push();
+    final Btree R = test_push();
+
+    Stuck s = (Stuck)b.processes.get("Stuck");
+    Stuck l = (Stuck)L.processes.get("Stuck");
+    Stuck r = (Stuck)R.processes.get("Stuck");
+    final Process.Register k = s.registers.get("k");
+    final Process.Register o = s.register("o", 1);
+
+    l.processClear();
+    l.new Instruction()
+     {void action()
+       {l.size.dec();
+       }
+     };
+    L.chipRunJava();
+
+    r.processClear();
+    r.new Instruction()
+     {void action()
+       {r.size.dec();
+       }
+     };
+    R.chipRunJava();
+
+    s.processClear();
+    s.new Instruction()
+     {void action()
+       {k.registerSet(11);
+        s.size.zero();
+        s.mergeButOne(l, k, r, o);
+       }
+     };
+
+    b.maxSteps = 100;
+    b.chipRunJava();
+    //stop(s.dump());
+    ok(s.dump(), """
+Stuck: Stuck size: 7, leaf: 0
+ 0     0 =>    1
+ 1     1 =>    2
+ 2     2 =>    3
+ 3    11 =>    4
+ 4     0 =>    1
+ 5     1 =>    2
+ 6     2 =>    3
+ 7     0 =>    4
 """);
 
     ok(o, "Stuck_o = 1");
@@ -3954,6 +4099,9 @@ stuckData: value=2, 0=1, 1=2, 2=0, 3=0
     test_splitLow();
     test_splitLowButOne();
     test_merge();
+    test_merge2();
+    test_mergeButOne();
+    test_mergeButOne2();
 
     //test_create();
     //test_leaf();
@@ -3983,9 +4131,7 @@ stuckData: value=2, 0=1, 1=2, 2=0, 3=0
    }
 
   static void newTests()                                                        // Tests being worked on
-   {//oldTests();
-    //test_splitLow();
-    test_merge2();
+   {oldTests();
    }
 
   public static void main(String[] args)                                        // Test if called as a program
