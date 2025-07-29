@@ -25,11 +25,11 @@ class Chip extends Test                                                         
   static Chip chip(String Name) {return new Chip(Name);}                        // Create a new chip
 
   void chipRunJava()                                                            // Run the processes == programs defined on this chip using the Java implementation
-   {for(Process p : processes) p.initProgram();                                 // Initialize each program
+   {for(Process p : processes) p.processInit();                                 // Initialize each program
     running = true;                                                             // Show the program as running
     deleteFile(javaTraceFile);                                                  // Remove java trace file
     for(step = 0; running && step < maxSteps; ++step)                           // Run each program
-     {for(Process p : processes) p.stepProgram();                               // Step each program
+     {for(Process p : processes) p.processStep();                               // Step each program
       chipPrint();                                                              // Print chip state after each step
      }
     if (running)                                                                // Still running after too many steps
@@ -50,6 +50,39 @@ class Chip extends Test                                                         
   void N() {if ( running) stop("Running");}                                     // Confirm that the simulation of the chip is not running
 
 //D2 Print                                                                      // Print the state of a chip
+
+  public String printMemory()                                                   // Print the memory of the java emulation of the chip
+   {final StringBuilder s = new StringBuilder();
+        s.append(String.format(
+         "Chip: %-16s step: %1d, maxSteps: %1d, running: %1d, returnCode: %1d\n",
+          chipName, step, maxSteps, (running ? 1 : 0), returnCode));
+
+        s.append("  Processes:\n");
+
+    for (Process p: processes)                                                  // Each process
+     {if (p.hasMemory())                                                      // Print memory if this process has memory attached to it
+       {s.append(String.format("    %-21s ", p.processName));
+        s.append(String.format(
+         ", memory: %1d * %1d = %1d",
+          p.memorySize, p.memoryWidth, p.memoryGetNoSet(0)));
+
+        for (int i = 1; i < p.memorySize; i++)
+         {s.append(", "+p.memoryGetNoSet(i));
+         }
+        s.append("\n");
+       }
+      if (false)
+       {s.append("      Registers :\n");
+        for (Process.Register r: p.registers)                                     // Print registers associated with this process
+         {s.append(String.format(
+           "        %-32s = %1d\n",
+          r.registerName(), r.registerGet()));
+         }
+       }
+     }
+
+    return ""+s;
+   }
 
   public String toString()                                                      // Print a description of the java emulation of the chip
    {final StringBuilder s = new StringBuilder();
@@ -388,11 +421,11 @@ endmodule
         new Register("Memory_Value", memoryWidth) : null;
      }
 
-    void initProgram()                                                          // Get ready to execute the program
-     {N(); processPc = 0;                                                            // Program always starts at the first instruction
+    void processInit()                                                          // Get ready to execute the program
+     {N(); processPc = 0;                                                       // Program always starts at the first instruction
      }
 
-    void stepProgram()                                                          // Execute one step in the program
+    void processStep()                                                          // Execute one step in the program
      {processNextPc = -1;                                                       // The executed instruction can optionally set this variable to change the execution flow
       if (code.size() == 0) return;                                             // No code to run
       if (processPc >= code.size())                                             // Stop the run if we go off the end of the code
@@ -403,7 +436,9 @@ endmodule
       if (processNextPc >= 0) processPc = processNextPc; else processPc++;      // Interpret next program counter as either a redirection or continuation of flow
      }
 
-//D2 Process                                                                    // A process represents a thread of program execution on the chip
+    void processClear() {code.clear();}                                         // Clear current process code. This faciltates testing by allowing a program to be wrtitten and executed incrementally.
+
+//D3 Verilog                                                                    // Generate a Verilog always block to implement this process
 
     String processPcName()     {N(); return processName+"_pc";}                 // Program counter
     String processNextPcName() {N(); return processName+"_next_pc";}            // Next program counter
@@ -1104,7 +1139,14 @@ Chip: Test             step: 50, maxSteps: 100, running: 0, returnCode: 1
             Memory_Memory_1_index                  = 15
             Memory_Memory_1_value                  = 1597
 """);
-    C.chipRunVerilog();
+
+    //stop(C.printMemory());
+
+    ok(C.printMemory(), """
+Chip: Test             step: 50, maxSteps: 100, running: 0, returnCode: 1
+  Processes:
+    Memory                , memory: 16 * 16 = 1, 2, 3, 5, 8, 13, 21, 34, 55, 89, 144, 233, 377, 610, 987, 1597
+""");
    }
 
   static void oldTests()                                                        // Tests thought to be in good shape
