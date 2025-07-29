@@ -17,6 +17,7 @@ class Chip extends Test                                                         
   int                       maxSteps = 10;                                      // Maximum number of steps to execute in the simulation
   int                     returnCode;                                           // The return code from the first process to finish which effectively terminates the simulation
   static boolean               debug = false;                                   // Debug when true
+  static boolean            chipStop = false;                                   // Exit on prgram error if true - useful for debugging
 
 
 //D1 Chip                                                                       // A chip is constructed from a fixed number of communicating processes that execute code on the chip to produce the desired outputs from the inputs to the chip
