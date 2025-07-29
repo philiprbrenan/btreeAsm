@@ -46,6 +46,9 @@ class Chip extends Test                                                         
    {return "returnCode = "+ReturnCode+"; stop = 1;";
    }
 
+  void R() {if (!running) stop("Not running");}                                 // Confirm that the simulation of the chip is running
+  void N() {if ( running) stop("Running");}                                     // Confirm that the simulation of the chip is not running
+
 //D2 Print                                                                      // Print the state of a chip
 
   public String toString()                                                      // Print a description of the java emulation of the chip
@@ -274,9 +277,7 @@ endmodule
       final String traceBack = traceBack();                                     // Line at which this instruction was created
 
       Instruction()                                                             // Add this instruction to the process's code
-       {if (running)
-         {stop("Cannot define instructions when the chip is running");
-         }
+       {N();
         instructionNumber = code.size();                                        // Number each instruction
         code.push(this);                                                        // Save instruction
        }
@@ -293,8 +294,8 @@ endmodule
 
     class Label                                                                 // Label jump targets in the program
      {int instruction;                                                          // The instruction location to which this labels applies
-      Label()    {set(); labels.push(this);}                                    // A label assigned to an instruction location
-      void set() {instruction = code.size();}                                   // Reassign the label to an instruction
+      Label()    {N(); set(); labels.push(this);}                               // A label assigned to an instruction location
+      void set() {N(); instruction = code.size();}                              // Reassign the label to an instruction
      }
 
 //D2 Register                                                                   // A register is a block of memory that can be accessed within the current clock cycle
@@ -305,9 +306,7 @@ endmodule
       BitSet value = new BitSet();                                              // Current value of the register in Java
 
       Register(String RegisterName, int RegisterBits)                           // Create the register
-       {if (running)
-         {stop("Cannot define register:", RegisterName, "when the chip is running");
-         }
+       {N();
         registerName = RegisterName; registerBits = RegisterBits;
         registers.put(registerName, this);                                      // Save registers associated with each process
        }
@@ -329,11 +328,12 @@ endmodule
        }
 
       String registerSetV(int Value)                                            // Set the value of the register from an integer
-       {return registerName() + " = " + Value+ ";";
+       {N(); return registerName() + " = " + Value+ ";";
        }
 
       void copy(Register Source)                                                // Copy a source register into this register which we can do because each, and only each, process can write to its own registers
-       {if (registerBits <= Source.registerBits)                                // Make sure the target register is big enough
+       {R();
+        if (registerBits <= Source.registerBits)                                // Make sure the target register is big enough
          {if (false) stop("Target register is smaller than source register.\n",
            "Target register:", registerName, "has a size of:", registerBits,
            "while source register:", Source.registerName, "has a size of:",
@@ -343,31 +343,31 @@ endmodule
         value = (BitSet)Source.value.clone();                                   // Copy the source value into the target
        }
 
-      String copyV(Register Source) {return rn() + " = "+ Source.rn()+";";}     // Copy a source register into this register which we can do because each and only each process can write to its own registers
+      String copyV(Register Source) {N(); return rn() + " = "+ Source.rn()+";";}// Copy a source register into this register which we can do because each and only each process can write to its own registers
 
 //D3 Arithmetic                                                                 // Operations on registers
 
-      void zero() {registerSet(0);}                                             // Zero a register in Java
-      void one () {registerSet(1);}                                             // One a register in Java
-      void inc () {registerSet(registerGet()+1);}                               // Increment a register in Java
-      void dec () {registerSet(registerGet()-1);}                               // Decrement a register in Java
-      void not () {registerSet(registerGet() != 0 ? 0 : 1);}                    // Not a register in Java
+      void zero() {R(); registerSet(0);}                                        // Zero a register in Java
+      void one () {R(); registerSet(1);}                                        // One a register in Java
+      void inc () {R(); registerSet(registerGet()+1);}                          // Increment a register in Java
+      void dec () {R(); registerSet(registerGet()-1);}                          // Decrement a register in Java
+      void not () {R(); registerSet(registerGet() != 0 ? 0 : 1);}               // Not a register in Java
       void add (Register source)                                                // Add the source register to the current register in Java
-       {registerSet(registerGet()+source.registerGet());
+       {R(); registerSet(registerGet()+source.registerGet());
        }
 
-      String zeroV() {return rn() + " = 0;";}                                   // Zero a register in Verilog
-      String oneV () {return rn() + " = 1;";}                                   // One a register in Verilog
-      String incV () {return rn() + " = " + rn()+"+1;";}                        // Increment a register in Verilog
-      String decV () {return rn() + " = " + rn()+"-1;";}                        // Decrement a register in Verilog
-      String notV () {return rn() + " = " + rn()+" != 0 ? 0 : 1;";}             // Not a register in Verilog
+      String zeroV() {N(); return rn() + " = 0;";}                              // Zero a register in Verilog
+      String oneV () {N(); return rn() + " = 1;";}                              // One a register in Verilog
+      String incV () {N(); return rn() + " = " + rn()+"+1;";}                   // Increment a register in Verilog
+      String decV () {N(); return rn() + " = " + rn()+"-1;";}                   // Decrement a register in Verilog
+      String notV () {N(); return rn() + " = " + rn()+" != 0 ? 0 : 1;";}        // Not a register in Verilog
       String addV (Register source)                                             // Add the source register to the current register in Verilog
-       {return rn() + " = " + rn() + " + " +source.rn() + ";";
+       {N(); return rn() + " = " + rn() + " + " +source.rn() + ";";
        }
      } // Register
 
     Register register(String RegisterName, int RegisterBits)                    // Create the register
-     {return new Register(RegisterName, RegisterBits);
+     {N(); return new Register(RegisterName, RegisterBits);
      }
 
 //D2 Process                                                                    // Start, step and stop a process while modifying its memory
@@ -375,9 +375,7 @@ endmodule
     Process(String ProcessName) {this(ProcessName, 0, 0);}                      // Create a process without any memory attached to it
 
     Process(String ProcessName, int MemorySize, int MemoryWidth)                // Create a process with the specified memory attached to it
-     {if (running)
-       {stop("Cannot define process:", ProcessName, "when the chip is running");
-       }
+     {N();
       processName   = ProcessName;
       processNumber = processes.size();
       processes.put(processName, this);
@@ -391,7 +389,7 @@ endmodule
      }
 
     void initProgram()                                                          // Get ready to execute the program
-     {processPc = 0;                                                            // Program always starts at the first instruction
+     {N(); processPc = 0;                                                            // Program always starts at the first instruction
      }
 
     void stepProgram()                                                          // Execute one step in the program
@@ -407,14 +405,14 @@ endmodule
 
 //D2 Process                                                                    // A process represents a thread of program execution on the chip
 
-    String processPcName()     {return processName+"_pc";}                      // Program counter
-    String processNextPcName() {return processName+"_next_pc";}                 // Next program counter
-    String processMemoryName() {return processName+"_memory";}                  // Name of the memory block used by this process
+    String processPcName()     {N(); return processName+"_pc";}                 // Program counter
+    String processNextPcName() {N(); return processName+"_next_pc";}            // Next program counter
+    String processMemoryName() {N(); return processName+"_memory";}             // Name of the memory block used by this process
     boolean hasMemory()        {return memoryWidth > 0 && memorySize > 0;}      // Whether this process has any memory attached directly to it
 
     String generateProcessVerilog()                                             // Generate Verilog code for this process
      {final StringBuilder v = new StringBuilder();
-
+      N();
       v.append("\n// Process: "+processName+"\n\n");
       if (hasMemory())                                                          // Not all processes have memory attached to them: declare memeory for those that do.
        {v.append("  reg ["+memoryWidth+"] "+processMemoryName()+"["+memorySize+"];\n");
@@ -495,7 +493,7 @@ endmodule
      }
 
     protected String memoryGetNoSetV(int Index)                                 // Get a memory element as an integer without setting the memory cache register in Verilog
-     {return processMemoryName()+"["+Index+"]";                                 // Read memory
+     {N(); return processMemoryName()+"["+Index+"]";                                 // Read memory
      }
 
     int memoryGet(int Index)                                                    // Get a memory element indexed by an integer as an integer setting the memory cache register to the value of the element retrieved
@@ -505,7 +503,7 @@ endmodule
      }
 
     protected String memoryGetV(int Index)                                      // Get a memory element indexed by an integer as an integer setting the memory cache register in Verilog
-     {return memoryRegister.registerName() + " = "+ processMemoryName()+"["+Index+"]";
+     {N(); return memoryRegister.registerName() + " = "+ processMemoryName()+"["+Index+"]";
      }
 
     int memoryGet(Register Register)                                            // Get a memory element indexed by a register as an integer setting the memory cache register to the value of the element retrieved
@@ -515,7 +513,7 @@ endmodule
      }
 
     protected String memoryGetV(Register Register)                              // Get a memory element as an integer setting the memory cache register in Verilog
-     {return memoryRegister.registerName() + " = "+ processMemoryName()+"["+Register.registerGet()+"]";
+     {N(); return memoryRegister.registerName() + " = "+ processMemoryName()+"["+Register.registerGet()+"]";
      }
 
     void memorySet(int Index)                                                   // Set a memory element from the associated cache memory register
@@ -523,7 +521,7 @@ endmodule
      }
 
     String memorySetV(int Index)                                                // Set a memory element from the associated cache memory register in Verilog
-     {return processMemoryName()+"["+Index+"] = " + memoryRegister.registerName() + ";";
+     {N(); return processMemoryName()+"["+Index+"] = " + memoryRegister.registerName() + ";";
      }
 
     void memorySet(Register Index)                                              // Set a memory element indexed by a register from the associated cache memory register
@@ -531,7 +529,7 @@ endmodule
      }
 
     String memorySetV(Register  Index)                                          // Set a memory element indexed by a register from the associated cache memory register in Verilog
-     {return processMemoryName()+"["+Index.registerName()+"] = " + memoryRegister.registerName() + ";";
+     {N(); return processMemoryName()+"["+Index.registerName()+"] = " + memoryRegister.registerName() + ";";
      }
 
     void memorySet(int Value, int Index)                                        // Set a memory element
@@ -544,7 +542,7 @@ endmodule
      }
 
     String memorySetV(int Value, int Index)                                     // Set a memory element in Verilog
-     {return processMemoryName()+"["+Index+"] = " + Value+";";
+     {N(); return processMemoryName()+"["+Index+"] = " + Value+";";
      }
 
 //D3 Transaction                                                                // A transaction allows other processes on the chip to request services from this process
@@ -560,20 +558,23 @@ endmodule
       final String  transactionOpCode;                                          // The service requested by the caller
 
       Transaction(String Name, Process CallingProcess, String OpCode)           // Transactions allow one process to request services from another process
-       {transactionName = Name;
+       {N();
+        transactionName = Name;
         transactionCallingProcess = CallingProcess;
         transactionOpCode = OpCode;
         transactions.put(transactionName, this);
        }
 
       void transactionInputRegisters(Process.Register...InputRegisters)         // The registers used to provide inputs to this transaction. As they are only going to be read during the transaction they can be owned by any process
-       {for(Process.Register r : InputRegisters)                                // Save input registers
+       {N();
+        for(Process.Register r : InputRegisters)                                // Save input registers
          {transactionInputRegisters.put(r.registerName(), r);
          }
        }
 
       void transactionOutputRegisters(Process.Register...OutputRegisters)       // The registers used as outputs by this transaction. As they are going to be written into by the transaction they have to be owned by the process executing the transaction
-       {for(Process.Register r : OutputRegisters)                               // Save output registers
+       {N();
+        for(Process.Register r : OutputRegisters)                               // Save output registers
          {if (r.registerProcess() != transactionProcess())                      // Check that the output registers are owned by the target process of the transaction as that process is the only process that can write into them
            {stop("Output transaction register:",
              r.registerName()+" must be owned by process: "+
@@ -598,38 +599,39 @@ endmodule
       int transactionExecutableAsInt() {return transactionExecutable() ? 1 : 0;}// Whether the transaction is executable or not as an integer
       int transactionFinishedAsInt  () {return transactionFinished  () ? 1 : 0;}// Whether the transaction has finished or not as an integer
 
-      String transactionRequestedAt() {return transactionName+"_requestedAt";}  // Name of the requested at field for a transaction
-      String transactionFinishedAt()  {return transactionName+"_finishedAt";}   // Name of the finished at field for a transaction
+      String transactionRequestedAt() {N(); return transactionName+"_requestedAt";} // Name of the requested at field for a transaction
+      String transactionFinishedAt()  {N(); return transactionName+"_finishedAt";}  // Name of the finished at field for a transaction
 
       String transactionExecutableV()                                           // Whether the transaction is executable or not in verilog
        {final String r = transactionRequestedAt();
         final String f = transactionFinishedAt();
-        return "("+r+" > "+f + " && "+r + " != step)";
+        N(); return "("+r+" > "+f + " && "+r + " != step)";
        }
 
       String transactionFinishedV()                                             // Whether the transaction has finished or not in verilog
        {final String r = transactionRequestedAt();
         final String f = transactionFinishedAt();
-        return "("+r+" < "+f+")";
+        N(); return "("+r+" < "+f+")";
        }
 
       void transactionSetExecutable()                                           // Mark a transaction as executable
-       {if (transactionRequestedAt > transactionFinishedAt)
+       {R();
+        if (transactionRequestedAt > transactionFinishedAt)
          {stop("Transaction already running");
          }
         transactionRequestedAt = step;
        }
       String transactionSetExecutableV()                                        // Mark a transaction as executable in verilog
-       {return transactionRequestedAt()+" = step;";
+       {N(); return transactionRequestedAt()+" = step;";
        }
       void transactionSetFinished()                                             // Mark a transaction as finished
-       {transactionFinishedAt = step;
+       {R(); transactionFinishedAt = step;
        }
       String transactionSetFinishedV()                                          // Mark a transaction as finished in verilog
-       {return transactionFinishedAt()+" = step;";
+       {N(); return transactionFinishedAt()+" = step;";
        }
       String transactionRcName()                                                // Name of the return code field for a transaction
-       {return transactionProcess().processName+"_"+transactionName+"_returnCode";
+       {N(); return transactionProcess().processName+"_"+transactionName+"_returnCode";
        }
 
       Process transactionProcess() {return Process.this;}                       // Process associated with this transaction
@@ -670,12 +672,12 @@ endmodule
        }
 
       void executeTransaction(Register Index)                                   // Execute the request in java
-       {index.copy(Index);
+       {R(); index.copy(Index);
         transactionSetExecutable();
        }
 
       String executeTransactionV(Register Index)                                // Execute the request in verilog
-       {return index.copyV(Index) + "  " + transactionSetExecutableV();
+       {N(); return index.copyV(Index) + "  " + transactionSetExecutableV();
        }
 
       void waitResultOfTransaction()                                            // Wait for the request to finish
@@ -705,13 +707,13 @@ endmodule
        }
 
       void executeTransaction(Register Index, Register Value)                   // Execute the requested memory update request
-       {index.copy(Index);
+       {R(); index.copy(Index);
         value.copy(Value);
         transactionSetExecutable();
        }
 
       String executeTransactionV(Register Index, Register Value)                // Execute the requested memory update in Verilog
-       {return index.copyV(Index) + "  " +value.copyV(Value) + "  " + transactionSetExecutableV();
+       {N(); return index.copyV(Index) + "  " +value.copyV(Value) + "  " + transactionSetExecutableV();
        }
 
       void waitResultOfTransaction()                                            // Wait for the update request to finish
