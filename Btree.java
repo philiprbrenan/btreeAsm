@@ -600,28 +600,43 @@ chipStop = true;
        };
      }
 
-//    void splitLowButOne(Stuck Left, int Copy)                                           // Copy the specified number of key, data pairs into the left stuck then move the remainder down
-//     {if (Copy >= stuckSize.value)
-//       {L.P.stopProgram("Cannot copy beyond end of stuck");
-//        return;
-//       }
-//      if (Left.maxStuckSize  <  Copy)
-//       {L.P.stopProgram("Left stuck too small");
-//        return;
-//       }
-//
-//      for (int i = 0; i < Copy; ++i)                                              // Copy to left
-//       {Left.stuckKeys.move(i, stuckKeys, i);
-//        Left.stuckData.move(i, stuckData, i);
-//       }
-//      Left.stuckSize.value = Copy;                                                // New size of left
-//
-//      for (int i = 0; i < Copy; ++i)                                              // Move down right
-//       {stuckKeys.move(i, stuckKeys, Copy + i);
-//        stuckData.move(i, stuckData, Copy + i);
-//       }
-//      stuckSize.value = Copy;                                                     // New size of right
-//     }
+//D3 Merge                                                                      // Merge stucks in various weays
+
+    void merge(Stuck source, Register Success)                                  // Concatenate the indicated stuck on to the end of the current one
+     {new Instruction()
+       {void action()
+         {final int S = source.size.registerGet();
+          final int T =        size.registerGet();
+          Success.zero();
+          if (S + T > maxStuckSize)
+           {return;
+           }
+          for (int i = 0; i < S; ++i)
+           {keys[T+i].copy(source.keys[i]);
+            data[T+i].copy(source.data[i]);
+           }
+          size.add(source.size);
+          Success.one();
+         }
+       };
+     }
+
+    void merge(Stuck Left, Stuck Right, Register Success)                       // Replace the current stuck with the concatenation of teh two stucks indicated
+     {new Instruction()
+       {void action()
+         {final int L = Left .size.registerGet();
+          final int R = Right.size.registerGet();
+          Success.zero();
+          if (L + R > maxStuckSize)
+           {return;
+           }
+          size.zero();
+          Success.one();
+         }
+       };
+      merge(Left,  Success);
+      merge(Right, Success);
+     }
 
    } // Stuck
 /*
@@ -2433,6 +2448,66 @@ Stuck: Left size: 3, leaf: 0
     ok(k, "Stuck_k = 3");
    }
 
+  static void test_merge()
+   {final Btree b = test_push();
+    final Btree B = test_push();
+
+    Stuck s = (Stuck)b.processes.get("Stuck");
+    Stuck S = (Stuck)B.processes.get("Stuck");
+    final Process.Register o = s.register("o", 1);
+
+    s.processClear();
+    s.merge(S, o);
+
+    b.maxSteps = 100;
+    b.chipRunJava();
+    //stop(s);
+    ok(s, """
+Stuck: Stuck size: 8, leaf: 0
+ 0     0 =>    1
+ 1     1 =>    2
+ 2     2 =>    3
+ 3     3 =>    4
+ 4     0 =>    1
+ 5     1 =>    2
+ 6     2 =>    3
+ 7     3 =>    4
+""");
+
+    ok(o, "Stuck_o = 1");
+   }
+
+  static void test_merge2()
+   {final Btree b = test_push();
+    final Btree L = test_push();
+    final Btree R = test_push();
+
+    Stuck s = (Stuck)b.processes.get("Stuck");
+    Stuck l = (Stuck)L.processes.get("Stuck");
+    Stuck r = (Stuck)R.processes.get("Stuck");
+    final Process.Register o = s.register("o", 1);
+
+    s.processClear();
+    s.merge(l, r, o);
+
+    b.maxSteps = 100;
+    b.chipRunJava();
+    //stop(s);
+    ok(s, """
+Stuck: Stuck size: 8, leaf: 0
+ 0     0 =>    1
+ 1     1 =>    2
+ 2     2 =>    3
+ 3     3 =>    4
+ 4     0 =>    1
+ 5     1 =>    2
+ 6     2 =>    3
+ 7     3 =>    4
+""");
+
+    ok(o, "Stuck_o = 1");
+   }
+
 /*
   static Btree test_create()
    {final Btree b = new Btree(32, 4, 8, 8);
@@ -3878,6 +3953,7 @@ stuckData: value=2, 0=1, 1=2, 2=0, 3=0
     test_splitIntoThree();
     test_splitLow();
     test_splitLowButOne();
+    test_merge();
 
     //test_create();
     //test_leaf();
@@ -3909,7 +3985,7 @@ stuckData: value=2, 0=1, 1=2, 2=0, 3=0
   static void newTests()                                                        // Tests being worked on
    {//oldTests();
     //test_splitLow();
-    test_splitLowButOne();
+    test_merge2();
    }
 
   public static void main(String[] args)                                        // Test if called as a program
