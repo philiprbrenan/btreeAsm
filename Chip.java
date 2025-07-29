@@ -40,7 +40,8 @@ class Chip extends Test                                                         
    }
 
   void chipStop(int ReturnCode)                                                 // Stop the chip
-   {returnCode = ReturnCode; running = false;
+   {if (chipStop) err("Error:", ReturnCode);
+    returnCode = ReturnCode; running = false;
    }
 
   String chipStopV(int ReturnCode)                                              // Stop the chip in verilog
