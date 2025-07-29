@@ -1477,16 +1477,57 @@ class Btree extends Chip                                                        
     Stuck s = b.new Stuck("Stuck");
     final Process.Register i = s.register("i", 3);
     i.registerSet(0);
-
     s.get(i);
 
-    b.maxSteps = 100;
+    b.maxSteps = 20;
     b.chipRunJava();
 
     ok(s, """
 Stuck: Stuck size: 2, leaf: 1
  0     2 =>    3
  1     4 =>    5
+""");
+
+    s.processClear();
+    s.isLeaf .registerSet(0);
+    s.size   .registerSet(1);
+    s.keys[0].registerSet(3); s.data[0].registerSet(4);
+    s.set();
+
+    //stop(b.printMemory());
+    ok(b.printMemory(), """
+Chip: Btree            step: 13, maxSteps: 20, running: 0, returnCode: 0
+  Processes:
+    stuckIsLeaf           , memory: 1 * 1 = 1
+    stuckIsFree           , memory: 1 * 1 = 0
+    freeNext              , memory: 1 * 1 = 0
+    stuckSize             , memory: 1 * 3 = 2
+    stuckKeys_0           , memory: 1 * 8 = 2
+    stuckData_0           , memory: 1 * 8 = 3
+    stuckKeys_1           , memory: 1 * 8 = 4
+    stuckData_1           , memory: 1 * 8 = 5
+    stuckKeys_2           , memory: 1 * 8 = 0
+    stuckData_2           , memory: 1 * 8 = 0
+    stuckKeys_3           , memory: 1 * 8 = 0
+    stuckData_3           , memory: 1 * 8 = 0
+""");
+    b.chipRunJava();
+    //stop(b.printMemory());
+    ok(b.printMemory(), """
+Chip: Btree            step: 12, maxSteps: 20, running: 0, returnCode: 0
+  Processes:
+    stuckIsLeaf           , memory: 1 * 1 = 0
+    stuckIsFree           , memory: 1 * 1 = 0
+    freeNext              , memory: 1 * 1 = 0
+    stuckSize             , memory: 1 * 3 = 1
+    stuckKeys_0           , memory: 1 * 8 = 3
+    stuckData_0           , memory: 1 * 8 = 4
+    stuckKeys_1           , memory: 1 * 8 = 4
+    stuckData_1           , memory: 1 * 8 = 5
+    stuckKeys_2           , memory: 1 * 8 = 0
+    stuckData_2           , memory: 1 * 8 = 0
+    stuckKeys_3           , memory: 1 * 8 = 0
+    stuckData_3           , memory: 1 * 8 = 0
 """);
    }
 
