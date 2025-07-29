@@ -25,7 +25,7 @@ class Btree extends Chip                                                        
 //D1 Construction                                                               // Construct and layout a btree
 
   Btree(int Size, int MaxStuckSize, int BitsPerKey, int BitsPerData)            // Create the Btree
-   {super("Btree");
+   {super("Btree"); N();
     if (MaxStuckSize % 2 == 1) stop("The stuck size must be even, not:", MaxStuckSize);
     if (MaxStuckSize < 4)      stop("The stuck size must be greater than equal to 4, not:", MaxStuckSize);
     size         = Size;                                                        // The maximum number of entries in the btree.
@@ -49,15 +49,15 @@ class Btree extends Chip                                                        
 
     //iCreateFreeChain();                                                       // Create the free chain
    }
-
-  Process.Register index       (Process P) {return P.register("index", logTwo(size)+1);} // Create an index for a stuck in a btree
-  Process.Register isLeaf      (Process P) {return P.register("isLeaf",             1);} // Create a bit for is leaf
-  Process.Register isFull      (Process P) {return P.register("isFull",             1);} // Create a bit for is full
-  Process.Register isFullButOne(Process P) {return P.register("isFullButOne",       1);} // Create a bit for is full but one
-  Process.Register within      (Process P) {return P.register("within",             1);} // Create a bit for is within the body of the stuck and not at the top
-  Process.Register found       (Process P) {return P.register("found",              1);} // Create a bit for whether a key has been found
-  Process.Register leafFull    (Process P) {return P.register("leafFull",           1);} // Create a bit for a leaf is full
-  Process.Register branchFull  (Process P) {return P.register("branchFull",         1);} // Create a bit for a branch is full
+//
+//  Process.Register index       (Process P) {return P.register("index", logTwo(size)+1);} // Create an index for a stuck in a btree
+//  Process.Register isLeaf      (Process P) {return P.register("isLeaf",             1);} // Create a bit for is leaf
+//  Process.Register isFull      (Process P) {return P.register("isFull",             1);} // Create a bit for is full
+//  Process.Register isFullButOne(Process P) {return P.register("isFullButOne",       1);} // Create a bit for is full but one
+//  Process.Register within      (Process P) {return P.register("within",             1);} // Create a bit for is within the body of the stuck and not at the top
+//  Process.Register found       (Process P) {return P.register("found",              1);} // Create a bit for whether a key has been found
+//  Process.Register leafFull    (Process P) {return P.register("leafFull",           1);} // Create a bit for a leaf is full
+//  Process.Register branchFull  (Process P) {return P.register("branchFull",         1);} // Create a bit for a branch is full
 
 //D2 Allocation                                                                 // Allocate stucks from the free chain
 /*
@@ -163,11 +163,28 @@ class Btree extends Chip                                                        
        }
      }
 
-    void get(Register Index)                                                    // Copy a stuck out of memory into a set of registers. Currently this is done sequentially, but multiple stuck loads could be overlapped if this method was fragmented into smaller steps.  Most stuck methods do not actually require the retriveal of a full stuck from memory but doing so makes it easier to write an initial version of the btree algorithm at the cost of considerable inefficiency.
-     {new Instruction()                                                         // Request the details of the indexed stuck from memory
+    void get(Register Index)                                                    // Copy a stuck indexed by a register out of memory into a set of registers. Currently this is done sequentially, but multiple stuck loads could be overlapped if this method was fragmented into smaller steps.  Most stuck methods do not actually require the retriveal of a full stuck from memory but doing so makes it easier to write an initial version of the btree algorithm at the cost of considerable inefficiency.
+     {new Instruction()
        {void action()
          {index.copy(Index);
-          gSize.executeTransaction(index);
+         }
+       };
+      get();
+     }
+
+    void getRoot()                                                              // Copy the root stuck out of memory into a set of registers. Currently this is done sequentially, but multiple stuck loads could be overlapped if this method was fragmented into smaller steps.  Most stuck methods do not actually require the retriveal of a full stuck from memory but doing so makes it easier to write an initial version of the btree algorithm at the cost of considerable inefficiency.
+     {new Instruction()
+       {void action()
+         {index.registerSet(0);
+         }
+       };
+      get();
+     }
+
+    void get()                                                                  // Copy the indexed stuck out of memory into a set of registers. Currently this is done sequentially, but multiple stuck loads could be overlapped if this method was fragmented into smaller steps.  Most stuck methods do not actually require the retriveal of a full stuck from memory but doing so makes it easier to write an initial version of the btree algorithm at the cost of considerable inefficiency.
+     {new Instruction()                                                         // Request the details of the indexed stuck from memory
+       {void action()
+         {gSize.executeTransaction(index);
           gLeaf.executeTransaction(index);
           for (int i = 0; i < maxStuckSize; i++)
            {gKeys[i].executeTransaction(index);
@@ -196,7 +213,7 @@ class Btree extends Chip                                                        
        };
      }
 
-    void set()                                                                  // Update a stuck in memory fromthe registers describing his stuck
+    void set()                                                                  // Update a stuck in memory from the registers describing his stuck
      {new Instruction()                                                         // Save registers into memory
        {void action()
          {sSize.executeTransaction(index, size);
@@ -218,7 +235,7 @@ class Btree extends Chip                                                        
      }
 
     public String toString()                                                    // Print the stuck
-     {final StringBuilder s = new StringBuilder();                              //
+     {final StringBuilder s = new StringBuilder();
       final int     ns = size  .registerGet();                                  // Size of stuck
       final int     il = isLeaf.registerGet() > 0 ? 1 : 0;                      // Is a leaf
       final String  nm = processName;                                           // Name of the stuck is the same as the name of the process
@@ -231,83 +248,23 @@ class Btree extends Chip                                                        
        }
       return ""+s;
      }
-   }
+
+    void push(Register Key, Register Data)                                      // Push a key, data pair to the local copy of the stuck
+     {new Instruction()
+       {void action()
+         {final int N = size.registerGet();
+          if (N >= maxStuckSize)
+           {chipStop(1);
+            return;
+           }
+          keys[N].copy(Key);
+          data[N].copy(Data);
+          size.inc();
+         }
+       };                                                                         //
+     }
+   } // Stuck
 /*
-  Stuck stuck()                                                                 // Make a temporary stuck we can copy into or out of as needed
-   {final Stuck s = new Stuck(maxStuckSize, bitsPerKey, bitsPerData);
-    s.L.P = L.P;
-    return s;
-   }
-
-  void copyStuckFrom(Stuck S, Layout.Field BtreeIndex)                          // Copy a stuck out of the btree
-   {final Layout.Field stuckIndex = S.index();
-
-    stuckSize  .read(BtreeIndex);
-    S.stuckSize.move(stuckSize);
-
-    for (int i = 0; i < S.maxStuckSize; i++)
-     {stuckIndex.write(i);
-      stuckKeys.read(BtreeIndex, stuckIndex); S.stuckKeys.move(stuckKeys); S.stuckKeys.write(stuckIndex);
-      stuckData.read(BtreeIndex, stuckIndex); S.stuckData.move(stuckData); S.stuckData.write(stuckIndex);
-     }
-   }
-
-  void iCopyStuckFrom(Stuck S, Layout.Field BtreeIndex)                         // Copy a stuck out of the btree
-   {L.P.new Instruction()
-     {void action()
-       {copyStuckFrom(S, BtreeIndex);
-       }
-     };
-   }
-
-  void saveStuckInto(Stuck S, Layout.Field BtreeIndex)                          // Save a stuck into the indicated position in the btree
-   {final Layout.Field stuckIndex = S.index();
-
-    stuckSize.move(S.stuckSize);                                                // Get the size field from the btree
-    stuckSize.write(BtreeIndex);                                                // Set the size field in the stuck
-
-    for (int i = 0; i < S.maxStuckSize; i++)
-     {stuckIndex.write(i);
-      S.stuckKeys.read(stuckIndex); stuckKeys.move(S.stuckKeys); stuckKeys.write(BtreeIndex, stuckIndex);
-      S.stuckData.read(stuckIndex); stuckData.move(S.stuckData); stuckData.write(BtreeIndex, stuckIndex);
-     }
-   }
-
-  void iSaveStuckInto(Stuck S, Layout.Field BtreeIndex)                         // Save a stuck into the indicated position in the btree
-   {L.P.new Instruction()
-     {void action()
-       {saveStuckInto(S, BtreeIndex);                                           // Save a stuck into the indicated position in the btree
-       }
-     };
-   }
-
-  void copyStuckFromRoot(Stuck S)                                               // Copy a stuck out of the root of the btree
-   {final Layout.Field i = index();
-    i.zero();
-    copyStuckFrom(S, i);
-   }
-
-  void iCopyStuckFromRoot(Stuck S)                                              // Copy a stuck out of the root of the btree
-   {L.P.new Instruction()
-     {void action()
-       {copyStuckFromRoot(S);
-       }
-     };
-   }
-
-  void saveStuckIntoRoot(Stuck S)                                               // Copy a stuck out of the root of the btree
-   {final Layout.Field i = index();
-    i.zero();
-    saveStuckInto(S, i);
-   }
-
-  void iSaveStuckIntoRoot(Stuck S)                                              // Copy a stuck out of the root of the btree
-   {L.P.new Instruction()
-     {void action()
-       {saveStuckIntoRoot(S);
-       }
-    };
-   }
 
 //D1 Attributes                                                                 // Get and set attributes
 
@@ -1496,7 +1453,7 @@ Stuck: Stuck size: 2, leaf: 1
 
     //stop(b.printMemory());
     ok(b.printMemory(), """
-Chip: Btree            step: 13, maxSteps: 20, running: 0, returnCode: 0
+Chip: Btree            step: 14, maxSteps: 20, running: 0, returnCode: 0
   Processes:
     stuckIsLeaf           , memory: 1 * 1 = 1
     stuckIsFree           , memory: 1 * 1 = 0
@@ -1528,6 +1485,37 @@ Chip: Btree            step: 12, maxSteps: 20, running: 0, returnCode: 0
     stuckData_2           , memory: 1 * 8 = 0
     stuckKeys_3           , memory: 1 * 8 = 0
     stuckData_3           , memory: 1 * 8 = 0
+""");
+   }
+
+  static void test_push()
+   {final int B = 8, S = 4, K = 8, D = 8;
+    final Btree b = new Btree(B, S+S, K, D);
+
+    Stuck s = b.new Stuck("Stuck");
+    final Process.Register k = s.register("k", 8);
+    final Process.Register d = s.register("d", 8);
+
+    s.getRoot();
+    for (int i = 0; i < S; i++)
+     {final int I = i;
+      s.new Instruction()
+       {void action()
+         {k.registerSet(I); d.registerSet(I+1);
+         }
+       };
+      s.push(k, d);
+     }
+
+    b.maxSteps = 30;
+    b.chipRunJava();
+
+    ok(s, """
+Stuck: Stuck size: 4, leaf: 0
+ 0     0 =>    1
+ 1     1 =>    2
+ 2     2 =>    3
+ 3     3 =>    4
 """);
    }
 
@@ -2961,6 +2949,7 @@ stuckData: value=2, 0=1, 1=2, 2=0, 3=0
 */
   static void oldTests()                                                        // Tests thought to be in good shape
    {test_create1();
+    test_push();
     //test_create();
     //test_leaf();
     //test_allocFree();
@@ -2989,7 +2978,8 @@ stuckData: value=2, 0=1, 1=2, 2=0, 3=0
    }
 
   static void newTests()                                                        // Tests being worked on
-   {oldTests();
+   {//oldTests();
+    test_push();
    }
 
   public static void main(String[] args)                                        // Test if called as a program
