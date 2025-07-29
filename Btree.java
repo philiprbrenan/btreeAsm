@@ -493,6 +493,29 @@ class Btree extends Chip                                                        
        };
      }
 
+//D3 Split                                                                      // Split stucks in many and various ways
+
+    void splitIntoTwo(Stuck Left, Stuck Right, int Copy)                        // Copy the first key, data pairs into the left stuck, the remainder into the right stuck.  The original source stuck is not modifiedr
+     {new Instruction()
+       {void action()
+         {final int N = size.registerGet();
+          if (Copy >= N)
+           {chipStop(14);
+            return;
+           }
+          for (int i = 0; i < Copy; ++i)
+           {Left.keys[i].copy(keys[i]);
+            Left.data[i].copy(data[i]);
+           }
+          for (int i = 0; i < N - Copy; ++i)
+           {Right.keys[i].copy(keys[Copy+i]);
+            Right.data[i].copy(data[Copy+i]);
+           }
+          Left .size.registerSet(Copy);
+          Right.size.registerSet(N - Copy);
+         }
+       };
+     }
    } // Stuck
 /*
 
@@ -2116,6 +2139,41 @@ Stuck: Stuck size: 4, leaf: 0
     ok(d, "Stuck_d = 21");
    }
 
+  static void test_splitIntoTwo()
+   {final Btree b = test_push();
+
+    Stuck s = (Stuck)b.processes.get("Stuck");
+    Stuck l = b.new Stuck("Left");
+    Stuck r = b.new Stuck("Right");
+
+    s.processClear();
+
+    s.splitIntoTwo(l, r, 2);
+
+    b.maxSteps = 100;
+    b.chipRunJava();
+    //stop(s);
+    ok(s, """
+Stuck: Stuck size: 4, leaf: 0
+ 0     0 =>    1
+ 1     1 =>    2
+ 2     2 =>    3
+ 3     3 =>    4
+""");
+    //stop(l);
+    ok(l, """
+Stuck: Left size: 2, leaf: 0
+ 0     0 =>    1
+ 1     1 =>    2
+""");
+    //stop(r);
+    ok(r, """
+Stuck: Right size: 2, leaf: 0
+ 0     2 =>    3
+ 1     3 =>    4
+""");
+   }
+
 /*
   static Btree test_create()
    {final Btree b = new Btree(32, 4, 8, 8);
@@ -3556,6 +3614,9 @@ stuckData: value=2, 0=1, 1=2, 2=0, 3=0
     test_insertElementAt();
     test_removeElementAt();
     test_search_eq();
+    test_search_le();
+    test_splitIntoTwo();
+//  test_splitIntoThree();
 
     //test_create();
     //test_leaf();
@@ -3586,7 +3647,8 @@ stuckData: value=2, 0=1, 1=2, 2=0, 3=0
 
   static void newTests()                                                        // Tests being worked on
    {//oldTests();
-    test_search_le();
+    test_splitIntoTwo();
+//  test_splitIntoThree();
    }
 
   public static void main(String[] args)                                        // Test if called as a program
