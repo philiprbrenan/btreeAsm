@@ -216,6 +216,21 @@ class Btree extends Chip                                                        
         sData[i].waitResultOfTransaction();
        }
      }
+
+    public String toString()                                                    // Print the stuck
+     {final StringBuilder s = new StringBuilder();                              //
+      final int     ns = size  .registerGet();                                  // Size of stuck
+      final int     il = isLeaf.registerGet() > 0 ? 1 : 0;                      // Is a leaf
+      final String  nm = processName;                                           // Name of the stuck is the same as the name of the process
+      s.append("Stuck: "+nm+" size: "+ns+", leaf: "+il+"\n");                   // Title
+
+      for (int i = 0; i < ns; i++)                                              // Each key, data pair
+       {final int k = keys[i].registerGet();
+        final int d = data[i].registerGet();
+        s.append(String.format("%2d  %4d => %4d\n", i, k, d));
+       }
+      return ""+s;
+     }
    }
 /*
   Stuck stuck()                                                                 // Make a temporary stuck we can copy into or out of as needed
@@ -1449,9 +1464,33 @@ class Btree extends Chip                                                        
    }
 
 //D1 Tests                                                                      // Test the btree
-
+*/
   final static int[]random_100 = {27, 442, 545, 317, 511, 578, 391, 993, 858, 586, 472, 906, 658, 704, 882, 246, 261, 501, 354, 903, 854, 279, 526, 686, 987, 403, 401, 989, 650, 576, 436, 560, 806, 554, 422, 298, 425, 912, 503, 611, 135, 447, 344, 338, 39, 804, 976, 186, 234, 106, 667, 494, 690, 480, 288, 151, 773, 769, 260, 809, 438, 237, 516, 29, 376, 72, 946, 103, 961, 55, 358, 232, 229, 90, 155, 657, 681, 43, 907, 564, 377, 615, 612, 157, 922, 272, 490, 679, 830, 839, 437, 826, 577, 937, 884, 13, 96, 273, 1, 188};
 
+  static void test_create1()
+   {final Btree b = new Btree(1, 4, 8, 8);
+    b.stuckIsLeaf .memorySet(1, 0);
+    b.stuckSize   .memorySet(2, 0);
+    b.stuckKeys[0].memorySet(2, 0); b.stuckData[0].memorySet(3, 0);
+    b.stuckKeys[1].memorySet(4, 0); b.stuckData[1].memorySet(5, 0);
+
+    Stuck s = b.new Stuck("Stuck");
+    final Process.Register i = s.register("i", 3);
+    i.registerSet(0);
+
+    s.get(i);
+
+    b.maxSteps = 100;
+    b.chipRunJava();
+
+    ok(s, """
+Stuck: Stuck size: 2, leaf: 1
+ 0     2 =>    3
+ 1     4 =>    5
+""");
+   }
+
+/*
   static Btree test_create()
    {final Btree b = new Btree(32, 4, 8, 8);
     ok(b.dump(), """
@@ -2880,7 +2919,8 @@ stuckData: value=2, 0=1, 1=2, 2=0, 3=0
    }
 */
   static void oldTests()                                                        // Tests thought to be in good shape
-   {//test_create();
+   {test_create1();
+    //test_create();
     //test_leaf();
     //test_allocFree();
     //test_btree();
