@@ -543,6 +543,57 @@ class Btree extends Chip                                                        
          }
        };
      }
+
+    void splitLow(Stuck Left)                                                   // Split a full stuck with an even number of elements so thatthe fors half is moved in the left stuck leaving the remainmder moved down in the current stuck
+     {new Instruction()
+       {void action()
+         {if (maxStuckSize % 2 == 1)
+           {chipStop(16);
+            return;
+           }
+          if (maxStuckSize != size.registerGet())
+           {chipStop(17);
+            return;
+           }
+          final int N = maxStuckSize / 2;
+          for (int i = 0; i < N; ++i)
+           {Left.keys[i].copy(keys[i]);
+            Left.data[i].copy(data[i]);
+           }
+          Left.size.registerSet(N);
+
+          for (int i = 0; i < N; ++i)
+           {keys[i].copy(keys[N+i]);
+            data[i].copy(data[N+i]);
+           }
+          size.registerSet(N);
+         }
+       };
+     }
+
+//    void splitLowButOne(Stuck Left, int Copy)                                           // Copy the specified number of key, data pairs into the left stuck then move the remainder down
+//     {if (Copy >= stuckSize.value)
+//       {L.P.stopProgram("Cannot copy beyond end of stuck");
+//        return;
+//       }
+//      if (Left.maxStuckSize  <  Copy)
+//       {L.P.stopProgram("Left stuck too small");
+//        return;
+//       }
+//
+//      for (int i = 0; i < Copy; ++i)                                              // Copy to left
+//       {Left.stuckKeys.move(i, stuckKeys, i);
+//        Left.stuckData.move(i, stuckData, i);
+//       }
+//      Left.stuckSize.value = Copy;                                                // New size of left
+//
+//      for (int i = 0; i < Copy; ++i)                                              // Move down right
+//       {stuckKeys.move(i, stuckKeys, Copy + i);
+//        stuckData.move(i, stuckData, Copy + i);
+//       }
+//      stuckSize.value = Copy;                                                     // New size of right
+//     }
+
    } // Stuck
 /*
 
@@ -2252,6 +2303,104 @@ Stuck: Right size: 2, leaf: 0
 """);
    }
 
+  static void test_splitLow()
+   {final Btree b = test_push();
+
+    Stuck s = (Stuck)b.processes.get("Stuck");
+    final Process.Register k = s.registers.get("k");
+    final Process.Register d = s.registers.get("d");
+    Stuck l = b.new Stuck("Left");
+
+    s.processClear();
+    s.new Instruction()
+     {void action()
+       {s.size.zero();
+       }
+     };
+
+    for (int i = 0; i < b.maxStuckSize; i++)
+     {final int I = i;
+      s.new Instruction()
+       {void action()
+         {k.registerSet(I); d.registerSet(I+1);
+         }
+       };
+      s.push(k, d);
+     }
+
+    s.splitLow(l);
+
+    b.maxSteps = 100;
+    b.chipRunJava();
+    //stop(s);
+    ok(s, """
+Stuck: Stuck size: 4, leaf: 0
+ 0     4 =>    5
+ 1     5 =>    6
+ 2     6 =>    7
+ 3     7 =>    8
+""");
+    //stop(l);
+    ok(l, """
+Stuck: Left size: 4, leaf: 0
+ 0     0 =>    1
+ 1     1 =>    2
+ 2     2 =>    3
+ 3     3 =>    4
+""");
+   }
+
+  static void test_splitLowButOne()
+   {final Btree b = test_push();
+
+    Stuck s = (Stuck)b.processes.get("Stuck");
+    Stuck l = b.new Stuck("Left");
+    Stuck r = b.new Stuck("Right");
+
+    s.processClear();
+    s.new Instruction()
+     {void action()
+       {s.size.dec();
+       }
+     };
+
+    //s.splitLowButOne(l, r, 1);
+
+    b.maxSteps = 100;
+    b.chipRunJava();
+    //stop(s);
+    ok(s, """
+Stuck: Stuck size: 3, leaf: 0
+ 0     0 =>    1
+ 1     1 =>    2
+ 2     2 =>    3
+""");
+    //stop(l.dump());
+    ok(l.dump(), """
+Stuck: Left size: 1, leaf: 0
+ 0     0 =>    1
+ 1     0 =>    2
+ 2     0 =>    0
+ 3     0 =>    0
+ 4     0 =>    0
+ 5     0 =>    0
+ 6     0 =>    0
+ 7     0 =>    0
+""");
+    //stop(r.dump());
+    ok(r.dump(), """
+Stuck: Right size: 2, leaf: 0
+ 0     2 =>    3
+ 1     0 =>    4
+ 2     0 =>    0
+ 3     0 =>    0
+ 4     0 =>    0
+ 5     0 =>    0
+ 6     0 =>    0
+ 7     0 =>    0
+""");
+   }
+
 /*
   static Btree test_create()
    {final Btree b = new Btree(32, 4, 8, 8);
@@ -3695,6 +3844,8 @@ stuckData: value=2, 0=1, 1=2, 2=0, 3=0
     test_search_le();
     test_splitIntoTwo();
     test_splitIntoThree();
+    test_splitLow();
+    test_splitLowButOne();
 
     //test_create();
     //test_leaf();
@@ -3725,8 +3876,8 @@ stuckData: value=2, 0=1, 1=2, 2=0, 3=0
 
   static void newTests()                                                        // Tests being worked on
    {//oldTests();
-//  test_splitIntoTwo();
-    test_splitIntoThree();
+    test_splitLow();
+    //test_splitLowButOne();
    }
 
   public static void main(String[] args)                                        // Test if called as a program
