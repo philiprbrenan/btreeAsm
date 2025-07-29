@@ -431,6 +431,47 @@ class Btree extends Chip                                                        
          }
        };
      }
+
+    void removeElementAt(Register Index, Register Key, Register Data)              // Set the indexed key, data pair
+     {new Instruction()
+       {void action()
+         {final int N = Index.registerGet();
+          final int M = size.registerGet();
+          if (N >= M)
+           {chipStop(13);
+            return;
+           }
+          size.dec();
+          Key.copy (keys[N]);
+          Data.copy(data[N]);
+          for (int i = N; i < M-1; i++)
+           {keys[i].copy(keys[i+1]);
+            data[i].copy(data[i+1]);
+           }
+         }
+       };
+     }
+
+//D3 Search                                                                     // Search the stuck
+
+    void search_eq(Register Key, Register Found, Register Index, Register Data) // Find the specified key if possible in the stuck
+     {new Instruction()
+       {void action()
+         {final int N = size.registerGet();
+          Found.zero();
+          for (int i = 0; i < N; ++i)
+           {final int I = i;
+             if (keys[i].registerGet() == Key.registerGet())
+             {Found.one();
+              Index.registerSet(I);
+              Data.copy(data[I]);
+              return;
+             }
+           }
+         }
+       };
+     }
+
    } // Stuck
 /*
 
@@ -1931,6 +1972,79 @@ Stuck: Stuck size: 5, leaf: 0
 """);
    }
 
+  static void test_removeElementAt()
+   {final Btree b = test_push();
+
+    Stuck s = (Stuck)b.processes.get("Stuck");
+    final Process.Register k = s.registers.get("k");
+    final Process.Register d = s.registers.get("d");
+    final Process.Register i = s.register("i", b.stuckAddressSize);
+
+    s.processClear();
+
+    s.new Instruction()
+     {void action()
+       {i.registerSet(1);
+       }
+     };
+    s.removeElementAt(i, k, d);
+
+    b.maxSteps = 100;
+    b.chipRunJava();
+    //stop(s);
+    ok(s, """
+Stuck: Stuck size: 3, leaf: 0
+ 0     0 =>    1
+ 1     2 =>    3
+ 2     3 =>    4
+""");
+    ok(k, "Stuck_k = 1");
+    ok(d, "Stuck_d = 2");
+   }
+
+  static void test_search_eq()
+   {final Btree b = test_push();
+
+    Stuck s = (Stuck)b.processes.get("Stuck");
+    final Process.Register k = s.registers.get("k");
+    final Process.Register d = s.registers.get("d");
+    final Process.Register i = s.register("i", b.stuckAddressSize);
+    final Process.Register f = s.register("f", 1);
+
+    s.processClear();
+
+    s.new Instruction()
+     {void action()
+       {k.registerSet(11);
+       }
+     };
+    s.search_eq(f, i, k, d);
+
+    b.maxSteps = 100;
+    b.chipRunJava();
+    ok(f, "Stuck_f = 0");
+
+    final int N = 4;
+    for (int j = 0; j < N; j++)
+     {final int J = j;
+       s.processClear();
+
+      s.new Instruction()
+       {void action()
+         {k.registerSet(J);
+         }
+       };
+      s.search_eq(k, f, i, d);
+
+      b.maxSteps = 100;
+      b.chipRunJava();
+      ok(f, "Stuck_f = 1");
+      ok(i, "Stuck_i = "+J);
+      ok(k, "Stuck_k = "+J);
+      ok(d, "Stuck_d = "+(J+1));
+    }
+   }
+
 /*
   static Btree test_create()
    {final Btree b = new Btree(32, 4, 8, 8);
@@ -3369,6 +3483,8 @@ stuckData: value=2, 0=1, 1=2, 2=0, 3=0
     test_setDataAt();
     test_setPastLastElement();
     test_insertElementAt();
+    test_removeElementAt();
+    test_search_eq();
 
     //test_create();
     //test_leaf();
@@ -3399,7 +3515,7 @@ stuckData: value=2, 0=1, 1=2, 2=0, 3=0
 
   static void newTests()                                                        // Tests being worked on
    {//oldTests();
-    test_insertElementAt();
+    test_search_eq();
    }
 
   public static void main(String[] args)                                        // Test if called as a program
