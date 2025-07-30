@@ -4,11 +4,11 @@
 
 # Chip
 
-A chip implements an algorithm in [Silicon](https://en.wikipedia.org/wiki/Silicon). 
-A chip exists in one of two states:
+A [chip](https://en.wikipedia.org/wiki/Integrated_circuit) implements an algorithm in [Silicon](https://en.wikipedia.org/wiki/Silicon). 
+A [chip](https://en.wikipedia.org/wiki/Integrated_circuit) exists in one of two states:
 
-- **Design**: The stage where the chip's layout is defined on [Silicon](https://en.wikipedia.org/wiki/Silicon). 
-- **Execution**: When the chip runs a fixed set of parallel [processes](https://en.wikipedia.org/wiki/Process_management_(computing)) to perform work.
+- **Design**: The stage where the layout of the [chip](https://en.wikipedia.org/wiki/Integrated_circuit) is defined on [Silicon](https://en.wikipedia.org/wiki/Silicon). 
+- **Execution**: When the [chip](https://en.wikipedia.org/wiki/Integrated_circuit) runs a fixed set of parallel [processes](https://en.wikipedia.org/wiki/Process_management_(computing)) to perform work.
 
 ## Process
 
@@ -28,7 +28,7 @@ The [Verilog](https://en.wikipedia.org/wiki/Verilog) `always` blocks enforce acc
 The [memory](https://en.wikipedia.org/wiki/Computer_memory) associated with a [process](https://en.wikipedia.org/wiki/Process_management_(computing)) is comprised of one-dimensional, indexable [arrays](https://en.wikipedia.org/wiki/Dynamic_array): 
 - Memory size is determined at **runtime**.
 
-- Memory contents persist even when the chip is not executing.
+- Memory contents persist even when the [chip](https://en.wikipedia.org/wiki/Integrated_circuit) is not executing.
 
 - Memory is typically accessed over multiple [clock](https://en.wikipedia.org/wiki/Clock_generator) cycles by issuing transactions that copy [memory](https://en.wikipedia.org/wiki/Computer_memory) elements to or from local [registers](https://en.wikipedia.org/wiki/Processor_register) for faster access.
 
@@ -42,11 +42,11 @@ Registers are local blocks of [memory](https://en.wikipedia.org/wiki/Computer_me
 
 - Are accessible within a **single [clock](https://en.wikipedia.org/wiki/Clock_generator) cycle**.
 
-- Lose their values if the chip is powered off.
+- Lose their values if the [chip](https://en.wikipedia.org/wiki/Integrated_circuit) is powered off.
 
 ## Program Execution
 
-Each [process](https://en.wikipedia.org/wiki/Process_management_(computing)) executes a single [program](https://en.wikipedia.org/wiki/Computer_program) composed of sequential [instructions](https://en.wikipedia.org/wiki/Instruction_set_architecture). A chip may contain multiple [processes](https://en.wikipedia.org/wiki/Process_management_(computing)). 
+Each [process](https://en.wikipedia.org/wiki/Process_management_(computing)) executes a single [program](https://en.wikipedia.org/wiki/Computer_program) composed of sequential [instructions](https://en.wikipedia.org/wiki/Instruction_set_architecture). A [chip](https://en.wikipedia.org/wiki/Integrated_circuit) may contain multiple [processes](https://en.wikipedia.org/wiki/Process_management_(computing)). 
 Processes can be driven by transactions, which are parameter lists of [registers](https://en.wikipedia.org/wiki/Processor_register) provided by the calling [processes](https://en.wikipedia.org/wiki/Process_management_(computing)). 
 Processes execute in a fixed round-robin order, allowing behavior in [Verilog](https://en.wikipedia.org/wiki/Verilog) to be compared with [Java](https://en.wikipedia.org/wiki/Java_(programming_language)) simulations reliably.
 
@@ -72,7 +72,7 @@ To avoid deadlocks, [processes](https://en.wikipedia.org/wiki/Process_management
 
 ## Verilog Implementation
 
-The chip is implemented in [Verilog](https://en.wikipedia.org/wiki/Verilog). Each [process](https://en.wikipedia.org/wiki/Process_management_(computing)) is mapped to an `always` block that:
+The [chip](https://en.wikipedia.org/wiki/Integrated_circuit) is implemented in [Verilog](https://en.wikipedia.org/wiki/Verilog). Each [process](https://en.wikipedia.org/wiki/Process_management_(computing)) is mapped to an `always` block that:
 
 - Executes [instructions](https://en.wikipedia.org/wiki/Instruction_set_architecture) comprising in-flight transactions or polls its non-in-flight transactions for work.
 
@@ -86,7 +86,7 @@ Programs are implemented using a `case` statement where:
 
 - The process's [program](https://en.wikipedia.org/wiki/Computer_program) counter selects the next [instruction](https://en.wikipedia.org/wiki/Instruction_set_architecture) to execute.
 
-This is **not** a general-purpose processor. It is a **specialized chip** with **statically optimized** execution paths for minimal time and power consumption.
+This is **not** a general-purpose processor. It is a specialized [chip](https://en.wikipedia.org/wiki/Integrated_circuit) with **statically optimized** execution paths for minimal time and power consumption.
 
 ## Java Simulation
 
