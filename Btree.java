@@ -1877,36 +1877,36 @@ Stuck: Stuck size: 2, leaf: 1
     ok(b.printMemory(), """
 Chip: Btree            step: 14, maxSteps: 20, running: 0, returnCode: 0
   Processes:
-    stuckIsLeaf           , memory: 1 * 1 = 1
-    stuckIsFree           , memory: 1 * 1 = 0
-    freeNext              , memory: 1 * 1 = 0
-    stuckSize             , memory: 1 * 3 = 2
-    stuckKeys_0           , memory: 1 * 8 = 2
-    stuckData_0           , memory: 1 * 8 = 3
-    stuckKeys_1           , memory: 1 * 8 = 4
-    stuckData_1           , memory: 1 * 8 = 5
-    stuckKeys_2           , memory: 1 * 8 = 0
-    stuckData_2           , memory: 1 * 8 = 0
-    stuckKeys_3           , memory: 1 * 8 = 0
-    stuckData_3           , memory: 1 * 8 = 0
+    stuckIsLeaf           memory: 1 * 1 = 1
+    stuckIsFree           memory: 1 * 1 = 0
+    freeNext              memory: 1 * 1 = 0
+    stuckSize             memory: 1 * 3 = 2
+    stuckKeys_0           memory: 1 * 8 = 2
+    stuckData_0           memory: 1 * 8 = 3
+    stuckKeys_1           memory: 1 * 8 = 4
+    stuckData_1           memory: 1 * 8 = 5
+    stuckKeys_2           memory: 1 * 8 = 0
+    stuckData_2           memory: 1 * 8 = 0
+    stuckKeys_3           memory: 1 * 8 = 0
+    stuckData_3           memory: 1 * 8 = 0
 """);
     b.chipRunJava();
     //stop(b.printMemory());
     ok(b.printMemory(), """
 Chip: Btree            step: 12, maxSteps: 20, running: 0, returnCode: 0
   Processes:
-    stuckIsLeaf           , memory: 1 * 1 = 0
-    stuckIsFree           , memory: 1 * 1 = 0
-    freeNext              , memory: 1 * 1 = 0
-    stuckSize             , memory: 1 * 3 = 1
-    stuckKeys_0           , memory: 1 * 8 = 3
-    stuckData_0           , memory: 1 * 8 = 4
-    stuckKeys_1           , memory: 1 * 8 = 4
-    stuckData_1           , memory: 1 * 8 = 5
-    stuckKeys_2           , memory: 1 * 8 = 0
-    stuckData_2           , memory: 1 * 8 = 0
-    stuckKeys_3           , memory: 1 * 8 = 0
-    stuckData_3           , memory: 1 * 8 = 0
+    stuckIsLeaf           memory: 1 * 1 = 0
+    stuckIsFree           memory: 1 * 1 = 0
+    freeNext              memory: 1 * 1 = 0
+    stuckSize             memory: 1 * 3 = 1
+    stuckKeys_0           memory: 1 * 8 = 3
+    stuckData_0           memory: 1 * 8 = 4
+    stuckKeys_1           memory: 1 * 8 = 4
+    stuckData_1           memory: 1 * 8 = 5
+    stuckKeys_2           memory: 1 * 8 = 0
+    stuckData_2           memory: 1 * 8 = 0
+    stuckKeys_3           memory: 1 * 8 = 0
+    stuckData_3           memory: 1 * 8 = 0
 """);
    }
 
@@ -4224,8 +4224,8 @@ stuckData: value=2, 0=1, 1=2, 2=0, 3=0
    }
 
   static void newTests()                                                        // Tests being worked on
-   {//oldTests();
-    test_allocate();
+   {oldTests();
+    //test_allocate();
    }
 
   public static void main(String[] args)                                        // Test if called as a program
