@@ -1,8 +1,10 @@
 # Chip
 
+A chip implements an algorithm.
+
 A chip exists in one of two phases:
 
-- **Design time**: The stage where the chipâs layout is defined on [Silicon](https://en.wikipedia.org/wiki/Silicon). - **Execution time**: When the chip runs a fixed set of parallel [processes](https://en.wikipedia.org/wiki/Process_management_(computing)) to perform work.
+- **Design time**: The stage where the chip's layout is defined on [Silicon](https://en.wikipedia.org/wiki/Silicon). - **Execution time**: When the chip runs a fixed set of parallel [processes](https://en.wikipedia.org/wiki/Process_management_(computing)) to perform work.
 
 ## Process
 
