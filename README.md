@@ -6,23 +6,19 @@
 
 A chip implements an algorithm in [Silicon](https://en.wikipedia.org/wiki/Silicon). 
 A chip exists in one of two states:
-
 - **Design**: The stage where the chip's layout is defined on [Silicon](https://en.wikipedia.org/wiki/Silicon). - **Execution**: When the chip runs a fixed set of parallel [processes](https://en.wikipedia.org/wiki/Process_management_(computing)) to perform work.
 
 ## Process
 
 Each [process](https://en.wikipedia.org/wiki/Process_management_(computing)) is assigned a unique identifier at design time. A [process](https://en.wikipedia.org/wiki/Process_management_(computing)) includes:
-
 - A [program](https://en.wikipedia.org/wiki/Computer_program), which in turn is comprised of [instructions](https://en.wikipedia.org/wiki/Instruction_set_architecture). - An optional block of [memory](https://en.wikipedia.org/wiki/Computer_memory) - Optional local [registers](https://en.wikipedia.org/wiki/Processor_register) 
 ### Access Rules
 
-The [Verilog](https://en.wikipedia.org/wiki/Verilog) `always` blocks enforce access rule requirements for [processes](https://en.wikipedia.org/wiki/Process_management_(computing)): 
-- A [process](https://en.wikipedia.org/wiki/Process_management_(computing)) can **only write** to its own [memory](https://en.wikipedia.org/wiki/Computer_memory) and [registers](https://en.wikipedia.org/wiki/Processor_register). - A [process](https://en.wikipedia.org/wiki/Process_management_(computing)) can **read** its own [registers](https://en.wikipedia.org/wiki/Processor_register) and the [registers](https://en.wikipedia.org/wiki/Processor_register) of **any** other [process](https://en.wikipedia.org/wiki/Process_management_(computing)) .
+The [Verilog](https://en.wikipedia.org/wiki/Verilog) `always` blocks enforce access rule requirements for [processes](https://en.wikipedia.org/wiki/Process_management_(computing)): - A [process](https://en.wikipedia.org/wiki/Process_management_(computing)) can **only write** to its own [memory](https://en.wikipedia.org/wiki/Computer_memory) and [registers](https://en.wikipedia.org/wiki/Processor_register). - A [process](https://en.wikipedia.org/wiki/Process_management_(computing)) can **read** its own [registers](https://en.wikipedia.org/wiki/Processor_register) and the [registers](https://en.wikipedia.org/wiki/Processor_register) of **any** other [process](https://en.wikipedia.org/wiki/Process_management_(computing)) .
 
 ## Memory
 
-The [memory](https://en.wikipedia.org/wiki/Computer_memory) associated with a [process](https://en.wikipedia.org/wiki/Process_management_(computing)) is comprised of one-dimensional, indexable [arrays](https://en.wikipedia.org/wiki/Dynamic_array): 
-- Memory size is determined at **runtime**.
+The [memory](https://en.wikipedia.org/wiki/Computer_memory) associated with a [process](https://en.wikipedia.org/wiki/Process_management_(computing)) is comprised of one-dimensional, indexable [arrays](https://en.wikipedia.org/wiki/Dynamic_array): - Memory size is determined at **runtime**.
 - Memory contents persist even when the chip is not executing.
 - Memory is typically accessed over multiple clock cycles by issuing transactions that copy [memory](https://en.wikipedia.org/wiki/Computer_memory) elements to or from local [registers](https://en.wikipedia.org/wiki/Processor_register) for faster access.
 - Each memeory is owned by a [process](https://en.wikipedia.org/wiki/Process_management_(computing)) .
@@ -58,13 +54,11 @@ To avoid deadlocks, [processes](https://en.wikipedia.org/wiki/Process_management
 ## Verilog Implementation
 
 The chip is implemented in [Verilog](https://en.wikipedia.org/wiki/Verilog). Each [process](https://en.wikipedia.org/wiki/Process_management_(computing)) is mapped to an `always` block that:
-
 - Executes [instructions](https://en.wikipedia.org/wiki/Instruction_set_architecture) comprising in-flight transactions or polls its non-in-flight transactions for work.
 - Is triggered by a common clock to ensure **synchronous execution**.
 - Shares a common clock cycle count (step number) across all [processes](https://en.wikipedia.org/wiki/Process_management_(computing)), though each [process](https://en.wikipedia.org/wiki/Process_management_(computing)) has its own [program](https://en.wikipedia.org/wiki/Computer_program) counter.
 
 Programs are implemented using a `case` statement where:
-
 - Each [instruction](https://en.wikipedia.org/wiki/Instruction_set_architecture) corresponds to a case branch.
 - The process's [program](https://en.wikipedia.org/wiki/Computer_program) counter selects the next [instruction](https://en.wikipedia.org/wiki/Instruction_set_architecture) to execute.
 
@@ -73,6 +67,5 @@ This is **not** a general-purpose processor. It is a **specialized chip** with *
 ## Java Simulation
 
 Writing [Verilog](https://en.wikipedia.org/wiki/Verilog) directly is time-consuming and error-prone. Therefore:
-
 - Algorithms are first written and debugged in [Java](https://en.wikipedia.org/wiki/Java_(programming_language)) using familiar programming paradigms and tools.
 - [Java](https://en.wikipedia.org/wiki/Java_(programming_language)) [code](https://en.wikipedia.org/wiki/Computer_program) is then **semi-automatically translated** into [Verilog](https://en.wikipedia.org/wiki/Verilog). - This approach produces [Verilog](https://en.wikipedia.org/wiki/Verilog) [code](https://en.wikipedia.org/wiki/Computer_program) **more efficiently** and **reliably** than writing it by hand.
