@@ -19,7 +19,6 @@ class Chip extends Test                                                         
   static boolean               debug = false;                                   // Debug when true
   static boolean            chipStop = false;                                   // Exit on prgram error if true - useful for debugging
 
-
 //D1 Chip                                                                       // A chip is constructed from a fixed number of communicating processes that execute code on the chip to produce the desired outputs from the inputs to the chip
 
   Chip(String Name)             {chipName = Name;}                              // Create a new chip
@@ -342,8 +341,9 @@ endmodule
 
       Register(String RegisterName, int RegisterBits)                           // Create the register
        {N();
-        registerName = RegisterName; registerBits = RegisterBits;
-        registers.put(registerName, this);                                      // Save registers associated with each process
+        final String n = registerName = RegisterName + "_" + registers.size();
+        registerBits = RegisterBits;
+        registers.put(n, this);                                                 // Save registers associated with each process
        }
 
       String registerName() {return processName + "_" + registerName;}          // Create a name for a register that includes its register name
@@ -925,17 +925,17 @@ Chip: Test             step: 4, maxSteps: 10, running: 0, returnCode: 1
   Processes:
     Process: 0 - Memory                instructions: 2, pc: 1, nextPc: 1, memory: 16 * 8 = 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16
       Registers :
-        Register: Memory_Memory_Value              = 2
-        Register: Memory_value                     = 2
+        Register: Memory_Memory_Value_0            = 2
+        Register: Memory_value_1                   = 2
       Transactions:
         Transaction   : get      - GetValueFromMemory  requested at: 2, finished at: 3, returnCode: 0, executable: 0, finished: 1
           Inputs      :
-            Request_index                          = 1
+            Request_index_0                        = 1
           Outputs     :
-            Memory_value                           = 2
+            Memory_value_1                         = 2
     Process: 1 - Request               instructions: 1, pc: 0, nextPc: 0
       Registers :
-        Register: Request_index                    = 1
+        Register: Request_index_0                  = 1
 """);
     ok(c.returnCode, 1);
     c.chipRunVerilog();
@@ -1030,33 +1030,33 @@ Chip: Test             step: 8, maxSteps: 10, running: 0, returnCode: 1
   Processes:
     Process: 0 - Memory                instructions: 2, pc: 0, nextPc: 0, memory: 16 * 8 = 1, 2, 33, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16
       Registers :
-        Register: Memory_Memory_Value              = 33
-        Register: Memory_Memory_1_index            = 1
-        Register: Memory_Memory_1_result           = 2
-        Register: Memory_Memory_2_index            = 2
-        Register: Memory_Memory_2_result           = 3
-        Register: Memory_Memory_3_index            = 2
-        Register: Memory_Memory_3_value            = 33
+        Register: Memory_Memory_Value_0            = 33
+        Register: Memory_Memory_1_index_1          = 1
+        Register: Memory_Memory_1_result_2         = 2
+        Register: Memory_Memory_2_index_3          = 2
+        Register: Memory_Memory_2_result_4         = 3
+        Register: Memory_Memory_3_index_5          = 2
+        Register: Memory_Memory_3_value_6          = 33
       Transactions:
         Transaction   : get      - Memory_1          requested at: 1, finished at: 2, returnCode: 0, executable: 0, finished: 1
           Inputs      :
-            Memory_Memory_1_index                  = 1
+            Memory_Memory_1_index_1                = 1
           Outputs     :
-            Memory_Memory_1_result                 = 2
+            Memory_Memory_1_result_2               = 2
         Transaction   : get      - Memory_2          requested at: 2, finished at: 3, returnCode: 0, executable: 0, finished: 1
           Inputs      :
-            Memory_Memory_2_index                  = 2
+            Memory_Memory_2_index_3                = 2
           Outputs     :
-            Memory_Memory_2_result                 = 3
+            Memory_Memory_2_result_4               = 3
         Transaction   : set      - Memory_3          requested at: 5, finished at: 6, returnCode: 0, executable: 0, finished: 1
           Inputs      :
-            Memory_Memory_3_index                  = 2
-            Memory_Memory_3_value                  = 33
+            Memory_Memory_3_index_5                = 2
+            Memory_Memory_3_value_6                = 33
     Process: 1 - Requests              instructions: 8, pc: 8, nextPc: -1
       Registers :
-        Register: Requests_index1                  = 1
-        Register: Requests_index2                  = 2
-        Register: Requests_value                   = 33
+        Register: Requests_index1_0                = 1
+        Register: Requests_index2_1                = 2
+        Register: Requests_value_2                 = 33
 """);
     c.chipRunVerilog();
    }
@@ -1128,20 +1128,20 @@ Chip: Test             step: 50, maxSteps: 100, running: 0, returnCode: 1
   Processes:
     Process: 0 - Main                  instructions: 50, pc: 50, nextPc: -1
       Registers :
-        Register: Main_a                           = 987
-        Register: Main_b                           = 1597
-        Register: Main_c                           = 1597
-        Register: Main_i                           = 16
+        Register: Main_a_0                         = 987
+        Register: Main_b_1                         = 1597
+        Register: Main_c_2                         = 1597
+        Register: Main_i_3                         = 16
     Process: 1 - Memory                instructions: 2, pc: 0, nextPc: 0, memory: 16 * 16 = 1, 2, 3, 5, 8, 13, 21, 34, 55, 89, 144, 233, 377, 610, 987, 1597
       Registers :
-        Register: Memory_Memory_Value              = 1597
-        Register: Memory_Memory_1_index            = 15
-        Register: Memory_Memory_1_value            = 1597
+        Register: Memory_Memory_Value_0            = 1597
+        Register: Memory_Memory_1_index_1          = 15
+        Register: Memory_Memory_1_value_2          = 1597
       Transactions:
         Transaction   : set      - Memory_1          requested at: 46, finished at: 47, returnCode: 0, executable: 0, finished: 1
           Inputs      :
-            Memory_Memory_1_index                  = 15
-            Memory_Memory_1_value                  = 1597
+            Memory_Memory_1_index_1                = 15
+            Memory_Memory_1_value_2                = 1597
 """);
 
     //stop(C.printMemory());
@@ -1152,7 +1152,7 @@ Chip: Test             step: 50, maxSteps: 100, running: 0, returnCode: 1
     Memory                memory: 16 * 16 = 1, 2, 3, 5, 8, 13, 21, 34, 55, 89, 144, 233, 377, 610, 987, 1597
 """);
 
-    ok(a, "Main_a = 987");
+    ok(a, "Main_a_0 = 987");
    }
 
   static void oldTests()                                                        // Tests thought to be in good shape
