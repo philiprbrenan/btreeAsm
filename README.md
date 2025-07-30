@@ -11,16 +11,14 @@ A chip exists in one of two states:
 
 ## Process
 
-Each process is assigned a unique identifier at design time. A process includes:
+Each [process](https://en.wikipedia.org/wiki/Process_management_(computing)) is assigned a unique identifier at design time. A [process](https://en.wikipedia.org/wiki/Process_management_(computing)) includes:
 
 - A [program](https://en.wikipedia.org/wiki/Computer_program), which in turn is comprised of instructions.
-- An optional block of [memory](https://en.wikipedia.org/wiki/Computer_memory) - Optional local registers
-
+- An optional block of [memory](https://en.wikipedia.org/wiki/Computer_memory) - Optional local [registers](https://en.wikipedia.org/wiki/Processor_register) 
 ### Access Rules
 
 The [Verilog](https://en.wikipedia.org/wiki/Verilog) `always` blocks enforce access rule requirements for [processes](https://en.wikipedia.org/wiki/Process_management_(computing)): 
-- A process can **only write** to its own [memory](https://en.wikipedia.org/wiki/Computer_memory) and registers.
-- A process can **read** its own registers and the registers of **any** other process .
+- A [process](https://en.wikipedia.org/wiki/Process_management_(computing)) can **only write** to its own [memory](https://en.wikipedia.org/wiki/Computer_memory) and [registers](https://en.wikipedia.org/wiki/Processor_register). - A [process](https://en.wikipedia.org/wiki/Process_management_(computing)) can **read** its own [registers](https://en.wikipedia.org/wiki/Processor_register) and the [registers](https://en.wikipedia.org/wiki/Processor_register) of **any** other [process](https://en.wikipedia.org/wiki/Process_management_(computing)) .
 
 ## Memory
 
@@ -28,8 +26,8 @@ Memory is comprised of one-dimensional, indexable arrays:
 
 - Memory size is determined at **runtime**.
 - Memory contents persist even when the chip is not executing.
-- Memory is typically accessed over multiple clock cycles by issuing transactions that copy [memory](https://en.wikipedia.org/wiki/Computer_memory) elements to or from local registers for faster access.
-- Each memeory is owned by a process .
+- Memory is typically accessed over multiple clock cycles by issuing transactions that copy [memory](https://en.wikipedia.org/wiki/Computer_memory) elements to or from local [registers](https://en.wikipedia.org/wiki/Processor_register) for faster access.
+- Each memeory is owned by a [process](https://en.wikipedia.org/wiki/Process_management_(computing)) .
 
 ## Registers
 
@@ -40,36 +38,32 @@ Registers are local blocks of [memory](https://en.wikipedia.org/wiki/Computer_me
 
 ## Program Execution
 
-Each process executes a **single program** composed of sequential instructions. A chip may contain multiple [processes](https://en.wikipedia.org/wiki/Process_management_(computing)). 
-Processes can be driven by **transactions**, which are parameter lists of registers provided by the calling [processes](https://en.wikipedia.org/wiki/Process_management_(computing)). 
+Each [process](https://en.wikipedia.org/wiki/Process_management_(computing)) executes a **single program** composed of sequential instructions. A chip may contain multiple [processes](https://en.wikipedia.org/wiki/Process_management_(computing)). 
+Processes can be driven by **transactions**, which are parameter lists of [registers](https://en.wikipedia.org/wiki/Processor_register) provided by the calling [processes](https://en.wikipedia.org/wiki/Process_management_(computing)). 
 Processes execute in a **fixed round-robin order**, allowing behavior in [Verilog](https://en.wikipedia.org/wiki/Verilog) to be compared with [Java](https://en.wikipedia.org/wiki/Java_(programming_language)) simulations reliably.
 
 ### Transactions
 
-A **transaction** enables one process to request work from another process using a parameter [list](https://en.wikipedia.org/wiki/Linked_list) comprised of registers.
-
-Processes handle transactions in **round-robin polling** mode, fixed at design time. Each process:
-
+A **transaction** enables one [process](https://en.wikipedia.org/wiki/Process_management_(computing)) to request work from another [process](https://en.wikipedia.org/wiki/Process_management_(computing)) using a parameter [list](https://en.wikipedia.org/wiki/Linked_list) comprised of [registers](https://en.wikipedia.org/wiki/Processor_register). 
+Processes handle transactions in **round-robin polling** mode, fixed at design time. Each [process](https://en.wikipedia.org/wiki/Process_management_(computing)): 
 1. Polls its inbound transactions for work.
 2. When a [transaction](https://en.wikipedia.org/wiki/Database_transaction) is found:
-   - Copies data from the transaction's parameter registers into its own registers.
-   - Processes the data.
-   - Writes results into the transaction's output registers.
-   - Marks the [transaction](https://en.wikipedia.org/wiki/Database_transaction) as complete.
-3. The requesting process waits for the completion of a [transaction](https://en.wikipedia.org/wiki/Database_transaction) by spinning on an instruction.
+   - Copies data from the transaction's parameter [registers](https://en.wikipedia.org/wiki/Processor_register) into its own [registers](https://en.wikipedia.org/wiki/Processor_register).    - Processes the data.
+   - Writes results into the transaction's output [registers](https://en.wikipedia.org/wiki/Processor_register).    - Marks the [transaction](https://en.wikipedia.org/wiki/Database_transaction) as complete.
+3. The requesting [process](https://en.wikipedia.org/wiki/Process_management_(computing)) waits for the completion of a [transaction](https://en.wikipedia.org/wiki/Database_transaction) by spinning on an instruction.
 
-The output remains in the [transaction](https://en.wikipedia.org/wiki/Database_transaction) registers until they are overwritten by the next use of the same [transaction](https://en.wikipedia.org/wiki/Database_transaction). 
+The output remains in the [transaction](https://en.wikipedia.org/wiki/Database_transaction) [registers](https://en.wikipedia.org/wiki/Processor_register) until they are overwritten by the next use of the same [transaction](https://en.wikipedia.org/wiki/Database_transaction). 
 ### Deadlock Prevention
 
-To avoid deadlocks, [processes](https://en.wikipedia.org/wiki/Process_management_(computing)) may **only request work from [processes](https://en.wikipedia.org/wiki/Process_management_(computing)) with lower process numbers**.
+To avoid deadlocks, [processes](https://en.wikipedia.org/wiki/Process_management_(computing)) may **only request work from [processes](https://en.wikipedia.org/wiki/Process_management_(computing)) with lower [process](https://en.wikipedia.org/wiki/Process_management_(computing)) numbers**.
 
 ## Verilog Implementation
 
-The chip is implemented in [Verilog](https://en.wikipedia.org/wiki/Verilog). Each process is mapped to an `always` block that:
+The chip is implemented in [Verilog](https://en.wikipedia.org/wiki/Verilog). Each [process](https://en.wikipedia.org/wiki/Process_management_(computing)) is mapped to an `always` block that:
 
 - Executes instructions comprising in-flight transactions or polls its non-in-flight transactions for work.
 - Is triggered by a common clock to ensure **synchronous execution**.
-- Shares a common clock cycle count (step number) across all [processes](https://en.wikipedia.org/wiki/Process_management_(computing)), though each process has its own [program](https://en.wikipedia.org/wiki/Computer_program) counter.
+- Shares a common clock cycle count (step number) across all [processes](https://en.wikipedia.org/wiki/Process_management_(computing)), though each [process](https://en.wikipedia.org/wiki/Process_management_(computing)) has its own [program](https://en.wikipedia.org/wiki/Computer_program) counter.
 
 Programs are implemented using a `case` statement where:
 
