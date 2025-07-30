@@ -18,7 +18,7 @@ Each **process** is assigned a unique identifier at design time. A process inclu
 
 ### Access Rules
 
-Verilog's `always` blocks enforce access rule requirements for [processes](https://en.wikipedia.org/wiki/Process_management_(computing)): 
+The [Verilog](https://en.wikipedia.org/wiki/Verilog) `always` blocks enforce access rule requirements for [processes](https://en.wikipedia.org/wiki/Process_management_(computing)): 
 - A process can **only write** to its own [memory](https://en.wikipedia.org/wiki/Computer_memory) and registers.
 - A process can **read** its own registers and the registers of **any** other process.
 
@@ -42,7 +42,7 @@ Registers are local blocks of [memory](https://en.wikipedia.org/wiki/Computer_me
 
 Each process executes a **single program** composed of sequential instructions. A chip may contain multiple [processes](https://en.wikipedia.org/wiki/Process_management_(computing)). 
 Processes can be driven by **transactions**, which are parameter lists of registers provided by the calling [processes](https://en.wikipedia.org/wiki/Process_management_(computing)). 
-Processes execute in a **fixed round-robin order**, allowing behavior in Verilog to be compared with Java simulations reliably.
+Processes execute in a **fixed round-robin order**, allowing behavior in [Verilog](https://en.wikipedia.org/wiki/Verilog) to be compared with [Java](https://en.wikipedia.org/wiki/Java_(programming_language)) simulations reliably.
 
 ### Transactions
 
@@ -65,7 +65,7 @@ To avoid deadlocks, [processes](https://en.wikipedia.org/wiki/Process_management
 
 ## Verilog Implementation
 
-The chip is implemented in **Verilog**. Each process is mapped to an `always` block that:
+The chip is implemented in [Verilog](https://en.wikipedia.org/wiki/Verilog). Each process is mapped to an `always` block that:
 
 - Executes instructions comprising in-flight transactions or polls its non-in-flight transactions for work.
 - Is triggered by a common clock to ensure **synchronous execution**.
@@ -80,8 +80,7 @@ This is **not** a general-purpose processor. It is a **specialized chip** with *
 
 ## Java Simulation
 
-Writing Verilog directly is time-consuming and error-prone. Therefore:
+Writing [Verilog](https://en.wikipedia.org/wiki/Verilog) directly is time-consuming and error-prone. Therefore:
 
-- Algorithms are first written and debugged in **Java** using familiar programming paradigms and tools.
-- Java [code](https://en.wikipedia.org/wiki/Computer_program) is then **semi-automatically translated** into Verilog.
-- This approach produces Verilog [code](https://en.wikipedia.org/wiki/Computer_program) **more efficiently** and **reliably** than writing it by hand.
+- Algorithms are first written and debugged in [Java](https://en.wikipedia.org/wiki/Java_(programming_language)) using familiar programming paradigms and tools.
+- [Java](https://en.wikipedia.org/wiki/Java_(programming_language)) [code](https://en.wikipedia.org/wiki/Computer_program) is then **semi-automatically translated** into [Verilog](https://en.wikipedia.org/wiki/Verilog). - This approach produces [Verilog](https://en.wikipedia.org/wiki/Verilog) [code](https://en.wikipedia.org/wiki/Computer_program) **more efficiently** and **reliably** than writing it by hand.
