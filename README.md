@@ -1,10 +1,9 @@
 # Chip
 
-A chip implements an algorithm.
-
+A chip implements an algorithm in [Silicon](https://en.wikipedia.org/wiki/Silicon). 
 A chip exists in one of two states:
 
-- **Design time**: The stage where the chip's layout is defined on [Silicon](https://en.wikipedia.org/wiki/Silicon). - **Execution time**: When the chip runs a fixed set of parallel [processes](https://en.wikipedia.org/wiki/Process_management_(computing)) to perform work.
+- **Design**: The stage where the chip's layout is defined on [Silicon](https://en.wikipedia.org/wiki/Silicon). - **Execution**: When the chip runs a fixed set of parallel [processes](https://en.wikipedia.org/wiki/Process_management_(computing)) to perform work.
 
 ## Process
 
@@ -15,7 +14,7 @@ Each **process** is assigned a unique identifier at design time. A process inclu
 
 ### Access Rules
 
-Verilog's `always` blocks enforce access rules for [processes](https://en.wikipedia.org/wiki/Process_management_(computing)): 
+Verilog's `always` blocks enforce access rule requirements for [processes](https://en.wikipedia.org/wiki/Process_management_(computing)): 
 - A process can **only write** to its own [memory](https://en.wikipedia.org/wiki/Computer_memory) and registers.
 - A process can **read** its own registers and the registers of **any** other process.
 
@@ -26,6 +25,7 @@ Memory is comprised of one-dimensional, indexable arrays:
 - Memory size is determined at **runtime**.
 - Memory contents persist even when the chip is not executing.
 - Memory is typically accessed over multiple clock cycles by issuing transactions that copy [memory](https://en.wikipedia.org/wiki/Computer_memory) elements to or from local registers for faster access.
+- Each memeory is owned by a process.
 
 ## Registers
 
