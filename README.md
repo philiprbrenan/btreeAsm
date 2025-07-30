@@ -2,7 +2,7 @@
    <p><a href="https://github.com/philiprbrenan/btreeAsm"><img src="https://github.com/philiprbrenan/btreeAsm/workflows/Test/badge.svg"></a>
 </div>
 
-#  Chip
+# Chip
 
 A chip implements an algorithm in [Silicon](https://en.wikipedia.org/wiki/Silicon). 
 A chip exists in one of two states:
