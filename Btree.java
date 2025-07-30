@@ -111,19 +111,15 @@ chipStop = true;
     final Memory.Get    gFreeNext = freeNext.new Get(P);                        // Get next free stuck
     final Memory.Set    sFreeRoot = freeNext.new Set(P);                        // Set next free stuck
     final Memory.Set    sFreeNext = freeNext.new Set(P);                        // Set next free stuck
-    final Process.Register   root = btreeIndex(P, "root");                              // Index of the first free stuck in the btree
-    final Process.Register   next = btreeIndex(P, "next");                              // Index of the second free stuck in the btree
+    final Process.Register   root = P.registers.get("root");                    // Index of the first free stuck in the btree
+    final Process.Register   next = P.registers.get("next");                    // Index of the second free stuck in the btree
     P.new Instruction()                                                         // Get first free stuck
      {void action()
        {root.zero();                                                            // The free chain depends from the root which is never freed asnd so can never be on the free chain
         gFreeNext.executeTransaction(root);
        }
      };
-    P.new Instruction()                                                         // Wait for first free stuck
-     {void action()
-       {gFreeNext.waitResultOfTransaction();
-       }
-     };
+    gFreeNext.waitResultOfTransaction();
     P.new Instruction()                                                         // Next free stuck
      {void action()
        {next.copy(gFreeNext.transactionOutputRegisters.firstElement());
@@ -131,12 +127,8 @@ chipStop = true;
         sFreeNext.executeTransaction(ref, next);                                // Stuck Root pointsd to the stuck being freed
        }
      };
-    P.new Instruction()                                                         // Wait for memory updates to complete
-     {void action()
-       {sFreeRoot.waitResultOfTransaction();
-        sFreeNext.waitResultOfTransaction();
-       }
-     };
+    sFreeRoot.waitResultOfTransaction();
+    sFreeNext.waitResultOfTransaction();
    }
 
   private void  allocateLeaf  (Process.Register ref) { allocate(ref, true);}    // Allocate a stuck, set a ref to the allocated node and mark it a leaf
@@ -2717,6 +2709,28 @@ Chip: Btree            step: 8, maxSteps: 100, running: 0, returnCode: 0
     stuckIsLeaf           memory: 2 * 1 = 1, 1
     stuckIsFree           memory: 2 * 1 = 0, 0
     freeNext              memory: 2 * 2 = 0, 0
+    stuckSize             memory: 2 * 3 = 0, 0
+    stuckKeys_0           memory: 2 * 8 = 0, 0
+    stuckData_0           memory: 2 * 8 = 0, 0
+    stuckKeys_1           memory: 2 * 8 = 0, 0
+    stuckData_1           memory: 2 * 8 = 0, 0
+    stuckKeys_2           memory: 2 * 8 = 0, 0
+    stuckData_2           memory: 2 * 8 = 0, 0
+    stuckKeys_3           memory: 2 * 8 = 0, 0
+    stuckData_3           memory: 2 * 8 = 0, 0
+""");
+    ok(i, "alloc_index = 1");
+
+    p.processClear();
+    b.free(i);
+    b.chipRunJava();
+    //stop(b.printMemory());
+    ok(b.printMemory(), """
+Chip: Btree            step: 6, maxSteps: 100, running: 0, returnCode: 0
+  Processes:
+    stuckIsLeaf           memory: 2 * 1 = 1, 1
+    stuckIsFree           memory: 2 * 1 = 0, 0
+    freeNext              memory: 2 * 2 = 1, 0
     stuckSize             memory: 2 * 3 = 0, 0
     stuckKeys_0           memory: 2 * 8 = 0, 0
     stuckData_0           memory: 2 * 8 = 0, 0
