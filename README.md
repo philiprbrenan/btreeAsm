@@ -30,7 +30,7 @@ The [memory](https://en.wikipedia.org/wiki/Computer_memory) associated with a [p
 
 - Memory contents persist even when the chip is not executing.
 
-- Memory is typically accessed over multiple clock cycles by issuing transactions that copy [memory](https://en.wikipedia.org/wiki/Computer_memory) elements to or from local [registers](https://en.wikipedia.org/wiki/Processor_register) for faster access.
+- Memory is typically accessed over multiple [clock](https://en.wikipedia.org/wiki/Clock_generator) cycles by issuing transactions that copy [memory](https://en.wikipedia.org/wiki/Computer_memory) elements to or from local [registers](https://en.wikipedia.org/wiki/Processor_register) for faster access.
 
 - Each memeory is owned by a [process](https://en.wikipedia.org/wiki/Process_management_(computing)) .
 
@@ -40,7 +40,7 @@ Registers are local blocks of [memory](https://en.wikipedia.org/wiki/Computer_me
 
 - Have a fixed size determined at **compile time**.
 
-- Are accessible within a **single clock cycle**.
+- Are accessible within a **single [clock](https://en.wikipedia.org/wiki/Clock_generator) cycle**.
 
 - Lose their values if the chip is powered off.
 
@@ -76,9 +76,9 @@ The chip is implemented in [Verilog](https://en.wikipedia.org/wiki/Verilog). Eac
 
 - Executes [instructions](https://en.wikipedia.org/wiki/Instruction_set_architecture) comprising in-flight transactions or polls its non-in-flight transactions for work.
 
-- Is triggered by a common clock to ensure **synchronous execution**.
+- Is triggered by a common [clock](https://en.wikipedia.org/wiki/Clock_generator) to ensure **synchronous execution** .
 
-- Shares a common clock cycle count (step number) across all [processes](https://en.wikipedia.org/wiki/Process_management_(computing)), though each [process](https://en.wikipedia.org/wiki/Process_management_(computing)) has its own [program](https://en.wikipedia.org/wiki/Computer_program) counter.
+- Shares a common [clock](https://en.wikipedia.org/wiki/Clock_generator) cycle count (step number) across all [processes](https://en.wikipedia.org/wiki/Process_management_(computing)), though each [process](https://en.wikipedia.org/wiki/Process_management_(computing)) has its own [program](https://en.wikipedia.org/wiki/Computer_program) counter.
 
 Programs are implemented using a `case` statement where:
 
