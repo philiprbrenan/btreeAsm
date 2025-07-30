@@ -76,8 +76,8 @@ chipStop = true;
     final Memory.Get    gFreeNext = freeNext.new Get(P);                        // Get next free stuck
     final Memory.Set    sFreeNext = freeNext.new Set(P);                        // Set next free stuck
     final Memory.Set    sIsLeaf   = stuckIsLeaf.new Set(P);                     // Set leaf or branch
-    final Process.Register   root = btreeIndex(P, "root");                              // Index of the first free stuck in the btree
-    final Process.Register   next = btreeIndex(P, "next");                              // Index of the second free stuck in the btree
+    final Process.Register   root = btreeIndex(P, "root");                      // Index of the first free stuck in the btree
+    final Process.Register   next = btreeIndex(P, "next");                      // Index of the second free stuck in the btree
     final Process.Register isLeaf = P.register("isLeaf", 1);                    // Indicate whether the allocated stuck is a leaf or a branch
     P.new Instruction()                                                         // Get first free stuck
      {void action()
@@ -137,20 +137,20 @@ chipStop = true;
 //D2 Stuck                                                                      // Get and set stucks within btree
 
   class Stuck extends Process                                                   // A reference to a stuck in the memory of the btree plus a copy of its size, keys and data
-   {final Register index     = register("index",    btreeAddressSize);          // The address of the stuck in main memory
-    final Register size      = register("size",     stuckAddressSize);          // Size of the stuck locally
-    final Register isLeaf    = register("isLeaf",   1);                         // Whether the stuck is a leaf
-    final Register nextFree  = register("nextFree", btreeAddressSize);          // Free chain from root
-    final Register[]keys     = new Register[maxStuckSize];                      // Keys in the stuck copied out of memory
-    final Register[]data     = new Register[maxStuckSize];                      // Data in the stuck copied out of memory
-    final Memory.Get gSize   = stuckSize.new Get(this);                         // Transaction to get the current size of the stuck
-    final Memory.Set sSize   = stuckSize.new Set(this);                         // Transaction to set the current size of the stuck
-    final Memory.Get gLeaf   = stuckIsLeaf.new Get(this);                       // Transaction to discoeve whether this stuck is acting as a leaf or a branch
-    final Memory.Set sLeaf   = stuckIsLeaf.new Set(this);                       // Transaction to set the stuck in memory to  a leaf or a branch
-    final Memory.Get[]gKeys  = new Memory.Get[maxStuckSize];                    // Transactions to get each key in the stuck
-    final Memory.Set[]sKeys  = new Memory.Set[maxStuckSize];                    // Transactions to set each key in the stuck
-    final Memory.Get[]gData  = new Memory.Get[maxStuckSize];                    // Transactions to get each data element in the stuck
-    final Memory.Set[]sData  = new Memory.Set[maxStuckSize];                    // Transactions to set each data element in the stuck
+   {final Register index    = register("index",    btreeAddressSize);           // The address of the stuck in main memory
+    final Register size     = register("size",     stuckAddressSize);           // Size of the stuck locally
+    final Register isLeaf   = register("isLeaf",   1);                          // Whether the stuck is a leaf
+    final Register nextFree = register("nextFree", btreeAddressSize);           // Free chain from root
+    final Register[]keys    = new Register[maxStuckSize];                       // Keys in the stuck copied out of memory
+    final Register[]data    = new Register[maxStuckSize];                       // Data in the stuck copied out of memory
+    final Memory.Get gSize  = stuckSize.new Get(this);                          // Transaction to get the current size of the stuck
+    final Memory.Set sSize  = stuckSize.new Set(this);                          // Transaction to set the current size of the stuck
+    final Memory.Get gLeaf  = stuckIsLeaf.new Get(this);                        // Transaction to discoeve whether this stuck is acting as a leaf or a branch
+    final Memory.Set sLeaf  = stuckIsLeaf.new Set(this);                        // Transaction to set the stuck in memory to  a leaf or a branch
+    final Memory.Get[]gKeys = new Memory.Get[maxStuckSize];                     // Transactions to get each key in the stuck
+    final Memory.Set[]sKeys = new Memory.Set[maxStuckSize];                     // Transactions to set each key in the stuck
+    final Memory.Get[]gData = new Memory.Get[maxStuckSize];                     // Transactions to get each data element in the stuck
+    final Memory.Set[]sData = new Memory.Set[maxStuckSize];                     // Transactions to set each data element in the stuck
 
     Stuck(String Name)                                                          // Mirror a stuck in memory with one in registers.
      {super(Name); N();
@@ -407,7 +407,7 @@ chipStop = true;
        };
      }
 
-    void insertElementAt(Register Index, Register Key, Register Data)              // Set the indexed key, data pair
+    void insertElementAt(Register Index, Register Key, Register Data)           // Set the indexed key, data pair
      {new Instruction()
        {void action()
          {final int N = Index.registerGet();
@@ -433,7 +433,7 @@ chipStop = true;
        };
      }
 
-    void removeElementAt(Register Index, Register Key, Register Data)              // Set the indexed key, data pair
+    void removeElementAt(Register Index, Register Key, Register Data)           // Set the indexed key, data pair
      {new Instruction()
        {void action()
          {final int N = Index.registerGet();
@@ -714,18 +714,18 @@ chipStop = true;
     stuckIsLeaf.iZero(i);
    }
 
-  void setLeaf  (Process.Register i)  {stuckIsLeaf.one (i);}                        // Set a stuck in the btree to be a leaf
-  void setBranch(Process.Register i)  {stuckIsLeaf.zero(i);}                        // Set a stuck in the btree to be a branch
+  void setLeaf  (Process.Register i)  {stuckIsLeaf.one (i);}                    // Set a stuck in the btree to be a leaf
+  void setBranch(Process.Register i)  {stuckIsLeaf.zero(i);}                    // Set a stuck in the btree to be a branch
 
-  void iSetLeaf  (Process.Register i) {stuckIsLeaf.iOne (i);}                       // Set a stuck in the btree to be a leaf
-  void iSetBranch(Process.Register i) {stuckIsLeaf.iZero(i);}                       // Set a stuck in the btree to be a branch
+  void iSetLeaf  (Process.Register i) {stuckIsLeaf.iOne (i);}                   // Set a stuck in the btree to be a leaf
+  void iSetBranch(Process.Register i) {stuckIsLeaf.iZero(i);}                   // Set a stuck in the btree to be a branch
 
-  void isLeaf(Process.Register index, Process.Register isLeaf)                          // Is leaf at indicated index
+  void isLeaf(Process.Register index, Process.Register isLeaf)                  // Is leaf at indicated index
    {stuckIsLeaf.read(index);
     isLeaf.move(stuckIsLeaf);
    }
 
-  void iIsLeaf(Process.Register index, Process.Register isLeaf)                         // Is leaf at indicated index
+  void iIsLeaf(Process.Register index, Process.Register isLeaf)                 // Is leaf at indicated index
    {L.P.new Instruction()
      {void action()
        {isLeaf(index, isLeaf);
@@ -733,7 +733,7 @@ chipStop = true;
      };
    }
 
-  void isRootLeaf(Process.Register isLeaf)                                          // Is the root a leaf?
+  void isRootLeaf(Process.Register isLeaf)                                      // Is the root a leaf?
    {L.P.new Instruction()
      {void action()
        {final Process.Register i = index();
@@ -744,7 +744,7 @@ chipStop = true;
      };
    }
 
-  void isRootLeafFull(Process.Register isFull)                                      // Is the root assumed to be a leaf full?
+  void isRootLeafFull(Process.Register isFull)                                  // Is the root assumed to be a leaf full?
    {L.P.new Instruction()
      {void action()
        {final Process.Register i = index();
@@ -755,7 +755,7 @@ chipStop = true;
      };
    }
 
-  void iIsRootBranchFull(Process.Register isFullButOne)                             // Is the root assumed to be a root full?
+  void iIsRootBranchFull(Process.Register isFullButOne)                         // Is the root assumed to be a root full?
    {L.P.new Instruction()
      {void action()
        {final Process.Register i = index();
@@ -952,8 +952,8 @@ chipStop = true;
   private void splitRootLeaf()                                                  // Split a full root leaf
    {final Stuck p = stuck(), l = stuck(), r = stuck();                          // Parent == root, left, right stucks
     final Process.Register isFull = isFull();
-    final Process.Register cl = index(), cr = index();                              // Indexes of left and right children
-    final Process.Register pl = p.key(), pr = p.key(), plr = p.key();               // Parent key must be smaller than anything in right child yet greater than or equal to anything in the left child
+    final Process.Register cl = index(), cr = index();                          // Indexes of left and right children
+    final Process.Register pl = p.key(), pr = p.key(), plr = p.key();           // Parent key must be smaller than anything in right child yet greater than or equal to anything in the left child
 
     copyStuckFromRoot(p);                                                       // Load leaf root stuck from btree
     p.isFull(isFull);                                                           // Check whether the leaf root stuck is full
@@ -985,7 +985,7 @@ chipStop = true;
   private void splitRootBranch()                                                // Split a full root branch
    {final Stuck p = stuck(), l = stuck(), r = stuck();                          // Parent == root, left, right stucks
     final Process.Register isFullButOne = isFullButOne();
-    final Process.Register           cl = index(), cr = index();                    // Indexes of left and right children
+    final Process.Register           cl = index(), cr = index();                // Indexes of left and right children
     final int              midPoint = (maxStuckSize-1) / 2;                     // Mid point in parent
 
     copyStuckFromRoot(p);                                                       // Load branch root stuck from btree
@@ -1021,7 +1021,7 @@ chipStop = true;
    {final Stuck p = stuck(), c = stuck(), l = stuck();                          // Parent which must be a branch which is not full, child at index which must be a full leaf, left and right splits of leaf
     final Process.Register isFull = isFull(), isFullButOne = isFullButOne();
     final Process.Register isLeaf = isLeaf();
-    final Process.Register cl = index(), cr = index();                              // Btree indexes of child and left and right children of child
+    final Process.Register cl = index(), cr = index();                          // Btree indexes of child and left and right children of child
     final Process.Register ck = p.key(), pl = p.key(), pr = p.key(), plr = p.key(); // Key of child in parent, splitting key which must be smaller than anything in right child of child yet greater than or equal to anything in the left child of child
 
     copyStuckFrom(p, parentIndex);                                              // Load parent stuck from btree
@@ -1070,13 +1070,13 @@ chipStop = true;
      };
    }
 
-  private void splitLeafAtTop(Process.Register parentIndex)                         // Split a full leaf that is not the root and is the last child of its parent branch which is not full
+  private void splitLeafAtTop(Process.Register parentIndex)                     // Split a full leaf that is not the root and is the last child of its parent branch which is not full
    {final Stuck p = stuck(), c = stuck(), l = stuck();                          // Parent which must be a branch which is not full, child at index which must be a full leaf, left and right splits of leaf
     final Process.Register isFull       = isFull();
     final Process.Register isFullButOne = isFullButOne();
     final Process.Register isLeaf       = isLeaf();
-    final Process.Register cl = index(), cr = index();                              // Btree indexes of child and left and right children of child
-    final Process.Register pl = p.key(), pr = p.key(), plr = p.key();               // Key of child in parent, splitting key which must be smaller than anything in right child of child yet greater than or equal to anything in the left child of child
+    final Process.Register cl = index(), cr = index();                          // Btree indexes of child and left and right children of child
+    final Process.Register pl = p.key(), pr = p.key(), plr = p.key();           // Key of child in parent, splitting key which must be smaller than anything in right child of child yet greater than or equal to anything in the left child of child
 
     copyStuckFrom(p, parentIndex);                                              // Load parent stuck from btree
     p.pastLastElement();                                                        // Key of child
@@ -1118,7 +1118,7 @@ chipStop = true;
     saveStuckInto(p, parentIndex);                                              // Save the parent stuck back into the btree
    }
 
-  private void iSplitLeafAtTop(Process.Register parentIndex)                        // Split a full leaf that is not the root and is the last child of its parent branch which is not full
+  private void iSplitLeafAtTop(Process.Register parentIndex)                    // Split a full leaf that is not the root and is the last child of its parent branch which is not full
    {L.P.new Instruction()
      {void action()                                                             // Compute mid point key
        {splitLeafAtTop(parentIndex);
@@ -1131,9 +1131,9 @@ chipStop = true;
    {final Stuck p = stuck(), c = stuck(), l = stuck(), r = stuck();             // Parent which must be a branch which is not full, child at index which must be a full leaf, left and right splits of leaf
     final Process.Register isFullButOne = isFullButOne();
     final Process.Register isLeaf       = isLeaf();
-    final Process.Register cl           = index(), cr = index();                    // Btree indexes of child and left and right children of child
-    final Process.Register ck           = p.key();                                  // Key of child in parent, splitting key which must be smaller than anything in right child of child yet greater than or equal to anything in the left child of child
-    final Process.Register key          = p.key();                                  // The central key
+    final Process.Register cl           = index(), cr = index();                // Btree indexes of child and left and right children of child
+    final Process.Register ck           = p.key();                              // Key of child in parent, splitting key which must be smaller than anything in right child of child yet greater than or equal to anything in the left child of child
+    final Process.Register key          = p.key();                              // The central key
 
     copyStuckFrom(p, parentIndex);                                              // Load parent stuck from btree
     p.stuckKeys.read(stuckIndex); ck.move(p.stuckKeys);                         // Key of child
@@ -1179,12 +1179,12 @@ chipStop = true;
      };
    }
 
-  private void splitBranchAtTop(Process.Register parentIndex)                       // Split a full branch that is not the root and is the last child of its parent branch which is not full
+  private void splitBranchAtTop(Process.Register parentIndex)                   // Split a full branch that is not the root and is the last child of its parent branch which is not full
    {final Stuck p = stuck(), c = stuck(), l = stuck();                          // Parent which must be a branch which is not full, child at index which must be a full leaf, left and right splits of leaf
     final Process.Register isFullButOne = isFullButOne();
     final Process.Register isLeaf       = isLeaf();
-    final Process.Register cl           = index(), cr = index();                    // Btree indexes of child and left and right children of child
-    final Process.Register center       = p.key();                                  // The central key
+    final Process.Register cl           = index(), cr = index();                // Btree indexes of child and left and right children of child
+    final Process.Register center       = p.key();                              // The central key
 
     copyStuckFrom(p, parentIndex);                                              // Load parent stuck from btree
     p.pastLastElement();                                                        // Key of child
@@ -1220,7 +1220,7 @@ chipStop = true;
     saveStuckInto(p, parentIndex);                                              // Save the parent stuck back into the btree
    }
 
-  private void iSplitBranchAtTop(Process.Register parentIndex)                      // Split a full branch that is not the root and is the last child of its parent branch which is not full
+  private void iSplitBranchAtTop(Process.Register parentIndex)                  // Split a full branch that is not the root and is the last child of its parent branch which is not full
    {L.P.new Instruction()
      {void action()                                                             // Compute mid point key
        {splitBranchAtTop(parentIndex);
@@ -1230,9 +1230,9 @@ chipStop = true;
 
 //D1 Merge                                                                      // Merge two nodes
 
-  private void iMergeLeavesIntoRoot(Process.Register success)                       // Merge two leaves into the root
+  private void iMergeLeavesIntoRoot(Process.Register success)                   // Merge two leaves into the root
    {final Stuck p = stuck(), l = stuck(), r = stuck();                          // Root and left, right children
-    final Process.Register li  = index(), ri = index();                             // Btree indexes of left and right children of root
+    final Process.Register li  = index(), ri = index();                         // Btree indexes of left and right children of root
 
     L.P.new Block()
      {void code()
@@ -1272,7 +1272,7 @@ chipStop = true;
   private void iMergeLeavesNotTop                                               // Merge the two consecutive leaves of a branch that is not the root. Neither of the leaves is the topmost leaf.
    (Process.Register Parent, Process.Register LeftLeaf, Process.Register success)
    {final Stuck p = stuck(), l = stuck(), r  = stuck();                         // Parent, left and right children
-    final Process.Register li = index(), ri = index();                              // Btree indexes of left and right children of parent that we want to merge
+    final Process.Register li = index(), ri = index();                          // Btree indexes of left and right children of parent that we want to merge
 
     L.P.new Block()
      {void code()
@@ -1316,8 +1316,8 @@ chipStop = true;
 
   private void iMergeLeavesAtTop(Process.Register Parent, Process.Register success)     // Merge the top most two leaves of a branch that is not the root
    {final Stuck p = stuck(), l = stuck(), r  = stuck();                         // Parent, left and right children
-    final Process.Register ls = p.index(),    rs = p.index();                       // Indices in stuck of left and right children
-    final Process.Register li = index(),      ri = index();                         // Btree indexes of left and right children of parent that we want to merge
+    final Process.Register ls = p.index(),    rs = p.index();                   // Indices in stuck of left and right children
+    final Process.Register li = index(),      ri = index();                     // Btree indexes of left and right children of parent that we want to merge
 
     L.P.new Block()
      {void code()
@@ -1359,10 +1359,10 @@ chipStop = true;
      };
    }
 
-  private void iMergeBranchesIntoRoot(Process.Register success)                     // Merge two branches into the root
+  private void iMergeBranchesIntoRoot(Process.Register success)                 // Merge two branches into the root
    {final Stuck p = stuck(), l = stuck(),  r  = stuck();                        // Root and left, right children
-    final Process.Register li  = index(), ri = index();                             // Btree indexes of left and right children of root
-    final Process.Register k   = p.key();                                           // Splitting key
+    final Process.Register li  = index(), ri = index();                         // Btree indexes of left and right children of root
+    final Process.Register k   = p.key();                                       // Splitting key
 
     iCopyStuckFromRoot(p);                                                      // Load root
     L.P.new Block()
@@ -1402,9 +1402,9 @@ chipStop = true;
    }
 
   private void iMergeBranchesNotTop
-   (Process.Register Parent, Process.Register LeftBranch, Process.Register success)         // Merge the two consecutive child branches of a branch that is not the root. Neither of the child branches is the topmost leaf.
+   (Process.Register Parent, Process.Register LeftBranch, Process.Register success) // Merge the two consecutive child branches of a branch that is not the root. Neither of the child branches is the topmost leaf.
    {final Stuck p = stuck(), l = stuck(), r  = stuck();                         // Parent, left and right children
-    final Process.Register li = index(), ri = index();                              // Btree indexes of left and right children of parent that we want to merge
+    final Process.Register li = index(), ri = index();                          // Btree indexes of left and right children of parent that we want to merge
 
     L.P.new Block()
      {void code()
@@ -1449,10 +1449,10 @@ chipStop = true;
      };
    }
 
-  private void iMergeBranchesAtTop(Process.Register Parent, Process.Register success)   // Merge the top most two child branches of a branch that is not the root
+  private void iMergeBranchesAtTop(Process.Register Parent, Process.Register success) // Merge the top most two child branches of a branch that is not the root
    {final Stuck p = stuck(), l = stuck(), r  = stuck();                         // Parent, left and right children
-    final Process.Register ls = p.index(),    rs = p.index();                       // Indices in stuck of left and right children
-    final Process.Register li = index(),      ri = index();                         // Btree indexes of left and right children of parent that we want to merge
+    final Process.Register ls = p.index(),    rs = p.index();                   // Indices in stuck of left and right children
+    final Process.Register li = index(),      ri = index();                     // Btree indexes of left and right children of parent that we want to merge
 
     L.P.new Block()
      {void code()
@@ -1514,7 +1514,7 @@ chipStop = true;
     void Branch() {}
    }
 
-  public void find(Process.Register Key, Process.Register Found,                        // Find the leaf associated with a key in the tree
+  public void find(Process.Register Key, Process.Register Found,                // Find the leaf associated with a key in the tree
     Process.Register Data, Process.Register index, Process.Register stuckIndex)
    {final Stuck        S = stuck();
     final Process.Register s = index;
@@ -1560,7 +1560,7 @@ chipStop = true;
 
 //D1 Insertion                                                                  // Insert a key, data pair into the tree if ther is room for it or update and existing key with a new datum
 
-  private void findAndInsert(Process.Register Found)                                // Find the leaf that should contain this key and insert or update it is possible setting Found to true if found else to false indicating that the key, data pair still needs to be inserted
+  private void findAndInsert(Process.Register Found)                            // Find the leaf that should contain this key and insert or update it is possible setting Found to true if found else to false indicating that the key, data pair still needs to be inserted
    {final Stuck  S          = stuck();
     Process.Register Key        = S.key();
     Process.Register Data       = S.data();
@@ -1610,8 +1610,8 @@ chipStop = true;
 
   public void put()                                                             // Insert a key, data pair into the tree or update and existing key with a new datum
    {final Stuck        S          = stuck();
-    final Process.Register p          = index();                                    // Previous or parent position in the btree
-    final Process.Register s          = index();                                    // Current position in the btree
+    final Process.Register p          = index();                                // Previous or parent position in the btree
+    final Process.Register s          = index();                                // Current position in the btree
     final Process.Register Key        = S.key();
     final Process.Register Data       = S.data();
     final Process.Register index      = index();
@@ -1739,11 +1739,11 @@ chipStop = true;
 
   public void merge()                                                           // Merge stucks on either side of the path to the key
    {final Stuck        S          = stuck();
-    final Process.Register s          = index();                                    // Current position in the btree
+    final Process.Register s          = index();                                // Current position in the btree
     final Process.Register Key        = S.key();
     final Process.Register stuckIndex = S.index();
     final Process.Register found      = S.found();
-    final Process.Register within     = within();                                   // In the body of the stuck and not at the top
+    final Process.Register within     = within();                               // In the body of the stuck and not at the top
     final Process.Register isLeaf     = isLeaf();
     final Process.Register success    = S.success();
 
@@ -1814,7 +1814,7 @@ chipStop = true;
 
 //D1 Deletion                                                                   // Delete a key data pair from the btree returning the data associated with the key
 
-  private void delete(Process.Register Data)                                        // Find the leaf that contains this key and delete it
+  private void delete(Process.Register Data)                                    // Find the leaf that contains this key and delete it
    {final Stuck  S          = stuck();
     Process.Register Key        = S.key();
     Process.Register index      = index();
