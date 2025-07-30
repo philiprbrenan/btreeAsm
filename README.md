@@ -13,8 +13,7 @@ A chip exists in one of two states:
 
 Each [process](https://en.wikipedia.org/wiki/Process_management_(computing)) is assigned a unique identifier at design time. A [process](https://en.wikipedia.org/wiki/Process_management_(computing)) includes:
 
-- A [program](https://en.wikipedia.org/wiki/Computer_program), which in turn is comprised of instructions.
-- An optional block of [memory](https://en.wikipedia.org/wiki/Computer_memory) - Optional local [registers](https://en.wikipedia.org/wiki/Processor_register) 
+- A [program](https://en.wikipedia.org/wiki/Computer_program), which in turn is comprised of [instructions](https://en.wikipedia.org/wiki/Instruction_set_architecture). - An optional block of [memory](https://en.wikipedia.org/wiki/Computer_memory) - Optional local [registers](https://en.wikipedia.org/wiki/Processor_register) 
 ### Access Rules
 
 The [Verilog](https://en.wikipedia.org/wiki/Verilog) `always` blocks enforce access rule requirements for [processes](https://en.wikipedia.org/wiki/Process_management_(computing)): 
@@ -39,7 +38,7 @@ Registers are local blocks of [memory](https://en.wikipedia.org/wiki/Computer_me
 
 ## Program Execution
 
-Each [process](https://en.wikipedia.org/wiki/Process_management_(computing)) executes a single [program](https://en.wikipedia.org/wiki/Computer_program) composed of sequential instructions. A chip may contain multiple [processes](https://en.wikipedia.org/wiki/Process_management_(computing)). 
+Each [process](https://en.wikipedia.org/wiki/Process_management_(computing)) executes a single [program](https://en.wikipedia.org/wiki/Computer_program) composed of sequential [instructions](https://en.wikipedia.org/wiki/Instruction_set_architecture). A chip may contain multiple [processes](https://en.wikipedia.org/wiki/Process_management_(computing)). 
 Processes can be driven by **transactions**, which are parameter lists of [registers](https://en.wikipedia.org/wiki/Processor_register) provided by the calling [processes](https://en.wikipedia.org/wiki/Process_management_(computing)). 
 Processes execute in a **fixed round-robin order**, allowing behavior in [Verilog](https://en.wikipedia.org/wiki/Verilog) to be compared with [Java](https://en.wikipedia.org/wiki/Java_(programming_language)) simulations reliably.
 
@@ -51,8 +50,7 @@ Processes handle transactions in **round-robin polling** mode, fixed at design t
 2. When a [transaction](https://en.wikipedia.org/wiki/Database_transaction) is found:
    - Copies data from the transaction's parameter [registers](https://en.wikipedia.org/wiki/Processor_register) into its own [registers](https://en.wikipedia.org/wiki/Processor_register).    - Processes the data.
    - Writes results into the transaction's output [registers](https://en.wikipedia.org/wiki/Processor_register).    - Marks the [transaction](https://en.wikipedia.org/wiki/Database_transaction) as complete.
-3. The requesting [process](https://en.wikipedia.org/wiki/Process_management_(computing)) waits for the completion of a [transaction](https://en.wikipedia.org/wiki/Database_transaction) by spinning on an instruction.
-
+3. The requesting [process](https://en.wikipedia.org/wiki/Process_management_(computing)) waits for the completion of a [transaction](https://en.wikipedia.org/wiki/Database_transaction) by spinning on an [instruction](https://en.wikipedia.org/wiki/Instruction_set_architecture). 
 The output remains in the [transaction](https://en.wikipedia.org/wiki/Database_transaction) [registers](https://en.wikipedia.org/wiki/Processor_register) until they are overwritten by the next use of the same [transaction](https://en.wikipedia.org/wiki/Database_transaction). 
 ### Deadlock Prevention
 
@@ -62,14 +60,14 @@ To avoid deadlocks, [processes](https://en.wikipedia.org/wiki/Process_management
 
 The chip is implemented in [Verilog](https://en.wikipedia.org/wiki/Verilog). Each [process](https://en.wikipedia.org/wiki/Process_management_(computing)) is mapped to an `always` block that:
 
-- Executes instructions comprising in-flight transactions or polls its non-in-flight transactions for work.
+- Executes [instructions](https://en.wikipedia.org/wiki/Instruction_set_architecture) comprising in-flight transactions or polls its non-in-flight transactions for work.
 - Is triggered by a common clock to ensure **synchronous execution**.
 - Shares a common clock cycle count (step number) across all [processes](https://en.wikipedia.org/wiki/Process_management_(computing)), though each [process](https://en.wikipedia.org/wiki/Process_management_(computing)) has its own [program](https://en.wikipedia.org/wiki/Computer_program) counter.
 
 Programs are implemented using a `case` statement where:
 
-- Each instruction corresponds to a case branch.
-- The process's [program](https://en.wikipedia.org/wiki/Computer_program) counter selects the next instruction to execute.
+- Each [instruction](https://en.wikipedia.org/wiki/Instruction_set_architecture)  corresponds to a case branch.
+- The process's [program](https://en.wikipedia.org/wiki/Computer_program) counter selects the next [instruction](https://en.wikipedia.org/wiki/Instruction_set_architecture) to execute.
 
 This is **not** a general-purpose processor. It is a **specialized chip** with **statically optimized** execution paths for minimal time and power consumption.
 
