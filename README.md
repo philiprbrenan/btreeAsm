@@ -57,7 +57,7 @@ To avoid deadlocks, [processes](https://en.wikipedia.org/wiki/Process_management
 
 ## Verilog Implementation
 
-The chip  is implemented in [Verilog](https://en.wikipedia.org/wiki/Verilog). Each [process](https://en.wikipedia.org/wiki/Process_management_(computing)) is mapped to an `always` block that:
+The chip is implemented in [Verilog](https://en.wikipedia.org/wiki/Verilog). Each [process](https://en.wikipedia.org/wiki/Process_management_(computing)) is mapped to an `always` block that:
 
 - Executes [instructions](https://en.wikipedia.org/wiki/Instruction_set_architecture) comprising in-flight transactions or polls its non-in-flight transactions for work.
 - Is triggered by a common clock to ensure **synchronous execution**.
