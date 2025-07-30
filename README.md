@@ -76,7 +76,7 @@ The chip is implemented in [Verilog](https://en.wikipedia.org/wiki/Verilog). Eac
 
 - Executes [instructions](https://en.wikipedia.org/wiki/Instruction_set_architecture) comprising in-flight transactions or polls its non-in-flight transactions for work.
 
-- Is triggered by a common [clock](https://en.wikipedia.org/wiki/Clock_generator) to ensure **synchronous execution** .
+- Is triggered by a common [clock](https://en.wikipedia.org/wiki/Clock_generator) to ensure **synchronous execution**.
 
 - Shares a common [clock](https://en.wikipedia.org/wiki/Clock_generator) cycle count (step number) across all [processes](https://en.wikipedia.org/wiki/Process_management_(computing)), though each [process](https://en.wikipedia.org/wiki/Process_management_(computing)) has its own [program](https://en.wikipedia.org/wiki/Computer_program) counter.
 
