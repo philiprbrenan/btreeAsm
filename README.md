@@ -22,7 +22,7 @@ The [Verilog](https://en.wikipedia.org/wiki/Verilog) `always` blocks enforce acc
 
 ## Memory
 
-Memory is comprised of one-dimensional, indexable arrays:
+The [memory](https://en.wikipedia.org/wiki/Computer_memory) associated with a [process](https://en.wikipedia.org/wiki/Process_management_(computing)) is comprised of one-dimensional, indexable arrays:
 
 - Memory size is determined at **runtime**.
 - Memory contents persist even when the chip is not executing.
@@ -31,14 +31,15 @@ Memory is comprised of one-dimensional, indexable arrays:
 
 ## Registers
 
-Registers are local blocks of [memory](https://en.wikipedia.org/wiki/Computer_memory): 
+Registers are local blocks of [memory](https://en.wikipedia.org/wiki/Computer_memory) :
+
 - Have a fixed size determined at **compile time**.
 - Are accessible within a **single clock cycle**.
 - Lose their values if the chip is powered off.
 
 ## Program Execution
 
-Each [process](https://en.wikipedia.org/wiki/Process_management_(computing)) executes a **single program** composed of sequential instructions. A chip may contain multiple [processes](https://en.wikipedia.org/wiki/Process_management_(computing)). 
+Each [process](https://en.wikipedia.org/wiki/Process_management_(computing)) executes a single [program](https://en.wikipedia.org/wiki/Computer_program) composed of sequential instructions. A chip may contain multiple [processes](https://en.wikipedia.org/wiki/Process_management_(computing)). 
 Processes can be driven by **transactions**, which are parameter lists of [registers](https://en.wikipedia.org/wiki/Processor_register) provided by the calling [processes](https://en.wikipedia.org/wiki/Process_management_(computing)). 
 Processes execute in a **fixed round-robin order**, allowing behavior in [Verilog](https://en.wikipedia.org/wiki/Verilog) to be compared with [Java](https://en.wikipedia.org/wiki/Java_(programming_language)) simulations reliably.
 
