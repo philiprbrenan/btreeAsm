@@ -11,7 +11,7 @@ A chip exists in one of two states:
 
 ## Process
 
-Each **process** is assigned a unique identifier at design time. A process includes:
+Each process is assigned a unique identifier at design time. A process includes:
 
 - A [program](https://en.wikipedia.org/wiki/Computer_program), which in turn is comprised of instructions.
 - An optional block of [memory](https://en.wikipedia.org/wiki/Computer_memory) - Optional local registers
@@ -20,7 +20,7 @@ Each **process** is assigned a unique identifier at design time. A process inclu
 
 The [Verilog](https://en.wikipedia.org/wiki/Verilog) `always` blocks enforce access rule requirements for [processes](https://en.wikipedia.org/wiki/Process_management_(computing)): 
 - A process can **only write** to its own [memory](https://en.wikipedia.org/wiki/Computer_memory) and registers.
-- A process can **read** its own registers and the registers of **any** other process.
+- A process can **read** its own registers and the registers of **any** other process .
 
 ## Memory
 
@@ -29,7 +29,7 @@ Memory is comprised of one-dimensional, indexable arrays:
 - Memory size is determined at **runtime**.
 - Memory contents persist even when the chip is not executing.
 - Memory is typically accessed over multiple clock cycles by issuing transactions that copy [memory](https://en.wikipedia.org/wiki/Computer_memory) elements to or from local registers for faster access.
-- Each memeory is owned by a process.
+- Each memeory is owned by a process .
 
 ## Registers
 
