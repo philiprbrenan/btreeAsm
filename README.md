@@ -66,7 +66,7 @@ The chip is implemented in [Verilog](https://en.wikipedia.org/wiki/Verilog). Eac
 
 Programs are implemented using a `case` statement where:
 
-- Each [instruction](https://en.wikipedia.org/wiki/Instruction_set_architecture)  corresponds to a case branch.
+- Each [instruction](https://en.wikipedia.org/wiki/Instruction_set_architecture) corresponds to a case branch.
 - The process's [program](https://en.wikipedia.org/wiki/Computer_program) counter selects the next [instruction](https://en.wikipedia.org/wiki/Instruction_set_architecture) to execute.
 
 This is **not** a general-purpose processor. It is a **specialized chip** with **statically optimized** execution paths for minimal time and power consumption.
