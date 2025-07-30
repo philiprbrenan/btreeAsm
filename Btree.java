@@ -53,14 +53,6 @@ chipStop = true;
   Process.Register btreeIndex(Process Process, String Name)
    {return Process.register(Name, btreeAddressSize);
    }
-// Create an index for a stuck in a btree
-//  Process.Register isLeaf      (Process P) {return P.register("isLeaf",             1);} // Create a bit for is leaf
-//  Process.Register isFull      (Process P) {return P.register("isFull",             1);} // Create a bit for is full
-//  Process.Register isFullButOne(Process P) {return P.register("isFullButOne",       1);} // Create a bit for is full but one
-//  Process.Register within      (Process P) {return P.register("within",             1);} // Create a bit for is within the body of the stuck and not at the top
-//  Process.Register found       (Process P) {return P.register("found",              1);} // Create a bit for whether a key has been found
-//  Process.Register leafFull    (Process P) {return P.register("leafFull",           1);} // Create a bit for a leaf is full
-//  Process.Register branchFull  (Process P) {return P.register("branchFull",         1);} // Create a bit for a branch is full
 
 //D2 Allocation                                                                 // Allocate stucks from the free chain
 
@@ -68,7 +60,7 @@ chipStop = true;
    {for (int i = 0; i < size-1; i++)
      {freeNext.memorySet(i+1, i);                                               // Free chain hangs from root
      }
-    stuckIsLeaf.memorySet(1, 0);                                                // Start wuth the root as a leaf
+    stuckIsLeaf.memorySet(1, 0);                                                // Start with the root as a leaf
    }
 
   private void allocate(Process.Register ref, boolean leaf)                     // Allocate a stuck and set a ref to the allocated node
@@ -111,8 +103,8 @@ chipStop = true;
     final Memory.Get    gFreeNext = freeNext.new Get(P);                        // Get next free stuck
     final Memory.Set    sFreeRoot = freeNext.new Set(P);                        // Set next free stuck
     final Memory.Set    sFreeNext = freeNext.new Set(P);                        // Set next free stuck
-    final Process.Register   root = P.registers.get("root");                    // Index of the first free stuck in the btree
-    final Process.Register   next = P.registers.get("next");                    // Index of the second free stuck in the btree
+    final Process.Register   root = btreeIndex(P, "root");                      // Index of the first free stuck in the btree
+    final Process.Register   next = btreeIndex(P, "next");                      // Index of the second free stuck in the btree
     P.new Instruction()                                                         // Get first free stuck
      {void action()
        {root.zero();                                                            // The free chain depends from the root which is never freed asnd so can never be on the free chain
@@ -2678,70 +2670,75 @@ Stuck: Stuck size: 7, leaf: 0
    }
 
   static void test_allocate()
-   {final Btree            b = new Btree(2, 4, 8, 8);
+   {final Btree            b = new Btree(4, 4, 8, 8);
     final Process          p = b.process("alloc");
-    final Process.Register i = b.btreeIndex(p, "index");
+    final Process.Register i = b.btreeIndex(p, "index1");
+    final Process.Register j = b.btreeIndex(p, "index2");
 
+    //stop(b.printMemory());
     ok(b.printMemory(), """
 Chip: Btree            step: 0, maxSteps: 10, running: 0, returnCode: 0
   Processes:
-    stuckIsLeaf           memory: 2 * 1 = 1, 0
-    stuckIsFree           memory: 2 * 1 = 0, 0
-    freeNext              memory: 2 * 2 = 1, 0
-    stuckSize             memory: 2 * 3 = 0, 0
-    stuckKeys_0           memory: 2 * 8 = 0, 0
-    stuckData_0           memory: 2 * 8 = 0, 0
-    stuckKeys_1           memory: 2 * 8 = 0, 0
-    stuckData_1           memory: 2 * 8 = 0, 0
-    stuckKeys_2           memory: 2 * 8 = 0, 0
-    stuckData_2           memory: 2 * 8 = 0, 0
-    stuckKeys_3           memory: 2 * 8 = 0, 0
-    stuckData_3           memory: 2 * 8 = 0, 0
+    stuckIsLeaf           memory: 4 * 1 = 1, 0, 0, 0
+    stuckIsFree           memory: 4 * 1 = 0, 0, 0, 0
+    freeNext              memory: 4 * 3 = 1, 2, 3, 0
+    stuckSize             memory: 4 * 3 = 0, 0, 0, 0
+    stuckKeys_0           memory: 4 * 8 = 0, 0, 0, 0
+    stuckData_0           memory: 4 * 8 = 0, 0, 0, 0
+    stuckKeys_1           memory: 4 * 8 = 0, 0, 0, 0
+    stuckData_1           memory: 4 * 8 = 0, 0, 0, 0
+    stuckKeys_2           memory: 4 * 8 = 0, 0, 0, 0
+    stuckData_2           memory: 4 * 8 = 0, 0, 0, 0
+    stuckKeys_3           memory: 4 * 8 = 0, 0, 0, 0
+    stuckData_3           memory: 4 * 8 = 0, 0, 0, 0
 """);
     p.processClear();
     b.allocate(i, true);
+    b.allocate(j, false);
     b.maxSteps = 100;
-    b.chipRunJava();
-     //stop(b.printMemory());
-    ok(b.printMemory(), """
-Chip: Btree            step: 8, maxSteps: 100, running: 0, returnCode: 0
-  Processes:
-    stuckIsLeaf           memory: 2 * 1 = 1, 1
-    stuckIsFree           memory: 2 * 1 = 0, 0
-    freeNext              memory: 2 * 2 = 0, 0
-    stuckSize             memory: 2 * 3 = 0, 0
-    stuckKeys_0           memory: 2 * 8 = 0, 0
-    stuckData_0           memory: 2 * 8 = 0, 0
-    stuckKeys_1           memory: 2 * 8 = 0, 0
-    stuckData_1           memory: 2 * 8 = 0, 0
-    stuckKeys_2           memory: 2 * 8 = 0, 0
-    stuckData_2           memory: 2 * 8 = 0, 0
-    stuckKeys_3           memory: 2 * 8 = 0, 0
-    stuckData_3           memory: 2 * 8 = 0, 0
-""");
-    ok(i, "alloc_index = 1");
-
-    p.processClear();
-    b.free(i);
     b.chipRunJava();
     //stop(b.printMemory());
     ok(b.printMemory(), """
-Chip: Btree            step: 6, maxSteps: 100, running: 0, returnCode: 0
+Chip: Btree            step: 15, maxSteps: 100, running: 0, returnCode: 0
   Processes:
-    stuckIsLeaf           memory: 2 * 1 = 1, 1
-    stuckIsFree           memory: 2 * 1 = 0, 0
-    freeNext              memory: 2 * 2 = 1, 0
-    stuckSize             memory: 2 * 3 = 0, 0
-    stuckKeys_0           memory: 2 * 8 = 0, 0
-    stuckData_0           memory: 2 * 8 = 0, 0
-    stuckKeys_1           memory: 2 * 8 = 0, 0
-    stuckData_1           memory: 2 * 8 = 0, 0
-    stuckKeys_2           memory: 2 * 8 = 0, 0
-    stuckData_2           memory: 2 * 8 = 0, 0
-    stuckKeys_3           memory: 2 * 8 = 0, 0
-    stuckData_3           memory: 2 * 8 = 0, 0
+    stuckIsLeaf           memory: 4 * 1 = 1, 1, 0, 0
+    stuckIsFree           memory: 4 * 1 = 0, 0, 0, 0
+    freeNext              memory: 4 * 3 = 3, 2, 3, 0
+    stuckSize             memory: 4 * 3 = 0, 0, 0, 0
+    stuckKeys_0           memory: 4 * 8 = 0, 0, 0, 0
+    stuckData_0           memory: 4 * 8 = 0, 0, 0, 0
+    stuckKeys_1           memory: 4 * 8 = 0, 0, 0, 0
+    stuckData_1           memory: 4 * 8 = 0, 0, 0, 0
+    stuckKeys_2           memory: 4 * 8 = 0, 0, 0, 0
+    stuckData_2           memory: 4 * 8 = 0, 0, 0, 0
+    stuckKeys_3           memory: 4 * 8 = 0, 0, 0, 0
+    stuckData_3           memory: 4 * 8 = 0, 0, 0, 0
 """);
-    ok(i, "alloc_index = 1");
+    ok(i, "alloc_index1_0 = 1");
+    ok(j, "alloc_index2_1 = 2");
+
+    p.processClear();
+    b.free(i);
+    b.free(j);
+    b.chipRunJava();
+    //stop(b.printMemory());
+    ok(b.printMemory(), """
+Chip: Btree            step: 11, maxSteps: 100, running: 0, returnCode: 0
+  Processes:
+    stuckIsLeaf           memory: 4 * 1 = 1, 1, 0, 0
+    stuckIsFree           memory: 4 * 1 = 0, 0, 0, 0
+    freeNext              memory: 4 * 3 = 2, 3, 1, 0
+    stuckSize             memory: 4 * 3 = 0, 0, 0, 0
+    stuckKeys_0           memory: 4 * 8 = 0, 0, 0, 0
+    stuckData_0           memory: 4 * 8 = 0, 0, 0, 0
+    stuckKeys_1           memory: 4 * 8 = 0, 0, 0, 0
+    stuckData_1           memory: 4 * 8 = 0, 0, 0, 0
+    stuckKeys_2           memory: 4 * 8 = 0, 0, 0, 0
+    stuckData_2           memory: 4 * 8 = 0, 0, 0, 0
+    stuckKeys_3           memory: 4 * 8 = 0, 0, 0, 0
+    stuckData_3           memory: 4 * 8 = 0, 0, 0, 0
+""");
+    ok(i, "alloc_index1_0 = 1");
    }
 
 /*
@@ -4224,8 +4221,8 @@ stuckData: value=2, 0=1, 1=2, 2=0, 3=0
    }
 
   static void newTests()                                                        // Tests being worked on
-   {oldTests();
-    //test_allocate();
+   {//oldTests();
+    test_allocate();
    }
 
   public static void main(String[] args)                                        // Test if called as a program
