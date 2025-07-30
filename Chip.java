@@ -65,7 +65,7 @@ class Chip extends Test                                                         
      {if (p.hasMemory())                                                      // Print memory if this process has memory attached to it
        {s.append(String.format("    %-21s ", p.processName));
         s.append(String.format(
-         ", memory: %1d * %1d = %1d",
+         "memory: %1d * %1d = %1d",
           p.memorySize, p.memoryWidth, p.memoryGetNoSet(0)));
 
         for (int i = 1; i < p.memorySize; i++)
@@ -1149,7 +1149,7 @@ Chip: Test             step: 50, maxSteps: 100, running: 0, returnCode: 1
     ok(C.printMemory(), """
 Chip: Test             step: 50, maxSteps: 100, running: 0, returnCode: 1
   Processes:
-    Memory                , memory: 16 * 16 = 1, 2, 3, 5, 8, 13, 21, 34, 55, 89, 144, 233, 377, 610, 987, 1597
+    Memory                memory: 16 * 16 = 1, 2, 3, 5, 8, 13, 21, 34, 55, 89, 144, 233, 377, 610, 987, 1597
 """);
 
     ok(a, "Main_a = 987");
