@@ -370,7 +370,9 @@ endmodule
 
       String registerName() {return processName + "_" + registerName;}          // Create a name for a register that includes its register name
       private String rn  () {return registerName();}                            // The shorter is his daughter
-      Process registerProcess() {return Process.this;}                          // Process associated with this register
+      private int    rg  () {return registerGet();}                             // The shorter is his daughter
+      private void   rs  (int v) {registerSet(v);}                              // The shorter is his daughter
+      Process registerProcess()  {return Process.this;}                         // Process associated with this register
 
       int registerGet()                                                         // Return the registerâs value as an integer
        {return value.length() == 0 ? 0 : (int) value.toLongArray()[0];          // Relies on the fact that this Java code is only used for testing, unlike the Verilog version
@@ -406,34 +408,20 @@ endmodule
 
 //D3 Arithmetic                                                                 // Operations on registers
 
-      void zero() {R(); registerSet(0);}                                        // Zero a register in Java
-      void one () {R(); registerSet(1);}                                        // One a register in Java
-      void inc () {R(); registerSet(registerGet()+1);}                          // Increment a register in Java
-      void dec () {R(); registerSet(registerGet()-1);}                          // Decrement a register in Java
-      void not () {R(); registerSet(registerGet() != 0 ? 0 : 1);}               // Not a register in Java
-      void add (Register source)                                                // Add the source register to the current register in Java
-       {say("AAAA11", registerGet(), source.registerGet());
-         R(); registerSet(registerGet()+source.registerGet());
-        say("AAAA22", registerGet());
-       }
-      void gt (Register a, Register b)                                          // Set the target register to one if the test between the 'a' and 'b' register is true else 0
-       {R(); registerSet(a.registerGet() >  b.registerGet() ? 1 : 0);
-       }
-      void ge (Register a, Register b)                                          // Set the target register to one if the test between the 'a' and 'b' register is true else 0
-       {R(); registerSet(a.registerGet() >= b.registerGet() ? 1 : 0);
-       }
-      void eq (Register a, Register b)                                          // Set the target register to one if the test between the 'a' and 'b' register is true else 0
-       {R(); registerSet(a.registerGet() == b.registerGet() ? 1 : 0);
-       }
-      void ne (Register a, Register b)                                          // Set the target register to one if the test between the 'a' and 'b' register is true else 0
-       {R(); registerSet(a.registerGet() != b.registerGet() ? 1 : 0);
-       }
-      void le (Register a, Register b)                                          // Set the target register to one if the test between the 'a' and 'b' register is true else 0
-       {R(); registerSet(a.registerGet() <= b.registerGet() ? 1 : 0);
-       }
-      void lt (Register a, Register b)                                          // Set the target register to one if the test between the 'a' and 'b' register is true else 0
-       {R(); registerSet(a.registerGet() <  b.registerGet() ? 1 : 0);
-       }
+      void zero() {R(); rs(0);}                                                 // Zero a register in Java
+      void one () {R(); rs(1);}                                                 // One a register in Java
+      void inc () {R(); rs(rg()+1);}                                            // Increment a register in Java
+      void dec () {R(); rs(rg()-1);}                                            // Decrement a register in Java
+      void not () {R(); rs(rg() != 0 ? 0 : 1);}                                 // Not a register in Java
+      void add (Register source) {R(); rs(rg()+source.rg());}                   // Add the source register to the current register in Java
+
+      void gt (Register a, Register b) {R(); rs(a.rg() >  b.rg() ? 1 : 0);}     // Set the target register to one if the test between the 'a' and 'b' register is true else 0
+      void ge (Register a, Register b) {R(); rs(a.rg() >= b.rg() ? 1 : 0);}     // Set the target register to one if the test between the 'a' and 'b' register is true else 0
+      void eq (Register a, Register b) {R(); rs(a.rg() == b.rg() ? 1 : 0);}     // Set the target register to one if the test between the 'a' and 'b' register is true else 0
+      void ne (Register a, Register b) {R(); rs(a.rg() != b.rg() ? 1 : 0);}     // Set the target register to one if the test between the 'a' and 'b' register is true else 0
+      void le (Register a, Register b) {R(); rs(a.rg() <= b.rg() ? 1 : 0);}     // Set the target register to one if the test between the 'a' and 'b' register is true else 0
+      void lt (Register a, Register b) {R(); rs(a.rg() <  b.rg() ? 1 : 0);}     // Set the target register to one if the test between the 'a' and 'b' register is true else 0
+
 
       String zeroV() {N(); return rn() + " = 0;";}                              // Zero a register in Verilog
       String oneV () {N(); return rn() + " = 1;";}                              // One a register in Verilog
@@ -1206,6 +1194,7 @@ Chip: Test             step: 50, maxSteps: 100, running: 0, returnCode: 1
     var b  = p.register("b",  B);
     var c  = p.register("c",  B);
     var i  = p.register("i",  B);
+    var k  = p.register("k",  B);
     var n  = p.register("n",  B);
 
     final StringBuilder s = new StringBuilder();
@@ -1214,6 +1203,7 @@ Chip: Test             step: 50, maxSteps: 100, running: 0, returnCode: 1
        {a.registerSet(0);
         b.registerSet(1);
         c.registerSet(0);
+        k.registerSet(0);
         i.registerSet(0);
         n.registerSet(6);
        }
@@ -1226,15 +1216,13 @@ Chip: Test             step: 50, maxSteps: 100, running: 0, returnCode: 1
            {c.copy(a); c.add(b);
             i.inc();
             s.append(" "+i.registerGet()+"=>"+c.registerGet());
-            c.gt(i, n);
-            p.GoNotZero(end, c);
-            say("BBBB", a.registerGet(), b.registerGet(), c.registerGet());
+            k.gt(i, n);
+            p.GoNotZero(end, k);
            }
          };
         p.new Instruction()
          {void action()
-           {say("CCCC", a.registerGet(), b.registerGet(), c.registerGet());
-            a.copy(b); b.copy(c);
+           {a.copy(b); b.copy(c);
             p.Goto(start);
            }
          };
@@ -1243,7 +1231,7 @@ Chip: Test             step: 50, maxSteps: 100, running: 0, returnCode: 1
 
     C.maxSteps = 100;
     C.chipRunJava();
-    say("AAAA", s);
+    ok(s, " 1=>1 2=>2 3=>3 4=>5 5=>8 6=>13 7=>21");
    }
 
   static void oldTests()                                                        // Tests thought to be in good shape
