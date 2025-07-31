@@ -327,9 +327,31 @@ endmodule
      }
 
     class Label                                                                 // Label jump targets in the program
-     {int instruction;                                                          // The instruction location to which this labels applies
+     {int offset;                                                               // The instruction location to which this labels applies
       Label()    {N(); set(); labels.push(this);}                               // A label assigned to an instruction location
-      void set() {N(); instruction = code.size();}                              // Reassign the label to an instruction
+      void set() {N(); offset = code.size();}                                   // Reassign the label to an instruction
+     }
+
+//D2 Block                                                                      // A block is a squqnce of instructions that can be jumped out of to act liek an if statament or restarted to act like a loop
+
+    class Block                                                                 // A register is a block of memory that can be accessed within the current clock cycle
+     {final Label start = new Label();                                          // Start of block
+      final Label end   = new Label();                                          // End of block
+      Block()                                                                   // Create a block of code
+       {code();                                                                 // Add the code to the block
+        end.set();                                                              // Mark the end of the block
+       }
+      void code() {}                                                            // Code of the block
+     }
+
+    void Goto     (Label label)                                                 // Goto a label unconditionally
+     {processNextPc = label.offset;
+     }
+    void GoNotZero(Label label, Register condition)                             // Go to a specified label if the value of a field is not zero
+     {if (condition.registerGet() > 0) processNextPc = label.offset;
+     }
+    void GoZero   (Label label, Register condition)                                // Go to a specified label if the value of a field is zero
+     {if (condition.registerGet() == 0) processPc = label.offset;
      }
 
 //D2 Register                                                                   // A register is a block of memory that can be accessed within the current clock cycle
@@ -390,7 +412,27 @@ endmodule
       void dec () {R(); registerSet(registerGet()-1);}                          // Decrement a register in Java
       void not () {R(); registerSet(registerGet() != 0 ? 0 : 1);}               // Not a register in Java
       void add (Register source)                                                // Add the source register to the current register in Java
-       {R(); registerSet(registerGet()+source.registerGet());
+       {say("AAAA11", registerGet(), source.registerGet());
+         R(); registerSet(registerGet()+source.registerGet());
+        say("AAAA22", registerGet());
+       }
+      void gt (Register a, Register b)                                          // Set the target register to one if the test between the 'a' and 'b' register is true else 0
+       {R(); registerSet(a.registerGet() >  b.registerGet() ? 1 : 0);
+       }
+      void ge (Register a, Register b)                                          // Set the target register to one if the test between the 'a' and 'b' register is true else 0
+       {R(); registerSet(a.registerGet() >= b.registerGet() ? 1 : 0);
+       }
+      void eq (Register a, Register b)                                          // Set the target register to one if the test between the 'a' and 'b' register is true else 0
+       {R(); registerSet(a.registerGet() == b.registerGet() ? 1 : 0);
+       }
+      void ne (Register a, Register b)                                          // Set the target register to one if the test between the 'a' and 'b' register is true else 0
+       {R(); registerSet(a.registerGet() != b.registerGet() ? 1 : 0);
+       }
+      void le (Register a, Register b)                                          // Set the target register to one if the test between the 'a' and 'b' register is true else 0
+       {R(); registerSet(a.registerGet() <= b.registerGet() ? 1 : 0);
+       }
+      void lt (Register a, Register b)                                          // Set the target register to one if the test between the 'a' and 'b' register is true else 0
+       {R(); registerSet(a.registerGet() <  b.registerGet() ? 1 : 0);
        }
 
       String zeroV() {N(); return rn() + " = 0;";}                              // Zero a register in Verilog
@@ -1155,17 +1197,68 @@ Chip: Test             step: 50, maxSteps: 100, running: 0, returnCode: 1
     ok(a, "Main_a_0 = 987");
    }
 
+  static void test_block()
+   {final int B = 16;
+    var C  = chip("Test");
+    var p  = C.process("Main");
+
+    var a  = p.register("a",  B);
+    var b  = p.register("b",  B);
+    var c  = p.register("c",  B);
+    var i  = p.register("i",  B);
+    var n  = p.register("n",  B);
+
+    final StringBuilder s = new StringBuilder();
+    p.new Instruction()
+     {void action()
+       {a.registerSet(0);
+        b.registerSet(1);
+        c.registerSet(0);
+        i.registerSet(0);
+        n.registerSet(6);
+       }
+     };
+
+    p.new Block()
+     {void code()
+       {p.new Instruction()
+         {void action()
+           {c.copy(a); c.add(b);
+            i.inc();
+            s.append(" "+i.registerGet()+"=>"+c.registerGet());
+            c.gt(i, n);
+            p.GoNotZero(end, c);
+            say("BBBB", a.registerGet(), b.registerGet(), c.registerGet());
+           }
+         };
+        p.new Instruction()
+         {void action()
+           {say("CCCC", a.registerGet(), b.registerGet(), c.registerGet());
+            a.copy(b); b.copy(c);
+            p.Goto(start);
+           }
+         };
+       }
+     };
+
+    C.maxSteps = 100;
+    C.chipRunJava();
+    say("AAAA", s);
+   }
+
   static void oldTests()                                                        // Tests thought to be in good shape
    {test_memory();
     test_memoryProcess();
     test_arithmeticFibonacci();
+    test_block();
    }
 
   static void newTests()                                                        // Tests being worked on
-   {oldTests();
+   {//oldTests();
     //test_memory();
     //test_memoryProcess();
     //test_arithmeticFibonacci();
+    test_block();
    }
 
   public static void main(String[] args)                                        // Test if called as a program
