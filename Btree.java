@@ -838,19 +838,18 @@ chipStop = true;
      }
     return ""+s;
    }
-
+*/
 //D2 Horizontally                                                               // Print the tree horizontally
 
     final int linesToPrintABranch =  4;                                         // The number of lines required to print a branch
-    final int maxPrintLevels      = 10;                                         // The maximum nu ber of levels to print =- this avoids endless print loops when something goes wrong
+    final int maxPrintLevels      =  3;                                         // The maximum nu ber of levels to print =- this avoids endless print loops when something goes wrong
 
     void printLeaf(int BtreeIndex, Stack<StringBuilder>P, int level)            // Print leaf horizontally
      {padStrings(P, level);
-      final DumpStuck     S = new DumpStuck(BtreeIndex);
 
       final StringBuilder s = new StringBuilder();                              // String builder
-      for  (int i = 0; i < S.size; i++)
-       {s.append(""+S.keys.elementAt(i)+",");
+      for  (int i = 0; i < stuckSize.memoryGet(BtreeIndex); i++)
+       {s.append(""+stuckKeys[i].memoryGet(BtreeIndex)+",");
        }
       if (s.length() > 0) s.setLength(s.length()-1);                            // Remove trailing comma if present
       s.append("="+BtreeIndex+" ");
@@ -861,35 +860,32 @@ chipStop = true;
     void printBranch(int BtreeIndex, Stack<StringBuilder>P, int level)          // Print branch horizontally
      {if (level > maxPrintLevels) return;
       padStrings(P, level);
-      final DumpStuck S = new DumpStuck(BtreeIndex);
-      final int       L = level * linesToPrintABranch;                          // Start line at which to print branch
-      final int       K = S.size;                                               // Size of branch
+      final int L = level * linesToPrintABranch;                                // Start line at which to print branch
+      final int K = stuckSize.memoryGet(BtreeIndex);                            // Size of branch
 
       if (K > 0)                                                                // Branch has key, next pairs
        {for  (int i = 0; i < K; i++)
-         {final int key  = S.keys.elementAt(i);
-          final int data = S.data.elementAt(i);
-          final DumpStuck C = new DumpStuck(data);
-          if (C.leaf)
+         {final int key  = stuckKeys[i].memoryGet(BtreeIndex);
+          final int data = stuckData[i].memoryGet(BtreeIndex);
+          if (stuckIsLeaf.memoryGet(data) > 0)
            {printLeaf  (data, P, level+1);
            }
           else
            {printBranch(data, P, level+1);
            }
 
-          P.elementAt(L+0).append(""+S.keys.elementAt(i));                      // Key
+          P.elementAt(L+0).append(""+stuckKeys[i].memoryGet(BtreeIndex));       // Key
           P.elementAt(L+1).append(""+BtreeIndex+(i > 0 ?  "."+i : ""));         // Branch,key, next pair
-          P.elementAt(L+2).append(""+S.data.elementAt(i));
+          P.elementAt(L+2).append(""+stuckData[i].memoryGet(BtreeIndex));
          }
        }
       else                                                                      // Branch is empty so print just the index of the branch
        {P.elementAt(L+0).append(""+BtreeIndex+"Empty");
        }
-      final int top = S.top;                                                    // Top next will always be present
+      final int top = stuckData[K].memoryGet(BtreeIndex);                       // Top next will always be present
       P.elementAt(L+3).append(top);                                             // Append top next
 
-      final DumpStuck T = new DumpStuck(top);
-      if (T.leaf)                                                               // Print leaf
+      if (stuckIsLeaf.memoryGet(top) > 0)                                       // Print leaf
        {printLeaf  (top, P, level+1);
        }
       else                                                                      // Print branch
@@ -921,11 +917,9 @@ chipStop = true;
    }
 
   String printCollapsed(Stack<StringBuilder> S)                                 // Collapse horizontal representation into a string
-   {z();
-    final StringBuilder t = new StringBuilder();                                // Print the lines of the tree that are not blank
+   {final StringBuilder t = new StringBuilder();                                // Print the lines of the tree that are not blank
     for  (StringBuilder s : S)
-     {z();
-      final String l = s.toString();
+     {final String l = s.toString();
       if (l.isBlank()) continue;
       t.append(l+"|\n");
      }
@@ -934,11 +928,10 @@ chipStop = true;
 
   String print()                                                                // Print a tree horizontally
    {final Stack<StringBuilder> P = new Stack<>();
-    final DumpStuck d = new DumpStuck(0);
-    if (d.leaf) printLeaf(0, P, 0); else printBranch(0, P, 0);
+    if (stuckIsLeaf.memoryGet(0) > 0) printLeaf(0, P, 0); else printBranch(0, P, 0);
     return printCollapsed(P);
    }
-
+/*
 //D1 Split                                                                      // Split nodes in half to increase the number of nodes in the tree
 
   private void splitRootLeaf()                                                  // Split a full root leaf
@@ -2741,6 +2734,49 @@ Chip: Btree            step: 11, maxSteps: 100, running: 0, returnCode: 0
     ok(i, "alloc_index1_0 = 1");
    }
 
+  static Btree test_createTree()
+   {final Btree b = new Btree(8, 4, 8, 8);
+    b.stuckIsLeaf .memorySet( 0, 0);
+    b.stuckIsLeaf .memorySet( 1, 1);
+    b.stuckIsLeaf .memorySet( 1, 2);
+    b.stuckIsLeaf .memorySet( 1, 3);
+
+    b.stuckSize   .memorySet( 2, 0);
+    b.stuckSize   .memorySet( 3, 1);
+    b.stuckSize   .memorySet( 4, 2);
+    b.stuckSize   .memorySet( 4, 3);
+
+    b.stuckKeys[0].memorySet(10, 0); b.stuckData[0].memorySet( 1, 0);
+    b.stuckKeys[0].memorySet(01, 1); b.stuckData[0].memorySet( 1, 1);
+    b.stuckKeys[0].memorySet(11, 2); b.stuckData[0].memorySet( 2, 2);
+    b.stuckKeys[0].memorySet(21, 3); b.stuckData[0].memorySet( 3, 3);
+
+    b.stuckKeys[1].memorySet(20, 0); b.stuckData[1].memorySet( 2, 0);
+    b.stuckKeys[1].memorySet(03, 1); b.stuckData[1].memorySet(11, 1);
+    b.stuckKeys[1].memorySet(12, 2); b.stuckData[1].memorySet(12, 2);
+    b.stuckKeys[1].memorySet(22, 3); b.stuckData[1].memorySet(13, 3);
+
+    b.stuckKeys[2].memorySet(30, 0); b.stuckData[2].memorySet( 3, 0);
+    b.stuckKeys[2].memorySet(05, 1); b.stuckData[2].memorySet(21, 1);
+    b.stuckKeys[2].memorySet(13, 2); b.stuckData[2].memorySet(22, 2);
+    b.stuckKeys[2].memorySet(23, 3); b.stuckData[2].memorySet(23, 3);
+
+    b.stuckKeys[3].memorySet(40, 0); b.stuckData[3].memorySet( 4, 0);
+    b.stuckKeys[3].memorySet(07, 1); b.stuckData[3].memorySet(31, 1);
+    b.stuckKeys[3].memorySet(14, 2); b.stuckData[3].memorySet(32, 2);
+    b.stuckKeys[3].memorySet(24, 3); b.stuckData[3].memorySet(33, 3);
+
+    //stop(b.print());
+    ok(b.print(), """
+        10              20               |
+        0               0.1              |
+        1               2                |
+                        3                |
+1,3,5=1   11,12,13,14=2    21,22,23,24=3 |
+""");
+    return b;
+   }
+
 /*
   static Btree test_create()
    {final Btree b = new Btree(32, 4, 8, 8);
@@ -4192,12 +4228,7 @@ stuckData: value=2, 0=1, 1=2, 2=0, 3=0
     test_mergeButOne();
     test_mergeButOne2();
     test_allocate();
-
-    //test_create();
-    //test_leaf();
-    //test_allocFree();
-    //test_btree();
-    //test_find();
+    ////test_find();
     //test_findAndInsert();
     //test_isLeaf();
     //test_splitLeafRoot();
@@ -4221,8 +4252,8 @@ stuckData: value=2, 0=1, 1=2, 2=0, 3=0
    }
 
   static void newTests()                                                        // Tests being worked on
-   {oldTests();
-    test_allocate();
+   {//oldTests();
+    test_createTree();
    }
 
   public static void main(String[] args)                                        // Test if called as a program
