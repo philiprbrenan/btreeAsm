@@ -422,6 +422,13 @@ endmodule
       void le (Register a, Register b) {R(); rs(a.rg() <= b.rg() ? 1 : 0);}     // Set the target register to one if the test between the 'a' and 'b' register is true else 0
       void lt (Register a, Register b) {R(); rs(a.rg() <  b.rg() ? 1 : 0);}     // Set the target register to one if the test between the 'a' and 'b' register is true else 0
 
+      void gt (Register a, int b) {R(); rs(a.rg() >  b ? 1 : 0);}               // Set the target register to one if the test between the 'a' and 'b' register is true else 0
+      void ge (Register a, int b) {R(); rs(a.rg() >= b ? 1 : 0);}               // Set the target register to one if the test between the 'a' and 'b' register is true else 0
+      void eq (Register a, int b) {R(); rs(a.rg() == b ? 1 : 0);}               // Set the target register to one if the test between the 'a' and 'b' register is true else 0
+      void ne (Register a, int b) {R(); rs(a.rg() != b ? 1 : 0);}               // Set the target register to one if the test between the 'a' and 'b' register is true else 0
+      void le (Register a, int b) {R(); rs(a.rg() <= b ? 1 : 0);}               // Set the target register to one if the test between the 'a' and 'b' register is true else 0
+      void lt (Register a, int b) {R(); rs(a.rg() <  b ? 1 : 0);}               // Set the target register to one if the test between the 'a' and 'b' register is true else 0
+
 
       String zeroV() {N(); return rn() + " = 0;";}                              // Zero a register in Verilog
       String oneV () {N(); return rn() + " = 1;";}                              // One a register in Verilog
@@ -1195,7 +1202,6 @@ Chip: Test             step: 50, maxSteps: 100, running: 0, returnCode: 1
     var c  = p.register("c",  B);
     var i  = p.register("i",  B);
     var k  = p.register("k",  B);
-    var n  = p.register("n",  B);
 
     final StringBuilder s = new StringBuilder();
     p.new Instruction()
@@ -1205,7 +1211,6 @@ Chip: Test             step: 50, maxSteps: 100, running: 0, returnCode: 1
         c.registerSet(0);
         k.registerSet(0);
         i.registerSet(0);
-        n.registerSet(6);
        }
      };
 
@@ -1216,7 +1221,7 @@ Chip: Test             step: 50, maxSteps: 100, running: 0, returnCode: 1
            {c.copy(a); c.add(b);
             i.inc();
             s.append(" "+i.registerGet()+"=>"+c.registerGet());
-            k.gt(i, n);
+            k.gt(i, 6);
             p.GoNotZero(end, k);
            }
          };
