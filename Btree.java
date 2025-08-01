@@ -135,14 +135,22 @@ chipStop = true;
     final Register nextFree = register("nextFree", btreeAddressSize);           // Free chain from root
     final Register[]keys    = new Register[maxStuckSize];                       // Keys in the stuck copied out of memory
     final Register[]data    = new Register[maxStuckSize];                       // Data in the stuck copied out of memory
-    final Memory.Get gSize  = stuckSize.new Get(this);                          // Transaction to get the current size of the stuck
-    final Memory.Set sSize  = stuckSize.new Set(this);                          // Transaction to set the current size of the stuck
+    final Memory.Get gSize  = stuckSize  .new Get(this);                        // Transaction to get the current size of the stuck
+    final Memory.Set sSize  = stuckSize  .new Set(this);                        // Transaction to set the current size of the stuck
     final Memory.Get gLeaf  = stuckIsLeaf.new Get(this);                        // Transaction to discoeve whether this stuck is acting as a leaf or a branch
     final Memory.Set sLeaf  = stuckIsLeaf.new Set(this);                        // Transaction to set the stuck in memory to  a leaf or a branch
     final Memory.Get[]gKeys = new Memory.Get[maxStuckSize];                     // Transactions to get each key in the stuck
     final Memory.Set[]sKeys = new Memory.Set[maxStuckSize];                     // Transactions to set each key in the stuck
     final Memory.Get[]gData = new Memory.Get[maxStuckSize];                     // Transactions to get each data element in the stuck
     final Memory.Set[]sData = new Memory.Set[maxStuckSize];                     // Transactions to set each data element in the stuck
+                                                                                // Output registers so they must be owned by this process so that we can write into them
+    final Process.Register Found        = register("Found",      1);                // Whether the key was found
+    final Process.Register Key          = register("Key",        bitsPerKey);       // Data associated with the key if found
+    final Process.Register FoundKey     = register("FoundKey",   bitsPerKey);       // Data associated with the key if found
+    final Process.Register Data         = register("Data",       bitsPerData);      // Data associated with the key if found
+    final Process.Register BtreeIndex   = register("BtreeIndex", btreeAddressSize); // Index of stuck in Btree in which the key should reside
+    final Process.Register StuckIndex   = register("StuckIndex", stuckAddressSize); // Index of stuck in Btree in which the key should reside
+    final Process.Register MergeSuccess = register("MergeSuccess", 1);              // Whether a merge was completed successfully or not
 
     Stuck(String Name)                                                          // Mirror a stuck in memory with one in registers.
      {super(Name); N();
@@ -199,7 +207,7 @@ chipStop = true;
       new Instruction()                                                         // Load results from transactions into local registers
        {void action()
          {size.copy(gSize.transactionOutputRegisters.firstElement());
-          isLeaf.copy(gSize.transactionOutputRegisters.firstElement());
+          isLeaf.copy(gLeaf.transactionOutputRegisters.firstElement());
           for (int i = 0; i < maxStuckSize; i++)
            {keys[i].copy(gKeys[i].transactionOutputRegisters.firstElement());
             data[i].copy(gData[i].transactionOutputRegisters.firstElement());
@@ -232,33 +240,43 @@ chipStop = true;
 //D3 Print                                                                      // Print the stuck
 
     public String toString()                                                    // Print the stuck
-     {final StringBuilder s = new StringBuilder();
-      final int     ns = size  .registerGet();                                  // Size of stuck
-      final int     il = isLeaf.registerGet() > 0 ? 1 : 0;                      // Is a leaf
-      final String  nm = processName;                                           // Name of the stuck is the same as the name of the process
-      s.append("Stuck: "+nm+" size: "+ns+", leaf: "+il+"\n");                   // Title
+     {final StringBuilder S = new StringBuilder();
+      final int ns = size  .registerGet();                                      // Size of stuck
+      final int il = isLeaf.registerGet() > 0 ? 1 : 0;                          // Is a leaf
+
+      final String nm = processName;                                            // Name of the stuck is the same as the name of the process
+      S.append("Stuck: "+nm+" size: "+ns+", leaf: "+il+"\n");                   // Title
 
       for (int i = 0; i < ns; i++)                                              // Each key, data pair
-       {final int k = keys[i].registerGet();
-        final int d = data[i].registerGet();
-        s.append(String.format("%2d  %4d => %4d\n", i, k, d));
+       {final int K = keys[i].registerGet();
+        final int D = data[i].registerGet();
+        S.append(String.format("%2d  %4d => %4d\n", i, K, D));
        }
-      return ""+s;
+      return ""+S;
      }
 
     String dump()                                                               // Print all the entries in the stuck
-     {final StringBuilder s = new StringBuilder();
+     {final StringBuilder S = new StringBuilder();
       final int     ns = size  .registerGet();                                  // Size of stuck
       final int     il = isLeaf.registerGet() > 0 ? 1 : 0;                      // Is a leaf
       final String  nm = processName;                                           // Name of the stuck is the same as the name of the process
-      s.append("Stuck: "+nm+" size: "+ns+", leaf: "+il+"\n");                   // Title
+      S.append("Stuck: "+nm+" size: "+ns+", leaf: "+il+"\n");                   // Title
 
       for (int i = 0; i < maxStuckSize; i++)                                    // Each key, data pair
        {final int k = keys[i].registerGet();
         final int d = data[i].registerGet();
-        s.append(String.format("%2d  %4d => %4d\n", i, k, d));
+        S.append(String.format("%2d  %4d => %4d\n", i, k, d));
        }
-      return ""+s;
+
+      final int f = Found       .registerGet(); S.append("Found     : "+f+"\n"); // Whether the key was found
+      final int k = Key         .registerGet(); S.append("Key       : "+k+"\n"); // Data associated with the key if found
+      final int K = FoundKey    .registerGet(); S.append("FoundKey  : "+K+"\n"); // Data associated with the key if found
+      final int d = Data        .registerGet(); S.append("Data      : "+d+"\n"); // Data associated with the key if found
+      final int b = BtreeIndex  .registerGet(); S.append("BtreeIndex: "+b+"\n"); // Index of stuck in Btree in which the key should reside
+      final int s = StuckIndex  .registerGet(); S.append("StuckIndex: "+s+"\n"); // Index of stuck in Btree in which the key should reside
+      final int m = MergeSuccess.registerGet(); S.append("Merge     : "+m+"\n"); // Whether a merge was completed successfully or not
+
+      return ""+S;
      }
 
 //D3 Actions                                                                    // Just the actions needed on a stuck to support a btree
@@ -278,7 +296,7 @@ chipStop = true;
        };
      }
 
-    void pop(Register Key, Register Data)                                       // Pop a key, data pair from the local copy of the stuck
+    void pop()                                                                  // Pop a key, data pair from the local copy of the stuck
      {new Instruction()
        {void action()
          {final int N = size.registerGet();
@@ -307,7 +325,7 @@ chipStop = true;
        };
      }
 
-    void firstElement(Register Key, Register Data)                              // Get the first key, data pair
+    void firstElement()                                                         // Get the first key, data pair
      {new Instruction()
        {void action()
          {final int N = size.registerGet();
@@ -321,7 +339,7 @@ chipStop = true;
        };
      }
 
-    void lastElement(Register Key, Register Data)                               // Get the last key, data pair
+    void lastElement()                                                          // Get the last key, data pair
      {new Instruction()
        {void action()
          {final int N = size.registerGet();
@@ -335,7 +353,7 @@ chipStop = true;
        };
      }
 
-    void pastLastElement(Register Key, Register Data)                           // Get the past last key, data pair
+    void pastLastElement()                                                      // Get the past last key, data pair
      {new Instruction()
        {void action()
          {final int N = size.registerGet();
@@ -349,7 +367,7 @@ chipStop = true;
        };
      }
 
-    void elementAt(Register Index, Register Key, Register Data)                 // Get the indexed key, data pair
+    void elementAt(Register Index)                                              // Get the indexed key, data pair
      {new Instruction()
        {void action()
          {final int N = Index.registerGet();
@@ -425,7 +443,7 @@ chipStop = true;
        };
      }
 
-    void removeElementAt(Register Index, Register Key, Register Data)           // Set the indexed key, data pair
+    void removeElementAt(Register Index)                                        // Set the indexed key, data pair
      {new Instruction()
        {void action()
          {final int N = Index.registerGet();
@@ -447,7 +465,7 @@ chipStop = true;
 
 //D3 Search                                                                     // Search the stuck
 
-    void search_eq(Register Key, Register Found, Register Index, Register Data) // Find the specified key if possible in the stuck
+    void search_eq(Register Key)                                                // Find the specified key if possible in the stuck
      {new Instruction()
        {void action()
          {final int N = size.registerGet();
@@ -456,8 +474,9 @@ chipStop = true;
            {final int I = i;
              if (keys[i].registerGet() == Key.registerGet())
              {Found.one();
-              Index.registerSet(I);
-              Data.copy(data[I]);
+              StuckIndex.registerSet(I);
+              Stuck.this.Key .copy(keys[I]);
+              Stuck.this.Data.copy(data[I]);
               return;
              }
            }
@@ -466,19 +485,18 @@ chipStop = true;
      }
 
 
-    void search_le(Register Key, Register Found, Register Index,                // Find the first key in the stuck so that the search key is less than or equal to this key
-      Register FoundKey, Register FoundData)
+    void search_le(Register Key)                                                // Find the first key in the stuck so that the search key is less than or equal to this key
      {new Instruction()
        {void action()
          {final int N = size.registerGet();
           Found.zero();
           for (int i = 0; i < N; ++i)
            {final int I = i;
-             if (Key.registerGet() <= keys[i].registerGet())
+            if (Key.registerGet() <= keys[i].registerGet())
              {Found.one();
-              Index.registerSet(I);
-              FoundKey .copy(keys[I]);
-              FoundData.copy(data[I]);
+              BtreeIndex.registerSet(I);
+              FoundKey.copy(keys[I]);
+              Data    .copy(data[I]);
               return;
              }
            }
@@ -595,12 +613,12 @@ chipStop = true;
 
 //D3 Merge                                                                      // Merge stucks in various weays
 
-    void merge(Stuck source, Register Success)                                  // Concatenate the indicated stuck on to the end of the current one
+    void merge(Stuck source)                                                    // Concatenate the indicated stuck on to the end of the current one
      {new Instruction()
        {void action()
          {final int S = source.size.registerGet();
           final int T =        size.registerGet();
-          Success.zero();
+          MergeSuccess.zero();
           if (S + T > maxStuckSize)
            {return;
            }
@@ -609,34 +627,39 @@ chipStop = true;
             data[T+i].copy(source.data[i]);
            }
           size.add(source.size);
-          Success.one();
+          MergeSuccess.one();
          }
        };
      }
 
-    void merge(Stuck Left, Stuck Right, Register Success)                       // Replace the current stuck with the concatenation of teh two stucks indicated
+    void merge(Stuck Left, Stuck Right)                                         // Replace the current stuck with the concatenation of teh two stucks indicated
      {new Instruction()
        {void action()
          {final int L = Left .size.registerGet();
           final int R = Right.size.registerGet();
-          Success.zero();
+          MergeSuccess.zero();
           if (L + R > maxStuckSize)
            {return;
            }
           size.zero();
-          Success.one();
+          MergeSuccess.one();
          }
        };
-      merge(Left,  Success);
-      merge(Right, Success);
+      merge(Left);
+      merge(Right);
+      new Instruction()
+       {void action()
+         {MergeSuccess.one();
+         }
+       };
      }
 
-    void mergeButOne(Register Key, Stuck Source, Register Success)              // Concatenate the indicated stuck with a past last data element on to the end of the current stuck with a past last data element with the specified key inserted over the central past last data element separating the two.
+    void mergeButOne(Register Key, Stuck Source)                                // Concatenate the indicated stuck with a past last data element on to the end of the current stuck with a past last data element with the specified key inserted over the central past last data element separating the two.
      {new Instruction()
        {void action()
          {final int S = Source.size.registerGet();
           final int T =        size.registerGet();
-          Success.zero();
+          MergeSuccess.zero();
           if (S + T > maxStuckSize)
            {return;
            }
@@ -649,15 +672,15 @@ chipStop = true;
           data[S+T+1].copy(Source.data[S]);                                     // Past last data element from source
           size.add(Source.size);                                                // New size of target
           size.inc();
-          Success.one();
+          MergeSuccess.one();
          }
        };
      }
 
-    void mergeButOne(Stuck Left, Register Key, Stuck Right, Register Success)   // Concatenate the past last left and right stucks separated by the key over the past last data element of the left stuck into the target
+    void mergeButOne(Stuck Left, Register Key, Stuck Right)                     // Concatenate the past last left and right stucks separated by the key over the past last data element of the left stuck into the target
      {final int L = Left .size.registerGet();
       final int R = Right.size.registerGet();
-      Success.zero();
+      MergeSuccess.zero();
       if (L + R + 1 >= maxStuckSize)                                            // Check size
        {return;
        }
@@ -675,7 +698,7 @@ chipStop = true;
        }
       data[L+R+1].copy(Right.data[R]);                                          // Past last data element from right
       size.registerSet(L+R+1);                                                  // New size of target
-      Success.one();
+      MergeSuccess.one();
      }
    } // Stuck
 /*
@@ -1483,68 +1506,75 @@ chipStop = true;
        }
      };
    }
+*/
 
 //D1 Find                                                                       // Find a key in a btree
-
+// Belongs in Stuck
   class IsLeaf                                                                  // Process a stuck depending on wnether it is a leaf or a branch
-   {IsLeaf(Process.Register index)
-     {stuckIsLeaf.iRead(index);
-      final IsLeaf l = this;
-      L.P.new If(stuckIsLeaf)
-       {void Then() {l.Leaf();}
-        void Else() {l.Branch();}
+   {IsLeaf(Stuck Stuck)
+     {Stuck.new Block()                                                         // Outer block contains branch code
+       {void code()
+         {final Process.Label bEnd = end;
+          Stuck.new Block()                                                     // Inner block contrains leaf code
+           {void code()
+             {final Process.Label lEnd = end;
+              Stuck.new Instruction()
+               {void action()
+                 {if (Stuck.isLeaf.registerGet() == 0) Stuck.Goto(lEnd);                      // Not a leaf so go to code for branch
+                 }
+               };
+              Leaf();                                                           // On a leaf
+              Stuck.new Instruction() {void action() {Stuck.Goto(bEnd);}};      // Exit outer block
+             }
+           };
+          Branch();                                                             // On a branch
+         }
        };
      }
-    void Leaf() {}
+    void Leaf()   {}
     void Branch() {}
    }
 
-  public void find(Process.Register Key, Process.Register Found,                // Find the leaf associated with a key in the tree
-    Process.Register Data, Process.Register index, Process.Register stuckIndex)
-   {final Stuck        S = stuck();
-    final Process.Register s = index;
-    s.iZero();                                                                  // Start at the root
-    L.P.new Block()
-     {void code()
-       {L.P.new Instruction()
-         {void action()
-           {copyStuckFrom(S, s);                                                // Set search key
-            S.stuckKeys.move(Key);
-           }
-         };
+  public Stuck find(Process.Register Key)                                       // Find the leaf associated with a key in the tree
+   {final Stuck S = new Stuck("stuck");
+    S.new Instruction()
+     {void action()
+       {S.BtreeIndex.zero();                                                    // Start at the root
+       }
+     };
 
-        new IsLeaf(s)
+    S.new Block()
+     {void code()
+       {
+
+        S.get(S.BtreeIndex);                                                    // Load current stuck
+
+        new IsLeaf(S)
          {void Leaf()                                                           // At a leaf - search for exact match
-           {L.P.new Instruction()
+           {S.search_eq(Key);                                                   // Search
+            S.new Instruction()
              {void action()
-               {S.search_eq(Found, stuckIndex);                                 // Search
-                L.P.GoZero(end, Found);                                         // Key not present
-               }
-             };
-            L.P.new Instruction()
-             {void action()
-               {S.elementAt(stuckIndex);                                        // Look up data
-                Data.move(S.stuckData);                                         // Save data
-                L.P.Goto (end);                                                 // Successfully found the key
+               {S.GoZero(end, S.Found);                                         // Key not present
                }
              };
            }
           void Branch()                                                         // On a branch - step to next level down
-           {L.P.new Instruction()
+           {S.search_le(Key);                                                   // Search stuck for matching key
+            S.new Instruction()
              {void action()
-               {S.search_le(Found, stuckIndex);                                 // Search stuck for matching key
-                s.move(S.stuckData);                                            // Index of next stuck down
-                L.P.Goto(start);                                                // Key not present
+               {S.BtreeIndex.copy(S.Data);
+                S.Goto(start);                                                  // Key not present
                }
              };
            }
          };
        };
      };
+    return S;
    }
 
 //D1 Insertion                                                                  // Insert a key, data pair into the tree if ther is room for it or update and existing key with a new datum
-
+/*
   private void findAndInsert(Process.Register Found)                            // Find the leaf that should contain this key and insert or update it is possible setting Found to true if found else to false indicating that the key, data pair still needs to be inserted
    {final Stuck  S          = stuck();
     Process.Register Key        = S.key();
@@ -1846,6 +1876,7 @@ chipStop = true;
     b.maxSteps = 20;
     b.chipRunJava();
 
+    //stop(s);
     ok(s, """
 Stuck: Stuck size: 2, leaf: 1
  0     2 =>    3
@@ -1923,7 +1954,7 @@ Chip: Btree            step: 0, maxSteps: 10, running: 0, returnCode: 0
     final Btree b = new Btree(B, S+S, K, D);
 
     Stuck s = b.new Stuck("Stuck");
-    final Process.Register k = s.register("k", K);
+    final Process.Register k = s.Key;
     final Process.Register d = s.register("d", D);
 
     s.getRoot();
@@ -1941,7 +1972,7 @@ Chip: Btree            step: 0, maxSteps: 10, running: 0, returnCode: 0
     b.chipRunJava();
 
     ok(s, """
-Stuck: Stuck size: 4, leaf: 0
+Stuck: Stuck size: 4, leaf: 1
  0     0 =>    1
  1     1 =>    2
  2     2 =>    3
@@ -1955,20 +1986,40 @@ Stuck: Stuck size: 4, leaf: 0
    {final Btree b = test_push();
 
     Stuck s = (Stuck)b.processes.get("Stuck");
-    final Process.Register k = s.register("k", b.bitsPerKey);
-    final Process.Register d = s.register("d", b.bitsPerData);
+    final Process.Register k = s.Key;
+    final Process.Register d = s.Data;
 
     s.processClear();
-    s.pop(k, d);
+    s.pop();
 
     b.maxSteps = 10;
     b.chipRunJava();
 
     ok(s, """
-Stuck: Stuck size: 3, leaf: 0
+Stuck: Stuck size: 3, leaf: 1
  0     0 =>    1
  1     1 =>    2
  2     2 =>    3
+""");
+
+    //stop(s.dump());
+    ok(s.dump(), """
+Stuck: Stuck size: 3, leaf: 1
+ 0     0 =>    1
+ 1     1 =>    2
+ 2     2 =>    3
+ 3     3 =>    4
+ 4     0 =>    0
+ 5     0 =>    0
+ 6     0 =>    0
+ 7     0 =>    0
+Found     : 0
+Key       : 3
+FoundKey  : 0
+Data      : 4
+BtreeIndex: 0
+StuckIndex: 0
+Merge     : 0
 """);
      return b;
    }
@@ -1977,29 +2028,46 @@ Stuck: Stuck size: 3, leaf: 0
    {final Btree b = test_push();
 
     Stuck s = (Stuck)b.processes.get("Stuck");
-    final Process.Register k = s.register("k", b.bitsPerKey);
-    final Process.Register d = s.register("d", b.bitsPerData);
+    final Process.Register k = s.Key;
+    final Process.Register d = s.Data;
 
     s.processClear();
-    s.firstElement(k, d);
+    s.firstElement();
+
+    b.maxSteps = 10;
+    b.chipRunJava();
+    //stop(s.dump());
+    ok(s.dump(), """
+Stuck: Stuck size: 4, leaf: 1
+ 0     0 =>    1
+ 1     1 =>    2
+ 2     2 =>    3
+ 3     3 =>    4
+ 4     0 =>    0
+ 5     0 =>    0
+ 6     0 =>    0
+ 7     0 =>    0
+Found     : 0
+Key       : 0
+FoundKey  : 0
+Data      : 1
+BtreeIndex: 0
+StuckIndex: 0
+Merge     : 0
+""");
+    ok(d, "Stuck_Data_7 = 1");
+
+    s.processClear();
+    s.lastElement();
 
     b.maxSteps = 10;
     b.chipRunJava();
 
-    ok(k, "Stuck_k_22 = 0");
-    ok(d, "Stuck_d_23 = 1");
+    ok(k, "Stuck_Key_5 = 3");
+    ok(d, "Stuck_Data_7 = 4");
 
     s.processClear();
-    s.lastElement(k, d);
-
-    b.maxSteps = 10;
-    b.chipRunJava();
-
-    ok(k, "Stuck_k_22 = 3");
-    ok(d, "Stuck_d_23 = 4");
-
-    s.processClear();
-    s.pop(k, d);
+    s.pop();
     s.new Instruction()
      {void action()
        {k.registerSet(5); d.registerSet(55);
@@ -2012,7 +2080,7 @@ Stuck: Stuck size: 3, leaf: 0
 
     //stop(s.dump());
     ok(s.dump(), """
-Stuck: Stuck size: 3, leaf: 0
+Stuck: Stuck size: 3, leaf: 1
  0     0 =>    1
  1     1 =>    2
  2     2 =>    3
@@ -2021,25 +2089,31 @@ Stuck: Stuck size: 3, leaf: 0
  5     0 =>    0
  6     0 =>    0
  7     0 =>    0
+Found     : 0
+Key       : 5
+FoundKey  : 0
+Data      : 55
+BtreeIndex: 0
+StuckIndex: 0
+Merge     : 0
 """);
 
     s.processClear();
-    s.pastLastElement(k, d);
+    s.pastLastElement();
 
     b.maxSteps = 10;
     b.chipRunJava();
 
-    ok(k, "Stuck_k_22 = 5");
-    ok(d, "Stuck_d_23 = 55");
+    ok(k, "Stuck_Key_5 = 5");
+    ok(d, "Stuck_Data_7 = 55");
    }
 
   static void test_elementAt()
    {final Btree b = test_push();
 
     Stuck s = (Stuck)b.processes.get("Stuck");
-    final Process.Register k = s.register("k", b.bitsPerKey);
-    final Process.Register d = s.register("d", b.bitsPerData);
     final Process.Register i = s.register("i", b.stuckAddressSize);
+    final StringBuilder    S = new StringBuilder();                                    // a
 
     final int N = 4;
     for (int j = 0; j < N; j++)
@@ -2050,14 +2124,79 @@ Stuck: Stuck size: 3, leaf: 0
          {i.registerSet(J);
          }
        };
-      s.elementAt(i, k, d);
+      s.elementAt(i);
 
       b.maxSteps = 10;
       b.chipRunJava();
 
-      ok(k, "Stuck_k_22 = "+j);
-      ok(d, "Stuck_d_23 = "+(j+1));
+      S.append(s.dump());
      }
+    ok(S, """
+Stuck: Stuck size: 4, leaf: 1
+ 0     0 =>    1
+ 1     1 =>    2
+ 2     2 =>    3
+ 3     3 =>    4
+ 4     0 =>    0
+ 5     0 =>    0
+ 6     0 =>    0
+ 7     0 =>    0
+Found     : 0
+Key       : 0
+FoundKey  : 0
+Data      : 1
+BtreeIndex: 0
+StuckIndex: 0
+Merge     : 0
+Stuck: Stuck size: 4, leaf: 1
+ 0     0 =>    1
+ 1     1 =>    2
+ 2     2 =>    3
+ 3     3 =>    4
+ 4     0 =>    0
+ 5     0 =>    0
+ 6     0 =>    0
+ 7     0 =>    0
+Found     : 0
+Key       : 1
+FoundKey  : 0
+Data      : 2
+BtreeIndex: 0
+StuckIndex: 0
+Merge     : 0
+Stuck: Stuck size: 4, leaf: 1
+ 0     0 =>    1
+ 1     1 =>    2
+ 2     2 =>    3
+ 3     3 =>    4
+ 4     0 =>    0
+ 5     0 =>    0
+ 6     0 =>    0
+ 7     0 =>    0
+Found     : 0
+Key       : 2
+FoundKey  : 0
+Data      : 3
+BtreeIndex: 0
+StuckIndex: 0
+Merge     : 0
+Stuck: Stuck size: 4, leaf: 1
+ 0     0 =>    1
+ 1     1 =>    2
+ 2     2 =>    3
+ 3     3 =>    4
+ 4     0 =>    0
+ 5     0 =>    0
+ 6     0 =>    0
+ 7     0 =>    0
+Found     : 0
+Key       : 3
+FoundKey  : 0
+Data      : 4
+BtreeIndex: 0
+StuckIndex: 0
+Merge     : 0
+""");
    }
 
   static void test_setElementAt()
@@ -2086,7 +2225,7 @@ Stuck: Stuck size: 3, leaf: 0
     b.maxSteps = 100;
     b.chipRunJava();
     ok(s, """
-Stuck: Stuck size: 5, leaf: 0
+Stuck: Stuck size: 5, leaf: 1
  0     1 =>    2
  1     2 =>    4
  2     3 =>    6
@@ -2120,7 +2259,7 @@ Stuck: Stuck size: 5, leaf: 0
     b.maxSteps = 100;
     b.chipRunJava();
     ok(s, """
-Stuck: Stuck size: 4, leaf: 0
+Stuck: Stuck size: 4, leaf: 1
  0     0 =>    2
  1     1 =>    4
  2     2 =>    6
@@ -2149,7 +2288,7 @@ Stuck: Stuck size: 4, leaf: 0
     b.chipRunJava();
     //stop(s.dump());
     ok(""+s.dump(), """
-Stuck: Stuck size: 4, leaf: 0
+Stuck: Stuck size: 4, leaf: 1
  0     0 =>    1
  1     1 =>    2
  2     2 =>    3
@@ -2158,6 +2297,13 @@ Stuck: Stuck size: 4, leaf: 0
  5     0 =>    0
  6     0 =>    0
  7     0 =>    0
+Found     : 0
+Key       : 3
+FoundKey  : 0
+Data      : 0
+BtreeIndex: 0
+StuckIndex: 0
+Merge     : 0
 """);
    }
 
@@ -2184,7 +2330,7 @@ Stuck: Stuck size: 4, leaf: 0
     b.chipRunJava();
     //stop(s);
     ok(s, """
-Stuck: Stuck size: 5, leaf: 0
+Stuck: Stuck size: 5, leaf: 1
  0     0 =>    1
  1     5 =>   55
  2     1 =>    2
@@ -2197,8 +2343,8 @@ Stuck: Stuck size: 5, leaf: 0
    {final Btree b = test_push();
 
     Stuck s = (Stuck)b.processes.get("Stuck");
-    final Process.Register k = s.register("k", b.bitsPerKey);
-    final Process.Register d = s.register("d", b.bitsPerData);
+    final Process.Register k = s.Key;
+    final Process.Register d = s.Data;
     final Process.Register i = s.register("i", b.stuckAddressSize);
 
     s.processClear();
@@ -2208,29 +2354,29 @@ Stuck: Stuck size: 5, leaf: 0
        {i.registerSet(1);
        }
      };
-    s.removeElementAt(i, k, d);
+    s.removeElementAt(i);
 
     b.maxSteps = 100;
     b.chipRunJava();
     //stop(s);
     ok(s, """
-Stuck: Stuck size: 3, leaf: 0
+Stuck: Stuck size: 3, leaf: 1
  0     0 =>    1
  1     2 =>    3
  2     3 =>    4
 """);
-    ok(k, "Stuck_k_22 = 1");
-    ok(d, "Stuck_d_23 = 2");
+    ok(k, "Stuck_Key_5 = 1");
+    ok(d, "Stuck_Data_7 = 2");
    }
 
   static void test_search_eq()
    {final Btree b = test_push();
 
     Stuck s = (Stuck)b.processes.get("Stuck");
-    final Process.Register k = s.register("k", b.bitsPerKey);
-    final Process.Register d = s.register("d", b.bitsPerData);
-    final Process.Register i = s.register("i", b.stuckAddressSize);
-    final Process.Register f = s.register("f", 1);
+    final Process.Register k = s.Key;
+    final Process.Register d = s.Data;
+    final Process.Register i = s.StuckIndex;
+    final Process.Register f = s.Found;
 
     s.processClear();
 
@@ -2239,11 +2385,11 @@ Stuck: Stuck size: 3, leaf: 0
        {k.registerSet(11);
        }
      };
-    s.search_eq(k, f, i, d);
+    s.search_eq(k);
 
     b.maxSteps = 100;
     b.chipRunJava();
-    ok(f, "Stuck_f_25 = 0");
+    ok(f, "Stuck_Found_4 = 0");
 
     final int N = 4;
     for (int j = 0; j < N; j++)
@@ -2255,14 +2401,14 @@ Stuck: Stuck size: 3, leaf: 0
          {k.registerSet(J);
          }
        };
-      s.search_eq(k, f, i, d);
+      s.search_eq(k);
 
       b.maxSteps = 100;
       b.chipRunJava();
-      ok(f, "Stuck_f_25 = 1");
-      ok(i, "Stuck_i_24 = "+J);
-      ok(k, "Stuck_k_22 = "+J);
-      ok(d, "Stuck_d_23 = "+(J+1));
+      ok(f, "Stuck_Found_4 = 1");
+      ok(i, "Stuck_StuckIndex_9 = "+J);
+      ok(k, "Stuck_Key_5 = "+J);
+      ok(d, "Stuck_Data_7 = "+(J+1));
      }
    }
 
@@ -2271,7 +2417,7 @@ Stuck: Stuck size: 3, leaf: 0
     final Btree b = new Btree(B, S+S, K, D);
 
     Stuck s = b.new Stuck("Stuck");
-    final Process.Register k = s.register("k", K);
+    final Process.Register k = s.Key;
     final Process.Register l = s.register("l", K);
     final Process.Register d = s.register("d", D);
     final Process.Register i = s.register("i", b.stuckAddressSize);
@@ -2291,7 +2437,7 @@ Stuck: Stuck size: 3, leaf: 0
     b.maxSteps = 30;
     b.chipRunJava();
     ok(s, """
-Stuck: Stuck size: 4, leaf: 0
+Stuck: Stuck size: 4, leaf: 1
  0     0 =>    1
  1    10 =>   11
  2    20 =>   21
@@ -2299,22 +2445,36 @@ Stuck: Stuck size: 4, leaf: 0
 """);
     s.processClear();
 
+
     s.new Instruction()
      {void action()
        {k.registerSet(11);
        }
      };
-    s.search_le(k, f, i, l, d);
+    s.search_le(k);
 
     b.maxSteps = 100;
     b.chipRunJava();
 
-    ok(k, "Stuck_k_20 = 11");
-    ok(f, "Stuck_f_24 = 1");
-    ok(i, "Stuck_i_23 = 2");
-    ok(l, "Stuck_l_21 = 20");
-    ok(d, "Stuck_d_22 = 21");
-   }
+    //stop(s.dump());
+    ok(s.dump(), """
+Stuck: Stuck size: 4, leaf: 1
+ 0     0 =>    1
+ 1    10 =>   11
+ 2    20 =>   21
+ 3    30 =>   31
+ 4     0 =>    0
+ 5     0 =>    0
+ 6     0 =>    0
+ 7     0 =>    0
+Found     : 1
+Key       : 11
+FoundKey  : 20
+Data      : 21
+BtreeIndex: 2
+StuckIndex: 0
+Merge     : 0
+""");   }
 
   static void test_splitIntoTwo()
    {final Btree b = test_push();
@@ -2331,7 +2491,7 @@ Stuck: Stuck size: 4, leaf: 0
     b.chipRunJava();
     //stop(s);
     ok(s, """
-Stuck: Stuck size: 4, leaf: 0
+Stuck: Stuck size: 4, leaf: 1
  0     0 =>    1
  1     1 =>    2
  2     2 =>    3
@@ -2371,7 +2531,7 @@ Stuck: Right size: 2, leaf: 0
     b.chipRunJava();
     //stop(s);
     ok(s, """
-Stuck: Stuck size: 3, leaf: 0
+Stuck: Stuck size: 3, leaf: 1
  0     0 =>    1
  1     1 =>    2
  2     2 =>    3
@@ -2387,6 +2547,13 @@ Stuck: Left size: 1, leaf: 0
  5     0 =>    0
  6     0 =>    0
  7     0 =>    0
+Found     : 0
+Key       : 0
+FoundKey  : 0
+Data      : 0
+BtreeIndex: 0
+StuckIndex: 0
+Merge     : 0
 """);
     //stop(r.dump());
     ok(r.dump(), """
@@ -2399,6 +2566,13 @@ Stuck: Right size: 2, leaf: 0
  5     0 =>    0
  6     0 =>    0
  7     0 =>    0
+Found     : 0
+Key       : 0
+FoundKey  : 0
+Data      : 0
+BtreeIndex: 0
+StuckIndex: 0
+Merge     : 0
 """);
    }
 
@@ -2433,7 +2607,7 @@ Stuck: Right size: 2, leaf: 0
     b.chipRunJava();
     //stop(s);
     ok(s, """
-Stuck: Stuck size: 4, leaf: 0
+Stuck: Stuck size: 4, leaf: 1
  0     4 =>    5
  1     5 =>    6
  2     6 =>    7
@@ -2456,7 +2630,6 @@ Stuck: Left size: 4, leaf: 0
     final Process.Register k = s.register("k", b.bitsPerKey);
     final Process.Register d = s.register("d", b.bitsPerData);
     Stuck l = b.new Stuck("Left");
-    Stuck r = b.new Stuck("Right");
 
     s.processClear();
     s.new Instruction()
@@ -2479,9 +2652,8 @@ Stuck: Left size: 4, leaf: 0
 
     b.maxSteps = 100;
     b.chipRunJava();
-    //stop(s);
     ok(s, """
-Stuck: Stuck size: 3, leaf: 0
+Stuck: Stuck size: 3, leaf: 1
  0     4 =>    5
  1     5 =>    6
  2     6 =>    7
@@ -2498,9 +2670,14 @@ Stuck: Left size: 3, leaf: 0
  5     0 =>    0
  6     0 =>    0
  7     0 =>    0
+Found     : 0
+Key       : 0
+FoundKey  : 0
+Data      : 0
+BtreeIndex: 0
+StuckIndex: 0
+Merge     : 0
 """);
-
-    ok(k, "Stuck_k_22 = 3");
    }
 
   static void test_merge()
@@ -2512,13 +2689,13 @@ Stuck: Left size: 3, leaf: 0
     final Process.Register o = s.register("o", 1);
 
     s.processClear();
-    s.merge(S, o);
+    s.merge(S);
 
     b.maxSteps = 100;
     b.chipRunJava();
     //stop(s);
     ok(s, """
-Stuck: Stuck size: 8, leaf: 0
+Stuck: Stuck size: 8, leaf: 1
  0     0 =>    1
  1     1 =>    2
  2     2 =>    3
@@ -2528,8 +2705,6 @@ Stuck: Stuck size: 8, leaf: 0
  6     2 =>    3
  7     3 =>    4
 """);
-
-    ok(o, "Stuck_o_22 = 1");
    }
 
   static void test_merge2()
@@ -2543,13 +2718,13 @@ Stuck: Stuck size: 8, leaf: 0
     final Process.Register o = s.register("o", 1);
 
     s.processClear();
-    s.merge(l, r, o);
+    s.merge(l, r);
 
     b.maxSteps = 100;
     b.chipRunJava();
     //stop(s);
     ok(s, """
-Stuck: Stuck size: 8, leaf: 0
+Stuck: Stuck size: 8, leaf: 1
  0     0 =>    1
  1     1 =>    2
  2     2 =>    3
@@ -2559,8 +2734,6 @@ Stuck: Stuck size: 8, leaf: 0
  6     2 =>    3
  7     3 =>    4
 """);
-
-    ok(o, "Stuck_o_22 = 1");
    }
 
   static void test_mergeButOne()
@@ -2588,13 +2761,13 @@ Stuck: Stuck size: 8, leaf: 0
        }
      };
 
-    s.mergeButOne(k, S, o);
+    s.mergeButOne(k, S);
 
     b.maxSteps = 100;
     b.chipRunJava();
     //stop(s.dump());
     ok(s.dump(), """
-Stuck: Stuck size: 7, leaf: 0
+Stuck: Stuck size: 7, leaf: 1
  0     0 =>    1
  1     1 =>    2
  2     2 =>    3
@@ -2603,9 +2776,14 @@ Stuck: Stuck size: 7, leaf: 0
  5     1 =>    2
  6     2 =>    3
  7     0 =>    4
+Found     : 0
+Key       : 3
+FoundKey  : 0
+Data      : 0
+BtreeIndex: 0
+StuckIndex: 0
+Merge     : 1
 """);
-
-    ok(o, "Stuck_o_23 = 1");
    }
 
   static void test_mergeButOne2()
@@ -2640,7 +2818,7 @@ Stuck: Stuck size: 7, leaf: 0
      {void action()
        {k.registerSet(11);
         s.size.zero();
-        s.mergeButOne(l, k, r, o);
+        s.mergeButOne(l, k, r);
        }
      };
 
@@ -2648,7 +2826,7 @@ Stuck: Stuck size: 7, leaf: 0
     b.chipRunJava();
     //stop(s.dump());
     ok(s.dump(), """
-Stuck: Stuck size: 7, leaf: 0
+Stuck: Stuck size: 7, leaf: 1
  0     0 =>    1
  1     1 =>    2
  2     2 =>    3
@@ -2657,9 +2835,14 @@ Stuck: Stuck size: 7, leaf: 0
  5     1 =>    2
  6     2 =>    3
  7     0 =>    4
+Found     : 0
+Key       : 3
+FoundKey  : 0
+Data      : 0
+BtreeIndex: 0
+StuckIndex: 0
+Merge     : 1
 """);
-
-    ok(o, "Stuck_o_23 = 1");
    }
 
   static void test_allocate()
@@ -2752,17 +2935,17 @@ Chip: Btree            step: 11, maxSteps: 100, running: 0, returnCode: 0
     b.stuckKeys[0].memorySet(21, 3); b.stuckData[0].memorySet( 3, 3);
 
     b.stuckKeys[1].memorySet(20, 0); b.stuckData[1].memorySet( 2, 0);
-    b.stuckKeys[1].memorySet(03, 1); b.stuckData[1].memorySet(11, 1);
+    b.stuckKeys[1].memorySet(03, 1); b.stuckData[1].memorySet(33, 1);
     b.stuckKeys[1].memorySet(12, 2); b.stuckData[1].memorySet(12, 2);
     b.stuckKeys[1].memorySet(22, 3); b.stuckData[1].memorySet(13, 3);
 
     b.stuckKeys[2].memorySet(30, 0); b.stuckData[2].memorySet( 3, 0);
-    b.stuckKeys[2].memorySet(05, 1); b.stuckData[2].memorySet(21, 1);
+    b.stuckKeys[2].memorySet(05, 1); b.stuckData[2].memorySet(55, 1);
     b.stuckKeys[2].memorySet(13, 2); b.stuckData[2].memorySet(22, 2);
     b.stuckKeys[2].memorySet(23, 3); b.stuckData[2].memorySet(23, 3);
 
     b.stuckKeys[3].memorySet(40, 0); b.stuckData[3].memorySet( 4, 0);
-    b.stuckKeys[3].memorySet(07, 1); b.stuckData[3].memorySet(31, 1);
+    b.stuckKeys[3].memorySet(07, 1); b.stuckData[3].memorySet(77, 1);
     b.stuckKeys[3].memorySet(14, 2); b.stuckData[3].memorySet(32, 2);
     b.stuckKeys[3].memorySet(24, 3); b.stuckData[3].memorySet(33, 3);
 
@@ -2775,6 +2958,34 @@ Chip: Btree            step: 11, maxSteps: 100, running: 0, returnCode: 0
 1,3,5=1   11,12,13,14=2    21,22,23,24=3 |
 """);
     return b;
+   }
+
+  static void test_find()
+   {final Btree b = test_createTree();
+
+    final Process          P = b.new Process("find");
+    final Process.Register k = P.register("k", b.bitsPerKey);
+
+    k.registerSet(3);
+    final Stuck s = b.find(k);
+    b.maxSteps = 100;
+    b.chipRunJava();
+
+    //stop(s.dump());
+    ok(s.dump(), """
+Stuck: stuck size: 3, leaf: 1
+ 0     1 =>    1
+ 1     3 =>   33
+ 2     5 =>   55
+ 3     7 =>   77
+Found     : 1
+Key       : 3
+FoundKey  : 10
+Data      : 33
+BtreeIndex: 1
+StuckIndex: 1
+Merge     : 0
+""");
    }
 
 /*
@@ -2835,11 +3046,11 @@ Stuck:  0   size: 0   free: 0   next:  0  leaf: 1
 stuckSize: value=0
 stuckKeys: value=0, 0=0, 1=0, 2=0, 3=0
 stuckData: value=0, 0=0, 1=0, 2=0, 3=0
-Stuck:  1   size: 0   free: 0   next:  0  leaf: 0
+Stuck:  1   size: 0   free: 0   next:  0  leaf: 1
 stuckSize: value=0
 stuckKeys: value=0, 0=0, 1=0, 2=0, 3=0
 stuckData: value=0, 0=0, 1=0, 2=0, 3=0
-Stuck:  2   size: 0   free: 0   next:  0  leaf: 0
+Stuck:  2   size: 0   free: 0   next:  0  leaf: 1
 stuckSize: value=0
 stuckKeys: value=0, 0=0, 1=0, 2=0, 3=0
 stuckData: value=0, 0=0, 1=0, 2=0, 3=0
@@ -2923,7 +3134,7 @@ stuckData: value=0, 0=0, 1=0, 2=0, 3=0
   //stop(b.dump());
     ok(b.dump(), """
 Btree
-Stuck:  0   size: 3   free: 0   next:  0  leaf: 0
+Stuck:  0   size: 3   free: 0   next:  0  leaf: 1
 stuckSize: value=3
 stuckKeys: value=30, 0=10, 1=20, 2=30, 3=0
 stuckData: value=4, 0=1, 1=2, 2=3, 3=4
@@ -3063,7 +3274,7 @@ stuckData: value=31, 0=1, 1=21, 2=31, 3=0
     b.runProgram();
     ok(b.dump(), """
 Btree
-Stuck:  0   size: 3   free: 0   next:  0  leaf: 0
+Stuck:  0   size: 3   free: 0   next:  0  leaf: 1
 stuckSize: value=3
 stuckKeys: value=30, 0=10, 1=20, 2=30, 3=0
 stuckData: value=0, 0=1, 1=21, 2=31, 3=0
@@ -3080,7 +3291,7 @@ stuckData: value=0, 0=0, 1=0, 2=0, 3=0
     b.runProgram();
     ok(b.dump(), """
 Btree
-Stuck:  0   size: 3   free: 0   next:  0  leaf: 0
+Stuck:  0   size: 3   free: 0   next:  0  leaf: 1
 stuckSize: value=3
 stuckKeys: value=30, 0=10, 1=20, 2=30, 3=0
 stuckData: value=0, 0=1, 1=21, 2=31, 3=0
@@ -3097,7 +3308,7 @@ stuckData: value=5, 0=5, 1=0, 2=0, 3=0
     b.runProgram();
     ok(b.dump(), """
 Btree
-Stuck:  0   size: 3   free: 0   next:  0  leaf: 0
+Stuck:  0   size: 3   free: 0   next:  0  leaf: 1
 stuckSize: value=3
 stuckKeys: value=30, 0=10, 1=20, 2=30, 3=0
 stuckData: value=0, 0=1, 1=21, 2=31, 3=0
@@ -3114,7 +3325,7 @@ stuckData: value=6, 0=5, 1=6, 2=0, 3=0
     b.runProgram();
     ok(b.dump(), """
 Btree
-Stuck:  0   size: 3   free: 0   next:  0  leaf: 0
+Stuck:  0   size: 3   free: 0   next:  0  leaf: 1
 stuckSize: value=3
 stuckKeys: value=30, 0=10, 1=20, 2=30, 3=0
 stuckData: value=0, 0=1, 1=21, 2=31, 3=0
@@ -3172,7 +3383,7 @@ stuckData: value=41, 0=11, 1=21, 2=31, 3=41
     b.runProgram();
     ok(b.dump(), """
 Btree
-Stuck:  0   size: 1   free: 0   next:  0  leaf: 0
+Stuck:  0   size: 1   free: 0   next:  0  leaf: 1
 stuckSize: value=1
 stuckKeys: value=25, 0=25, 1=25, 2=30, 3=40
 stuckData: value=2, 0=1, 1=2, 2=31, 3=41
@@ -3194,7 +3405,7 @@ stuckData: value=41, 0=31, 1=41, 2=0, 3=0
 //stop(b.dump());
     ok(b.dump(), """
 Btree
-Stuck:  0   size: 3   free: 0   next:  0  leaf: 0
+Stuck:  0   size: 3   free: 0   next:  0  leaf: 1
 stuckSize: value=3
 stuckKeys: value=30, 0=10, 1=20, 2=30, 3=0
 stuckData: value=0, 0=1, 1=21, 2=31, 3=0
@@ -3210,7 +3421,7 @@ stuckData: value=6, 0=4, 1=5, 2=6, 3=0
     //stop(b.dump());
     ok(b.dump(), """
 Btree
-Stuck:  0   size: 1   free: 0   next:  0  leaf: 0
+Stuck:  0   size: 1   free: 0   next:  0  leaf: 1
 stuckSize: value=1
 stuckKeys: value=20, 0=20, 1=20, 2=30, 3=0
 stuckData: value=3, 0=2, 1=3, 2=31, 3=0
@@ -3218,11 +3429,11 @@ Stuck:  1   size: 3   free: 0   next:  0  leaf: 1
 stuckSize: value=3
 stuckKeys: value=5, 0=3, 1=4, 2=5, 3=0
 stuckData: value=6, 0=4, 1=5, 2=6, 3=0
-Stuck:  2   size: 1   free: 0   next:  0  leaf: 0
+Stuck:  2   size: 1   free: 0   next:  0  leaf: 1
 stuckSize: value=1
 stuckKeys: value=10, 0=10, 1=0, 2=0, 3=0
 stuckData: value=21, 0=1, 1=21, 2=0, 3=0
-Stuck:  3   size: 1   free: 0   next:  0  leaf: 0
+Stuck:  3   size: 1   free: 0   next:  0  leaf: 1
 stuckSize: value=1
 stuckKeys: value=30, 0=30, 1=0, 2=0, 3=0
 stuckData: value=0, 0=31, 1=0, 2=0, 3=0
@@ -3256,7 +3467,7 @@ stuckData: value=0, 0=31, 1=0, 2=0, 3=0
     b.runProgram();
     ok(b.dump(), """
 Btree
-Stuck:  0   size: 2   free: 0   next:  0  leaf: 0
+Stuck:  0   size: 2   free: 0   next:  0  leaf: 1
 stuckSize: value=2
 stuckKeys: value=20, 0=10, 1=20, 2=30, 3=0
 stuckData: value=0, 0=1, 1=0, 2=0, 3=0
@@ -3273,7 +3484,7 @@ stuckData: value=4, 0=1, 1=2, 2=3, 3=4
     b.runProgram();
     ok(b.dump(), """
 Btree
-Stuck:  0   size: 3   free: 0   next:  0  leaf: 0
+Stuck:  0   size: 3   free: 0   next:  0  leaf: 1
 stuckSize: value=3
 stuckKeys: value=20, 0=2, 1=10, 2=20, 3=30
 stuckData: value=0, 0=2, 1=1, 2=0, 3=0
@@ -3315,7 +3526,7 @@ stuckData: value=2, 0=1, 1=2, 2=0, 3=0
     //stop(b.dump());
     ok(b.dump(), """
 Btree
-Stuck:  0   size: 2   free: 0   next:  0  leaf: 0
+Stuck:  0   size: 2   free: 0   next:  0  leaf: 1
 stuckSize: value=2
 stuckKeys: value=20, 0=10, 1=20, 2=30, 3=0
 stuckData: value=1, 0=0, 1=0, 2=1, 3=0
@@ -3332,7 +3543,7 @@ stuckData: value=4, 0=1, 1=2, 2=3, 3=4
     //stop(b.dump());
     ok(b.dump(), """
 Btree
-Stuck:  0   size: 3   free: 0   next:  0  leaf: 0
+Stuck:  0   size: 3   free: 0   next:  0  leaf: 1
 stuckSize: value=3
 stuckKeys: value=2, 0=10, 1=20, 2=2, 3=0
 stuckData: value=1, 0=0, 1=0, 2=2, 3=1
@@ -3375,11 +3586,11 @@ stuckData: value=2, 0=1, 1=2, 2=0, 3=0
     //stop(b.dump());
     ok(b.dump(), """
 Btree
-Stuck:  0   size: 2   free: 0   next:  0  leaf: 0
+Stuck:  0   size: 2   free: 0   next:  0  leaf: 1
 stuckSize: value=2
 stuckKeys: value=20, 0=10, 1=20, 2=30, 3=0
 stuckData: value=0, 0=1, 1=0, 2=0, 3=0
-Stuck:  1   size: 3   free: 0   next:  0  leaf: 0
+Stuck:  1   size: 3   free: 0   next:  0  leaf: 1
 stuckSize: value=3
 stuckKeys: value=3, 0=1, 1=2, 2=3, 3=4
 stuckData: value=5, 0=2, 1=3, 2=4, 3=5
@@ -3393,15 +3604,15 @@ stuckData: value=5, 0=2, 1=3, 2=4, 3=5
     //stop(b.dump());
     ok(b.dump(), """
 Btree
-Stuck:  0   size: 3   free: 0   next:  0  leaf: 0
+Stuck:  0   size: 3   free: 0   next:  0  leaf: 1
 stuckSize: value=3
 stuckKeys: value=20, 0=2, 1=10, 2=20, 3=30
 stuckData: value=0, 0=2, 1=1, 2=0, 3=0
-Stuck:  1   size: 1   free: 0   next:  0  leaf: 0
+Stuck:  1   size: 1   free: 0   next:  0  leaf: 1
 stuckSize: value=1
 stuckKeys: value=3, 0=3, 1=2, 2=3, 3=4
 stuckData: value=5, 0=4, 1=5, 2=4, 3=5
-Stuck:  2   size: 1   free: 0   next:  0  leaf: 0
+Stuck:  2   size: 1   free: 0   next:  0  leaf: 1
 stuckSize: value=1
 stuckKeys: value=1, 0=1, 1=0, 2=0, 3=0
 stuckData: value=3, 0=2, 1=3, 2=0, 3=0
@@ -3435,11 +3646,11 @@ stuckData: value=3, 0=2, 1=3, 2=0, 3=0
     //stop(b.dump());
     ok(b.dump(), """
 Btree
-Stuck:  0   size: 2   free: 0   next:  0  leaf: 0
+Stuck:  0   size: 2   free: 0   next:  0  leaf: 1
 stuckSize: value=2
 stuckKeys: value=20, 0=10, 1=20, 2=30, 3=0
 stuckData: value=1, 0=0, 1=0, 2=1, 3=0
-Stuck:  1   size: 3   free: 0   next:  0  leaf: 0
+Stuck:  1   size: 3   free: 0   next:  0  leaf: 1
 stuckSize: value=3
 stuckKeys: value=3, 0=1, 1=2, 2=3, 3=4
 stuckData: value=4, 0=1, 1=2, 2=3, 3=4
@@ -3452,15 +3663,15 @@ stuckData: value=4, 0=1, 1=2, 2=3, 3=4
     //stop(b.dump());
     ok(b.dump(), """
 Btree
-Stuck:  0   size: 3   free: 0   next:  0  leaf: 0
+Stuck:  0   size: 3   free: 0   next:  0  leaf: 1
 stuckSize: value=3
 stuckKeys: value=2, 0=10, 1=20, 2=2, 3=0
 stuckData: value=1, 0=0, 1=0, 2=2, 3=1
-Stuck:  1   size: 1   free: 0   next:  0  leaf: 0
+Stuck:  1   size: 1   free: 0   next:  0  leaf: 1
 stuckSize: value=1
 stuckKeys: value=3, 0=3, 1=2, 2=3, 3=4
 stuckData: value=4, 0=3, 1=4, 2=3, 3=4
-Stuck:  2   size: 1   free: 0   next:  0  leaf: 0
+Stuck:  2   size: 1   free: 0   next:  0  leaf: 1
 stuckSize: value=1
 stuckKeys: value=1, 0=1, 1=0, 2=0, 3=0
 stuckData: value=2, 0=1, 1=2, 2=0, 3=0
@@ -4228,7 +4439,7 @@ stuckData: value=2, 0=1, 1=2, 2=0, 3=0
     test_mergeButOne();
     test_mergeButOne2();
     test_allocate();
-    ////test_find();
+    test_find();
     //test_findAndInsert();
     //test_isLeaf();
     //test_splitLeafRoot();
@@ -4252,8 +4463,8 @@ stuckData: value=2, 0=1, 1=2, 2=0, 3=0
    }
 
   static void newTests()                                                        // Tests being worked on
-   {//oldTests();
-    test_createTree();
+   {oldTests();
+    test_find();
    }
 
   public static void main(String[] args)                                        // Test if called as a program
