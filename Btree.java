@@ -1,5 +1,5 @@
 //------------------------------------------------------------------------------
-// Btree using block memory, Written July 1-12, 2025
+// Btree using asynchronous, block memory.
 // Philip R Brenan at appaapps dot com, Appa Apps Ltd Inc., 2025
 //------------------------------------------------------------------------------
 package com.AppaApps.Silicon;                                                   // Btree in a block on the surface of a silicon chip.
@@ -1535,42 +1535,48 @@ chipStop = true;
 
 //D1 Find                                                                       // Find a key in a btree
 
-  public Stuck find(Process.Register Key)                                       // Find the leaf associated with a key in the tree
-   {final Stuck S = new Stuck("stuck");
-    S.new Instruction()
-     {void action()
-       {S.BtreeIndex.zero();                                                    // Start at the root
-       }
-     };
+  class Find                                                                    // Find the leaf associated with a key in the tree
+   {final Stuck S = new Stuck("stuck");                                         // Stuck found
 
-    S.new Block()
-     {void code()
-       {S.get(S.BtreeIndex);                                                    // Load current stuck
+    Find(Process.Register Key)
+     {before();
+      S.new Instruction()
+       {void action()
+         {S.BtreeIndex.zero();                                                  // Start at the root
+         }
+       };
 
-        S.new IsLeaf()
-         {void Leaf()                                                           // At a leaf - search for exact match
-           {S.search_eq(Key);                                                   // Search
-            S.new Instruction()
-             {void action()
-               {S.GoZero(end, S.Found);                                         // Key not present
-               }
-             };
-           }
-          void Branch()                                                         // On a branch - step to next level down
-           {S.search_le(Key);                                                   // Search stuck for matching key
-            S.new Instruction()
-             {void action()
-               {S.BtreeIndex.copy(S.Data);
-                S.Goto(start);                                                  // Key not present
-               }
-             };
-           }
+      S.new Block()
+       {void code()
+         {S.get(S.BtreeIndex);                                                    // Load current stuck
+
+          S.new IsLeaf()
+           {void Leaf()                                                           // At a leaf - search for exact match
+             {S.search_eq(Key);                                                   // Search
+              S.new Instruction()
+               {void action()
+                 {S.GoZero(end, S.Found);                                         // Key not present
+                 }
+               };
+             }
+            void Branch()                                                         // On a branch - step to next level down
+             {S.search_le(Key);                                                   // Search stuck for matching key
+              S.new Instruction()
+               {void action()
+                 {S.BtreeIndex.copy(S.Data);
+                  S.Goto(start);                                                  // Key not present
+                 }
+               };
+             }
+           };
          };
        };
-     };
+      after();
+     }
 
-    return S;                                                                   // The stuck located by the key
-   }
+    void before() {}                                                            // Code executed before the find
+    void after () {}                                                            // Code executed after the find
+   } // Find
 
 //D1 Insertion                                                                  // Insert a key, data pair into the tree if ther is room for it or update and existing key with a new datum
 /*
@@ -2966,12 +2972,12 @@ Chip: Btree            step: 11, maxSteps: 100, running: 0, returnCode: 0
     final Process.Register k = P.register("k", b.bitsPerKey);
 
     k.registerSet(3);
-    final Stuck s = b.find(k);
+    final Find f = b.new Find(k);
     b.maxSteps = 100;
     b.chipRunJava();
 
     //stop(s.dump());
-    ok(s.dump(), """
+    ok(f.S.dump(), """
 Stuck: stuck size: 3, leaf: 1
  0     1 =>    1
  1     3 =>   33
