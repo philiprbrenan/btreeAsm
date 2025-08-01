@@ -700,6 +700,31 @@ chipStop = true;
       size.registerSet(L+R+1);                                                  // New size of target
       MergeSuccess.one();
      }
+
+    class IsLeaf                                                                // Process a stuck depending on wnether it is a leaf or a branch
+     {IsLeaf()
+       {new Block()                                                             // Outer block contains branch code
+         {void code()
+           {final Process.Label bEnd = end;
+            new Block()                                                         // Inner block contrains leaf code
+             {void code()
+               {final Process.Label lEnd = end;
+                new Instruction()
+                 {void action()
+                   {if (isLeaf.registerGet() == 0) Goto(lEnd);                  // Not a leaf so go to code for branch
+                   }
+                 };
+                Leaf();                                                         // On a leaf
+                new Instruction() {void action() {Goto(bEnd);}};                // Exit outer block
+               }
+             };
+            Branch();                                                           // On a branch
+           }
+         };
+       }
+      void Leaf()   {}
+      void Branch() {}
+     }
    } // Stuck
 /*
 
@@ -1509,31 +1534,6 @@ chipStop = true;
 */
 
 //D1 Find                                                                       // Find a key in a btree
-// Belongs in Stuck
-  class IsLeaf                                                                  // Process a stuck depending on wnether it is a leaf or a branch
-   {IsLeaf(Stuck Stuck)
-     {Stuck.new Block()                                                         // Outer block contains branch code
-       {void code()
-         {final Process.Label bEnd = end;
-          Stuck.new Block()                                                     // Inner block contrains leaf code
-           {void code()
-             {final Process.Label lEnd = end;
-              Stuck.new Instruction()
-               {void action()
-                 {if (Stuck.isLeaf.registerGet() == 0) Stuck.Goto(lEnd);                      // Not a leaf so go to code for branch
-                 }
-               };
-              Leaf();                                                           // On a leaf
-              Stuck.new Instruction() {void action() {Stuck.Goto(bEnd);}};      // Exit outer block
-             }
-           };
-          Branch();                                                             // On a branch
-         }
-       };
-     }
-    void Leaf()   {}
-    void Branch() {}
-   }
 
   public Stuck find(Process.Register Key)                                       // Find the leaf associated with a key in the tree
    {final Stuck S = new Stuck("stuck");
@@ -1545,11 +1545,9 @@ chipStop = true;
 
     S.new Block()
      {void code()
-       {
+       {S.get(S.BtreeIndex);                                                    // Load current stuck
 
-        S.get(S.BtreeIndex);                                                    // Load current stuck
-
-        new IsLeaf(S)
+        S.new IsLeaf()
          {void Leaf()                                                           // At a leaf - search for exact match
            {S.search_eq(Key);                                                   // Search
             S.new Instruction()
@@ -1570,7 +1568,8 @@ chipStop = true;
          };
        };
      };
-    return S;
+
+    return S;                                                                   // The stuck located by the key
    }
 
 //D1 Insertion                                                                  // Insert a key, data pair into the tree if ther is room for it or update and existing key with a new datum
