@@ -1540,8 +1540,7 @@ chipStop = true;
    {final Stuck S = new Stuck("stuck");                                         // Stuck found
 
     Find(Process.Register Key)
-     {before();
-      S.new Instruction()
+     {S.new Instruction()
        {void action()
          {S.BtreeIndex.zero();                                                  // Start at the root
          }
@@ -1572,11 +1571,7 @@ chipStop = true;
            };
          };
        };
-      after();
      }
-
-    void before() {}                                                            // Code executed before the find
-    void after () {}                                                            // Code executed after the find
    } // Find
 
 //D1 Insertion                                                                  // Insert a key, data pair into the tree if ther is room for it or update and existing key with a new datum
@@ -2985,8 +2980,8 @@ Chip: Btree            step: 11, maxSteps: 100, running: 0, returnCode: 0
 
     final Process          P = b.new Process("find");
     final Process.Register k = P.register("k", b.bitsPerKey);
-
     k.registerSet(3);
+
     final Find f = b.new Find(k);
     b.maxSteps = 100;
     b.chipRunJava();
@@ -3008,6 +3003,21 @@ Merge     : 0
 """);
    }
 
+  static void test_findAndInsert()
+   {final Btree b = new Btree(8, 4, 8, 8);
+    final Process          P = b.new Process("find");
+    final Process.Register k = P.register("k", b.bitsPerKey);
+    final Process.Register d = P.register("d", b.bitsPerData);
+    k.registerSet(1); d.registerSet(2);
+
+    final FindAndInsert f = b.new FindAndInsert(k, d);
+    b.maxSteps = 100;
+    b.chipRunJava();
+
+    stop(b.print());
+    ok(f.S.dump(), """
+""");
+   }
 /*
   static Btree test_create()
    {final Btree b = new Btree(32, 4, 8, 8);
@@ -4460,7 +4470,7 @@ stuckData: value=2, 0=1, 1=2, 2=0, 3=0
     test_mergeButOne2();
     test_allocate();
     test_find();
-    //test_findAndInsert();
+    test_findAndInsert();
     //test_isLeaf();
     //test_splitLeafRoot();
     //test_splitBranchRoot();
