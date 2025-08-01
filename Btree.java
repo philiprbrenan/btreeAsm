@@ -494,12 +494,13 @@ chipStop = true;
            {final int I = i;
             if (Key.registerGet() <= keys[i].registerGet())
              {Found.one();
-              BtreeIndex.registerSet(I);
+              StuckIndex.registerSet(I);
               FoundKey.copy(keys[I]);
               Data    .copy(data[I]);
               return;
              }
            }
+          StuckIndex.registerSet(N);
          }
        };
      }
@@ -1548,23 +1549,23 @@ chipStop = true;
 
       S.new Block()
        {void code()
-         {S.get(S.BtreeIndex);                                                    // Load current stuck
+         {S.get(S.BtreeIndex);                                                  // Load current stuck
 
           S.new IsLeaf()
-           {void Leaf()                                                           // At a leaf - search for exact match
-             {S.search_eq(Key);                                                   // Search
+           {void Leaf()                                                         // At a leaf - search for exact match
+             {S.search_eq(Key);                                                 // Search
               S.new Instruction()
                {void action()
-                 {S.GoZero(end, S.Found);                                         // Key not present
+                 {S.GoZero(end, S.Found);                                       // Key not present
                  }
                };
              }
-            void Branch()                                                         // On a branch - step to next level down
-             {S.search_le(Key);                                                   // Search stuck for matching key
+            void Branch()                                                       // On a branch - step to next level down
+             {S.search_le(Key);                                                 // Search stuck for matching key
               S.new Instruction()
                {void action()
                  {S.BtreeIndex.copy(S.Data);
-                  S.Goto(start);                                                  // Key not present
+                  S.Goto(start);                                                // Key not present
                  }
                };
              }
@@ -1579,55 +1580,38 @@ chipStop = true;
    } // Find
 
 //D1 Insertion                                                                  // Insert a key, data pair into the tree if ther is room for it or update and existing key with a new datum
+
+  class FindAndInsert extends Find                                               // Find the leaf stuck that should contain this key and insert or update it if possible
+   {FindAndInsert(Process.Register Key, Process.Register Data)                  // Find the leaf stuck that should contain this key and insert or update it if possible
+     {super(Key);
+      final Process.Register i = S.new Register("i", stuckAddressSize);
+
+      S.new Block()
+       {void code()
+         {S.get(Key);                                                           // Find the leaf that should contain the key and possibly the key.
+
+          S.new Instruction()
+           {void action()
+             {if (S.Found.registerGet() > 0)                                    // Found the key in the leaf so update it with the new data
+               {S.setElementAt(S.StuckIndex, Key, Data);
+                S.set();
+                S.Found.one();
+               }
+              else if (S.size.registerGet() < maxStuckSize)                     // Check whether the stuck is full
+               {S.search_le(S.Key);
+                S.insertElementAt(S.StuckIndex, Key, Data);
+                S.set();
+                S.Found.one();
+               }
+              else S.Found.zero();                                              // The key has not been inserted
+             }
+           };
+         }
+       };
+     }
+   } // FindAndInsert
+
 /*
-  private void findAndInsert(Process.Register Found)                            // Find the leaf that should contain this key and insert or update it is possible setting Found to true if found else to false indicating that the key, data pair still needs to be inserted
-   {final Stuck  S          = stuck();
-    Process.Register Key        = S.key();
-    Process.Register Data       = S.data();
-    Process.Register index      = index();
-    Process.Register stuckIndex = S.index();
-    Process.Register full       = S.full();
-
-    L.P.new Block()
-     {void code()
-       {L.P.new Instruction()
-         {void action()
-           {Key .move(stuckKeys);
-            Data.move(stuckData);
-           }
-         };
-
-        find(Key, Found, Data, index, stuckIndex);                              // Find the leaf that should contain the key and possibly the key.
-
-        L.P.new Instruction()
-         {void action()
-           {copyStuckFrom(S, index);                                            // Copy the stuck that should contain the key
-            S.stuckKeys.move(Key);
-            S.stuckData.move(Data);
-            if (Found.asBoolean())                                              // Found the key in the leaf so update it with the new data
-             {S.setElementAt(stuckIndex);
-              saveStuckInto(S, index);
-              Found.one();
-              L.P.Goto(end);
-             }
-
-            S.isFull(full);                                                     // Check whether the stuck is full
-            if (!full.asBoolean())
-             {S.search_le(Found, stuckIndex);
-              S.stuckKeys.move(Key);
-              S.stuckData.move(Data);
-              if (Found.asBoolean()) S.insertElementAt(stuckIndex);
-              else S.push();
-              saveStuckInto(S, index);
-              Found.one();
-             }
-            else Found.zero();                                                  // The key has not been inserted
-           }
-         };
-       }
-     };
-   }
-
   public void put()                                                             // Insert a key, data pair into the tree or update and existing key with a new datum
    {final Stuck        S          = stuck();
     final Process.Register p          = index();                                // Previous or parent position in the btree
@@ -2448,9 +2432,8 @@ Stuck: Stuck size: 4, leaf: 1
  2    20 =>   21
  3    30 =>   31
 """);
+
     s.processClear();
-
-
     s.new Instruction()
      {void action()
        {k.registerSet(11);
@@ -2476,10 +2459,42 @@ Found     : 1
 Key       : 11
 FoundKey  : 20
 Data      : 21
-BtreeIndex: 2
-StuckIndex: 0
+BtreeIndex: 0
+StuckIndex: 2
 Merge     : 0
-""");   }
+""");
+
+    s.processClear();
+    s.new Instruction()
+     {void action()
+       {k.registerSet(21);
+       }
+     };
+
+    s.pop();
+    s.search_le(k);
+    b.chipRunJava();
+
+    //stop(s.dump());
+    ok(s.dump(), """
+Stuck: Stuck size: 3, leaf: 1
+ 0     0 =>    1
+ 1    10 =>   11
+ 2    20 =>   21
+ 3    30 =>   31
+ 4     0 =>    0
+ 5     0 =>    0
+ 6     0 =>    0
+ 7     0 =>    0
+Found     : 0
+Key       : 30
+FoundKey  : 20
+Data      : 31
+BtreeIndex: 0
+StuckIndex: 3
+Merge     : 0
+""");
+   }
 
   static void test_splitIntoTwo()
    {final Btree b = test_push();
