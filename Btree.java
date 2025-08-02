@@ -428,24 +428,19 @@ chipStop = true;
 //D3 Search                                                                     // Search the stuck
 
     void search_eq(Register Key)                                                // Find the specified key if possible in the stuck
-     {new Instruction()
-       {void action()
-         {final int N = size.registerGet();
-          Found.zero();
-          for (int i = 0; i < N; ++i)
-           {final int I = i;
-             if (keys[i].registerGet() == Key.registerGet())
-             {Found.one();
-              StuckIndex.registerSet(I);
-              Stuck.this.Key .copy(keys[I]);
-              Stuck.this.Data.copy(data[I]);
-              return;
-             }
-           }
+     {final int N = size.registerGet();
+      Found.zero();
+      for (int i = 0; i < N; ++i)
+       {final int I = i;
+         if (keys[i].registerGet() == Key.registerGet())
+         {Found.one();
+          StuckIndex.registerSet(I);
+          Stuck.this.Key .copy(keys[I]);
+          Stuck.this.Data.copy(data[I]);
+          return;
          }
-       };
+       }
      }
-
 
     void search_le(Register Key)                                                // Find the first key in the stuck so that the search key is less than or equal to this key
      {new Instruction()
@@ -1514,10 +1509,10 @@ chipStop = true;
 
           S.new IsLeaf()
            {void Leaf()                                                         // At a leaf - search for exact match
-             {S.search_eq(Key);                                                 // Search
-              S.new Instruction()
+             {S.new Instruction()
                {void action()
-                 {S.GoZero(end, S.Found);                                       // Key not present
+                 {S.search_eq(Key);                                             // Search
+                  S.GoZero(end, S.Found);                                       // Key not present
                  }
                };
              }
@@ -2346,9 +2341,9 @@ Stuck: Stuck size: 3, leaf: 1
     s.new Instruction()
      {void action()
        {k.registerSet(11);
+        s.search_eq(k);
        }
      };
-    s.search_eq(k);
 
     b.maxSteps = 100;
     b.chipRunJava();
@@ -2362,9 +2357,9 @@ Stuck: Stuck size: 3, leaf: 1
       s.new Instruction()
        {void action()
          {k.registerSet(J);
+          s.search_eq(k);
          }
        };
-      s.search_eq(k);
 
       b.maxSteps = 100;
       b.chipRunJava();
