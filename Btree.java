@@ -1528,12 +1528,12 @@ chipStop = true;
 //D1 Insertion                                                                  // Insert a key, data pair into the tree if ther is room for it or update and existing key with a new datum
 
   class FindAndInsert extends Find                                              // Find the leaf stuck that should contain this key and insert or update it if possible
-   {void get(Process.Register Key, Process.Register Data)                       // Find the leaf stuck that should contain this key and insert or update it if possible
+   {void findAndInsert(Process.Register Key, Process.Register Data)             // Find the leaf stuck that should contain this key and insert or update it if possible
      {final Process.Register i = new Register("i", stuckAddressSize);
 
       new Block()
        {void code()
-         {findSearch(Key);                                                          // Find the leaf that should contain the key and possibly the key.
+         {findSearch(Key);                                                      // Find the leaf that should contain the key and possibly the key.
 
           new Instruction()
            {void action()
@@ -2976,7 +2976,7 @@ Merge     : 0
     final Process.Register d = P.register("d", b.bitsPerData);
 
     final FindAndInsert f = b.new FindAndInsert();
-    k.registerSet(1); d.registerSet(2); f.get(k, d);
+    k.registerSet(1); d.registerSet(2); f.findAndInsert(k, d);
     b.maxSteps = 1000;
     b.chipRunJava();
     //stop(b.print());
@@ -2984,21 +2984,21 @@ Merge     : 0
 1=0 |
 """);
 
-    k.registerSet(2); d.registerSet(3); f.get(k, d);
+    k.registerSet(2); d.registerSet(3); f.findAndInsert(k, d);
     b.chipRunJava();
     //stop(b.print());
     ok(b.print(), """
 1,2=0 |
 """);
 
-    k.registerSet(4); d.registerSet(5); f.get(k, d);
+    k.registerSet(4); d.registerSet(5); f.findAndInsert(k, d);
     b.chipRunJava();
     //stop(b.print());
     ok(b.print(), """
 1,2,4=0 |
 """);
 
-    k.registerSet(3); d.registerSet(4); f.get(k, d);
+    k.registerSet(3); d.registerSet(4); f.findAndInsert(k, d);
     b.chipRunJava();
     //stop(b.print());
     ok(b.print(), """
