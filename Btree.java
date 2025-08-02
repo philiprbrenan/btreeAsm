@@ -282,125 +282,99 @@ chipStop = true;
 //D3 Actions                                                                    // Just the actions needed on a stuck to support a btree
 
     void push(Register Key, Register Data)                                      // Push a key, data pair to the local copy of the stuck
-     {new Instruction()
-       {void action()
-         {final int N = size.registerGet();
-          if (N >= maxStuckSize)
-           {chipStop(1);
-            return;
-           }
-          keys[N].copy(Key);
-          data[N].copy(Data);
-          size.inc();
-         }
-       };
+     {final int N = size.registerGet();
+      if (N >= maxStuckSize)
+       {chipStop(1);
+       }
+      else
+       {keys[N].copy(Key);
+        data[N].copy(Data);
+        size.inc();
+       }
      }
 
     void pop()                                                                  // Pop a key, data pair from the local copy of the stuck
-     {new Instruction()
-       {void action()
-         {final int N = size.registerGet();
-          if (N == 0)
-           {chipStop(2);
-            return;
-           }
-          Key.copy (keys[N-1]);
-          Data.copy(data[N-1]);
-          size.dec();
-         }
-       };
+     {final int N = size.registerGet();
+      if (N == 0)
+       {chipStop(2);
+       }
+      else
+       {Key.copy (keys[N-1]);
+        Data.copy(data[N-1]);
+        size.dec();
+       }
      }
 
     void setPastLastElement(Register Key, Register Data)                        // Push a key, data pair to the local copy of the stuck without changing the size
-     {new Instruction()
-       {void action()
-         {final int N = size.registerGet();
-          if (N >= maxStuckSize - 1)
-           {chipStop(3);
-            return;
-           }
-          keys[N].copy(Key);
-          data[N].copy(Data);
-         }
-       };
+     {final int N = size.registerGet();
+      if (N >= maxStuckSize - 1)
+       {chipStop(3);
+       }
+      else
+       {keys[N].copy(Key);
+        data[N].copy(Data);
+       }
      }
 
     void firstElement()                                                         // Get the first key, data pair
-     {new Instruction()
-       {void action()
-         {final int N = size.registerGet();
-          if (N == 0)
-           {chipStop(4);
-            return;
-           }
-          Key.copy (keys[0]);
-          Data.copy(data[0]);
-         }
-       };
+     {final int N = size.registerGet();
+      if (N == 0)
+       {chipStop(4);
+       }
+      else
+       {Key.copy (keys[0]);
+        Data.copy(data[0]);
+       }
      }
 
     void lastElement()                                                          // Get the last key, data pair
-     {new Instruction()
-       {void action()
-         {final int N = size.registerGet();
-          if (N >= maxStuckSize)
-           {chipStop(5);
-            return;
-           }
-          Key.copy (keys[N-1]);
-          Data.copy(data[N-1]);
-         }
-       };
+     {final int N = size.registerGet();
+      if (N >= maxStuckSize)
+       {chipStop(5);
+       }
+      else
+       {Key.copy (keys[N-1]);
+        Data.copy(data[N-1]);
+       }
      }
 
     void pastLastElement()                                                      // Get the past last key, data pair
-     {new Instruction()
-       {void action()
-         {final int N = size.registerGet();
-          if (N >= maxStuckSize-1)
-           {chipStop(6);
-            return;
-           }
-          Key.copy (keys[N]);
-          Data.copy(data[N]);
-         }
-       };
+     {final int N = size.registerGet();
+      if (N >= maxStuckSize-1)
+       {chipStop(6);
+       }
+      else
+       {Key.copy (keys[N]);
+        Data.copy(data[N]);
+       }
      }
 
     void elementAt(Register Index)                                              // Get the indexed key, data pair
-     {new Instruction()
-       {void action()
-         {final int N = Index.registerGet();
-          if (N >= maxStuckSize)
-           {chipStop(7);
-            return;
-           }
-          Key.copy (keys[N]);
-          Data.copy(data[N]);
-         }
-       };
+     {final int N = Index.registerGet();
+      if (N >= maxStuckSize)
+       {chipStop(7);
+        return;
+       }
+      Key.copy (keys[N]);
+      Data.copy(data[N]);
      }
 
     void setElementAt(Register Index, Register Key, Register Data)              // Set the indexed key, data pair
-     {new Instruction()
-       {void action()
-         {final int N = Index.registerGet();
-          final int M = size.registerGet();
-          if (N >= maxStuckSize)
-           {chipStop(8);
-            return;
-           }
-          if (N > M)
-           {chipStop(9);
-            return;
-           }
-          if (N == M)
-           {size.inc();
-           }
-          keys[N].copy(Key);
-          data[N].copy(Data);
-         }
-       };
+     {final int N = Index.registerGet();
+      final int M = size.registerGet();
+      if (N >= maxStuckSize)
+       {chipStop(8);
+        return;
+       }
+      if (N > M)
+       {chipStop(9);
+        return;
+       }
+      if (N == M)
+       {size.inc();
+       }
+      keys[N].copy(Key);
+      data[N].copy(Data);
      }
 
     void setDataAt(Register Index, Register Data)                               // Set the indexed data pair
@@ -1575,7 +1549,7 @@ chipStop = true;
    } // Find
 
 //D1 Insertion                                                                  // Insert a key, data pair into the tree if ther is room for it or update and existing key with a new datum
-
+/*
   class FindAndInsert extends Find                                               // Find the leaf stuck that should contain this key and insert or update it if possible
    {FindAndInsert(Process.Register Key, Process.Register Data)                  // Find the leaf stuck that should contain this key and insert or update it if possible
      {super(Key);
@@ -1947,9 +1921,9 @@ Chip: Btree            step: 0, maxSteps: 10, running: 0, returnCode: 0
       s.new Instruction()
        {void action()
          {k.registerSet(I); d.registerSet(I+1);
+          s.push(k, d);
          }
        };
-      s.push(k, d);
      }
 
     b.maxSteps = 30;
@@ -1974,7 +1948,12 @@ Stuck: Stuck size: 4, leaf: 1
     final Process.Register d = s.Data;
 
     s.processClear();
-    s.pop();
+
+    s.new Instruction()
+     {void action()
+       {s.pop();
+       }
+     };
 
     b.maxSteps = 10;
     b.chipRunJava();
@@ -2016,7 +1995,11 @@ Merge     : 0
     final Process.Register d = s.Data;
 
     s.processClear();
-    s.firstElement();
+    s.new Instruction()
+     {void action()
+       {s.firstElement();
+       }
+     };
 
     b.maxSteps = 10;
     b.chipRunJava();
@@ -2042,7 +2025,11 @@ Merge     : 0
     ok(d, "Stuck_Data_7 = 1");
 
     s.processClear();
-    s.lastElement();
+    s.new Instruction()
+     {void action()
+       {s.lastElement();
+       }
+     };
 
     b.maxSteps = 10;
     b.chipRunJava();
@@ -2051,13 +2038,13 @@ Merge     : 0
     ok(d, "Stuck_Data_7 = 4");
 
     s.processClear();
-    s.pop();
     s.new Instruction()
      {void action()
-       {k.registerSet(5); d.registerSet(55);
+       {s.pop();
+        k.registerSet(5); d.registerSet(55);
+        s.setPastLastElement(k, d);
        }
      };
-    s.setPastLastElement(k, d);
 
     b.maxSteps = 10;
     b.chipRunJava();
@@ -2083,7 +2070,11 @@ Merge     : 0
 """);
 
     s.processClear();
-    s.pastLastElement();
+    s.new Instruction()
+     {void action()
+       {s.pastLastElement();
+       }
+     };
 
     b.maxSteps = 10;
     b.chipRunJava();
@@ -2106,9 +2097,9 @@ Merge     : 0
       s.new Instruction()
        {void action()
          {i.registerSet(J);
+          s.elementAt(i);
          }
        };
-      s.elementAt(i);
 
       b.maxSteps = 10;
       b.chipRunJava();
@@ -2201,9 +2192,9 @@ Merge     : 0
          {i.registerSet(J);
           k.registerSet(J+1);
           d.registerSet((J+1)*2);
+          s.setElementAt(i, k, d);
          }
        };
-       s.setElementAt(i, k, d);
      }
 
     b.maxSteps = 100;
@@ -2264,9 +2255,9 @@ Stuck: Stuck size: 4, leaf: 1
      {void action()
        {k.registerSet(5);
         d.registerSet(55);
+        s.setPastLastElement(k, d);
        }
      };
-    s.setPastLastElement(k, d);
 
     b.maxSteps = 100;
     b.chipRunJava();
@@ -2413,9 +2404,9 @@ Stuck: Stuck size: 3, leaf: 1
       s.new Instruction()
        {void action()
          {k.registerSet(J); d.registerSet(J+1);
+          s.push(k, d);
          }
        };
-      s.push(k, d);
      }
 
     b.maxSteps = 30;
@@ -2463,10 +2454,10 @@ Merge     : 0
     s.new Instruction()
      {void action()
        {k.registerSet(21);
+        s.pop();
        }
      };
 
-    s.pop();
     s.search_le(k);
     b.chipRunJava();
 
@@ -2611,9 +2602,9 @@ Merge     : 0
       s.new Instruction()
        {void action()
          {k.registerSet(I); d.registerSet(I+1);
+          s.push(k, d);
          }
        };
-      s.push(k, d);
      }
 
     s.splitLow(l);
@@ -2658,9 +2649,9 @@ Stuck: Left size: 4, leaf: 0
       s.new Instruction()
        {void action()
          {k.registerSet(I); d.registerSet(I+1);
+          s.push(k, d);
          }
        };
-      s.push(k, d);
      }
 
     s.splitLowButOne(l, k);
@@ -3002,7 +2993,7 @@ StuckIndex: 1
 Merge     : 0
 """);
    }
-
+/*
   static void test_findAndInsert()
    {final Btree b = new Btree(8, 4, 8, 8);
     final Process          P = b.new Process("find");
@@ -4470,7 +4461,7 @@ stuckData: value=2, 0=1, 1=2, 2=0, 3=0
     test_mergeButOne2();
     test_allocate();
     test_find();
-    test_findAndInsert();
+    ///test_findAndInsert();
     //test_isLeaf();
     //test_splitLeafRoot();
     //test_splitBranchRoot();
@@ -4494,7 +4485,7 @@ stuckData: value=2, 0=1, 1=2, 2=0, 3=0
 
   static void newTests()                                                        // Tests being worked on
    {oldTests();
-    test_find();
+    //test_findAndInsert();
    }
 
   public static void main(String[] args)                                        // Test if called as a program
