@@ -166,25 +166,25 @@ chipStop = true;
 
 //D3 Memory                                                                     // Get a stuck from memory or return it to memory
 
-    void get(Register Index)                                                    // Copy a stuck indexed by a register out of memory into a set of registers. Currently this is done sequentially, but multiple stuck loads could be overlapped if this method was fragmented into smaller steps.  Most stuck methods do not actually require the retriveal of a full stuck from memory but doing so makes it easier to write an initial version of the btree algorithm at the cost of considerable inefficiency.
+    void stuckGet(Register Index)                                                    // Copy a stuck indexed by a register out of memory into a set of registers. Currently this is done sequentially, but multiple stuck loads could be overlapped if this method was fragmented into smaller steps.  Most stuck methods do not actually require the retriveal of a full stuck from memory but doing so makes it easier to write an initial version of the btree algorithm at the cost of considerable inefficiency.
      {new Instruction()
        {void action()
          {index.copy(Index);
          }
        };
-      get();
+      stuckGet();
      }
 
-    void getRoot()                                                              // Copy the root stuck out of memory into a set of registers. Currently this is done sequentially, but multiple stuck loads could be overlapped if this method was fragmented into smaller steps.  Most stuck methods do not actually require the retriveal of a full stuck from memory but doing so makes it easier to write an initial version of the btree algorithm at the cost of considerable inefficiency.
+    void stuckGetRoot()                                                              // Copy the root stuck out of memory into a set of registers. Currently this is done sequentially, but multiple stuck loads could be overlapped if this method was fragmented into smaller steps.  Most stuck methods do not actually require the retriveal of a full stuck from memory but doing so makes it easier to write an initial version of the btree algorithm at the cost of considerable inefficiency.
      {new Instruction()
        {void action()
          {index.registerSet(0);
          }
        };
-      get();
+      stuckGet();
      }
 
-    void get()                                                                  // Copy the indexed stuck out of memory into a set of registers. Currently this is done sequentially, but multiple stuck loads could be overlapped if this method was fragmented into smaller steps.  Most stuck methods do not actually require the retriveal of a full stuck from memory but doing so makes it easier to write an initial version of the btree algorithm at the cost of considerable inefficiency.
+    void stuckGet()                                                                  // Copy the indexed stuck out of memory into a set of registers. Currently this is done sequentially, but multiple stuck loads could be overlapped if this method was fragmented into smaller steps.  Most stuck methods do not actually require the retriveal of a full stuck from memory but doing so makes it easier to write an initial version of the btree algorithm at the cost of considerable inefficiency.
      {new Instruction()                                                         // Request the details of the indexed stuck from memory
        {void action()
          {gSize.executeTransaction(index);
@@ -216,7 +216,7 @@ chipStop = true;
        };
      }
 
-    void set()                                                                  // Update a stuck in memory from the registers describing his stuck
+    void stuckPut()                                                             // Update a stuck in memory from the registers describing his stuck
      {new Instruction()                                                         // Save registers into memory
        {void action()
          {sSize.executeTransaction(index, size);
@@ -390,17 +390,15 @@ chipStop = true;
     void insertElementAt(Register Index, Register Key, Register Data)           // Set the indexed key, data pair
      {final int N = Index.registerGet();
       final int M = size.registerGet();
-      if (N >= maxStuckSize-1)
+      if (N >= maxStuckSize-1)                                                  // No reason left in stuck
        {chipStop(11);
         return;
        }
-      if (N > M)
+      if (N > M)                                                                // An insertion would leave gap
        {chipStop(12);
         return;
        }
-      if (N != M)
-       {size.inc();
-       }
+      size.inc();                                                               // Increase number of elements
       for (int i = M; i > N; i--)
        {keys[i].copy(keys[i-1]);
         data[i].copy(data[i-1]);
@@ -1489,35 +1487,35 @@ chipStop = true;
 
 //D1 Find                                                                       // Find a key in a btree
 
-  class Find                                                                    // Find the leaf associated with a key in the tree
-   {final Stuck S = new Stuck("stuck");                                         // Stuck found
+  class Find extends Stuck                                                      // Find the leaf stuck associated with a key in the tree
+   {Find() {super("stuck");}                                                    // Stuck found
 
-    Find(Process.Register Key)
-     {S.new Instruction()
+    void findSearch(Process.Register Key)
+     {new Instruction()
        {void action()
-         {S.BtreeIndex.zero();                                                  // Start at the root
+         {BtreeIndex.zero();                                                    // Start at the root
          }
        };
 
-      S.new Block()
+      new Block()
        {void code()
-         {S.get(S.BtreeIndex);                                                  // Load current stuck
+         {stuckGet(BtreeIndex);                                                 // Load current stuck
 
-          S.new IsLeaf()
+          new IsLeaf()
            {void Leaf()                                                         // At a leaf - search for exact match
-             {S.new Instruction()
+             {new Instruction()
                {void action()
-                 {S.search_eq(Key);                                             // Search
-                  S.GoZero(end, S.Found);                                       // Key not present
+                 {search_eq(Key);                                               // Search
+                  Goto(end);                                                    // Key not present
                  }
                };
              }
             void Branch()                                                       // On a branch - step to next level down
-             {S.new Instruction()
+             {new Instruction()
                {void action()
-                 {S.search_le(Key);                                             // Search stuck for matching key
-                  S.BtreeIndex.copy(S.Data);
-                  S.Goto(start);                                                // Key not present
+                 {search_le(Key);                                               // Search stuck for matching key
+                  BtreeIndex.copy(Data);
+                  Goto(start);                                                  // Key not present
                  }
                };
              }
@@ -1528,32 +1526,29 @@ chipStop = true;
    } // Find
 
 //D1 Insertion                                                                  // Insert a key, data pair into the tree if ther is room for it or update and existing key with a new datum
-/*
-  class FindAndInsert extends Find                                               // Find the leaf stuck that should contain this key and insert or update it if possible
-   {FindAndInsert(Process.Register Key, Process.Register Data)                  // Find the leaf stuck that should contain this key and insert or update it if possible
-     {super(Key);
-      final Process.Register i = S.new Register("i", stuckAddressSize);
 
-      S.new Block()
+  class FindAndInsert extends Find                                              // Find the leaf stuck that should contain this key and insert or update it if possible
+   {void get(Process.Register Key, Process.Register Data)                       // Find the leaf stuck that should contain this key and insert or update it if possible
+     {final Process.Register i = new Register("i", stuckAddressSize);
+
+      new Block()
        {void code()
-         {S.get(Key);                                                           // Find the leaf that should contain the key and possibly the key.
+         {findSearch(Key);                                                          // Find the leaf that should contain the key and possibly the key.
 
-          S.new Instruction()
+          new Instruction()
            {void action()
-             {if (S.Found.registerGet() > 0)                                    // Found the key in the leaf so update it with the new data
-               {S.setElementAt(S.StuckIndex, Key, Data);
-                S.set();
-                S.Found.one();
+             {if (Found.registerGet() > 0)                                      // Found the key in the leaf so update it with the new data
+               {setElementAt(StuckIndex, Key, Data);
                }
-              else if (S.size.registerGet() < maxStuckSize)                     // Check whether the stuck is full
-               {S.search_le(S.Key);
-                S.insertElementAt(S.StuckIndex, Key, Data);
-                S.set();
-                S.Found.one();
+              else if (size.registerGet() < maxStuckSize)                       // Check whether the stuck is full
+               {search_le(Key);
+                insertElementAt(StuckIndex, Key, Data);
+                Found.one();
                }
-              else S.Found.zero();                                              // The key has not been inserted
+              else Goto(end);                                                   // No insertion so no need to update memory
              }
            };
+          stuckPut();
          }
        };
      }
@@ -1808,7 +1803,7 @@ chipStop = true;
     Stuck s = b.new Stuck("Stuck");
     final Process.Register i = s.register("i", 3);
     i.registerSet(0);
-    s.get(i);
+    s.stuckGet(i);
 
     b.maxSteps = 20;
     b.chipRunJava();
@@ -1824,7 +1819,7 @@ Stuck: Stuck size: 2, leaf: 1
     s.isLeaf .registerSet(0);
     s.size   .registerSet(1);
     s.keys[0].registerSet(3); s.data[0].registerSet(4);
-    s.set();
+    s.stuckPut();
 
     //stop(b.printMemory());
     ok(b.printMemory(), """
@@ -1894,7 +1889,7 @@ Chip: Btree            step: 0, maxSteps: 10, running: 0, returnCode: 0
     final Process.Register k = s.Key;
     final Process.Register d = s.register("d", D);
 
-    s.getRoot();
+    s.stuckGetRoot();
     for (int i = 0; i < S; i++)
      {final int I = i;
       s.new Instruction()
@@ -2377,7 +2372,7 @@ Stuck: Stuck size: 3, leaf: 1
     final Process.Register i = s.register("i", b.stuckAddressSize);
     final Process.Register f = s.register("f", 1);
 
-    s.getRoot();
+    s.stuckGetRoot();
     for (int j = 0; j < S; j++)
      {final int J = j*10;
       s.new Instruction()
@@ -2952,12 +2947,13 @@ Chip: Btree            step: 11, maxSteps: 100, running: 0, returnCode: 0
     final Process.Register k = P.register("k", b.bitsPerKey);
     k.registerSet(3);
 
-    final Find f = b.new Find(k);
+    final Find f = b.new Find();
+    f.findSearch(k);
     b.maxSteps = 100;
     b.chipRunJava();
 
     //stop(s.dump());
-    ok(f.S.dump(), """
+    ok(f.dump(), """
 Stuck: stuck size: 3, leaf: 1
  0     1 =>    1
  1     3 =>   33
@@ -2972,20 +2968,30 @@ StuckIndex: 1
 Merge     : 0
 """);
    }
-/*
+
   static void test_findAndInsert()
    {final Btree b = new Btree(8, 4, 8, 8);
     final Process          P = b.new Process("find");
     final Process.Register k = P.register("k", b.bitsPerKey);
     final Process.Register d = P.register("d", b.bitsPerData);
-    k.registerSet(1); d.registerSet(2);
 
-    final FindAndInsert f = b.new FindAndInsert(k, d);
+    final FindAndInsert f = b.new FindAndInsert();
+    k.registerSet(1); d.registerSet(2); f.get(k, d);
     b.maxSteps = 100;
     b.chipRunJava();
 
-    stop(b.print());
-    ok(f.S.dump(), """
+    //stop(b.print());
+    ok(b.print(), """
+1=0 |
+""");
+
+    k.registerSet(2); d.registerSet(3); f.get(k, d);
+    b.maxSteps = 100;
+    b.chipRunJava();
+
+    //stop(b.print());
+    ok(b.print(), """
+1,2=0 |
 """);
    }
 /*
@@ -4440,7 +4446,7 @@ stuckData: value=2, 0=1, 1=2, 2=0, 3=0
     test_mergeButOne2();
     test_allocate();
     test_find();
-    ///test_findAndInsert();
+    test_findAndInsert();
     //test_isLeaf();
     //test_splitLeafRoot();
     //test_splitBranchRoot();
@@ -4463,8 +4469,9 @@ stuckData: value=2, 0=1, 1=2, 2=0, 3=0
    }
 
   static void newTests()                                                        // Tests being worked on
-   {oldTests();
-    //test_findAndInsert();
+   {//oldTests();
+    test_find();
+    test_findAndInsert();
    }
 
   public static void main(String[] args)                                        // Test if called as a program
