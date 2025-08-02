@@ -2977,21 +2977,32 @@ Merge     : 0
 
     final FindAndInsert f = b.new FindAndInsert();
     k.registerSet(1); d.registerSet(2); f.get(k, d);
-    b.maxSteps = 100;
+    b.maxSteps = 1000;
     b.chipRunJava();
-
     //stop(b.print());
     ok(b.print(), """
 1=0 |
 """);
 
     k.registerSet(2); d.registerSet(3); f.get(k, d);
-    b.maxSteps = 100;
     b.chipRunJava();
-
     //stop(b.print());
     ok(b.print(), """
 1,2=0 |
+""");
+
+    k.registerSet(4); d.registerSet(5); f.get(k, d);
+    b.chipRunJava();
+    //stop(b.print());
+    ok(b.print(), """
+1,2,4=0 |
+""");
+
+    k.registerSet(3); d.registerSet(4); f.get(k, d);
+    b.chipRunJava();
+    //stop(b.print());
+    ok(b.print(), """
+1,2,3,4=0 |
 """);
    }
 /*
