@@ -214,11 +214,12 @@ chipStop = true;
            {keys[i].copy(gKeys[i].transactionOutputRegisters.firstElement());
             data[i].copy(gData[i].transactionOutputRegisters.firstElement());
            }
+          say("CCCCC");
          }
        };
      }
 
-    void stuckPut()                                                             // Update a stuck in memory from the registers describing his stuck
+    void stuckPut(Process.Register Index)                                                             // Update a stuck in memory from the registers describing his stuck
      {new Instruction()                                                         // Save registers into memory
        {void action()
          {sSize.executeTransaction(index, size);
@@ -238,6 +239,8 @@ chipStop = true;
         sData[i].waitResultOfTransaction();
        }
      }
+
+    void stuckPut() {stuckPut(index);}                                          // Update a stuck in memory from the registers describing his stuck
 
 //D3 Print                                                                      // Print the stuck
 
@@ -282,6 +285,10 @@ chipStop = true;
      }
 
 //D3 Actions                                                                    // Just the actions needed on a stuck to support a btree
+
+    void clear()                                                                // Set the size of the stuck to zero to clear it
+     {size.zero();
+     }
 
     void push(Register Key, Register Data)                                      // Push a key, data pair to the local copy of the stuck
      {final int N = size.registerGet();
@@ -933,23 +940,51 @@ chipStop = true;
     if (stuckIsLeaf.memoryGet(0) > 0) printLeaf(0, P, 0); else printBranch(0, P, 0);
     return printCollapsed(P);
    }
-/*
-//D1 Split                                                                      // Split nodes in half to increase the number of nodes in the tree
+
+//D2 Split                                                                      // Split nodes in half to increase the number of nodes in the tree
 
   private void splitRootLeaf()                                                  // Split a full root leaf
-   {final Stuck p = stuck(), l = stuck(), r = stuck();                          // Parent == root, left, right stucks
-    final Process.Register isFull = isFull();
-    final Process.Register cl = index(), cr = index();                          // Indexes of left and right children
-    final Process.Register pl = p.key(), pr = p.key(), plr = p.key();           // Parent key must be smaller than anything in right child yet greater than or equal to anything in the left child
+   {final Stuck p = new Stuck("parent");                                        // Parent stuck
+    final Stuck l = new Stuck("left");                                          // Left split stuck
+    final Stuck r = new Stuck("right");                                         // Right split stuck
+    final Process.Register il = p.new Register("indexLeft",  btreeAddressSize); // Index in memory of the left stuck
+    final Process.Register ir = p.new Register("indexRight", btreeAddressSize); // Index in memory of the right stuck
+    final Process.Register mk = p.new Register("midKey",     bitsPerKey);       // Mid key
 
-    copyStuckFromRoot(p);                                                       // Load leaf root stuck from btree
-    p.isFull(isFull);                                                           // Check whether the leaf root stuck is full
-    if (!isFull.asBoolean())
-     {L.P.stopProgram("A root leaf must be full before it can be split");
-     }
-    p.splitIntoTwo(l, r, maxStuckSize / 2);                                     // Split the leaf root in two down the middle
-    allocateLeaf(cl); saveStuckInto(l, cl);                                     // Allocate and save left leaf
-    allocateLeaf(cr); saveStuckInto(r, cr);                                     // Allocate and save right leaf
+    p.new Instruction() {void action() {say("AAAA");}};
+
+    p.stuckGetRoot();                                                           // Load parent
+    p.new Instruction() {void action() {say("BBBB");}};
+
+    p.new Block()
+     {void code()
+       {p.new Instruction()
+         {void action()
+           {if (p.isLeaf.registerGet() == 0) stop("Root must be a leaf");
+            if (p.size.registerGet() < maxStuckSize) p.Goto(end);               // Check size of root
+            p.splitIntoTwo(l, r, maxStuckSize / 2);                             // Split the leaf root in two down the middle
+           }
+         };
+        allocateLeaf(il); l.stuckPut(il);                                       // Allocate and save left leaf
+        allocateLeaf(ir); r.stuckPut(ir);                                       // Allocate and save right leaf
+
+        p.new Instruction()
+         {void action()
+           {if (p.isLeaf.registerGet() == 0) stop("Root must be a leaf");
+            if (p.size.registerGet() < maxStuckSize) p.Goto(end);               // Check size of root
+            p.splitIntoTwo(l, r, maxStuckSize / 2);                             // Split the leaf root in two down the middle
+
+            mk.copy(l.size); mk.add(r.size); mk.half();
+            p.clear();
+            p.push(mk, il); p.setPastLastElement(mk, ir);
+            p.isLeaf.one();
+            p.stuckPut();
+           }
+         };
+       }
+     };
+   }
+/*
 
     l.lastElement();  pl.move(l.stuckKeys);                                     // Last element of left child
     r.firstElement(); pr.move(r.stuckKeys);                                     // First element of right child
@@ -961,14 +996,7 @@ chipStop = true;
     saveStuckIntoRoot(p);  setRootAsBranch();                                   // Save the root stuck back into the btree and mark it as a branch
    }
 
-  private void iSplitRootLeaf()                                                 // Split a full root leaf
-   {L.P.new Instruction()
-     {void action()
-       {splitRootLeaf();
-       }
-     };
-   }
-
+/*
   private void splitRootBranch()                                                // Split a full root branch
    {final Stuck p = stuck(), l = stuck(), r = stuck();                          // Parent == root, left, right stucks
     final Process.Register isFullButOne = isFullButOne();
@@ -1914,6 +1942,25 @@ Stuck: Stuck size: 4, leaf: 1
 """);
 
      return b;
+   }
+
+  static void test_clear()
+   {final Btree b = test_push();
+
+    Stuck s = (Stuck)b.processes.get("Stuck");
+
+    s.new Instruction()
+     {void action()
+       {s.clear();
+       }
+     };
+
+    b.maxSteps = 100;
+    b.chipRunJava();
+
+    ok(s, """
+Stuck: Stuck size: 0, leaf: 1
+""");
    }
 
   static Btree test_pop()
@@ -2972,7 +3019,7 @@ Merge     : 0
    }
 
   static void test_findAndInsert()
-   {final Btree b = new Btree(8, 4, 8, 8);
+   {final Btree            b = new Btree(8, 4, 8, 8);
     final Process          P = b.new Process("findAndInsert");
     final Process.Register k = P.register("k", b.bitsPerKey);
     final Process.Register d = P.register("d", b.bitsPerData);
@@ -2998,7 +3045,6 @@ Merge     : 0
 1,2,4=0 |
 """);
 
-    //f.processClear();
     f.processClear(); k.registerSet(3); d.registerSet(4); f.findAndInsert(k, d); b.chipRunJava();
     //stop(b.print());
     ok(b.btreePrint(), """
@@ -3020,6 +3066,14 @@ Chip: Btree            step: 29, maxSteps: 1000, running: 0, returnCode: 0
     stuckData_2           memory: 8 * 8 = 4, 0, 0, 0, 0, 0, 0, 0
     stuckKeys_3           memory: 8 * 8 = 4, 0, 0, 0, 0, 0, 0, 0
     stuckData_3           memory: 8 * 8 = 5, 0, 0, 0, 0, 0, 0, 0
+""");
+
+    f.processClear();
+    b.splitRootLeaf();
+    b.chipRunJava();
+    //stop(b.print());
+    ok(b.btreePrint(), """
+1,2,3,4=0 |
 """);
    }
 /*
@@ -4454,6 +4508,7 @@ stuckData: value=2, 0=1, 1=2, 2=0, 3=0
    {test_create1();
     test_create2();
     test_push();
+    test_clear();
     test_pop();
     test_firstLastPast();
     test_elementAt();
@@ -4497,7 +4552,7 @@ stuckData: value=2, 0=1, 1=2, 2=0, 3=0
    }
 
   static void newTests()                                                        // Tests being worked on
-   {oldTests();
+   {//oldTests();
     test_findAndInsert();
    }
 
