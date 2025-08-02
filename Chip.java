@@ -33,7 +33,7 @@ class Chip extends Test                                                         
       chipPrint();                                                              // Print chip state after each step
      }
     if (running)                                                                // Still running after too many steps
-     {say(this);
+     {//say(this);
       stop("Out of steps after:", maxSteps);
      }
    }
@@ -52,7 +52,7 @@ class Chip extends Test                                                         
 
 //D2 Print                                                                      // Print the state of a chip
 
-  public String printMemory()                                                   // Print the memory of the java emulation of the chip
+  public String chipPrintMemory()                                                   // Print the memory of the java emulation of the chip
    {final StringBuilder s = new StringBuilder();
         s.append(String.format(
          "Chip: %-16s step: %1d, maxSteps: %1d, running: %1d, returnCode: %1d\n",
@@ -696,6 +696,7 @@ endmodule
          {stop("Transaction already running");
          }
         transactionRequestedAt = step;
+        transactionFinishedAt  = -1;                                            // This allows processes to be cleared and restarted. Otherwise teh transactin looks as it has finisjed with the previous values in its registers.
        }
       String transactionSetExecutableV()                                        // Mark a transaction as executable in verilog
        {N(); return transactionRequestedAt()+" = step;";
@@ -1181,9 +1182,9 @@ Chip: Test             step: 50, maxSteps: 100, running: 0, returnCode: 1
             Memory_Memory_1_value_2                = 1597
 """);
 
-    //stop(C.printMemory());
+    //stop(C.chipPrintMemory());
 
-    ok(C.printMemory(), """
+    ok(C.chipPrintMemory(), """
 Chip: Test             step: 50, maxSteps: 100, running: 0, returnCode: 1
   Processes:
     Memory                memory: 16 * 16 = 1, 2, 3, 5, 8, 13, 21, 34, 55, 89, 144, 233, 377, 610, 987, 1597
