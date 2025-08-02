@@ -54,6 +54,8 @@ chipStop = true;
    {return Process.register(Name, btreeAddressSize);
    }
 
+  Btree Btree() {return this;}
+
 //D2 Allocation                                                                 // Allocate stucks from the free chain
 
   void createFreeChain()                                                        // Create the free chain before the chip starts runnbinbg as this is a one time event
@@ -926,7 +928,7 @@ chipStop = true;
     return t.toString();
    }
 
-  String print()                                                                // Print a tree horizontally
+  String btreePrint()                                                            // Print a tree horizontally
    {final Stack<StringBuilder> P = new Stack<>();
     if (stuckIsLeaf.memoryGet(0) > 0) printLeaf(0, P, 0); else printBranch(0, P, 0);
     return printCollapsed(P);
@@ -1489,6 +1491,7 @@ chipStop = true;
 
   class Find extends Stuck                                                      // Find the leaf stuck associated with a key in the tree
    {Find() {super("stuck");}                                                    // Stuck found
+    Stuck stuck() {return (Stuck)this;}
 
     void findSearch(Process.Register Key)
      {new Instruction()
@@ -1528,13 +1531,12 @@ chipStop = true;
 //D1 Insertion                                                                  // Insert a key, data pair into the tree if ther is room for it or update and existing key with a new datum
 
   class FindAndInsert extends Find                                              // Find the leaf stuck that should contain this key and insert or update it if possible
-   {void findAndInsert(Process.Register Key, Process.Register Data)             // Find the leaf stuck that should contain this key and insert or update it if possible
+   {Stuck stuck() {return (Stuck)this;}
+    void findAndInsert(Process.Register Key, Process.Register Data)             // Find the leaf stuck that should contain this key and insert or update it if possible
      {final Process.Register i = new Register("i", stuckAddressSize);
-
       new Block()
        {void code()
          {findSearch(Key);                                                      // Find the leaf that should contain the key and possibly the key.
-
           new Instruction()
            {void action()
              {if (Found.registerGet() > 0)                                      // Found the key in the leaf so update it with the new data
@@ -1821,8 +1823,8 @@ Stuck: Stuck size: 2, leaf: 1
     s.keys[0].registerSet(3); s.data[0].registerSet(4);
     s.stuckPut();
 
-    //stop(b.printMemory());
-    ok(b.printMemory(), """
+    //stop(b.chipPrintMemory());
+    ok(b.chipPrintMemory(), """
 Chip: Btree            step: 14, maxSteps: 20, running: 0, returnCode: 0
   Processes:
     stuckIsLeaf           memory: 1 * 1 = 1
@@ -1839,8 +1841,8 @@ Chip: Btree            step: 14, maxSteps: 20, running: 0, returnCode: 0
     stuckData_3           memory: 1 * 8 = 0
 """);
     b.chipRunJava();
-    //stop(b.printMemory());
-    ok(b.printMemory(), """
+    //stop(b.chipPrintMemory());
+    ok(b.chipPrintMemory(), """
 Chip: Btree            step: 12, maxSteps: 20, running: 0, returnCode: 0
   Processes:
     stuckIsLeaf           memory: 1 * 1 = 0
@@ -1861,8 +1863,8 @@ Chip: Btree            step: 12, maxSteps: 20, running: 0, returnCode: 0
   static Btree test_create2()
    {final Btree b = new Btree(2, 4, 8, 8);
 
-    //stop(b.printMemory());
-    ok(b.printMemory(), """
+    //stop(b.chipPrintMemory());
+    ok(b.chipPrintMemory(), """
 Chip: Btree            step: 0, maxSteps: 10, running: 0, returnCode: 0
   Processes:
     stuckIsLeaf           memory: 2 * 1 = 1, 0
@@ -2831,8 +2833,8 @@ Merge     : 1
     final Process.Register i = b.btreeIndex(p, "index1");
     final Process.Register j = b.btreeIndex(p, "index2");
 
-    //stop(b.printMemory());
-    ok(b.printMemory(), """
+    //stop(b.chipPrintMemory());
+    ok(b.chipPrintMemory(), """
 Chip: Btree            step: 0, maxSteps: 10, running: 0, returnCode: 0
   Processes:
     stuckIsLeaf           memory: 4 * 1 = 1, 0, 0, 0
@@ -2853,8 +2855,8 @@ Chip: Btree            step: 0, maxSteps: 10, running: 0, returnCode: 0
     b.allocate(j, false);
     b.maxSteps = 100;
     b.chipRunJava();
-    //stop(b.printMemory());
-    ok(b.printMemory(), """
+    //stop(b.chipPrintMemory());
+    ok(b.chipPrintMemory(), """
 Chip: Btree            step: 15, maxSteps: 100, running: 0, returnCode: 0
   Processes:
     stuckIsLeaf           memory: 4 * 1 = 1, 1, 0, 0
@@ -2877,8 +2879,8 @@ Chip: Btree            step: 15, maxSteps: 100, running: 0, returnCode: 0
     b.free(i);
     b.free(j);
     b.chipRunJava();
-    //stop(b.printMemory());
-    ok(b.printMemory(), """
+    //stop(b.chipPrintMemory());
+    ok(b.chipPrintMemory(), """
 Chip: Btree            step: 11, maxSteps: 100, running: 0, returnCode: 0
   Processes:
     stuckIsLeaf           memory: 4 * 1 = 1, 1, 0, 0
@@ -2930,7 +2932,7 @@ Chip: Btree            step: 11, maxSteps: 100, running: 0, returnCode: 0
     b.stuckKeys[3].memorySet(24, 3); b.stuckData[3].memorySet(33, 3);
 
     //stop(b.print());
-    ok(b.print(), """
+    ok(b.btreePrint(), """
         10              20               |
         0               0.1              |
         1               2                |
@@ -2971,38 +2973,53 @@ Merge     : 0
 
   static void test_findAndInsert()
    {final Btree b = new Btree(8, 4, 8, 8);
-    final Process          P = b.new Process("find");
+    final Process          P = b.new Process("findAndInsert");
     final Process.Register k = P.register("k", b.bitsPerKey);
     final Process.Register d = P.register("d", b.bitsPerData);
 
     final FindAndInsert f = b.new FindAndInsert();
-    k.registerSet(1); d.registerSet(2); f.findAndInsert(k, d);
     b.maxSteps = 1000;
-    b.chipRunJava();
-    //stop(b.print());
-    ok(b.print(), """
+
+    f.processClear(); k.registerSet(1); d.registerSet(2); f.findAndInsert(k, d); b.chipRunJava();
+    //stop(b.btreePrint());
+    ok(b.btreePrint(), """
 1=0 |
 """);
 
-    k.registerSet(2); d.registerSet(3); f.findAndInsert(k, d);
-    b.chipRunJava();
-    //stop(b.print());
-    ok(b.print(), """
+    f.processClear(); k.registerSet(2); d.registerSet(3); f.findAndInsert(k, d); b.chipRunJava();
+    //stop(b.btreePrint());
+    ok(b.btreePrint(), """
 1,2=0 |
 """);
 
-    k.registerSet(4); d.registerSet(5); f.findAndInsert(k, d);
-    b.chipRunJava();
-    //stop(b.print());
-    ok(b.print(), """
+    f.processClear(); k.registerSet(4); d.registerSet(5); f.findAndInsert(k, d); b.chipRunJava();
+    //stop(b.btreePrint());
+    ok(b.btreePrint(), """
 1,2,4=0 |
 """);
 
-    k.registerSet(3); d.registerSet(4); f.findAndInsert(k, d);
-    b.chipRunJava();
+    //f.processClear();
+    f.processClear(); k.registerSet(3); d.registerSet(4); f.findAndInsert(k, d); b.chipRunJava();
     //stop(b.print());
-    ok(b.print(), """
+    ok(b.btreePrint(), """
 1,2,3,4=0 |
+""");
+    //stop(b.chipPrintMemory());
+    ok(b.chipPrintMemory(), """
+Chip: Btree            step: 29, maxSteps: 1000, running: 0, returnCode: 0
+  Processes:
+    stuckIsLeaf           memory: 8 * 1 = 1, 0, 0, 0, 0, 0, 0, 0
+    stuckIsFree           memory: 8 * 1 = 0, 0, 0, 0, 0, 0, 0, 0
+    freeNext              memory: 8 * 4 = 1, 2, 3, 4, 5, 6, 7, 0
+    stuckSize             memory: 8 * 3 = 4, 0, 0, 0, 0, 0, 0, 0
+    stuckKeys_0           memory: 8 * 8 = 1, 0, 0, 0, 0, 0, 0, 0
+    stuckData_0           memory: 8 * 8 = 2, 0, 0, 0, 0, 0, 0, 0
+    stuckKeys_1           memory: 8 * 8 = 2, 0, 0, 0, 0, 0, 0, 0
+    stuckData_1           memory: 8 * 8 = 3, 0, 0, 0, 0, 0, 0, 0
+    stuckKeys_2           memory: 8 * 8 = 3, 0, 0, 0, 0, 0, 0, 0
+    stuckData_2           memory: 8 * 8 = 4, 0, 0, 0, 0, 0, 0, 0
+    stuckKeys_3           memory: 8 * 8 = 4, 0, 0, 0, 0, 0, 0, 0
+    stuckData_3           memory: 8 * 8 = 5, 0, 0, 0, 0, 0, 0, 0
 """);
    }
 /*
@@ -4480,8 +4497,7 @@ stuckData: value=2, 0=1, 1=2, 2=0, 3=0
    }
 
   static void newTests()                                                        // Tests being worked on
-   {//oldTests();
-    test_find();
+   {oldTests();
     test_findAndInsert();
    }
 
