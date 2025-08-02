@@ -350,7 +350,7 @@ endmodule
     void GoNotZero(Label label, Register condition)                             // Go to a specified label if the value of a field is not zero
      {if (condition.registerGet() > 0) processNextPc = label.offset;
      }
-    void GoZero   (Label label, Register condition)                                // Go to a specified label if the value of a field is zero
+    void GoZero   (Label label, Register condition)                             // Go to a specified label if the value of a field is zero
      {if (condition.registerGet() == 0) processPc = label.offset;
      }
 
@@ -413,6 +413,7 @@ endmodule
       void inc () {R(); rs(rg()+1);}                                            // Increment a register in Java
       void dec () {R(); rs(rg()-1);}                                            // Decrement a register in Java
       void not () {R(); rs(rg() != 0 ? 0 : 1);}                                 // Not a register in Java
+      void half() {R(); rs(rg() >> 1);}                                         // Halve a register
       void add (Register source) {R(); rs(rg()+source.rg());}                   // Add the source register to the current register in Java
 
       void gt (Register a, Register b) {R(); rs(a.rg() >  b.rg() ? 1 : 0);}     // Set the target register to one if the test between the 'a' and 'b' register is true else 0
@@ -1248,11 +1249,7 @@ Chip: Test             step: 50, maxSteps: 100, running: 0, returnCode: 1
    }
 
   static void newTests()                                                        // Tests being worked on
-   {//oldTests();
-    //test_memory();
-    //test_memoryProcess();
-    //test_arithmeticFibonacci();
-    test_block();
+   {oldTests();
    }
 
   public static void main(String[] args)                                        // Test if called as a program
