@@ -378,63 +378,51 @@ chipStop = true;
      }
 
     void setDataAt(Register Index, Register Data)                               // Set the indexed data pair
-     {new Instruction()
-       {void action()
-         {final int N = Index.registerGet();
-          final int M = size.registerGet();
-          if (N >= M)
-           {chipStop(10);
-            return;
-           }
-          data[N].copy(Data);
-         }
-       };
+     {final int N = Index.registerGet();
+      final int M = size.registerGet();
+      if (N >= M)
+       {chipStop(10);
+        return;
+       }
+      data[N].copy(Data);
      }
 
     void insertElementAt(Register Index, Register Key, Register Data)           // Set the indexed key, data pair
-     {new Instruction()
-       {void action()
-         {final int N = Index.registerGet();
-          final int M = size.registerGet();
-          if (N >= maxStuckSize-1)
-           {chipStop(11);
-            return;
-           }
-          if (N > M)
-           {chipStop(12);
-            return;
-           }
-          if (N != M)
-           {size.inc();
-           }
-          for (int i = M; i > N; i--)
-           {keys[i].copy(keys[i-1]);
-            data[i].copy(data[i-1]);
-           }
-          keys[N].copy(Key);
-          data[N].copy(Data);
-         }
-       };
+     {final int N = Index.registerGet();
+      final int M = size.registerGet();
+      if (N >= maxStuckSize-1)
+       {chipStop(11);
+        return;
+       }
+      if (N > M)
+       {chipStop(12);
+        return;
+       }
+      if (N != M)
+       {size.inc();
+       }
+      for (int i = M; i > N; i--)
+       {keys[i].copy(keys[i-1]);
+        data[i].copy(data[i-1]);
+       }
+      keys[N].copy(Key);
+      data[N].copy(Data);
      }
 
     void removeElementAt(Register Index)                                        // Set the indexed key, data pair
-     {new Instruction()
-       {void action()
-         {final int N = Index.registerGet();
-          final int M = size.registerGet();
-          if (N >= M)
-           {chipStop(13);
-            return;
-           }
-          size.dec();
-          Key.copy (keys[N]);
-          Data.copy(data[N]);
-          for (int i = N; i < M-1; i++)
-           {keys[i].copy(keys[i+1]);
-            data[i].copy(data[i+1]);
-           }
-         }
-       };
+     {final int N = Index.registerGet();
+      final int M = size.registerGet();
+      if (N >= M)
+       {chipStop(13);
+        return;
+       }
+      size.dec();
+      Key.copy (keys[N]);
+      Data.copy(data[N]);
+      for (int i = N; i < M-1; i++)
+       {keys[i].copy(keys[i+1]);
+        data[i].copy(data[i+1]);
+       }
      }
 
 //D3 Search                                                                     // Search the stuck
@@ -2226,9 +2214,9 @@ Stuck: Stuck size: 5, leaf: 1
        {void action()
          {i.registerSet(J);
           d.registerSet((J+1)*2);
+          s.setDataAt(i, d);
          }
        };
-       s.setDataAt(i, d);
      }
 
     b.maxSteps = 100;
@@ -2297,9 +2285,9 @@ Merge     : 0
        {i.registerSet(1);
         k.registerSet(5);
         d.registerSet(55);
+        s.insertElementAt(i, k, d);
        }
      };
-    s.insertElementAt(i, k, d);
 
     b.maxSteps = 100;
     b.chipRunJava();
@@ -2327,9 +2315,9 @@ Stuck: Stuck size: 5, leaf: 1
     s.new Instruction()
      {void action()
        {i.registerSet(1);
+        s.removeElementAt(i);
        }
      };
-    s.removeElementAt(i);
 
     b.maxSteps = 100;
     b.chipRunJava();
