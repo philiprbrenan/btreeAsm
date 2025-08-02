@@ -443,23 +443,19 @@ chipStop = true;
      }
 
     void search_le(Register Key)                                                // Find the first key in the stuck so that the search key is less than or equal to this key
-     {new Instruction()
-       {void action()
-         {final int N = size.registerGet();
-          Found.zero();
-          for (int i = 0; i < N; ++i)
-           {final int I = i;
-            if (Key.registerGet() <= keys[i].registerGet())
-             {Found.one();
-              StuckIndex.registerSet(I);
-              FoundKey.copy(keys[I]);
-              Data    .copy(data[I]);
-              return;
-             }
-           }
-          StuckIndex.registerSet(N);
+     {final int N = size.registerGet();
+      Found.zero();
+      for (int i = 0; i < N; ++i)
+       {final int I = i;
+        if (Key.registerGet() <= keys[i].registerGet())
+         {Found.one();
+          StuckIndex.registerSet(I);
+          FoundKey.copy(keys[I]);
+          Data    .copy(data[I]);
+          return;
          }
-       };
+       }
+      StuckIndex.registerSet(N);
      }
 
 //D3 Split                                                                      // Split stucks in many and various ways
@@ -1517,10 +1513,10 @@ chipStop = true;
                };
              }
             void Branch()                                                       // On a branch - step to next level down
-             {S.search_le(Key);                                                 // Search stuck for matching key
-              S.new Instruction()
+             {S.new Instruction()
                {void action()
-                 {S.BtreeIndex.copy(S.Data);
+                 {S.search_le(Key);                                             // Search stuck for matching key
+                  S.BtreeIndex.copy(S.Data);
                   S.Goto(start);                                                // Key not present
                  }
                };
@@ -2406,9 +2402,9 @@ Stuck: Stuck size: 4, leaf: 1
     s.new Instruction()
      {void action()
        {k.registerSet(11);
+        s.search_le(k);
        }
      };
-    s.search_le(k);
 
     b.maxSteps = 100;
     b.chipRunJava();
@@ -2438,10 +2434,10 @@ Merge     : 0
      {void action()
        {k.registerSet(21);
         s.pop();
+        s.search_le(k);
        }
      };
 
-    s.search_le(k);
     b.chipRunJava();
 
     //stop(s.dump());
