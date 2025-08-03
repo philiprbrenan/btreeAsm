@@ -102,12 +102,12 @@ chipStop = true;
    }
 
   private void free(Process.Register ref)                                       // Free the referenced stuck and put it on the free chain
-   {final Process       P         = ref.registerProcess();
-    final Memory.Get    gFreeNext = freeNext.new Get(P);                        // Get next free stuck
-    final Memory.Set    sFreeRoot = freeNext.new Set(P);                        // Set next free stuck
-    final Memory.Set    sFreeNext = freeNext.new Set(P);                        // Set next free stuck
-    final Process.Register   root = btreeIndex(P, "root");                      // Index of the first free stuck in the btree
-    final Process.Register   next = btreeIndex(P, "next");                      // Index of the second free stuck in the btree
+   {final Process     P         = ref.registerProcess();
+    final Memory.Get  gFreeNext = freeNext.new Get(P);                        // Get next free stuck
+    final Memory.Set  sFreeRoot = freeNext.new Set(P);                        // Set next free stuck
+    final Memory.Set  sFreeNext = freeNext.new Set(P);                        // Set next free stuck
+    final Process.Register root = btreeIndex(P, "root");                      // Index of the first free stuck in the btree
+    final Process.Register next = btreeIndex(P, "next");                      // Index of the second free stuck in the btree
     P.new Instruction()                                                         // Get first free stuck
      {void action()
        {root.zero();                                                            // The free chain depends from the root which is never freed asnd so can never be on the free chain
@@ -222,7 +222,6 @@ chipStop = true;
            }
          }
        };
-
       gSize.waitResultOfTransaction();                                          // Wait for size from memory
       gLeaf.waitResultOfTransaction();                                          // Wait for leaf status from memeory
 
@@ -244,20 +243,20 @@ chipStop = true;
        };
      }
 
-    void stuckPut(Process.Register Index)                                                             // Update a stuck in memory from the registers describing his stuck
-     {P.new Instruction()                                                         // Save registers into memory
+    void stuckPut(Process.Register Index, boolean SetLeaf)                      // Update a stuck in memory from the registers describing this stuck optionally updating the isLeaf field.
+     {P.new Instruction()
        {void action()
-         {sSize.executeTransaction(index, size);
-          sLeaf.executeTransaction(index, isLeaf);
+         {sSize.executeTransaction(Index, size);
+          if (SetLeaf) sLeaf.executeTransaction(Index, isLeaf);
           for (int i = 0; i < maxStuckSize; i++)
-           {sKeys[i].executeTransaction(index, keys[i]);
-            sData[i].executeTransaction(index, data[i]);
+           {sKeys[i].executeTransaction(Index, keys[i]);
+            sData[i].executeTransaction(Index, data[i]);
            }
          }
        };
 
       sSize.waitResultOfTransaction();                                          // Wait for size to complete
-      sLeaf.waitResultOfTransaction();                                          // Wait for leaf status to complete
+      if (SetLeaf) sLeaf.waitResultOfTransaction();                             // Wait for leaf status to complete
 
       for (int i = 0; i < maxStuckSize; i++)                                    // Wait for transactions for keys and data from memmory to complete
        {sKeys[i].waitResultOfTransaction();
@@ -265,17 +264,18 @@ chipStop = true;
        }
      }
 
-    void stuckPut() {stuckPut(index);}                                          // Update a stuck in memory from the registers describing his stuck
+    void stuckPut(boolean SetLeaf) {stuckPut(index, SetLeaf);}                  // Update a stuck in memory from the registers describing his stuck
 
 //D3 Print                                                                      // Print the stuck
 
     public String toString()                                                    // Print the stuck
      {final StringBuilder S = new StringBuilder();
-      final int ns = size  .registerGet();                                      // Size of stuck
-      final int il = isLeaf.registerGet() > 0 ? 1 : 0;                          // Is a leaf
+      final int    ns = size  .registerGet();                                      // Size of stuck
+      final int    il = isLeaf.registerGet() > 0 ? 1 : 0;                          // Is a leaf
+      final String rt = index.registerGet() == 0 ? "root" : "index: "+index.registerGet();
 
       final String nm = stuckName;                                              // Name of the stuck is the same as the name of the process
-      S.append("Stuck: "+nm+" size: "+ns+", leaf: "+il+"\n");                   // Title
+      S.append("Stuck: "+nm+" size: "+ns+", leaf: "+il+", "+rt+"\n");                   // Title
 
       for (int i = 0; i < ns; i++)                                              // Each key, data pair
        {final int K = keys[i].registerGet();
@@ -976,11 +976,7 @@ chipStop = true;
     final Process.Register ir = P.new Register("indexRight", btreeAddressSize); // Index in memory of the right stuck
     final Process.Register mk = P.new Register("midKey",     bitsPerKey);       // Mid key
 
-    P.new Instruction() {void action() {say("AAAA code", P.code.size());}};
-    P.new Instruction() {void action() {say("AAAA code", P.code.size());}};
-
-    p.stuckGetRoot();                                                           // Load parent
-    P.new Instruction() {void action() {say("BBBB");}};
+    p.stuckGetRoot();                                                       // Load parent
 
     P.new Block()
      {void code()
@@ -988,38 +984,25 @@ chipStop = true;
          {void action()
            {if (p.isLeaf.registerGet() == 0) stop("Root must be a leaf");
             if (p.size.registerGet() < maxStuckSize) P.Goto(end);               // Check size of root
-            p.splitIntoTwo(l, r, maxStuckSize / 2);                             // Split the leaf root in two down the middle
            }
          };
-        allocateLeaf(il); l.stuckPut(il);                                       // Allocate and save left leaf
-        allocateLeaf(ir); r.stuckPut(ir);                                       // Allocate and save right leaf
+        p.splitIntoTwo(l, r, maxStuckSize / 2);                                 // Split the leaf root in two down the middle
+
+        allocateLeaf(il); l.stuckPut(il, false);                                 // Allocate and save left leaf
+        allocateLeaf(ir); r.stuckPut(ir, false);                                 // Allocate and save right leaf
 
         P.new Instruction()
          {void action()
-           {if (p.isLeaf.registerGet() == 0) stop("Root must be a leaf");
-            if (p.size.registerGet() < maxStuckSize) P.Goto(end);               // Check size of root
-            p.splitIntoTwo(l, r, maxStuckSize / 2);                             // Split the leaf root in two down the middle
-
-            mk.copy(l.size); mk.add(r.size); mk.half();
+           {mk.copy(l.size); mk.add(r.size); mk.half();
             p.clear();
             p.push(mk, il); p.setPastLastElement(mk, ir);
-            p.isLeaf.one();
-            p.stuckPut();
+            p.isLeaf.zero();
            }
          };
+        p.stuckPut(true);
        }
      };
-   }
-/*
 
-    l.lastElement();  pl.move(l.stuckKeys);                                     // Last element of left child
-    r.firstElement(); pr.move(r.stuckKeys);                                     // First element of right child
-    plr.value = (pl.value + pr.value) / 2;                                      // Mid point key
-    p.clear();                                                                  // Clear the root so we can add the left and right children to it.
-                                                                                // Update root with new children
-    p.stuckKeys.move(plr); p.stuckData.move(cl); p.push();                      // Add reference to left child
-    p.stuckData.move(cr);  p.setPastLastElement();                              // Add reference to right child
-    saveStuckIntoRoot(p);  setRootAsBranch();                                   // Save the root stuck back into the btree and mark it as a branch
    }
 
 /*
@@ -1615,7 +1598,7 @@ chipStop = true;
               else P.Goto(end);                                                   // No insertion so no need to update memory
              }
            };
-          stuckPut();
+          stuckPut(false);
          }
        };
      }
@@ -1887,7 +1870,7 @@ Stuck: Stuck size: 2, leaf: 1
     s.isLeaf .registerSet(0);
     s.size   .registerSet(1);
     s.keys[0].registerSet(3); s.data[0].registerSet(4);
-    s.stuckPut();
+    s.stuckPut(true);
 
     //stop(b.chipPrintMemory());
     ok(b.chipPrintMemory(), """
@@ -3110,7 +3093,7 @@ Merge     : 0
 """);
     //stop(b.chipPrintMemory());
     ok(b.chipPrintMemory(), """
-Chip: Btree            step: 29, maxSteps: 1000, running: 0, returnCode: 0
+Chip: Btree            step: 28, maxSteps: 1000, running: 0, returnCode: 0
   Processes:
     stuckIsLeaf           memory: 8 * 1 = 1, 0, 0, 0, 0, 0, 0, 0
     stuckIsFree           memory: 8 * 1 = 0, 0, 0, 0, 0, 0, 0, 0
@@ -3126,12 +3109,16 @@ Chip: Btree            step: 29, maxSteps: 1000, running: 0, returnCode: 0
     stuckData_3           memory: 8 * 8 = 5, 0, 0, 0, 0, 0, 0, 0
 """);
 
+    final Stuck S = b.new Stuck(P, "Test");
     P.processClear();
     b.splitRootLeaf(P);
     b.chipRunJava();
-    //stop(b.print());
     ok(b.btreePrint(), """
-1,2,3,4=0 |
+      2      |
+      0      |
+      1      |
+      2      |
+1,2=1  3,4=2 |
 """);
    }
 /*
@@ -4610,7 +4597,7 @@ stuckData: value=2, 0=1, 1=2, 2=0, 3=0
    }
 
   static void newTests()                                                        // Tests being worked on
-   {oldTests();
+   {//oldTests();
     test_findAndInsert();
    }
 
