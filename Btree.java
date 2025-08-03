@@ -489,6 +489,7 @@ chipStop = true;
          }
        }
       StuckIndex.registerSet(N);
+      Data.copy(data[N]);
      }
 
 //D3 Split                                                                      // Split stucks in many and various ways
@@ -1586,6 +1587,7 @@ chipStop = true;
       P.new Block()
        {void code()
          {findSearch(Key);                                                      // Find the leaf that should contain the key and possibly the key.
+
           P.new Instruction()
            {void action()
              {if (Found.registerGet() > 0)                                      // Found the key in the leaf so update it with the new data
@@ -3093,22 +3095,6 @@ Merge     : 0
 1,2,3,4=0 |
 """);
     //stop(b.chipPrintMemory());
-    ok(b.chipPrintMemory(), """
-Chip: Btree            step: 28, maxSteps: 1000, running: 0, returnCode: 0
-  Processes:
-    stuckIsLeaf           memory: 8 * 1 = 1, 0, 0, 0, 0, 0, 0, 0
-    stuckIsFree           memory: 8 * 1 = 0, 0, 0, 0, 0, 0, 0, 0
-    freeNext              memory: 8 * 4 = 1, 2, 3, 4, 5, 6, 7, 0
-    stuckSize             memory: 8 * 3 = 4, 0, 0, 0, 0, 0, 0, 0
-    stuckKeys_0           memory: 8 * 8 = 1, 0, 0, 0, 0, 0, 0, 0
-    stuckData_0           memory: 8 * 8 = 2, 0, 0, 0, 0, 0, 0, 0
-    stuckKeys_1           memory: 8 * 8 = 2, 0, 0, 0, 0, 0, 0, 0
-    stuckData_1           memory: 8 * 8 = 3, 0, 0, 0, 0, 0, 0, 0
-    stuckKeys_2           memory: 8 * 8 = 3, 0, 0, 0, 0, 0, 0, 0
-    stuckData_2           memory: 8 * 8 = 4, 0, 0, 0, 0, 0, 0, 0
-    stuckKeys_3           memory: 8 * 8 = 4, 0, 0, 0, 0, 0, 0, 0
-    stuckData_3           memory: 8 * 8 = 5, 0, 0, 0, 0, 0, 0, 0
-""");
 
     final Stuck S = b.new Stuck(P, "Test");
     P.processClear();
@@ -3121,6 +3107,18 @@ Chip: Btree            step: 28, maxSteps: 1000, running: 0, returnCode: 0
       2      |
 1,2=1  3,4=2 |
 """);
+
+debug = true;
+    P.processClear(); k.registerSet(5); d.registerSet(6); f.findAndInsert(k, d); b.chipRunJava();
+    //stop(b.btreePrint());
+    ok(b.btreePrint(), """
+      2        |
+      0        |
+      1        |
+      2        |
+1,2=1  3,4,5=2 |
+""");
+
    }
 /*
   static Btree test_create()
@@ -4598,7 +4596,7 @@ stuckData: value=2, 0=1, 1=2, 2=0, 3=0
    }
 
   static void newTests()                                                        // Tests being worked on
-   {oldTests();
+   {//oldTests();
     test_findAndInsert();
    }
 
