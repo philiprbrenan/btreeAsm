@@ -12,7 +12,7 @@ class Chip extends Test                                                         
   final String         javaTraceFile = fn(Verilog.folder, "j.txt");             // Java trace file for comparison with verilog
   final String      verilogTraceFile = fn(Verilog.folder, "v.txt");             // Verilog trace file
   int memoryProcessTransactionNumber = 0;                                       // Make transaction names unique
-  boolean                    running;                                           // True when the chip is running
+  boolean                chipRunning;                                           // True when the chip is running
   int                           step;                                           // Current simulation step being executed
   int                       maxSteps = 10;                                      // Maximum number of steps to execute in the simulation
   int                     returnCode;                                           // The return code from the first process to finish which effectively terminates the simulation
@@ -26,13 +26,13 @@ class Chip extends Test                                                         
 
   void chipRunJava()                                                            // Run the processes == programs defined on this chip using the Java implementation
    {for(Process p : processes) p.processInit();                                 // Initialize each program
-    running = true;                                                             // Show the program as running
+    chipRunning = true;                                                         // Show the program as running
     deleteFile(javaTraceFile);                                                  // Remove java trace file
-    for(step = 0; running && step < maxSteps; ++step)                           // Run each program
+    for(step = 0; chipRunning && step < maxSteps; ++step)                       // Run each program
      {for(Process p : processes) p.processStep();                               // Step each program
       chipPrint();                                                              // Print chip state after each step
      }
-    if (running)                                                                // Still running after too many steps
+    if (chipRunning)                                                            // Still running after too many steps
      {//say(this);
       stop("Out of steps after:", maxSteps);
      }
@@ -40,28 +40,28 @@ class Chip extends Test                                                         
 
   void chipStop(int ReturnCode)                                                 // Stop the chip
    {if (chipStop) err("Error:", ReturnCode);
-    returnCode = ReturnCode; running = false;
+    returnCode = ReturnCode; chipRunning = false;
    }
 
   String chipStopV(int ReturnCode)                                              // Stop the chip in verilog
    {return "returnCode = "+ReturnCode+"; stop = 1;";
    }
 
-  void R() {if (!running) stop("Not running");}                                 // Confirm that the simulation of the chip is running
-  void N() {if ( running) stop("Running");}                                     // Confirm that the simulation of the chip is not running
+  void R() {if (!chipRunning) stop("Not running");}                             // Confirm that the simulation of the chip is running
+  void N() {if ( chipRunning) stop("Running");}                                 // Confirm that the simulation of the chip is not running
 
 //D2 Print                                                                      // Print the state of a chip
 
-  public String chipPrintMemory()                                                   // Print the memory of the java emulation of the chip
+  public String chipPrintMemory()                                               // Print the memory of the java emulation of the chip
    {final StringBuilder s = new StringBuilder();
         s.append(String.format(
          "Chip: %-16s step: %1d, maxSteps: %1d, running: %1d, returnCode: %1d\n",
-          chipName, step, maxSteps, (running ? 1 : 0), returnCode));
+          chipName, step, maxSteps, (chipRunning ? 1 : 0), returnCode));
 
         s.append("  Processes:\n");
 
     for (Process p: processes)                                                  // Each process
-     {if (p.hasMemory())                                                      // Print memory if this process has memory attached to it
+     {if (p.hasMemory())                                                        // Print memory if this process has memory attached to it
        {s.append(String.format("    %-21s ", p.processName));
         s.append(String.format(
          "memory: %1d * %1d = %1d",
@@ -74,7 +74,7 @@ class Chip extends Test                                                         
        }
       if (false)
        {s.append("      Registers :\n");
-        for (Process.Register r: p.registers)                                     // Print registers associated with this process
+        for (Process.Register r: p.registers)                                   // Print registers associated with this process
          {s.append(String.format(
            "        %-32s = %1d\n",
           r.registerName(), r.registerGet()));
@@ -89,7 +89,7 @@ class Chip extends Test                                                         
    {final StringBuilder s = new StringBuilder();
         s.append(String.format(
          "Chip: %-16s step: %1d, maxSteps: %1d, running: %1d, returnCode: %1d\n",
-          chipName, step, maxSteps, (running ? 1 : 0), returnCode));
+          chipName, step, maxSteps, (chipRunning ? 1 : 0), returnCode));
 
         s.append("  Processes:\n");
 
@@ -471,7 +471,8 @@ endmodule
      {processNextPc = -1;                                                       // The executed instruction can optionally set this variable to change the execution flow
       if (code.size() == 0) return;                                             // No code to run
       if (processPc >= code.size())                                             // Stop the run if we go off the end of the code
-       {running = false;
+       {chipRunning = false;
+        say("Stopped by process:", processName);                                // Make sure we know who stopped the chip
         return;
        }
       code.elementAt(processPc).action();                                       // Perform the action associated with the current instruction
