@@ -289,8 +289,9 @@ chipStop = true;
      {final StringBuilder S = new StringBuilder();
       final int     ns = size  .registerGet();                                  // Size of stuck
       final int     il = isLeaf.registerGet() > 0 ? 1 : 0;                      // Is a leaf
+      final String  rt = index.registerGet() == 0 ? "root" : "index: "+index.registerGet();
       final String  nm = stuckName;                                             // Name of the stuck is the same as the name of the process
-      S.append("Stuck: "+nm+" size: "+ns+", leaf: "+il+"\n");                   // Title
+      S.append("Stuck: "+nm+" size: "+ns+", leaf: "+il+", "+rt+"\n");                   // Title
 
       for (int i = 0; i < maxStuckSize; i++)                                    // Each key, data pair
        {final int k = keys[i].registerGet();
@@ -1861,7 +1862,7 @@ chipStop = true;
 
     //stop(s);
     ok(s, """
-Stuck: Stuck size: 2, leaf: 1
+Stuck: Stuck size: 2, leaf: 1, root
  0     2 =>    3
  1     4 =>    5
 """);
@@ -1959,7 +1960,7 @@ Chip: Btree            step: 0, maxSteps: 10, running: 0, returnCode: 0
     }
 
     ok(b.stucks.firstElement(), """
-Stuck: Stuck size: 4, leaf: 1
+Stuck: Stuck size: 4, leaf: 1, root
  0     0 =>    1
  1     1 =>    2
  2     2 =>    3
@@ -1985,7 +1986,7 @@ Stuck: Stuck size: 4, leaf: 1
     b.chipRunJava();
 
     ok(s, """
-Stuck: Stuck size: 0, leaf: 1
+Stuck: Stuck size: 0, leaf: 1, root
 """);
    }
 
@@ -2009,7 +2010,7 @@ Stuck: Stuck size: 0, leaf: 1
     b.chipRunJava();
 
     ok(s, """
-Stuck: Stuck size: 3, leaf: 1
+Stuck: Stuck size: 3, leaf: 1, root
  0     0 =>    1
  1     1 =>    2
  2     2 =>    3
@@ -2017,7 +2018,7 @@ Stuck: Stuck size: 3, leaf: 1
 
     //stop(s.dump());
     ok(s.dump(), """
-Stuck: Stuck size: 3, leaf: 1
+Stuck: Stuck size: 3, leaf: 1, root
  0     0 =>    1
  1     1 =>    2
  2     2 =>    3
@@ -2056,7 +2057,7 @@ Merge     : 0
     b.chipRunJava();
     //stop(s.dump());
     ok(s.dump(), """
-Stuck: Stuck size: 4, leaf: 1
+Stuck: Stuck size: 4, leaf: 1, root
  0     0 =>    1
  1     1 =>    2
  2     2 =>    3
@@ -2102,7 +2103,7 @@ Merge     : 0
 
     //stop(s.dump());
     ok(s.dump(), """
-Stuck: Stuck size: 3, leaf: 1
+Stuck: Stuck size: 3, leaf: 1, root
  0     0 =>    1
  1     1 =>    2
  2     2 =>    3
@@ -2159,7 +2160,7 @@ Merge     : 0
       S.append(s.dump());
      }
     ok(S, """
-Stuck: Stuck size: 4, leaf: 1
+Stuck: Stuck size: 4, leaf: 1, root
  0     0 =>    1
  1     1 =>    2
  2     2 =>    3
@@ -2175,7 +2176,7 @@ Data      : 1
 BtreeIndex: 0
 StuckIndex: 0
 Merge     : 0
-Stuck: Stuck size: 4, leaf: 1
+Stuck: Stuck size: 4, leaf: 1, root
  0     0 =>    1
  1     1 =>    2
  2     2 =>    3
@@ -2191,7 +2192,7 @@ Data      : 2
 BtreeIndex: 0
 StuckIndex: 0
 Merge     : 0
-Stuck: Stuck size: 4, leaf: 1
+Stuck: Stuck size: 4, leaf: 1, root
  0     0 =>    1
  1     1 =>    2
  2     2 =>    3
@@ -2207,7 +2208,7 @@ Data      : 3
 BtreeIndex: 0
 StuckIndex: 0
 Merge     : 0
-Stuck: Stuck size: 4, leaf: 1
+Stuck: Stuck size: 4, leaf: 1, root
  0     0 =>    1
  1     1 =>    2
  2     2 =>    3
@@ -2253,7 +2254,7 @@ Merge     : 0
     b.maxSteps = 100;
     b.chipRunJava();
     ok(s, """
-Stuck: Stuck size: 5, leaf: 1
+Stuck: Stuck size: 5, leaf: 1, root
  0     1 =>    2
  1     2 =>    4
  2     3 =>    6
@@ -2288,7 +2289,7 @@ Stuck: Stuck size: 5, leaf: 1
     b.maxSteps = 100;
     b.chipRunJava();
     ok(s, """
-Stuck: Stuck size: 4, leaf: 1
+Stuck: Stuck size: 4, leaf: 1, root
  0     0 =>    2
  1     1 =>    4
  2     2 =>    6
@@ -2318,7 +2319,7 @@ Stuck: Stuck size: 4, leaf: 1
     b.chipRunJava();
     //stop(s.dump());
     ok(""+s.dump(), """
-Stuck: Stuck size: 4, leaf: 1
+Stuck: Stuck size: 4, leaf: 1, root
  0     0 =>    1
  1     1 =>    2
  2     2 =>    3
@@ -2361,7 +2362,7 @@ Merge     : 0
     b.chipRunJava();
     //stop(s);
     ok(s, """
-Stuck: Stuck size: 5, leaf: 1
+Stuck: Stuck size: 5, leaf: 1, root
  0     0 =>    1
  1     5 =>   55
  2     1 =>    2
@@ -2392,7 +2393,7 @@ Stuck: Stuck size: 5, leaf: 1
     b.chipRunJava();
     //stop(s);
     ok(s, """
-Stuck: Stuck size: 3, leaf: 1
+Stuck: Stuck size: 3, leaf: 1, root
  0     0 =>    1
  1     2 =>    3
  2     3 =>    4
@@ -2471,7 +2472,7 @@ Stuck: Stuck size: 3, leaf: 1
     b.maxSteps = 30;
     b.chipRunJava();
     ok(s, """
-Stuck: Stuck size: 4, leaf: 1
+Stuck: Stuck size: 4, leaf: 1, root
  0     0 =>    1
  1    10 =>   11
  2    20 =>   21
@@ -2491,7 +2492,7 @@ Stuck: Stuck size: 4, leaf: 1
 
     //stop(s.dump());
     ok(s.dump(), """
-Stuck: Stuck size: 4, leaf: 1
+Stuck: Stuck size: 4, leaf: 1, root
  0     0 =>    1
  1    10 =>   11
  2    20 =>   21
@@ -2522,7 +2523,7 @@ Merge     : 0
 
     //stop(s.dump());
     ok(s.dump(), """
-Stuck: Stuck size: 3, leaf: 1
+Stuck: Stuck size: 3, leaf: 1, root
  0     0 =>    1
  1    10 =>   11
  2    20 =>   21
@@ -2557,7 +2558,7 @@ Merge     : 0
     b.chipRunJava();
     //stop(s);
     ok(s, """
-Stuck: Stuck size: 4, leaf: 1
+Stuck: Stuck size: 4, leaf: 1, root
  0     0 =>    1
  1     1 =>    2
  2     2 =>    3
@@ -2565,13 +2566,13 @@ Stuck: Stuck size: 4, leaf: 1
 """);
     //stop(l);
     ok(l, """
-Stuck: Left size: 2, leaf: 0
+Stuck: Left size: 2, leaf: 0, root
  0     0 =>    1
  1     1 =>    2
 """);
     //stop(r);
     ok(r, """
-Stuck: Right size: 2, leaf: 0
+Stuck: Right size: 2, leaf: 0, root
  0     2 =>    3
  1     3 =>    4
 """);
@@ -2598,14 +2599,14 @@ Stuck: Right size: 2, leaf: 0
     b.chipRunJava();
     //stop(s);
     ok(s, """
-Stuck: Stuck size: 3, leaf: 1
+Stuck: Stuck size: 3, leaf: 1, root
  0     0 =>    1
  1     1 =>    2
  2     2 =>    3
 """);
     //stop(l.dump());
     ok(l.dump(), """
-Stuck: Left size: 1, leaf: 0
+Stuck: Left size: 1, leaf: 0, root
  0     0 =>    1
  1     0 =>    2
  2     0 =>    0
@@ -2624,7 +2625,7 @@ Merge     : 0
 """);
     //stop(r.dump());
     ok(r.dump(), """
-Stuck: Right size: 2, leaf: 0
+Stuck: Right size: 2, leaf: 0, root
  0     2 =>    3
  1     0 =>    4
  2     0 =>    0
@@ -2675,7 +2676,7 @@ Merge     : 0
     b.chipRunJava();
     //stop(s);
     ok(s, """
-Stuck: Stuck size: 4, leaf: 1
+Stuck: Stuck size: 4, leaf: 1, root
  0     4 =>    5
  1     5 =>    6
  2     6 =>    7
@@ -2683,7 +2684,7 @@ Stuck: Stuck size: 4, leaf: 1
 """);
     //stop(l);
     ok(l, """
-Stuck: Left size: 4, leaf: 0
+Stuck: Left size: 4, leaf: 0, root
  0     0 =>    1
  1     1 =>    2
  2     2 =>    3
@@ -2722,7 +2723,7 @@ Stuck: Left size: 4, leaf: 0
     b.maxSteps = 100;
     b.chipRunJava();
     ok(s, """
-Stuck: Stuck size: 3, leaf: 1
+Stuck: Stuck size: 3, leaf: 1, root
  0     4 =>    5
  1     5 =>    6
  2     6 =>    7
@@ -2730,7 +2731,7 @@ Stuck: Stuck size: 3, leaf: 1
 
     //stop(l.dump());
     ok(l.dump(), """
-Stuck: Left size: 3, leaf: 0
+Stuck: Left size: 3, leaf: 0, root
  0     0 =>    1
  1     1 =>    2
  2     2 =>    3
@@ -2765,7 +2766,7 @@ Merge     : 0
     b.chipRunJava();
     //stop(s);
     ok(s, """
-Stuck: Stuck size: 8, leaf: 1
+Stuck: Stuck size: 8, leaf: 1, root
  0     0 =>    1
  1     1 =>    2
  2     2 =>    3
@@ -2795,7 +2796,7 @@ Stuck: Stuck size: 8, leaf: 1
     b.chipRunJava();
     //stop(s);
     ok(s, """
-Stuck: Stuck size: 8, leaf: 1
+Stuck: Stuck size: 8, leaf: 1, root
  0     0 =>    1
  1     1 =>    2
  2     2 =>    3
@@ -2837,7 +2838,7 @@ Stuck: Stuck size: 8, leaf: 1
     b.chipRunJava();
     //stop(s.dump());
     ok(s.dump(), """
-Stuck: Stuck size: 7, leaf: 1
+Stuck: Stuck size: 7, leaf: 1, root
  0     0 =>    1
  1     1 =>    2
  2     2 =>    3
@@ -2895,7 +2896,7 @@ Merge     : 1
     b.chipRunJava();
     //stop(s.dump());
     ok(s.dump(), """
-Stuck: Stuck size: 7, leaf: 1
+Stuck: Stuck size: 7, leaf: 1, root
  0     0 =>    1
  1     1 =>    2
  2     2 =>    3
@@ -3042,9 +3043,9 @@ Chip: Btree            step: 11, maxSteps: 100, running: 0, returnCode: 0
     b.maxSteps = 100;
     b.chipRunJava();
 
-    //stop(s.dump());
+    //stop(f.dump());
     ok(f.dump(), """
-Stuck: stuck size: 3, leaf: 1
+Stuck: stuck size: 3, leaf: 1, index: 1
  0     1 =>    1
  1     3 =>   33
  2     5 =>   55
@@ -4597,7 +4598,7 @@ stuckData: value=2, 0=1, 1=2, 2=0, 3=0
    }
 
   static void newTests()                                                        // Tests being worked on
-   {//oldTests();
+   {oldTests();
     test_findAndInsert();
    }
 
