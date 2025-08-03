@@ -22,6 +22,7 @@ class Chip extends Test                                                         
 //D1 Chip                                                                       // A chip is constructed from a fixed number of communicating processes that execute code on the chip to produce the desired outputs from the inputs to the chip
 
   Chip(String Name)             {chipName = Name;}                              // Create a new chip
+  Chip chip()                   {return this;}                                  // This chip
   static Chip chip(String Name) {return new Chip(Name);}                        // Create a new chip
 
   void chipRunJava()                                                            // Run the processes == programs defined on this chip using the Java implementation
