@@ -473,7 +473,7 @@ endmodule
       if (code.size() == 0) return;                                             // No code to run
       if (processPc >= code.size())                                             // Stop the run if we go off the end of the code
        {chipRunning = false;
-        //err("Stopped by process:", processName);                                // Make sure we know who stopped the chip
+        //err("Stopped by process:", processName);                              // Make sure we know who stopped the chip
         return;
        }
       code.elementAt(processPc).action();                                       // Perform the action associated with the current instruction
