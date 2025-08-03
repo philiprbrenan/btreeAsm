@@ -572,7 +572,7 @@ chipStop = true;
        };
      }
 
-    void splitLowButOne(Stuck Left, Process.Register Key)                               // Split an almost full stuck with an odd number of elements so that the first half is moved into the left stuck extended by the data of the central element, while the remainder beyond the central element are moved down.  The central key is returned as it would otherwiose be lost.
+    void splitLowButOne(Stuck Left, Process.Register Key)                       // Split an almost full stuck with an odd number of elements so that the first half is moved into the left stuck extended by the data of the central element, while the remainder beyond the central element are moved down.  The central key is returned as it would otherwiose be lost.
      {P.new Instruction()
        {void action()
          {if (maxStuckSize % 2 == 1)
@@ -592,7 +592,7 @@ chipStop = true;
           Left.data[N].copy(data[N]);
           Key.copy(keys[N]);
 
-          for (int i = 0; i < N; ++i)
+          for (int i = 0; i <= N; ++i)                                          // Move the top element element down as well
            {keys[i].copy(keys[N+i+1]);
             data[i].copy(data[N+i+1]);
            }
@@ -1001,7 +1001,8 @@ chipStop = true;
 
         P.new Instruction()
          {void action()
-           {mk.copy(l.size); mk.add(r.size); mk.half();
+           {l.lastElement();  r.firstElement();
+            mk.copy(l.Key);   mk.add(r.Key); mk.half();
             p.clear();
             p.push(mk, il); p.setPastLastElement(mk, ir);
             p.isLeaf.zero();
@@ -1129,119 +1130,94 @@ chipStop = true;
      };
     p.stuckPut();                                                               // Save the parent stuck back into the btree whence it came
    }
-/*
-  private void iSplitLeafAtTop(Process.Register parentIndex)                    // Split a full leaf that is not the root and is the last child of its parent branch which is not full
-   {L.P.new Instruction()
-     {void action()                                                             // Compute mid point key
-       {splitLeafAtTop(parentIndex);
-       }
-     };
-   }
 
   private void splitBranchNotTop                                                // Split a full branch that is not the root and is not the last child of its parent branch which is not full
-   (Process.Register parentIndex, Process.Register stuckIndex)
-   {final Stuck p = stuck(), c = stuck(), l = stuck(), r = stuck();             // Parent which must be a branch which is not full, child at index which must be a full leaf, left and right splits of leaf
-    final Process.Register isFullButOne = isFullButOne();
-    final Process.Register isLeaf       = isLeaf();
-    final Process.Register cl           = index(), cr = index();                // Btree indexes of child and left and right children of child
-    final Process.Register ck           = p.key();                              // Key of child in parent, splitting key which must be smaller than anything in right child of child yet greater than or equal to anything in the left child of child
-    final Process.Register key          = p.key();                              // The central key
+   (Process P, Process.Register parentIndex, Process.Register stuckIndex)
+   {final Stuck p = allocateOrReuseStuck(P, "splitBranchNotTopParent");         // Parent stuck
+    final Stuck c = allocateOrReuseStuck(P, "splitBranchNotTopChild");          // Left split stuck
+    final Stuck l = allocateOrReuseStuck(P, "splitBranchNotTopLeft");           // Left split stuck
+    final Stuck r = allocateOrReuseStuck(P, "splitBranchNotTopRight");          // Right split stuck
+    final Process.Register ck = P.new Register("childKey",   stuckAddressSize); // Index in memory of the left stuck
+    final Process.Register cd = P.new Register("childData",  btreeAddressSize); // Index in memory of the left stuck
+    final Process.Register il = P.new Register("indexLeft",  btreeAddressSize); // Index in memory of the left stuck
+    final Process.Register ir = P.new Register("indexRight", btreeAddressSize); // Index in memory of the right stuck
+    final Process.Register mk = P.new Register("midKey",     bitsPerKey);       // Mid key
 
-    copyStuckFrom(p, parentIndex);                                              // Load parent stuck from btree
-    p.stuckKeys.read(stuckIndex); ck.move(p.stuckKeys);                         // Key of child
-    p.stuckData.read(stuckIndex); cr.move(p.stuckData);                         // Reference to child
-    copyStuckFrom(c, p.stuckData);                                              // Load child
-
-    isLeaf(parentIndex, isLeaf);                                                // The parent stuck must be a branch
-    if (isLeaf.asBoolean())
-     {L.P.stopProgram("Parent must be a branch");
-     }
-
-    p.isFullButOne(isFullButOne);                                               // The parent stuck may not be full
-    if (isFullButOne.asBoolean())
-     {L.P.stopProgram("Parent must not be full");
-     }
-
-    isLeaf(cr, isLeaf);                                                         // The child stuck must be a branch
-    if (isLeaf.asBoolean())
-     {L.P.stopProgram("Child must be a branch");
-     }
-
-    c.isFullButOne(isFullButOne);                                               // The child stuck must be a leaf
-    if (!isFullButOne.asBoolean())
-     {L.P.stopProgram("Child branch must be full");
-     }
-
-    c.splitLowButOne(l, (maxStuckSize-1) / 2, key);                             // Split the leaf in two down the middle copying out the lower half
-
-    allocateBranch(cl); saveStuckInto(l, cl);                                   // Allocate and save left leaf
-                        saveStuckInto(c, cr);                                   // Allocate and save left leaf
-                                                                                // Update root with new children
-    p.stuckKeys.move(key); p.stuckData.move(cl);
-    p.insertElementAt(stuckIndex);                                              // Add reference to left child
-    saveStuckInto(p, parentIndex);                                              // Save the parent stuck back into the btree
-   }
-
-  private void iSplitBranchNotTop                                               // Split a full leaf that is not the root and is the last child of its parent branch which is not full
-   (Process.Register parentIndex, Process.Register stuckIndex)
-   {L.P.new Instruction()
-     {void action()                                                             // Compute mid point key
-       {splitBranchNotTop(parentIndex, stuckIndex);
+    p.stuckGet(parentIndex);                                                    // Load parent stuck from btree
+    P.new Instruction()
+     {void action()
+       {ck.copy(p.keys[stuckIndex.registerGet()]);                                  // Key of child
+        cd.copy(p.data[stuckIndex.registerGet()]);                                  // Data of child
        }
      };
-   }
+    c.stuckGet(cd);                                                             // Load child
 
-  private void splitBranchAtTop(Process.Register parentIndex)                   // Split a full branch that is not the root and is the last child of its parent branch which is not full
-   {final Stuck p = stuck(), c = stuck(), l = stuck();                          // Parent which must be a branch which is not full, child at index which must be a full leaf, left and right splits of leaf
-    final Process.Register isFullButOne = isFullButOne();
-    final Process.Register isLeaf       = isLeaf();
-    final Process.Register cl           = index(), cr = index();                // Btree indexes of child and left and right children of child
-    final Process.Register center       = p.key();                              // The central key
-
-    copyStuckFrom(p, parentIndex);                                              // Load parent stuck from btree
-    p.pastLastElement();                                                        // Key of child
-    cr.move(p.stuckData);                                                       // Reference to child in btree
-    copyStuckFrom(c, p.stuckData);                                              // Load child from btree
-
-    isLeaf(parentIndex, isLeaf);                                                // The parent stuck must be a branch
-    if (isLeaf.asBoolean())
-     {L.P.stopProgram("Parent must be a branch");
-     }
-
-    p.isFullButOne(isFullButOne);                                               // The parent stuck may not be full
-    if (isFullButOne.asBoolean())
-     {L.P.stopProgram("Parent must not be full");
-     }
-
-    isLeaf(cr, isLeaf);                                                         // The child stuck must be a leaf
-    if (isLeaf.asBoolean())
-     {L.P.stopProgram("Child must be a branch");
-     }
-
-    c.isFullButOne(isFullButOne);                                               // The child stuck must be a leaf
-    if (!isFullButOne.asBoolean())
-     {L.P.stopProgram("Child branch must be full");
-     }
-
-    c.splitLowButOne(l, (maxStuckSize-1) / 2, center);                          // Split the leaf in two down the middle copying out the lower half
-    allocateBranch(cl); saveStuckInto(l, cl);                                   // Allocate and save left leaf
-                        saveStuckInto(c, cr);                                   // Allocate and save left leaf
-                                                                                // Update root with new children
-    p.stuckKeys.move(center); p.stuckData.move(cl); p.push();                   // Add reference to left child
-    p.stuckKeys.zero();       p.stuckData.move(cr); p.setPastLastElement();     // Add reference to not split top child on the right
-    saveStuckInto(p, parentIndex);                                              // Save the parent stuck back into the btree
-   }
-
-  private void iSplitBranchAtTop(Process.Register parentIndex)                  // Split a full branch that is not the root and is the last child of its parent branch which is not full
-   {L.P.new Instruction()
-     {void action()                                                             // Compute mid point key
-       {splitBranchAtTop(parentIndex);
+    P.new Instruction()
+     {void action()
+       {if (p.isLeaf.registerGet() >  0) stop("Parent must be a branch");
+        if (p.size  .registerGet() >= maxStuckSize-1) stop("Parent must mot be full");
+        if (c.isLeaf.registerGet() >  0) stop("Child must be a branch");
+        if (c.size  .registerGet() <  maxStuckSize-1) stop("Child must not full");
        }
      };
+
+    c.splitLowButOne(l, ck);                                                    // Split the leaf in two down the middle copying out the lower half
+    allocateBranch(il); l.stuckPut(il);                                         // Allocate and save left leaf
+                        c.stuckPut(cd);                                         // Allocate and save left leaf
+                                                                                // Update root with new children
+    P.new Instruction()
+     {void action()
+       {p.insertElementAt(stuckIndex, ck, il);                                      // Add reference to left child
+       }
+     };
+    p.stuckPut();                                                               // Save the parent stuck back into the btree
+   }
+
+  private void splitBranchAtTop(Process P, Process.Register parentIndex)        // Split a full branch that is not the root and is the last child of its parent branch which is not full
+   {final Stuck p = allocateOrReuseStuck(P, "splitBranchAtTopParent");         // Parent stuck
+    final Stuck c = allocateOrReuseStuck(P, "splitBranchAtTopChild");          // Left split stuck
+    final Stuck l = allocateOrReuseStuck(P, "splitBranchAtTopLeft");           // Left split stuck
+    final Stuck r = allocateOrReuseStuck(P, "splitBranchAtTopRight");          // Right split stuck
+    final Process.Register ck = P.new Register("childKey",   stuckAddressSize); // Index in memory of the left stuck
+    final Process.Register cd = P.new Register("childData",  btreeAddressSize); // Index in memory of the left stuck
+    final Process.Register il = P.new Register("indexLeft",  btreeAddressSize); // Index in memory of the left stuck
+    final Process.Register ir = P.new Register("indexRight", btreeAddressSize); // Index in memory of the right stuck
+    final Process.Register mk = P.new Register("midKey",     bitsPerKey);       // Mid key
+
+    p.stuckGet(parentIndex);                                                    // Load parent stuck from btree
+
+    P.new Instruction()
+     {void action()
+       {p.pastLastElement();                                                    // Key of child
+        cd.copy(p.data[p.size.registerGet()]);                                  // Reference to child in btree
+       }
+     };
+    c.stuckGet(cd);                                                             // Load child from btree
+
+    P.new Instruction()
+     {void action()
+       {if (p.isLeaf.registerGet() >  0) stop("Parent must be a branch");
+        if (p.size.registerGet()   >= maxStuckSize-1) stop("Parent must not be full");
+        if (c.isLeaf.registerGet() >  0) stop("Child must be a branch");
+        if (c.size.registerGet()   <  maxStuckSize-1) stop("Child branch must be full");
+       }
+     };
+
+    c.splitLowButOne(l, mk);                                                    // Split the leaf in two down the middle copying out the lower half
+    allocateBranch(il); l.stuckPut(il);                                         // Allocate and save left leaf
+                        c.stuckPut(cd);                                         // Allocate and save left leaf
+                                                                                // Update root with new children
+    P.new Instruction()
+     {void action()
+       {p.push(mk, il);                                                         // Add reference to left child
+        p.setPastLastElement(mk, cd);                                           // Add reference to not split top child on the right
+       }
+     };
+    p.stuckPut();                                                               // Save the parent stuck back into the btree
    }
 
 //D1 Merge                                                                      // Merge two nodes
-
+/*
   private void iMergeLeavesIntoRoot(Process.Register success)                   // Merge two leaves into the root
    {final Stuck p = stuck(), l = stuck(), r = stuck();                          // Root and left, right children
     final Process.Register li  = index(), ri = index();                         // Btree indexes of left and right children of root
@@ -1291,7 +1267,7 @@ chipStop = true;
        {L.P.new Instruction()                                                   // Check that the parent has a child at the specified index
          {void action()
            {success.zero();                                                     // Assume failure
-            copyStuckFrom(p, Parent);                                           // Load parent
+            p.stuckGet(Parent);                                           // Load parent
             if (p.stuckSize.value < 2) L.P.Goto(end);
            }
          };
@@ -1336,7 +1312,7 @@ chipStop = true;
        {L.P.new Instruction()
          {void action()
            {success.zero();                                                     // Assume failure
-            copyStuckFrom(p, Parent);                                           // Load parent
+            p.stuckGet(Parent);                                           // Load parent
             L.P.GoZero(end, p.stuckSize);                                       // Stuck must have at least one entry
            }
          };
@@ -1423,7 +1399,7 @@ chipStop = true;
        {L.P.new Instruction()                                                   // Check that the parent has a child at the specified index
          {void action()
            {success.zero();                                                     // Assume failure
-            copyStuckFrom(p, Parent);                                           // Load parent
+            p.stuckGet(Parent);                                           // Load parent
             if (p.stuckSize.value < 2)
              {L.P.Goto(end);
              }
@@ -1471,7 +1447,7 @@ chipStop = true;
        {L.P.new Instruction()                                                   // Check that the parent has a child at the specified index
          {void action()
            {success.zero();                                                     // Assume failure
-            copyStuckFrom(p, Parent);                                           // Load parent
+            p.stuckGet(Parent);                                           // Load parent
 
             if (p.stuckSize.value == 0)
              {L.P.Goto(end);
@@ -1511,7 +1487,6 @@ chipStop = true;
      };
    }
 */
-
 //D1 Find                                                                       // Find a key in a btree
 
   class Find extends Stuck                                                      // Find the leaf stuck associated with a key in the tree
@@ -3049,7 +3024,7 @@ Merge     : 0
    }
 
   static void test_findAndInsert()
-   {final Btree            b = new Btree(8, 4, 8, 8);
+   {final Btree            b = new Btree(32, 4, 8, 8);
     final Process          P = b.new Process("findAndInsert");
     final Process.Register k = P.register("k", b.bitsPerKey);
     final Process.Register d = P.register("d", b.bitsPerData);
@@ -3090,31 +3065,31 @@ Merge     : 0
     b.chipRunJava();
     //stop(b.btreePrint());
     ok(b.btreePrint(), """
-        2        |
-        0        |
-        1        |
-        2        |
-10,20=1  30,40=2 |
+        25        |
+        0         |
+        1         |
+        2         |
+10,20=1   30,40=2 |
 """);
 
     P.processClear(); k.registerSet(50); d.registerSet(60); f.findAndInsert(k, d); b.chipRunJava();
     //stop(b.btreePrint());
     ok(b.btreePrint(), """
-        2           |
-        0           |
-        1           |
-        2           |
-10,20=1  30,40,50=2 |
+        25           |
+        0            |
+        1            |
+        2            |
+10,20=1   30,40,50=2 |
 """);
 
     P.processClear(); k.registerSet(60); d.registerSet(70); f.findAndInsert(k, d); b.chipRunJava();
     //stop(b.btreePrint());
     ok(b.btreePrint(), """
-        2              |
-        0              |
-        1              |
-        2              |
-10,20=1  30,40,50,60=2 |
+        25              |
+        0               |
+        1               |
+        2               |
+10,20=1   30,40,50,60=2 |
 """);
 
     P.processClear();
@@ -3123,31 +3098,31 @@ Merge     : 0
     b.chipRunJava();
     //stop(b.btreePrint());
     ok(b.btreePrint(), """
-        2        45         |
-        0        0.1        |
-        1        3          |
-                 2          |
-10,20=1  30,40=3    50,60=2 |
+        25        45         |
+        0         0.1        |
+        1         3          |
+                  2          |
+10,20=1   30,40=3    50,60=2 |
 """);
 
     P.processClear(); k.registerSet(70); d.registerSet(80); f.findAndInsert(k, d); b.chipRunJava();
     //stop(b.btreePrint());
     ok(b.btreePrint(), """
-        2        45            |
-        0        0.1           |
-        1        3             |
-                 2             |
-10,20=1  30,40=3    50,60,70=2 |
+        25        45            |
+        0         0.1           |
+        1         3             |
+                  2             |
+10,20=1   30,40=3    50,60,70=2 |
 """);
 
     P.processClear(); k.registerSet(80); d.registerSet(90); f.findAndInsert(k, d); b.chipRunJava();
     //stop(b.btreePrint());
     ok(b.btreePrint(), """
-        2        45               |
-        0        0.1              |
-        1        3                |
-                 2                |
-10,20=1  30,40=3    50,60,70,80=2 |
+        25        45               |
+        0         0.1              |
+        1         3                |
+                  2                |
+10,20=1   30,40=3    50,60,70,80=2 |
 """);
 
     P.processClear();
@@ -3156,11 +3131,11 @@ Merge     : 0
     b.chipRunJava();
     //stop(b.btreePrint());
     ok(b.btreePrint(), """
-        2        45         65         |
-        0        0.1        0.2        |
-        1        3          4          |
-                            2          |
-10,20=1  30,40=3    50,60=4    70,80=2 |
+        25        45         65         |
+        0         0.1        0.2        |
+        1         3          4          |
+                             2          |
+10,20=1   30,40=3    50,60=4    70,80=2 |
 """);
 
     P.processClear();
@@ -3168,43 +3143,43 @@ Merge     : 0
     b.chipRunJava();
     //stop(b.btreePrint());
     ok(b.btreePrint(), """
-                 45                  |
-                 0                   |
-                 5                   |
-                 6                   |
-        2                  65        |
-        5                  6         |
-        1                  4         |
-        3                  2         |
-10,20=1  30,40=3   50,60=4   70,80=2 |
+                  45                  |
+                  0                   |
+                  5                   |
+                  6                   |
+        25                  65        |
+        5                   6         |
+        1                   4         |
+        3                   2         |
+10,20=1   30,40=3   50,60=4   70,80=2 |
 """);
 
     P.processClear(); k.registerSet(62); d.registerSet(63); f.findAndInsert(k, d); b.chipRunJava();
     //stop(b.btreePrint());
     ok(b.btreePrint(), """
-                 45                     |
-                 0                      |
-                 5                      |
-                 6                      |
-        2                     65        |
-        5                     6         |
-        1                     4         |
-        3                     2         |
-10,20=1  30,40=3   50,60,62=4   70,80=2 |
+                  45                     |
+                  0                      |
+                  5                      |
+                  6                      |
+        25                     65        |
+        5                      6         |
+        1                      4         |
+        3                      2         |
+10,20=1   30,40=3   50,60,62=4   70,80=2 |
 """);
 
     P.processClear(); k.registerSet(64); d.registerSet(65); f.findAndInsert(k, d); b.chipRunJava();
     //stop(b.btreePrint());
     ok(b.btreePrint(), """
-                 45                        |
-                 0                         |
-                 5                         |
-                 6                         |
-        2                        65        |
-        5                        6         |
-        1                        4         |
-        3                        2         |
-10,20=1  30,40=3   50,60,62,64=4   70,80=2 |
+                  45                        |
+                  0                         |
+                  5                         |
+                  6                         |
+        25                        65        |
+        5                         6         |
+        1                         4         |
+        3                         2         |
+10,20=1   30,40=3   50,60,62,64=4   70,80=2 |
 """);
 
     P.processClear();
@@ -3214,17 +3189,122 @@ Merge     : 0
     b.chipRunJava();
     //stop(b.btreePrint());
     ok(b.btreePrint(), """
-                 45                             |
-                 0                              |
-                 5                              |
-                 6                              |
-        2                  61        65         |
-        5                  6         6.1        |
-        1                  7         4          |
-        3                            2          |
-10,20=1  30,40=3   50,60=7   62,64=4    70,80=2 |
+                  45                             |
+                  0                              |
+                  5                              |
+                  6                              |
+        25                  61        65         |
+        5                   6         6.1        |
+        1                   7         4          |
+        3                             2          |
+10,20=1   30,40=3   50,60=7   62,64=4    70,80=2 |
 """);
 
+    P.processClear(); k.registerSet( 90); d.registerSet(100); f.findAndInsert(k, d); b.chipRunJava();
+    P.processClear(); k.registerSet(100); d.registerSet(110); f.findAndInsert(k, d); b.chipRunJava();
+    P.processClear();
+    i.registerSet(6);
+    b.splitLeafAtTop(P, i);
+    b.chipRunJava();
+    //stop(b.btreePrint());
+    ok(b.btreePrint(), """
+                  45                                         |
+                  0                                          |
+                  5                                          |
+                  6                                          |
+        25                  61        65         85          |
+        5                   6         6.1        6.2         |
+        1                   7         4          8           |
+        3                                        2           |
+10,20=1   30,40=3   50,60=7   62,64=4    70,80=8    90,100=2 |
+""");
+    P.processClear();
+    i.registerSet(0);
+    b.splitBranchAtTop(P, i);
+    b.chipRunJava();
+    //stop(b.btreePrint());
+    ok(b.btreePrint(), """
+                  45                  65                    |
+                  0                   0.1                   |
+                  5                   9                     |
+                                      6                     |
+        25                  61                   85         |
+        5                   9                    6          |
+        1                   7                    8          |
+        3                   4                    2          |
+10,20=1   30,40=3   50,60=7   62,64=4    70,80=8   90,100=2 |
+""");
+
+    P.processClear(); k.registerSet(21); d.registerSet(22); f.findAndInsert(k, d); b.chipRunJava();
+    P.processClear(); k.registerSet(22); d.registerSet(23); f.findAndInsert(k, d); b.chipRunJava();
+    P.processClear();
+    i.registerSet(5);
+    j.registerSet(0);
+    b.splitLeafNotTop(P, i, j);
+    b.chipRunJava();
+    //stop(b.btreePrint());
+    ok(b.btreePrint(), """
+                              45                  65                    |
+                              0                   0.1                   |
+                              5                   9                     |
+                                                  6                     |
+         20        25                   61                   85         |
+         5         5.1                  9                    6          |
+         10        1                    7                    8          |
+                   3                    4                    2          |
+10,20=10   21,22=1    30,40=3   50,60=7   62,64=4    70,80=8   90,100=2 |
+""");
+
+    P.processClear(); k.registerSet(12); d.registerSet(13); f.findAndInsert(k, d); b.chipRunJava();
+    P.processClear(); k.registerSet(14); d.registerSet(15); f.findAndInsert(k, d); b.chipRunJava();
+    //stop(b.btreePrint());
+    ok(b.btreePrint(), """
+                                    45                  65                    |
+                                    0                   0.1                   |
+                                    5                   9                     |
+                                                        6                     |
+               20        25                   61                   85         |
+               5         5.1                  9                    6          |
+               10        1                    7                    8          |
+                         3                    4                    2          |
+10,12,14,20=10   21,22=1    30,40=3   50,60=7   62,64=4    70,80=8   90,100=2 |
+""");
+
+    P.processClear();
+    i.registerSet(5);
+    j.registerSet(0);
+    b.splitLeafNotTop(P, i, j);
+    b.chipRunJava();
+    //stop(b.btreePrint());
+    ok(b.btreePrint(), """
+                                          45                  65                    |
+                                          0                   0.1                   |
+                                          5                   9                     |
+                                                              6                     |
+         13         20         25                   61                   85         |
+         5          5.1        5.2                  9                    6          |
+         11         10         1                    7                    8          |
+                               3                    4                    2          |
+10,12=11   14,20=10    21,22=1    30,40=3   50,60=7   62,64=4    70,80=8   90,100=2 |
+""");
+
+    P.processClear();
+    i.registerSet(0);
+    j.registerSet(0);
+    b.splitBranchNotTop(P, i, j);
+    b.chipRunJava();
+    //stop(b.btreePrint());
+    ok(b.btreePrint(), """
+                    20                  45                   65                    |
+                    0                   0.1                  0.2                   |
+                    12                  5                    9                     |
+                                                             6                     |
+         13                   25                   61                   85         |
+         12                   5                    9                    6          |
+         11                   1                    7                    8          |
+         10                   3                    4                    2          |
+10,12=11   14,20=10   21,22=1   30,40=3    50,60=7   62,64=4    70,80=8   90,100=2 |
+""");
    }
 /*
   static Btree test_create()
