@@ -10,6 +10,8 @@ public class Children<E> extends Test implements Iterable<E>                    
  {private final Stack<E>       stack = new Stack<>();                           // Order of entries
   private final Map<String, E> map   = new TreeMap<>();                         // Prebent duplication of entries
 
+  public boolean has(String key) {return map.containsKey(key);}                 // Get the data asscoiated with a key
+
   public E get(String key)                                                      // Get the data asscoiated with a key
    {if (!map.containsKey(key)) stop("No such key: " + key);
     return map.get(key);
@@ -79,6 +81,15 @@ public class Children<E> extends Test implements Iterable<E>                    
     ok(m.lastElement(),  3);
    }
 
+  protected static void test_has()
+   {final Children<Integer> m = new Children<>();
+    m.put("c", 1);
+    m.put("b", 2);
+    m.put("a", 3);
+    ok(m.has("a"), true);
+    ok(m.has("A"), false);
+   }
+
   protected static void test_dup()
    {final Children<Integer> m = new Children<>();
     m.put("a", 1);
@@ -90,6 +101,7 @@ public class Children<E> extends Test implements Iterable<E>                    
     test_get();
     test_iter();
     test_at();
+    test_has();
     //test_dup();
    }
 
