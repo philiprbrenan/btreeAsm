@@ -539,7 +539,7 @@ chipStop = true;
            {Right.keys[i].copy(keys[Copy+i+1]);
             Right.data[i].copy(data[Copy+i+1]);
            }
-          Right.size.registerSet(N - Copy);
+          Right.size.registerSet(N - Copy-1);
           Right.data[Copy].copy(data[2*Copy+1]);
          }
        };
@@ -1012,31 +1012,36 @@ chipStop = true;
      };
 
    }
-/*
-  private void splitRootBranch()                                                // Split a full root branch
-   {final Stuck p = stuck(), l = stuck(), r = stuck();                          // Parent == root, left, right stucks
-    final Process.Register isFullButOne = isFullButOne();
-    final Process.Register           cl = index(), cr = index();                // Indexes of left and right children
+
+  private void splitRootBranch(Process P)                                       // Split a full root branch
+   {final Stuck p = allocateOrReuseStuck(P, "splitRootBranchParent");           // Parent stuck
+    final Stuck l = allocateOrReuseStuck(P, "splitRootBranchLeft");             // Left split stuck
+    final Stuck r = allocateOrReuseStuck(P, "splitRootBranchRight");            // Right split stuck
+    final Process.Register il = P.new Register("indexLeft",  btreeAddressSize); // Index in memory of the left stuck
+    final Process.Register ir = P.new Register("indexRight", btreeAddressSize); // Index in memory of the right stuck
+    final Process.Register mk = P.new Register("midKey",     bitsPerKey);       // Mid key
     final int              midPoint = (maxStuckSize-1) / 2;                     // Mid point in parent
 
-    copyStuckFromRoot(p);                                                       // Load branch root stuck from btree
+    p.stuckGetRoot();                                                           // Load branch root stuck from btree
 
-    p.isFullButOne(isFullButOne);                                               // Check whether the branch root stuck is full
-    if (!isFullButOne.asBoolean())
-     {L.P.stopProgram("A root branch must be full before it can be split");
-     }
-
+    P.new Instruction()
+     {void action()
+       {if (p.size.registerGet() < maxStuckSize-1) stop("Root must be full");
+       }
+     };
     p.splitIntoThree(l, r, midPoint);                                           // Split the branch root in two down the middle
-    allocateBranch(cl); saveStuckInto(l, cl);                                   // Allocate and save left branch
-    allocateBranch(cr); saveStuckInto(r, cr);                                   // Allocate and save right branch
+    allocateBranch(il); l.stuckPut(il);                                         // Allocate and save left branch
+    allocateBranch(ir); r.stuckPut(ir);                                         // Allocate and save right branch
                                                                                 // Update root with new children
-    p.stuckKeys.read(midPoint);                                                 // Get splitting key
-    p.stuckData.move(cl);                                                       // Refence to left child stuck
-
-    p.clear();                                                                  // Clear the root so we can add the left and right children to it.
-    p.push();                                                                   // Add reference to left child
-    p.stuckData.move(cr); p.setPastLastElement();                               // Add reference to right child as top element past the end of the stuck
-    saveStuckIntoRoot(p);                                                       // Save the root stuck back into the btree and mark it as a branch
+    P.new Instruction()
+     {void action()
+       {mk.copy(p.keys[midPoint]);                                                  // Get splitting key
+        p.clear();                                                                  // Clear the root so we can add the left and right children to it.
+        p.push(mk, il);                                                             // Add reference to left child
+        p.setPastLastElement(mk, ir);                                               // Add reference to right child as top element past the end of the stuck
+       }
+     };
+    p.stuckPut();                                                               // Save the root stuck back into the btree whence it came
    }
 /*
   private void splitLeafNotTop                                                  // Split a full leaf that is not the root and is not the last child of its parent branch which is not full
@@ -2617,7 +2622,7 @@ Merge     : 0
 """);
     //stop(r.dump());
     ok(r.dump(), """
-Stuck: Right size: 2, leaf: 0, root
+Stuck: Right size: 1, leaf: 0, root
  0     2 =>    3
  1     0 =>    4
  2     0 =>    0
@@ -3166,7 +3171,21 @@ Merge     : 0
 1,2=1  3,4=3    5,6=4    7,8=2 |
 """);
 
-
+    P.processClear();
+    b.splitRootBranch(P);
+    b.chipRunJava();
+    //stop(b.btreePrint());
+    ok(b.btreePrint(), """
+             4             |
+             0             |
+             5             |
+             6             |
+      2             6      |
+      5             6      |
+      1             4      |
+      3             2      |
+1,2=1  3,4=3  5,6=4  7,8=2 |
+""");
    }
 /*
   static Btree test_create()
