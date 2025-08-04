@@ -177,7 +177,7 @@ chipStop = true;
         sData[i] = stuckData[i].new Set(P);                                     // Transactions to set each data element in the stuck
        }
 
-      stucks.put(Name, this);                                                   // Track the stucks created in creation order
+      //////stucks.put(Name, this);                                                   // Track the stucks created in creation order
       gSize = stuckSize  .new Get(P);                                           // Transaction to get the current size of the stuck
       sSize = stuckSize  .new Set(P);                                           // Transaction to set the current size of the stuck
       gLeaf = stuckIsLeaf.new Get(P);                                           // Transaction to discoeve whether this stuck is acting as a leaf or a branch
@@ -1570,77 +1570,134 @@ chipStop = true;
    } // FindAndInsert
 
   public void put(Process P, Process.Register Key, Process.Register Data)       // Insert a key, data pair into the tree or update and existing key with a new datum
-   {final Stuck         S = new Stuck(P, "putParent");                          // Parent stuck
-    final Stuck         s = new Stuck(P, "putChild");                           // Child stuck
-    final FindAndInsert f = new FindAndInsert(P);                               // Find and insert
-    final Process.Register full = P.new Register("full", 1);                    // Whether a stuck is full or not
+   {final Stuck            S     = allocateOrReuseStuck(P, "putParent");        // Parent stuck
+    final Stuck            s     = allocateOrReuseStuck(P, "putChild");         // Child stuck
+    final FindAndInsert    f     = new FindAndInsert(P);                        // Find and insert
+    final Process.Register c     = P.new Register("child",  btreeAddressSize);  // Current child in tree
+    final Process.Register p     = P.new Register("parent", btreeAddressSize);  // Parent of current child in tree
+    final Process.Register ci    = P.new Register("childInparent", stuckAddressSize); // Position of child in parent
+    final Process.Register found = P.new Register("found",  1);                 // Whether the child was found in its parent (true) or defualted to top (false)
+    final Process.Register full  = P.new Register("full", 1);                   // Whether a stuck is full or not
 
     f.findAndInsert(Key, Data);                                                 // Try direct insertion with no modifications to the shape of the tree
 
     P.new Block()                                                               // The block is left as soon as possible
      {void code()
        {final Process.Label oStart = start, oEnd = end;
-        P.GoNotZero(oEnd, f.Found);                                             // Direct insertion succeeded so nothing more to do
-
-        P.new If(f.BtreeIndex)                                                  // Failed to insert because the root is a leaf which must be full else the operation would have succeeded
-         {void Then()
-           {splitRootLeaf(P);                                                   // Split the leaf root to make room
-            f.findAndInsert(Key, Data);                                         // Splitting a leaf root will make more space in the tree so this operation will now succeed
-            P.Goto(oEnd);                                                       // Direct insertion succeeded so nothing more to do
+        P.new Instruction()
+         {void action()
+           {P.GoNotZero(oEnd, f.Found);                                         // Direct insertion succeeded so nothing more to do
            }
          };
 
-        full.ge(f.size, maxStuckSize-1);                                        // If root branch is full split it using the dedicated method and restart
-        P.new If (full)
-         {void Then()
-           {splitRootBranch(P);                                                 // Split the full branch root
-            P.Goto(oStart);                                                     // Restart descent to make sure we are on the right path
+        P.new If(f.BtreeIndex)                                                  // Failed to insert because the root is a leaf which must be full else the operation would have succeeded
+         {void Else()
+           {splitRootLeaf(P);                                                   // Split the leaf root to make room
+            f.findAndInsert(Key, Data);                                         // Splitting a leaf root will make more space in the tree so this operation will now succeed
+            P.new Instruction()
+             {void action()
+               {P.Goto(oEnd);                                                   // Direct insertion succeeded so nothing more to do
+               }
+             };
            }
          };
 
         S.stuckGetRoot();                                                       // Start at the root now known to be a split branch
-        S.search_le(Key);                                                       // Step down
-        s.stuckGet(S.Data);                                                     // Child - inefficient as written
+
+        P.new Instruction()                                                     // Is the root branch full
+         {void action()
+           {full.ge(S.size, maxStuckSize-1);
+           }
+         };
+        P.new If (full)                                                         // If root branch is full split it using the dedicated method and restart
+         {void Then()
+           {splitRootBranch(P);                                                 // Split the full branch root
+            P.new Instruction()
+             {void action()
+               {P.Goto(start);                                                  // Restart descent to make sure we are on the right path
+               }
+             };
+           }
+         };
+
+        P.new Instruction()                                                     // Start at the root
+         {void action()
+           {p.zero();
+           }
+         };
 
         P.new Block()                                                           // Step down through the tree by iterating this block
          {void code()
-           {s.new IsLeaf()
+           {final Process.Label loopStart = start, loopEnd = end;
+            S.stuckGet(p);
+            P.new Instruction()
+             {void action()
+               {S.search_le(Key);                                               // Step down
+                c.copy(S.Data); ci.copy(S.StuckIndex); found.copy(S.Found);
+               }
+             };
+
+            s.stuckGet(c);                                                      // Child - inefficient way to find out if it is a leaf or not
+
+            s.new IsLeaf()
              {void Leaf()                                                       // At a leaf - search for exact match
-               {full.ge(s.size, maxStuckSize);
+               {P.new Instruction()
+                 {void action()
+                   {full.ge(s.size, maxStuckSize);
+                   }
+                 };
+
                 P.new If (full)
                  {void Then()
-                   {P.new If (f.Found)
-                     {void Then()                                               // Split the child leaf known not to be top
-                       {splitLeafNotTop(P, S.BtreeIndex, S.StuckIndex);
+                   {P.new If (found)
+                     {void Then()                                               // Split the child leaf known not to be top under its parent
+                       {splitLeafNotTop(P, p, ci);
                        }
                       void Else()
-                       {splitLeafAtTop(P, S.BtreeIndex);                        // Split the child leaf known to be top
+                       {splitLeafAtTop(P, p);                                   // Split the child leaf known to be top under its parent
                        }
                      };
                    }
                  };
                 f.findAndInsert(Key, Data);                                     // Must be insertable now because we have split everything in the path of the key
-                P.Goto(end);                                                    // On leaf so descent has been completed
+                P.new Instruction()
+                 {void action()
+                   {P.Goto(loopEnd);                                            // On leaf so descent has been completed
+                   }
+                 };
                }
 
               void Branch()                                                     // On a branch
-               {full.ge(s.size, maxStuckSize-1);
+               {P.new Instruction()
+                 {void action()
+                   {full.ge(s.size, maxStuckSize-1);
+                   }
+                 };
+
                 P.new If (full)
                  {void Then()                                                   // Full branch
-                   {P.new If (S.Found)
+                   {P.new If (found)                                            // Was the child found within its parent or is it top
                      {void Then()
-                       {splitBranchNotTop(P, S.BtreeIndex, S.StuckIndex);       // Split the child branch known not to be top
+                       {splitBranchNotTop(P, p, c);                             // Split the child branch known not to be top
                        }
                       void Else ()
-                       {splitBranchAtTop(P, S.BtreeIndex);                      // Split the child branch known to be top
+                       {splitBranchAtTop(P, p);                                 // Split the child branch known to be top
                        }
                      };
                    }                                                            // No split occurred so we can safely step down (from the heights)
                   void Else()
-                   {S.stuckGet(S.Data);                                         // Step down from parent to child
+                   {P.new Instruction()
+                     {void action()
+                       {p.copy(c);                                              // Step down from parent to child
+                       }
+                     };
                    }
                  };
-                P.Goto(start);                                                  // Process next level of tree
+                P.new Instruction()
+                 {void action()
+                   {P.Goto(loopStart);                                          // Process next level of tree
+                   }
+                 };
                }
              };
            }
@@ -3268,7 +3325,8 @@ Merge     : 0
     final Process.Register k = P.register("k", b.bitsPerKey);
     final Process.Register d = P.register("d", b.bitsPerData);
 
-    b.maxSteps = 2000;
+    b.maxSteps     = 2000;
+    b.supressMerge = true;                                                      // Supress merges as they have not been developed yet
 
     final int N = 32;
     for (int i = 1; i <= N; i++)
@@ -3280,15 +3338,19 @@ Merge     : 0
      }
     stop(b.btreePrint());
     ok(b, """
-                                                      16                                                                   |
-                                                      0                                                                    |
-                                                      6                                                                    |
-                                                      11                                                                   |
-          4          8               12                               20               24                28                |
-          6          6.1             6.2                              11               11.1              11.2              |
-          1          3               4                                8                10                9                 |
-                                     7                                                                   2                 |
-1,2,3,4=1  5,6,7,8=3    9,10,11,12=4    13,14,15,16=7   17,18,19,20=8   21,22,23,24=10     25,26,27,28=9     29,30,31,32=2 |
+                            8                                         16                                                                                    |
+                            0                                         0.1                                                                                   |
+                            14                                        22                                                                                    |
+                                                                      15                                                                                    |
+             4                                  12                                           20                    24                                       |
+             14                                 22                                           15                    15.1                                     |
+             5                                  12                                           20                    24                                       |
+             9                                  17                                                                 6                                        |
+      2              6               10                    14                     18                    22                      26         28               |
+      5              9               12                    17                     20                    24                      6          6.1              |
+      1              4               8                     11                     16                    19                      23         25               |
+      3              7               10                    13                     18                    21                                 2                |
+1,2=1  3,4=3   5,6=4  7,8=7   9,10=8   11,12=10   13,14=11   15,16=13    17,18=16   19,20=18   21,22=19   23,24=21     25,26=23   27,28=25    29,30,31,32=2 |
 """);
    }
 /*
@@ -4035,7 +4097,7 @@ Merge     : 0
 
   static void newTests()                                                        // Tests being worked on
    {//oldTests();
-    test_findAndInsert();
+    test_put();
    }
 
   public static void main(String[] args)                                        // Test if called as a program
