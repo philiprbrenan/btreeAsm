@@ -346,13 +346,29 @@ endmodule
      }
 
     void Goto     (Label label)                                                 // Goto a label unconditionally
-     {processNextPc = label.offset;
+     {R(); processNextPc = label.offset;
      }
     void GoNotZero(Label label, Register condition)                             // Go to a specified label if the value of a field is not zero
-     {if (condition.registerGet() > 0) processNextPc = label.offset;
+     {R(); if (condition.registerGet() >  0) processNextPc = label.offset;
      }
     void GoZero   (Label label, Register condition)                             // Go to a specified label if the value of a field is zero
-     {if (condition.registerGet() == 0) processPc = label.offset;
+     {R(); if (condition.registerGet() == 0) processNextPc = label.offset;
+     }
+
+    abstract class If                                                           // An implementation of an if statement
+     {final Label Else = new Label(), End = new Label();                        // Components of an if statement
+
+      If (Process.Register Condition)                                           // If a condition
+       {N();
+        new Instruction() {void action() {GoZero(Else, Condition);}};                                                // Branch on the current value of condition
+        Then();
+        new Instruction() {void action() {Goto(End);}};
+        Else.set();
+        Else();
+        End.set();
+       }
+      void Then() {}
+      void Else() {}
      }
 
 //D2 Register                                                                   // A register is a block of memory that can be accessed within the current clock cycle
@@ -1243,11 +1259,54 @@ Chip: Test             step: 50, maxSteps: 100, running: 0, returnCode: 1
     ok(s, " 1=>1 2=>2 3=>3 4=>5 5=>8 6=>13 7=>21");
    }
 
+  static void test_if()
+   {final int B = 16;
+    var C  = chip("Test");
+    var p  = C.process("Main");
+
+    var a  = p.register("a",  B);
+    var b  = p.register("b",  B);
+
+    final StringBuilder s = new StringBuilder();                                //
+
+    p.new Instruction()
+     {void action()
+       {a.registerSet(1);
+        b.registerSet(0);
+       }
+     };
+
+    p.new Instruction() {void action() {b.ge(a, 1);}};
+
+    p.new If (b)
+     {void Then()
+       {p.new Instruction() {void action() {s.append("1");}};
+       }
+      void Else()
+       {p.new Instruction() {void action() {s.append("2");}};
+       }
+     };
+
+    p.new Instruction() {void action() {b.lt(a, 1);}};
+
+    p.new If (b)
+     {void Then()
+       {p.new Instruction() {void action() {s.append("3");}};
+       }
+      void Else()
+       {p.new Instruction() {void action() {s.append("4");}};
+       }
+     };
+    C.chipRunJava();
+    ok(s, "14");
+   }
+
   static void oldTests()                                                        // Tests thought to be in good shape
    {test_memory();
     test_memoryProcess();
     test_arithmeticFibonacci();
     test_block();
+    test_if();
    }
 
   static void newTests()                                                        // Tests being worked on
