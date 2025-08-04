@@ -883,11 +883,12 @@ chipStop = true;
    }
 
   private void splitLeafNotTop                                                  // Split a full leaf that is not the root and is not the last child of its parent branch which is not full
-   (Process P, Process.Register ParentIndex, Process.Register StuckIndex)
-   {final Stuck p = new Stuck(P, "splitLeafNotTopParent");           // Parent stuck
-    final Stuck c = new Stuck(P, "splitLeafNotTopChild");            // Left split stuck
-    final Stuck l = new Stuck(P, "splitLeafNotTopLeft");             // Left split stuck
-    final Stuck r = new Stuck(P, "splitLeafNotTopRight");            // Right split stuck
+   (Process.Register ParentIndex, Process.Register StuckIndex)
+   {Process     P = ParentIndex.registerProcess();
+    final Stuck p = new Stuck(P, "splitLeafNotTopParent");                      // Parent stuck
+    final Stuck c = new Stuck(P, "splitLeafNotTopChild");                       // Left split stuck
+    final Stuck l = new Stuck(P, "splitLeafNotTopLeft");                        // Left split stuck
+    final Stuck r = new Stuck(P, "splitLeafNotTopRight");                       // Right split stuck
     final Process.Register ck = P.new Register("childKey",   stuckAddressSize); // Index in memory of the left stuck
     final Process.Register cd = P.new Register("childData",  btreeAddressSize); // Index in memory of the left stuck
     final Process.Register il = P.new Register("indexLeft",  btreeAddressSize); // Index in memory of the left stuck
@@ -918,28 +919,29 @@ chipStop = true;
 
     P.new Instruction()
      {void action()
-       {l.lastElement();  mk.copy(l.Key);                                           // Last element of left child
-        c.firstElement(); mk.add (c.Key); mk.half();                                // First element of right child
-        p.insertElementAt(StuckIndex, mk, il);                                      // Add reference to left child
+       {l.lastElement();  mk.copy(l.Key);                                       // Last element of left child
+        c.firstElement(); mk.add (c.Key); mk.half();                            // First element of right child
+        p.insertElementAt(StuckIndex, mk, il);                                  // Add reference to left child
        }
      };
 
     p.stuckPut();                                                               // Save the parent stuck back into the btree
    }
 
-  private void splitLeafAtTop(Process P, Process.Register parentIndex)          // Split a full leaf that is not the root and is the last child of its parent branch which is not full
-   {final Stuck p = new Stuck(P, "splitLeafAtTopParent");                       // Parent which must be a branch which is not full
+  private void splitLeafAtTop(Process.Register ParentIndex)                     // Split a full leaf that is not the root and is the last child of its parent branch which is not full
+   {Process     P = ParentIndex.registerProcess();
+    final Stuck p = new Stuck(P, "splitLeafAtTopParent");                       // Parent which must be a branch which is not full
     final Stuck c = new Stuck(P, "splitLeafAtTopChild");                        // Child at index which must be a full leaf
     final Stuck l = new Stuck(P, "splitLeafAtTopLeft");                         // Left split of leaf
     final Process.Register ci  = P.register("childIndex" , btreeAddressSize);   // Btree index of child
     final Process.Register cl  = P.register("leftIndex" ,  btreeAddressSize);   // Btree index of left child of child
     final Process.Register mk  = P.register("midKey",            bitsPerKey);   //
 
-    p.stuckGet(parentIndex);                                                    // Load parent stuck from btree
+    p.stuckGet(ParentIndex);                                                    // Load parent stuck from btree
     P.new Instruction()
      {void action()
-       {p.pastLastElement();                                                        // Get index of child
-        ci.copy(p.Data);                                                            // Index of child
+       {p.pastLastElement();                                                    // Get index of child
+        ci.copy(p.Data);                                                        // Index of child
        }
      };
 
@@ -969,22 +971,23 @@ chipStop = true;
    }
 
   private void splitBranchNotTop                                                // Split a full branch that is not the root and is not the last child of its parent branch which is not full
-   (Process P, Process.Register parentIndex, Process.Register stuckIndex)
-   {final Stuck p = new Stuck(P, "splitBranchNotTopParent");         // Parent stuck
-    final Stuck c = new Stuck(P, "splitBranchNotTopChild");          // Left split stuck
-    final Stuck l = new Stuck(P, "splitBranchNotTopLeft");           // Left split stuck
-    final Stuck r = new Stuck(P, "splitBranchNotTopRight");          // Right split stuck
+   (Process.Register ParentIndex, Process.Register StuckIndex)
+   {Process     P = ParentIndex.registerProcess();
+    final Stuck p = new Stuck(P, "splitBranchNotTopParent");                    // Parent stuck
+    final Stuck c = new Stuck(P, "splitBranchNotTopChild");                     // Left split stuck
+    final Stuck l = new Stuck(P, "splitBranchNotTopLeft");                      // Left split stuck
+    final Stuck r = new Stuck(P, "splitBranchNotTopRight");                     // Right split stuck
     final Process.Register ck = P.new Register("childKey",   stuckAddressSize); // Index in memory of the left stuck
     final Process.Register cd = P.new Register("childData",  btreeAddressSize); // Index in memory of the left stuck
     final Process.Register il = P.new Register("indexLeft",  btreeAddressSize); // Index in memory of the left stuck
     final Process.Register ir = P.new Register("indexRight", btreeAddressSize); // Index in memory of the right stuck
     final Process.Register mk = P.new Register("midKey",     bitsPerKey);       // Mid key
 
-    p.stuckGet(parentIndex);                                                    // Load parent stuck from btree
+    p.stuckGet(ParentIndex);                                                    // Load parent stuck from btree
     P.new Instruction()
      {void action()
-       {ck.copy(p.keys[stuckIndex.registerGet()]);                                  // Key of child
-        cd.copy(p.data[stuckIndex.registerGet()]);                                  // Data of child
+       {ck.copy(p.keys[StuckIndex.registerGet()]);                                  // Key of child
+        cd.copy(p.data[StuckIndex.registerGet()]);                                  // Data of child
        }
      };
     c.stuckGet(cd);                                                             // Load child
@@ -1004,14 +1007,15 @@ chipStop = true;
                                                                                 // Update root with new children
     P.new Instruction()
      {void action()
-       {p.insertElementAt(stuckIndex, ck, il);                                      // Add reference to left child
+       {p.insertElementAt(StuckIndex, ck, il);                                  // Add reference to left child
        }
      };
     p.stuckPut();                                                               // Save the parent stuck back into the btree
    }
 
-  private void splitBranchAtTop(Process P, Process.Register parentIndex)        // Split a full branch that is not the root and is the last child of its parent branch which is not full
-   {final Stuck p = new Stuck(P, "splitBranchAtTopParent");                     // Parent stuck
+  private void splitBranchAtTop(Process.Register ParentIndex)                   // Split a full branch that is not the root and is the last child of its parent branch which is not full
+   {Process     P = ParentIndex.registerProcess();
+    final Stuck p = new Stuck(P, "splitBranchAtTopParent");                     // Parent stuck
     final Stuck c = new Stuck(P, "splitBranchAtTopChild");                      // Left split stuck
     final Stuck l = new Stuck(P, "splitBranchAtTopLeft");                       // Left split stuck
     final Stuck r = new Stuck(P, "splitBranchAtTopRight");                      // Right split stuck
@@ -1021,7 +1025,7 @@ chipStop = true;
     final Process.Register ir = P.new Register("indexRight", btreeAddressSize); // Index in memory of the right stuck
     final Process.Register mk = P.new Register("midKey",     bitsPerKey);       // Mid key
 
-    p.stuckGet(parentIndex);                                                    // Load parent stuck from btree
+    p.stuckGet(ParentIndex);                                                    // Load parent stuck from btree
 
     P.new Instruction()
      {void action()
@@ -1123,8 +1127,9 @@ chipStop = true;
    }
 
   private Process.Register mergeLeavesNotTop                                    // Merge the two consecutive leaves of a branch that is not the root. Neither of the leaves is the topmost leaf.
-   (Process P, Process.Register Parent, Process.Register LeftLeaf)
-   {final Stuck p = new Stuck(P, "mergeLeavesIntoRootParent");                  // Parent stuck
+   (Process.Register ParentIndex, Process.Register LeftLeaf)
+   {Process     P = ParentIndex.registerProcess();
+    final Stuck p = new Stuck(P, "mergeLeavesIntoRootParent");                  // Parent stuck
     final Stuck l = new Stuck(P, "mergeLeavesIntoRootLeft");                    // Left split stuck
     final Stuck r = new Stuck(P, "mergeLeavesIntoRootRight");                   // Right split stuck
     final Process.Register ck = P.new Register("childKey",   stuckAddressSize); // Index in memory of the left stuck
@@ -1135,7 +1140,7 @@ chipStop = true;
     final Process.Register success = P.new Register("success", 1);              // Success of merge - the result of this operation
     final Process.Register test    = P.new Register("test",    1);              // A generic test
 
-    p.stuckGet(Parent);                                                         // Load parent
+    p.stuckGet(ParentIndex);                                                    // Load parent
 
     P.new Block()
      {void code()
@@ -1185,18 +1190,20 @@ chipStop = true;
     return success;
    }
 /*
-  private void iMergeLeavesAtTop(Process.Register Parent, Process.Register success)     // Merge the top most two leaves of a branch that is not the root
-   {final Stuck p = stuck(), l = stuck(), r  = stuck();                         // Parent, left and right children
-    finaP.ocess.Register ls = p.index(),    rs = p.index();                   // Indices in stuck of left and right children
-    finaP.ocess.Register li = index(),      ri = index();                     // Btree indexes of left and right children of parent that we want to merge
+  private Process.Register mergeLeavesAtTop                                     // Merge the top most two leaves of a branch that is not the root
+   (Process.Register Parent, Process.Register success)
+   {Process     P = ParentIndex.registerProcess();
+    final Stuck p = stuck(), l = stuck(), r  = stuck();                         // Parent, left and right children
+    finaP.ocess.Register ls = p.index(),  rs = p.index();                       // Indices in stuck of left and right children
+    finaP.ocess.Register li = index(),    ri = index();                         // Btree indexes of left and right children of parent that we want to merge
 
     P.new Block()
      {void code()
        {P.new Instruction()
          {void action()
            {success.zero();                                                     // Assume failure
-            p.stuckGet(Parent);                                           // Load parent
-            P.GoZero(end, p.stuckSize);                                       // Stuck must have at least one entry
+            p.stuckGet(Parent);                                                 // Load parent
+            P.GoZero(end, p.stuckSize);                                         // Stuck must have at least one entry
            }
          };
 
@@ -1213,8 +1220,8 @@ chipStop = true;
          {void Leaf()                                                           // Children are leaves
            {P.new Instruction()
              {void action()
-               {l.stuckGet( li);                                           // Load left  leaf from btree
-                r.stuckGet( ri);                                           // Load right leaf from btree
+               {l.stuckGet( li);                                                // Load left  leaf from btree
+                r.stuckGet( ri);                                                // Load right leaf from btree
                 l.merge(r, success);                                            // Merge leaves into left child
                 if (success.asBoolean())                                        // Modify the parent only if the merge succeeded
                  {p.stuckSize.dec();                                            // The left child is now topmost - we know this is ok because the parent has at elast one entry
@@ -1230,22 +1237,23 @@ chipStop = true;
      };
    }
 
+/*
   private void iMergeBranchesIntoRoot(Process.Register success)                 // Merge two branches into the root
    {final Stuck p = stuck(), l = stuck(),  r  = stuck();                        // Root and left, right children
-    finaP.ocess.Register li  = index(), ri = index();                         // Btree indexes of left and right children of root
-    finaP.ocess.Register k   = p.key();                                       // Splitting key
+    finaP.ocess.Register li  = index(), ri = index();                           // Btree indexes of left and right children of root
+    finaP.ocess.Register k   = p.key();                                         // Splitting key
 
     iCopyStuckFromRoot(p);                                                      // Load root
     P.new Block()
      {void code()
-       {P.new Instruction()                                                   // Check that the root has one entry and thus two children
+       {P.new Instruction()                                                     // Check that the root has one entry and thus two children
          {void action()
            {success.zero();                                                     // Assume failure
             if (p.stuckSize.value != 1) P.Goto(end);
            };
          };
 
-        P.new Instruction()                                                   // Check that the root has one entry and thus two children
+        P.new Instruction()                                                     // Check that the root has one entry and thus two children
          {void action()
            {p.stuckKeys.read(0); k .move(p.stuckKeys);                          // Splitting key
             p.stuckData.read(0); li.move(p.stuckData);                          // Index of left branch
@@ -1534,10 +1542,10 @@ chipStop = true;
                  {void Then()
                    {P.new If (found)
                      {void Then()                                               // Split the child leaf known not to be top under its parent
-                       {splitLeafNotTop(P, p, ci);
+                       {splitLeafNotTop(p, ci);
                        }
                       void Else()
-                       {splitLeafAtTop(P, p);                                   // Split the child leaf known to be top under its parent
+                       {splitLeafAtTop(p);                                      // Split the child leaf known to be top under its parent
                        }
                      };
                    }
@@ -1561,10 +1569,10 @@ chipStop = true;
                  {void Then()                                                   // Full branch
                    {P.new If (found)                                            // Was the child found within its parent or is it top
                      {void Then()
-                       {splitBranchNotTop(P, p, c);                             // Split the child branch known not to be top
+                       {splitBranchNotTop(p, c);                                // Split the child branch known not to be top
                        }
                       void Else ()
-                       {splitBranchAtTop(P, p);                                 // Split the child branch known to be top
+                       {splitBranchAtTop(p);                                    // Split the child branch known to be top
                        }
                      };
                    }                                                            // No split occurred so we can safely step down (from the heights)
@@ -2990,7 +2998,7 @@ Merge     : 0
 
     P.processClear();
     i.registerSet(0);
-    b.splitLeafAtTop(P, i);
+    b.splitLeafAtTop(i);
     b.chipRunJava();
     //stop(b.btreePrint());
     ok(b.btreePrint(), """
@@ -3023,7 +3031,7 @@ Merge     : 0
 
     P.processClear();
     i.registerSet(0);
-    b.splitLeafAtTop(P, i);
+    b.splitLeafAtTop(i);
     b.chipRunJava();
     //stop(b.btreePrint());
     ok(b.btreePrint(), """
@@ -3081,7 +3089,7 @@ Merge     : 0
     P.processClear();
     i.registerSet(6);
     j.registerSet(0);
-    b.splitLeafNotTop(P, i, j);
+    b.splitLeafNotTop(i, j);
     b.chipRunJava();
     //stop(b.btreePrint());
     ok(b.btreePrint(), """
@@ -3100,7 +3108,7 @@ Merge     : 0
     P.processClear(); k.registerSet(100); d.registerSet(110); f.findAndInsert(k, d); b.chipRunJava();
     P.processClear();
     i.registerSet(6);
-    b.splitLeafAtTop(P, i);
+    b.splitLeafAtTop(i);
     b.chipRunJava();
     //stop(b.btreePrint());
     ok(b.btreePrint(), """
@@ -3116,7 +3124,7 @@ Merge     : 0
 """);
     P.processClear();
     i.registerSet(0);
-    b.splitBranchAtTop(P, i);
+    b.splitBranchAtTop(i);
     b.chipRunJava();
     //stop(b.btreePrint());
     ok(b.btreePrint(), """
@@ -3136,7 +3144,7 @@ Merge     : 0
     P.processClear();
     i.registerSet(5);
     j.registerSet(0);
-    b.splitLeafNotTop(P, i, j);
+    b.splitLeafNotTop(i, j);
     b.chipRunJava();
     //stop(b.btreePrint());
     ok(b.btreePrint(), """
@@ -3169,7 +3177,7 @@ Merge     : 0
     P.processClear();
     i.registerSet(5);
     j.registerSet(0);
-    b.splitLeafNotTop(P, i, j);
+    b.splitLeafNotTop(i, j);
     b.chipRunJava();
     //stop(b.btreePrint());
     ok(b.btreePrint(), """
@@ -3187,7 +3195,7 @@ Merge     : 0
     P.processClear();
     i.registerSet(0);
     j.registerSet(0);
-    b.splitBranchNotTop(P, i, j);
+    b.splitBranchNotTop(i, j);
     b.chipRunJava();
     //stop(b.btreePrint());
     ok(b.btreePrint(), """
@@ -3300,7 +3308,7 @@ Merge     : 0
 
     P.processClear();
     i.registerSet(0);
-    b.splitLeafAtTop(P, i);
+    b.splitLeafAtTop(i);
     b.chipRunJava();
     //stop(b.btreePrint());
     ok(b.btreePrint(), """
@@ -3314,7 +3322,7 @@ Merge     : 0
     P.processClear();
     i.registerSet(0);
     j.registerSet(0);
-    b.mergeLeavesNotTop(P, i, j);
+    b.mergeLeavesNotTop(i, j);
     b.chipRunJava();
     //stop(b.btreePrint());
     ok(b.btreePrint(), """
