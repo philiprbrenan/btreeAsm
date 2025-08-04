@@ -3333,7 +3333,7 @@ Merge     : 0
       b.chipRunJava();
      }
     //stop(b.btreePrint());
-    ok(b, """
+    ok(b.btreePrint(), """
                             8                                         16                                                                                    |
                             0                                         0.1                                                                                   |
                             14                                        22                                                                                    |
