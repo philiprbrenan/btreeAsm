@@ -1536,6 +1536,7 @@ chipStop = true;
 
   class FindAndInsert extends Find                                              // Find the leaf stuck that should contain this key and insert or update it if possible
    {final Process P;
+
     FindAndInsert(Process Process)
      {super(Process);
       P = Process;
@@ -1568,136 +1569,90 @@ chipStop = true;
      }
    } // FindAndInsert
 
-/*
-  public void put()                                                             // Insert a key, data pair into the tree or update and existing key with a new datum
-   {final Stuck        S          = stuck();
-    final Process.Register p          = index();                                // Previous or parent position in the btree
-    final Process.Register s          = index();                                // Current position in the btree
-    final Process.Register Key        = S.key();
-    final Process.Register Data       = S.data();
-    final Process.Register index      = index();
-    final Process.Register stuckIndex = S.index();
-    final Process.Register full       = S.full();
-    final Process.Register found      = S.found();
-    final Process.Register isLeaf     = isLeaf();
-    final Process.Register fullButOne = S.fullButOne();
+  public void put(Process P, Process.Register Key, Process.Register Data)       // Insert a key, data pair into the tree or update and existing key with a new datum
+   {final Stuck         S = new Stuck(P, "putParent");                          // Parent stuck
+    final Stuck         s = new Stuck(P, "putChild");                           // Child stuck
+    final FindAndInsert f = new FindAndInsert(P);                               // Find and insert
+    final Process.Register full = P.new Register("full", 1);                    // Whether a stuck is full or not
 
-    L.P.new Instruction()
-     {void action()
-       {Key.move(stuckKeys); Data.move(stuckData);                              // Save key and data to be inserted,  It is convenient for the caller to be able to use the predeclared fields but theya re overwrittne by subsequqnt activity and so they have to ba saved immediately.
-       }
-     };
+    f.findAndInsert(Key, Data);                                                 // Try direct insertion with no modifications to the shape of the tree
 
-    L.P.new Block()                                                             // The block is left as soon as possible
+    P.new Block()                                                               // The block is left as soon as possible
      {void code()
-       {L.P.new Instruction()
-         {void action()
-           {stuckKeys.move(Key);
-            stuckData.move(Data);
-           }
-         };
+       {final Process.Label oStart = start, oEnd = end;
+        P.GoNotZero(oEnd, f.Found);                                             // Direct insertion succeeded so nothing more to do
 
-        findAndInsert(found);                                                   // Try direct insertion with no modifications to the shape of the tree
-        L.P.iGoNotZero(end, found);                                             // Direct insertion succeeded
-
-        isRootLeaf(isLeaf);                                                     // Failed to insert because the root is a leaf and must therefore be full
-        L.P.new If (isLeaf)                                                     // Root is a leaf
+        P.new If(f.BtreeIndex)                                                  // Failed to insert because the root is a leaf which must be full else the operation would have succeeded
          {void Then()
-           {L.P.new Instruction()
-             {void action()
-               {splitRootLeaf();                                                // Split the leaf root to make room
-                stuckKeys.move(Key);                                            // Key, data pair to be inserted
-                stuckData.move(Data);
-               }
-             };
-
-            findAndInsert(found);                                               // Splitting a leaf root will make more space in the tree
-            L.P.iGoto(end);                                                     // Direct insertion succeeded
+           {splitRootLeaf(P);                                                   // Split the leaf root to make room
+            f.findAndInsert(Key, Data);                                         // Splitting a leaf root will make more space in the tree so this operation will now succeed
+            P.Goto(oEnd);                                                       // Direct insertion succeeded so nothing more to do
            }
          };
-        iIsRootBranchFull(fullButOne);                                          // Root is a full branch so split it
-        L.P.new If (fullButOne)
+
+        full.ge(f.size, maxStuckSize-1);                                        // If root branch is full split it using the dedicated method and restart
+        P.new If (full)
          {void Then()
-           {L.P.new Instruction()
-             {void action()
-               {splitRootBranch();                                              // Split the branch root to make room
-                L.P.Goto(start);                                                // Restart descent to make sure we are on the right path
-               }
-             };
+           {splitRootBranch(P);                                                 // Split the full branch root
+            P.Goto(oStart);                                                     // Restart descent to make sure we are on the right path
            }
          };
 
-        L.P.new Instruction()
-         {void action()
-           {s.zero(); p.zero();                                                 // Start at the root and step down through the tree to the key splitting as we go
-            copyStuckFrom(S, s);                                                // Load root
-           }
-         };
+        S.stuckGetRoot();                                                       // Start at the root now known to be a split branch
+        S.search_le(Key);                                                       // Step down
+        s.stuckGet(S.Data);                                                     // Child - inefficient as written
 
-        L.P.new Block()
+        P.new Block()                                                           // Step down through the tree by iterating this block
          {void code()
-           {L.P.new Instruction()
-             {void action()
-               {S.stuckKeys.move(Key);
-                S.search_le(found, stuckIndex);                                 // Step down
-                p.move(s);                                                      // Parent
-                s.move(S.stuckData);                                            // Child
-                copyStuckFrom(S, s);                                            // Load child
-               }
-             };
-
-            new IsLeaf(s)                                                       // Child is a leaf or a branch
+           {s.new IsLeaf()
              {void Leaf()                                                       // At a leaf - search for exact match
-               {L.P.new Instruction()
-                 {void action()
-                   {S.isFull(full);
-
-                    if (full.asBoolean())                                       // Split leaf
-                     {if (found.asBoolean())
-                       {splitLeafNotTop(p, stuckIndex);                         // Split the child leaf known not to be top
+               {full.ge(s.size, maxStuckSize);
+                P.new If (full)
+                 {void Then()
+                   {P.new If (f.Found)
+                     {void Then()                                               // Split the child leaf known not to be top
+                       {splitLeafNotTop(P, S.BtreeIndex, S.StuckIndex);
                        }
-                      else
-                       {splitLeafAtTop(p);                                      // Split the child leaf known to be top
+                      void Else()
+                       {splitLeafAtTop(P, S.BtreeIndex);                        // Split the child leaf known to be top
                        }
-                     }
-
-                    stuckKeys.move(Key);                                        // Key, data pair to be inserted
-                    stuckData.move(Data);
+                     };
                    }
                  };
-
-                findAndInsert(found);                                           // Must be insertable now necuase we have split everything in the path of the key
-                L.P.iGoto(end);                                                 // Successfully found the key
+                f.findAndInsert(Key, Data);                                     // Must be insertable now because we have split everything in the path of the key
+                P.Goto(end);                                                    // On leaf so descent has been completed
                }
-              void Branch()                                                     // Child is a branch
-               {L.P.new Instruction()
-                 {void action()
-                   {S.isFullButOne(fullButOne);
-                    if (fullButOne.asBoolean())
-                     {if (found.asBoolean())
-                       {splitBranchNotTop(p, stuckIndex);                       // Split the child branch known not to be top
+
+              void Branch()                                                     // On a branch
+               {full.ge(s.size, maxStuckSize-1);
+                P.new If (full)
+                 {void Then()                                                   // Full branch
+                   {P.new If (S.Found)
+                     {void Then()
+                       {splitBranchNotTop(P, S.BtreeIndex, S.StuckIndex);       // Split the child branch known not to be top
                        }
-                      else
-                       {splitBranchAtTop(p);                                    // Split the child branch known to be top
+                      void Else ()
+                       {splitBranchAtTop(P, S.BtreeIndex);                      // Split the child branch known to be top
                        }
-                      s.move(p);                                                // Restart at the parent so we enter the child stuck that contains the key
-                      copyStuckFrom(S, s);                                      // Reload stuck so we start again at the parent level
-                     }
-                    L.P.Goto(start);                                            // Try again
+                     };
+                   }                                                            // No split occurred so we can safely step down (from the heights)
+                  void Else()
+                   {S.stuckGet(S.Data);                                         // Step down from parent to child
                    }
                  };
+                P.Goto(start);                                                  // Process next level of tree
                }
              };
-           };
+           }
          };
        }
      };
-    if (!supressMerge)                                                          // Switch of combined merge during testing so that the individual merges can tested
-     {stuckKeys.iMove(Key);                                                     // Key being inserted or updated
-      merge();                                                                  // Merge along path to key
-     }
+//    if (!supressMerge)                                                          // Switch of combined merge during testing so that the individual merges can tested
+//     {stuckKeys.iMove(Key);                                                     // Key being inserted or updated
+//      merge();                                                                  // Merge along path to key
+//     }
    }
-
+/*
   public void merge()                                                           // Merge stucks on either side of the path to the key
    {final Stuck        S          = stuck();
     final Process.Register s          = index();                                // Current position in the btree
@@ -3306,721 +3261,24 @@ Merge     : 0
 10,12=11   14,20=10   21,22=1   30,40=3    50,60=7   62,64=4    70,80=8   90,100=2 |
 """);
    }
-/*
-  static Btree test_create()
-   {final Btree b = new Btree(32, 4, 8, 8);
-    ok(b.dump(), """
-Btree
-Stuck:  0   size: 0   free: 0   next:  0  leaf: 1
-stuckSize: value=0
-stuckKeys: value=0, 0=0, 1=0, 2=0, 3=0
-stuckData: value=0, 0=0, 1=0, 2=0, 3=0
-""");
-    return b;
-   }
-
-  static void test_leaf()
-   {final Btree b = test_create();
-    final Layout.Field index = b.index();
-    final Layout.Field a     = b.variable("a", 4);
-
-    index.iWrite(0);
-    b.new IsLeaf(index)
-     {void Leaf  () {a.iWrite(1);}
-      void Branch() {a.iWrite(2);}
-     };
-    b.runProgram();
-    ok(a, "a: value=1");
-   }
-
-  static void test_allocFree()
-   {final Btree b = test_create();
-    final Layout.Field x = b.index();
-    final Layout.Field y = b.index();
-
-    ok(b.freeStart, "freeStart: value=1");
-    ok(b.freeNext,  "freeNext: value=0, 0=0, 1=2, 2=3, 3=4, 4=5, 5=6, 6=7, 7=8, 8=9, 9=10, 10=11, 11=12, 12=13, 13=14, 14=15, 15=16, 16=17, 17=18, 18=19, 19=20, 20=21, 21=22, 22=23, 23=24, 24=25, 25=26, 26=27, 27=28, 28=29, 29=30, 30=31, 31=0");
-    ok(b.dump(), """
-Btree
-Stuck:  0   size: 0   free: 0   next:  0  leaf: 1
-stuckSize: value=0
-stuckKeys: value=0, 0=0, 1=0, 2=0, 3=0
-stuckData: value=0, 0=0, 1=0, 2=0, 3=0
-""");
-
-    b.iAllocate(x, false);
-    b.iAllocate(y, false);
-    b.runProgram();
-
-    ok(x, "index: value=1");
-    ok(y, "index: value=2");
-
-    ok(b.freeStart, "freeStart: value=3");
-    ok(b.freeNext,  "freeNext: value=0, 0=0, 1=0, 2=0, 3=4, 4=5, 5=6, 6=7, 7=8, 8=9, 9=10, 10=11, 11=12, 12=13, 13=14, 14=15, 15=16, 16=17, 17=18, 18=19, 19=20, 20=21, 21=22, 22=23, 23=24, 24=25, 25=26, 26=27, 27=28, 28=29, 29=30, 30=31, 31=0");
-
-    ok(b.dump(), """
-Btree
-Stuck:  0   size: 0   free: 0   next:  0  leaf: 1
-stuckSize: value=0
-stuckKeys: value=0, 0=0, 1=0, 2=0, 3=0
-stuckData: value=0, 0=0, 1=0, 2=0, 3=0
-Stuck:  1   size: 0   free: 0   next:  0  leaf: 1
-stuckSize: value=0
-stuckKeys: value=0, 0=0, 1=0, 2=0, 3=0
-stuckData: value=0, 0=0, 1=0, 2=0, 3=0
-Stuck:  2   size: 0   free: 0   next:  0  leaf: 1
-stuckSize: value=0
-stuckKeys: value=0, 0=0, 1=0, 2=0, 3=0
-stuckData: value=0, 0=0, 1=0, 2=0, 3=0
-""");
-
-    b.clearProgram();
-    b.iFree(x);
-    b.iFree(y);
-    b.runProgram();
-    ok(b.freeStart, "freeStart: value=2");
-    ok(b.freeNext,  "freeNext: value=1, 0=0, 1=3, 2=1, 3=4, 4=5, 5=6, 6=7, 7=8, 8=9, 9=10, 10=11, 11=12, 12=13, 13=14, 14=15, 15=16, 16=17, 17=18, 18=19, 19=20, 20=21, 21=22, 22=23, 23=24, 24=25, 25=26, 26=27, 27=28, 28=29, 29=30, 30=31, 31=0");
-    ok(b.dump(), """
-Btree
-Stuck:  0   size: 0   free: 0   next:  0  leaf: 1
-stuckSize: value=0
-stuckKeys: value=0, 0=0, 1=0, 2=0, 3=0
-stuckData: value=0, 0=0, 1=0, 2=0, 3=0
-""");
-   }
-
-  static Btree test_btree()
-   {final Btree b = test_create();
-    final Layout.Field s = b.index();
-    final Layout.Field t = b.index();
-    final Layout.Field x = b.index();
-    final Layout.Field y = b.index();
-
-    final Stuck S = b.stuck();
-    final Stuck T = b.stuck();
-    final Stuck X = b.stuck();
-    final Stuck Y = b.stuck();
-    final Stuck Z = b.stuck();
-    b.iAllocate(s, true);
-    b.iAllocate(t, true);
-    b.iAllocate(x, true);
-    b.iAllocate(y, true);
-    b.runProgram();
-
-    b.clearProgram();
-    S.stuckKeys.iWrite( 1); S.stuckData.iWrite( 2); S.iPush();
-    S.stuckKeys.iWrite( 2); S.stuckData.iWrite( 4); S.iPush();
-    S.stuckKeys.iWrite( 3); S.stuckData.iWrite( 6); S.iPush();
-    S.stuckKeys.iWrite( 4); S.stuckData.iWrite( 8); S.iPush();
-    b.runProgram();
-
-    b.clearProgram();
-    T.stuckKeys.iWrite(11); T.stuckData.iWrite(12); T.iPush();
-    T.stuckKeys.iWrite(12); T.stuckData.iWrite(14); T.iPush();
-    T.stuckKeys.iWrite(13); T.stuckData.iWrite(16); T.iPush();
-    T.stuckKeys.iWrite(14); T.stuckData.iWrite(18); T.iPush();
-    b.runProgram();
-
-    b.clearProgram();
-    X.stuckKeys.iWrite(21); X.stuckData.iWrite(22); X.iPush();
-    X.stuckKeys.iWrite(22); X.stuckData.iWrite(24); X.iPush();
-    X.stuckKeys.iWrite(23); X.stuckData.iWrite(26); X.iPush();
-    X.stuckKeys.iWrite(24); X.stuckData.iWrite(28); X.iPush();
-    b.runProgram();
-
-    b.clearProgram();
-    Y.stuckKeys.iWrite(31); Y.stuckData.iWrite(32); Y.iPush();
-    Y.stuckKeys.iWrite(32); Y.stuckData.iWrite(34); Y.iPush();
-    Y.stuckKeys.iWrite(33); Y.stuckData.iWrite(36); Y.iPush();
-    Y.stuckKeys.iWrite(34); Y.stuckData.iWrite(38); Y.iPush();
-    b.runProgram();
-
-    b.clearProgram();
-    Z.stuckKeys.iWrite(10); Z.stuckData.iWrite(s.value); Z.iPush();
-    Z.stuckKeys.iWrite(20); Z.stuckData.iWrite(t.value); Z.iPush();
-    Z.stuckKeys.iWrite(30); Z.stuckData.iWrite(x.value); Z.iPush();
-    Z.stuckKeys.iWrite(0);  Z.stuckData.iWrite(y.value); Z.iSetPastLastElement();
-    b.runProgram();
-
-    b.clearProgram();
-    b.iSaveStuckInto(S, s);  b.iSetLeaf(s);
-    b.iSaveStuckInto(T, t);  b.iSetLeaf(t);
-    b.iSaveStuckInto(X, x);  b.iSetLeaf(x);
-    b.iSaveStuckInto(Y, y);  b.iSetLeaf(y);
-    b.iSaveStuckIntoRoot(Z); b.iSetRootAsBranch();
-    b.runProgram();
-  //stop(b.dump());
-    ok(b.dump(), """
-Btree
-Stuck:  0   size: 3   free: 0   next:  0  leaf: 1
-stuckSize: value=3
-stuckKeys: value=30, 0=10, 1=20, 2=30, 3=0
-stuckData: value=4, 0=1, 1=2, 2=3, 3=4
-Stuck:  1   size: 4   free: 0   next:  0  leaf: 1
-stuckSize: value=4
-stuckKeys: value=4, 0=1, 1=2, 2=3, 3=4
-stuckData: value=8, 0=2, 1=4, 2=6, 3=8
-Stuck:  2   size: 4   free: 0   next:  0  leaf: 1
-stuckSize: value=4
-stuckKeys: value=14, 0=11, 1=12, 2=13, 3=14
-stuckData: value=18, 0=12, 1=14, 2=16, 3=18
-Stuck:  3   size: 4   free: 0   next:  0  leaf: 1
-stuckSize: value=4
-stuckKeys: value=24, 0=21, 1=22, 2=23, 3=24
-stuckData: value=28, 0=22, 1=24, 2=26, 3=28
-Stuck:  4   size: 4   free: 0   next:  0  leaf: 1
-stuckSize: value=4
-stuckKeys: value=34, 0=31, 1=32, 2=33, 3=34
-stuckData: value=38, 0=32, 1=34, 2=36, 3=38
-""");
-    return b;
-   }
-
-  static void test_find()
-   {final Btree b = test_btree();
-    final Stuck s = b.stuck();
-    final Layout.Field Key   = s.key();
-    final Layout.Field Data  = s.data();
-    final Layout.Field Found = s.found();
-    final Layout.Field stuckIndex = s.index();
-    final Layout.Field index = b.index();
-
-    b.L.P.maxSteps = 500;
-
-    b.clearProgram();
-    Key.iWrite(5);
-    b.find(Key, Found, Data, index, stuckIndex);
-    b.runProgram();
-
-    //stop(Found);
-    ok(Found, "found: value=0");
-
-    b.clearProgram();
-    Key.iWrite(4);
-    b.find(Key, Found, Data, index, stuckIndex);
-    b.runProgram();
-
-    //stop(Found, Data, index, stuckIndex);
-    ok(Found, "found: value=1");
-    ok(Data,  "data: value=8");
-    ok(index, "index: value=1");
-    ok(stuckIndex, "stuckIndex: value=3");
-
-    b.clearProgram();
-    Key.iWrite(14);
-    b.find(Key, Found, Data, index, stuckIndex);
-    b.runProgram();
-
-    //stop(Found, Data, index, stuckIndex);
-    ok(Found, "found: value=1");
-    ok(Data,  "data: value=18");
-    ok(index, "index: value=2");
-    ok(stuckIndex, "stuckIndex: value=3");
-
-    b.clearProgram();
-    Key.iWrite(23);
-    b.find(Key, Found, Data, index, stuckIndex);
-    b.runProgram();
-
-    //stop(Found, Data, index, stuckIndex);
-    ok(Found, "found: value=1");
-    ok(Data,  "data: value=26");
-    ok(index, "index: value=3");
-    ok(stuckIndex, "stuckIndex: value=2");
-
-    b.clearProgram();
-    Key.iWrite(32);
-    b.find(Key, Found, Data, index, stuckIndex);
-    b.runProgram();
-
-    //stop(Found, Data, index, stuckIndex);
-    ok(Found, "found: value=1");
-    ok(Data,  "data: value=34");
-    ok(index, "index: value=4");
-    ok(stuckIndex, "stuckIndex: value=1");
-   }
-
-  static Btree test_findAndInsert()
-   {final Btree b = test_create();
-    final Layout.Field Found = b.found();
-
-    b.L.P.maxSteps = 500;
-
-    b.clearProgram();
-    b.stuckKeys.iWrite(20);
-    b.stuckData.iWrite(21);
-    b.findAndInsert(Found);
-    b.runProgram();
-    ok(b.dump(), """
-Btree
-Stuck:  0   size: 1   free: 0   next:  0  leaf: 1
-stuckSize: value=1
-stuckKeys: value=20, 0=20, 1=0, 2=0, 3=0
-stuckData: value=21, 0=21, 1=0, 2=0, 3=0
-""");
-
-    b.clearProgram();
-    b.stuckKeys.iWrite(10);
-    b.stuckData.iWrite(1);
-    b.findAndInsert(Found);
-    b.runProgram();
-    ok(b.dump(), """
-Btree
-Stuck:  0   size: 2   free: 0   next:  0  leaf: 1
-stuckSize: value=2
-stuckKeys: value=20, 0=10, 1=20, 2=0, 3=0
-stuckData: value=21, 0=1, 1=21, 2=0, 3=0
-""");
-
-    b.clearProgram();
-    b.stuckKeys.iWrite(30);
-    b.stuckData.iWrite(31);
-    b.findAndInsert(Found);
-    b.runProgram();
-    ok(b.dump(), """
-Btree
-Stuck:  0   size: 3   free: 0   next:  0  leaf: 1
-stuckSize: value=3
-stuckKeys: value=30, 0=10, 1=20, 2=30, 3=0
-stuckData: value=31, 0=1, 1=21, 2=31, 3=0
-""");
-
-    Layout.Field index = b.index();
-    b.clearProgram();
-    b.iAllocateLeaf(index);
-    b.iSetRootAsBranch();
-    b.runProgram();
-    ok(b.dump(), """
-Btree
-Stuck:  0   size: 3   free: 0   next:  0  leaf: 1
-stuckSize: value=3
-stuckKeys: value=30, 0=10, 1=20, 2=30, 3=0
-stuckData: value=0, 0=1, 1=21, 2=31, 3=0
-Stuck:  1   size: 0   free: 0   next:  0  leaf: 1
-stuckSize: value=0
-stuckKeys: value=0, 0=0, 1=0, 2=0, 3=0
-stuckData: value=0, 0=0, 1=0, 2=0, 3=0
-""");
-
-    b.clearProgram();
-    b.stuckKeys.iWrite(4);
-    b.stuckData.iWrite(5);
-    b.findAndInsert(Found);
-    b.runProgram();
-    ok(b.dump(), """
-Btree
-Stuck:  0   size: 3   free: 0   next:  0  leaf: 1
-stuckSize: value=3
-stuckKeys: value=30, 0=10, 1=20, 2=30, 3=0
-stuckData: value=0, 0=1, 1=21, 2=31, 3=0
-Stuck:  1   size: 1   free: 0   next:  0  leaf: 1
-stuckSize: value=1
-stuckKeys: value=4, 0=4, 1=0, 2=0, 3=0
-stuckData: value=5, 0=5, 1=0, 2=0, 3=0
-""");
-
-    b.clearProgram();
-    b.stuckKeys.iWrite(5);
-    b.stuckData.iWrite(6);
-    b.findAndInsert(Found);
-    b.runProgram();
-    ok(b.dump(), """
-Btree
-Stuck:  0   size: 3   free: 0   next:  0  leaf: 1
-stuckSize: value=3
-stuckKeys: value=30, 0=10, 1=20, 2=30, 3=0
-stuckData: value=0, 0=1, 1=21, 2=31, 3=0
-Stuck:  1   size: 2   free: 0   next:  0  leaf: 1
-stuckSize: value=2
-stuckKeys: value=5, 0=4, 1=5, 2=0, 3=0
-stuckData: value=6, 0=5, 1=6, 2=0, 3=0
-""");
-
-    b.clearProgram();
-    b.stuckKeys.iWrite(3);
-    b.stuckData.iWrite(4);
-    b.findAndInsert(Found);
-    b.runProgram();
-    ok(b.dump(), """
-Btree
-Stuck:  0   size: 3   free: 0   next:  0  leaf: 1
-stuckSize: value=3
-stuckKeys: value=30, 0=10, 1=20, 2=30, 3=0
-stuckData: value=0, 0=1, 1=21, 2=31, 3=0
-Stuck:  1   size: 3   free: 0   next:  0  leaf: 1
-stuckSize: value=3
-stuckKeys: value=5, 0=3, 1=4, 2=5, 3=0
-stuckData: value=6, 0=4, 1=5, 2=6, 3=0
-""");
-    return b;
-   }
-
-  static void test_isLeaf()
-   {final Btree b = test_btree();
-    final Layout.Field isLeaf     = b.isLeaf();
-    final Layout.Field index = b.index();
-
-    b.clearProgram();
-    b.isRootLeaf(isLeaf);
-    b.runProgram();
-    ok(isLeaf, "isLeaf: value=0");
-
-    b.clearProgram();
-    index.iZero();
-    b.iIsLeaf(index, isLeaf);
-    b.runProgram();
-    ok(isLeaf, "isLeaf: value=0");
-
-    b.clearProgram();
-    index.iOne();
-    b.iIsLeaf(index, isLeaf);
-    b.runProgram();
-    ok(isLeaf, "isLeaf: value=1");
-   }
-
-  static void test_splitLeafRoot()
-   {final Btree b = test_create();
-    final Layout.Field Found = b.found();
-
-    b.L.P.maxSteps = 500;
-
-    b.clearProgram(); b.stuckKeys.iWrite(10); b.stuckData.iWrite(11); b.findAndInsert(Found); b.runProgram();
-    b.clearProgram(); b.stuckKeys.iWrite(20); b.stuckData.iWrite(21); b.findAndInsert(Found); b.runProgram();
-    b.clearProgram(); b.stuckKeys.iWrite(30); b.stuckData.iWrite(31); b.findAndInsert(Found); b.runProgram();
-    b.clearProgram(); b.stuckKeys.iWrite(40); b.stuckData.iWrite(41); b.findAndInsert(Found); b.runProgram();
-    ok(b.dump(), """
-Btree
-Stuck:  0   size: 4   free: 0   next:  0  leaf: 1
-stuckSize: value=4
-stuckKeys: value=40, 0=10, 1=20, 2=30, 3=40
-stuckData: value=41, 0=11, 1=21, 2=31, 3=41
-""");
-
-    b.clearProgram();
-    b.iSplitRootLeaf();
-    b.runProgram();
-    ok(b.dump(), """
-Btree
-Stuck:  0   size: 1   free: 0   next:  0  leaf: 1
-stuckSize: value=1
-stuckKeys: value=25, 0=25, 1=25, 2=30, 3=40
-stuckData: value=2, 0=1, 1=2, 2=31, 3=41
-Stuck:  1   size: 2   free: 0   next:  0  leaf: 1
-stuckSize: value=2
-stuckKeys: value=20, 0=10, 1=20, 2=0, 3=0
-stuckData: value=21, 0=11, 1=21, 2=0, 3=0
-Stuck:  2   size: 2   free: 0   next:  0  leaf: 1
-stuckSize: value=2
-stuckKeys: value=40, 0=30, 1=40, 2=0, 3=0
-stuckData: value=41, 0=31, 1=41, 2=0, 3=0
-""");
-   }
-
-  static void test_splitBranchRoot()
-   {final Btree b = test_findAndInsert();
-
-    b.L.P.maxSteps = 500;
-//stop(b.dump());
-    ok(b.dump(), """
-Btree
-Stuck:  0   size: 3   free: 0   next:  0  leaf: 1
-stuckSize: value=3
-stuckKeys: value=30, 0=10, 1=20, 2=30, 3=0
-stuckData: value=0, 0=1, 1=21, 2=31, 3=0
-Stuck:  1   size: 3   free: 0   next:  0  leaf: 1
-stuckSize: value=3
-stuckKeys: value=5, 0=3, 1=4, 2=5, 3=0
-stuckData: value=6, 0=4, 1=5, 2=6, 3=0
-""");
-
-    b.clearProgram();
-    b.iSplitRootBranch();
-    b.runProgram();
-    //stop(b.dump());
-    ok(b.dump(), """
-Btree
-Stuck:  0   size: 1   free: 0   next:  0  leaf: 1
-stuckSize: value=1
-stuckKeys: value=20, 0=20, 1=20, 2=30, 3=0
-stuckData: value=3, 0=2, 1=3, 2=31, 3=0
-Stuck:  1   size: 3   free: 0   next:  0  leaf: 1
-stuckSize: value=3
-stuckKeys: value=5, 0=3, 1=4, 2=5, 3=0
-stuckData: value=6, 0=4, 1=5, 2=6, 3=0
-Stuck:  2   size: 1   free: 0   next:  0  leaf: 1
-stuckSize: value=1
-stuckKeys: value=10, 0=10, 1=0, 2=0, 3=0
-stuckData: value=21, 0=1, 1=21, 2=0, 3=0
-Stuck:  3   size: 1   free: 0   next:  0  leaf: 1
-stuckSize: value=1
-stuckKeys: value=30, 0=30, 1=0, 2=0, 3=0
-stuckData: value=0, 0=31, 1=0, 2=0, 3=0
-""");
-   }
-
-  static void test_splitLeafNotTop()
-   {final Btree b = test_create();
-    final Stuck r = b.stuck();
-    final Stuck l = b.stuck();
-    final Layout.Field Found = b.found();
-    final Layout.Field R     = b.index();
-    final Layout.Field I     = r.index();
-    final Layout.Field L     = b.index();
-
-    b.L.P.maxSteps = 500;
-
-    b.clearProgram(); r.stuckKeys.iWrite(10); r.stuckData.iWrite(1); r.iPush();               b.runProgram();
-    b.clearProgram(); r.stuckKeys.iWrite(20); r.stuckData.iWrite(0); r.iPush();               b.runProgram();
-    b.clearProgram(); r.stuckKeys.iWrite(30); r.stuckData.iWrite(0); r.iSetPastLastElement(); b.runProgram();
-    b.clearProgram(); b.iSaveStuckIntoRoot(r);                                                 b.runProgram();
-
-    b.clearProgram(); l.stuckKeys.iWrite(1); l.stuckData.iWrite(1); l.iPush(); b.runProgram();
-    b.clearProgram(); l.stuckKeys.iWrite(2); l.stuckData.iWrite(2); l.iPush(); b.runProgram();
-    b.clearProgram(); l.stuckKeys.iWrite(3); l.stuckData.iWrite(3); l.iPush(); b.runProgram();
-    b.clearProgram(); l.stuckKeys.iWrite(4); l.stuckData.iWrite(4); l.iPush(); b.runProgram();
-
-    b.clearProgram();
-    b.iSaveStuckIntoRoot(r);                     b.iSetRootAsBranch();
-    b.iAllocateLeaf(L); b.iSaveStuckInto(l, L);  b.iSetLeaf(L);
-    b.runProgram();
-    ok(b.dump(), """
-Btree
-Stuck:  0   size: 2   free: 0   next:  0  leaf: 1
-stuckSize: value=2
-stuckKeys: value=20, 0=10, 1=20, 2=30, 3=0
-stuckData: value=0, 0=1, 1=0, 2=0, 3=0
-Stuck:  1   size: 4   free: 0   next:  0  leaf: 1
-stuckSize: value=4
-stuckKeys: value=4, 0=1, 1=2, 2=3, 3=4
-stuckData: value=4, 0=1, 1=2, 2=3, 3=4
-""");
-
-    b.clearProgram();
-    R.iZero();
-    I.iZero();
-    b.iSplitLeafNotTop(R, I);
-    b.runProgram();
-    ok(b.dump(), """
-Btree
-Stuck:  0   size: 3   free: 0   next:  0  leaf: 1
-stuckSize: value=3
-stuckKeys: value=20, 0=2, 1=10, 2=20, 3=30
-stuckData: value=0, 0=2, 1=1, 2=0, 3=0
-Stuck:  1   size: 2   free: 0   next:  0  leaf: 1
-stuckSize: value=2
-stuckKeys: value=4, 0=3, 1=4, 2=3, 3=4
-stuckData: value=4, 0=3, 1=4, 2=3, 3=4
-Stuck:  2   size: 2   free: 0   next:  0  leaf: 1
-stuckSize: value=2
-stuckKeys: value=2, 0=1, 1=2, 2=0, 3=0
-stuckData: value=2, 0=1, 1=2, 2=0, 3=0
-""");
-   }
-
-  static void test_splitLeafAtTop()
-   {final Btree b = test_create();
-    final Stuck r = b.stuck();
-    final Stuck l = b.stuck();
-    final Layout.Field Found = b.found();
-    final Layout.Field R     = b.index();
-    final Layout.Field L     = b.index();
-
-    b.L.P.maxSteps = 500;
-
-    b.clearProgram(); r.stuckKeys.iWrite(10); r.stuckData.iWrite(0); r.iPush();               b.runProgram();
-    b.clearProgram(); r.stuckKeys.iWrite(20); r.stuckData.iWrite(0); r.iPush();               b.runProgram();
-    b.clearProgram(); r.stuckKeys.iWrite(30); r.stuckData.iWrite(1); r.iSetPastLastElement(); b.runProgram();
-    b.clearProgram(); b.iSaveStuckIntoRoot(r);                                                 b.runProgram();
-
-    b.clearProgram(); l.stuckKeys.iWrite(1); l.stuckData.iWrite(1); l.iPush(); b.runProgram();
-    b.clearProgram(); l.stuckKeys.iWrite(2); l.stuckData.iWrite(2); l.iPush(); b.runProgram();
-    b.clearProgram(); l.stuckKeys.iWrite(3); l.stuckData.iWrite(3); l.iPush(); b.runProgram();
-    b.clearProgram(); l.stuckKeys.iWrite(4); l.stuckData.iWrite(4); l.iPush(); b.runProgram();
-
-    b.clearProgram();
-    b.iSaveStuckIntoRoot(r);                       b.iSetRootAsBranch();
-    b.iAllocateBranch(L); b.iSaveStuckInto(l, L);  b.iSetLeaf(L);
-    b.runProgram();
-    //stop(b.dump());
-    ok(b.dump(), """
-Btree
-Stuck:  0   size: 2   free: 0   next:  0  leaf: 1
-stuckSize: value=2
-stuckKeys: value=20, 0=10, 1=20, 2=30, 3=0
-stuckData: value=1, 0=0, 1=0, 2=1, 3=0
-Stuck:  1   size: 4   free: 0   next:  0  leaf: 1
-stuckSize: value=4
-stuckKeys: value=4, 0=1, 1=2, 2=3, 3=4
-stuckData: value=4, 0=1, 1=2, 2=3, 3=4
-""");
-
-    b.clearProgram();
-    R.iZero();
-    b.iSplitLeafAtTop(R);
-    b.runProgram();
-    //stop(b.dump());
-    ok(b.dump(), """
-Btree
-Stuck:  0   size: 3   free: 0   next:  0  leaf: 1
-stuckSize: value=3
-stuckKeys: value=2, 0=10, 1=20, 2=2, 3=0
-stuckData: value=1, 0=0, 1=0, 2=2, 3=1
-Stuck:  1   size: 2   free: 0   next:  0  leaf: 1
-stuckSize: value=2
-stuckKeys: value=4, 0=3, 1=4, 2=3, 3=4
-stuckData: value=4, 0=3, 1=4, 2=3, 3=4
-Stuck:  2   size: 2   free: 0   next:  0  leaf: 1
-stuckSize: value=2
-stuckKeys: value=2, 0=1, 1=2, 2=0, 3=0
-stuckData: value=2, 0=1, 1=2, 2=0, 3=0
-""");
-   }
-
-  static void test_splitBranchNotTop()
-   {final Btree b = test_create();
-    final Stuck r = b.stuck();
-    final Stuck l = b.stuck();
-    final Layout.Field Found = b.found();
-    final Layout.Field R     = b.index();
-    final Layout.Field I     = r.index();
-    final Layout.Field L     = b.index();
-
-    b.L.P.maxSteps = 500;
-
-    b.clearProgram(); r.stuckKeys.iWrite(10); r.stuckData.iWrite(1); r.iPush();               b.runProgram();
-    b.clearProgram(); r.stuckKeys.iWrite(20); r.stuckData.iWrite(0); r.iPush();               b.runProgram();
-    b.clearProgram(); r.stuckKeys.iWrite(30); r.stuckData.iWrite(0); r.iSetPastLastElement(); b.runProgram();
-    b.clearProgram(); b.iSaveStuckIntoRoot(r);                                                b.runProgram();
-
-    b.clearProgram(); l.stuckKeys.iWrite(1); l.stuckData.iWrite(2); l.iPush(); b.runProgram();
-    b.clearProgram(); l.stuckKeys.iWrite(2); l.stuckData.iWrite(3); l.iPush(); b.runProgram();
-    b.clearProgram(); l.stuckKeys.iWrite(3); l.stuckData.iWrite(4); l.iPush(); b.runProgram();
-    b.clearProgram(); l.stuckKeys.iWrite(4); l.stuckData.iWrite(5); l.iSetPastLastElement(); b.runProgram();
-
-    b.clearProgram();
-    b.iSaveStuckIntoRoot(r);                      b.iSetRootAsBranch();
-    b.iAllocateBranch(L); b.iSaveStuckInto(l, L); b.iSetBranch(L);
-    b.runProgram();
-    //stop(b.dump());
-    ok(b.dump(), """
-Btree
-Stuck:  0   size: 2   free: 0   next:  0  leaf: 1
-stuckSize: value=2
-stuckKeys: value=20, 0=10, 1=20, 2=30, 3=0
-stuckData: value=0, 0=1, 1=0, 2=0, 3=0
-Stuck:  1   size: 3   free: 0   next:  0  leaf: 1
-stuckSize: value=3
-stuckKeys: value=3, 0=1, 1=2, 2=3, 3=4
-stuckData: value=5, 0=2, 1=3, 2=4, 3=5
-""");
-
-    b.clearProgram();
-    L.iZero();
-    I.iZero();
-    b.iSplitBranchNotTop(L, I);
-    b.runProgram();
-    //stop(b.dump());
-    ok(b.dump(), """
-Btree
-Stuck:  0   size: 3   free: 0   next:  0  leaf: 1
-stuckSize: value=3
-stuckKeys: value=20, 0=2, 1=10, 2=20, 3=30
-stuckData: value=0, 0=2, 1=1, 2=0, 3=0
-Stuck:  1   size: 1   free: 0   next:  0  leaf: 1
-stuckSize: value=1
-stuckKeys: value=3, 0=3, 1=2, 2=3, 3=4
-stuckData: value=5, 0=4, 1=5, 2=4, 3=5
-Stuck:  2   size: 1   free: 0   next:  0  leaf: 1
-stuckSize: value=1
-stuckKeys: value=1, 0=1, 1=0, 2=0, 3=0
-stuckData: value=3, 0=2, 1=3, 2=0, 3=0
-""");
-   }
-
-  static void test_splitBranchAtTop()
-   {final Btree b = test_create();
-    final Stuck r = b.stuck();
-    final Stuck l = b.stuck();
-    final Layout.Field Found = b.found();
-    final Layout.Field R     = b.index();
-    final Layout.Field L     = b.index();
-
-    b.L.P.maxSteps = 500;
-
-    b.clearProgram(); r.stuckKeys.iWrite(10); r.stuckData.iWrite(0); r.iPush();               b.runProgram();
-    b.clearProgram(); r.stuckKeys.iWrite(20); r.stuckData.iWrite(0); r.iPush();               b.runProgram();
-    b.clearProgram(); r.stuckKeys.iWrite(30); r.stuckData.iWrite(1); r.iSetPastLastElement(); b.runProgram();
-    b.clearProgram(); b.iSaveStuckIntoRoot(r);                                                 b.runProgram();
-
-    b.clearProgram(); l.stuckKeys.iWrite(1); l.stuckData.iWrite(1); l.iPush();                b.runProgram();
-    b.clearProgram(); l.stuckKeys.iWrite(2); l.stuckData.iWrite(2); l.iPush();                b.runProgram();
-    b.clearProgram(); l.stuckKeys.iWrite(3); l.stuckData.iWrite(3); l.iPush();                b.runProgram();
-    b.clearProgram(); l.stuckKeys.iWrite(4); l.stuckData.iWrite(4); l.iSetPastLastElement();  b.runProgram();
-
-    b.clearProgram();
-    b.iSaveStuckIntoRoot(r);                       b.iSetRootAsBranch();
-    b.iAllocateBranch(L); b.iSaveStuckInto(l, L);  b.iSetBranch(L);
-    b.runProgram();
-    //stop(b.dump());
-    ok(b.dump(), """
-Btree
-Stuck:  0   size: 2   free: 0   next:  0  leaf: 1
-stuckSize: value=2
-stuckKeys: value=20, 0=10, 1=20, 2=30, 3=0
-stuckData: value=1, 0=0, 1=0, 2=1, 3=0
-Stuck:  1   size: 3   free: 0   next:  0  leaf: 1
-stuckSize: value=3
-stuckKeys: value=3, 0=1, 1=2, 2=3, 3=4
-stuckData: value=4, 0=1, 1=2, 2=3, 3=4
-""");
-
-    b.clearProgram();
-    R.iZero();
-    b.iSplitBranchAtTop(R);
-    b.runProgram();
-    //stop(b.dump());
-    ok(b.dump(), """
-Btree
-Stuck:  0   size: 3   free: 0   next:  0  leaf: 1
-stuckSize: value=3
-stuckKeys: value=2, 0=10, 1=20, 2=2, 3=0
-stuckData: value=1, 0=0, 1=0, 2=2, 3=1
-Stuck:  1   size: 1   free: 0   next:  0  leaf: 1
-stuckSize: value=1
-stuckKeys: value=3, 0=3, 1=2, 2=3, 3=4
-stuckData: value=4, 0=3, 1=4, 2=3, 3=4
-Stuck:  2   size: 1   free: 0   next:  0  leaf: 1
-stuckSize: value=1
-stuckKeys: value=1, 0=1, 1=0, 2=0, 3=0
-stuckData: value=2, 0=1, 1=2, 2=0, 3=0
-""");
-   }
-
-  static void test_isRootLeafFull()
-   {final Btree b = test_create();
-    final Layout.Field f = b.leafFull();
-    final Layout.Field F = b.branchFull();
-
-    b.clearProgram(); b.stuckKeys.iWrite(10); b.stuckData.iWrite(11); b.findAndInsert(f); b.isRootLeafFull(f); b.iIsRootBranchFull(F); b.runProgram(); ok(f, "leafFull: value=0"); ok(F, "branchFull: value=0");
-    b.clearProgram(); b.stuckKeys.iWrite(20); b.stuckData.iWrite(21); b.findAndInsert(f); b.isRootLeafFull(f); b.iIsRootBranchFull(F); b.runProgram(); ok(f, "leafFull: value=0"); ok(F, "branchFull: value=0");
-    b.clearProgram(); b.stuckKeys.iWrite(30); b.stuckData.iWrite(31); b.findAndInsert(f); b.isRootLeafFull(f); b.iIsRootBranchFull(F); b.runProgram(); ok(f, "leafFull: value=0"); ok(F, "branchFull: value=1");
-    b.clearProgram(); b.stuckKeys.iWrite(40); b.stuckData.iWrite(41); b.findAndInsert(f); b.isRootLeafFull(f); b.iIsRootBranchFull(F); b.runProgram(); ok(f, "leafFull: value=1"); ok(F, "branchFull: value=1");
-   }
 
   static void test_put()
-   {final Btree b = test_create();
+   {final Btree            b = new Btree(32, 4, 8, 8);
+    final Process          P = b.new Process("put");
+    final Process.Register k = P.register("k", b.bitsPerKey);
+    final Process.Register d = P.register("d", b.bitsPerData);
 
-    b.L.P.maxSteps = 2000;
+    b.maxSteps = 2000;
 
     final int N = 32;
     for (int i = 1; i <= N; i++)
-     {b.clearProgram();
-      b.stuckKeys.iWrite(i);
-      b.stuckData.iWrite(i+1);
-      b.put();
-      b.runProgram();
+     {P.processClear();
+      k.registerSet(i);
+      d.registerSet(i+1);
+      b.put(P, k, d);
+      b.chipRunJava();
      }
-    //stop(b);
+    stop(b.btreePrint());
     ok(b, """
                                                       16                                                                   |
                                                       0                                                                    |
@@ -4033,6 +3291,7 @@ stuckData: value=2, 0=1, 1=2, 2=0, 3=0
 1,2,3,4=1  5,6,7,8=3    9,10,11,12=4    13,14,15,16=7   17,18,19,20=8   21,22,23,24=10     25,26,27,28=9     29,30,31,32=2 |
 """);
    }
+/*
 
   static void test_putReverse()
    {final Btree b = test_create();
@@ -4760,14 +4019,7 @@ stuckData: value=2, 0=1, 1=2, 2=0, 3=0
     test_allocate();
     test_find();
     test_findAndInsert();
-    //test_isLeaf();
-    //test_splitLeafRoot();
-    //test_splitBranchRoot();
-    //test_splitLeafNotTop();
-    //test_splitLeafAtTop();
-    //test_splitBranchNotTop();
-    //test_splitBranchAtTop();
-    //test_isRootLeafFull();
+
     //test_put();
     //test_putReverse();
     //test_putRandom();
