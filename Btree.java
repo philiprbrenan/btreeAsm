@@ -1706,7 +1706,7 @@ chipStop = true;
                  {void Then()                                                   // Full branch
                    {P.new If (found)                                            // Was the child found within its parent or is it top
                      {void Then()
-                       {splitBranchNotTop(p, c);                                // Split the child branch known not to be top
+                       {splitBranchNotTop(p, ci);                                // Split the child branch known not to be top
                        }
                       void Else ()
                        {splitBranchAtTop(p);                                    // Split the child branch known to be top
@@ -3420,6 +3420,42 @@ Merge     : 0
 """;
    }
 
+  static void test_put_reverse()
+   {final Btree            b = new Btree(32, 4, 8, 8);
+    final Process          P = b.new Process("put");
+    final Process.Register k = P.register("k", b.bitsPerKey);
+    final Process.Register d = P.register("d", b.bitsPerData);
+
+    b.maxSteps     = 2000;
+    b.supressMerge = true;                                                      // Supress merges as they have not been developed yet
+
+    final int N = 32;
+    for (int i = N; i > 0; i--)
+     {P.processClear();
+      k.registerSet(i);
+      d.registerSet(i+1);
+      b.put(P, k, d);
+      b.chipRunJava();
+      //say(i, b.btreePrint());
+     }
+    //stop(b.btreePrint());
+    ok(b.btreePrint(), """
+                                                                            16                                        24                                       |
+                                                                            0                                         0.1                                      |
+                                                                            22                                        14                                       |
+                                                                                                                      15                                       |
+                               8                    12                                            20                                       28                  |
+                               22                   22.1                                          14                                       15                  |
+                               24                   20                                            12                                       5                   |
+                                                    17                                            9                                        6                   |
+           4        6                    10                      14                    18                   22                   26                  30        |
+           24       24.1                 20                      17                    12                   9                    5                   6         |
+           25       23                   19                      16                    11                   8                    4                   1         |
+                    21                   18                      13                    10                   7                    3                   2         |
+1,2,3,4=25   5,6=23     7,8=21   9,10=19   11,12=18     13,14=16   15,16=13   17,18=11   19,20=10   21,22=8   23,24=7    25,26=4   27,28=3   29,30=1   31,32=2 |
+""");
+   }
+
   static void test_mergeLeavesIntoRoot()
    {final Btree            b = new Btree(32, 4, 8, 8);
     final Process          P = b.new Process("findAndInsert");
@@ -4183,6 +4219,7 @@ Merge     : 0
     test_findAndInsert();
     test_put();
     test_put_reload();
+    test_put_reverse();
     test_mergeLeavesIntoRoot();
     test_mergeLeavesNotTop();
     test_mergeLeavesAtTop();
@@ -4199,8 +4236,10 @@ Merge     : 0
   static void newTests()                                                        // Tests being worked on
    {//oldTests();
     //test_put_reload();
-    test_mergeBranchesNotTop();
-    test_mergeBranchesAtTop();
+    //test_mergeBranchesNotTop();
+    //test_mergeBranchesAtTop();
+    //test_mergeBranchesNotTop();
+    test_put_reverse();
    }
 
   public static void main(String[] args)                                        // Test if called as a program
