@@ -3359,7 +3359,7 @@ Merge     : 0
       b.chipRunJava();
      }
     //stop(b.btreePrint());
-    finmal String print = """
+    final String print = """
                             8                                         16                                                                                    |
                             0                                         0.1                                                                                   |
                             14                                        22                                                                                    |
