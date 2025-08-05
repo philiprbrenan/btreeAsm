@@ -736,6 +736,31 @@ endmodule
     Transaction transaction(String Name, Process CallingProcess, String OpCode) // Transactions allow one process to request services from another processbh supplying the service name and the input and output registers
      {return new Transaction(Name, CallingProcess, OpCode);
      }
+
+//D3 Store and Retrieve                                                         // Save memory to a string or reload memory from a string
+
+    String processSave()                                                        // Save memeory
+     {final StringBuilder s = new StringBuilder();
+      s.append(""+memoryWidth+" ");
+      s.append(""+memorySize+" ");
+      for (int i = 0; i < memorySize; i++)
+       {s.append(""+memoryGet(i)+" ");
+       }
+      s.append("\n");
+      return ""+s;
+     }
+
+    void processLoad(String line)                                               // Load memory from a string
+     {final String[]w = line.split("\\s+");
+      final int   []n = new int[w.length];
+      for (int i = 0; i < w.length; i++) n[i] = Integer.parseInt(w[i]);
+
+      if (memoryWidth != n[0]) stop("Wrong width");
+      if (memorySize  != n[1]) stop("Wrong size");
+      for (int i = 0; i < memorySize; i++)
+       {memorySet(n[i+2], i);
+       }
+     }
    } // Process
 
   Process process(String ProcessName, int MemorySize, int MemoryWidth)          // Create a process with attached memory
@@ -1301,16 +1326,34 @@ Chip: Test             step: 50, maxSteps: 100, running: 0, returnCode: 1
     ok(s, "14");
    }
 
+  static void test_saveLoad()
+   {final int B = 8, N = 16;
+    var c = chip("Test");
+    var m = c.new Memory("Memory", N, B);
+    for (int i = 0; i < N; i++)
+     {m.memorySet(i+1, i);
+     }
+
+    m.processLoad(m.processSave());
+    ok(c.chipPrintMemory(), """
+Chip: Test             step: 0, maxSteps: 10, running: 0, returnCode: 0
+  Processes:
+    Memory                memory: 16 * 8 = 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16
+""");
+   }
+
   static void oldTests()                                                        // Tests thought to be in good shape
    {test_memory();
     test_memoryProcess();
     test_arithmeticFibonacci();
     test_block();
     test_if();
+    test_saveLoad();
    }
 
   static void newTests()                                                        // Tests being worked on
-   {oldTests();
+   {//oldTests();
+    test_saveLoad();
    }
 
   public static void main(String[] args)                                        // Test if called as a program
