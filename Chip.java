@@ -741,22 +741,21 @@ endmodule
 
     String processSave()                                                        // Save memeory
      {final StringBuilder s = new StringBuilder();
-      s.append(""+memoryWidth+" ");
-      s.append(""+memorySize+" ");
+      s.append(" "+memoryWidth);
+      s.append(" "+memorySize);
       for (int i = 0; i < memorySize; i++)
-       {s.append(""+memoryGet(i)+" ");
+       {s.append(" "+memoryGet(i));
        }
-      s.append("\n");
-      return ""+s;
+      return (""+s).trim()+"\n";
      }
 
     void processLoad(String line)                                               // Load memory from a string
-     {final String[]w = line.split("\\s+");
+     {final String[]w = line.trim().split("\\s+");
       final int   []n = new int[w.length];
       for (int i = 0; i < w.length; i++) n[i] = Integer.parseInt(w[i]);
 
-      if (memoryWidth != n[0]) stop("Wrong width");
-      if (memorySize  != n[1]) stop("Wrong size");
+      if (memoryWidth != n[0]) stop("Wrong width:", memoryWidth, n[0]);
+      if (memorySize  != n[1]) stop("Wrong size",   memorySize,  n[1]);
       for (int i = 0; i < memorySize; i++)
        {memorySet(n[i+2], i);
        }
