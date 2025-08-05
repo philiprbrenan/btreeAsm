@@ -344,7 +344,7 @@ chipStop = true;
       final int     il = isLeaf.registerGet() > 0 ? 1 : 0;                      // Is a leaf
       final String  rt = index.registerGet() == 0 ? "root" : "index: "+index.registerGet();
       final String  nm = stuckName;                                             // Name of the stuck is the same as the name of the process
-      S.append("Stuck: "+nm+" size: "+ns+", leaf: "+il+", "+rt+"\n");                   // Title
+      S.append("Stuck: "+nm+" size: "+ns+", leaf: "+il+", "+rt+"\n");           // Title
 
       for (int i = 0; i < maxStuckSize; i++)                                    // Each key, data pair
        {final int k = keys[i].registerGet();
@@ -701,7 +701,7 @@ chipStop = true;
          {final int S = Source.size.registerGet();
           final int T =        size.registerGet();
           MergeSuccess.zero();
-          if (S + T > maxStuckSize)
+          if (S + T + 1 >= maxStuckSize)
            {return;
            }
 
@@ -1426,10 +1426,13 @@ chipStop = true;
                         p.elementAt(LeftBranch);                                // Details of right child which has now been moved down into the position formerly occupied by the left child
                         p.setElementAt(LeftBranch, p.Key, il);                  // Update left child position with key of right child and index of left child
                         success.one();
+say("EEEE");
                        }
                      };
 
                     l.stuckPut(il);                                             // Save the modified left child back into the tree
+P.new Instruction() {void action() {say("LLLL", l);}};
+P.new Instruction() {void action() {say("PPPP", p);}};
                     p.stuckPut();                                               // Save the modified root back into the tree
                     free(ir);                                                   // Free right branch as it is no longer in use
                    }
@@ -1737,74 +1740,98 @@ chipStop = true;
 //      merge();                                                                  // Merge along path to key
 //     }
    }
-/*
-  public void merge()                                                           // Merge stucks on either side of the path to the key
-   {final Stuck        S          = stuck();
-    final Process.Register s          = index();                                // Current position in the btree
-    final Process.Register Key        = S.key();
-    final Process.Register stuckIndex = S.index();
-    final Process.Register found      = S.found();
-    final Process.Register within     = within();                               // In the body of the stuck and not at the top
-    final Process.Register isLeaf     = isLeaf();
-    final Process.Register success    = S.success();
 
-    L.P.new Block()                                                             // The block is left as soon as possible
+  public void merge(Process.Register Key)                                       // Merge stucks on either side of the path to the key
+   {final Process          P          = Key.registerProcess();
+    final Stuck            S          = new Stuck(P, "merge");
+    final Process.Register s          = P.new Register("position", btreeAddressSize); // Current position in the btree
+    final Process.Register stuckIndex = P.new Register("index",    stuckAddressSize); // Position within current stuck
+    final Process.Register found      = P.new Register("found",    1);          // Success of merge - the result of this operation
+    final Process.Register within     = P.new Register("within",   1);          // Success of merge - the result of this operation
+    final Process.Register isLeaf     = P.new Register("isLeaf",   1);          // Success of merge - the result of this operation
+
+    P.new Block()                                                               // The block is left as soon as possible
      {void code()
-       {L.P.new Instruction()
+       {P.new Instruction()
          {void action()
-           {Key.move(stuckKeys);                                                // Save path key
-            s.zero();                                                           // Start at the root and step down through the tree along the path of the key merging on each side of the key as we go
+           {s.zero();                                                           // Start at the root and step down through the tree along the path of the key merging on each side of the key as we go
            }
          };
 
-        new IsLeaf(s)                                                           // Root is a leaf or a branch
-         {void Leaf()                                                           // Root is a leaf - nothing to merge
-           {L.P.iGoto(end);
+        S.stuckGetRoot();                                                       // Load current stuck
+
+        S.new IsLeaf()                                                          // Root is a leaf - nothing to merge
+         {void Leaf()
+           {P.new Instruction()
+             {void action()
+               {P.Goto(end);
+               }
+             };
            }
          };
 
-        iMergeLeavesIntoRoot(success);                                          // Try merging leaves into root
-        L.P.iGoNotZero(end,  success);                                          // A successful merge makes the root a leaf so we can return
+        final Process.Register success = mergeLeavesIntoRoot(P);                // Try merging leaves into root
 
-        iMergeBranchesIntoRoot(success);                                        // Try merging branches into root
+        P.new Instruction()
+         {void action()
+           {P.GoNotZero(end, success);
+           }
+         };
 
-        iCopyStuckFrom(S, s);                                                   // Load root
+        P.new If (mergeBranchesIntoRoot(P))                                     // Try merging branches into root
+         {void Then()
+           {S.stuckGetRoot();                                                   // Reload root is the merge was succesful
+           }
+         };
 
-        L.P.new Block()
+        P.new Block()                                                           // Step down through tree
          {void code()
-           {iMergeLeavesAtTop  (s, success);                                    // Try merging leaves at top into parent
-            iMergeBranchesAtTop(s, success);                                    // Try merging branches at top into parent
+           {//mergeLeavesAtTop  (s);                                              // Try merging leaves at top into parent
+            //mergeBranchesAtTop(s);                                              // Try merging branches at top into parent
             for (int i = 0; i < maxStuckSize-1; i++)
              {final int I = i;
-              L.P.new Instruction()                                             // Check we are in the body of the stuck
+              P.new Instruction()                                               // Check we are in the active body of the stuck
                {void action()
-                 {stuckIndex.write(I);
-                  within.value = I < S.stuckSize.value ? 1 : 0;
+                 {stuckIndex.registerSet(I);
+                  within.ge(S.size, I);
                  }
                };
-              L.P.new If(within)                                                // Within body of stuck
+              P.new If(within)                                                  // Within body of stuck
                {void Then()
-                 {iMergeLeavesNotTop  (s, stuckIndex, success);                 // Try merging leaves not at top into parent
-                  iMergeBranchesNotTop(s, stuckIndex, success);                 // Try merging branches not at top into parent
+                 {//mergeLeavesNotTop  (s, stuckIndex);                           // Try merging leaves not at top into parent
+P.new Instruction() {void action() {say("BBBB", I);}};
+                  mergeBranchesNotTop(s, stuckIndex);                           // Try merging branches not at top into parent
+P.new Instruction()
+             {void action()
+               {P.Goto(end);
+               }
+             };
                  }
                };
              }
 
-            L.P.new Instruction()
+            P.new Instruction()
              {void action()
-               {S.stuckKeys.move(Key);                                          // Following the path made by this key
-                S.search_le(found, stuckIndex);                                 // Step down
-                s.move(S.stuckData);                                            // Child
-                copyStuckFrom(S, s);                                            // Load child
+               {S.search_le(Key);                                               // Step down from parent to child
+                s.copy(S.Data);                                                 // Index of child
                }
              };
+            S.stuckGet(s);                                                      // Load child
 
-            new IsLeaf(s)                                                       // Child is a leaf or a branch
+            S.new IsLeaf()                                                      // Child is a leaf or a branch
              {void Leaf()                                                       // At a leaf - end of merging
-               {L.P.iGoto(end);
+               {P.new Instruction()
+                 {void action()
+                   {P.Goto(end);
+                   }
+                 };
                }
               void Branch()                                                     // Child is a branch - try again
-               {L.P.iGoto(start);
+               {P.new Instruction()
+                 {void action()
+                   {P.Goto(start);
+                   }
+                 };
                }
              };
            };
@@ -1814,7 +1841,7 @@ chipStop = true;
    }
 
 //D1 Deletion                                                                   // Delete a key data pair from the btree returning the data associated with the key
-
+/*
   private void delete(Process.Register Data)                                    // Find the leaf that contains this key and delete it
    {final Stuck  S          = stuck();
     Process.Register Key        = S.key();
@@ -1845,7 +1872,7 @@ chipStop = true;
 
 //D1 Tests                                                                      // Test the btree
 */
-  final static int[]random_100 = {27, 442, 545, 317, 511, 578, 391, 993, 858, 586, 472, 906, 658, 704, 882, 246, 261, 501, 354, 903, 854, 279, 526, 686, 987, 403, 401, 989, 650, 576, 436, 560, 806, 554, 422, 298, 425, 912, 503, 611, 135, 447, 344, 338, 39, 804, 976, 186, 234, 106, 667, 494, 690, 480, 288, 151, 773, 769, 260, 809, 438, 237, 516, 29, 376, 72, 946, 103, 961, 55, 358, 232, 229, 90, 155, 657, 681, 43, 907, 564, 377, 615, 612, 157, 922, 272, 490, 679, 830, 839, 437, 826, 577, 937, 884, 13, 96, 273, 1, 188};
+  final static int[]random_32 = {12, 3, 27, 1, 23, 20, 8, 18, 2, 31, 25, 16, 13, 32, 11, 21, 5, 24, 4, 10, 26, 30, 9, 6, 29, 17, 28, 15, 14, 19, 7, 22};
 
   static void test_create1()
    {final Btree   b = new Btree(1, 4, 8, 8);
@@ -3456,6 +3483,42 @@ Merge     : 0
 """);
    }
 
+  static void test_put_random()
+   {final Btree            b = new Btree(32, 4, 8, 8);
+    final Process          P = b.new Process("putReverse");
+    final Process.Register k = P.register("k", b.bitsPerKey);
+    final Process.Register d = P.register("d", b.bitsPerData);
+
+    b.maxSteps     = 2000;
+    b.supressMerge = true;                                                      // Supress merges as they have not been developed yet
+
+    final int N = random_32.length;
+    for (int i = 0; i < N; ++i)
+     {P.processClear();
+      k.registerSet(random_32[i]);
+      d.registerSet(i);
+      b.put(P, k, d);
+      b.chipRunJava();
+      //say(i, b.btreePrint());
+     }
+    //stop(b.btreePrint());
+    ok(b.btreePrint(), """
+                                                         15                                                                                |
+                                                         0                                                                                 |
+                                                         15                                                                                |
+                                                         16                                                                                |
+                           7                                                                                    26                         |
+                           15                                                                                   16                         |
+                           13                                                                                   11                         |
+                           5                                                                                    6                          |
+      2        4                         11                               19        21              24                           30        |
+      13       13.1                      5                                11        11.1            11.2                         6         |
+      8        14                        9                                12        3               17                           10        |
+               1                         4                                                          7                            2         |
+1,2=8   3,4=14     5,6,7=1   8,9,10,11=9   12,13,14,15=4   16,17,18,19=12   20,21=3     22,23,24=17     25,26=7   27,28,29,30=10   31,32=2 |
+""");
+   }
+
   static void test_mergeLeavesIntoRoot()
    {final Btree            b = new Btree(32, 4, 8, 8);
     final Process          P = b.new Process("findAndInsert");
@@ -3529,6 +3592,8 @@ Merge     : 0
 10,20=1   30,40=3    50,60=2 |
 """);
 
+    //stop(b.btreeSave());
+
     P.processClear();
     i.registerSet(0);
     j.registerSet(0);
@@ -3547,33 +3612,11 @@ Merge     : 0
 
   static void test_mergeLeavesAtTop()
    {final Btree            b = new Btree(32, 4, 8, 8);
+    b.btreeLoad(test_mergeLeavesNotTop_dump());
     final Process          P = b.new Process("findAndInsert");
-    final Process.Register k = P.register("k", b.bitsPerKey);
-    final Process.Register d = P.register("d", b.bitsPerData);
     final Process.Register i = P.register("i", b.btreeAddressSize);
-    final Process.Register j = P.register("j", b.stuckAddressSize);
 
-    final FindAndInsert f = b.new FindAndInsert(P);
-    b.maxSteps = 2000;
-
-    P.processClear(); k.registerSet(10); d.registerSet(20); f.findAndInsert(k, d); b.chipRunJava();
-    P.processClear(); k.registerSet(20); d.registerSet(30); f.findAndInsert(k, d); b.chipRunJava();
-    P.processClear(); k.registerSet(40); d.registerSet(50); f.findAndInsert(k, d); b.chipRunJava();
-    P.processClear(); k.registerSet(30); d.registerSet(40); f.findAndInsert(k, d); b.chipRunJava();
-
-    P.processClear();
-    b.splitRootLeaf(P);
-    b.chipRunJava();
-
-    P.processClear(); k.registerSet(50); d.registerSet(60); f.findAndInsert(k, d); b.chipRunJava();
-    P.processClear(); k.registerSet(60); d.registerSet(70); f.findAndInsert(k, d); b.chipRunJava();
-
-    P.processClear();
-    i.registerSet(0);
-    b.splitLeafAtTop(i);
-    b.chipRunJava();
-
-    //stop(b.btreePrint());
+    stop(b.btreePrint());
     ok(b.btreePrint(), """
         25        45         |
         0         0.1        |
@@ -3595,6 +3638,29 @@ Merge     : 0
 10,20=1   30,40,50,60=3 |
 """);
     ok(r, "findAndInsert_success_221 = 1");
+   }
+
+  static String test_mergeLeavesNotTop_dump()
+   {return """
+32
+4
+8
+8
+6
+3
+1 32 0 1 1 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+1 32 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+6 32 4 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31 0
+3 32 2 2 2 2 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+8 32 25 10 50 30 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+8 32 45 20 60 40 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+8 32 45 0 50 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+8 32 40 0 60 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+8 32 1 20 60 40 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+8 32 3 30 70 50 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+8 32 2 0 60 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+8 32 50 0 70 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+""";
    }
 
   static void test_mergeBranchesIntoRoot()
@@ -3765,34 +3831,43 @@ Merge     : 0
 """);
    }
 
-/*
+  static void test_mergePath()
+   {final Btree            b = test_put_reload();
+    final Process          P = b.new Process("findAndInsert");
+    final Process.Register k = P.register("i", b.bitsPerKey);
+    final Process.Register i = P.register("i", b.btreeAddressSize);
+    final Process.Register j = P.register("j", b.stuckAddressSize);
 
-  static void test_putReverse()
-   {final Btree b = test_create();
+    say("AAAA", b.btreePrint());
 
-    b.L.P.maxSteps = 2000;
+    k.registerSet(18);
+    i.registerSet(0);
+    j.registerSet(1);
+    //b.merge(k);
+    b.mergeBranchesNotTop(i, j);                           // Try merging branches not at top into parent
 
-    final int N = 32;
-    for (int i = N; i > 0; i--)
-     {b.clearProgram();
-      b.stuckKeys.iWrite(i);
-      b.stuckData.iWrite(i+1);
-      b.put();
-      b.runProgram();
-     }
-    //stop(b);
-    ok(b, """
-                                                           16                                                                |
-                                                           0                                                                 |
-                                                           11                                                                |
-                                                           6                                                                 |
-           4            8                12                                20              24               28               |
-           11           11.1             11.2                              6               6.1              6.2              |
-           12           10               8                                 4               3                2                |
-                                         7                                                                  1                |
-1,2,3,4=12   5,6,7,8=10     9,10,11,12=8     13,14,15,16=7   17,18,19,20=4   21,22,23,24=3    25,26,27,28=2    29,30,31,32=1 |
+    b.maxSteps = 2000;
+    b.chipRunJava();
+
+    stop(b.btreePrint());
+    ok(b.btreePrint(), """
+                            8                                         16                                                                   |
+                            0                                         0.1                                                                  |
+                            14                                        22                                                                   |
+                                                                      15                                                                   |
+             4                                  12                                           20                    24                      |
+             14                                 22                                           15                    15.1                    |
+             5                                  12                                           20                    24                      |
+             9                                  17                                                                 6                       |
+      2              6               10                    14                     18                    22                      26         |
+      5              9               12                    17                     20                    24                      6          |
+      1              4               8                     11                     16                    19                      23         |
+      3              7               10                    13                     18                    21                      25         |
+1,2=1  3,4=3   5,6=4  7,8=7   9,10=8   11,12=10   13,14=11   15,16=13    17,18=16   19,20=18   21,22=19   23,24=21     25,26=23   27,28=25 |
 """);
    }
+
+/*
 
   static void test_putRandom()
    {final Btree b = new Btree(64, 4, 16, 16);
@@ -4220,6 +4295,7 @@ Merge     : 0
     test_put();
     test_put_reload();
     test_put_reverse();
+    test_put_random();
     test_mergeLeavesIntoRoot();
     test_mergeLeavesNotTop();
     test_mergeLeavesAtTop();
@@ -4227,19 +4303,13 @@ Merge     : 0
     test_mergeBranchesNotTop();
     test_mergeBranchesAtTop();
 
-    //test_putReverse();
-    //test_putRandom();
-    //test_merge();
+    test_mergePath();
     //test_delete();
    }
 
   static void newTests()                                                        // Tests being worked on
    {//oldTests();
-    //test_put_reload();
-    //test_mergeBranchesNotTop();
-    //test_mergeBranchesAtTop();
-    //test_mergeBranchesNotTop();
-    test_put_reverse();
+    test_mergePath();
    }
 
   public static void main(String[] args)                                        // Test if called as a program
