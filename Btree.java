@@ -497,15 +497,15 @@ chipStop = true;
 
     void removeElementAt(Process.Register Index)                                // Set the indexed key, data pair
      {R(); final int N = Index.registerGet();
-      final int M = size.registerGet();
-      if (N >= M)
+      if (N >= size.registerGet())
        {chipStop(13);
         return;
        }
       size.dec();
       Key.copy (keys[N]);
       Data.copy(data[N]);
-      for (int i = N; i < M-1; i++)
+      final int M = maxStuckSize-1;  //ZZZZ
+      for (int i = N; i < M; i++)
        {keys[i].copy(keys[i+1]);
         data[i].copy(data[i+1]);
        }
@@ -1191,13 +1191,12 @@ chipStop = true;
     final Process.Register test    = P.new Register("test",    1);              // A generic test
 
     p.stuckGet(ParentIndex);                                                    // Load parent
-
     P.new Block()
      {void code()
        {P.new Instruction()                                                     // Check that the parent has a child at the specified index
          {void action()
            {success.zero();                                                     // Assume failure
-            if (p.size.registerGet() < 2) P.Goto(end);                          // Need at least one entry which is not top in the parent because merging will remove one entry
+            if (p.size.registerGet() < 2) P.Goto(end);                          // Need at least two entries as one is going to be removed by the merge
            }
          };
 
@@ -1261,14 +1260,14 @@ chipStop = true;
        {P.new Instruction()
          {void action()
            {success.zero();                                                     // Assume failure
-            P.GoZero(end, p.size);                                              // Stuck must have at least one entry
+            if (p.size.registerGet() < 2) P.Goto(end);                          // Need at least two entries as one is going to be removed by the merge
            }
          };
 
         P.new Instruction()
          {void action()
            {sz.copy(p.size);                                                    // Index of left leaf known to be valid as the parent contains at least one entry resulting in two children
-            il.copy(p.data[sz.registerGet()-1]);                                  // Get the btree index of the left child leaf
+            il.copy(p.data[sz.registerGet()-1]);                                // Get the btree index of the left child leaf
             ir.copy(p.data[sz.registerGet()]);                                  // Get the btree index of the right child leaf
            }
          };
@@ -1390,9 +1389,7 @@ chipStop = true;
        {P.new Instruction()                                                     // Check that the parent has a child at the specified index
          {void action()
            {success.zero();                                                     // Assume failure
-            if (p.size.registerGet() < 2)
-             {P.Goto(end);
-             }
+            if (p.size.registerGet() < 2) P.Goto(end);                          // Need at least two entries as one is going to be removed by the merge
            };
          };
 
@@ -1426,13 +1423,10 @@ chipStop = true;
                         p.elementAt(LeftBranch);                                // Details of right child which has now been moved down into the position formerly occupied by the left child
                         p.setElementAt(LeftBranch, p.Key, il);                  // Update left child position with key of right child and index of left child
                         success.one();
-say("EEEE");
                        }
                      };
 
-                    l.stuckPut(il);                                             // Save the modified left child back into the tree
-P.new Instruction() {void action() {say("LLLL", l);}};
-P.new Instruction() {void action() {say("PPPP", p);}};
+                    l.stuckPut();                                               // Save the modified left child back into the tree
                     p.stuckPut();                                               // Save the modified root back into the tree
                     free(ir);                                                   // Free right branch as it is no longer in use
                    }
@@ -1443,6 +1437,7 @@ P.new Instruction() {void action() {say("PPPP", p);}};
          };
        }
      };
+P.new Instruction() {void action() {say("BBBB", btreePrint());}};
     return success;
    }
 
@@ -1468,9 +1463,7 @@ P.new Instruction() {void action() {say("PPPP", p);}};
          {void action()
            {success.zero();                                                     // Assume failure
 
-            if (p.size.registerGet() == 0)                                      // Parent must have at least one entry to permit a merge
-             {P.Goto(end);
-             }
+            if (p.size.registerGet() < 2) P.Goto(end);                          // Need at least two entries as one is going to be removed by the merge
            };
          };
 
@@ -1525,8 +1518,8 @@ P.new Instruction() {void action() {say("PPPP", p);}};
      Find(Process Process)
      {super(Process, "stuck");
       P = Process;
-     }                                                    // Stuck found
-    Stuck stuck() {return (Stuck)this;}
+     }
+    Stuck stuck() {return (Stuck)this;}                                         // Stuck found
 
     void findSearch(Process.Register Key)
      {P.new Instruction()
@@ -1786,10 +1779,11 @@ P.new Instruction() {void action() {say("PPPP", p);}};
 
         P.new Block()                                                           // Step down through tree
          {void code()
-           {//mergeLeavesAtTop  (s);                                              // Try merging leaves at top into parent
-            //mergeBranchesAtTop(s);                                              // Try merging branches at top into parent
-            for (int i = 0; i < maxStuckSize-1; i++)
+           {mergeLeavesAtTop  (s);                                              // Try merging leaves at top into parent
+            mergeBranchesAtTop(s);                                              // Try merging branches at top into parent
+            for (int i = maxStuckSize-2; i >= 0; i--)
              {final int I = i;
+              S.stuckGet();                                                     // Update the size inefficiently
               P.new Instruction()                                               // Check we are in the active body of the stuck
                {void action()
                  {stuckIndex.registerSet(I);
@@ -1798,14 +1792,8 @@ P.new Instruction() {void action() {say("PPPP", p);}};
                };
               P.new If(within)                                                  // Within body of stuck
                {void Then()
-                 {//mergeLeavesNotTop  (s, stuckIndex);                           // Try merging leaves not at top into parent
-P.new Instruction() {void action() {say("BBBB", I);}};
+                 {mergeLeavesNotTop  (s, stuckIndex);                           // Try merging leaves not at top into parent
                   mergeBranchesNotTop(s, stuckIndex);                           // Try merging branches not at top into parent
-P.new Instruction()
-             {void action()
-               {P.Goto(end);
-               }
-             };
                  }
                };
              }
@@ -3604,8 +3592,8 @@ Merge     : 0
               45        |
               0         |
               1         |
-              3         |
-10,20,30,40=1   30,40=3 |
+              2         |
+10,20,30,40=1   50,60=2 |
 """);
     ok(r, "findAndInsert_success_220 = 1");
    }
@@ -3616,7 +3604,7 @@ Merge     : 0
     final Process          P = b.new Process("findAndInsert");
     final Process.Register i = P.register("i", b.btreeAddressSize);
 
-    stop(b.btreePrint());
+    //stop(b.btreePrint());
     ok(b.btreePrint(), """
         25        45         |
         0         0.1        |
@@ -3628,6 +3616,7 @@ Merge     : 0
     P.processClear();
     i.registerSet(0);
     final Process.Register r = b.mergeLeavesAtTop(i);
+    b.maxSteps = 100;
     b.chipRunJava();
     //stop(b.btreePrint());
     ok(b.btreePrint(), """
@@ -3637,7 +3626,7 @@ Merge     : 0
         3               |
 10,20=1   30,40,50,60=3 |
 """);
-    ok(r, "findAndInsert_success_221 = 1");
+    ok(r, "findAndInsert_success_64 = 1");
    }
 
   static String test_mergeLeavesNotTop_dump()
@@ -3757,19 +3746,19 @@ Merge     : 0
     b.chipRunJava();
     //stop(b.btreePrint());
     ok(b.btreePrint(), """
-                            8                                         16                                                                     |
-                            0                                         0.1                                                                    |
-                            14                                        22                                                                     |
-                                                                      15                                                                     |
-             4                                  12                                                                     24                    |
-             14                                 22                                                                     15                    |
-             5                                  12                                                                     20                    |
-             9                                  17                                                                     24                    |
-      2              6               10                    14                     18         20           22                      22         |
-      5              9               12                    17                     20         20.1         20.2                    24         |
-      1              4               8                     11                     16         18           19                      19         |
-      3              7               10                    13                                             21                      21         |
-1,2=1  3,4=3   5,6=4  7,8=7   9,10=8   11,12=10   13,14=11   15,16=13    17,18=16   19,20=18     21,22=19     23,24=21   21,22=19   23,24=21 |
+                            8                                         16                                                                                      |
+                            0                                         0.1                                                                                     |
+                            14                                        22                                                                                      |
+                                                                      15                                                                                      |
+             4                                  12                                                                     24                                     |
+             14                                 22                                                                     15                                     |
+             5                                  12                                                                     20                                     |
+             9                                  17                                                                     6                                      |
+      2              6               10                    14                     18         20           22                      26         28               |
+      5              9               12                    17                     20         20.1         20.2                    6          6.1              |
+      1              4               8                     11                     16         18           19                      23         25               |
+      3              7               10                    13                                             21                                 2                |
+1,2=1  3,4=3   5,6=4  7,8=7   9,10=8   11,12=10   13,14=11   15,16=13    17,18=16   19,20=18     21,22=19     23,24=21   25,26=23   27,28=25    29,30,31,32=2 |
 """);
    }
 
@@ -3830,27 +3819,22 @@ Merge     : 0
 1,2=1  3,4=3   5,6=4  7,8=7   9,10=8   11,12=10   13,14=11   15,16=13    17,18=16   19,20=18   21,22=19   23,24=21     25,26=23     27,28=25 |
 """);
    }
-
+/*
   static void test_mergePath()
    {final Btree            b = test_put_reload();
     final Process          P = b.new Process("findAndInsert");
     final Process.Register k = P.register("i", b.bitsPerKey);
-    final Process.Register i = P.register("i", b.btreeAddressSize);
-    final Process.Register j = P.register("j", b.stuckAddressSize);
-
-    say("AAAA", b.btreePrint());
-
-    k.registerSet(18);
-    i.registerSet(0);
-    j.registerSet(1);
-    //b.merge(k);
-    b.mergeBranchesNotTop(i, j);                           // Try merging branches not at top into parent
 
     b.maxSteps = 2000;
-    b.chipRunJava();
 
-    stop(b.btreePrint());
-    ok(b.btreePrint(), """
+    P.processClear(); k.registerSet( 2); b.merge(k); b.chipRunJava(); //say(b.btreePrint());
+    P.processClear(); k.registerSet(12); b.merge(k); b.chipRunJava(); //say(b.btreePrint());
+    P.processClear(); k.registerSet(20); b.merge(k); b.chipRunJava(); //say(b.btreePrint());
+    P.processClear(); k.registerSet(26); b.merge(k); b.chipRunJava(); //say(b.btreePrint());
+    //P.processClear(); k.registerSet(24); b.merge(k); b.chipRunJava(); say(b.btreePrint());
+    stop();
+    P.processClear(); k.registerSet(15); b.merge(k); b.chipRunJava(); say(b.btreePrint());
+    if (false) ok(b.btreePrint(), """
                             8                                         16                                                                   |
                             0                                         0.1                                                                  |
                             14                                        22                                                                   |
@@ -3867,38 +3851,54 @@ Merge     : 0
 """);
    }
 
-/*
-
-  static void test_putRandom()
-   {final Btree b = new Btree(64, 4, 16, 16);
-
-    b.L.P.maxSteps = 8000;
-
-    final int N = 32;
-    for (int i = 0; i < random_100.length; ++i)
-     {b.clearProgram();
-      b.stuckKeys.iWrite(random_100[i]);
-      b.stuckData.iWrite(i);
-      b.put();
-      b.runProgram();
-     }
-    //stop(b);
-    ok(b, """
-                                                                                                                                                                                                                        379                                                                                                                    528                                                                                                                                                                                                                                                                  |
-                                                                                                                                                                                                                        0                                                                                                                      0.1                                                                                                                                                                                                                                                                  |
-                                                                                                                                                                                                                        48                                                                                                                     34                                                                                                                                                                                                                                                                   |
-                                                                                                                                                                                                                                                                                                                                               39                                                                                                                                                                                                                                                                   |
-                                                               143                                                              253                                                     341                                                             429                                                   497                                                                     582                                                                          718                                                                      894                                                                     |
-                                                               48                                                               48.1                                                    48.2                                                            34                                                    34.1                                                                    39                                                                           39.1                                                                     39.2                                                                    |
-                                                               36                                                               25                                                      46                                                              14                                                    41                                                                      21                                                                           11                                                                       3                                                                       |
-                                                                                                                                                                                        10                                                                                                                    5                                                                                                                                                                                                                             6                                                                       |
-              34               87               104                          156               210                235                          266               283                                   356                            402                                 440          457                                   507                                     568                                    630                   672                688                              805           819                   856                                  909                   946               988          |
-              36               36.1             36.2                         25                25.1               25.2                         46                46.1                                  10                             14                                  41           41.1                                  5                                       21                                     11                    11.1               11.2                             3             3.1                   3.2                                  6                     6.1               6.2          |
-              37               24               45                           49                26                 38                           47                30                                    17                             15                                  44           8                                     33                                      18                                     27                    13                 42                               29            43                    32                                   40                    12                35           |
-                                                16                                                                9                                              19                                    1                              20                                               28                                    22                                      7                                                                               4                                                                    23                                                                           2            |
-1,13,27,29=37   39,43,55,72=24     90,96,103=45     106,135=16    151,155=49    157,186,188=26     229,232,234=38     237,246=9     260,261=47    272,273,279=30     288,298,317,338=19     344,354=17    358,376,377=1    391,401=15    403,422,425=20    436,437,438=44    442,447=8     472,480,490,494=28     501,503=33    511,516,526=22    545,554,560,564=18    576,577,578=7    586,611,612,615=27    650,657,658,667=13     679,681,686=42     690,704=4     769,773,804=29    806,809=43    826,830,839,854=32    858,882,884=23     903,906,907=40    912,922,937,946=12    961,976,987=35    989,993=2 |
-""");
+  static void test_mergePath2()
+   {final Btree b = test_put_reload();
+    final Process          P = b.new Process("findAndInsert");
+    final Process.Register k = P.register("i", b.bitsPerKey);
+    final Process.Register i = P.register("i", b.btreeAddressSize);
+    final Process.Register j = P.register("j", b.stuckAddressSize);
+    b.maxSteps = 2000;
+    P.processClear(); k.registerSet(26); b.merge(k); b.chipRunJava();
+    say(b.btreeSave());
    }
+
+  static Btree test_mergePath_load()
+   {final Btree b = new Btree(32, 4, 8, 8);
+    b.btreeLoad("""
+32
+4
+8
+8
+6
+3
+1 32 0 1 1 1 1 0 0 1 1 0 1 1 0 1 0 0 1 0 1 1 0 1 0 1 0 1 0 0 0 0 0 0
+1 32 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+6 32 15 2 3 7 5 6 7 9 9 17 13 12 13 3 18 14 17 22 21 20 21 24 26 24 10 26 27 28 29 30 31 0
+3 32 3 4 4 2 4 1 2 2 4 1 2 4 1 2 1 1 4 1 2 4 1 2 1 2 1 2 0 0 0 0 0 0
+8 32 8 1 29 3 5 4 26 7 9 6 11 13 12 15 8 24 17 14 19 21 20 23 12 25 22 27 0 0 0 0 0 0
+8 32 16 2 30 4 6 6 28 8 10 0 12 14 14 16 12 24 18 0 20 22 22 24 0 26 0 28 0 0 0 0 0 0
+8 32 24 3 31 0 7 6 28 0 11 0 0 15 14 0 12 24 19 0 0 23 22 0 0 0 0 0 0 0 0 0 0 0
+8 32 12 4 32 0 8 0 26 0 12 0 0 16 0 0 0 20 20 0 0 24 0 0 0 0 0 0 0 0 0 0 0 0
+8 32 5 2 30 4 6 1 23 8 10 4 12 14 8 16 5 20 18 11 20 22 16 24 12 26 19 28 0 0 0 0 0 0
+8 32 12 3 31 5 7 4 25 9 11 7 13 15 11 17 12 6 19 13 21 23 19 25 17 27 21 29 0 0 0 0 0 0
+8 32 20 4 32 0 8 4 2 0 12 0 0 16 11 0 12 6 20 0 0 24 19 0 0 0 0 0 0 0 0 0 0 0
+8 32 6 5 33 0 9 7 2 0 13 0 0 17 13 0 17 6 21 0 0 25 21 0 0 0 0 0 0 0 0 0 0 0
+""");
+    say(b.btreePrint());
+    return b;
+   }
+
+  static void test_mergePath3()
+   {final Btree b = test_mergePath_load();
+    final Process          P = b.new Process("findAndInsert");
+    final Process.Register k = P.register("i", b.bitsPerKey);
+    final Process.Register i = P.register("i", b.btreeAddressSize);
+    final Process.Register j = P.register("j", b.stuckAddressSize);
+    b.maxSteps = 2000;
+
+    P.processClear(); i.registerSet(0); j.registerSet(1); b.mergeBranchesNotTop(i, j); b.chipRunJava();
+   }
+/*
 
   static void test_merge()
    {final Btree b = test_create();
@@ -4303,13 +4303,11 @@ Merge     : 0
     test_mergeBranchesNotTop();
     test_mergeBranchesAtTop();
 
-    test_mergePath();
     //test_delete();
    }
 
   static void newTests()                                                        // Tests being worked on
-   {//oldTests();
-    test_mergePath();
+   {oldTests();
    }
 
   public static void main(String[] args)                                        // Test if called as a program
