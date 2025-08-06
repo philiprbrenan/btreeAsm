@@ -425,27 +425,27 @@ endmodule
 
 //D3 Arithmetic                                                                 // Operations on registers
 
-      void zero() {R(); rs(0);}                                                 // Zero a register in Java
-      void one () {R(); rs(1);}                                                 // One a register in Java
-      void inc () {R(); rs(rg()+1);}                                            // Increment a register in Java
-      void dec () {R(); rs(rg()-1);}                                            // Decrement a register in Java
-      void not () {R(); rs(rg() != 0 ? 0 : 1);}                                 // Not a register in Java
-      void half() {R(); rs(rg() >> 1);}                                         // Halve a register
-      void add (Register source) {R(); rs(rg()+source.rg());}                   // Add the source register to the current register in Java
+      Process.Register zero() {R(); rs(0); return this;}                                                 // Zero a register in Java
+      Process.Register one () {R(); rs(1); return this;}                                                 // One a register in Java
+      Process.Register inc () {R(); rs(rg()+1); return this;}                                            // Increment a register in Java
+      Process.Register dec () {R(); rs(rg()-1); return this;}                                            // Decrement a register in Java
+      Process.Register not () {R(); rs(rg() != 0 ? 0 : 1); return this;}                                 // Not a register in Java
+      Process.Register half() {R(); rs(rg() >> 1); return this;}                                         // Halve a register
+      Process.Register add (Register source) {R(); rs(rg()+source.rg()); return this;}                   // Add the source register to the current register in Java
 
-      void gt (Register a, Register b) {R(); rs(a.rg() >  b.rg() ? 1 : 0);}     // Set the target register to one if the test between the 'a' and 'b' register is true else 0
-      void ge (Register a, Register b) {R(); rs(a.rg() >= b.rg() ? 1 : 0);}     // Set the target register to one if the test between the 'a' and 'b' register is true else 0
-      void eq (Register a, Register b) {R(); rs(a.rg() == b.rg() ? 1 : 0);}     // Set the target register to one if the test between the 'a' and 'b' register is true else 0
-      void ne (Register a, Register b) {R(); rs(a.rg() != b.rg() ? 1 : 0);}     // Set the target register to one if the test between the 'a' and 'b' register is true else 0
-      void le (Register a, Register b) {R(); rs(a.rg() <= b.rg() ? 1 : 0);}     // Set the target register to one if the test between the 'a' and 'b' register is true else 0
-      void lt (Register a, Register b) {R(); rs(a.rg() <  b.rg() ? 1 : 0);}     // Set the target register to one if the test between the 'a' and 'b' register is true else 0
+      Process.Register gt (Register a, Register b) {R(); rs(a.rg() >  b.rg() ? 1 : 0); return this;}     // Set the target register to one if the test between the 'a' and 'b' register is true else 0
+      Process.Register ge (Register a, Register b) {R(); rs(a.rg() >= b.rg() ? 1 : 0); return this;}     // Set the target register to one if the test between the 'a' and 'b' register is true else 0
+      Process.Register eq (Register a, Register b) {R(); rs(a.rg() == b.rg() ? 1 : 0); return this;}     // Set the target register to one if the test between the 'a' and 'b' register is true else 0
+      Process.Register ne (Register a, Register b) {R(); rs(a.rg() != b.rg() ? 1 : 0); return this;}     // Set the target register to one if the test between the 'a' and 'b' register is true else 0
+      Process.Register le (Register a, Register b) {R(); rs(a.rg() <= b.rg() ? 1 : 0); return this;}     // Set the target register to one if the test between the 'a' and 'b' register is true else 0
+      Process.Register lt (Register a, Register b) {R(); rs(a.rg() <  b.rg() ? 1 : 0); return this;}     // Set the target register to one if the test between the 'a' and 'b' register is true else 0
 
-      void gt (Register a, int b) {R(); rs(a.rg() >  b ? 1 : 0);}               // Set the target register to one if the test between the 'a' and 'b' register is true else 0
-      void ge (Register a, int b) {R(); rs(a.rg() >= b ? 1 : 0);}               // Set the target register to one if the test between the 'a' and 'b' register is true else 0
-      void eq (Register a, int b) {R(); rs(a.rg() == b ? 1 : 0);}               // Set the target register to one if the test between the 'a' and 'b' register is true else 0
-      void ne (Register a, int b) {R(); rs(a.rg() != b ? 1 : 0);}               // Set the target register to one if the test between the 'a' and 'b' register is true else 0
-      void le (Register a, int b) {R(); rs(a.rg() <= b ? 1 : 0);}               // Set the target register to one if the test between the 'a' and 'b' register is true else 0
-      void lt (Register a, int b) {R(); rs(a.rg() <  b ? 1 : 0);}               // Set the target register to one if the test between the 'a' and 'b' register is true else 0
+      Process.Register gt (Register a, int b) {R(); rs(a.rg() >  b ? 1 : 0); return this;}               // Set the target register to one if the test between the 'a' and 'b' register is true else 0
+      Process.Register ge (Register a, int b) {R(); rs(a.rg() >= b ? 1 : 0); return this;}               // Set the target register to one if the test between the 'a' and 'b' register is true else 0
+      Process.Register eq (Register a, int b) {R(); rs(a.rg() == b ? 1 : 0); return this;}               // Set the target register to one if the test between the 'a' and 'b' register is true else 0
+      Process.Register ne (Register a, int b) {R(); rs(a.rg() != b ? 1 : 0); return this;}               // Set the target register to one if the test between the 'a' and 'b' register is true else 0
+      Process.Register le (Register a, int b) {R(); rs(a.rg() <= b ? 1 : 0); return this;}               // Set the target register to one if the test between the 'a' and 'b' register is true else 0
+      Process.Register lt (Register a, int b) {R(); rs(a.rg() <  b ? 1 : 0); return this;}               // Set the target register to one if the test between the 'a' and 'b' register is true else 0
 
 
       String zeroV() {N(); return rn() + " = 0;";}                              // Zero a register in Verilog
