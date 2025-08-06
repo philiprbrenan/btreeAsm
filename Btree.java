@@ -682,15 +682,19 @@ chipStop = true;
           if (L + R > maxStuckSize)
            {return;
            }
-          size.zero();
+          clear();
           MergeSuccess.one();
          }
        };
-      merge(Left);
-      merge(Right);
-      P.new Instruction()
-       {void action()
-         {MergeSuccess.one();
+      P.new If(MergeSuccess)
+       {void Then()
+         {merge(Left);
+          merge(Right);
+          P.new Instruction()
+           {void action()
+             {MergeSuccess.one();
+             }
+           };
          }
        };
      }
@@ -1437,7 +1441,6 @@ chipStop = true;
          };
        }
      };
-P.new Instruction() {void action() {say("BBBB", btreePrint());}};
     return success;
    }
 
@@ -1728,10 +1731,7 @@ P.new Instruction() {void action() {say("BBBB", btreePrint());}};
          };
        }
      };
-//    if (!supressMerge)                                                          // Switch of combined merge during testing so that the individual merges can tested
-//     {stuckKeys.iMove(Key);                                                     // Key being inserted or updated
-//      merge();                                                                  // Merge along path to key
-//     }
+    if (!supressMerge) merge(Key);                                              // Merge along path to key
    }
 
   public void merge(Process.Register Key)                                       // Merge stucks on either side of the path to the key
@@ -3383,8 +3383,262 @@ Merge     : 0
 //    stop(b.btreePrint());
 //    stop(b.btreeSave());
 //    writeFile("zzz.txt", b.btreeSave());
-      ok(b.btreePrint(), test_put_print());
-      ok(b.btreeSave(),  test_put_dump());
+    ok(b.btreePrint(), test_put_print());
+    ok(b.btreeSave(),  test_put_dump());
+   }
+
+  static void test_put_merge()
+   {final Btree            b = new Btree(32, 4, 8, 8);
+    final Process          P = b.new Process("put");
+    final Process.Register k = P.register("k", b.bitsPerKey);
+    final Process.Register d = P.register("d", b.bitsPerData);
+    final Process.Register i = P.register("i", 8);
+    final Process.Register l = P.register("l", 1);
+    final StringBuilder    s = new StringBuilder();
+
+    b.maxSteps     = 200000;
+    b.supressMerge = false;
+
+    final int N = 32;
+    k.registerSet(0);
+    d.registerSet(0);
+    P.new Block()
+     {void code()
+       {P.new Instruction()
+         {void action()
+           {k.inc();
+            d.copy(k); d.inc();
+           }
+         };
+        b.put(P, k, d);
+        P.new Instruction()
+         {void action()
+           {s.append(b.btreePrint());
+            P.GoNotZero(start, l.lt(k, N));
+           }
+         };
+       }
+     };
+    b.chipRunJava();
+    //stop(s);
+    ok(s, """
+1=0 |
+1,2=0 |
+1,2,3=0 |
+1,2,3,4=0 |
+      2        |
+      0        |
+      1        |
+      2        |
+1,2=1  3,4,5=2 |
+      2          |
+      0          |
+      1          |
+      2          |
+1,2=1  3,4,5,6=2 |
+          4        |
+          0        |
+          1        |
+          2        |
+1,2,3,4=1  5,6,7=2 |
+          4          |
+          0          |
+          1          |
+          2          |
+1,2,3,4=1  5,6,7,8=2 |
+          4      6          |
+          0      0.1        |
+          1      3          |
+                 2          |
+1,2,3,4=1  5,6=3    7,8,9=2 |
+          4      6             |
+          0      0.1           |
+          1      3             |
+                 2             |
+1,2,3,4=1  5,6=3    7,8,9,10=2 |
+          4          8            |
+          0          0.1          |
+          1          3            |
+                     2            |
+1,2,3,4=1  5,6,7,8=3    9,10,11=2 |
+          4          8               |
+          0          0.1             |
+          1          3               |
+                     2               |
+1,2,3,4=1  5,6,7,8=3    9,10,11,12=2 |
+          4          8         10            |
+          0          0.1       0.2           |
+          1          3         4             |
+                               2             |
+1,2,3,4=1  5,6,7,8=3    9,10=4    11,12,13=2 |
+          4          8         10               |
+          0          0.1       0.2              |
+          1          3         4                |
+                               2                |
+1,2,3,4=1  5,6,7,8=3    9,10=4    11,12,13,14=2 |
+                     8                          |
+                     0                          |
+                     5                          |
+                     6                          |
+          4                        12           |
+          5                        6            |
+          1                        4            |
+          3                        2            |
+1,2,3,4=1  5,6,7,8=3  9,10,11,12=4   13,14,15=2 |
+                     8                             |
+                     0                             |
+                     5                             |
+                     6                             |
+          4                        12              |
+          5                        6               |
+          1                        4               |
+          3                        2               |
+1,2,3,4=1  5,6,7,8=3  9,10,11,12=4   13,14,15,16=2 |
+                     8                                     |
+                     0                                     |
+                     5                                     |
+                     6                                     |
+          4                        12        14            |
+          5                        6         6.1           |
+          1                        4         7             |
+          3                                  2             |
+1,2,3,4=1  5,6,7,8=3  9,10,11,12=4   13,14=7    15,16,17=2 |
+                     8                                        |
+                     0                                        |
+                     5                                        |
+                     6                                        |
+          4                        12        14               |
+          5                        6         6.1              |
+          1                        4         7                |
+          3                                  2                |
+1,2,3,4=1  5,6,7,8=3  9,10,11,12=4   13,14=7    15,16,17,18=2 |
+                     8                                           |
+                     0                                           |
+                     5                                           |
+                     6                                           |
+          4                        12              16            |
+          5                        6               6.1           |
+          1                        4               7             |
+          3                                        2             |
+1,2,3,4=1  5,6,7,8=3  9,10,11,12=4   13,14,15,16=7    17,18,19=2 |
+                     8                                              |
+                     0                                              |
+                     5                                              |
+                     6                                              |
+          4                        12              16               |
+          5                        6               6.1              |
+          1                        4               7                |
+          3                                        2                |
+1,2,3,4=1  5,6,7,8=3  9,10,11,12=4   13,14,15,16=7    17,18,19,20=2 |
+                     8                                                      |
+                     0                                                      |
+                     5                                                      |
+                     6                                                      |
+          4                        12              16         18            |
+          5                        6               6.1        6.2           |
+          1                        4               7          8             |
+          3                                                   2             |
+1,2,3,4=1  5,6,7,8=3  9,10,11,12=4   13,14,15,16=7    17,18=8    19,20,21=2 |
+                     8                                                         |
+                     0                                                         |
+                     5                                                         |
+                     6                                                         |
+          4                        12              16         18               |
+          5                        6               6.1        6.2              |
+          1                        4               7          8                |
+          3                                                   2                |
+1,2,3,4=1  5,6,7,8=3  9,10,11,12=4   13,14,15,16=7    17,18=8    19,20,21,22=2 |
+                                                      16                           |
+                                                      0                            |
+                                                      5                            |
+                                                      6                            |
+          4          8               12                               20           |
+          5          5.1             5.2                              6            |
+          1          3               4                                8            |
+                                     7                                2            |
+1,2,3,4=1  5,6,7,8=3    9,10,11,12=4    13,14,15,16=7   17,18,19,20=8   21,22,23=2 |
+                                                      16                              |
+                                                      0                               |
+                                                      5                               |
+                                                      6                               |
+          4          8               12                               20              |
+          5          5.1             5.2                              6               |
+          1          3               4                                8               |
+                                     7                                2               |
+1,2,3,4=1  5,6,7,8=3    9,10,11,12=4    13,14,15,16=7   17,18,19,20=8   21,22,23,24=2 |
+                                                      16                                       |
+                                                      0                                        |
+                                                      5                                        |
+                                                      6                                        |
+          4          8               12                               20         22            |
+          5          5.1             5.2                              6          6.1           |
+          1          3               4                                8          10            |
+                                     7                                           2             |
+1,2,3,4=1  5,6,7,8=3    9,10,11,12=4    13,14,15,16=7   17,18,19,20=8   21,22=10    23,24,25=2 |
+                                                      16                                          |
+                                                      0                                           |
+                                                      5                                           |
+                                                      6                                           |
+          4          8               12                               20         22               |
+          5          5.1             5.2                              6          6.1              |
+          1          3               4                                8          10               |
+                                     7                                           2                |
+1,2,3,4=1  5,6,7,8=3    9,10,11,12=4    13,14,15,16=7   17,18,19,20=8   21,22=10    23,24,25,26=2 |
+                                                      16                                             |
+                                                      0                                              |
+                                                      5                                              |
+                                                      6                                              |
+          4          8               12                               20               24            |
+          5          5.1             5.2                              6                6.1           |
+          1          3               4                                8                10            |
+                                     7                                                 2             |
+1,2,3,4=1  5,6,7,8=3    9,10,11,12=4    13,14,15,16=7   17,18,19,20=8   21,22,23,24=10    25,26,27=2 |
+                                                      16                                                |
+                                                      0                                                 |
+                                                      5                                                 |
+                                                      6                                                 |
+          4          8               12                               20               24               |
+          5          5.1             5.2                              6                6.1              |
+          1          3               4                                8                10               |
+                                     7                                                 2                |
+1,2,3,4=1  5,6,7,8=3    9,10,11,12=4    13,14,15,16=7   17,18,19,20=8   21,22,23,24=10    25,26,27,28=2 |
+                                                      16                                                        |
+                                                      0                                                         |
+                                                      5                                                         |
+                                                      6                                                         |
+          4          8               12                               20               24         26            |
+          5          5.1             5.2                              6                6.1        6.2           |
+          1          3               4                                8                10         9             |
+                                     7                                                            2             |
+1,2,3,4=1  5,6,7,8=3    9,10,11,12=4    13,14,15,16=7   17,18,19,20=8   21,22,23,24=10    25,26=9    27,28,29=2 |
+                                                      16                                                           |
+                                                      0                                                            |
+                                                      5                                                            |
+                                                      6                                                            |
+          4          8               12                               20               24         26               |
+          5          5.1             5.2                              6                6.1        6.2              |
+          1          3               4                                8                10         9                |
+                                     7                                                            2                |
+1,2,3,4=1  5,6,7,8=3    9,10,11,12=4    13,14,15,16=7   17,18,19,20=8   21,22,23,24=10    25,26=9    27,28,29,30=2 |
+                                                      16                               24                            |
+                                                      0                                0.1                           |
+                                                      5                                11                            |
+                                                                                       6                             |
+          4          8               12                               20                                28           |
+          5          5.1             5.2                              11                                6            |
+          1          3               4                                8                                 9            |
+                                     7                                10                                2            |
+1,2,3,4=1  5,6,7,8=3    9,10,11,12=4    13,14,15,16=7   17,18,19,20=8   21,22,23,24=10    25,26,27,28=9   29,30,31=2 |
+                                                      16                                                                   |
+                                                      0                                                                    |
+                                                      5                                                                    |
+                                                      11                                                                   |
+          4          8               12                               20               24                28                |
+          5          5.1             5.2                              11               11.1              11.2              |
+          1          3               4                                8                10                9                 |
+                                     7                                                                   2                 |
+1,2,3,4=1  5,6,7,8=3    9,10,11,12=4    13,14,15,16=7   17,18,19,20=8   21,22,23,24=10     25,26,27,28=9     29,30,31,32=2 |
+""");
    }
 
   static Btree test_put_reload()
@@ -4293,6 +4547,7 @@ Merge     : 0
     test_find();
     test_findAndInsert();
     test_put();
+    test_put_merge();
     test_put_reload();
     test_put_reverse();
     test_put_random();
@@ -4307,7 +4562,8 @@ Merge     : 0
    }
 
   static void newTests()                                                        // Tests being worked on
-   {oldTests();
+   {//oldTests();
+    test_put_merge();
    }
 
   public static void main(String[] args)                                        // Test if called as a program
