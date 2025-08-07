@@ -775,7 +775,7 @@ chipStop = true;
 //D2 Horizontally                                                               // Print the tree horizontally
 
     final int linesToPrintABranch =  4;                                         // The number of lines required to print a branch
-    final int maxPrintLevels      =  3;                                         // The maximum nu ber of levels to print =- this avoids endless print loops when something goes wrong
+    final int maxPrintLevels      =  3;                                         // The maximum number of levels to print `- this avoids endless print loops when something goes wrong
 
     void printLeaf(int BtreeIndex, Stack<StringBuilder>P, int level)            // Print leaf horizontally
      {padStrings(P, level);
@@ -1113,6 +1113,8 @@ chipStop = true;
 
 //D1 Merge                                                                      // Merge two nodes
 
+  final int minMergeSize = 1;                                                   // Minimum number of entries in a parent stuck before a merge of two of its children
+
   private Process.Register mergeLeavesIntoRoot(Process P)                       // Merge two leaves into the root
    {final Stuck p = new Stuck(P, "mergeLeavesIntoRootParent");                  // Parent stuck
     final Stuck l = new Stuck(P, "mergeLeavesIntoRootLeft");                    // Left split stuck
@@ -1177,6 +1179,7 @@ chipStop = true;
          };
        }
      };
+//P.new Instruction() {void action() {say("BBBB 11", btreePrint());}};
     return success;
    }
 
@@ -1194,13 +1197,15 @@ chipStop = true;
     final Process.Register success = P.new Register("success", 1);              // Success of merge - the result of this operation
     final Process.Register test    = P.new Register("test",    1);              // A generic test
 
+    //P.new Instruction() {void action() {say("AAAA mergeLeavesNotTop", ParentIndex, LeftLeaf);}};
+
     p.stuckGet(ParentIndex);                                                    // Load parent
     P.new Block()
      {void code()
        {P.new Instruction()                                                     // Check that the parent has a child at the specified index
          {void action()
            {success.zero();                                                     // Assume failure
-            if (p.size.registerGet() < 2) P.Goto(end);                          // Need at least two entries as one is going to be removed by the merge
+            if (p.size.registerGet() < minMergeSize) P.Goto(end);               // Need at least two entries as one is going to be removed by the merge
            }
          };
 
@@ -1240,6 +1245,7 @@ chipStop = true;
          };
        }
      };
+//P.new Instruction() {void action() {say("BBBB 22", btreePrint());}};
     return success;
    }
 
@@ -1257,6 +1263,8 @@ chipStop = true;
     final Process.Register success = P.new Register("success", 1);              // Success of merge - the result of this operation
     final Process.Register test    = P.new Register("test",    1);              // A generic test
 
+    //P.new Instruction() {void action() {say("AAAA mergeLeavesAtTop", ParentIndex);}};
+
     p.stuckGet(ParentIndex);                                                    // Load parent
 
     P.new Block()
@@ -1264,7 +1272,7 @@ chipStop = true;
        {P.new Instruction()
          {void action()
            {success.zero();                                                     // Assume failure
-            if (p.size.registerGet() < 2) P.Goto(end);                          // Need at least two entries as one is going to be removed by the merge
+            if (p.size.registerGet() < minMergeSize) P.Goto(end);               // Need at least two entries as one is going to be removed by the merge
            }
          };
 
@@ -1303,6 +1311,7 @@ chipStop = true;
          };
        }
      };
+//P.new Instruction() {void action() {say("BBBB 33", btreePrint());}};
     return success;
    }
 
@@ -1367,6 +1376,7 @@ chipStop = true;
          };
        }
      };
+//P.new Instruction() {void action() {say("BBBB 44", btreePrint());}};
     return success;
    }
 
@@ -1386,6 +1396,8 @@ chipStop = true;
     final Process.Register success = P.new Register("success", 1);              // Success of merge - the result of this operation
     final Process.Register test    = P.new Register("test",    1);              // A generic test
 
+    //P.new Instruction() {void action() {say("AAAA mergeBranchesNotTop", ParentIndex, LeftBranch);}};
+
     p.stuckGet(ParentIndex);                                                    // Load parent
 
     P.new Block()
@@ -1393,7 +1405,14 @@ chipStop = true;
        {P.new Instruction()                                                     // Check that the parent has a child at the specified index
          {void action()
            {success.zero();                                                     // Assume failure
-            if (p.size.registerGet() < 2) P.Goto(end);                          // Need at least two entries as one is going to be removed by the merge
+            if (ParentIndex.registerGet() == 0 &&                               // Cannot be used on root
+                p.size.registerGet() > 1)                                       // Can be used if the is more than one entry
+             {
+             }
+            else if (ParentIndex.registerGet() == 0 ||                               // Cannot be used on root
+                p.size.registerGet() < minMergeSize)                            // Need at least two entries as one is going to be removed by the merge
+             {P.Goto(end);
+             }
            };
          };
 
@@ -1441,6 +1460,7 @@ chipStop = true;
          };
        }
      };
+//P.new Instruction() {void action() {say("BBBB 55", btreePrint());}};
     return success;
    }
 
@@ -1458,6 +1478,8 @@ chipStop = true;
     final Process.Register success = P.new Register("success", 1);              // Success of merge - the result of this operation
     final Process.Register test    = P.new Register("test",    1);              // A generic test
 
+    //P.new Instruction() {void action() {say("AAAA mergeBranchesAtTop", ParentIndex);}};
+
     p.stuckGet(ParentIndex);                                                    // Load parent
 
     P.new Block()
@@ -1465,8 +1487,10 @@ chipStop = true;
        {P.new Instruction()                                                     // Check that the parent has a child at the specified index
          {void action()
            {success.zero();                                                     // Assume failure
-
-            if (p.size.registerGet() < 2) P.Goto(end);                          // Need at least two entries as one is going to be removed by the merge
+            if (ParentIndex.registerGet() == 0 ||                               // Do not use on root
+                p.size.registerGet()      <  minMergeSize)                      // Need at least two entries as one is going to be removed by the merge
+             {P.Goto(end);
+             };
            };
          };
 
@@ -1511,6 +1535,7 @@ chipStop = true;
          };
        }
      };
+//P.new Instruction() {void action() {say("BBBB 66", btreePrint());}};
     return success;
    }
 
@@ -1763,25 +1788,28 @@ chipStop = true;
            }
          };
 
-        final Process.Register success = mergeLeavesIntoRoot(P);                // Try merging leaves into root
-
-        P.new Instruction()
-         {void action()
-           {P.GoNotZero(end, success);
+        P.new If (mergeLeavesIntoRoot(P))                                       // Try merging leaves into root
+         {void Then()
+           {P.new Instruction()
+             {void action()
+               {P.Goto(end);                                                    // The root is now a leaf so there is nothing else to do
+               }
+             };
            }
          };
 
         P.new If (mergeBranchesIntoRoot(P))                                     // Try merging branches into root
          {void Then()
-           {S.stuckGetRoot();                                                   // Reload root is the merge was succesful
+           {S.stuckGetRoot();                                                   // Reload root if the merge was successful
            }
          };
 
         P.new Block()                                                           // Step down through tree
          {void code()
-           {mergeLeavesAtTop  (s);                                              // Try merging leaves at top into parent
-            mergeBranchesAtTop(s);                                              // Try merging branches at top into parent
-            for (int i = maxStuckSize-2; i >= 0; i--)
+           {mergeLeavesAtTop  (s);                                              // Try merging leaves at top into parent -  this forces non top siblings into top
+            mergeBranchesAtTop(s);                                              // Try merging branches at top into parent -  this forces non top siblings into top
+
+            for (int i = maxStuckSize-2; i >= 0; i--)                           // Each pair of sibling stucks from high to low so that any merges do not affect the current position
              {final int I = i;
               S.stuckGet();                                                     // Update the size inefficiently
               P.new Instruction()                                               // Check we are in the active body of the stuck
@@ -1829,37 +1857,32 @@ chipStop = true;
    }
 
 //D1 Deletion                                                                   // Delete a key data pair from the btree returning the data associated with the key
-/*
-  private void delete(Process.Register Data)                                    // Find the leaf that contains this key and delete it
-   {final Stuck  S          = stuck();
-    Process.Register Key        = S.key();
-    Process.Register index      = index();
-    Process.Register stuckIndex = S.index();
-    Process.Register found      = found();
 
-    L.P.new Block()
+  private Find delete(Process.Register Key)                                     // Find the leaf that contains this key and delete it
+   {final Process P = Key.registerProcess();
+    final Find    f = new Find(P);
+
+    P.new Block()
      {void code()
-       {Key.iMove(stuckKeys);
-        find(Key, found, Data, index, stuckIndex);                              // Find the leaf that should contain the key and possibly the key.
-        iCopyStuckFrom(S, index);                                               // Copy the stuck that should contain the key
-        L.P.new If (found)                                                      // Found the key in the leaf so remove it
+       {f.findSearch(Key);                                                      // Find the leaf that should contain the key
+        P.new If (f.Found)                                                      // Found the key in the leaf so remove it
          {void Then()
-           {L.P.new Instruction()
+           {P.new Instruction()
              {void action()
-               {S.removeElementAt(stuckIndex);                                  // Remove the key
-                saveStuckInto(S, index);                                        // Save modified stuck back into btree
-                stuckKeys.move(Key);                                            // Reload key
+               {f.removeElementAt(f.StuckIndex);                                // Remove the key
                }
              };
-            merge();                                                            // Merge along key path
+            f.stuckPut();                                                   // Save modified stuck back into btree
+            merge(Key);                                                            // Merge along key path
            }
          };
        }
      };
+    return f;
    }
 
 //D1 Tests                                                                      // Test the btree
-*/
+
   final static int[]random_32 = {12, 3, 27, 1, 23, 20, 8, 18, 2, 31, 25, 16, 13, 32, 11, 21, 5, 24, 4, 10, 26, 30, 9, 6, 29, 17, 28, 15, 14, 19, 7, 22};
 
   static void test_create1()
@@ -3400,6 +3423,7 @@ Merge     : 0
     b.supressMerge = false;
 
     final int N = 32;
+//  final int N = 16;
     k.registerSet(0);
     d.registerSet(0);
     P.new Block()
@@ -3413,7 +3437,8 @@ Merge     : 0
         b.put(P, k, d);
         P.new Instruction()
          {void action()
-           {s.append(b.btreePrint());
+           {//say(b.btreePrint());
+            s.append(b.btreePrint());
             P.GoNotZero(start, l.lt(k, N));
            }
          };
@@ -3548,96 +3573,96 @@ Merge     : 0
           1                        4               7          8                |
           3                                                   2                |
 1,2,3,4=1  5,6,7,8=3  9,10,11,12=4   13,14,15,16=7    17,18=8    19,20,21,22=2 |
-                                                      16                           |
-                                                      0                            |
-                                                      5                            |
-                                                      6                            |
-          4          8               12                               20           |
-          5          5.1             5.2                              6            |
-          1          3               4                                8            |
-                                     7                                2            |
-1,2,3,4=1  5,6,7,8=3    9,10,11,12=4    13,14,15,16=7   17,18,19,20=8   21,22,23=2 |
-                                                      16                              |
-                                                      0                               |
-                                                      5                               |
-                                                      6                               |
-          4          8               12                               20              |
-          5          5.1             5.2                              6               |
-          1          3               4                                8               |
-                                     7                                2               |
-1,2,3,4=1  5,6,7,8=3    9,10,11,12=4    13,14,15,16=7   17,18,19,20=8   21,22,23,24=2 |
-                                                      16                                       |
-                                                      0                                        |
-                                                      5                                        |
-                                                      6                                        |
-          4          8               12                               20         22            |
-          5          5.1             5.2                              6          6.1           |
-          1          3               4                                8          10            |
-                                     7                                           2             |
-1,2,3,4=1  5,6,7,8=3    9,10,11,12=4    13,14,15,16=7   17,18,19,20=8   21,22=10    23,24,25=2 |
-                                                      16                                          |
-                                                      0                                           |
-                                                      5                                           |
-                                                      6                                           |
-          4          8               12                               20         22               |
-          5          5.1             5.2                              6          6.1              |
-          1          3               4                                8          10               |
-                                     7                                           2                |
-1,2,3,4=1  5,6,7,8=3    9,10,11,12=4    13,14,15,16=7   17,18,19,20=8   21,22=10    23,24,25,26=2 |
-                                                      16                                             |
-                                                      0                                              |
-                                                      5                                              |
-                                                      6                                              |
-          4          8               12                               20               24            |
-          5          5.1             5.2                              6                6.1           |
-          1          3               4                                8                10            |
-                                     7                                                 2             |
-1,2,3,4=1  5,6,7,8=3    9,10,11,12=4    13,14,15,16=7   17,18,19,20=8   21,22,23,24=10    25,26,27=2 |
-                                                      16                                                |
-                                                      0                                                 |
-                                                      5                                                 |
-                                                      6                                                 |
-          4          8               12                               20               24               |
-          5          5.1             5.2                              6                6.1              |
-          1          3               4                                8                10               |
-                                     7                                                 2                |
-1,2,3,4=1  5,6,7,8=3    9,10,11,12=4    13,14,15,16=7   17,18,19,20=8   21,22,23,24=10    25,26,27,28=2 |
-                                                      16                                                        |
-                                                      0                                                         |
-                                                      5                                                         |
-                                                      6                                                         |
-          4          8               12                               20               24         26            |
-          5          5.1             5.2                              6                6.1        6.2           |
-          1          3               4                                8                10         9             |
-                                     7                                                            2             |
-1,2,3,4=1  5,6,7,8=3    9,10,11,12=4    13,14,15,16=7   17,18,19,20=8   21,22,23,24=10    25,26=9    27,28,29=2 |
-                                                      16                                                           |
-                                                      0                                                            |
-                                                      5                                                            |
-                                                      6                                                            |
-          4          8               12                               20               24         26               |
-          5          5.1             5.2                              6                6.1        6.2              |
-          1          3               4                                8                10         9                |
-                                     7                                                            2                |
-1,2,3,4=1  5,6,7,8=3    9,10,11,12=4    13,14,15,16=7   17,18,19,20=8   21,22,23,24=10    25,26=9    27,28,29,30=2 |
-                                                      16                               24                            |
-                                                      0                                0.1                           |
-                                                      5                                11                            |
-                                                                                       6                             |
-          4          8               12                               20                                28           |
-          5          5.1             5.2                              11                                6            |
-          1          3               4                                8                                 9            |
-                                     7                                10                                2            |
-1,2,3,4=1  5,6,7,8=3    9,10,11,12=4    13,14,15,16=7   17,18,19,20=8   21,22,23,24=10    25,26,27,28=9   29,30,31=2 |
-                                                      16                                                                   |
-                                                      0                                                                    |
-                                                      5                                                                    |
-                                                      11                                                                   |
-          4          8               12                               20               24                28                |
-          5          5.1             5.2                              11               11.1              11.2              |
-          1          3               4                                8                10                9                 |
-                                     7                                                                   2                 |
-1,2,3,4=1  5,6,7,8=3    9,10,11,12=4    13,14,15,16=7   17,18,19,20=8   21,22,23,24=10     25,26,27,28=9     29,30,31,32=2 |
+                     8                             16                            |
+                     0                             0.1                           |
+                     5                             9                             |
+                                                   6                             |
+          4                        12                               20           |
+          5                        9                                6            |
+          1                        4                                8            |
+          3                        7                                2            |
+1,2,3,4=1  5,6,7,8=3  9,10,11,12=4   13,14,15,16=7    17,18,19,20=8   21,22,23=2 |
+                     8                             16                               |
+                     0                             0.1                              |
+                     5                             9                                |
+                                                   6                                |
+          4                        12                               20              |
+          5                        9                                6               |
+          1                        4                                8               |
+          3                        7                                2               |
+1,2,3,4=1  5,6,7,8=3  9,10,11,12=4   13,14,15,16=7    17,18,19,20=8   21,22,23,24=2 |
+                     8                             16                                        |
+                     0                             0.1                                       |
+                     5                             9                                         |
+                                                   6                                         |
+          4                        12                               20         22            |
+          5                        9                                6          6.1           |
+          1                        4                                8          10            |
+          3                        7                                           2             |
+1,2,3,4=1  5,6,7,8=3  9,10,11,12=4   13,14,15,16=7    17,18,19,20=8   21,22=10    23,24,25=2 |
+                     8                             16                                           |
+                     0                             0.1                                          |
+                     5                             9                                            |
+                                                   6                                            |
+          4                        12                               20         22               |
+          5                        9                                6          6.1              |
+          1                        4                                8          10               |
+          3                        7                                           2                |
+1,2,3,4=1  5,6,7,8=3  9,10,11,12=4   13,14,15,16=7    17,18,19,20=8   21,22=10    23,24,25,26=2 |
+                     8                             16                                              |
+                     0                             0.1                                             |
+                     5                             9                                               |
+                                                   6                                               |
+          4                        12                               20               24            |
+          5                        9                                6                6.1           |
+          1                        4                                8                10            |
+          3                        7                                                 2             |
+1,2,3,4=1  5,6,7,8=3  9,10,11,12=4   13,14,15,16=7    17,18,19,20=8   21,22,23,24=10    25,26,27=2 |
+                     8                             16                                                 |
+                     0                             0.1                                                |
+                     5                             9                                                  |
+                                                   6                                                  |
+          4                        12                               20               24               |
+          5                        9                                6                6.1              |
+          1                        4                                8                10               |
+          3                        7                                                 2                |
+1,2,3,4=1  5,6,7,8=3  9,10,11,12=4   13,14,15,16=7    17,18,19,20=8   21,22,23,24=10    25,26,27,28=2 |
+                     8                             16                                                          |
+                     0                             0.1                                                         |
+                     5                             9                                                           |
+                                                   6                                                           |
+          4                        12                               20               24          26            |
+          5                        9                                6                6.1         6.2           |
+          1                        4                                8                10          11            |
+          3                        7                                                             2             |
+1,2,3,4=1  5,6,7,8=3  9,10,11,12=4   13,14,15,16=7    17,18,19,20=8   21,22,23,24=10    25,26=11    27,28,29=2 |
+                     8                             16                                                             |
+                     0                             0.1                                                            |
+                     5                             9                                                              |
+                                                   6                                                              |
+          4                        12                               20               24          26               |
+          5                        9                                6                6.1         6.2              |
+          1                        4                                8                10          11               |
+          3                        7                                                             2                |
+1,2,3,4=1  5,6,7,8=3  9,10,11,12=4   13,14,15,16=7    17,18,19,20=8   21,22,23,24=10    25,26=11    27,28,29,30=2 |
+                     8                             16                                24                             |
+                     0                             0.1                               0.2                            |
+                     5                             9                                 12                             |
+                                                                                     6                              |
+          4                        12                               20                                 28           |
+          5                        9                                12                                 6            |
+          1                        4                                8                                  11           |
+          3                        7                                10                                 2            |
+1,2,3,4=1  5,6,7,8=3  9,10,11,12=4   13,14,15,16=7    17,18,19,20=8   21,22,23,24=10    25,26,27,28=11   29,30,31=2 |
+                     8                             16                                24                                |
+                     0                             0.1                               0.2                               |
+                     5                             9                                 12                                |
+                                                                                     6                                 |
+          4                        12                               20                                 28              |
+          5                        9                                12                                 6               |
+          1                        4                                8                                  11              |
+          3                        7                                10                                 2               |
+1,2,3,4=1  5,6,7,8=3  9,10,11,12=4   13,14,15,16=7    17,18,19,20=8   21,22,23,24=10    25,26,27,28=11   29,30,31,32=2 |
 """);
    }
 
@@ -4520,6 +4545,47 @@ Merge     : 0
 """);
    }
 */
+
+
+  static void test_delete()
+   {final Btree            b = test_put_reload();
+    final Process          P = b.new Process("delete");
+    final Stuck            s = b.new Stuck(P, "stuck");
+    final Process.Register i = P.register("i", b.btreeAddressSize);
+    final Process.Register j = P.register("j", b.stuckAddressSize);
+
+    b.maxSteps = 2000;
+    P.processClear(); i.registerSet( 1); b.delete(i); b.chipRunJava();
+    P.processClear(); i.registerSet( 2); b.delete(i); b.chipRunJava();
+    P.processClear(); i.registerSet( 3); b.delete(i); b.chipRunJava();
+    P.processClear(); i.registerSet( 4); b.delete(i); b.chipRunJava();
+    P.processClear(); i.registerSet( 5); b.delete(i); b.chipRunJava();
+    P.processClear(); i.registerSet( 6); b.delete(i); b.chipRunJava();
+    P.processClear(); i.registerSet( 7); b.delete(i); b.chipRunJava();
+    P.processClear(); i.registerSet( 8); b.delete(i); b.chipRunJava();
+    P.processClear(); i.registerSet( 9); b.delete(i); b.chipRunJava();
+    P.processClear(); i.registerSet(10); b.delete(i); b.chipRunJava();
+    P.processClear(); i.registerSet(11); b.delete(i); b.chipRunJava();
+    P.processClear(); i.registerSet(12); b.delete(i); b.chipRunJava();
+
+    stop(b.btreePrint());
+    ok(b.btreePrint(), """
+                            8                                         16                                                                   |
+                            0                                         0.1                                                                  |
+                            14                                        22                                                                   |
+                                                                      15                                                                   |
+             4                                  12                                           20                    24                      |
+             14                                 22                                           15                    15.1                    |
+             5                                  12                                           20                    24                      |
+             9                                  17                                                                 6                       |
+      2              6               10                    14                     18                    22                      26         |
+      5              9               12                    17                     20                    24                      6          |
+      1              4               8                     11                     16                    19                      23         |
+      3              7               10                    13                     18                    21                      25         |
+1,2=1  3,4=3   5,6=4  7,8=7   9,10=8   11,12=10   13,14=11   15,16=13    17,18=16   19,20=18   21,22=19   23,24=21     25,26=23   27,28=25 |
+""");
+   }
+
   static void oldTests()                                                        // Tests thought to be in good shape
    {test_create1();
     test_create2();
@@ -4558,12 +4624,12 @@ Merge     : 0
     test_mergeBranchesNotTop();
     test_mergeBranchesAtTop();
 
-    //test_delete();
+    test_delete();
    }
 
   static void newTests()                                                        // Tests being worked on
    {//oldTests();
-    test_put_merge();
+    test_delete();
    }
 
   public static void main(String[] args)                                        // Test if called as a program
