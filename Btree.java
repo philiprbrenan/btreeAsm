@@ -1208,9 +1208,10 @@ chipStop = true;
    }
 
   private Process.Register mergeLeavesNotTop                                    // Merge the two consecutive leaves of a branch that is not the root. Neither of the leaves is the topmost leaf.
-   (Stuck p, Process.Register ParentIndex, Process.Register LeftLeaf)
+   (Stuck Stuck, Process.Register ParentIndex, Process.Register LeftLeaf)
    {final Process P = ParentIndex.registerProcess();
-    //final Stuck   p = new Stuck(P, "mergeLeavesIntoRootParent");                // Parent stuck
+    //final Stuck   p = new Stuck(P, "mergeLeavesIntoRootParent");              // Parent stuck
+    final Stuck   p = Stuck;
     final Stuck   l = new Stuck(P, "mergeLeavesIntoRootLeft");                  // Left split stuck
     final Stuck   r = new Stuck(P, "mergeLeavesIntoRootRight");                 // Right split stuck
     final Process.Register ck = P.new Register("childKey",   stuckAddressSize); // Index in memory of the left stuck
@@ -1223,7 +1224,7 @@ chipStop = true;
 
     //P.new Instruction() {void action() {say("AAAA 22 mergeLeavesNotTop", ParentIndex, LeftLeaf);}};
 
-    //p.stuckGet(ParentIndex);                                                    // Load parent
+    //p.stuckGet(ParentIndex);                                                  // Load parent
     P.new Block()
      {void code()
        {P.new Instruction()                                                     // Check that the parent has a child at the specified index
@@ -1273,9 +1274,11 @@ chipStop = true;
     return success;
    }
 
-  private Process.Register mergeLeavesAtTop(Stuck p, Process.Register ParentIndex)       // Merge the top most two leaves of a branch that is not the root
+  private Process.Register mergeLeavesAtTop                                     // Merge the top most two leaves of a branch that is not the root
+   (Stuck Stuck, Process.Register ParentIndex)
    {final Process P = ParentIndex.registerProcess();
-    //final Stuck   p = new Stuck(P, "mergeLeavesIntoRootParent");                // Parent stuck
+    //final Stuck   p = new Stuck(P, "mergeLeavesIntoRootParent");              // Parent stuck
+    final Stuck   p = Stuck;                                                    // Parent stuck
     final Stuck   l = new Stuck(P, "mergeLeavesIntoRootLeft");                  // Left split stuck
     final Stuck   r = new Stuck(P, "mergeLeavesIntoRootRight");                 // Right split stuck
     final Process.Register ck = P.new Register("childKey",   stuckAddressSize); // Index in memory of the left stuck
@@ -1388,7 +1391,7 @@ chipStop = true;
                 P.new If (p.MergeSuccess)
                  {void Then()
                    {p.stuckPut();                                               // Save the modified root back into the tree
-                    free(il); free(ir);                                           // Free left and right leaves as they are no longer needed
+                    free(il); free(ir);                                         // Free left and right leaves as they are no longer needed
                     P.new Instruction()
                      {void action()
                        {success.one();
@@ -1407,9 +1410,10 @@ chipStop = true;
    }
 
   private Process.Register mergeBranchesNotTop                                  // Merge the two consecutive child branches of a branch that is not the root. Neither of the child branches is the topmost leaf.
-   (Stuck p, Process.Register ParentIndex, Process.Register LeftBranch)
+   (Stuck Stuck, Process.Register ParentIndex, Process.Register LeftBranch)
    {final Process P = ParentIndex.registerProcess();
-    //final Stuck   p = new Stuck(P, "mergeBranchesNotTopParent");                // Parent stuck
+    //final Stuck p = new Stuck(P, "mergeBranchesNotTopParent");                // Parent stuck
+    final Stuck   p = Stuck;                                                    // Parent stuck
     final Stuck   l = new Stuck(P, "mergeBranchesNotTopLeft");                  // Left split stuck
     final Stuck   r = new Stuck(P, "mergeBranchesNotTopRight");                 // Right split stuck
     final Process.Register ck = P.new Register("childKey",   stuckAddressSize); // Index in memory of the left stuck
@@ -1424,7 +1428,7 @@ chipStop = true;
 
     //P.new Instruction() {void action() {say("AAAA 55 mergeBranchesNotTop", ParentIndex, LeftBranch);}};
 
-    //p.stuckGet(ParentIndex);                                                    // Load parent
+    //p.stuckGet(ParentIndex);                                                  // Load parent
 
     P.new Block()
      {void code()
@@ -1483,9 +1487,11 @@ chipStop = true;
     return success;
    }
 
-  private Process.Register mergeBranchesAtTop(Stuck p, Process.Register ParentIndex)     // Merge the top most two child branches of a branch that is not the root
+  private Process.Register mergeBranchesAtTop                                   // Merge the top most two child branches of a branch that is not the root
+   (Stuck Stuck, Process.Register ParentIndex)
    {final Process P = ParentIndex.registerProcess();
-    //final Stuck   p = new Stuck(P, "mergeLeavesIntoRootParent");                // Parent stuck
+    //final Stuck   p = new Stuck(P, "mergeLeavesIntoRootParent");              // Parent stuck
+    final Stuck   p = Stuck;                                                    // Parent stuck
     final Stuck   l = new Stuck(P, "mergeLeavesIntoRootLeft");                  // Left split stuck
     final Stuck   r = new Stuck(P, "mergeLeavesIntoRootRight");                 // Right split stuck
     final Process.Register ck = P.new Register("childKey",   stuckAddressSize); // Index in memory of the left stuck
@@ -1499,7 +1505,7 @@ chipStop = true;
 
     //P.new Instruction() {void action() {say("AAAA 66 mergeBranchesAtTop", ParentIndex);}};
 
-    //p.stuckGet(ParentIndex);                                                    // Load parent
+    //p.stuckGet(ParentIndex);                                                  // Load parent
 
     P.new Block()
      {void code()
@@ -1523,9 +1529,9 @@ chipStop = true;
 
         l.new IsLeaf()                                                          // Check that the children are branches
          {void Branch()                                                         // Children are branches
-           {r.new IsLeaf()                                                        // Check that the children are branches
-             {void Branch()                                                       // Children are branches
-               {P.new Instruction()                                               // Check that the parent has a child at the specified index
+           {r.new IsLeaf()                                                      // Check that the children are branches
+             {void Branch()                                                     // Children are branches
+               {P.new Instruction()                                             // Check that the parent has a child at the specified index
                  {void action()
                    {p.pop();
                    }
@@ -1746,7 +1752,7 @@ chipStop = true;
                  {void Then()                                                   // Full branch
                    {P.new If (found)                                            // Was the child found within its parent or is it top
                      {void Then()
-                       {splitBranchNotTop(p, ci);                                // Split the child branch known not to be top
+                       {splitBranchNotTop(p, ci);                               // Split the child branch known not to be top
                        }
                       void Else ()
                        {splitBranchAtTop(p);                                    // Split the child branch known to be top
