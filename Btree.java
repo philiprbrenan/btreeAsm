@@ -5,7 +5,7 @@
 package com.AppaApps.Silicon;                                                   // Btree in a block on the surface of a silicon chip.
 // Squeeze out all redundant variables and check all code paths are being tested
 // Remove stuckIsFree if possible
-// Remove Instructions from split and merge
+// Remove Instructions from split and  merge
 // Write a tree to a file and reload it
 // Improve chipPrint memory so the columns line up vertically
 // Add verilog
