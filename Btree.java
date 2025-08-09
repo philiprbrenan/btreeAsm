@@ -2031,7 +2031,8 @@ Stuck: Stuck size: 4, leaf: 1, root
    }
 
   static void test_clear()
-   {final Btree   b = test_push();
+   {sayCurrentTestName();
+    final Btree   b = test_push();
     final Process P = b.processes.get("Stuck");
 
     Stuck s = b.stucks.firstElement();
@@ -2051,7 +2052,8 @@ Stuck: Stuck size: 0, leaf: 1, root
    }
 
   static Btree test_pop()
-   {final Btree   b = test_push();
+   {sayCurrentTestName();
+    final Btree   b = test_push();
     final Process P = b.processes.get("Stuck");
 
     Stuck s = b.stucks.firstElement();
@@ -2099,7 +2101,8 @@ Merge     : 0
    }
 
   static void test_firstLastPast()
-   {final Btree   b = test_push();
+   {sayCurrentTestName();
+    final Btree   b = test_push();
     final Process P = b.processes.get("Stuck");
 
     Stuck s = b.stucks.firstElement();
@@ -2196,7 +2199,8 @@ Merge     : 0
    }
 
   static void test_elementAt()
-   {final Btree   b = test_push();
+   {sayCurrentTestName();
+    final Btree   b = test_push();
     final Process P = b.processes.get("Stuck");
 
     Stuck s = b.stucks.firstElement();
@@ -2288,7 +2292,8 @@ Merge     : 0
    }
 
   static void test_setElementAt()
-   {final Btree b = test_push();
+   {sayCurrentTestName();
+    final Btree b = test_push();
     final Process P = b.processes.get("Stuck");
 
     Stuck s = b.stucks.firstElement();
@@ -2324,7 +2329,8 @@ Stuck: Stuck size: 5, leaf: 1, root
    }
 
   static void test_setDataAt()
-   {final Btree b = test_push();
+   {sayCurrentTestName();
+    final Btree b = test_push();
     final Process P = b.processes.get("Stuck");
 
     Stuck s = b.stucks.firstElement();
@@ -2358,7 +2364,8 @@ Stuck: Stuck size: 4, leaf: 1, root
    }
 
   static void test_setPastLastElement()
-   {final Btree b = test_push();
+   {sayCurrentTestName();
+    final Btree b = test_push();
     final Process P = b.processes.get("Stuck");
 
     Stuck s = b.stucks.firstElement();
@@ -2399,7 +2406,8 @@ Merge     : 0
    }
 
   static void test_insertElementAt()
-   {final Btree b = test_push();
+   {sayCurrentTestName();
+    final Btree b = test_push();
     final Process P = b.processes.get("Stuck");
 
     Stuck s = b.stucks.firstElement();
@@ -2432,7 +2440,8 @@ Stuck: Stuck size: 5, leaf: 1, root
    }
 
   static void test_removeElementAt()
-   {final Btree b = test_push();
+   {sayCurrentTestName();
+    final Btree b = test_push();
     final Process P = b.processes.get("Stuck");
 
     Stuck s = b.stucks.firstElement();
@@ -2463,7 +2472,8 @@ Stuck: Stuck size: 3, leaf: 1, root
    }
 
   static void test_search_eq()
-   {final Btree b = test_push();
+   {sayCurrentTestName();
+    final Btree b = test_push();
     final Process P = b.processes.get("Stuck");
 
     Stuck s = b.stucks.firstElement();
@@ -2507,7 +2517,8 @@ Stuck: Stuck size: 3, leaf: 1, root
    }
 
   static void test_search_le()
-   {final int B = 8, S = 4, K = 8, D = 8;
+   {sayCurrentTestName();
+    final int B = 8, S = 4, K = 8, D = 8;
     final Btree   b = new Btree(B, S+S, K, D);
     final Process P = b.new Process("Stuck");
 
@@ -2603,7 +2614,8 @@ Merge     : 0
    }
 
   static void test_splitIntoTwo()
-   {final Btree b = test_push();
+   {sayCurrentTestName();
+    final Btree b = test_push();
     final Process P = b.processes.get("Stuck");
 
     Stuck s = b.stucks.firstElement();
@@ -2639,7 +2651,8 @@ Stuck: Right size: 2, leaf: 0, root
    }
 
   static void test_splitIntoThree()
-   {final Btree b = test_push();
+   {sayCurrentTestName();
+    final Btree b = test_push();
     final Process P = b.processes.get("Stuck");
 
     Stuck s = b.stucks.firstElement();
@@ -2705,7 +2718,8 @@ Merge     : 0
    }
 
   static void test_splitLow()
-   {final Btree b = test_push();
+   {sayCurrentTestName();
+    final Btree b = test_push();
     final Process P = b.processes.get("Stuck");
 
     Stuck s = b.stucks.firstElement();
@@ -2753,7 +2767,8 @@ Stuck: Left size: 4, leaf: 0, root
    }
 
   static void test_splitLowButOne()
-   {final Btree b = test_push();
+   {sayCurrentTestName();
+    final Btree b = test_push();
     final Process P = b.processes.get("Stuck");
 
     Stuck s = b.stucks.firstElement();
@@ -2811,7 +2826,8 @@ Merge     : 0
    }
 
   static void test_merge()
-   {final Btree b = test_push();
+   {sayCurrentTestName();
+    final Btree b = test_push();
     final Btree B = test_push();
     final Process P = b.processes.get("Stuck");
 
@@ -2839,7 +2855,8 @@ Stuck: Stuck size: 8, leaf: 1, root
    }
 
   static void test_merge2()
-   {final Btree b = test_push();
+   {sayCurrentTestName();
+    final Btree b = test_push();
     final Btree L = test_push();
     final Btree R = test_push();
     final Process P = b.processes.get("Stuck");
@@ -2869,7 +2886,8 @@ Stuck: Stuck size: 8, leaf: 1, root
    }
 
   static void test_mergeButOne()
-   {final Btree   b = test_push();
+   {sayCurrentTestName();
+    final Btree   b = test_push();
     final Process P = b.processes.get("Stuck");
     Stuck s = b.stucks.firstElement();
     Stuck S = b.stucks.lastElement();
@@ -2918,7 +2936,8 @@ Merge     : 1
    }
 
   static void test_mergeButOne2()
-   {final Btree b = test_push();
+   {sayCurrentTestName();
+    final Btree b = test_push();
     final Process P = b.processes.get("Stuck");
 
     Stuck s = b.stucks.elementAt(0);
@@ -2976,7 +2995,8 @@ Merge     : 1
    }
 
   static void test_allocate()
-   {final Btree            b = new Btree(4, 4, 8, 8);
+   {sayCurrentTestName();
+    final Btree            b = new Btree(4, 4, 8, 8);
     final Process          p = b.process("alloc");
     final Process.Register i = b.btreeIndex(p, "index1");
     final Process.Register j = b.btreeIndex(p, "index2");
@@ -3048,7 +3068,8 @@ Chip: Btree            step: 13, maxSteps: 100, running: 0, returnCode: 0
    }
 
   static Btree test_createTree()
-   {final Btree b = new Btree(8, 4, 8, 8);
+   {sayCurrentTestName();
+    final Btree b = new Btree(8, 4, 8, 8);
     final Process P = b.new Process("Stuck");
     b.stuckIsLeaf .memorySet( 0, 0);
     b.stuckIsLeaf .memorySet( 1, 1);
@@ -3092,7 +3113,8 @@ Chip: Btree            step: 13, maxSteps: 100, running: 0, returnCode: 0
    }
 
   static void test_find()
-   {final Btree b = test_createTree();
+   {sayCurrentTestName();
+    final Btree b = test_createTree();
     final Process P = b.processes.get("Stuck");
 
     final Process.Register k = P.register("k", b.bitsPerKey);
@@ -3121,7 +3143,8 @@ Merge     : 0
    }
 
   static void test_findAndInsert()
-   {final Btree            b = new Btree(32, 4, 8, 8);
+   {sayCurrentTestName();
+    final Btree            b = new Btree(32, 4, 8, 8);
     final Process          P = b.new Process("findAndInsert");
     final Process.Register k = P.register("k", b.bitsPerKey);
     final Process.Register d = P.register("d", b.bitsPerData);
@@ -3405,7 +3428,8 @@ Merge     : 0
    }
 
   static void test_put()
-   {final Btree            b = new Btree(32, 4, 8, 8);
+   {sayCurrentTestName();
+    final Btree            b = new Btree(32, 4, 8, 8);
     final Process          P = b.new Process("put");
     final Process.Register k = P.register("k", b.bitsPerKey);
     final Process.Register d = P.register("d", b.bitsPerData);
@@ -3428,7 +3452,8 @@ Merge     : 0
    }
 
   static void test_put_merge()
-   {final Btree            b = new Btree(32, 4, 8, 8);
+   {sayCurrentTestName();
+    final Btree            b = new Btree(32, 4, 8, 8);
     final Process          P = b.new Process("put");
     final Process.Register k = P.register("k", b.bitsPerKey);
     final Process.Register d = P.register("d", b.bitsPerData);
@@ -3731,7 +3756,8 @@ Merge     : 0
    }
 
   static void test_put_reverse()
-   {final Btree            b = new Btree(32, 4, 8, 8);
+   {sayCurrentTestName();
+    final Btree            b = new Btree(32, 4, 8, 8);
     final Process          P = b.new Process("put");
     final Process.Register k = P.register("k", b.bitsPerKey);
     final Process.Register d = P.register("d", b.bitsPerData);
@@ -3767,7 +3793,8 @@ Merge     : 0
    }
 
   static void test_put_random()
-   {final Btree            b = new Btree(32, 4, 8, 8);
+   {sayCurrentTestName();
+    final Btree            b = new Btree(32, 4, 8, 8);
     final Process          P = b.new Process("putReverse");
     final Process.Register k = P.register("k", b.bitsPerKey);
     final Process.Register d = P.register("d", b.bitsPerData);
@@ -3803,7 +3830,8 @@ Merge     : 0
    }
 
   static void test_mergeLeavesIntoRoot()
-   {final Btree            b = new Btree(32, 4, 8, 8);
+   {sayCurrentTestName();
+    final Btree            b = new Btree(32, 4, 8, 8);
     final Process          P = b.new Process("findAndInsert");
     final Process.Register k = P.register("k", b.bitsPerKey);
     final Process.Register d = P.register("d", b.bitsPerData);
@@ -3840,7 +3868,8 @@ Merge     : 0
    }
 
   static void test_mergeLeavesNotTop()
-   {final Btree            b = new Btree(32, 4, 8, 8);
+   {sayCurrentTestName();
+    final Btree            b = new Btree(32, 4, 8, 8);
     final Process          P = b.new Process("findAndInsert");
     final Process.Register k = P.register("k", b.bitsPerKey);
     final Process.Register d = P.register("d", b.bitsPerData);
@@ -3894,7 +3923,8 @@ Merge     : 0
    }
 
   static void test_mergeLeavesAtTop()
-   {final Btree            b = new Btree(32, 4, 8, 8);
+   {sayCurrentTestName();
+    final Btree            b = new Btree(32, 4, 8, 8);
     b.btreeLoad(test_mergeLeavesNotTop_dump());
     final Process          P = b.new Process("findAndInsert");
     final Process.Register i = P.register("i", b.btreeAddressSize);
@@ -3948,7 +3978,8 @@ Merge     : 0
    }
 
   static void test_mergeBranchesIntoRoot()
-   {final Btree            b = new Btree(32, 4, 8, 8);
+   {sayCurrentTestName();
+    final Btree            b = new Btree(32, 4, 8, 8);
     final Process          P = b.new Process("findAndInsert");
     final Process.Register k = P.register("k", b.bitsPerKey);
     final Process.Register d = P.register("d", b.bitsPerData);
@@ -4014,7 +4045,8 @@ Merge     : 0
   }
 
   static void test_mergeBranchesNotTop()
-   {final Btree            b = test_put_reload();
+   {sayCurrentTestName();
+    final Btree            b = test_put_reload();
     final Process          P = b.new Process("findAndInsert");
     final Process.Register i = P.register("i", b.btreeAddressSize);
     final Process.Register j = P.register("j", b.stuckAddressSize);
@@ -4058,7 +4090,8 @@ Merge     : 0
    }
 
   static void test_mergeBranchesAtTop()
-   {final Btree            b = test_put_reload();
+   {sayCurrentTestName();
+    final Btree            b = test_put_reload();
     final Process          P = b.new Process("findAndInsert");
     final Stuck            s = b.new Stuck(P, "stuck");
     final Process.Register i = P.register("i", b.btreeAddressSize);
@@ -4116,7 +4149,8 @@ Merge     : 0
    }
 
   static void test_delete()
-   {final Btree            b = test_put_reload();
+   {sayCurrentTestName();
+    final Btree            b = test_put_reload();
     final Process          P = b.new Process("delete");
     final Stuck            s = b.new Stuck(P, "stuck");
     final Process.Register k = P.register("k", b.bitsPerKey);
@@ -4411,7 +4445,8 @@ Merge     : 0
    }
 
   static void test_delete_random()
-   {final Btree            b = test_put_reload();
+   {sayCurrentTestName();
+    final Btree            b = test_put_reload();
     final Process          P = b.new Process("delete");
     final Stuck            s = b.new Stuck(P, "stuck");
     final Process.Register i = P.register("i", b.btreeAddressSize);
@@ -4664,7 +4699,8 @@ Merge     : 0
    }
 
   static void test_delete_reverse()
-   {final Btree            b = test_put_reload();
+   {sayCurrentTestName();
+    final Btree            b = test_put_reload();
     final Process          P = b.new Process("delete");
     final Stuck            s = b.new Stuck(P, "stuck");
     final Process.Register i = P.register("i", b.btreeAddressSize);
@@ -5009,7 +5045,8 @@ Merge     : 0
    }
 
   static void test_delete_random_reverse()
-   {final Btree            b = test_put_reload();
+   {sayCurrentTestName();
+    final Btree            b = test_put_reload();
     final Process          P = b.new Process("delete");
     final Stuck            s = b.new Stuck(P, "stuck");
     final Process.Register i = P.register("i", b.btreeAddressSize);
@@ -5313,8 +5350,7 @@ Merge     : 0
    }
 
   static void newTests()                                                        // Tests being worked on
-   {//oldTests();
-    test_delete();
+   {oldTests();
    }
 
   public static void main(String[] args)                                        // Test if called as a program
