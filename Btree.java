@@ -70,7 +70,7 @@ chipStop = true;
   void createFreeChain()                                                        // Create the free chain before the chip starts runnbinbg as this is a one time event
    {for (int i = 0; i < size-1; i++)
      {freeNext.memorySet(i+1, i);                                               // Free chain hangs from root
-      stuckIsFree.memorySet(1, i+1);                                                // Start with the root as a leaf
+      stuckIsFree.memorySet(1, i+1);                                            // Start with the root as a leaf
      }
     stuckIsLeaf.memorySet(1, 0);                                                // Start with the root as a leaf
     stuckIsFree.memorySet(0, 0);                                                // Start with the root as a leaf
@@ -151,8 +151,8 @@ chipStop = true;
 
 //D2 Save and Load                                                              // Save a btree to a string and reload it from a string
 
-  String btreeSave()                                                          // Save a btree to a string
-   {final StringBuilder s = new StringBuilder();                              //
+  String btreeSave()                                                            // Save a btree to a string
+   {final StringBuilder s = new StringBuilder();
     s.append(""+size              +"\n");
     s.append(""+maxStuckSize      +"\n");
     s.append(""+bitsPerKey        +"\n");
@@ -1292,7 +1292,7 @@ chipStop = true;
 
     //P.new Instruction() {void action() {say("AAAA 33 mergeLeavesAtTop", ParentIndex);}};
 
-    //p.stuckGet(ParentIndex);                                                    // Load parent
+    //p.stuckGet(ParentIndex);                                                  // Load parent
 
     P.new Block()
      {void code()
@@ -1587,7 +1587,7 @@ chipStop = true;
              {P.new Instruction()
                {void action()
                  {search_eq(Key);                                               // Search
-                  P.Goto(end);                                                    // Key not present
+                  P.Goto(end);                                                  // Key not present
                  }
                };
              }
@@ -1596,7 +1596,7 @@ chipStop = true;
                {void action()
                  {search_le(Key);                                               // Search stuck for matching key
                   BtreeIndex.copy(Data);
-                  P.Goto(start);                                                  // Key not present
+                  P.Goto(start);                                                // Key not present
                  }
                };
              }
@@ -1828,8 +1828,8 @@ chipStop = true;
 
         P.new Block()                                                           // Step down through tree
          {void code()
-           {mergeLeavesAtTop  (S, s);                                              // Try merging leaves at top into parent -  this forces non top siblings into top
-            mergeBranchesAtTop(S, s);                                              // Try merging branches at top into parent -  this forces non top siblings into top
+           {mergeLeavesAtTop  (S, s);                                           // Try merging leaves at top into parent -  this forces non top siblings into top
+            mergeBranchesAtTop(S, s);                                           // Try merging branches at top into parent -  this forces non top siblings into top
 
             for (int i = maxStuckSize-2; i >= 0; i--)                           // Each pair of sibling stucks from high to low so that any merges do not affect the current position
              {final int I = i;
@@ -1842,8 +1842,8 @@ chipStop = true;
                };
               P.new If(within)                                                  // Within body of stuck
                {void Then()
-                 {mergeLeavesNotTop  (S, s, stuckIndex);                           // Try merging leaves not at top into parent
-                  mergeBranchesNotTop(S, s, stuckIndex);                           // Try merging branches not at top into parent
+                 {mergeLeavesNotTop  (S, s, stuckIndex);                        // Try merging leaves not at top into parent
+                  mergeBranchesNotTop(S, s, stuckIndex);                        // Try merging branches not at top into parent
                  }
                };
              }
@@ -1896,8 +1896,8 @@ chipStop = true;
                {f.removeElementAt(f.StuckIndex);                                // Remove the key
                }
              };
-            f.stuckPut();                                                   // Save modified stuck back into btree
-            merge(Key);                                                            // Merge along key path
+            f.stuckPut();                                                       // Save modified stuck back into btree
+            merge(Key);                                                         // Merge along key path
            }
          };
        }
@@ -2211,7 +2211,7 @@ Merge     : 0
 
     Stuck s = b.stucks.firstElement();
     final Process.Register i = P.register("i", b.stuckAddressSize);
-    final StringBuilder    S = new StringBuilder();                                    // a
+    final StringBuilder    S = new StringBuilder();
 
     final int N = 4;
     for (int j = 0; j < N; j++)
