@@ -3422,8 +3422,7 @@ Merge     : 0
       b.chipRunJava();
      }
     //stop(b.btreePrint());
-    stop(b.btreeSave());
-//    writeFile("zzz.txt", b.btreeSave());
+    //stop(b.btreeSave());
     ok(b.btreePrint(), test_put_print());
     ok(b.btreeSave(),  test_put_save());
    }
@@ -5314,8 +5313,7 @@ Merge     : 0
    }
 
   static void newTests()                                                        // Tests being worked on
-   {//oldTests();
-    test_delete_random_reverse();
+   {oldTests();
    }
 
   public static void main(String[] args)                                        // Test if called as a program
