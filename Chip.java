@@ -59,17 +59,21 @@ class Chip extends Test                                                         
          "Chip: %-16s step: %1d, maxSteps: %1d, running: %1d, returnCode: %1d\n",
           chipName, step, maxSteps, (chipRunning ? 1 : 0), returnCode));
 
-        s.append("  Processes:\n");
+        s.append("  Processes:"+(" ".repeat(50)));
+    for (int i = 0; i < 25; i++)
+     {s.append(String.format(" %2d", i));
+     }
+    s.append("\n");
 
     for (Process p: processes)                                                  // Each process
      {if (p.hasMemory())                                                        // Print memory if this process has memory attached to it
        {s.append(String.format("    %-21s ", p.processName));
         s.append(String.format(
-         "memory: %1d * %1d = %1d",
+         "memory: %21d * %2d = %2d",
           p.memorySize, p.memoryWidth, p.memoryGetNoSet(0)));
 
         for (int i = 1; i < p.memorySize; i++)
-         {s.append(", "+p.memoryGetNoSet(i));
+         {s.append(String.format(" %2d", p.memoryGetNoSet(i)));
          }
         s.append("\n");
        }
@@ -1229,8 +1233,8 @@ Chip: Test             step: 50, maxSteps: 100, running: 0, returnCode: 1
 
     ok(C.chipPrintMemory(), """
 Chip: Test             step: 50, maxSteps: 100, running: 0, returnCode: 1
-  Processes:
-    Memory                memory: 16 * 16 = 1, 2, 3, 5, 8, 13, 21, 34, 55, 89, 144, 233, 377, 610, 987, 1597
+  Processes:                                                    0  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24
+    Memory                memory:                    16 * 16 =  1  2  3  5  8 13 21 34 55 89 144 233 377 610 987 1597
 """);
 
     ok(a, "Main_a_0 = 987");
@@ -1334,10 +1338,11 @@ Chip: Test             step: 50, maxSteps: 100, running: 0, returnCode: 1
      }
 
     m.processLoad(m.processSave());
+    //stop(c.chipPrintMemory());
     ok(c.chipPrintMemory(), """
 Chip: Test             step: 0, maxSteps: 10, running: 0, returnCode: 0
-  Processes:
-    Memory                memory: 16 * 8 = 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16
+  Processes:                                                    0  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24
+    Memory                memory:                    16 *  8 =  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16
 """);
    }
 
@@ -1351,7 +1356,7 @@ Chip: Test             step: 0, maxSteps: 10, running: 0, returnCode: 0
    }
 
   static void newTests()                                                        // Tests being worked on
-   {//oldTests();
+   {oldTests();
     test_saveLoad();
    }
 
