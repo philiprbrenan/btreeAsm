@@ -1208,9 +1208,9 @@ chipStop = true;
    }
 
   private Process.Register mergeLeavesNotTop                                    // Merge the two consecutive leaves of a branch that is not the root. Neither of the leaves is the topmost leaf.
-   (Process.Register ParentIndex, Process.Register LeftLeaf)
+   (Stuck p, Process.Register ParentIndex, Process.Register LeftLeaf)
    {final Process P = ParentIndex.registerProcess();
-    final Stuck   p = new Stuck(P, "mergeLeavesIntoRootParent");                // Parent stuck
+    //final Stuck   p = new Stuck(P, "mergeLeavesIntoRootParent");                // Parent stuck
     final Stuck   l = new Stuck(P, "mergeLeavesIntoRootLeft");                  // Left split stuck
     final Stuck   r = new Stuck(P, "mergeLeavesIntoRootRight");                 // Right split stuck
     final Process.Register ck = P.new Register("childKey",   stuckAddressSize); // Index in memory of the left stuck
@@ -1223,7 +1223,7 @@ chipStop = true;
 
     //P.new Instruction() {void action() {say("AAAA 22 mergeLeavesNotTop", ParentIndex, LeftLeaf);}};
 
-    p.stuckGet(ParentIndex);                                                    // Load parent
+    //p.stuckGet(ParentIndex);                                                    // Load parent
     P.new Block()
      {void code()
        {P.new Instruction()                                                     // Check that the parent has a child at the specified index
@@ -1273,9 +1273,9 @@ chipStop = true;
     return success;
    }
 
-  private Process.Register mergeLeavesAtTop(Process.Register ParentIndex)       // Merge the top most two leaves of a branch that is not the root
+  private Process.Register mergeLeavesAtTop(Stuck p, Process.Register ParentIndex)       // Merge the top most two leaves of a branch that is not the root
    {final Process P = ParentIndex.registerProcess();
-    final Stuck   p = new Stuck(P, "mergeLeavesIntoRootParent");                // Parent stuck
+    //final Stuck   p = new Stuck(P, "mergeLeavesIntoRootParent");                // Parent stuck
     final Stuck   l = new Stuck(P, "mergeLeavesIntoRootLeft");                  // Left split stuck
     final Stuck   r = new Stuck(P, "mergeLeavesIntoRootRight");                 // Right split stuck
     final Process.Register ck = P.new Register("childKey",   stuckAddressSize); // Index in memory of the left stuck
@@ -1289,7 +1289,7 @@ chipStop = true;
 
     //P.new Instruction() {void action() {say("AAAA 33 mergeLeavesAtTop", ParentIndex);}};
 
-    p.stuckGet(ParentIndex);                                                    // Load parent
+    //p.stuckGet(ParentIndex);                                                    // Load parent
 
     P.new Block()
      {void code()
@@ -1483,9 +1483,9 @@ chipStop = true;
     return success;
    }
 
-  private Process.Register mergeBranchesAtTop(Process.Register ParentIndex)     // Merge the top most two child branches of a branch that is not the root
+  private Process.Register mergeBranchesAtTop(Stuck p, Process.Register ParentIndex)     // Merge the top most two child branches of a branch that is not the root
    {final Process P = ParentIndex.registerProcess();
-    final Stuck   p = new Stuck(P, "mergeLeavesIntoRootParent");                // Parent stuck
+    //final Stuck   p = new Stuck(P, "mergeLeavesIntoRootParent");                // Parent stuck
     final Stuck   l = new Stuck(P, "mergeLeavesIntoRootLeft");                  // Left split stuck
     final Stuck   r = new Stuck(P, "mergeLeavesIntoRootRight");                 // Right split stuck
     final Process.Register ck = P.new Register("childKey",   stuckAddressSize); // Index in memory of the left stuck
@@ -1499,7 +1499,7 @@ chipStop = true;
 
     //P.new Instruction() {void action() {say("AAAA 66 mergeBranchesAtTop", ParentIndex);}};
 
-    p.stuckGet(ParentIndex);                                                    // Load parent
+    //p.stuckGet(ParentIndex);                                                    // Load parent
 
     P.new Block()
      {void code()
@@ -1822,8 +1822,8 @@ chipStop = true;
 
         P.new Block()                                                           // Step down through tree
          {void code()
-           {mergeLeavesAtTop  (s);                                              // Try merging leaves at top into parent -  this forces non top siblings into top
-            mergeBranchesAtTop(s);                                              // Try merging branches at top into parent -  this forces non top siblings into top
+           {mergeLeavesAtTop  (S, s);                                              // Try merging leaves at top into parent -  this forces non top siblings into top
+            mergeBranchesAtTop(S, s);                                              // Try merging branches at top into parent -  this forces non top siblings into top
 
             for (int i = maxStuckSize-2; i >= 0; i--)                           // Each pair of sibling stucks from high to low so that any merges do not affect the current position
              {final int I = i;
@@ -1836,8 +1836,8 @@ chipStop = true;
                };
               P.new If(within)                                                  // Within body of stuck
                {void Then()
-                 {mergeLeavesNotTop  (s, stuckIndex);                           // Try merging leaves not at top into parent
-                  mergeBranchesNotTop(s, stuckIndex);                           // Try merging branches not at top into parent
+                 {mergeLeavesNotTop  (S, s, stuckIndex);                           // Try merging leaves not at top into parent
+                  mergeBranchesNotTop(S, s, stuckIndex);                           // Try merging branches not at top into parent
                  }
                };
              }
@@ -3884,6 +3884,7 @@ Merge     : 0
    {sayCurrentTestName();
     final Btree            b = new Btree(32, 4, 8, 8);
     final Process          P = b.new Process("findAndInsert");
+    final Stuck            s = b.new Stuck(P, "findAndInsert");
     final Process.Register k = P.register("k", b.bitsPerKey);
     final Process.Register d = P.register("d", b.bitsPerData);
     final Process.Register i = P.register("i", b.btreeAddressSize);
@@ -3922,7 +3923,8 @@ Merge     : 0
     P.processClear();
     i.registerSet(0);
     j.registerSet(0);
-    final Process.Register r = b.mergeLeavesNotTop(i, j);
+    s.stuckGet(i);
+    final Process.Register r = b.mergeLeavesNotTop(s, i, j);
     b.chipRunJava();
     //stop(b.btreePrint());
     ok(b.btreePrint(), """
@@ -3940,6 +3942,7 @@ Merge     : 0
     final Btree            b = new Btree(32, 4, 8, 8);
     b.btreeLoad(test_mergeLeavesNotTop_dump());
     final Process          P = b.new Process("findAndInsert");
+    final Stuck            p = b.new Stuck(P, "findAndInsert");
     final Process.Register i = P.register("i", b.btreeAddressSize);
 
     //stop(b.btreePrint());
@@ -3953,7 +3956,8 @@ Merge     : 0
 
     P.processClear();
     i.registerSet(0);
-    final Process.Register r = b.mergeLeavesAtTop(i);
+    p.stuckGet(i);
+    final Process.Register r = b.mergeLeavesAtTop(p, i);
     b.maxSteps = 100;
     b.chipRunJava();
     //stop(b.btreePrint());
@@ -4140,7 +4144,8 @@ Merge     : 0
 
     P.processClear();
     i.registerSet(15);
-    b.mergeBranchesAtTop(i);
+    s.stuckGet(i);
+    b.mergeBranchesAtTop(s, i);
     b.maxSteps = 2000;
     b.chipRunJava();
     //stop(b.btreePrint());
@@ -5364,11 +5369,13 @@ Merge     : 0
 
   static void newTests()                                                        // Tests being worked on
    {//oldTests();
-    test_put();
-    test_put_merge();
-    test_put_reload();
-    test_put_reverse();
-    test_put_random();
+    test_mergeLeavesIntoRoot();
+    test_mergeLeavesNotTop();
+    test_mergeLeavesAtTop();
+    test_mergeBranchesIntoRoot();
+    test_mergeBranchesNotTop();
+    test_mergeBranchesAtTop();
+    test_delete();
    }
 
   public static void main(String[] args)                                        // Test if called as a program
