@@ -3421,11 +3421,11 @@ Merge     : 0
       b.put(P, k, d);
       b.chipRunJava();
      }
-//    stop(b.btreePrint());
-//    stop(b.btreeSave());
+    //stop(b.btreePrint());
+    stop(b.btreeSave());
 //    writeFile("zzz.txt", b.btreeSave());
     ok(b.btreePrint(), test_put_print());
-    ok(b.btreeSave(),  test_put_dump());
+    ok(b.btreeSave(),  test_put_save());
    }
 
   static void test_put_merge()
@@ -3685,7 +3685,7 @@ Merge     : 0
 
   static Btree test_put_reload()
    {final Btree b = new Btree(32, 4, 8, 8);
-    b.btreeLoad(test_put_dump());
+    b.btreeLoad(test_put_save());
     ok(b.btreePrint(), test_put_print());
     return b;
    }
@@ -3708,7 +3708,7 @@ Merge     : 0
 """;
    }
 
-  static String test_put_dump()
+  static String test_put_save()
    {return """
 32
 4
@@ -3717,7 +3717,7 @@ Merge     : 0
 6
 3
 1 32 0 1 1 1 1 0 0 1 1 0 1 1 0 1 0 0 1 0 1 1 0 1 0 1 0 1 0 0 0 0 0 0
-1 32 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+1 32 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 1 1 1 1 1 1
 6 32 26 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31 0
 3 32 2 2 4 2 2 1 2 2 2 1 2 2 1 2 1 2 2 1 2 2 1 2 1 2 1 2 0 0 0 0 0 0
 8 32 8 1 29 3 5 2 26 7 9 6 11 13 10 15 4 20 17 14 19 21 18 23 12 25 22 27 0 0 0 0 0 0
@@ -5053,6 +5053,7 @@ Merge     : 0
 
   static void newTests()                                                        // Tests being worked on
    {//oldTests();
+    test_put();
    }
 
   public static void main(String[] args)                                        // Test if called as a program
