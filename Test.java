@@ -316,6 +316,10 @@ public class Test                                                               
     return null;                                                                // Not called in a test
    }
 
+  static void sayCurrentTestName()                                              // Name of the current test
+   {say(currentTestName());
+   }
+
   static String testLine()                                                      // Locate line associated with the current test
    {final StackTraceElement[] t = new Exception().getStackTrace();
     final String T = currentTestName();                                         // Current test name
