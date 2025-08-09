@@ -916,9 +916,9 @@ public class Test                                                               
        {final String ee = e == '\n' ? "new-line" : ""+(char)e;                  // Handle new lines gracefully
         final String gg = g == '\n' ? "new-line" : ""+(char)g;
         final String ruler = "0----+----1----+----2----+----3----+----4----+----5----+----6----+----7----+----8----+----9----+----";
-        final String error = "Character "+c+", expected="+ee+"= got="+gg+"=";   // Location of error
+        final String error = "Line: "+l+" character: "+c+", expected="+ee+"= got="+gg+"=";   // Location of error
 
-        say(b, error); say(b, ruler);
+        say(b, error); //say(b, ruler);
 
         final String[]sg = G.split("\\n");                                      // Got as lines
         final String[]se = E.split("\\n");                                      // Expected as lines
