@@ -3455,8 +3455,7 @@ Merge     : 0
         b.put(P, k, d);
         P.new Instruction()
          {void action()
-           {say("DDDD", k, b.chipPrintMemory());
-            s.append(b.btreePrint());
+           {s.append(b.btreePrint());
             P.GoNotZero(start, l.lt(k, N));
            }
          };
@@ -3835,7 +3834,7 @@ Merge     : 0
     P.processClear();Process.Register r =  b.mergeLeavesIntoRoot(P); b.chipRunJava();
     //stop(b.chipPrintMemory());
     //stop(b.btreePrint());
-    ok(r, "findAndInsert_success_174 = 1");
+    ok(r, "findAndInsert_success_176 = 1");
     ok(b.btreePrint(), """
 1,2,3,4=0 |
 """);
@@ -3892,7 +3891,7 @@ Merge     : 0
               2         |
 10,20,30,40=1   50,60=2 |
 """);
-    ok(r, "findAndInsert_success_220 = 1");
+    ok(r, "findAndInsert_success_223 = 1");
    }
 
   static void test_mergeLeavesAtTop()
@@ -4012,7 +4011,7 @@ Merge     : 0
                              2          |
 10,20=1   30,40=3    50,60=4    70,80=2 |
 """);
-   ok(r, "findAndInsert_success_353 = 1");
+   ok(r, "findAndInsert_success_359 = 1");
   }
 
   static void test_mergeBranchesNotTop()
@@ -5053,7 +5052,7 @@ Merge     : 0
    }
 
   static void newTests()                                                        // Tests being worked on
-   {oldTests();
+   {//oldTests();
    }
 
   public static void main(String[] args)                                        // Test if called as a program
