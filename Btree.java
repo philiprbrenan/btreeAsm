@@ -1407,9 +1407,9 @@ chipStop = true;
    }
 
   private Process.Register mergeBranchesNotTop                                  // Merge the two consecutive child branches of a branch that is not the root. Neither of the child branches is the topmost leaf.
-   (Process.Register ParentIndex, Process.Register LeftBranch)
+   (Stuck p, Process.Register ParentIndex, Process.Register LeftBranch)
    {final Process P = ParentIndex.registerProcess();
-    final Stuck   p = new Stuck(P, "mergeBranchesNotTopParent");                // Parent stuck
+    //final Stuck   p = new Stuck(P, "mergeBranchesNotTopParent");                // Parent stuck
     final Stuck   l = new Stuck(P, "mergeBranchesNotTopLeft");                  // Left split stuck
     final Stuck   r = new Stuck(P, "mergeBranchesNotTopRight");                 // Right split stuck
     final Process.Register ck = P.new Register("childKey",   stuckAddressSize); // Index in memory of the left stuck
@@ -1424,7 +1424,7 @@ chipStop = true;
 
     //P.new Instruction() {void action() {say("AAAA 55 mergeBranchesNotTop", ParentIndex, LeftBranch);}};
 
-    p.stuckGet(ParentIndex);                                                    // Load parent
+    //p.stuckGet(ParentIndex);                                                    // Load parent
 
     P.new Block()
      {void code()
@@ -4065,6 +4065,7 @@ Merge     : 0
    {sayCurrentTestName();
     final Btree            b = test_put_reload();
     final Process          P = b.new Process("findAndInsert");
+    final Stuck            s = b.new Stuck(P, "findAndInsert");
     final Process.Register i = P.register("i", b.btreeAddressSize);
     final Process.Register j = P.register("j", b.stuckAddressSize);
     ok(b.btreePrint(), """
@@ -4085,7 +4086,8 @@ Merge     : 0
 
     i.registerSet(15);
     j.registerSet(0);
-    b.mergeBranchesNotTop(i, j);
+    s.stuckGet(i);
+    b.mergeBranchesNotTop(s, i, j);
     b.maxSteps = 2000;
     b.chipRunJava();
     //stop(b.btreePrint());
