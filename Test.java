@@ -316,8 +316,19 @@ public class Test                                                               
     return null;                                                                // Not called in a test
    }
 
+  static int  currentTestNumber = 0;
+  static long currentTestTime = System.nanoTime();
+
+  static double elapsedTime()                                                    // Elapsed time since last call or start of run
+   {final long    e = System.nanoTime();
+    final double  d = (e - currentTestTime) / 1_000_000_000.0;
+    currentTestTime = e;
+    return d;
+   }
+
   static void sayCurrentTestName()                                              // Name of the current test
-   {say(currentTestName());
+   {say(String.format("%2d %6.2f", ++currentTestNumber, elapsedTime()),
+      currentTestName());
    }
 
   static String testLine()                                                      // Locate line associated with the current test
