@@ -3433,18 +3433,32 @@ Merge     : 0
     final Process          P = b.new Process("put");
     final Process.Register k = P.register("k", b.bitsPerKey);
     final Process.Register d = P.register("d", b.bitsPerData);
+    final Process.Register i = P.register("i", 8);
+    final Process.Register l = P.register("l", 1);
 
-    b.maxSteps     = 2000;
+    b.maxSteps     = 20000;
     b.supressMerge = true;                                                      // Supress merges as they have not been developed yet
 
     final int N = 32;
-    for (int i = 1; i <= N; i++)
-     {P.processClear();
-      k.registerSet(i);
-      d.registerSet(i+1);
-      b.put(P, k, d);
-      b.chipRunJava();
-     }
+    k.registerSet(0);
+    d.registerSet(0);
+    P.new Block()
+     {void code()
+       {P.new Instruction()
+         {void action()
+           {k.inc();
+            d.copy(k); d.inc();
+           }
+         };
+        b.put(P, k, d);
+        P.new Instruction()
+         {void action()
+           {P.GoNotZero(start, l.lt(k, N));
+           }
+         };
+       }
+     };
+    b.chipRunJava();
     //stop(b.btreePrint());
     //stop(b.btreeSave());
     ok(b.btreePrint(), test_put_print());
@@ -3465,7 +3479,6 @@ Merge     : 0
     b.supressMerge = false;
 
     final int N = 32;
-//  final int N = 16;
     k.registerSet(0);
     d.registerSet(0);
     P.new Block()
@@ -5350,7 +5363,12 @@ Merge     : 0
    }
 
   static void newTests()                                                        // Tests being worked on
-   {oldTests();
+   {//oldTests();
+    test_put();
+    test_put_merge();
+    test_put_reload();
+    test_put_reverse();
+    test_put_random();
    }
 
   public static void main(String[] args)                                        // Test if called as a program
