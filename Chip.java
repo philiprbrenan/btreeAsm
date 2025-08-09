@@ -359,6 +359,20 @@ endmodule
      {R(); if (condition.registerGet() == 0) processNextPc = label.offset;
      }
 
+    String processNextPcV(Label label)                                          // Set the next program counter for this process
+     {return processNextPcName()+" = "+label.offset+";";
+     }
+
+    String GotoV     (Label label)                                               // Goto a label unconditionally
+     {return processNextPcV(label);
+     }
+    String GoNotZeroV(Label label, Register condition)                           // Go to a specified label if the value of a field is not zero
+     {return "if ("+condition.registerGetV()+" >  0)"+processNextPcV(label);
+     }
+    String GoZeroV   (Label label, Register condition)                           // Go to a specified label if the value of a field is zero
+     {return "if ("+condition.registerGetV()+" == 0)"+processNextPcV(label);
+     }
+
     abstract class If                                                           // An implementation of an if statement
      {final Label Else = new Label(), End = new Label();                        // Components of an if statement
 
@@ -398,6 +412,8 @@ endmodule
       int registerGet()                                                         // Return the registerâs value as an integer
        {return value.length() == 0 ? 0 : (int) value.toLongArray()[0];          // Relies on the fact that this Java code is only used for testing, unlike the Verilog version
        }
+
+      String registerGetV() {return registerName();}                            // Return the registerâs value as an integer
 
       void registerSet(int Value)                                               // Set the value of the register from an integer
        {final int l = min(registerBits, Integer.SIZE-1);                        // The most bits we can hope to represent
@@ -451,15 +467,28 @@ endmodule
       Process.Register le (Register a, int b) {R(); rs(a.rg() <= b ? 1 : 0); return this;}               // Set the target register to one if the test between the 'a' and 'b' register is true else 0
       Process.Register lt (Register a, int b) {R(); rs(a.rg() <  b ? 1 : 0); return this;}               // Set the target register to one if the test between the 'a' and 'b' register is true else 0
 
-
-      String zeroV() {N(); return rn() + " = 0;";}                              // Zero a register in Verilog
-      String oneV () {N(); return rn() + " = 1;";}                              // One a register in Verilog
-      String incV () {N(); return rn() + " = " + rn()+"+1;";}                   // Increment a register in Verilog
-      String decV () {N(); return rn() + " = " + rn()+"-1;";}                   // Decrement a register in Verilog
-      String notV () {N(); return rn() + " = " + rn()+" != 0 ? 0 : 1;";}        // Not a register in Verilog
+      String zeroV() {return rn() + " = 0;";}                                   // Zero a register in Verilog
+      String oneV () {return rn() + " = 1;";}                                   // One a register in Verilog
+      String incV () {return rn() + " = " + rn()+"+1;";}                        // Increment a register in Verilog
+      String decV () {return rn() + " = " + rn()+"-1;";}                        // Decrement a register in Verilog
+      String notV () {return rn() + " = " + rn()+" != 0 ? 0 : 1;";}             // Not a register in Verilog
+      String halfV() {return rn() + " = " + rn()+" >> 1;";}                     // Half a number
       String addV (Register source)                                             // Add the source register to the current register in Verilog
-       {N(); return rn() + " = " + rn() + " + " +source.rn() + ";";
+       {return rn() + " = " + rn() + " + " +source.rn() + ";";
        }
+      String gtV (Register a, Register b) {return rn() + " = "+a.rn() +"> "+ b.rn()+" ? 1 : 0;";} // Set the target register to one if the test between the 'a' and 'b' register is true else 0
+      String geV (Register a, Register b) {return rn() + " = "+a.rn() +">="+ b.rn()+" ? 1 : 0;";} // Set the target register to one if the test between the 'a' and 'b' register is true else 0
+      String eqV (Register a, Register b) {return rn() + " = "+a.rn() +"=="+ b.rn()+" ? 1 : 0;";} // Set the target register to one if the test between the 'a' and 'b' register is true else 0
+      String neV (Register a, Register b) {return rn() + " = "+a.rn() +"!="+ b.rn()+" ? 1 : 0;";} // Set the target register to one if the test between the 'a' and 'b' register is true else 0
+      String leV (Register a, Register b) {return rn() + " = "+a.rn() +"<="+ b.rn()+" ? 1 : 0;";} // Set the target register to one if the test between the 'a' and 'b' register is true else 0
+      String ltV (Register a, Register b) {return rn() + " = "+a.rn() +"< "+ b.rn()+" ? 1 : 0;";} // Set the target register to one if the test between the 'a' and 'b' register is true else 0
+
+      String gtV (Register a, int b) {return rn() + " = " + a.rn() +"> "+ b +" ? 1 : 0;";} // Set the target register to one if the test between the 'a' and 'b' register is true else 0
+      String geV (Register a, int b) {return rn() + " = " + a.rn() +">="+ b +" ? 1 : 0;";} // Set the target register to one if the test between the 'a' and 'b' register is true else 0
+      String eqV (Register a, int b) {return rn() + " = " + a.rn() +"=="+ b +" ? 1 : 0;";} // Set the target register to one if the test between the 'a' and 'b' register is true else 0
+      String neV (Register a, int b) {return rn() + " = " + a.rn() +"!="+ b +" ? 1 : 0;";} // Set the target register to one if the test between the 'a' and 'b' register is true else 0
+      String leV (Register a, int b) {return rn() + " = " + a.rn() +"<="+ b +" ? 1 : 0;";} // Set the target register to one if the test between the 'a' and 'b' register is true else 0
+      String ltV (Register a, int b) {return rn() + " = " + a.rn() +"< "+ b +" ? 1 : 0;";} // Set the target register to one if the test between the 'a' and 'b' register is true else 0
      } // Register
 
     Register register(String RegisterName, int RegisterBits)                    // Create the register
@@ -493,6 +522,7 @@ endmodule
       if (code.size() == 0) return;                                             // No code to run
       if (processPc >= code.size())                                             // Stop the run if we go off the end of the code
        {chipRunning = false;
+        processPc++;                                                            // This matches the default clause in the generated verilog code
         //err("Stopped by process:", processName);                              // Make sure we know who stopped the chip
         return;
        }
@@ -1203,8 +1233,6 @@ Chip: Test             step: 8, maxSteps: 10, running: 0, returnCode: 1
        }
      };
 
-    m.memoryProcessGenerate();
-
     C.maxSteps = 100;
     C.chipRunJava();
     //stop(C);
@@ -1217,7 +1245,7 @@ Chip: Test             step: 50, maxSteps: 100, running: 0, returnCode: 1
         Register: Main_b_1                         = 1597
         Register: Main_c_2                         = 1597
         Register: Main_i_3                         = 16
-    Process: 1 - Memory                instructions: 2, pc: 0, nextPc: 0, memory: 16 * 16 = 1, 2, 3, 5, 8, 13, 21, 34, 55, 89, 144, 233, 377, 610, 987, 1597
+    Process: 1 - Memory                instructions: 1, pc: 0, nextPc: 0, memory: 16 * 16 = 1, 2, 3, 5, 8, 13, 21, 34, 55, 89, 144, 233, 377, 610, 987, 1597
       Registers :
         Register: Memory_Memory_Value_0            = 1597
         Register: Memory_Memory_1_index_1          = 15
@@ -1260,23 +1288,43 @@ Chip: Test             step: 50, maxSteps: 100, running: 0, returnCode: 1
         k.registerSet(0);
         i.registerSet(0);
        }
+      String verilog()
+       {return              "         "+
+        a.registerSetV(0)+"\n         "+
+        b.registerSetV(1)+"\n         "+
+        c.registerSetV(0)+"\n         "+
+        k.registerSetV(0)+"\n         "+
+        i.registerSetV(0);
+       }
      };
 
     p.new Block()
      {void code()
        {p.new Instruction()
          {void action()
-           {c.copy(a); c.add(b);
-            i.inc();
+           {c.copy(a); c.add(b); i.inc();
             s.append(" "+i.registerGet()+"=>"+c.registerGet());
             k.gt(i, 6);
             p.GoNotZero(end, k);
            }
+          String verilog()
+           {return         "             "+
+            c.copyV(a)  +"\n             "+
+            c.addV(b)   +"\n             "+
+            i.incV()    +"\n             "+
+            k.gtV(i, 6) +"\n             "+
+            p.GoNotZeroV(end, k);
+           }
          };
         p.new Instruction()
          {void action()
-           {a.copy(b); b.copy(c);
-            p.Goto(start);
+           {a.copy(b); b.copy(c); p.Goto(start);
+           }
+          String verilog()
+           {return       "             "+
+            a.copyV(b)+"\n             "+
+            b.copyV(c)+"\n             "+
+            p.GotoV(start);
            }
          };
        }
@@ -1285,6 +1333,7 @@ Chip: Test             step: 50, maxSteps: 100, running: 0, returnCode: 1
     C.maxSteps = 100;
     C.chipRunJava();
     ok(s, " 1=>1 2=>2 3=>3 4=>5 5=>8 6=>13 7=>21");
+    C.chipRunVerilog();
    }
 
   static void test_if()
@@ -1356,8 +1405,9 @@ Chip: Test             step: 0, maxSteps: 10, running: 0, returnCode: 0
    }
 
   static void newTests()                                                        // Tests being worked on
-   {oldTests();
-    test_saveLoad();
+   {//oldTests();
+    test_block();
+    //test_arithmeticFibonacci();
    }
 
   public static void main(String[] args)                                        // Test if called as a program
