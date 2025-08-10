@@ -26,7 +26,8 @@ class Chip extends Test                                                         
   static Chip chip(String Name) {return new Chip(Name);}                        // Create a new chip
 
   void chipRunJava()                                                            // Run the processes == programs defined on this chip using the Java implementation
-   {for(Process p : processes) p.processInit();                                 // Initialize each program
+   {returnCode = 0;                                                             // Reset return code
+    for(Process p : processes) p.processInit();                                 // Initialize each process == program
     chipRunning = true;                                                         // Show the program as running
     deleteFile(javaTraceFile);                                                  // Remove java trace file
     for(step = 0; chipRunning && step < maxSteps; ++step)                       // Run each program
@@ -261,9 +262,7 @@ module $chip_name;                                                              
 
     for(Process p: processes)                                                   // Single thread the processes in a constant order
      {v.append("      processCurrent = "+p.processNumber+";");
-      v.append("""
-      clock = 0; #1; clock = 1; #1;
-""");
+      v.append(" clock = 0; #1; clock = 1; #1; // "+p.processNameAndNumber()+"\n");
      }
     v.append("""
       if (step >= 0) chipPrint();                                               // Steps prior to zero are for initialization to make Java and Verilog match
@@ -290,7 +289,7 @@ endmodule
                   " && timeout 1m ./"      +chipName;
     final var e = new ExecCommand(c);
 
-    ok(readFileAsString(verilogTraceFile), readFileAsString(javaTraceFile));    // Compare excution traces
+    ok(readFileAsString(verilogTraceFile), readFileAsString(javaTraceFile));    // Compare execution traces - assumes that the java version has been executed to produce a comparable trace
     return ""+v;
    }
 
@@ -302,6 +301,7 @@ endmodule
     final int                memoryWidth;                                       // The width of each memory element in bits
     final int                memorySize;                                        // The number of memory elements in the memory available to this process
     final BitSet[]           memory;                                            // Memory is represented as an array of bit vectors
+    final BitSet[]           memoryBackUp;                                      // Before a java run startss we back u the memory ehre for this process o that we can start in the stme stae withthe equiovalent verilog run allowing us to confirm that memory evolves in the same way for both Java and Verilog
     final Register           memoryRegister;                                    // A register that is used to interact with memory
     final Children<Transaction> transactions = new Children<>();                // Transactions representing work requests to this process
     final Children<Register> registers       = new Children<>();                // Registers used in this process
@@ -448,6 +448,10 @@ endmodule
 
       public String toString() {return registerName()+" = "+registerGet();}     // Print the register
 
+      void registerDeclare(Verilog v)                                           // Declare a register in verilog
+       {v.A("reg ["+registerBits+"] "+registerName+";");                                                                                //
+       }
+
 //D3 Arithmetic                                                                 // Operations on registers
 
       Process.Register zero() {R(); rs(0); return this;}                                                 // Zero a register in Java
@@ -513,6 +517,7 @@ endmodule
       memorySize    = MemorySize;                                               // Create memory
       memoryWidth   = MemoryWidth;
       memory        = new BitSet[memorySize];
+      memoryBackUp  = new BitSet[memorySize];
       for (int i = 0; i < memorySize; i++) memory[i] = new BitSet(memoryWidth);
       memoryRegister = memoryWidth > 0 ?                                        // Only add a memory cache register if there is some memory associated with this process
         new Register("Memory_Value", memoryWidth) : null;
@@ -520,6 +525,13 @@ endmodule
 
     void processInit()                                                          // Get ready to execute the program
      {N(); processPc = 0;                                                       // Program always starts at the first instruction
+      memoryBackUp();                                                           // Back up memory for each process so we can start in the same state in Verilog
+      for (Register r: registers) r.registerSet(0);                             // Clear all registers
+      for (Transaction t: transactions)                                         // Initialize transactions
+       {t.transactionRc          = 0;
+        t.transactionFinishedAt  = -1;
+        t.transactionRequestedAt = -1;
+       }
      }
 
     void processStep()                                                          // Execute one step in the program
@@ -539,15 +551,18 @@ endmodule
 
 //D3 Verilog                                                                    // Generate a Verilog always block to implement this process
 
-    String processPcName()     {N(); return processName+"_pc";}                 // Program counter
-    String processNextPcName() {N(); return processName+"_next_pc";}            // Next program counter
-    String processMemoryName() {N(); return processName+"_memory";}             // Name of the memory block used by this process
+    String processNameAndNumber()                                               // Used to generate skip to comments
+     {return String.format("process_%s_%04d", processName, processNumber);
+     }
+    String processPcName()     {return processName+"_pc";}                      // Program counter
+    String processNextPcName() {return processName+"_next_pc";}                 // Next program counter
+    String processMemoryName() {return processName+"_memory";}                  // Name of the memory block used by this process
     boolean hasMemory()        {return memoryWidth > 0 && memorySize > 0;}      // Whether this process has any memory attached directly to it
 
     String generateProcessVerilog()                                             // Generate Verilog code for this process
      {final StringBuilder v = new StringBuilder();
       N();
-      v.append("\n// Process: "+processName+"\n\n");
+      v.append("\n// Process: "+processName+"  "+processNameAndNumber()+"\n\n");
       if (hasMemory())                                                          // Not all processes have memory attached to them: declare memeory for those that do.
        {v.append("  reg ["+memoryWidth+"] "+processMemoryName()+"["+memorySize+"];\n");
        }
@@ -589,8 +604,11 @@ endmodule
          }
        }
 
-      if (hasMemory())                                                          // Clear memory attached to the process
-       {v.append("       for(i = 0; i < "+memorySize+"; i = i+1) "+processMemoryName()+"[i] = 0;\n");
+      if (hasMemory())                                                          // Load memory to match the state at the start of the Java run
+       {for(int i = 0; i < memorySize; i++)
+         {final int m = memoryGetBackUp(i);
+          v.append("       "+processMemoryName()+"["+i+"] = "+m+";\n");
+         }
        }
 
       v.append("""
@@ -624,6 +642,12 @@ endmodule
 
 //D3 Memory                                                                     // Process operations on memory
 
+    protected int memoryGetBackUp(int Index)                                    // Get the value of the indexed location in the backup copy of memory made at the start of the java run so we could confirm that memory evolves from a known state
+     {final BitSet b = memoryBackUp[Index];                                     // Read memory as bit set
+      final long[]V = b.toLongArray();                                          // Convert bitset to long
+      return V.length > 0 ? (int)b.toLongArray()[0] : 0;                        // Take the first element if it exists relying on the fact that in the java code we test with just sufficiently large numbers to test the verilog in priniple
+     }
+
     protected int memoryGetNoSet(int Index)                                     // Get a memory element as an integer without setting the memory cache register
      {final BitSet b = memory[Index];                                           // Read memory as bit set
       final long[]V = b.toLongArray();                                          // Convert bitset to long
@@ -631,7 +655,7 @@ endmodule
      }
 
     protected String memoryGetNoSetV(int Index)                                 // Get a memory element as an integer without setting the memory cache register in Verilog
-     {N(); return processMemoryName()+"["+Index+"]";                                 // Read memory
+     {N(); return processMemoryName()+"["+Index+"]";                            // Read memory
      }
 
     int memoryGet(int Index)                                                    // Get a memory element indexed by an integer as an integer setting the memory cache register to the value of the element retrieved
@@ -681,6 +705,12 @@ endmodule
 
     void memorySet(Verilog v, int Value, int Index)                             // Set a memory element in Verilog
      {v.assign(processMemoryName()+"["+Index+"]", Value);
+     }
+
+    void memoryBackUp()                                                         // Back up memory
+     {for (int i = 0; i < memory.length; i++)
+       {memoryBackUp[i] = (BitSet)memory[i].clone();
+       }
      }
 
 //D3 Transaction                                                                // A transaction allows other processes on the chip to request services from this process
@@ -1169,6 +1199,8 @@ Chip: Test             step: 50, maxSteps: 100, running: 0, returnCode: 1
 """);
 
     ok(a, "Main_a_0 = 987");
+    C.chipRunVerilog();
+    C.chipRunJava();
     C.chipRunVerilog();
    }
 
