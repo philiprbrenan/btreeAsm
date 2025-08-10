@@ -70,14 +70,14 @@ class Verilog extends Test                                                      
 
   class If                                                                      // If
    {If(String condition)
-     {A("if ("+condition+") begin");                                            //
+     {A("if ("+condition+") begin");
       indent();
       final int t = lines.size();
       Then();
       final int T = lines.size();
       if (T == t) stop("Missing then");
       end();
-      A("else begin");                                                          //
+      A("else begin");
       indent();
       final int e = lines.size();
       Else();
@@ -89,6 +89,32 @@ class Verilog extends Test                                                      
      }
     void Then() {}
     void Else() {}
+   }
+
+  class Case                                                                    // Case
+   {Case(int N, String condition)
+     {A("case ("+condition+")");
+      indent();
+      for (int i = 0; i < N; i++)
+       {A(""+i+": begin");
+        indent();
+        Choice(i);
+        end();
+       }
+      A("default: begin");
+      indent();
+      final int d = lines.size();
+      Default();
+      final int D = lines.size();
+      end();
+      if (D == d)                                                               // Remove default if empty
+       {lines.pop(); lines.pop();
+       }
+      dedent();
+      A("endcase");
+     }
+    void Choice(int i) {}
+    void Default()     {}
    }
 
   class For                                                                     // For
@@ -154,15 +180,39 @@ end
 """);
    }
 
+  static void test_case()
+   {final Verilog v = new Verilog();
+    v.new Case(2, "i")
+     {void Choice(int i) {v.assign("c",  i);}
+      void Default()     {v.assign("c", -1);}
+     };
+    //stop(v);
+    ok(""+v, """
+case (i)
+  0: begin
+    c = 0;
+  end
+  1: begin
+    c = 1;
+  end
+  default: begin
+    c = -1;
+  end
+endcase
+""");
+   }
+
   static void oldTests()                                                        // Tests thought to be in good shape
    {test_ext();
     test_assign();
     test_if();
     test_for();
+    test_case();
    }
 
   static void newTests()                                                        // Tests being worked on
    {oldTests();
+    //test_case();
    }
 
   public static void main(String[] args)                                        // Test if called as a program
