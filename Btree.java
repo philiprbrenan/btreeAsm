@@ -397,6 +397,16 @@ chipStop = true;
        }
      }
 
+    void push(Verilog v, Process.Register Key, Process.Register Data)           // Push a key, data pair to the local copy of the stuck
+     {v.new Case(maxStuckSize, size.registerName())
+       {void Choice(int i)
+         {keys[i].copy(v, Key);
+          data[i].copy(v, Data);
+         }                                                                                //
+       };
+      size.inc(v);
+     }
+
     void pop()                                                                  // Pop a key, data pair from the local copy of the stuck
      {R(); final int N = size.registerGet();
       if (N == 0)
@@ -5332,6 +5342,29 @@ Merge     : 0
 """);
    }
 
+  static void test_verilog_push()
+   {sayCurrentTestName();
+    final Btree   b = new Btree(4, 4, 8, 8);
+    final Process P = b.new Process("Stuck");
+    final Stuck   s = b.new Stuck(P, "stuck");
+    final Process.Register k = P.register("k", b.bitsPerKey);
+    final Process.Register d = P.register("d", b.bitsPerData);
+
+    for (int i = 0; i < b.maxStuckSize; i++)
+     {final int I = i;
+      P.new Instruction()
+       {void action()
+         {k.registerSet(I+1); d.registerSet(I+2); s.push(k, d);
+         }
+        void verilog(Verilog v)
+         {k.registerSet(v, I+1); d.registerSet(v, I+2); s.push(v, k, d);
+         }
+       };
+     }
+    b.chipRunJava();
+    b.chipRunVerilog();
+   }
+
   static void oldTests()                                                        // Tests thought to be in good shape
    {test_create1();
     test_create2();
@@ -5377,13 +5410,7 @@ Merge     : 0
 
   static void newTests()                                                        // Tests being worked on
    {//oldTests();
-    test_mergeLeavesIntoRoot();
-    test_mergeLeavesNotTop();
-    test_mergeLeavesAtTop();
-    test_mergeBranchesIntoRoot();
-    test_mergeBranchesNotTop();
-    test_mergeBranchesAtTop();
-    test_delete();
+    test_verilog_push();
    }
 
   public static void main(String[] args)                                        // Test if called as a program
