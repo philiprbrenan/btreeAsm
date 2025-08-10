@@ -544,7 +544,8 @@ public class Test                                                               
    }
 
   static String readFileAsString(String filePath)                               // Read a file into a string
-   {return joinLines(readFile(filePath));
+   {final Stack<String> s = readFile(filePath);
+    return joinLines(s);
    }
 
   static String tempFile()                                                      // Create a temporary file
