@@ -599,6 +599,14 @@ chipStop = true;
       data[N].copy(Data);
      }
 
+    void setDataAt(Verilog v, Process.Register Index, Process.Register Data)               // Set the indexed data pair
+     {v.new Case(maxStuckSize, Index.registerName())
+       {void Choice(int i)
+         {data[i].copy(v, Data);
+         }
+       };
+     }
+
     void insertElementAt(Process.Register Index, Process.Register Key, Process.Register Data)           // Set the indexed key, data pair
      {R(); final int N = Index.registerGet();
       final int S = size.registerGet();
@@ -2540,7 +2548,7 @@ Stuck: stuck size: 5, leaf: 1, root
     final Process.Register i = P.register("i", b.stuckAddressSize);
 
     P.processClear();
-
+    s.stuckGetRoot();
     final int N = 4;
     for (int j = 0; j < N; j++)
      {final int J = j;
@@ -2550,13 +2558,19 @@ Stuck: stuck size: 5, leaf: 1, root
           d.registerSet((J+1)*2);
           s.setDataAt(i, d);
          }
+        void verilog(Verilog v)
+         {i.registerSet(v, J);
+          d.registerSet(v, (J+1)*2);
+          s.setDataAt(v, i, d);
+         }
        };
      }
 
     b.maxSteps = 100;
     b.chipRunJava();
+    b.chipRunVerilog();
     ok(s, """
-Stuck: Stuck size: 4, leaf: 1, root
+Stuck: stuck size: 4, leaf: 1, root
  0     0 =>    2
  1     1 =>    4
  2     2 =>    6
@@ -2573,20 +2587,26 @@ Stuck: Stuck size: 4, leaf: 1, root
     final Process.Register d = P.register("d", b.bitsPerData);
 
     P.processClear();
-
+    s.stuckGetRoot();
     P.new Instruction()
      {void action()
        {k.registerSet(5);
         d.registerSet(55);
         s.setPastLastElement(k, d);
        }
+      void verilog(Verilog v)
+       {k.registerSet(v, 5);
+        d.registerSet(v, 55);
+        s.setPastLastElement(v, k, d);
+       }
      };
 
     b.maxSteps = 100;
     b.chipRunJava();
+    b.chipRunVerilog();
     //stop(s.dump());
     ok(""+s.dump(), """
-Stuck: Stuck size: 4, leaf: 1, root
+Stuck: stuck size: 4, leaf: 1, root
  0     0 =>    1
  1     1 =>    2
  2     2 =>    3
@@ -2596,7 +2616,7 @@ Stuck: Stuck size: 4, leaf: 1, root
  6     0 =>    0
  7     0 =>    0
 Found     : 0
-Key       : 3
+Key       : 0
 FoundKey  : 0
 Data      : 0
 BtreeIndex: 0
@@ -5607,7 +5627,7 @@ Merge     : 0
 
   static void newTests()                                                        // Tests being worked on
    {//oldTests();
-    test_setElementAt();
+    test_setPastLastElement();
    }
 
   public static void main(String[] args)                                        // Test if called as a program
