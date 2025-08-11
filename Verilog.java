@@ -57,8 +57,8 @@ class Verilog extends Test                                                      
      }
    }
 
-  void begin()     {A("begin"); indent();}                                      // Begin
-  void end()       {dedent(); A("end");}                                        // End
+  void begin(String...ints) {A("begin"); indent(); i(ints);}                    // Begin with some optional integer declarations
+  void end()                {dedent(); A("end");}                               // End
 
   void assign(String a, String b)                                               // Assign
    {A(a + " = " + b + ";");
@@ -75,7 +75,7 @@ class Verilog extends Test                                                      
       final int t = lines.size();
       Then();
       final int T = lines.size();
-      if (T == t) stop("Missing then");
+      if (T == t) stop("Missing Then");
       end();
       A("else begin");
       indent();
@@ -162,6 +162,15 @@ class Verilog extends Test                                                      
      {a(", "+s[i]);
      }
     a(");");
+   }
+
+  void sum(String...s)                                                          // Sum ssintegers
+   {if (s.length < 2) stop("Nothing to sum");
+    A(s[0]+" = "+ s[1]);
+    for (int i = 2; i < s.length; i++)
+     {a(" + "+s[i]);
+     }
+    a(";");
    }
 
 //D0 Tests                                                                      // Testing
@@ -252,6 +261,35 @@ $display("Hello %s" , a );
 """);
    }
 
+  static void test_begin()
+   {final Verilog v = new Verilog();
+    v.begin("a", "b");
+    v.end();
+    //stop(v);
+    ok(v, """
+begin
+  integer a;
+  integer b;
+end
+""");
+   }
+
+  static void test_sum()
+   {final Verilog v = new Verilog();
+    v.begin("a", "b", "c");
+    v.sum("a", "b", "c");
+    v.end();
+    //stop(v);
+    ok(v, """
+begin
+  integer a;
+  integer b;
+  integer c;
+  a = b  + c ;
+end
+""");
+   }
+
   static void oldTests()                                                        // Tests thought to be in good shape
    {test_ext();
     test_assign();
@@ -260,6 +298,8 @@ $display("Hello %s" , a );
     test_case();
     test_comment();
     test_display();
+    test_begin();
+    test_sum();
    }
 
   static void newTests()                                                        // Tests being worked on
