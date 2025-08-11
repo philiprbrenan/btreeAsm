@@ -3150,18 +3150,24 @@ Merge     : 0
 
   static void test_splitLow()
    {sayCurrentTestName();
-    final Btree b = test_push();
-    final Process P = b.processes.get("Stuck");
-    final Stuck   s = b.new Stuck(P, "stuck");
+    final Btree            b = test_push();
+    final Process          P = b.processes.get("Stuck");
+    final Stuck            s = b.new Stuck(P, "stuck");
+    final Stuck            l = b.new Stuck(P, "left");
+    final Stuck            r = b.new Stuck(P, "right");
+    final Process.Register L = P.new Register("Left",  8);
+    final Process.Register R = P.new Register("Right", 8);
     final Process.Register k = P.register("k", b.bitsPerKey);
     final Process.Register d = P.register("d", b.bitsPerData);
-    Stuck l = b.new Stuck(P, "Left");
 
     P.processClear();
     s.stuckGetRoot();
     P.new Instruction()
      {void action()
        {s.size.zero();
+       }
+      void verilog(Verilog v)
+       {s.size.zero(v);
        }
      };
 
@@ -3175,13 +3181,27 @@ Merge     : 0
        };
      }
 
+    P.new Instruction()
+     {void action()
+       {L.registerSet(1);
+        R.registerSet(2);
+       }
+      void verilog(Verilog v)
+       {L.registerSet(v, 1);
+        R.registerSet(v, 2);
+       }
+     };
+
+    l.stuckGet(L);
+    r.stuckGet(R);
+
     s.splitLow(l);
 
     b.maxSteps = 100;
     b.chipRunJava();
     //stop(s);
     ok(s, """
-Stuck: Stuck size: 4, leaf: 1, root
+Stuck: stuck size: 4, leaf: 1, root
  0     4 =>    5
  1     5 =>    6
  2     6 =>    7
@@ -3189,7 +3209,7 @@ Stuck: Stuck size: 4, leaf: 1, root
 """);
     //stop(l);
     ok(l, """
-Stuck: Left size: 4, leaf: 0, root
+Stuck: left size: 4, leaf: 0, index: 1
  0     0 =>    1
  1     1 =>    2
  2     2 =>    3
@@ -3201,28 +3221,28 @@ Stuck: Left size: 4, leaf: 0, root
    {sayCurrentTestName();
     final Btree b = test_push();
     final Process P = b.processes.get("Stuck");
-    final Stuck   s = b.new Stuck(P, "stuck");
+    final Stuck            s = b.new Stuck(P, "stuck");
+    final Stuck            l = b.new Stuck(P, "left");
+    final Stuck            r = b.new Stuck(P, "right");
+    final Process.Register L = P.new Register("Left",  8);
+    final Process.Register R = P.new Register("Right", 8);
     final Process.Register k = P.register("k", b.bitsPerKey);
-    final Process.Register d = P.register("d", b.bitsPerData);
-    Stuck l = b.new Stuck(P, "Left");
 
     P.processClear();
     s.stuckGetRoot();
     P.new Instruction()
      {void action()
-       {s.size.zero();
+       {L.registerSet(1);
+        R.registerSet(2);
+       }
+      void verilog(Verilog v)
+       {L.registerSet(v, 1);
+        R.registerSet(v, 2);
        }
      };
 
-    for (int i = 0; i < b.maxStuckSize-1; i++)
-     {final int I = i;
-      P.new Instruction()
-       {void action()
-         {k.registerSet(I); d.registerSet(I+1);
-          s.push(k, d);
-         }
-       };
-     }
+    l.stuckGet(L);
+    r.stuckGet(R);
 
     s.splitLowButOne(l, k);
 
@@ -5850,7 +5870,7 @@ Merge     : 0
 
   static void newTests()                                                        // Tests being worked on
    {//oldTests();
-    test_splitIntoThree();
+    test_splitLow();
    }
 
   public static void main(String[] args)                                        // Test if called as a program
