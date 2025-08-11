@@ -40,6 +40,11 @@ class Chip extends Test                                                         
      }
    }
 
+  void chipRun()                                                                // Run the Java version followed by the Verilog version. The output of the Verilog version is compared with the expected output of the definitive Java version
+   {chipRunJava();                                                                                //
+    chipRunVerilog();                                                                                //
+   }
+
   void chipStop(int ReturnCode)                                                 // Stop the chip
    {if (chipStop) err("Error:", ReturnCode);
     returnCode = ReturnCode; chipRunning = false;
