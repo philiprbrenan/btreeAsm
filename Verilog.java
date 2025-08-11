@@ -92,10 +92,31 @@ class Verilog extends Test                                                      
    }
 
   class Case                                                                    // Case
-   {Case(int N, String condition)
+   {Case(int N, String condition)                                               // Start at zero
      {A("case ("+condition+")");
       indent();
       for (int i = 0; i < N; i++)
+       {A(""+i+": begin");
+        indent();
+        Choice(i);
+        end();
+       }
+      A("default: begin");
+      indent();
+      final int d = lines.size();
+      Default();
+      final int D = lines.size();
+      end();
+      if (D == d)                                                               // Remove default if empty
+       {lines.pop(); lines.pop();
+       }
+      dedent();
+      A("endcase");
+     }
+    Case(int M, int N, String condition)                                        // Range start, end
+     {A("case ("+condition+")");
+      indent();
+      for (int i = M; i < N; i++)
        {A(""+i+": begin");
         indent();
         Choice(i);
@@ -128,6 +149,10 @@ class Verilog extends Test                                                      
       end();
      }
     void body() {}
+   }
+
+  void comment(String s)                                                        // Comment
+   {A("// "+s);
    }
 
 //D0 Tests                                                                      // Testing
@@ -202,17 +227,25 @@ endcase
 """);
    }
 
+  static void test_comment()
+   {final Verilog v = new Verilog();
+    v.comment("Hello Word");
+    ok(v, """
+// Hello Word
+""");
+   }
+
   static void oldTests()                                                        // Tests thought to be in good shape
    {test_ext();
     test_assign();
     test_if();
     test_for();
     test_case();
+    test_comment();
    }
 
   static void newTests()                                                        // Tests being worked on
    {oldTests();
-    //test_case();
    }
 
   public static void main(String[] args)                                        // Test if called as a program
