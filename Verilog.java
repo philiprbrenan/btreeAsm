@@ -155,6 +155,15 @@ class Verilog extends Test                                                      
    {A("// "+s);
    }
 
+  void display(String...s)                                                      // Display
+   {if (s.length == 0) stop("Nothing to display");
+    A("$display(\""+s[0]+"\"");
+    for (int i = 1; i < s.length; i++)
+     {a(", "+s[i]);
+     }
+    a(");");
+   }
+
 //D0 Tests                                                                      // Testing
 
   static void test_ext()
@@ -235,6 +244,14 @@ endcase
 """);
    }
 
+  static void test_display()
+   {final Verilog v = new Verilog();
+    v.display("Hello %s", "a");
+    ok(v, """
+$display("Hello %s" , a );
+""");
+   }
+
   static void oldTests()                                                        // Tests thought to be in good shape
    {test_ext();
     test_assign();
@@ -242,6 +259,7 @@ endcase
     test_for();
     test_case();
     test_comment();
+    test_display();
    }
 
   static void newTests()                                                        // Tests being worked on
