@@ -833,6 +833,27 @@ chipStop = true;
           Right.size.registerSet(N - Copy-1);
           Right.data[Copy].copy(data[2*Copy+1]);
          }
+
+        void verilog(Verilog v)
+         {for (int i = 0; i < Copy; ++i)
+           {Left.keys[i].copy(v, keys[i]);
+            Left.data[i].copy(v, data[i]);
+           }
+          Left.size.registerSet(v, Copy);
+          Left.data[Copy].copy(v, data[Copy]);
+
+          for (int i = 0; i < Copy; ++i)
+           {Right.keys[i].copy(v, keys[Copy+i+1]);
+            Right.data[i].copy(v, data[Copy+i+1]);
+           }
+
+          v.new Case(maxStuckSize, size.registerName())
+           {void Choice(int N)
+             {Right.size.registerSet(v, N - Copy-1);
+              Right.data[Copy].copy(v, data[2*Copy+1]);
+             }
+           };
+         }
        };
      }
 
@@ -3031,20 +3052,35 @@ Stuck: right size: 2, leaf: 0, index: 2
 
   static void test_splitIntoThree()
    {sayCurrentTestName();
-    final Btree b = test_push();
-    final Process P = b.processes.get("Stuck");
-    final Stuck   s = b.new Stuck(P, "stuck");
-    Stuck l = b.new Stuck(P, "Left");
-    Stuck r = b.new Stuck(P, "Right");
+    final Btree            b = test_push();
+    final Process          P = b.processes.get("Stuck");
+    final Process.Register L = P.new Register("Left",  8);
+    final Process.Register R = P.new Register("Right", 8);
+    final Stuck            s = b.new Stuck(P, "stuck");
+    final Stuck            l = b.new Stuck(P, "left");
+    final Stuck            r = b.new Stuck(P, "right");
 
     P.processClear();
     s.stuckGetRoot();
-    //l.stuckGetRoot();
-    //r.stuckGetRoot();
+    P.new Instruction()
+     {void action()
+       {L.registerSet(1);
+        R.registerSet(2);
+       }
+      void verilog(Verilog v)
+       {L.registerSet(v, 1);
+        R.registerSet(v, 2);
+       }
+     };
+    l.stuckGet(L);
+    r.stuckGet(R);
 
     P.new Instruction()
      {void action()
        {s.size.dec();
+       }
+      void verilog(Verilog v)
+       {s.size.dec(v);
        }
      };
 
@@ -3052,20 +3088,33 @@ Stuck: right size: 2, leaf: 0, index: 2
 
     b.maxSteps = 100;
     b.chipRunJava();
-    //stop(s);
-    ok(s, """
-Stuck: Stuck size: 3, leaf: 1, root
+    b.chipRunVerilog();
+    //stop(s.dump());
+    ok(s.dump(), """
+Stuck: stuck size: 3, leaf: 1, root
  0     0 =>    1
  1     1 =>    2
  2     2 =>    3
+ 3     3 =>    4
+ 4     0 =>    0
+ 5     0 =>    0
+ 6     0 =>    0
+ 7     0 =>    0
+Found     : 0
+Key       : 0
+FoundKey  : 0
+Data      : 0
+BtreeIndex: 0
+StuckIndex: 0
+Merge     : 0
 """);
     //stop(l.dump());
     ok(l.dump(), """
-Stuck: Left size: 1, leaf: 0, root
+Stuck: left size: 1, leaf: 0, index: 1
  0     0 =>    1
- 1     0 =>    2
- 2     0 =>    0
- 3     0 =>    0
+ 1     1 =>    2
+ 2     2 =>    3
+ 3     3 =>    4
  4     0 =>    0
  5     0 =>    0
  6     0 =>    0
@@ -3080,11 +3129,11 @@ Merge     : 0
 """);
     //stop(r.dump());
     ok(r.dump(), """
-Stuck: Right size: 1, leaf: 0, root
+Stuck: right size: 1, leaf: 0, index: 2
  0     2 =>    3
- 1     0 =>    4
- 2     0 =>    0
- 3     0 =>    0
+ 1     1 =>    4
+ 2     2 =>    3
+ 3     3 =>    4
  4     0 =>    0
  5     0 =>    0
  6     0 =>    0
@@ -5801,7 +5850,7 @@ Merge     : 0
 
   static void newTests()                                                        // Tests being worked on
    {//oldTests();
-    test_splitIntoTwo();
+    test_splitIntoThree();
    }
 
   public static void main(String[] args)                                        // Test if called as a program
