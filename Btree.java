@@ -738,6 +738,35 @@ chipStop = true;
       Data.copy(data[N]);
      }
 
+    void search_le(Verilog v, Process.Register Key)                             // Find the first key in the stuck so that the search key is less than or equal to this key
+     {StuckIndex.copy(v, size);                                                 // Default is top if no match found
+      v.new Case(maxStuckSize, size.registerName())
+       {void Choice(int i)
+         {Data.copy(v, data[i]);
+         }
+       };
+
+      for (int i = 0; i < maxStuckSize; ++i)                                    // Check each key
+       {final int I = i;
+        v.new If ("!"+Found.registerName())
+         {void Then()
+           {v.new If (""+I+" < "+size.registerName())
+             {void Then()
+               {v.new If (Key.registerName() +  "<= " +keys[I].registerName())
+                 {void Then()
+                   {Found.one(v);
+                    StuckIndex.registerSet(v, I);
+                    FoundKey.copy(v, keys[I]);
+                    Data    .copy(v, data[I]);
+                   }
+                 };
+               }
+             };
+           }
+         };
+       }
+     }
+
 //D3 Split                                                                      // Split stucks in many and various ways
 
     void splitIntoTwo(Stuck Left, Stuck Right, int Copy)                        // Copy the first key, data pairs into the left stuck, the remainder into the right stuck.  The original source stuck is not modifiedr
@@ -760,6 +789,24 @@ chipStop = true;
             Right.data[i].copy(data[Copy+i]);
            }
           Right.size.registerSet(N - Copy);
+         }
+
+        void verilog(Verilog v)
+         {for (int i = 0; i < Copy; ++i)
+           {Left.keys[i].copy(v, keys[i]);
+            Left.data[i].copy(v, data[i]);
+           }
+          Left  .size.registerSet(v, Copy);
+
+          v.new Case(maxStuckSize, size.registerName())
+           {void Choice(int N)
+             {for (int i = 0; i < N - Copy; ++i)
+               {Right.keys[i].copy(v, keys[Copy+i]);
+                Right.data[i].copy(v, data[Copy+i]);
+               }
+              Right.size.registerSet(v, N - Copy);
+             }
+           };
          }
        };
      }
@@ -2809,6 +2856,7 @@ Stuck: stuck size: 3, leaf: 1, root
 
       b.maxSteps = 100;
       b.chipRunJava();
+      b.chipRunVerilog();
       ok(f, "Stuck_Found_107 = 1");
       ok(i, "Stuck_StuckIndex_112 = "+J);
       ok(k, "Stuck_Key_108 = "+J);
@@ -2821,8 +2869,7 @@ Stuck: stuck size: 3, leaf: 1, root
     final int B = 8, S = 4, K = 8, D = 8;
     final Btree   b = new Btree(B, S+S, K, D);
     final Process P = b.new Process("Stuck");
-
-    Stuck s = b.new Stuck(P, "Stuck");
+    final Stuck   s = b.new Stuck(P, "stuck");
     final Process.Register k = s.Key;
     final Process.Register l = P.register("l", K);
     final Process.Register d = P.register("d", D);
@@ -2837,13 +2884,18 @@ Stuck: stuck size: 3, leaf: 1, root
          {k.registerSet(J); d.registerSet(J+1);
           s.push(k, d);
          }
+        void verilog(Verilog v)
+         {k.registerSet(v, J); d.registerSet(v, J+1);
+          s.push(v, k, d);
+         }
        };
      }
-
-    b.maxSteps = 30;
+    s.stuckPut();
+    b.maxSteps = 300;
     b.chipRunJava();
+    b.chipRunVerilog();
     ok(s, """
-Stuck: Stuck size: 4, leaf: 1, root
+Stuck: stuck size: 4, leaf: 1, root
  0     0 =>    1
  1    10 =>   11
  2    20 =>   21
@@ -2851,19 +2903,25 @@ Stuck: Stuck size: 4, leaf: 1, root
 """);
 
     P.processClear();
+    s.stuckGetRoot();
     P.new Instruction()
      {void action()
        {k.registerSet(11);
         s.search_le(k);
        }
+      void verilog(Verilog v)
+       {k.registerSet(v, 11);
+        s.search_le(v, k);
+       }
      };
 
     b.maxSteps = 100;
     b.chipRunJava();
+    b.chipRunVerilog();
 
     //stop(s.dump());
     ok(s.dump(), """
-Stuck: Stuck size: 4, leaf: 1, root
+Stuck: stuck size: 4, leaf: 1, root
  0     0 =>    1
  1    10 =>   11
  2    20 =>   21
@@ -2882,19 +2940,26 @@ Merge     : 0
 """);
 
     P.processClear();
+    s.stuckGetRoot();
     P.new Instruction()
      {void action()
        {k.registerSet(21);
         s.pop();
         s.search_le(k);
        }
+      void verilog(Verilog v)
+       {k.registerSet(v, 21);
+        s.pop(v);
+        s.search_le(v, k);
+       }
      };
 
     b.chipRunJava();
+    b.chipRunVerilog();
 
     //stop(s.dump());
     ok(s.dump(), """
-Stuck: Stuck size: 3, leaf: 1, root
+Stuck: stuck size: 3, leaf: 1, root
  0     0 =>    1
  1    10 =>   11
  2    20 =>   21
@@ -2905,7 +2970,7 @@ Stuck: Stuck size: 3, leaf: 1, root
  7     0 =>    0
 Found     : 0
 Key       : 30
-FoundKey  : 20
+FoundKey  : 0
 Data      : 31
 BtreeIndex: 0
 StuckIndex: 3
@@ -2915,21 +2980,36 @@ Merge     : 0
 
   static void test_splitIntoTwo()
    {sayCurrentTestName();
-    final Btree b = test_push();
-    final Process P = b.processes.get("Stuck");
-    final Stuck   s = b.new Stuck(P, "stuck");
-    Stuck l = b.new Stuck(P, "Left");
-    Stuck r = b.new Stuck(P, "Right");
+    final Btree            b = test_push();
+    final Process          P = b.processes.get("Stuck");
+    final Process.Register L = P.new Register("Left",  8);
+    final Process.Register R = P.new Register("Right", 8);
+    final Stuck            s = b.new Stuck(P, "stuck");
+    final Stuck            l = b.new Stuck(P, "left");
+    final Stuck            r = b.new Stuck(P, "right");
 
     P.processClear();
-
+    s.stuckGetRoot();
+    P.new Instruction()
+     {void action()
+       {L.registerSet(1);
+        R.registerSet(2);
+       }
+      void verilog(Verilog v)
+       {L.registerSet(v, 1);
+        R.registerSet(v, 2);
+       }
+     };
+    l.stuckGet(L);
+    r.stuckGet(R);
     s.splitIntoTwo(l, r, 2);
 
     b.maxSteps = 100;
     b.chipRunJava();
+    b.chipRunVerilog();
     //stop(s);
     ok(s, """
-Stuck: Stuck size: 4, leaf: 1, root
+Stuck: stuck size: 4, leaf: 1, root
  0     0 =>    1
  1     1 =>    2
  2     2 =>    3
@@ -2937,13 +3017,13 @@ Stuck: Stuck size: 4, leaf: 1, root
 """);
     //stop(l);
     ok(l, """
-Stuck: Left size: 2, leaf: 0, root
+Stuck: left size: 2, leaf: 0, index: 1
  0     0 =>    1
  1     1 =>    2
 """);
     //stop(r);
     ok(r, """
-Stuck: Right size: 2, leaf: 0, root
+Stuck: right size: 2, leaf: 0, index: 2
  0     2 =>    3
  1     3 =>    4
 """);
@@ -2958,6 +3038,10 @@ Stuck: Right size: 2, leaf: 0, root
     Stuck r = b.new Stuck(P, "Right");
 
     P.processClear();
+    s.stuckGetRoot();
+    //l.stuckGetRoot();
+    //r.stuckGetRoot();
+
     P.new Instruction()
      {void action()
        {s.size.dec();
@@ -3025,6 +3109,7 @@ Merge     : 0
     Stuck l = b.new Stuck(P, "Left");
 
     P.processClear();
+    s.stuckGetRoot();
     P.new Instruction()
      {void action()
        {s.size.zero();
@@ -3073,6 +3158,7 @@ Stuck: Left size: 4, leaf: 0, root
     Stuck l = b.new Stuck(P, "Left");
 
     P.processClear();
+    s.stuckGetRoot();
     P.new Instruction()
      {void action()
        {s.size.zero();
@@ -3131,6 +3217,7 @@ Merge     : 0
     final Process.Register o = P.register("o", 1);
 
     P.processClear();
+    s.stuckGetRoot();
     s.merge(S);
 
     b.maxSteps = 100;
@@ -3161,6 +3248,7 @@ Stuck: Stuck size: 8, leaf: 1, root
     final Process.Register o = P.register("o", 1);
 
     P.processClear();
+    s.stuckGetRoot();
     s.merge(l, r);
 
     b.maxSteps = 100;
@@ -3189,6 +3277,7 @@ Stuck: Stuck size: 8, leaf: 1, root
     final Process.Register o = P.register("o", 1);
 
     P.processClear();
+    s.stuckGetRoot();
     P.new Instruction()
      {void action()
        {S.size.dec();
@@ -3197,6 +3286,7 @@ Stuck: Stuck size: 8, leaf: 1, root
     b.chipRunJava();
 
     P.processClear();
+    s.stuckGetRoot();
     P.new Instruction()
      {void action()
        {k.registerSet(11);
@@ -3240,6 +3330,7 @@ Merge     : 1
     final Process.Register o = P.register("o", 1);
 
     P.processClear();
+    s.stuckGetRoot();
     P.new Instruction()
      {void action()
        {l.size.dec();
@@ -5710,7 +5801,7 @@ Merge     : 0
 
   static void newTests()                                                        // Tests being worked on
    {//oldTests();
-    test_search_eq();
+    test_splitIntoTwo();
    }
 
   public static void main(String[] args)                                        // Test if called as a program
