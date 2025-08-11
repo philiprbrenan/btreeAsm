@@ -480,6 +480,7 @@ endmodule
       Process.Register not () {R(); rs(rg() != 0 ? 0 : 1); return this;}                                 // Not a register in Java
       Process.Register half() {R(); rs(rg() >> 1); return this;}                                         // Halve a register
       Process.Register add (Register source) {R(); rs(rg()+source.rg()); return this;}                   // Add the source register to the current register in Java
+      Process.Register add (int      source) {R(); rs(rg()+source);      return this;}                   // Add the source register to the current register in Java
 
       Process.Register gt (Register a, Register b) {R(); rs(a.rg() >  b.rg() ? 1 : 0); return this;}     // Set the target register to one if the test between the 'a' and 'b' register is true else 0
       Process.Register ge (Register a, Register b) {R(); rs(a.rg() >= b.rg() ? 1 : 0); return this;}     // Set the target register to one if the test between the 'a' and 'b' register is true else 0
@@ -495,14 +496,17 @@ endmodule
       Process.Register le (Register a, int b) {R(); rs(a.rg() <= b ? 1 : 0); return this;}               // Set the target register to one if the test between the 'a' and 'b' register is true else 0
       Process.Register lt (Register a, int b) {R(); rs(a.rg() <  b ? 1 : 0); return this;}               // Set the target register to one if the test between the 'a' and 'b' register is true else 0
 
-      void zero(Verilog v) {v.assign(rn(), "0");}                              // Zero a register in Verilog
-      void one (Verilog v) {v.assign(rn(), "1");}                              // One a register in Verilog
-      void inc (Verilog v) {v.assign(rn(), rn()+"+1");}                        // Increment a register in Verilog
-      void dec (Verilog v) {v.assign(rn(), rn()+"-1");}                        // Decrement a register in Verilog
-      void not (Verilog v) {v.assign(rn(), rn()+" != 0 ? 0 : 1");}             // Not a register in Verilog
-      void half(Verilog v) {v.assign(rn(), rn()+" >> 1");}                     // Half a number
-      void add (Verilog v, Register source)                                    // Add the source register to the current register in Verilog
+      void zero(Verilog v) {v.assign(rn(), "0");}                               // Zero a register in Verilog
+      void one (Verilog v) {v.assign(rn(), "1");}                               // One a register in Verilog
+      void inc (Verilog v) {v.assign(rn(), rn()+"+1");}                         // Increment a register in Verilog
+      void dec (Verilog v) {v.assign(rn(), rn()+"-1");}                         // Decrement a register in Verilog
+      void not (Verilog v) {v.assign(rn(), rn()+" != 0 ? 0 : 1");}              // Not a register in Verilog
+      void half(Verilog v) {v.assign(rn(), rn()+" >> 1");}                      // Half a number
+      void add (Verilog v, Register source)                                     // Add the source register to the current register in Verilog
        {v.assign(rn(), rn() + " + " +source.rn());
+       }
+      void add (Verilog v, int source)                                          // Add the source register to the current register in Verilog
+       {v.assign(rn(), rn() + " + " +source);
        }
       void gt(Verilog v, Register a, Register b) {v.assign(rn(), a.rn() +"> "+ b.rn()+" ? 1 : 0");} // Set the target register to one if the test between the 'a' and 'b' register is true else 0
       void ge(Verilog v, Register a, Register b) {v.assign(rn(), a.rn() +">="+ b.rn()+" ? 1 : 0");} // Set the target register to one if the test between the 'a' and 'b' register is true else 0
