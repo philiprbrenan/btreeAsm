@@ -1044,32 +1044,27 @@ chipStop = true;
          }
 
         void verilog(Verilog v)
-         {v.begin("sum");
-          v.sum("sum", Source.size.registerName(), size.registerName(), "1");
-          MergeSuccess.zero(v);
-          v.new If ("sum < "+maxStuckSize)
-           {void Then()
-             {v.new Case(maxStuckSize, size.registerName())
-               {void Choice(int T)
-                 {keys[T].copy(v, Key);                                         // Add key over past last data element of target
-                  v.new Case(maxStuckSize, Source.size.registerName())
-                   {void Choice(int S)
-                     {for (int i = 0; i < S; ++i)                               // Concatenate each key, data pair from source
-                       {final int I = i;
-                        if (S+T+1 < maxStuckSize) keys[T+I+1].copy(v, Source.keys[I]);
-                        if (S+T+1 < maxStuckSize) data[T+I+1].copy(v, Source.data[I]);
-                       }
-                      if (S+T+1 < maxStuckSize) data[S+T+1].copy(v, Source.data[S]);                      // Past last data element from source
+         {MergeSuccess.zero(v);
+          v.new Case(maxStuckSize, size.registerName())
+           {void Choice(int T)
+             {keys[T].copy(v, Key);                                             // Add key over past last data element of target
+              v.new Case(maxStuckSize, Source.size.registerName())
+               {void Choice(int S)
+                 {if (S + T + 1 < maxStuckSize)
+                   {for (int i = 0; i < S; ++i)                                 // Concatenate each key, data pair from source
+                     {final int I = i;
+                      keys[T+I+1].copy(v, Source.keys[I]);
+                      data[T+I+1].copy(v, Source.data[I]);
                      }
-                   };
-                  size.add(v, Source.size);                                     // New size of target
-                  size.inc(v);
-                  MergeSuccess.one(v);
+                    data[S+T+1].copy(v, Source.data[S]);                        // Past last data element from source
+                    size.add(v, S);                                             // New size of target
+                    size.inc(v);
+                    MergeSuccess.one(v);
+                   }
                  }
                };
              }
            };
-          v.end();
          }
        };
      }
@@ -1098,6 +1093,34 @@ chipStop = true;
           data[L+R+1].copy(Right.data[R]);                                      // Past last data element from right
           size.registerSet(L+R+1);                                              // New size of target
           MergeSuccess.one();
+         }
+
+        void verilog(Verilog v)
+         {MergeSuccess.zero(v);
+          v.new Case(maxStuckSize, Left.size.registerName())
+           {void Choice(int L)
+             {v.new Case(maxStuckSize, Right.size.registerName())
+               {void Choice(int R)
+                 {if (L + R + 1 < maxStuckSize)                                 // Check size
+                   {for (int i = 0; i < L; ++i)                                 // Concatenate each key, data pair from source
+                     {keys[i].copy(v, Left.keys[i]);
+                      data[i].copy(v, Left.data[i]);
+                     }
+                    keys[L].copy(v, Key);                                       // Place key over past last data element from left
+                    data[L].copy(v, Left.data[L]);
+
+                    for (int i = 0; i < R; ++i)                                 // Concatenate each key, data pair from right
+                     {keys[L+i+1].copy(v, Right.keys[i]);
+                      data[L+i+1].copy(v, Right.data[i]);
+                     }
+                    data[L+R+1].copy(v, Right.data[R]);                         // Past last data element from right
+                    size.registerSet(v, L+R+1);                                 // New size of target
+                    MergeSuccess.one(v);
+                   }
+                 }
+               };
+             }
+           };
          }
        };
      }
@@ -3583,6 +3606,10 @@ Merge     : 1
        {L.registerSet(1);
         R.registerSet(2);
        }
+      void verilog(Verilog v)
+       {L.registerSet(v, 1);
+        R.registerSet(v, 2);
+       }
      };
     s.stuckGetRoot();
     l.stuckGet(L);
@@ -3594,6 +3621,12 @@ Merge     : 1
         l.size.dec();
         r.size.dec();
         k.registerSet(11);
+       }
+      void verilog(Verilog v)
+       {s.clear(v);
+        l.size.dec(v);
+        r.size.dec(v);
+        k.registerSet(v, 11);
        }
      };
 
@@ -6042,7 +6075,7 @@ Merge     : 0
    }
 
   static void newTests()                                                        // Tests being worked on
-   {//oldTests();
+   {oldTests();
     test_mergeButOne2();
    }
 
