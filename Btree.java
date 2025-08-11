@@ -663,20 +663,21 @@ chipStop = true;
      }
 
     void removeElementAt(Verilog v, Process.Register Index)                                // Set the indexed key, data pair
-     {R(); final int N = Index.registerGet();
-      size.dec(v);
+     {size.dec(v);
       v.new Case(maxStuckSize, Index.registerName())
        {void Choice(int i)
          {Key .copy(v, keys[i]);
           Data.copy(v, data[i]);
          }
-       }
-      final int M = maxStuckSize-1;
+       };
       for (int i = 0; i < maxStuckSize-1; i++)
-       {v.new If (""+i + ">= "+Index.registerName())
-
-       {keys[i].copy(keys[i+1]);
-        data[i].copy(data[i+1]);
+       {final int I = i;
+        v.new If (""+i + ">= "+Index.registerName())
+         {void Then()
+           {keys[I].copy(v, keys[I+1]);
+            data[I].copy(v, data[I+1]);
+           }
+         };
        }
      }
 
@@ -694,6 +695,29 @@ chipStop = true;
           Stuck.this.Data.copy(data[I]);
           return;
          }
+       }
+     }
+
+    void search_eq(Verilog v, Process.Register Key)                                        // Find the specified key if possible in the stuck
+     {Found.zero(v);
+      for (int i = 0; i < maxStuckSize; ++i)
+       {final int I = i;
+        v.new If ("!"+Found.registerName())
+         {void Then()
+           {v.new If (""+I+" < "+size.registerName())
+             {void Then()
+               {v.new If (keys[I].registerName()+" == "+Key.registerName())
+                 {void Then()
+                   {Found.one(v);
+                    StuckIndex.registerSet(v, I);
+                    Stuck.this.Key .copy(v, keys[I]);
+                    Stuck.this.Data.copy(v, data[I]);
+                   }
+                 };
+               }
+             };
+           }
+         };
        }
      }
 
@@ -2726,15 +2750,16 @@ Stuck: stuck size: 5, leaf: 1, root
 
     b.maxSteps = 100;
     b.chipRunJava();
+    b.chipRunVerilog();
     //stop(s);
     ok(s, """
-Stuck: Stuck size: 3, leaf: 1, root
+Stuck: stuck size: 3, leaf: 1, root
  0     0 =>    1
  1     2 =>    3
  2     3 =>    4
 """);
-    ok(k, "Stuck_Key_21 = 1");
-    ok(d, "Stuck_Data_23 = 2");
+    ok(k, "Stuck_Key_108 = 1");
+    ok(d, "Stuck_Data_110 = 2");
    }
 
   static void test_search_eq()
@@ -2748,36 +2773,46 @@ Stuck: Stuck size: 3, leaf: 1, root
     final Process.Register f = s.Found;
 
     P.processClear();
+    s.stuckGetRoot();
 
     P.new Instruction()
      {void action()
        {k.registerSet(11);
         s.search_eq(k);
        }
+      void verilog(Verilog v)
+       {k.registerSet(v, 11);
+        s.search_eq(v, k);
+       }
      };
 
     b.maxSteps = 100;
     b.chipRunJava();
-    ok(f, "Stuck_Found_20 = 0");
+    b.chipRunVerilog();
+    ok(f, "Stuck_Found_107 = 0");
 
     final int N = 4;
     for (int j = 0; j < N; j++)
      {final int J = j;
-       P.processClear();
-
+      P.processClear();
+      s.stuckGetRoot();
       P.new Instruction()
        {void action()
          {k.registerSet(J);
           s.search_eq(k);
          }
+        void verilog(Verilog v)
+         {k.registerSet(v, J);
+          s.search_eq(v, k);
+         }
        };
 
       b.maxSteps = 100;
       b.chipRunJava();
-      ok(f, "Stuck_Found_20 = 1");
-      ok(i, "Stuck_StuckIndex_25 = "+J);
-      ok(k, "Stuck_Key_21 = "+J);
-      ok(d, "Stuck_Data_23 = "+(J+1));
+      ok(f, "Stuck_Found_107 = 1");
+      ok(i, "Stuck_StuckIndex_112 = "+J);
+      ok(k, "Stuck_Key_108 = "+J);
+      ok(d, "Stuck_Data_110 = "+(J+1));
      }
    }
 
@@ -5675,7 +5710,7 @@ Merge     : 0
 
   static void newTests()                                                        // Tests being worked on
    {//oldTests();
-    test_removeElementAt();
+    test_search_eq();
    }
 
   public static void main(String[] args)                                        // Test if called as a program
