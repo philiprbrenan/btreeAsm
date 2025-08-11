@@ -961,6 +961,31 @@ chipStop = true;
           size.add(source.size);
           MergeSuccess.one();
          }
+        void verilog(Verilog v)
+         {v.begin("sum");
+          v.sum("sum", size.registerName(), source.size.registerName());
+          MergeSuccess.zero(v);
+          v.new If ("sum <= " + maxStuckSize)
+           {void Then()
+             {for (int i = 0; i < maxStuckSize; ++i)
+               {final int I = i;
+                v.new If(""+i+" < "+source.size.registerName())
+                 {void Then()
+                   {v.new Case(maxStuckSize, size.registerName())
+                     {void Choice(int T)
+                       {if (T+I < maxStuckSize) keys[T+I].copy(v, source.keys[I]);
+                        if (T+I < maxStuckSize) data[T+I].copy(v, source.data[I]);
+                       }
+                     };
+                   }
+                 };
+               }
+              size.add(v, source.size);
+              MergeSuccess.one(v);
+             }
+           };
+          v.end();
+         }
        };
      }
 
@@ -976,16 +1001,23 @@ chipStop = true;
           clear();
           MergeSuccess.one();
          }
+        void verilog(Verilog v)
+         {v.begin("sum");
+          v.sum("sum", Left .size.registerName(), Right.size.registerName());
+          MergeSuccess.zero(v);
+          v.new If ("sum <= "+maxStuckSize)
+           {void Then()
+             {clear(v);
+              MergeSuccess.one(v);
+             }
+           };
+          v.end();
+         }
        };
       P.new If(MergeSuccess)
        {void Then()
          {merge(Left);
           merge(Right);
-          P.new Instruction()
-           {void action()
-             {MergeSuccess.one();
-             }
-           };
          }
        };
      }
@@ -1010,32 +1042,67 @@ chipStop = true;
           size.inc();
           MergeSuccess.one();
          }
+
+        void verilog(Verilog v)
+         {v.begin("sum");
+          v.sum("sum", Source.size.registerName(), size.registerName(), "1");
+          MergeSuccess.zero(v);
+          v.new If ("sum < "+maxStuckSize)
+           {void Then()
+             {v.new Case(maxStuckSize, size.registerName())
+               {void Choice(int T)
+                 {keys[T].copy(v, Key);                                         // Add key over past last data element of target
+                  v.new Case(maxStuckSize, Source.size.registerName())
+                   {void Choice(int S)
+                     {for (int i = 0; i < S; ++i)                               // Concatenate each key, data pair from source
+                       {final int I = i;
+                        if (S+T+1 < maxStuckSize) keys[T+I+1].copy(v, Source.keys[I]);
+                        if (S+T+1 < maxStuckSize) data[T+I+1].copy(v, Source.data[I]);
+                       }
+                      if (S+T+1 < maxStuckSize) data[S+T+1].copy(v, Source.data[S]);                      // Past last data element from source
+                     }
+                   };
+                  size.add(v, Source.size);                                     // New size of target
+                  size.inc(v);
+                  MergeSuccess.one(v);
+                 }
+               };
+             }
+           };
+          v.end();
+         }
        };
      }
 
     void mergeButOne(Stuck Left, Process.Register Key, Stuck Right)             // Concatenate the past last left and right stucks separated by the key over the past last data element of the left stuck into the target
-     {final int L = Left .size.registerGet();
-      final int R = Right.size.registerGet();
-      MergeSuccess.zero();
-      if (L + R + 1 >= maxStuckSize)                                            // Check size
-       {return;
-       }
+     {P.new Instruction()
+       {void action()
+         {final int L = Left .size.registerGet();
+          final int R = Right.size.registerGet();
+          MergeSuccess.zero();
+          if (L + R + 1 >= maxStuckSize)                                        // Check size
+           {return;
+           }
 
-      for (int i = 0; i < L; ++i)                                               // Concatenate each key, data pair from source
-       {keys[i].copy(Left.keys[i]);
-        data[i].copy(Left.data[i]);
-       }
-      keys[L].copy(Key);                                                        // Place key over past last data element from left
-      data[L].copy(Left.data[L]);
+          for (int i = 0; i < L; ++i)                                           // Concatenate each key, data pair from source
+           {keys[i].copy(Left.keys[i]);
+            data[i].copy(Left.data[i]);
+           }
+          keys[L].copy(Key);                                                    // Place key over past last data element from left
+          data[L].copy(Left.data[L]);
 
-      for (int i = 0; i < R; ++i)                                               // Concatenate each key, data pair from right
-       {keys[L+i+1].copy(Right.keys[i]);
-        data[L+i+1].copy(Right.data[i]);
-       }
-      data[L+R+1].copy(Right.data[R]);                                          // Past last data element from right
-      size.registerSet(L+R+1);                                                  // New size of target
-      MergeSuccess.one();
+          for (int i = 0; i < R; ++i)                                           // Concatenate each key, data pair from right
+           {keys[L+i+1].copy(Right.keys[i]);
+            data[L+i+1].copy(Right.data[i]);
+           }
+          data[L+R+1].copy(Right.data[R]);                                      // Past last data element from right
+          size.registerSet(L+R+1);                                              // New size of target
+          MergeSuccess.one();
+         }
+       };
      }
+
+//D3 Is a Leaf                                                                  // Determine whether a stuck contains a leaf or a branch of a btree
 
     class IsLeaf                                                                // Process a stuck depending on wnether it is a leaf or a branch
      {IsLeaf()
@@ -3361,7 +3428,7 @@ Merge     : 0
     final Stuck   s = b.new Stuck(P, "stuck");
     final Stuck   S = b.new Stuck(P, "Stuck");
     final Process.Register O = P.new Register("One",  8);
-    final Process.Register o = P.register("o", 1);
+    final Process.Register o = P.register("o", 8);
 
     P.processClear();
     s.stuckGetRoot();
@@ -3397,23 +3464,37 @@ Stuck: stuck size: 8, leaf: 1, root
   static void test_merge2()
    {sayCurrentTestName();
     final Btree   b = test_push();
-    final Btree   L = test_push();
-    final Btree   R = test_push();
     final Process P = b.processes.get("Stuck");
     final Stuck   s = b.new Stuck(P, "stuck");
     final Stuck   l = b.new Stuck(P, "left");
     final Stuck   r = b.new Stuck(P, "right");
-    final Process.Register o = P.register("o", 1);
+    final Process.Register L = P.register("l", 8);
+    final Process.Register R = P.register("r", 8);
 
     P.processClear();
     s.stuckGetRoot();
+
+    P.new Instruction()
+     {void action()
+       {L.registerSet(1);
+        R.registerSet(2);
+       }
+      void verilog(Verilog v)
+       {L.registerSet(v, 1);
+        R.registerSet(v, 2);
+       }
+     };
+    s.stuckGetRoot();
+    l.stuckGet(L);
+    r.stuckGet(R);
+
     s.merge(l, r);
 
     b.maxSteps = 100;
-    b.chipRunJava();
+    b.chipRun();
     //stop(s);
     ok(s, """
-Stuck: Stuck size: 8, leaf: 1, root
+Stuck: stuck size: 8, leaf: 1, root
  0     0 =>    1
  1     1 =>    2
  2     2 =>    3
@@ -3432,33 +3513,41 @@ Stuck: Stuck size: 8, leaf: 1, root
     final Stuck   s = b.new Stuck(P, "stuck");
     final Stuck   S = b.new Stuck(P, "Stuck");
     final Process.Register k = P.register("k", b.bitsPerKey);
-    final Process.Register o = P.register("o", 1);
+    final Process.Register o = P.register("o", 8);
 
     P.processClear();
     s.stuckGetRoot();
     P.new Instruction()
      {void action()
-       {S.size.dec();
+       {o.registerSet(1);
+       }
+      void verilog(Verilog v)
+       {o.registerSet(v, 1);
        }
      };
-    b.chipRunJava();
 
-    P.processClear();
-    s.stuckGetRoot();
+    S.stuckGet(o);
+
     P.new Instruction()
      {void action()
        {k.registerSet(11);
         s.size.dec();
+        S.size.dec();
+       }
+      void verilog(Verilog v)
+       {k.registerSet(v, 11);
+        s.size.dec(v);
+        S.size.dec(v);
        }
      };
 
     s.mergeButOne(k, S);
 
     b.maxSteps = 100;
-    b.chipRunJava();
+    b.chipRun();
     //stop(s.dump());
     ok(s.dump(), """
-Stuck: Stuck size: 7, leaf: 1, root
+Stuck: stuck size: 7, leaf: 1, root
  0     0 =>    1
  1     1 =>    2
  2     2 =>    3
@@ -3468,7 +3557,7 @@ Stuck: Stuck size: 7, leaf: 1, root
  6     2 =>    3
  7     0 =>    4
 Found     : 0
-Key       : 3
+Key       : 0
 FoundKey  : 0
 Data      : 0
 BtreeIndex: 0
@@ -3485,39 +3574,36 @@ Merge     : 1
     final Stuck   l = b.new Stuck(P, "left");
     final Stuck   r = b.new Stuck(P, "right");
     final Process.Register k = P.register("k", b.bitsPerKey);
-    final Process.Register o = P.register("o", 1);
+    final Process.Register L = P.register("L", 8);
+    final Process.Register R = P.register("R", 8);
 
     P.processClear();
+    P.new Instruction()
+     {void action()
+       {L.registerSet(1);
+        R.registerSet(2);
+       }
+     };
     s.stuckGetRoot();
-    P.new Instruction()
-     {void action()
-       {l.size.dec();
-       }
-     };
-    b.chipRunJava();
+    l.stuckGet(L);
+    r.stuckGet(R);
 
-    P.processClear();
     P.new Instruction()
      {void action()
-       {r.size.dec();
+       {s.clear();
+        l.size.dec();
+        r.size.dec();
+        k.registerSet(11);
        }
      };
-    b.chipRunJava();
 
-    P.processClear();
-    P.new Instruction()
-     {void action()
-       {k.registerSet(11);
-        s.size.zero();
-        s.mergeButOne(l, k, r);
-       }
-     };
+    s.mergeButOne(l, k, r);
 
     b.maxSteps = 100;
-    b.chipRunJava();
+    b.chipRun();
     //stop(s.dump());
     ok(s.dump(), """
-Stuck: Stuck size: 7, leaf: 1, root
+Stuck: stuck size: 7, leaf: 1, root
  0     0 =>    1
  1     1 =>    2
  2     2 =>    3
@@ -3527,7 +3613,7 @@ Stuck: Stuck size: 7, leaf: 1, root
  6     2 =>    3
  7     0 =>    4
 Found     : 0
-Key       : 3
+Key       : 0
 FoundKey  : 0
 Data      : 0
 BtreeIndex: 0
@@ -5957,7 +6043,7 @@ Merge     : 0
 
   static void newTests()                                                        // Tests being worked on
    {//oldTests();
-    test_merge();
+    test_mergeButOne2();
    }
 
   public static void main(String[] args)                                        // Test if called as a program
