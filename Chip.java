@@ -388,9 +388,23 @@ endmodule
 
       If (Process.Register Condition)                                           // If a condition
        {N();
-        new Instruction() {void action() {GoZero(Else, Condition);}};                                                // Branch on the current value of condition
+        new Instruction()                                                       // Branch on the current value of condition
+         {void action()
+           {GoZero(Else, Condition);
+           }
+          void verilog(Verilog v)
+           {GoZero(v, Else, Condition);
+           }
+         };
         Then();
-        new Instruction() {void action() {Goto(End);}};
+        new Instruction()
+         {void action()
+           {Goto(End);
+           }
+          void verilog(Verilog v)
+           {Goto(v, End);
+           }
+         };
         Else.set();
         Else();
         End.set();
