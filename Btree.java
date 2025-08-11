@@ -575,6 +575,20 @@ chipStop = true;
       data[N].copy(Data);
      }
 
+    void setElementAt(Verilog v, Process.Register Index, Process.Register Key, Process.Register Data)              // Set the indexed key, data pair
+     {v.new If (Index.registerName()+" == "+size.registerName())
+       {void Then()
+         {size.inc(v);
+         }
+       };
+      v.new Case(maxStuckSize, Index.registerName())
+       {void Choice(int i)
+         {keys[i].copy(v, Key);
+          data[i].copy(v, Data);
+         }                                                                                //
+       };
+     }
+
     void setDataAt(Process.Register Index, Process.Register Data)               // Set the indexed data pair
      {R(); final int N = Index.registerGet();
       final int M = size.registerGet();
@@ -2483,7 +2497,7 @@ Merge     : 0
     final Process.Register i = P.register("i", b.stuckAddressSize);
 
     P.processClear();
-
+    s.stuckGetRoot();
     final int N = 4;
     for (int j = 0; j <= N; j++)
      {final int J = j;
@@ -2494,13 +2508,20 @@ Merge     : 0
           d.registerSet((J+1)*2);
           s.setElementAt(i, k, d);
          }
+        void verilog(Verilog v)
+         {i.registerSet(v, J);
+          k.registerSet(v, J+1);
+          d.registerSet(v, (J+1)*2);
+          s.setElementAt(v, i, k, d);
+         }
        };
      }
 
     b.maxSteps = 100;
     b.chipRunJava();
+    b.chipRunVerilog();
     ok(s, """
-Stuck: Stuck size: 5, leaf: 1, root
+Stuck: stuck size: 5, leaf: 1, root
  0     1 =>    2
  1     2 =>    4
  2     3 =>    6
@@ -5586,7 +5607,7 @@ Merge     : 0
 
   static void newTests()                                                        // Tests being worked on
    {//oldTests();
-    test_elementAt();
+    test_setElementAt();
    }
 
   public static void main(String[] args)                                        // Test if called as a program
