@@ -24,7 +24,6 @@ class Btree extends Chip                                                        
   final Memory  stuckSize;                                                      // Current size of stuck up to the maximum size
   final Memory[]stuckKeys;                                                      // Keys field
   final Memory[]stuckData;                                                      // Data field
-  final Stack<Stuck>stucks = new Stack<>();                                     // Stucks associated with this tree during testing
   boolean supressMerge = false;                                                 // Supress merges during put to allow merge steps to be tested individually.  If this is on the trees built for testing are already merged so there is nothing to test.
   static boolean debug = false;                                                 // Debug if enabled
 
@@ -265,6 +264,9 @@ chipStop = true;
        {void action()
          {index.copy(Index);
          }
+        void verilog(Verilog v)
+         {index.copy(v, Index);
+         }
        };
       stuckGet();
      }
@@ -273,6 +275,9 @@ chipStop = true;
      {P.new Instruction()
        {void action()
          {index.registerSet(0);
+         }
+        void verilog(Verilog v)
+         {index.registerSet(v, 0);
          }
        };
       stuckGet();
@@ -286,6 +291,14 @@ chipStop = true;
           for (int i = 0; i < maxStuckSize; i++)
            {gKeys[i].executeTransaction(index);
             gData[i].executeTransaction(index);
+           }
+         }
+        void verilog(Verilog v)
+         {gSize.executeTransaction(v, index);
+          gLeaf.executeTransaction(v, index);
+          for (int i = 0; i < maxStuckSize; i++)
+           {gKeys[i].executeTransaction(v, index);
+            gData[i].executeTransaction(v, index);
            }
          }
        };
@@ -307,6 +320,14 @@ chipStop = true;
             data[i].copy(gData[i].transactionOutputRegisters.firstElement());
            }
          }
+        void verilog(Verilog v)
+         {size.copy(v, gSize.transactionOutputRegisters.firstElement());
+          isLeaf.copy(v, gLeaf.transactionOutputRegisters.firstElement());
+          for (int i = 0; i < maxStuckSize; i++)
+           {keys[i].copy(v, gKeys[i].transactionOutputRegisters.firstElement());
+            data[i].copy(v, gData[i].transactionOutputRegisters.firstElement());
+           }
+         }
        };
      }
 
@@ -318,6 +339,14 @@ chipStop = true;
           for (int i = 0; i < maxStuckSize; i++)
            {sKeys[i].executeTransaction(Index, keys[i]);
             sData[i].executeTransaction(Index, data[i]);
+           }
+         }
+        void verilog(Verilog v)
+         {sSize.executeTransaction(v, Index, size);
+          if (SetLeaf) sLeaf.executeTransaction(v, Index, isLeaf);
+          for (int i = 0; i < maxStuckSize; i++)
+           {sKeys[i].executeTransaction(v, Index, keys[i]);
+            sData[i].executeTransaction(v, Index, data[i]);
            }
          }
        };
@@ -385,6 +414,10 @@ chipStop = true;
      {R(); size.zero();
      }
 
+    void clear(Verilog v)                                                       // Set the size of the stuck to zero to clear it
+     {size.zero(v);
+     }
+
     void push(Process.Register Key, Process.Register Data)                      // Push a key, data pair to the local copy of the stuck
      {R(); final int N = size.registerGet();
       if (N >= maxStuckSize)
@@ -419,6 +452,16 @@ chipStop = true;
        }
      }
 
+    void pop(Verilog v)                                                                  // Pop a key, data pair from the local copy of the stuck
+     {size.dec(v);
+      v.new Case(1, maxStuckSize, size.registerName())
+       {void Choice(int i)
+         {Key.copy (v, keys[i]);
+          Data.copy(v, data[i]);
+         }                                                                                //
+       };
+     }
+
     void setPastLastElement(Process.Register Key, Process.Register Data)        // Push a key, data pair to the local copy of the stuck without changing the size
      {R(); final int N = size.registerGet();
       if (N >= maxStuckSize)
@@ -428,6 +471,15 @@ chipStop = true;
        {keys[N].copy(Key);
         data[N].copy(Data);
        }
+     }
+
+    void setPastLastElement(Verilog v, Process.Register Key, Process.Register Data)        // Push a key, data pair to the local copy of the stuck without changing the size
+     {v.new Case(maxStuckSize, size.registerName())
+       {void Choice(int i)
+         {keys[i].copy(v, Key);
+          data[i].copy(v, Data);
+         }                                                                                //
+       };
      }
 
     void firstElement()                                                         // Get the first key, data pair
@@ -441,6 +493,11 @@ chipStop = true;
        }
      }
 
+    void firstElement(Verilog v)                                                // Get the first key, data pair
+     {Key .copy(v, keys[0]);
+      Data.copy(v, data[0]);
+     }
+
     void lastElement()                                                          // Get the last key, data pair
      {R(); final int N = size.registerGet();
       if (N >= maxStuckSize)
@@ -450,6 +507,15 @@ chipStop = true;
        {Key.copy (keys[N-1]);
         Data.copy(data[N-1]);
        }
+     }
+
+    void lastElement(Verilog v)                                                 // Get the last key, data pair
+     {v.new Case(1, maxStuckSize, size.registerName())
+       {void Choice(int i)
+         {Key.copy (v, keys[i-1]);
+          Data.copy(v, data[i-1]);
+         }                                                                                //
+       };
      }
 
     void pastLastElement()                                                      // Get the past last key, data pair
@@ -463,6 +529,15 @@ chipStop = true;
        }
      }
 
+    void pastLastElement(Verilog v)                                             // Get the past last key, data pair
+     {v.new Case(maxStuckSize, size.registerName())
+       {void Choice(int i)
+         {Key.copy (v, keys[i]);
+          Data.copy(v, data[i]);
+         }                                                                                //
+       };
+     }
+
     void elementAt(Process.Register Index)                                      // Get the indexed key, data pair
      {R(); final int N = Index.registerGet();
       if (N >= maxStuckSize)
@@ -471,6 +546,15 @@ chipStop = true;
        }
       Key.copy (keys[N]);
       Data.copy(data[N]);
+     }
+
+    void elementAt(Verilog v, Process.Register Index)                                      // Get the indexed key, data pair
+     {v.new Case(maxStuckSize, Index.registerName())
+       {void Choice(int i)
+         {Key.copy (v, keys[i]);
+          Data.copy(v, data[i]);
+         }
+       };
      }
 
     void setElementAt(Process.Register Index, Process.Register Key, Process.Register Data)              // Set the indexed key, data pair
@@ -1928,11 +2012,9 @@ chipStop = true;
     b.stuckKeys[1].memorySet(4, 0); b.stuckData[1].memorySet(5, 0);
 
     Stuck s = b.new Stuck(P, "Stuck");
-    final Process.Register i = P.register("i", 3);
-    i.registerSet(0);
-    s.stuckGet(i);
+    s.stuckGetRoot();
 
-    b.maxSteps = 20;
+    b.maxSteps = 200;
     b.chipRunJava();
 
     //stop(s);
@@ -1943,14 +2025,19 @@ Stuck: Stuck size: 2, leaf: 1, root
 """);
 
     P.processClear();
-    s.isLeaf .registerSet(0);
-    s.size   .registerSet(1);
-    s.keys[0].registerSet(3); s.data[0].registerSet(4);
+    s.stuckGetRoot();
+    P.new Instruction()
+     {void action()
+       {s.isLeaf .registerSet(0);
+        s.size   .registerSet(1);
+        s.keys[0].registerSet(3); s.data[0].registerSet(4);
+       }
+     };
     s.stuckPut(true);
 
     //stop(b.chipPrintMemory());
     ok(b.chipPrintMemory(), """
-Chip: Btree            step: 14, maxSteps: 20, running: 0, returnCode: 0
+Chip: Btree            step: 14, maxSteps: 200, running: 0, returnCode: 0
   Processes:                                                    0  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24
     stuckIsLeaf           memory:                     1 *  1 =  1
     stuckIsFree           memory:                     1 *  1 =  0
@@ -1965,10 +2052,12 @@ Chip: Btree            step: 14, maxSteps: 20, running: 0, returnCode: 0
     stuckData_2           memory:                     1 *  8 =  0
     stuckData_3           memory:                     1 *  8 =  0
 """);
+
     b.chipRunJava();
+
     //stop(b.chipPrintMemory());
     ok(b.chipPrintMemory(), """
-Chip: Btree            step: 12, maxSteps: 20, running: 0, returnCode: 0
+Chip: Btree            step: 26, maxSteps: 200, running: 0, returnCode: 0
   Processes:                                                    0  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24
     stuckIsLeaf           memory:                     1 *  1 =  0
     stuckIsFree           memory:                     1 *  1 =  0
@@ -2015,12 +2104,23 @@ Chip: Btree            step: 0, maxSteps: 10, running: 0, returnCode: 0
     final String[]names = {"Stuck", "left", "right"};
 
     for (int j = 0; j < names.length; j++)
-     {Stuck s = b.new Stuck(P, names[j]);
-      b.stucks.push(s);
+     {final int J = j;
+      P.processClear();
+      final Stuck s = b.new Stuck(P, names[j]);
       final Process.Register k = s.Key;
       final Process.Register d = P.register("d", D);
+      final Process.Register n = P.register("n", b.btreeAddressSize);
 
-      s.stuckGetRoot();
+      P.new Instruction()
+       {void action()
+         {n.registerSet(J);
+         }
+        void verilog(Verilog v)
+         {n.registerSet(v, J);
+         }
+       };
+
+      s.stuckGet(n);
       for (int i = 0; i < S; i++)
        {final int I = i;
         P.new Instruction()
@@ -2028,21 +2128,43 @@ Chip: Btree            step: 0, maxSteps: 10, running: 0, returnCode: 0
            {k.registerSet(I); d.registerSet(I+1);
             s.push(k, d);
            }
+          void verilog(Verilog v)
+           {k.registerSet(v, I); d.registerSet(v, I+1);
+            s.push(v, k, d);
+           }
          };
        }
+      s.stuckPut();
 
       b.maxSteps = 100;
       b.chipRunJava();
-    }
+      b.chipRunVerilog();
+     }
 
-    ok(b.stucks.firstElement(), """
-Stuck: Stuck size: 4, leaf: 1, root
- 0     0 =>    1
- 1     1 =>    2
- 2     2 =>    3
- 3     3 =>    4
+    ok(b.chipPrintMemory(), """
+Chip: Btree            step: 45, maxSteps: 100, running: 0, returnCode: 0
+  Processes:                                                    0  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24
+    stuckIsLeaf           memory:                     8 *  1 =  1  0  0  0  0  0  0  0
+    stuckIsFree           memory:                     8 *  1 =  0  1  1  1  1  1  1  1
+    freeNext              memory:                     8 *  4 =  1  2  3  4  5  6  7  0
+    stuckSize             memory:                     8 *  4 =  4  4  4  0  0  0  0  0
+    stuckKeys_0           memory:                     8 *  8 =  0  0  0  0  0  0  0  0
+    stuckKeys_1           memory:                     8 *  8 =  1  1  1  0  0  0  0  0
+    stuckKeys_2           memory:                     8 *  8 =  2  2  2  0  0  0  0  0
+    stuckKeys_3           memory:                     8 *  8 =  3  3  3  0  0  0  0  0
+    stuckKeys_4           memory:                     8 *  8 =  0  0  0  0  0  0  0  0
+    stuckKeys_5           memory:                     8 *  8 =  0  0  0  0  0  0  0  0
+    stuckKeys_6           memory:                     8 *  8 =  0  0  0  0  0  0  0  0
+    stuckKeys_7           memory:                     8 *  8 =  0  0  0  0  0  0  0  0
+    stuckData_0           memory:                     8 *  8 =  1  1  1  0  0  0  0  0
+    stuckData_1           memory:                     8 *  8 =  2  2  2  0  0  0  0  0
+    stuckData_2           memory:                     8 *  8 =  3  3  3  0  0  0  0  0
+    stuckData_3           memory:                     8 *  8 =  4  4  4  0  0  0  0  0
+    stuckData_4           memory:                     8 *  8 =  0  0  0  0  0  0  0  0
+    stuckData_5           memory:                     8 *  8 =  0  0  0  0  0  0  0  0
+    stuckData_6           memory:                     8 *  8 =  0  0  0  0  0  0  0  0
+    stuckData_7           memory:                     8 *  8 =  0  0  0  0  0  0  0  0
 """);
-
      return b;
    }
 
@@ -2050,20 +2172,37 @@ Stuck: Stuck size: 4, leaf: 1, root
    {sayCurrentTestName();
     final Btree   b = test_push();
     final Process P = b.processes.get("Stuck");
+    final Stuck   s = b.new Stuck(P, "root");
 
-    Stuck s = b.stucks.firstElement();
+    s.stuckGetRoot();
+    b.maxSteps = 100;
+    b.chipRunJava();
+    //stop(s);
+    ok(s, """
+Stuck: root size: 4, leaf: 1, root
+ 0     0 =>    1
+ 1     1 =>    2
+ 2     2 =>    3
+ 3     3 =>    4
+""");
 
+    P.processClear();
     P.new Instruction()
      {void action()
        {s.clear();
+       }
+      void verilog(Verilog v)
+       {s.clear(v);
        }
      };
 
     b.maxSteps = 100;
     b.chipRunJava();
+    b.chipRunVerilog();
 
+    //stop(s);
     ok(s, """
-Stuck: Stuck size: 0, leaf: 1, root
+Stuck: root size: 0, leaf: 0, root
 """);
    }
 
@@ -2071,21 +2210,24 @@ Stuck: Stuck size: 0, leaf: 1, root
    {sayCurrentTestName();
     final Btree   b = test_push();
     final Process P = b.processes.get("Stuck");
-
-    Stuck s = b.stucks.firstElement();
+    final Stuck   s = b.new Stuck(P, "Stuck");
     final Process.Register k = s.Key;
     final Process.Register d = s.Data;
 
     P.processClear();
-
+    s.stuckGetRoot();
     P.new Instruction()
      {void action()
        {s.pop();
        }
+      void verilog(Verilog v)
+       {s.pop(v);
+       }
      };
 
-    b.maxSteps = 10;
+    b.maxSteps = 100;
     b.chipRunJava();
+    b.chipRunVerilog();
 
     ok(s, """
 Stuck: Stuck size: 3, leaf: 1, root
@@ -2120,23 +2262,27 @@ Merge     : 0
    {sayCurrentTestName();
     final Btree   b = test_push();
     final Process P = b.processes.get("Stuck");
-
-    Stuck s = b.stucks.firstElement();
+    final Stuck   s = b.new Stuck(P, "stuck");
     final Process.Register k = s.Key;
     final Process.Register d = s.Data;
 
     P.processClear();
+    s.stuckGetRoot();
     P.new Instruction()
      {void action()
        {s.firstElement();
        }
+      void verilog(Verilog v)
+       {s.firstElement(v);
+       }
      };
 
-    b.maxSteps = 10;
+    b.maxSteps = 100;
     b.chipRunJava();
+    b.chipRunVerilog();
     //stop(s.dump());
     ok(s.dump(), """
-Stuck: Stuck size: 4, leaf: 1, root
+Stuck: stuck size: 4, leaf: 1, root
  0     0 =>    1
  1     1 =>    2
  2     2 =>    3
@@ -2153,36 +2299,47 @@ BtreeIndex: 0
 StuckIndex: 0
 Merge     : 0
 """);
-    ok(d, "Stuck_Data_23 = 1");
+    ok(d, "Stuck_Data_110 = 1");
 
     P.processClear();
+    s.stuckGetRoot();
     P.new Instruction()
      {void action()
        {s.lastElement();
        }
+      void verilog(Verilog v)
+       {s.lastElement(v);
+       }
      };
 
-    b.maxSteps = 10;
     b.chipRunJava();
+    b.chipRunVerilog();
 
-    ok(k, "Stuck_Key_21 = 3");
-    ok(d, "Stuck_Data_23 = 4");
+    ok(k, "Stuck_Key_108 = 3");
+    ok(d, "Stuck_Data_110 = 4");
 
     P.processClear();
+    s.stuckGetRoot();
     P.new Instruction()
      {void action()
        {s.pop();
         k.registerSet(5); d.registerSet(55);
         s.setPastLastElement(k, d);
        }
+      void verilog(Verilog v)
+       {s.pop(v);
+        k.registerSet(v, 5); d.registerSet(v, 55);
+        s.setPastLastElement(v, k, d);
+       }
      };
 
-    b.maxSteps = 10;
+    s.stuckPut();
     b.chipRunJava();
+    b.chipRunVerilog();
 
     //stop(s.dump());
     ok(s.dump(), """
-Stuck: Stuck size: 3, leaf: 1, root
+Stuck: stuck size: 3, leaf: 1, root
  0     0 =>    1
  1     1 =>    2
  2     2 =>    3
@@ -2201,25 +2358,28 @@ Merge     : 0
 """);
 
     P.processClear();
+    s.stuckGetRoot();
     P.new Instruction()
      {void action()
        {s.pastLastElement();
        }
+      void verilog(Verilog v)
+       {s.pastLastElement(v);
+       }
      };
 
-    b.maxSteps = 10;
     b.chipRunJava();
+    b.chipRunVerilog();
 
-    ok(k, "Stuck_Key_21 = 5");
-    ok(d, "Stuck_Data_23 = 55");
+    ok(k, "Stuck_Key_108 = 5");
+    ok(d, "Stuck_Data_110 = 55");
    }
 
   static void test_elementAt()
    {sayCurrentTestName();
     final Btree   b = test_push();
     final Process P = b.processes.get("Stuck");
-
-    Stuck s = b.stucks.firstElement();
+    final Stuck   s = b.new Stuck(P, "stuck");
     final Process.Register i = P.register("i", b.stuckAddressSize);
     final StringBuilder    S = new StringBuilder();
 
@@ -2227,20 +2387,26 @@ Merge     : 0
     for (int j = 0; j < N; j++)
      {final int J = j;
       P.processClear();
+      s.stuckGetRoot();
       P.new Instruction()
        {void action()
          {i.registerSet(J);
           s.elementAt(i);
          }
+        void verilog(Verilog v)
+         {i.registerSet(v, J);
+          s.elementAt(v, i);
+         }
        };
 
-      b.maxSteps = 10;
+      b.maxSteps = 100;
       b.chipRunJava();
+      b.chipRunVerilog();
 
       S.append(s.dump());
      }
     ok(S, """
-Stuck: Stuck size: 4, leaf: 1, root
+Stuck: stuck size: 4, leaf: 1, root
  0     0 =>    1
  1     1 =>    2
  2     2 =>    3
@@ -2256,7 +2422,7 @@ Data      : 1
 BtreeIndex: 0
 StuckIndex: 0
 Merge     : 0
-Stuck: Stuck size: 4, leaf: 1, root
+Stuck: stuck size: 4, leaf: 1, root
  0     0 =>    1
  1     1 =>    2
  2     2 =>    3
@@ -2272,7 +2438,7 @@ Data      : 2
 BtreeIndex: 0
 StuckIndex: 0
 Merge     : 0
-Stuck: Stuck size: 4, leaf: 1, root
+Stuck: stuck size: 4, leaf: 1, root
  0     0 =>    1
  1     1 =>    2
  2     2 =>    3
@@ -2288,7 +2454,7 @@ Data      : 3
 BtreeIndex: 0
 StuckIndex: 0
 Merge     : 0
-Stuck: Stuck size: 4, leaf: 1, root
+Stuck: stuck size: 4, leaf: 1, root
  0     0 =>    1
  1     1 =>    2
  2     2 =>    3
@@ -2311,8 +2477,7 @@ Merge     : 0
    {sayCurrentTestName();
     final Btree b = test_push();
     final Process P = b.processes.get("Stuck");
-
-    Stuck s = b.stucks.firstElement();
+    final Stuck   s = b.new Stuck(P, "stuck");
     final Process.Register k = P.register("k", b.bitsPerKey);
     final Process.Register d = P.register("d", b.bitsPerData);
     final Process.Register i = P.register("i", b.stuckAddressSize);
@@ -2348,8 +2513,7 @@ Stuck: Stuck size: 5, leaf: 1, root
    {sayCurrentTestName();
     final Btree b = test_push();
     final Process P = b.processes.get("Stuck");
-
-    Stuck s = b.stucks.firstElement();
+    final Stuck   s = b.new Stuck(P, "stuck");
     final Process.Register k = P.register("k", b.bitsPerKey);
     final Process.Register d = P.register("d", b.bitsPerData);
     final Process.Register i = P.register("i", b.stuckAddressSize);
@@ -2383,8 +2547,7 @@ Stuck: Stuck size: 4, leaf: 1, root
    {sayCurrentTestName();
     final Btree b = test_push();
     final Process P = b.processes.get("Stuck");
-
-    Stuck s = b.stucks.firstElement();
+    final Stuck   s = b.new Stuck(P, "stuck");
     final Process.Register k = P.register("k", b.bitsPerKey);
     final Process.Register d = P.register("d", b.bitsPerData);
 
@@ -2425,8 +2588,7 @@ Merge     : 0
    {sayCurrentTestName();
     final Btree b = test_push();
     final Process P = b.processes.get("Stuck");
-
-    Stuck s = b.stucks.firstElement();
+    final Stuck   s = b.new Stuck(P, "stuck");
     final Process.Register k = P.register("k", b.bitsPerKey);
     final Process.Register d = P.register("d", b.bitsPerData);
     final Process.Register i = P.register("i", b.stuckAddressSize);
@@ -2459,8 +2621,7 @@ Stuck: Stuck size: 5, leaf: 1, root
    {sayCurrentTestName();
     final Btree b = test_push();
     final Process P = b.processes.get("Stuck");
-
-    Stuck s = b.stucks.firstElement();
+    final Stuck   s = b.new Stuck(P, "stuck");
     final Process.Register k = s.Key;
     final Process.Register d = s.Data;
     final Process.Register i = P.register("i", b.stuckAddressSize);
@@ -2491,8 +2652,7 @@ Stuck: Stuck size: 3, leaf: 1, root
    {sayCurrentTestName();
     final Btree b = test_push();
     final Process P = b.processes.get("Stuck");
-
-    Stuck s = b.stucks.firstElement();
+    final Stuck   s = b.new Stuck(P, "stuck");
     final Process.Register k = s.Key;
     final Process.Register d = s.Data;
     final Process.Register i = s.StuckIndex;
@@ -2633,8 +2793,7 @@ Merge     : 0
    {sayCurrentTestName();
     final Btree b = test_push();
     final Process P = b.processes.get("Stuck");
-
-    Stuck s = b.stucks.firstElement();
+    final Stuck   s = b.new Stuck(P, "stuck");
     Stuck l = b.new Stuck(P, "Left");
     Stuck r = b.new Stuck(P, "Right");
 
@@ -2670,8 +2829,7 @@ Stuck: Right size: 2, leaf: 0, root
    {sayCurrentTestName();
     final Btree b = test_push();
     final Process P = b.processes.get("Stuck");
-
-    Stuck s = b.stucks.firstElement();
+    final Stuck   s = b.new Stuck(P, "stuck");
     Stuck l = b.new Stuck(P, "Left");
     Stuck r = b.new Stuck(P, "Right");
 
@@ -2737,8 +2895,7 @@ Merge     : 0
    {sayCurrentTestName();
     final Btree b = test_push();
     final Process P = b.processes.get("Stuck");
-
-    Stuck s = b.stucks.firstElement();
+    final Stuck   s = b.new Stuck(P, "stuck");
     final Process.Register k = P.register("k", b.bitsPerKey);
     final Process.Register d = P.register("d", b.bitsPerData);
     Stuck l = b.new Stuck(P, "Left");
@@ -2786,8 +2943,7 @@ Stuck: Left size: 4, leaf: 0, root
    {sayCurrentTestName();
     final Btree b = test_push();
     final Process P = b.processes.get("Stuck");
-
-    Stuck s = b.stucks.firstElement();
+    final Stuck   s = b.new Stuck(P, "stuck");
     final Process.Register k = P.register("k", b.bitsPerKey);
     final Process.Register d = P.register("d", b.bitsPerData);
     Stuck l = b.new Stuck(P, "Left");
@@ -2843,12 +2999,11 @@ Merge     : 0
 
   static void test_merge()
    {sayCurrentTestName();
-    final Btree b = test_push();
-    final Btree B = test_push();
+    final Btree   b = test_push();
+    final Btree   B = test_push();
     final Process P = b.processes.get("Stuck");
-
-    Stuck s = b.stucks.firstElement();
-    Stuck S = B.stucks.firstElement();
+    final Stuck   s = b.new Stuck(P, "stuck");
+    final Stuck   S = b.new Stuck(P, "Stuck");
     final Process.Register o = P.register("o", 1);
 
     P.processClear();
@@ -2872,14 +3027,13 @@ Stuck: Stuck size: 8, leaf: 1, root
 
   static void test_merge2()
    {sayCurrentTestName();
-    final Btree b = test_push();
-    final Btree L = test_push();
-    final Btree R = test_push();
+    final Btree   b = test_push();
+    final Btree   L = test_push();
+    final Btree   R = test_push();
     final Process P = b.processes.get("Stuck");
-
-    Stuck s = b.stucks.firstElement();
-    Stuck l = L.stucks.firstElement();
-    Stuck r = R.stucks.firstElement();
+    final Stuck   s = b.new Stuck(P, "stuck");
+    final Stuck   l = b.new Stuck(P, "left");
+    final Stuck   r = b.new Stuck(P, "right");
     final Process.Register o = P.register("o", 1);
 
     P.processClear();
@@ -2905,8 +3059,8 @@ Stuck: Stuck size: 8, leaf: 1, root
    {sayCurrentTestName();
     final Btree   b = test_push();
     final Process P = b.processes.get("Stuck");
-    Stuck s = b.stucks.firstElement();
-    Stuck S = b.stucks.lastElement();
+    final Stuck   s = b.new Stuck(P, "stuck");
+    final Stuck   S = b.new Stuck(P, "Stuck");
     final Process.Register k = P.register("k", b.bitsPerKey);
     final Process.Register o = P.register("o", 1);
 
@@ -2955,10 +3109,9 @@ Merge     : 1
    {sayCurrentTestName();
     final Btree b = test_push();
     final Process P = b.processes.get("Stuck");
-
-    Stuck s = b.stucks.elementAt(0);
-    Stuck l = b.stucks.elementAt(1);
-    Stuck r = b.stucks.elementAt(2);
+    final Stuck   s = b.new Stuck(P, "stuck");
+    final Stuck   l = b.new Stuck(P, "left");
+    final Stuck   r = b.new Stuck(P, "right");
     final Process.Register k = P.register("k", b.bitsPerKey);
     final Process.Register o = P.register("o", 1);
 
@@ -5365,6 +5518,29 @@ Merge     : 0
     b.chipRunVerilog();
    }
 
+  static void test_verilog_pop()
+   {sayCurrentTestName();
+    final Btree   b = test_push();
+    final Process P = b.processes.get("Stuck");
+    final Stuck   s = b.new Stuck(P, "stuck");
+    final Process.Register k = s.Key;
+    final Process.Register d = s.Data;
+    P.processClear();
+    s.stuckGetRoot();
+    P.new Instruction()
+     {void action()
+       {s.pop();
+       }
+      void verilog(Verilog v)
+       {s.pop(v);
+       }
+     };
+
+    b.maxSteps = 1000;
+    b.chipRunJava();
+    b.chipRunVerilog();
+   }
+
   static void oldTests()                                                        // Tests thought to be in good shape
    {test_create1();
     test_create2();
@@ -5410,7 +5586,7 @@ Merge     : 0
 
   static void newTests()                                                        // Tests being worked on
    {//oldTests();
-    test_verilog_push();
+    test_elementAt();
    }
 
   public static void main(String[] args)                                        // Test if called as a program
