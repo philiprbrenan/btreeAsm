@@ -698,7 +698,7 @@ endmodule
      }
 
     protected String memoryGetV(Register Register)                              // Get a memory element as an integer setting the memory cache register in Verilog
-     {N(); return memoryRegister.registerName() + " = "+ processMemoryName()+"["+Register.registerGet()+"]";
+     {N(); return memoryRegister.registerName() + " = "+ processMemoryName()+"["+Register.registerName()+"]";
      }
 
     void memorySet(int Index)                                                   // Set a memory element from the associated cache memory register
@@ -988,7 +988,7 @@ endmodule
                {if (t.transactionOpCode.equals("get"))                          // Memory get requests
                  {final Register I = t.transactionInputRegisters.elementAt(0);  // Address index register
                   final Register O = t.transactionOutputRegisters.elementAt(0); // Register to hold value of memory at index
-                  v.A(memoryGetV(I)+";");                                       // Set output register with value of memory at index
+                  v.A(memoryGetV(I)+"; //AAAAA "+I.registerName());                                       // Set output register with value of memory at index
                   O.copy(v, memoryRegister);                                    // Set output register with value of memory at index
                   t.transactionSetFinished(v);                                  // Mark the transaction as complete
                  }
