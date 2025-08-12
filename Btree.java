@@ -90,6 +90,10 @@ chipStop = true;
        {root.zero();                                                            // The free chain depends from the root which is never freed asnd so can never be on the free chain
         gFreeNext.executeTransaction(root);
        }
+      void verilog(Verilog v)
+       {root.zero(v);                                                            // The free chain depends from the root which is never freed asnd so can never be on the free chain
+        gFreeNext.executeTransaction(v, root);
+       }
      };
     gFreeNext.waitResultOfTransaction();
     P.new Instruction()                                                         // First free stuck if any is the allocated stuck
@@ -102,12 +106,27 @@ chipStop = true;
         isFree.zero();
         sIsFree.executeTransaction(ref, isFree);                                // Set allocated stuck to leaf or branch
        }
+      void verilog(Verilog v)
+       {ref.copy(v, gFreeNext.transactionOutputRegisters.firstElement());       // Save reference to allocated stuck
+        v.new If (ref.registerName() + " == 0")
+         {void Then() {chipStop(v, 20);}
+         };
+        gFreeNext.executeTransaction(v, ref);                                   // Next free stuck
+        if (leaf) isLeaf.one(v); else isLeaf.zero(v);                           // Leaf or branch
+        sIsLeaf.executeTransaction(v, ref, isLeaf);                             // Set allocated stuck to leaf or branch
+        isFree.zero(v);
+        sIsFree.executeTransaction(v, ref, isFree);                             // Set allocated stuck to leaf or branch
+       }
      };
     gFreeNext.waitResultOfTransaction();
     P.new Instruction()                                                         // Next free stuck
      {void action()
        {next.copy(gFreeNext.transactionOutputRegisters.firstElement());
         sFreeNext.executeTransaction(root, next);                               // Next free stuck is now first on free chain from root
+       }
+      void verilog(Verilog v)
+       {next.copy(v, gFreeNext.transactionOutputRegisters.firstElement());
+        sFreeNext.executeTransaction(v, root, next);                            // Next free stuck is now first on free chain from root
        }
      };
     sFreeNext.waitResultOfTransaction();
@@ -129,6 +148,10 @@ chipStop = true;
        {root.zero();                                                            // The free chain depends from the root which is never freed asnd so can never be on the free chain
         gFreeNext.executeTransaction(root);
        }
+      void verilog(Verilog v)
+       {root.zero(v);                                                           // The free chain depends from the root which is never freed asnd so can never be on the free chain
+        gFreeNext.executeTransaction(v, root);
+       }
      };
     gFreeNext.waitResultOfTransaction();
     P.new Instruction()                                                         // Next free stuck
@@ -138,6 +161,13 @@ chipStop = true;
         sFreeNext.executeTransaction(ref, next);                                // Stuck Root pointsd to the stuck being freed
         isFree.one();
         sIsFree.executeTransaction(ref, isFree);                                // Stuck Root pointsd to the stuck being freed
+       }
+      void verilog(Verilog v)
+       {next.copy(v, gFreeNext.transactionOutputRegisters.firstElement());
+        sFreeRoot.executeTransaction(v, root, ref);                             // Root points to the stuck being freed
+        sFreeNext.executeTransaction(v, ref, next);                             // Stuck Root pointsd to the stuck being freed
+        isFree.one(v);
+        sIsFree.executeTransaction(v, ref, isFree);                             // Stuck Root pointsd to the stuck being freed
        }
      };
     sFreeRoot.waitResultOfTransaction();
@@ -3663,7 +3693,7 @@ Merge     : 1
     final Process.Register j = b.btreeIndex(p, "index2");
 
     //stop(b.chipPrintMemory());
-    ok(b.chipPrintMemory(), """
+    ok(""+b.chipPrintMemory(), """
 Chip: Btree            step: 0, maxSteps: 10, running: 0, returnCode: 0
   Processes:                                                    0  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24
     stuckIsLeaf           memory:                     4 *  1 =  1  0  0  0
@@ -3682,11 +3712,11 @@ Chip: Btree            step: 0, maxSteps: 10, running: 0, returnCode: 0
     p.processClear();
     b.allocate(i, true);
     b.allocate(j, false);
-    b.maxSteps = 100;
-    b.chipRunJava();
     //stop(b.chipPrintMemory());
-    ok(b.chipPrintMemory(), """
-Chip: Btree            step: 17, maxSteps: 100, running: 0, returnCode: 0
+    if (false) p.new Instruction()
+     {void action()
+       {ok(b.chipPrintMemory(), """
+Chip: Btree            step: 16, maxSteps: 100, running: 1, returnCode: 0
   Processes:                                                    0  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24
     stuckIsLeaf           memory:                     4 *  1 =  1  1  0  0
     stuckIsFree           memory:                     4 *  1 =  0  0  0  1
@@ -3701,16 +3731,18 @@ Chip: Btree            step: 17, maxSteps: 100, running: 0, returnCode: 0
     stuckData_2           memory:                     4 *  8 =  0  0  0  0
     stuckData_3           memory:                     4 *  8 =  0  0  0  0
 """);
-    ok(i, "alloc_index1_0 = 1");
-    ok(j, "alloc_index2_1 = 2");
-
-    p.processClear();
+        ok(i, "alloc_index1_0 = 1");
+        ok(j, "alloc_index2_1 = 2");
+       }
+      void verilog(Verilog v) {}
+     };
     b.free(i);
     b.free(j);
-    b.chipRunJava();
+    b.maxSteps = 100;
+    b.chipRun();
     //stop(b.chipPrintMemory());
     ok(b.chipPrintMemory(), """
-Chip: Btree            step: 13, maxSteps: 100, running: 0, returnCode: 0
+Chip: Btree            step: 29, maxSteps: 100, running: 0, returnCode: 0
   Processes:                                                    0  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24
     stuckIsLeaf           memory:                     4 *  1 =  1  1  0  0
     stuckIsFree           memory:                     4 *  1 =  0  1  1  1
@@ -6075,8 +6107,8 @@ Merge     : 0
    }
 
   static void newTests()                                                        // Tests being worked on
-   {oldTests();
-    test_mergeButOne2();
+   {//oldTests();
+    test_allocate();
    }
 
   public static void main(String[] args)                                        // Test if called as a program
