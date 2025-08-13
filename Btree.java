@@ -1904,7 +1904,7 @@ chipStop = true;
            {success.zero(v);                                                    // Assume failure
             v.new If (p.size.registerName() + " != 1")
              {void Then()
-               {P.Goto(end);
+               {P.Goto(v, end);
                }
              };
            }
@@ -2561,6 +2561,9 @@ chipStop = true;
            {P.new Instruction()
              {void action()
                {f.removeElementAt(f.StuckIndex);                                // Remove the key
+               }
+              void verilog(Verilog v)
+               {f.removeElementAt(v, f.StuckIndex);                             // Remove the key
                }
              };
             f.stuckPut();                                                       // Save modified stuck back into btree
@@ -5727,18 +5730,24 @@ Merge     : 0
          {void action()
            {k.inc();
            }
+          void verilog(Verilog v)
+           {k.inc(v);
+           }
          };
         b.delete(k);
         P.new Instruction()
          {void action()
-           {//say(b.btreePrint());
-            t.append(b.btreePrint());
+           {t.append(b.btreePrint());
             P.GoNotZero(start, l.lt(k, N));
+           }
+          void verilog(Verilog v)
+           {l.lt(v, k, N);
+            P.GoNotZero(v, start, l);
            }
          };
        }
      };
-    b.chipRunJava();
+    b.chipRun();
 
     //stop(t);
     ok(t, """
@@ -6636,7 +6645,7 @@ Merge     : 0
          };
        }
      };
-    b.chipRunJava();
+    b.chipRun();
 
     //stop(t);
     ok(t, """
@@ -6957,7 +6966,7 @@ Merge     : 0
 
   static void newTests()                                                        // Tests being worked on
    {//oldTests();
-    //test_delete();
+      test_delete();
     //test_delete_random();
     //test_delete_reverse();
     //test_delete_random_reverse();
