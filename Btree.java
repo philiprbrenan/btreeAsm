@@ -932,11 +932,11 @@ chipStop = true;
        {void action()
          {if (maxStuckSize % 2 == 1)
            {chipStop(18);
-            return;
+            return;  // Not needed
            }
           if (maxStuckSize-1 != size.registerGet())
            {chipStop(19);
-            return;
+            return;  // Not needed
            }
           final int N = (maxStuckSize-1) / 2;
           for (int i = 0; i < N; ++i)
@@ -1389,7 +1389,7 @@ chipStop = true;
     final Stuck c = new Stuck(P, "splitLeafNotTopChild");                       // Left split stuck
     final Stuck l = new Stuck(P, "splitLeafNotTopLeft");                        // Left split stuck
     final Stuck r = new Stuck(P, "splitLeafNotTopRight");                       // Right split stuck
-    final Process.Register ck = P.new Register("childKey",   stuckAddressSize); // Index in memory of the left stuck
+    final Process.Register ck = P.new Register("childKey",   bitsPerKey);       // Index in memory of the left stuck
     final Process.Register cd = P.new Register("childData",  btreeAddressSize); // Index in memory of the left stuck
     final Process.Register il = P.new Register("indexLeft",  btreeAddressSize); // Index in memory of the left stuck
     final Process.Register ir = P.new Register("indexRight", btreeAddressSize); // Index in memory of the right stuck
@@ -1498,7 +1498,7 @@ chipStop = true;
     final Stuck c = new Stuck(P, "splitBranchNotTopChild");                     // Left split stuck
     final Stuck l = new Stuck(P, "splitBranchNotTopLeft");                      // Left split stuck
     final Stuck r = new Stuck(P, "splitBranchNotTopRight");                     // Right split stuck
-    final Process.Register ck = P.new Register("childKey",   stuckAddressSize); // Index in memory of the left stuck
+    final Process.Register ck = P.new Register("childKey",   bitsPerKey); // Index in memory of the left stuck
     final Process.Register cd = P.new Register("childData",  btreeAddressSize); // Index in memory of the left stuck
     final Process.Register il = P.new Register("indexLeft",  btreeAddressSize); // Index in memory of the left stuck
     final Process.Register ir = P.new Register("indexRight", btreeAddressSize); // Index in memory of the right stuck
@@ -1548,7 +1548,7 @@ chipStop = true;
     final Stuck c = new Stuck(P, "splitBranchAtTopChild");                      // Left split stuck
     final Stuck l = new Stuck(P, "splitBranchAtTopLeft");                       // Left split stuck
     final Stuck r = new Stuck(P, "splitBranchAtTopRight");                      // Right split stuck
-    final Process.Register ck = P.new Register("childKey",   stuckAddressSize); // Index in memory of the left stuck
+    final Process.Register ck = P.new Register("childKey",   bitsPerKey);       // Index in memory of the left stuck
     final Process.Register cd = P.new Register("childData",  btreeAddressSize); // Index in memory of the left stuck
     final Process.Register il = P.new Register("indexLeft",  btreeAddressSize); // Index in memory of the left stuck
     final Process.Register ir = P.new Register("indexRight", btreeAddressSize); // Index in memory of the right stuck
@@ -1562,8 +1562,12 @@ chipStop = true;
         cd.copy(p.data[p.size.registerGet()]);                                  // Reference to child in btree
        }
       void verilog(Verilog v)
-       {p.pastLastElement(v);                                                   // Key of child
-        cd.copy(v, p.data[p.size.registerGet()]);                               // Reference to child in btree
+       {v.new Case(maxStuckSize, p.size.registerName())
+         {void Choice(int i)
+           {p.pastLastElement(v);                                               // Key of child
+            cd.copy(v, p.data[i]);                                              // Reference to child in btree
+           }
+         };
        }
      };
     c.stuckGet(cd);                                                             // Load child from btree
@@ -1584,7 +1588,7 @@ chipStop = true;
                                                                                 // Update root with new children
     P.new Instruction()
      {void action()
-       {p.push(mk, il);                                                         // Add reference to left child
+       {p.push(mk, il);     // Differs on push                                                    // Add reference to left child
         p.setPastLastElement(mk, cd);                                           // Add reference to not split top child on the right
        }
       void verilog(Verilog v)
@@ -1626,7 +1630,7 @@ chipStop = true;
    {final Stuck p = new Stuck(P, "mergeLeavesIntoRootParent");                  // Parent stuck
     final Stuck l = new Stuck(P, "mergeLeavesIntoRootLeft");                    // Left split stuck
     final Stuck r = new Stuck(P, "mergeLeavesIntoRootRight");                   // Right split stuck
-    final Process.Register ck = P.new Register("childKey",   stuckAddressSize); // Index in memory of the left stuck
+    final Process.Register ck = P.new Register("childKey",   bitsPerKey); // Index in memory of the left stuck
     final Process.Register cd = P.new Register("childData",  btreeAddressSize); // Index in memory of the left stuck
     final Process.Register il = P.new Register("indexLeft",  btreeAddressSize); // Index in memory of the left stuck
     final Process.Register ir = P.new Register("indexRight", btreeAddressSize); // Index in memory of the right stuck
@@ -1715,7 +1719,7 @@ chipStop = true;
     final Stuck   p = Stuck;
     final Stuck   l = new Stuck(P, "mergeLeavesIntoRootLeft");                  // Left split stuck
     final Stuck   r = new Stuck(P, "mergeLeavesIntoRootRight");                 // Right split stuck
-    final Process.Register ck = P.new Register("childKey",   stuckAddressSize); // Index in memory of the left stuck
+    final Process.Register ck = P.new Register("childKey",   bitsPerKey); // Index in memory of the left stuck
     final Process.Register cd = P.new Register("childData",  btreeAddressSize); // Index in memory of the left stuck
     final Process.Register il = P.new Register("indexLeft",  btreeAddressSize); // Index in memory of the left stuck
     final Process.Register ir = P.new Register("indexRight", btreeAddressSize); // Index in memory of the right stuck
@@ -1797,7 +1801,7 @@ chipStop = true;
     final Stuck   p = Stuck;                                                    // Parent stuck
     final Stuck   l = new Stuck(P, "mergeLeavesIntoRootLeft");                  // Left split stuck
     final Stuck   r = new Stuck(P, "mergeLeavesIntoRootRight");                 // Right split stuck
-    final Process.Register ck = P.new Register("childKey",   stuckAddressSize); // Index in memory of the left stuck
+    final Process.Register ck = P.new Register("childKey",   bitsPerKey); // Index in memory of the left stuck
     final Process.Register sz = P.new Register("size",       stuckAddressSize); // Index in memory of the left stuck
     final Process.Register cd = P.new Register("childData",  btreeAddressSize); // Index in memory of the left stuck
     final Process.Register il = P.new Register("indexLeft",  btreeAddressSize); // Index in memory of the left stuck
@@ -1875,7 +1879,7 @@ chipStop = true;
    {final Stuck   p = new Stuck(P, "mergeLeavesIntoRootParent");                // Parent stuck
     final Stuck   l = new Stuck(P, "mergeLeavesIntoRootLeft");                  // Left split stuck
     final Stuck   r = new Stuck(P, "mergeLeavesIntoRootRight");                 // Right split stuck
-    final Process.Register ck = P.new Register("childKey",   stuckAddressSize); // Index in memory of the left stuck
+    final Process.Register ck = P.new Register("childKey",   bitsPerKey); // Index in memory of the left stuck
     final Process.Register ls = P.new Register("leftChild",  stuckAddressSize); // Index in memory of the left stuck
     final Process.Register rs = P.new Register("rightChild", stuckAddressSize); // Index in memory of the left stuck
     final Process.Register cd = P.new Register("childData",  btreeAddressSize); // Index in memory of the left stuck
@@ -1957,7 +1961,7 @@ chipStop = true;
     final Stuck   p = Stuck;                                                    // Parent stuck
     final Stuck   l = new Stuck(P, "mergeBranchesNotTopLeft");                  // Left split stuck
     final Stuck   r = new Stuck(P, "mergeBranchesNotTopRight");                 // Right split stuck
-    final Process.Register ck = P.new Register("childKey",   stuckAddressSize); // Index in memory of the left stuck
+    final Process.Register ck = P.new Register("childKey",   bitsPerKey); // Index in memory of the left stuck
     final Process.Register ls = P.new Register("leftChild",  stuckAddressSize); // Index in memory of the left stuck
     final Process.Register rs = P.new Register("rightChild", stuckAddressSize); // Index in memory of the left stuck
     final Process.Register cd = P.new Register("childData",  btreeAddressSize); // Index in memory of the left stuck
@@ -2052,7 +2056,7 @@ chipStop = true;
     final Stuck   p = Stuck;                                                    // Parent stuck
     final Stuck   l = new Stuck(P, "mergeLeavesIntoRootLeft");                  // Left split stuck
     final Stuck   r = new Stuck(P, "mergeLeavesIntoRootRight");                 // Right split stuck
-    final Process.Register ck = P.new Register("childKey",   stuckAddressSize); // Index in memory of the left stuck
+    final Process.Register ck = P.new Register("childKey",   bitsPerKey); // Index in memory of the left stuck
     final Process.Register sz = P.new Register("size",       stuckAddressSize); // Index in memory of the left stuck
     final Process.Register cd = P.new Register("childData",  btreeAddressSize); // Index in memory of the left stuck
     final Process.Register il = P.new Register("indexLeft",  btreeAddressSize); // Index in memory of the left stuck
@@ -4325,9 +4329,13 @@ Merge     : 0
        {k.registerSet(64);
         d.registerSet(65);
        }
+      void verilog(Verilog v)
+       {k.registerSet(v, 64);
+        d.registerSet(v, 65);
+       }
      };
     f.findAndInsert(k, d);
-    b.chipRunJava();
+    b.chipRun();
     //stop(b.btreePrint());
     ok(b.btreePrint(), """
                   45                        |
@@ -4347,9 +4355,13 @@ Merge     : 0
        {i.registerSet(6);
         j.registerSet(0);
        }
+      void verilog(Verilog v)
+       {i.registerSet(v, 6);
+        j.registerSet(v, 0);
+       }
      };
     b.splitLeafNotTop(i, j);
-    b.chipRunJava();
+    b.chipRun();
     //stop(b.btreePrint());
     ok(b.btreePrint(), """
                   45                             |
@@ -4369,14 +4381,22 @@ Merge     : 0
        {k.registerSet( 90);
         d.registerSet(100);
        }
+      void verilog(Verilog v)
+       {k.registerSet(v,  90);
+        d.registerSet(v, 100);
+       }
      };
     f.findAndInsert(k, d);
-    b.chipRunJava();
+    b.chipRun();
     P.processClear();
     P.new Instruction()
      {void action()
        {k.registerSet(100);
         d.registerSet(110);
+       }
+      void verilog(Verilog v)
+       {k.registerSet(v, 100);
+        d.registerSet(v, 110);
        }
      };
     f.findAndInsert(k, d);
@@ -4386,9 +4406,12 @@ Merge     : 0
      {void action()
        {i.registerSet(6);
        }
+      void verilog(Verilog v)
+       {i.registerSet(v, 6);
+       }
      };
     b.splitLeafAtTop(i);
-    b.chipRunJava();
+    b.chipRun();
     //stop(b.btreePrint());
     ok(b.btreePrint(), """
                   45                                         |
@@ -4406,9 +4429,12 @@ Merge     : 0
      {void action()
        {i.registerSet(0);
        }
+      void verilog(Verilog v)
+       {i.registerSet(v, 0);
+       }
      };
     b.splitBranchAtTop(i);
-    b.chipRunJava();
+    b.chipRun();
     //stop(b.btreePrint());
     ok(b.btreePrint(), """
                   45                  65                    |
@@ -4428,23 +4454,35 @@ Merge     : 0
        {k.registerSet(21);
         d.registerSet(22);
        }
+      void verilog(Verilog v)
+       {k.registerSet(v, 21);
+        d.registerSet(v, 22);
+       }
      };
     f.findAndInsert(k, d);
-    b.chipRunJava();
+    b.chipRun();
     P.processClear();
     P.new Instruction()
      {void action()
        {k.registerSet(22);
         d.registerSet(23);
        }
+      void verilog(Verilog v)
+       {k.registerSet(v, 22);
+        d.registerSet(v, 23);
+       }
      };
     f.findAndInsert(k, d);
-    b.chipRunJava();
+    b.chipRun();
     P.processClear();
     P.new Instruction()
      {void action()
        {i.registerSet(5);
         j.registerSet(0);
+       }
+      void verilog(Verilog v)
+       {i.registerSet(v, 5);
+        j.registerSet(v, 0);
        }
      };
     b.splitLeafNotTop(i, j);
@@ -4468,6 +4506,10 @@ Merge     : 0
        {k.registerSet(12);
         d.registerSet(13);
        }
+      void verilog(Verilog v)
+       {k.registerSet(v, 12);
+        d.registerSet(v, 13);
+       }
      };
     f.findAndInsert(k, d);
     b.chipRunJava();
@@ -4477,9 +4519,13 @@ Merge     : 0
        {k.registerSet(14);
         d.registerSet(15);
        }
+      void verilog(Verilog v)
+       {k.registerSet(v, 14);
+        d.registerSet(v, 15);
+       }
      };
     f.findAndInsert(k, d);
-    b.chipRunJava();
+    b.chipRun();
     //stop(b.btreePrint());
     ok(b.btreePrint(), """
                                     45                  65                    |
@@ -4499,9 +4545,13 @@ Merge     : 0
        {i.registerSet(5);
         j.registerSet(0);
        }
+      void verilog(Verilog v)
+       {i.registerSet(v, 5);
+        j.registerSet(v, 0);
+       }
      };
     b.splitLeafNotTop(i, j);
-    b.chipRunJava();
+    b.chipRun();
     //stop(b.btreePrint());
     ok(b.btreePrint(), """
                                           45                  65                    |
@@ -4520,6 +4570,10 @@ Merge     : 0
      {void action()
        {i.registerSet(0);
         j.registerSet(0);
+       }
+      void verilog(Verilog v)
+       {i.registerSet(v, 0);
+        j.registerSet(v, 0);
        }
      };
     b.splitBranchNotTop(i, j);
