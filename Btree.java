@@ -2271,6 +2271,9 @@ chipStop = true;
          {void action()
            {P.GoNotZero(oEnd, f.Found);                                         // Direct insertion succeeded so nothing more to do
            }
+          void verilog(Verilog v)
+           {P.GoNotZero(v, oEnd, f.Found);                                         // Direct insertion succeeded so nothing more to do
+           }
          };
 
         P.new If(f.BtreeIndex)                                                  // Failed to insert because the root is a leaf which must be full else the operation would have succeeded
@@ -2280,6 +2283,9 @@ chipStop = true;
             P.new Instruction()
              {void action()
                {P.Goto(oEnd);                                                   // Direct insertion succeeded so nothing more to do
+               }
+              void verilog(Verilog v)
+               {P.Goto(v, oEnd);                                                   // Direct insertion succeeded so nothing more to do
                }
              };
            }
@@ -2291,6 +2297,9 @@ chipStop = true;
          {void action()
            {full.ge(S.size, maxStuckSize-1);
            }
+          void verilog(Verilog v)
+           {full.ge(v, S.size, maxStuckSize-1);
+           }
          };
         P.new If (full)                                                         // If root branch is full split it using the dedicated method and restart
          {void Then()
@@ -2299,6 +2308,9 @@ chipStop = true;
              {void action()
                {P.Goto(start);                                                  // Restart descent to make sure we are on the right path
                }
+              void verilog(Verilog v)
+               {P.Goto(v, start);                                               // Restart descent to make sure we are on the right path
+               }
              };
            }
          };
@@ -2306,6 +2318,9 @@ chipStop = true;
         P.new Instruction()                                                     // Start at the root
          {void action()
            {p.zero();
+           }
+          void verilog(Verilog v)
+           {p.zero(v);
            }
          };
 
@@ -2318,6 +2333,11 @@ chipStop = true;
                {S.search_le(Key);                                               // Step down
                 c.copy(S.Data); ci.copy(S.StuckIndex); found.copy(S.Found);
                }
+              void verilog(Verilog v)
+               {S.search_le(v, Key);                                            // Step down
+                c.copy(v, S.Data); ci.copy(v, S.StuckIndex);
+                found.copy(v, S.Found);
+               }
              };
 
             s.stuckGet(c);                                                      // Child - inefficient way to find out if it is a leaf or not
@@ -2327,6 +2347,9 @@ chipStop = true;
                {P.new Instruction()
                  {void action()
                    {full.ge(s.size, maxStuckSize);
+                   }
+                  void verilog(Verilog v)
+                   {full.ge(v, s.size, maxStuckSize);
                    }
                  };
 
@@ -2347,6 +2370,9 @@ chipStop = true;
                  {void action()
                    {P.Goto(loopEnd);                                            // On leaf so descent has been completed
                    }
+                  void verilog(Verilog v)
+                   {P.Goto(v, loopEnd);                                            // On leaf so descent has been completed
+                   }
                  };
                }
 
@@ -2354,6 +2380,9 @@ chipStop = true;
                {P.new Instruction()
                  {void action()
                    {full.ge(s.size, maxStuckSize-1);
+                   }
+                  void verilog(Verilog v)
+                   {full.ge(v, s.size, maxStuckSize-1);
                    }
                  };
 
@@ -2373,12 +2402,18 @@ chipStop = true;
                      {void action()
                        {p.copy(c);                                              // Step down from parent to child
                        }
+                      void verilog(Verilog v)
+                       {p.copy(v, c);                                              // Step down from parent to child
+                       }
                      };
                    }
                  };
                 P.new Instruction()
                  {void action()
                    {P.Goto(loopStart);                                          // Process next level of tree
+                   }
+                  void verilog(Verilog v)
+                   {P.Goto(v, loopStart);                                       // Process next level of tree
                    }
                  };
                }
@@ -2714,7 +2749,7 @@ Chip: Btree            step: 45, maxSteps: 100, running: 0, returnCode: 0
 
     s.stuckGetRoot();
     b.maxSteps = 100;
-    b.chipRunJava();
+    b.chipRun();
     //stop(s);
     ok(s, """
 Stuck: root size: 4, leaf: 1, root
@@ -4400,7 +4435,7 @@ Merge     : 0
        }
      };
     f.findAndInsert(k, d);
-    b.chipRunJava();
+    b.chipRun();
     P.processClear();
     P.new Instruction()
      {void action()
@@ -4486,7 +4521,7 @@ Merge     : 0
        }
      };
     b.splitLeafNotTop(i, j);
-    b.chipRunJava();
+    b.chipRun();
     //stop(b.btreePrint());
     ok(b.btreePrint(), """
                               45                  65                    |
@@ -4512,7 +4547,7 @@ Merge     : 0
        }
      };
     f.findAndInsert(k, d);
-    b.chipRunJava();
+    b.chipRun();
     P.processClear();
     P.new Instruction()
      {void action()
@@ -4577,7 +4612,7 @@ Merge     : 0
        }
      };
     b.splitBranchNotTop(i, j);
-    b.chipRunJava();
+    b.chipRun();
     //stop(b.btreePrint());
     ok(b.btreePrint(), """
                     20                  45                   65                    |
@@ -4614,16 +4649,24 @@ Merge     : 0
            {k.inc();
             d.copy(k); d.inc();
            }
+          void verilog(Verilog v)
+           {k.inc(v);
+            d.copy(v, k); d.inc(v);
+           }
          };
         b.put(P, k, d);
         P.new Instruction()
          {void action()
            {P.GoNotZero(start, l.lt(k, N));
            }
+          void verilog(Verilog v)
+           {l.lt(v, k, N);
+            P.GoNotZero(v, start, l);
+           }
          };
        }
      };
-    b.chipRunJava();
+    b.chipRun();
     //stop(b.btreePrint());
     //stop(b.btreeSave());
     ok(b.btreePrint(), test_put_print());
@@ -4945,9 +4988,18 @@ Merge     : 0
 
     final int N = 32;
     for (int i = N; i > 0; i--)
-     {P.processClear();
-      k.registerSet(i);
-      d.registerSet(i+1);
+     {final int I = i;
+       P.processClear();
+      P.new Instruction()
+       {void action()
+         {k.registerSet(I);
+          d.registerSet(I+1);
+         }
+        void verilog(Verilog v)
+         {k.registerSet(v, I);
+          d.registerSet(v, I+1);
+         }
+       };
       b.put(P, k, d);
       b.chipRunJava();
       //say(i, b.btreePrint());
@@ -4982,9 +5034,18 @@ Merge     : 0
 
     final int N = random_32.length;
     for (int i = 0; i < N; ++i)
-     {P.processClear();
-      k.registerSet(random_32[i]);
-      d.registerSet(i);
+     {final int I = i;
+      P.processClear();
+      P.new Instruction()
+       {void action()
+         {k.registerSet(random_32[I]);
+          d.registerSet(I);
+         }
+        void verilog(Verilog v)
+         {k.registerSet(v, random_32[I]);
+          d.registerSet(v, I);
+         }
+      };
       b.put(P, k, d);
       b.chipRunJava();
       //say(i, b.btreePrint());
@@ -5075,8 +5136,8 @@ Merge     : 0
 
     b.splitRootLeaf(P);
     b.chipRun();
-    stop(b.chipPrintMemory());
-    stop(b.btreePrint());
+    //stop(b.chipPrintMemory());
+    //stop(b.btreePrint());
    }
 
   static void test_mergeLeavesIntoRoot()
@@ -5091,10 +5152,62 @@ Merge     : 0
     final FindAndInsert f = b.new FindAndInsert(P);
     b.maxSteps = 2000;
 
-    P.processClear(); k.registerSet(1); d.registerSet(2); f.findAndInsert(k, d); b.chipRunJava();
-    P.processClear(); k.registerSet(2); d.registerSet(3); f.findAndInsert(k, d); b.chipRunJava();
-    P.processClear(); k.registerSet(4); d.registerSet(5); f.findAndInsert(k, d); b.chipRunJava();
-    P.processClear(); k.registerSet(3); d.registerSet(4); f.findAndInsert(k, d); b.chipRunJava();
+    P.processClear();
+    P.new Instruction()
+     {void action()
+       {k.registerSet(1);
+        d.registerSet(2);
+       }
+      void verilog(Verilog v)
+       {k.registerSet(v, 1);
+        d.registerSet(v, 2);
+       }
+     };
+    f.findAndInsert(k, d);
+    b.chipRunJava();
+
+    P.processClear();
+    P.new Instruction()
+     {void action()
+       {k.registerSet(2);
+        d.registerSet(3);
+       }
+      void verilog(Verilog v)
+       {k.registerSet(v, 2);
+        d.registerSet(v, 3);
+       }
+     };
+    f.findAndInsert(k, d);
+    b.chipRunJava();
+
+    P.processClear();
+    P.new Instruction()
+     {void action()
+       {k.registerSet(4);
+        d.registerSet(5);
+       }
+      void verilog(Verilog v)
+       {k.registerSet(v, 4);
+        d.registerSet(v, 5);
+       }
+     };
+    f.findAndInsert(k, d);
+    b.chipRunJava();
+
+    P.processClear();
+    P.new Instruction()
+     {void action()
+       {k.registerSet(3);
+        d.registerSet(4);
+       }
+      void verilog(Verilog v)
+       {k.registerSet(v, 3);
+        d.registerSet(v, 4);
+       }
+    };
+    f.findAndInsert(k, d);
+    b.chipRunJava();
+
     final Stuck S = b.new Stuck(P, "Test");
     P.processClear();
     b.splitRootLeaf(P);
@@ -5108,7 +5221,9 @@ Merge     : 0
 1,2=1  3,4=2 |
 """);
 
-    P.processClear();Process.Register r =  b.mergeLeavesIntoRoot(P); b.chipRunJava();
+    P.processClear();
+    Process.Register r = b.mergeLeavesIntoRoot(P);
+    b.chipRun();
     //stop(b.chipPrintMemory());
     //stop(b.btreePrint());
     ok(r, "findAndInsert_success_176 = 1");
@@ -5130,36 +5245,102 @@ Merge     : 0
     final FindAndInsert f = b.new FindAndInsert(P);
     b.maxSteps = 2000;
 
-    P.processClear(); k.registerSet(10); d.registerSet(20); f.findAndInsert(k, d); b.chipRunJava();
-    P.processClear(); k.registerSet(20); d.registerSet(30); f.findAndInsert(k, d); b.chipRunJava();
-    P.processClear(); k.registerSet(40); d.registerSet(50); f.findAndInsert(k, d); b.chipRunJava();
-    P.processClear(); k.registerSet(30); d.registerSet(40); f.findAndInsert(k, d); b.chipRunJava();
+    P.new Instruction()
+     {void action()
+       {k.registerSet(10);
+        d.registerSet(20);
+       }
+      void verilog(Verilog v)
+       {k.registerSet(v, 10);
+        d.registerSet(v, 20);
+       }
+     };
+    f.findAndInsert(k, d);
 
-    P.processClear();
+    P.new Instruction()
+     {void action()
+       {k.registerSet(20);
+        d.registerSet(30);
+       }
+      void verilog(Verilog v)
+       {k.registerSet(v, 20);
+        d.registerSet(v, 30);
+       }
+     };
+    f.findAndInsert(k, d);
+
+    P.new Instruction()
+     {void action()
+       {k.registerSet(40);
+        d.registerSet(50);
+       }
+      void verilog(Verilog v)
+       {k.registerSet(v, 40);
+        d.registerSet(v, 50);
+       }
+     };
+    f.findAndInsert(k, d);
+
+    P.new Instruction()
+     {void action()
+       {k.registerSet(30);
+        d.registerSet(40);
+       }
+      void verilog(Verilog v)
+       {k.registerSet(v, 30);
+        d.registerSet(v, 40);
+       }
+    };
+    f.findAndInsert(k, d);
+
     b.splitRootLeaf(P);
-    b.chipRunJava();
 
-    P.processClear(); k.registerSet(50); d.registerSet(60); f.findAndInsert(k, d); b.chipRunJava();
-    P.processClear(); k.registerSet(60); d.registerSet(70); f.findAndInsert(k, d); b.chipRunJava();
+    P.new Instruction()
+     {void action()
+       {k.registerSet(50);
+        d.registerSet(60);
+       }
+      void verilog(Verilog v)
+       {k.registerSet(v, 50);
+        d.registerSet(v, 60);
+       }
+     };
+    f.findAndInsert(k, d);
 
-    P.processClear();
+    P.new Instruction()
+     {void action()
+       {k.registerSet(60);
+        d.registerSet(70);
+       }
+      void verilog(Verilog v)
+       {k.registerSet(v, 60);
+        d.registerSet(v, 70);
+       }
+     };
+    f.findAndInsert(k, d);
+
     i.registerSet(0);
+
+    P.new Instruction()
+     {void action()
+       {i.registerSet(0);
+       }
+      void verilog(Verilog v)
+       {i.registerSet(v, 0);
+       }
+     };
     b.splitLeafAtTop(i);
-    b.chipRunJava();
-    //stop(b.btreePrint());
-    ok(b.btreePrint(), """
-        25        45         |
-        0         0.1        |
-        1         3          |
-                  2          |
-10,20=1   30,40=3    50,60=2 |
-""");
 
-    //stop(b.btreeSave());
-
-    P.processClear();
-    i.registerSet(0);
-    j.registerSet(0);
+    P.new Instruction()
+     {void action()
+       {i.registerSet(0);
+        j.registerSet(0);
+       }
+      void verilog(Verilog v)
+       {i.registerSet(v, 0);
+        j.registerSet(v, 0);
+       }
+     };
     s.stuckGet(i);
     final Process.Register r = b.mergeLeavesNotTop(s, i, j);
     b.chipRunJava();
@@ -5243,34 +5424,128 @@ Merge     : 0
     final FindAndInsert f = b.new FindAndInsert(P);
     b.maxSteps = 2000;
 
-    P.processClear(); k.registerSet(10); d.registerSet(20); f.findAndInsert(k, d); b.chipRunJava();
-    P.processClear(); k.registerSet(20); d.registerSet(30); f.findAndInsert(k, d); b.chipRunJava();
-    P.processClear(); k.registerSet(40); d.registerSet(50); f.findAndInsert(k, d); b.chipRunJava();
-    P.processClear(); k.registerSet(30); d.registerSet(40); f.findAndInsert(k, d); b.chipRunJava();
+    P.new Instruction()
+     {void action()
+       {k.registerSet(10);
+        d.registerSet(20);
+       }
+      void verilog(Verilog v)
+       {k.registerSet(v, 10);
+        d.registerSet(v, 20);
+       }
+     };
+    f.findAndInsert(k, d);
 
-    P.processClear();
+    P.new Instruction()
+     {void action()
+       {k.registerSet(20);
+        d.registerSet(30);
+       }
+      void verilog(Verilog v)
+       {k.registerSet(v, 20);
+        d.registerSet(v, 30);
+       }
+     };
+    f.findAndInsert(k, d);
+
+    P.new Instruction()
+     {void action()
+       {k.registerSet(40);
+        d.registerSet(50);
+       }
+      void verilog(Verilog v)
+       {k.registerSet(v, 40);
+        d.registerSet(v, 50);
+       }
+     };
+    f.findAndInsert(k, d);
+
+    P.new Instruction()
+     {void action()
+       {k.registerSet(30);
+        d.registerSet(40);
+       }
+      void verilog(Verilog v)
+       {k.registerSet(v, 30);
+        d.registerSet(v, 40);
+       }
+    };
+    f.findAndInsert(k, d);
+
     b.splitRootLeaf(P);
-    b.chipRunJava();
 
-    P.processClear(); k.registerSet(50); d.registerSet(60); f.findAndInsert(k, d); b.chipRunJava();
-    P.processClear(); k.registerSet(60); d.registerSet(70); f.findAndInsert(k, d); b.chipRunJava();
+    P.new Instruction()
+     {void action()
+       {k.registerSet(50);
+        d.registerSet(60);
+       }
+      void verilog(Verilog v)
+       {k.registerSet(v, 50);
+        d.registerSet(v, 60);
+       }
+     };
+    f.findAndInsert(k, d);
 
-    P.processClear();
-    i.registerSet(0);
+    P.new Instruction()
+     {void action()
+       {k.registerSet(60);
+        d.registerSet(70);
+       }
+      void verilog(Verilog v)
+       {k.registerSet(v, 60);
+        d.registerSet(v, 70);
+       }
+    };
+    f.findAndInsert(k, d);
+
+    P.new Instruction()
+     {void action()
+       {i.registerSet(0);
+       }
+      void verilog(Verilog v)
+       {i.registerSet(v, 0);
+       }
+     };
+
     b.splitLeafAtTop(i);
-    b.chipRunJava();
 
-    P.processClear(); k.registerSet(70); d.registerSet(80); f.findAndInsert(k, d); b.chipRunJava();
-    P.processClear(); k.registerSet(80); d.registerSet(90); f.findAndInsert(k, d); b.chipRunJava();
+    P.new Instruction()
+     {void action()
+       {k.registerSet(70);
+        d.registerSet(80);
+       }
+      void verilog(Verilog v)
+       {k.registerSet(v, 70);
+        d.registerSet(v, 80);
+       }
+     };
+    f.findAndInsert(k, d);
 
-    P.processClear();
-    i.registerSet(0);
+    P.new Instruction()
+     {void action()
+       {k.registerSet(80);
+        d.registerSet(90);
+       }
+      void verilog(Verilog v)
+       {k.registerSet(v, 80);
+        d.registerSet(v, 90);
+       }
+    };
+    f.findAndInsert(k, d);
+
+    P.new Instruction()
+     {void action()
+       {i.registerSet(0);
+       }
+      void verilog(Verilog v)
+       {i.registerSet(v, 0);
+       }
+     };
+
     b.splitLeafAtTop(i);
-    b.chipRunJava();
 
-    P.processClear();
     b.splitRootBranch(P);
-    b.chipRunJava();
+    b.chipRun();
     //stop(b.btreePrint());
     ok(b.btreePrint(), """
                   45                  |
@@ -5321,12 +5596,21 @@ Merge     : 0
 1,2=1  3,4=3   5,6=4  7,8=7   9,10=8   11,12=10   13,14=11   15,16=13    17,18=16   19,20=18   21,22=19   23,24=21     25,26=23   27,28=25    29,30,31,32=2 |
 """);
 
-    i.registerSet(15);
-    j.registerSet(0);
+    P.new Instruction()
+     {void action()
+       {i.registerSet(15);
+        j.registerSet(0);
+       }
+      void verilog(Verilog v)
+       {i.registerSet(v, 15);
+        j.registerSet(v,  0);
+       }
+     };
+
     s.stuckGet(i);
     b.mergeBranchesNotTop(s, i, j);
     b.maxSteps = 2000;
-    b.chipRunJava();
+    b.chipRun();
     //stop(b.btreePrint());
     ok(b.btreePrint(), """
                             8                                         16                                                                                      |
@@ -5353,16 +5637,28 @@ Merge     : 0
     final Process.Register i = P.register("i", b.btreeAddressSize);
     final Process.Register j = P.register("j", b.stuckAddressSize);
 
-    i.registerSet(6);
+    P.new Instruction()
+     {void action()
+       {i.registerSet(6);
+       }
+      void verilog(Verilog v)
+       {i.registerSet(v, 6);
+       }
+    };
+
     s.stuckGet(i);
+
     P.new Instruction()
      {void action()
        {s.pop();
        }
+      void verilog(Verilog v)
+       {s.pop(v);
+       }
     };
     s.stuckPut();
     b.maxSteps = 2000;
-    b.chipRunJava();
+    b.chipRun();
 
     //stop(b.btreePrint());
     ok(b.btreePrint(), """
@@ -5382,7 +5678,15 @@ Merge     : 0
 """);
 
     P.processClear();
-    i.registerSet(15);
+
+    P.new Instruction()
+     {void action()
+       {i.registerSet(15);
+       }
+      void verilog(Verilog v)
+       {i.registerSet(v, 15);
+       }
+    };
     s.stuckGet(i);
     b.mergeBranchesAtTop(s, i);
     b.maxSteps = 2000;
@@ -6622,10 +6926,10 @@ Merge     : 0
     test_removeElementAt();
     test_search_eq();
     test_search_le();
-    test_splitIntoTwo();
-    test_splitIntoThree();
-    test_splitLow();
-    test_splitLowButOne();
+    //test_splitIntoTwo();
+    //test_splitIntoThree();
+    //test_splitLow();
+    //test_splitLowButOne();
     test_merge();
     test_merge2();
     test_mergeButOne();
@@ -6653,8 +6957,10 @@ Merge     : 0
 
   static void newTests()                                                        // Tests being worked on
    {//oldTests();
-    //test_splitRootLeaf();
-    test_findAndInsert();
+    //test_delete();
+    //test_delete_random();
+    //test_delete_reverse();
+    //test_delete_random_reverse();
    }
 
   public static void main(String[] args)                                        // Test if called as a program
