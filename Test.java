@@ -531,6 +531,27 @@ public class Test                                                               
 
 //D2 Files                                                                      // Operations on files
 
+  static Long fileSize(String file)
+   {final Path path = Path.of(file);
+    try
+     {return Files.size(path);
+     }
+    catch (IOException e)
+     {return null;
+     }
+   }
+
+  static Long fileCompare(String a, String b)
+   {final Path A = Path.of(a);
+    final Path B = Path.of(b);
+    try
+     {return Files.mismatch(A, B);
+     }
+    catch (IOException e)
+     {return null;
+     }
+   }
+
   static Stack<String> readFile(String filePath)                                // Read a file into stack of strings
    {try
      {final Stack<String> S = new Stack<>();
