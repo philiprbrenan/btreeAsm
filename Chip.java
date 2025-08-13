@@ -10,7 +10,9 @@ class Chip extends Test                                                         
  {final String chipName;                                                        // The name of the chip
   final Children<Process>  processes = new Children<>();                        // A fixed set of processes for this chip in definition order
   final String         javaTraceFile = fn(Verilog.folder, "trace_java.txt");    // Java trace file for comparison with verilog
+  final String   javaMemoryTraceFile = fn(Verilog.folder, "memory_trace_java.txt");    // Java trace file for comparison with verilog
   final String      verilogTraceFile = fn(Verilog.folder, "trace_verilog.txt"); // Verilog trace file
+  final String verilogMemoryTraceFile = fn(Verilog.folder, "trace_verilog.txt"); // Verilog trace file
   int memoryProcessTransactionNumber = 0;                                       // Make transaction names unique
   boolean                chipRunning;                                           // True when the chip is running
   int                           step;                                           // Current simulation step being executed
@@ -41,8 +43,8 @@ class Chip extends Test                                                         
    }
 
   void chipRun()                                                                // Run the Java version followed by the Verilog version. The output of the Verilog version is compared with the expected output of the definitive Java version
-   {chipRunJava();                                                                                //
-    chipRunVerilog();                                                                                //
+   {chipRunJava();
+    chipRunVerilog();
    }
 
   void chipStop(int ReturnCode)                                                 // Stop the chip
