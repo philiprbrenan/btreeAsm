@@ -296,7 +296,7 @@ endmodule
                   " && timeout 1m ./"      +chipName;
     final var e = new ExecCommand(c);
 
-    ok(readFileAsString(verilogTraceFile), readFileAsString(javaTraceFile));    // Compare execution traces - assumes that the java version has been executed to produce a comparable trace
+    ok(fileCompare(verilogTraceFile, javaTraceFile), -1);                       // Compare execution traces - assumes that the java version has been executed to produce a comparable trace
     return ""+v;
    }
 
