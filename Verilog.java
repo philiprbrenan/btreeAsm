@@ -72,10 +72,7 @@ class Verilog extends Test                                                      
    {If(String condition)
      {A("if ("+condition+") begin");
       indent();
-      final int t = lines.size();
       Then();
-      final int T = lines.size();
-      if (T == t) stop("Missing Then");
       end();
       A("else begin");
       indent();
