@@ -182,7 +182,7 @@ if ($file =~ m(\.(v|sv|tb)\Z))                                                  
 #  my $i = '/'.fpd @i;
 
   my $i = fpd fp($file), "includes";
-  my $c = qq(rm -f $n; iverilog -I$i -g2012 -o $n $ut $tb && timeout 3m ./$n);
+  my $c = qq(rm -f $n; iverilog -I$i -g2012 -o $n $ut $tb && timeout 1m ./$n);
   say STDERR qq($c);
   say STDERR qx($c);
   exit;
