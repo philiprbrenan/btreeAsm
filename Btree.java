@@ -1748,8 +1748,12 @@ chipStop = true;
             ir.copy(p.data[LeftLeaf.registerGet() + 1]);                        // Get the btree index of the right child leaf
            }
           void verilog(Verilog v)
-           {il.copy(v, p.data[LeftLeaf.registerGet()]);                         // Get the btree index of the left child leaf
-            ir.copy(v, p.data[LeftLeaf.registerGet() + 1]);                     // Get the btree index of the right child leaf
+           {v.new Case(maxStuckSize-1, LeftLeaf.registerName())
+             {void Choice(int i)
+               {il.copy(v, p.data[i]);                                          // Get the btree index of the left child leaf
+                ir.copy(v, p.data[i + 1]);                                      // Get the btree index of the right child leaf
+               }
+             };
            }
          };
 
@@ -1834,8 +1838,12 @@ chipStop = true;
            }
           void verilog(Verilog v)
            {sz.copy(v, p.size);                                                 // Index of left leaf known to be valid as the parent contains at least one entry resulting in two children
-            il.copy(v, p.data[sz.registerGet()-1]);                             // Get the btree index of the left child leaf
-            ir.copy(v, p.data[sz.registerGet()]);                               // Get the btree index of the right child leaf
+            v.new Case(1, maxStuckSize, sz.registerName())
+             {void Choice(int i)
+               {il.copy(v, p.data[i-1]);                                        // Get the btree index of the left child leaf
+                ir.copy(v, p.data[i]);                                          // Get the btree index of the right child leaf
+               }
+             };
            }
          };
 
@@ -2089,8 +2097,12 @@ chipStop = true;
            }
           void verilog(Verilog v)
            {sz.copy(v, p.size);                                                 // Index of left branch known to be valid as the parent contains at least one entry resulting in two children
-            il.copy(v, p.data[sz.registerGet()-1]);                             // Get the btree index of the left branch branch
-            ir.copy(v, p.data[sz.registerGet()  ]);                             // Get the btree index of the right branch branch
+            v.new Case(1, maxStuckSize, sz.registerName())
+             {void Choice(int i)
+               {il.copy(v, p.data[i-1]);                                        // Get the btree index of the left branch branch
+                ir.copy(v, p.data[i  ]);                                        // Get the btree index of the right branch branch
+               }
+             };
            }
          };
 
@@ -6424,7 +6436,12 @@ Merge     : 0
 
   static void test_delete()
    {sayCurrentTestName();
-    final Btree            b = test_put_reload();
+    //final Btree            b = test_put_reload();
+    final Btree b = new Btree(32, 4, 8, 8);
+    final int N = 31;
+    b.btreeLoad(test_put_save_31());   // +30
+    say("AAAA", b.btreePrint());
+
     final Process          P = b.new Process("delete");
     final Stuck            s = b.new Stuck(P, "stuck");
     final Process.Register k = P.register("k", b.bitsPerKey);
@@ -6433,7 +6450,6 @@ Merge     : 0
     b.maxSteps = 30000;
 
     //final int N = 32;
-    final int N = 1;
     P.new Instruction()
      {void action()
        {k.registerSet(0);
@@ -6460,7 +6476,7 @@ Merge     : 0
             P.GoNotZero(start, l);
            }
           void verilog(Verilog v)
-           {l.lt(v, k, N);
+           {l.le(v, k, N);
             P.GoNotZero(v, start, l);
            }
          };
@@ -7686,7 +7702,7 @@ Merge     : 0
   static void newTests()                                                        // Tests being worked on
    {//oldTests();
     //test_put();
-    //test_delete();
+      test_delete();
     //test_delete_random();
     //test_delete_reverse();
     //test_delete_random_reverse();
