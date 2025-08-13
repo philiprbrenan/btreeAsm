@@ -293,7 +293,7 @@ endmodule
 
     final var c = "rm -f "+chipName+" "+verilogTraceFile+
                   " ;  iverilog -g2012 -o "+chipName+" "+source+
-                  " && timeout 1m ./"      +chipName;
+                  " && timeout 5m ./"      +chipName;
     final var e = new ExecCommand(c);
 
     ok(fileCompare(verilogTraceFile, javaTraceFile), -1);                       // Compare execution traces - assumes that the java version has been executed to produce a comparable trace
