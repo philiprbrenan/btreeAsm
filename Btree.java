@@ -1020,11 +1020,11 @@ chipStop = true;
          {final int L = Left .size.registerGet();
           final int R = Right.size.registerGet();
           MergeSuccess.zero();
-          if (L + R > maxStuckSize)
-           {return;
+          if (L + R <= maxStuckSize)
+           {clear();
+            MergeSuccess.one();
            }
-          clear();
-          MergeSuccess.one();
+          chipStop(1);
          }
         void verilog(Verilog v)
          {MergeSuccess.zero(v);
@@ -1040,8 +1040,10 @@ chipStop = true;
                };
              }
            };
+          chipStop(v, 1);
          }
        };
+
       P.new If(MergeSuccess)
        {void Then()
          {merge(Left);
@@ -1205,8 +1207,8 @@ chipStop = true;
      {padStrings(P, level);
 
       final StringBuilder s = new StringBuilder();                              // String builder
-      for  (int i = 0; i < stuckSize.memoryGet(BtreeIndex); i++)
-       {s.append(""+stuckKeys[i].memoryGet(BtreeIndex)+",");
+      for  (int i = 0; i < stuckSize.memoryGetNoSet(BtreeIndex); i++)
+       {s.append(""+stuckKeys[i].memoryGetNoSet(BtreeIndex)+",");
        }
       if (s.length() > 0) s.setLength(s.length()-1);                            // Remove trailing comma if present
       s.append("="+BtreeIndex+" ");
@@ -1218,31 +1220,31 @@ chipStop = true;
      {if (level > maxPrintLevels) return;
       padStrings(P, level);
       final int L = level * linesToPrintABranch;                                // Start line at which to print branch
-      final int K = stuckSize.memoryGet(BtreeIndex);                            // Size of branch
+      final int K = stuckSize.memoryGetNoSet(BtreeIndex);                            // Size of branch
 
       if (K > 0)                                                                // Branch has key, next pairs
        {for  (int i = 0; i < K; i++)
-         {final int key  = stuckKeys[i].memoryGet(BtreeIndex);
-          final int data = stuckData[i].memoryGet(BtreeIndex);
-          if (stuckIsLeaf.memoryGet(data) > 0)
+         {final int key  = stuckKeys[i].memoryGetNoSet(BtreeIndex);
+          final int data = stuckData[i].memoryGetNoSet(BtreeIndex);
+          if (stuckIsLeaf.memoryGetNoSet(data) > 0)
            {printLeaf  (data, P, level+1);
            }
           else
            {printBranch(data, P, level+1);
            }
 
-          P.elementAt(L+0).append(""+stuckKeys[i].memoryGet(BtreeIndex));       // Key
+          P.elementAt(L+0).append(""+stuckKeys[i].memoryGetNoSet(BtreeIndex));       // Key
           P.elementAt(L+1).append(""+BtreeIndex+(i > 0 ?  "."+i : ""));         // Branch,key, next pair
-          P.elementAt(L+2).append(""+stuckData[i].memoryGet(BtreeIndex));
+          P.elementAt(L+2).append(""+stuckData[i].memoryGetNoSet(BtreeIndex));
          }
        }
       else                                                                      // Branch is empty so print just the index of the branch
        {P.elementAt(L+0).append(""+BtreeIndex+"Empty");
        }
-      final int top = stuckData[K].memoryGet(BtreeIndex);                       // Top next will always be present
+      final int top = stuckData[K].memoryGetNoSet(BtreeIndex);                       // Top next will always be present
       P.elementAt(L+3).append(top);                                             // Append top next
 
-      if (stuckIsLeaf.memoryGet(top) > 0)                                       // Print leaf
+      if (stuckIsLeaf.memoryGetNoSet(top) > 0)                                       // Print leaf
        {printLeaf  (top, P, level+1);
        }
       else                                                                      // Print branch
@@ -1285,7 +1287,7 @@ chipStop = true;
 
   String btreePrint()                                                           // Print a tree horizontally
    {final Stack<StringBuilder> P = new Stack<>();
-    if (stuckIsLeaf.memoryGet(0) > 0) printLeaf(0, P, 0); else printBranch(0, P, 0);
+    if (stuckIsLeaf.memoryGetNoSet(0) > 0) printLeaf(0, P, 0); else printBranch(0, P, 0);
     return printCollapsed(P);
    }
 
@@ -1629,7 +1631,7 @@ chipStop = true;
    {final Stuck p = new Stuck(P, "mergeLeavesIntoRootParent");                  // Parent stuck
     final Stuck l = new Stuck(P, "mergeLeavesIntoRootLeft");                    // Left split stuck
     final Stuck r = new Stuck(P, "mergeLeavesIntoRootRight");                   // Right split stuck
-    final Process.Register ck = P.new Register("childKey",   bitsPerKey); // Index in memory of the left stuck
+    final Process.Register ck = P.new Register("childKey",   bitsPerKey);       // Index in memory of the left stuck
     final Process.Register cd = P.new Register("childData",  btreeAddressSize); // Index in memory of the left stuck
     final Process.Register il = P.new Register("indexLeft",  btreeAddressSize); // Index in memory of the left stuck
     final Process.Register ir = P.new Register("indexRight", btreeAddressSize); // Index in memory of the right stuck
@@ -1649,6 +1651,7 @@ chipStop = true;
            };
          };
         p.stuckGetRoot();                                                       // Load root
+
         P.new Instruction()                                                     // Check that the root has one entry and thus two children
          {void action()
            {test.eq(p.size, 1);                                                 // Number of entries in root
@@ -1659,6 +1662,7 @@ chipStop = true;
             P.GoZero(v, end, test);                                             // Wrong number of entries in root
            };
          };
+
 
         P.new Instruction()                                                     // Check that the root has one entry and thus two children
          {void action()
@@ -6437,7 +6441,7 @@ Merge     : 0
   static void test_delete()
    {sayCurrentTestName();
     final Btree b = new Btree(32, 4, 8, 8);
-    final int   N = 6;
+    final int   N = 6, L = 2;
     b.btreeLoad(test_put_save_6());
 
     final Process          P = b.new Process("delete");
@@ -6458,6 +6462,7 @@ Merge     : 0
        {k.registerSet(v, 0);
        }
      };
+
     P.new Block()
      {void code()
        {P.new Instruction()
@@ -6472,16 +6477,17 @@ Merge     : 0
         P.new Instruction()
          {void action()
            {t.append(b.btreePrint());
-            l.lt(k, N);
+            l.lt(k, L);
             P.GoNotZero(start, l);
            }
           void verilog(Verilog v)
-           {l.lt(v, k, N);
+           {l.lt(v, k, L);
             P.GoNotZero(v, start, l);
            }
          };
        }
      };
+
     b.chipRun();
 
     //stop(t);
