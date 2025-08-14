@@ -552,6 +552,63 @@ public class Test                                                               
      }
    }
 
+  class FileCompareAndLocate                                                    // Compare two files A, B line by line and return the last instance of a line starting with last before their point of divergence or null if file B is a prefix of file A
+   {final String last = "Location: ";                                           // Locator string identifying the nest section of the log
+    final String fileA, fileB;
+    int    line       = 0;                                                      // Line in the log at which the first failure as detected
+    boolean matches   = false;                                                  // Whether the two files match or not
+    String location   = null;                                                   // Last location record pripro to point of failure
+    final int N = 100;
+    final Deque<Match> q = new ArrayDeque<>(2*N);                               // The last so many lines before and after the point of fialure
+
+    class Match
+     {final String  a, b;
+      final int     line;
+      final boolean ahead;
+      Match(int Line, String A, String B)                {line = Line; a = A; b = B; ahead = false;}                                                                                //
+      Match(int Line, String A, String B, boolean Ahead) {line = Line; a = A; b = B; ahead = Ahead;}                                                                                //
+     }
+
+
+    FileCompareAndLocate(String a, String b)                                    // Compare two files A, B line by line and return the last instance of a line starting with last before their point of divergence or null if file B is a prefix of file A
+     {fileA = a; fileB = b;
+      final Path A = Path.of(a);
+      final Path B = Path.of(b);
+
+      try
+       (Stream<String> sa = Files.lines(A);
+        Stream<String> sb = Files.lines(B)
+       )
+       {final Iterator<String> ia = sa.iterator();
+        final Iterator<String> ib = sb.iterator();
+        while (ia.hasNext() && ib.hasNext())                                    // Read fiels line by line
+         {final String aa = ia.next();
+          final String bb = ib.next();
+          ++line;
+          if (q.size() >= N) q.removeFirst();
+          q.addLast(new Match(line, aa, bb));
+
+          if (aa.startsWith(last))                                              // Found a location record
+           {location = aa.substring(last.length()).replaceAll("\\|", "\n");
+           }
+          else if (!aa.equals(bb))                                              // Found a differing line which is not a location line
+           {for (int i = 1; i <= N && ia.hasNext() && ib.hasNext(); ++i)
+             {q.addLast(new Match(line+i, ia.next(), ib.next(), true));
+             }
+            return;
+           }
+         }
+        if (ib.hasNext())                                                       // File A has terminated earlier than B so no match
+         {return;
+         }
+        matches = true;                                                         // Files are identical
+       }
+      catch (IOException e)
+       {stop(e);
+       }
+     }
+   }
+
   static Stack<String> readFile(String filePath)                                // Read a file into stack of strings
    {try
      {final Stack<String> S = new Stack<>();
