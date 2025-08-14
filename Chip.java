@@ -10,9 +10,7 @@ class Chip extends Test                                                         
  {final String chipName;                                                        // The name of the chip
   final Children<Process>  processes = new Children<>();                        // A fixed set of processes for this chip in definition order
   final String         javaTraceFile = fn(Verilog.folder, "trace_java.txt");    // Java trace file for comparison with verilog
-  final String   javaMemoryTraceFile = fn(Verilog.folder, "memory_trace_java.txt");    // Java trace file for comparison with verilog
   final String      verilogTraceFile = fn(Verilog.folder, "trace_verilog.txt"); // Verilog trace file
-  final String verilogMemoryTraceFile = fn(Verilog.folder, "trace_verilog.txt"); // Verilog trace file
   int memoryProcessTransactionNumber = 0;                                       // Make transaction names unique
   boolean                chipRunning;                                           // True when the chip is running
   int                           step;                                           // Current simulation step being executed
@@ -239,8 +237,8 @@ class Chip extends Test                                                         
     end
   endtask
 """);
-    return ""+s;
-   }
+   return ""+s;
+  }
 
 //D2 Verilog                                                                    // Verilog describing the chip
 
@@ -290,14 +288,32 @@ endmodule
 
     final String source = fne(Verilog.folder, chipName, Verilog.ext);           // Source code in verilog
     writeFile(source,  ""+v);
+    deleteFile(verilogTraceFile);                                               // Remove java trace file
 
-    final var c = "rm -f "+chipName+" "+verilogTraceFile+
+    final var c = "rm -f "+chipName+" "+verilogTraceFile+                       // Verilog command
                   " ;  iverilog -g2012 -o "+chipName+" "+source+
                   " && timeout 5m ./"      +chipName;
-    final var e = new ExecCommand(c);
+    final var e = new ExecCommand(c);                                           // Run verilog
 
-    ok(fileCompare(verilogTraceFile, javaTraceFile), -1);                       // Compare execution traces - assumes that the java version has been executed to produce a comparable trace
-    say("File Compare", fileCompare(verilogTraceFile, javaTraceFile));
+    final FileCompareAndLocate fcl = new FileCompareAndLocate                   // Compare trace files
+     (verilogTraceFile, javaTraceFile);
+
+    if (fcl.matches) ok(1,1);                                                   // Passed
+    else if (fcl.location != null)
+     {say("Traces do NOT match on line:", fcl.line, "\n", fcl.location);              // Location of instruction causing first failure
+      for (FileCompareAndLocate.Match l : fcl.q)
+       {if (l.ahead)
+         {say(String.format("%10d J: %s", l.line, l.a));
+          if (!l.a.equals(l.b)) say(String.format("       V: %s", l.b));
+         }
+        else
+         {say(String.format("%10d j: %s", l.line, l.a));
+          if (!l.a.equals(l.b)) say(String.format("       v: %s", l.b));
+         }
+       }
+     }
+    else stop("Trace files do not contain location records");
+
     return ""+v;
    }
 
@@ -317,12 +333,16 @@ endmodule
     final Stack<Label>       labels          = new Stack<>();                   // Labels for instructions in this process
     int                      processPc       = 0;                               // The index of the next instruction to be executed
     int                      processNextPc   = -1;                              // The next program counter requested
+    boolean                  processTrace    = false;                           // Trace this process if true by writing location statements intothe log file to identify where in the source code this instruction was generated
 
 //D2 Instruction                                                                // An instruction represents code to be executed by a process in a single clock cycle == process step
 
     abstract class Instruction                                                  // Instructions implement the action of a program
      {final int instructionNumber;                                              // The number of this instruction
       final String traceBack = traceBack();                                     // Line at which this instruction was created
+      final String traceBackOnOneLine()                                         // Line at which this instruction was created represented with out new lines
+       {return traceBack.replace("\n", "|").trim();
+       }
 
       Instruction()                                                             // Add this instruction to the process's code
        {N();
@@ -569,8 +589,12 @@ endmodule
         //err("Stopped by process:", processName);                              // Make sure we know who stopped the chip
         return;
        }
-      code.elementAt(processPc).action();                                       // Perform the action associated with the current instruction
+      final Instruction i = code.elementAt(processPc);                          // The action associated with the current instruction
+      i.action();                                                               // Perform the action associated with the current instruction
       if (processNextPc >= 0) processPc = processNextPc; else processPc++;      // Interpret next program counter as either a redirection or continuation of flow
+      if (processTrace)                                                         // Write a trace element to the log
+       {appendFile(javaTraceFile, "Location: "+i.traceBackOnOneLine()+"\n");
+       }
      }
 
     void processClear() {code.clear();}                                         // Clear current process code. This faciltates testing by allowing a program to be wrtitten and executed incrementally.
@@ -649,8 +673,15 @@ endmodule
 
         final Verilog V = new Verilog(5);
         i.verilog(V);
-        s.append(""+V);
 
+        if (processTrace)                                                       // Add a location statement if this process is being traced. Domne in  line becuase Icarus does not pass the string correctly as a paremeter
+         {V.begin("f");
+          V.A("f = $fopen(\""+verilogTraceFile+"\", \"a\");");
+          V.A("$fdisplay(f, \"Location: "+i.traceBackOnOneLine()+"\");");
+          V.A("$fclose(f);");
+          V.end();
+         }
+        s.append(""+V);
         s.append("        end\n");
         v.append(s);
        }
@@ -1363,6 +1394,42 @@ Chip: Test             step: 0, maxSteps: 10, running: 0, returnCode: 0
 """);
    }
 
+  static void test_trace()
+   {var c = chip("Test");
+    var p = c.new Process("process");
+    p.processTrace = true;
+    var a = p.register("a",  8);
+
+    p.new Instruction()
+     {void action()
+       {a.registerSet(1);
+       }
+      void verilog(Verilog v)
+       {a.registerSet(v, 1);
+       }
+     };
+
+    p.new Instruction()
+     {void action()
+       {a.registerSet(1);
+       }
+      void verilog(Verilog v)
+       {a.registerSet(v, 2);
+       }
+     };
+
+    p.new Instruction()
+     {void action()
+       {a.registerSet(1);
+       }
+      void verilog(Verilog v)
+       {a.registerSet(v, 1);
+       }
+     };
+
+    c.chipRun();
+   }
+
   static void oldTests()                                                        // Tests thought to be in good shape
    {test_stop();
     test_memoryProcess();
@@ -1370,11 +1437,12 @@ Chip: Test             step: 0, maxSteps: 10, running: 0, returnCode: 0
     test_block();
     test_if();
     test_saveLoad();
+    test_trace();
    }
 
   static void newTests()                                                        // Tests being worked on
    {//oldTests();
-    test_stop();
+    test_trace();
    }
 
   public static void main(String[] args)                                        // Test if called as a program
