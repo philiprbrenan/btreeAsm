@@ -6436,20 +6436,20 @@ Merge     : 0
 
   static void test_delete()
    {sayCurrentTestName();
-    //final Btree            b = test_put_reload();
     final Btree b = new Btree(32, 4, 8, 8);
-    final int N = 31;
-    b.btreeLoad(test_put_save_31());   // +30
-    say("AAAA", b.btreePrint());
+    final int   N = 6;
+    b.btreeLoad(test_put_save_6());
 
     final Process          P = b.new Process("delete");
     final Stuck            s = b.new Stuck(P, "stuck");
     final Process.Register k = P.register("k", b.bitsPerKey);
     final Process.Register l = P.register("l", 1);
     final StringBuilder    t = new StringBuilder();
+
+    say(b.btreePrint());
+
     b.maxSteps = 30000;
 
-    //final int N = 32;
     P.new Instruction()
      {void action()
        {k.registerSet(0);
@@ -6476,7 +6476,7 @@ Merge     : 0
             P.GoNotZero(start, l);
            }
           void verilog(Verilog v)
-           {l.le(v, k, N);
+           {l.lt(v, k, N);
             P.GoNotZero(v, start, l);
            }
          };
