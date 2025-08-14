@@ -297,6 +297,7 @@ endmodule
     final var e = new ExecCommand(c);
 
     ok(fileCompare(verilogTraceFile, javaTraceFile), -1);                       // Compare execution traces - assumes that the java version has been executed to produce a comparable trace
+    say("File Compare", fileCompare(verilogTraceFile, javaTraceFile));
     return ""+v;
    }
 
@@ -1012,6 +1013,15 @@ endmodule
 
 //D2 Tests                                                                      // Run tests
 
+  static void test_stop()
+   {final int B = 8, N = 16;
+    var c = chip("Test");
+    var p = c.process("Process");
+
+    p.new Instruction() {void action() {c.chipStop(1);} void verilog(Verilog v) {c.chipStop(v, 1);}};
+    c.chipRun();
+   }
+
   static void test_memoryProcess()
    {final int B = 8, N = 16;
     var c  = chip("Test");
@@ -1354,7 +1364,8 @@ Chip: Test             step: 0, maxSteps: 10, running: 0, returnCode: 0
    }
 
   static void oldTests()                                                        // Tests thought to be in good shape
-   {test_memoryProcess();
+   {test_stop();
+    test_memoryProcess();
     test_arithmeticFibonacci();
     test_block();
     test_if();
@@ -1363,7 +1374,7 @@ Chip: Test             step: 0, maxSteps: 10, running: 0, returnCode: 0
 
   static void newTests()                                                        // Tests being worked on
    {//oldTests();
-    test_arithmeticFibonacci();
+    test_stop();
    }
 
   public static void main(String[] args)                                        // Test if called as a program
