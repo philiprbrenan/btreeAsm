@@ -1510,8 +1510,12 @@ chipStop = true;
         cd.copy(p.data[StuckIndex.registerGet()]);                              // Data of child
        }
       void verilog(Verilog v)
-       {ck.copy(v, p.keys[StuckIndex.registerGet()]);                           // Key of child
-        cd.copy(v, p.data[StuckIndex.registerGet()]);                           // Data of child
+       {v.new Case(maxStuckSize, StuckIndex.registerName())
+         {void Choice(int I)
+           {ck.copy(v, p.keys[I]);                                              // Key of child
+            cd.copy(v, p.data[I]);                                              // Data of child
+           }
+         };
        }
      };
     c.stuckGet(cd);                                                             // Load child
@@ -7876,11 +7880,11 @@ Merge     : 0
    {//oldTests();
 //    test_put_reload();
 //    test_put_reverse();
-//    test_put_random();
+      test_put_random();
 //    test_delete();
 //    test_delete_random();
 //    test_delete_reverse();
-      test_delete_random_reverse();
+//    test_delete_random_reverse();
    }
 
   public static void main(String[] args)                                        // Test if called as a program
