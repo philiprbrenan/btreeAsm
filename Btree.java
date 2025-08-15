@@ -2934,8 +2934,7 @@ Merge     : 0
        }
      };
     s.stuckPut();
-    b.chipRunJava();
-    b.chipRunVerilog();
+    b.chipRun();
 
     //stop(s.dump());
     ok(s.dump(), """
@@ -3531,7 +3530,7 @@ Merge     : 0
 
   static void test_splitIntoTwo()
    {sayCurrentTestName();
-    final Btree            b = test_push();
+    final Btree            b = test_push(4, 4);
     final Process          P = b.processes.get("Stuck");
     final Process.Register L = P.new Register("Left",  8);
     final Process.Register R = P.new Register("Right", 8);
@@ -3581,7 +3580,7 @@ Stuck: right size: 2, leaf: 0, index: 2
 
   static void test_splitIntoThree()
    {sayCurrentTestName();
-    final Btree            b = test_push();
+    final Btree            b = test_push(4,4);
     final Process          P = b.processes.get("Stuck");
     final Process.Register L = P.new Register("Left",  8);
     final Process.Register R = P.new Register("Right", 8);
@@ -3678,7 +3677,7 @@ Merge     : 0
 
   static void test_splitLow()
    {sayCurrentTestName();
-    final Btree            b = test_push();
+    final Btree            b = test_push(4, 4);
     final Process          P = b.processes.get("Stuck");
     final Stuck            s = b.new Stuck(P, "stuck");
     final Stuck            l = b.new Stuck(P, "left");
@@ -3751,7 +3750,7 @@ Stuck: left size: 4, leaf: 0, index: 1
 
   static void test_splitLowButOne()
    {sayCurrentTestName();
-    final Btree b = test_push();
+    final Btree   b = test_push(4, 4);
     final Process P = b.processes.get("Stuck");
     final Stuck            s = b.new Stuck(P, "stuck");
     final Stuck            l = b.new Stuck(P, "left");
@@ -4798,7 +4797,7 @@ Merge     : 0
          };
        }
      };
-    b.chipRunJava();
+    b.chipRun();
     //stop(b.btreePrint());
     //stop(b.btreeSave());
     ok(b.btreePrint(), test_put_print());
@@ -4814,7 +4813,7 @@ Merge     : 0
     final Process.Register i = P.register("i", 8);
     final Process.Register l = P.register("l", 1);
     final StringBuilder    s = new StringBuilder();
-
+    P.processTrace = true;
     b.maxSteps     = 200000;
     b.supressMerge = false;
 
@@ -4828,17 +4827,26 @@ Merge     : 0
            {k.inc();
             d.copy(k); d.inc();
            }
+          void verilog(Verilog v)
+           {k.inc(v);
+            d.copy(v, k); d.inc(v);
+           }
          };
         b.put(P, k, d);
         P.new Instruction()
          {void action()
            {s.append(b.btreePrint());
-            P.GoNotZero(start, l.lt(k, N));
+            l.lt(k, N);
+            P.GoNotZero(start, l);
+           }
+          void verilog(Verilog v)
+           {l.lt(v, k, N);
+            P.GoNotZero(v, start, l);
            }
          };
        }
      };
-    b.chipRunJava();
+    b.chipRun();
     //stop(s);
     ok(s, """
 1=0 |
@@ -5818,14 +5826,14 @@ Merge     : 0
     final Process          P = b.new Process("put");
     final Process.Register k = P.register("k", b.bitsPerKey);
     final Process.Register d = P.register("d", b.bitsPerData);
-
+    P.processTrace = true;
     b.maxSteps     = 2000;
     b.supressMerge = true;                                                      // Supress merges as they have not been developed yet
 
     final int N = 32;
     for (int i = N; i > 0; i--)
      {final int I = i;
-       P.processClear();
+      P.processClear();
       P.new Instruction()
        {void action()
          {k.registerSet(I);
@@ -5837,7 +5845,7 @@ Merge     : 0
          }
        };
       b.put(P, k, d);
-      b.chipRunJava();
+      b.chipRun();
       //say(i, b.btreePrint());
      }
     //stop(b.btreePrint());
@@ -5864,7 +5872,7 @@ Merge     : 0
     final Process          P = b.new Process("putReverse");
     final Process.Register k = P.register("k", b.bitsPerKey);
     final Process.Register d = P.register("d", b.bitsPerData);
-
+    P.processTrace = true;
     b.maxSteps     = 2000;
     b.supressMerge = true;                                                      // Supress merges as they have not been developed yet
 
@@ -5883,7 +5891,7 @@ Merge     : 0
          }
       };
       b.put(P, k, d);
-      b.chipRunJava();
+      b.chipRun();
       //say(i, b.btreePrint());
      }
     //stop(b.btreePrint());
@@ -5913,6 +5921,7 @@ Merge     : 0
     final Process.Register d = P.register("d", b.bitsPerData);
     final Process.Register i = P.register("i", b.btreeAddressSize);
     final Process.Register j = P.register("j", b.stuckAddressSize);
+    P.processTrace = true;
 
     b.maxSteps = 2000;
     s.stuckGetRoot();
@@ -5987,6 +5996,7 @@ Merge     : 0
 
     final FindAndInsert f = b.new FindAndInsert(P);
     b.maxSteps = 2000;
+    P.processTrace = true;
 
     P.processClear();
     P.new Instruction()
@@ -6000,7 +6010,7 @@ Merge     : 0
        }
      };
     f.findAndInsert(k, d);
-    b.chipRunJava();
+    b.chipRun();
 
     P.processClear();
     P.new Instruction()
@@ -6014,7 +6024,7 @@ Merge     : 0
        }
      };
     f.findAndInsert(k, d);
-    b.chipRunJava();
+    b.chipRun();
 
     P.processClear();
     P.new Instruction()
@@ -6028,7 +6038,7 @@ Merge     : 0
        }
      };
     f.findAndInsert(k, d);
-    b.chipRunJava();
+    b.chipRun();
 
     P.processClear();
     P.new Instruction()
@@ -6042,12 +6052,12 @@ Merge     : 0
        }
     };
     f.findAndInsert(k, d);
-    b.chipRunJava();
+    b.chipRun();
 
     final Stuck S = b.new Stuck(P, "Test");
     P.processClear();
     b.splitRootLeaf(P);
-    b.chipRunJava();
+    b.chipRun();
     //stop(b.btreePrint());
     ok(b.btreePrint(), """
       2      |
@@ -6077,6 +6087,7 @@ Merge     : 0
     final Process.Register d = P.register("d", b.bitsPerData);
     final Process.Register i = P.register("i", b.btreeAddressSize);
     final Process.Register j = P.register("j", b.stuckAddressSize);
+    P.processTrace = true;
 
     final FindAndInsert f = b.new FindAndInsert(P);
     b.maxSteps = 2000;
@@ -6179,7 +6190,7 @@ Merge     : 0
      };
     s.stuckGet(i);
     final Process.Register r = b.mergeLeavesNotTop(s, i, j);
-    b.chipRunJava();
+    b.chipRun();
     //stop(b.btreePrint());
     ok(b.btreePrint(), """
               45        |
@@ -6213,7 +6224,7 @@ Merge     : 0
     p.stuckGet(i);
     final Process.Register r = b.mergeLeavesAtTop(p, i);
     b.maxSteps = 100;
-    b.chipRunJava();
+    b.chipRun();
     //stop(b.btreePrint());
     ok(b.btreePrint(), """
         25              |
@@ -6256,6 +6267,7 @@ Merge     : 0
     final Process.Register d = P.register("d", b.bitsPerData);
     final Process.Register i = P.register("i", b.btreeAddressSize);
     final Process.Register j = P.register("j", b.stuckAddressSize);
+    P.processTrace = true;
 
     final FindAndInsert f = b.new FindAndInsert(P);
     b.maxSteps = 2000;
@@ -6397,7 +6409,7 @@ Merge     : 0
 
     P.processClear();
     final Process.Register r = b.mergeBranchesIntoRoot(P);
-    b.chipRunJava();
+    b.chipRun();
     //stop(b.btreePrint());
     ok(b.btreePrint(), """
         25        45         65         |
@@ -6416,6 +6428,8 @@ Merge     : 0
     final Stuck            s = b.new Stuck(P, "findAndInsert");
     final Process.Register i = P.register("i", b.btreeAddressSize);
     final Process.Register j = P.register("j", b.stuckAddressSize);
+    P.processTrace = true;
+
     ok(b.btreePrint(), """
                             8                                         16                                                                                    |
                             0                                         0.1                                                                                   |
@@ -6472,6 +6486,7 @@ Merge     : 0
     final Stuck            s = b.new Stuck(P, "stuck");
     final Process.Register i = P.register("i", b.btreeAddressSize);
     final Process.Register j = P.register("j", b.stuckAddressSize);
+    P.processTrace = true;
 
     P.new Instruction()
      {void action()
@@ -6480,7 +6495,7 @@ Merge     : 0
       void verilog(Verilog v)
        {i.registerSet(v, 6);
        }
-    };
+     };
 
     s.stuckGet(i);
 
@@ -6491,7 +6506,7 @@ Merge     : 0
       void verilog(Verilog v)
        {s.pop(v);
        }
-    };
+     };
     s.stuckPut();
     b.maxSteps = 2000;
     b.chipRun();
@@ -6522,11 +6537,11 @@ Merge     : 0
       void verilog(Verilog v)
        {i.registerSet(v, 15);
        }
-    };
+     };
     s.stuckGet(i);
     b.mergeBranchesAtTop(s, i);
     b.maxSteps = 2000;
-    b.chipRunJava();
+    b.chipRun();
     //stop(b.btreePrint());
     ok(b.btreePrint(), """
                             8                                         16                                                                     |
@@ -6871,9 +6886,18 @@ Merge     : 0
     final Process.Register l = P.register("l", 1);
     final StringBuilder    t = new StringBuilder();
     b.maxSteps = 30000;
-
+    P.processTrace = true;
     final int N = 32;
-    i.registerSet(0);
+
+    P.new Instruction()
+     {void action()
+       {i.registerSet(0);
+       }
+      void verilog(Verilog v)
+       {i.registerSet(v, 0);
+       }
+     };
+
     P.new Block()
      {void code()
        {P.new Instruction()
@@ -6881,18 +6905,31 @@ Merge     : 0
            {k.registerSet(random_32[i.registerGet()]);
             i.inc();
            }
+          void verilog(Verilog v)
+           {v.new Case(random_32.length, i.registerName())
+             {void Choice(int I)
+               {k.registerSet(v, random_32[I]);
+                i.inc(v);
+               }
+             };
+           }
          };
 
         b.delete(k);
         P.new Instruction()
          {void action()
            {t.append(b.btreePrint());
-            P.GoNotZero(start, l.lt(i, N));
+            l.lt(i, N);
+            P.GoNotZero(start, l);
+           }
+          void verilog(Verilog v)
+           {l.lt(v, i, N);
+            P.GoNotZero(v, start, l);
            }
          };
        }
      };
-    b.chipRunJava();
+    b.chipRun();
 
     //stop(t);
     ok(t, """
@@ -7125,9 +7162,18 @@ Merge     : 0
     final Process.Register l = P.register("l", 1);
     final StringBuilder    t = new StringBuilder();
     b.maxSteps = 30000;
-
+    P.processTrace = true;
     final int N = 32;
-    i.registerSet(0);
+
+    P.new Instruction()
+     {void action()
+       {i.registerSet(0);
+       }
+      void verilog(Verilog v)
+       {i.registerSet(v, 0);
+       }
+     };
+
     P.new Block()
      {void code()
        {P.new Instruction()
@@ -7135,18 +7181,31 @@ Merge     : 0
            {k.registerSet(N-i.registerGet());
             i.inc();
            }
+          void verilog(Verilog v)
+           {v.new Case(random_32.length, i.registerName())
+             {void Choice(int I)
+               {k.registerSet(v, N-I);
+                i.inc(v);
+               }
+             };
+           }
          };
 
         b.delete(k);
         P.new Instruction()
          {void action()
            {t.append(b.btreePrint());
-            P.GoNotZero(start, l.lt(i, N));
+            l.lt(i, N);
+            P.GoNotZero(start, l);
+           }
+          void verilog(Verilog v)
+           {l.lt(v, i, N);
+            P.GoNotZero(v, start, l);
            }
          };
        }
      };
-    b.chipRunJava();
+    b.chipRun();
 
     //stop(t);
     ok(t, """
@@ -7471,9 +7530,19 @@ Merge     : 0
     final Process.Register l = P.register("l", 1);
     final StringBuilder    t = new StringBuilder();
     b.maxSteps = 30000;
+    P.processTrace = true;
 
     final int N = 32;
-    i.registerSet(0);
+
+    P.new Instruction()
+     {void action()
+       {i.registerSet(0);
+       }
+      void verilog(Verilog v)
+       {i.registerSet(v, 0);
+       }
+     };
+
     P.new Block()
      {void code()
        {P.new Instruction()
@@ -7481,13 +7550,26 @@ Merge     : 0
            {k.registerSet(random_32[N-1-i.registerGet()]);
             i.inc();
            }
+          void verilog(Verilog v)
+           {v.new Case(random_32.length, i.registerName())
+             {void Choice(int I)
+               {k.registerSet(random_32[N-1-I]);
+               }
+             };
+            i.inc(v);
+           }
          };
 
         b.delete(k);
         P.new Instruction()
          {void action()
            {t.append(b.btreePrint());
-            P.GoNotZero(start, l.lt(i, N));
+            l.lt(i, N);
+            P.GoNotZero(start, l);
+           }
+          void verilog(Verilog v)
+           {l.lt(i, N);
+            P.GoNotZero(start, l);
            }
          };
        }
@@ -7730,6 +7812,7 @@ Merge     : 0
     final Stuck   s = b.new Stuck(P, "stuck");
     final Process.Register k = P.register("k", b.bitsPerKey);
     final Process.Register d = P.register("d", b.bitsPerData);
+    P.processTrace = true;
 
     for (int i = 0; i < b.maxStuckSize; i++)
      {final int I = i;
@@ -7752,6 +7835,7 @@ Merge     : 0
     final Stuck   s = b.new Stuck(P, "stuck");
     final Process.Register k = s.Key;
     final Process.Register d = s.Data;
+    P.processTrace = true;
     P.processClear();
     s.stuckGetRoot();
     P.new Instruction()
@@ -7783,10 +7867,10 @@ Merge     : 0
     test_removeElementAt();
     test_search_eq();
     test_search_le();
-    //test_splitIntoTwo();
-    //test_splitIntoThree();
-    //test_splitLow();
-    //test_splitLowButOne();
+    test_splitIntoTwo();
+    test_splitIntoThree();
+    test_splitLow();
+    test_splitLowButOne();
     test_merge();
     test_merge2();
     test_mergeButOne();
@@ -7814,12 +7898,21 @@ Merge     : 0
 
   static void newTests()                                                        // Tests being worked on
    {//oldTests();
-    //test_put();
-    //test_pop_4();
+    test_put_merge();
+    test_put_reload();
+    test_put_reverse();
+    test_put_random();
+    test_splitRootLeaf();
+    test_mergeLeavesIntoRoot();
+    test_mergeLeavesNotTop();
+    test_mergeLeavesAtTop();
+    test_mergeBranchesIntoRoot();
+    test_mergeBranchesNotTop();
+    test_mergeBranchesAtTop();
     test_delete();
-    //test_delete_random();
-    //test_delete_reverse();
-    //test_delete_random_reverse();
+    test_delete_random();
+    test_delete_reverse();
+    test_delete_random_reverse();
    }
 
   public static void main(String[] args)                                        // Test if called as a program
