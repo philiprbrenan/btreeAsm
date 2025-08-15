@@ -35,7 +35,7 @@ public class Test                                                               
    }
 
   static String   ones(int n) {return "1".repeat(n);}                           // A string of ones
-  static String zeroes(int n) {return "0".repeat(n);}                           // A string of zeroes
+  static String  zeros(int n) {return "0".repeat(n);}                           // A string of zeros
 
   static int longestLine(String s)                                              // Longest line  in a string
    {int l = 0, i = 0, j = 0;
@@ -95,14 +95,14 @@ public class Test                                                               
         d.append(b.substring(v, b.length())+'\n');                              // Remainder of current line outside valid overlap
         if (c > 0) D.append(d);
        }
-      else D.append(b+'\n');                                                    // A s hort line that did not reach he margin
+      else D.append(b+'\n');                                                    // A short line that did not reach the margin
      }
     return ""+D;
    }
 
   static void writeProperties                                                   // Write a properties file
    (String fileName, TreeMap<String,String> properties)
-   {final StringBuilder s = new StringBuilder();                                // Properties written outparser
+   {final StringBuilder s = new StringBuilder();                                // Properties written out
     for (String k : properties.keySet())                                        // Each key
      {s.append(k.trim()+"="+properties.get(k).trim()+"\n");                     // One key=value per line
      }
@@ -319,7 +319,7 @@ public class Test                                                               
   static int  currentTestNumber = 0;
   static long currentTestTime = System.nanoTime();
 
-  static double elapsedTime()                                                    // Elapsed time since last call or start of run
+  static double elapsedTime()                                                   // Elapsed time since last call or start of run
    {final long    e = System.nanoTime();
     final double  d = (e - currentTestTime) / 1_000_000_000.0;
     currentTestTime = e;
@@ -458,17 +458,17 @@ public class Test                                                               
      }
    }
 
-  static boolean coverageExecuted(String file, Integer line,                    // Coverage analysis: check thata line weas executed
+  static boolean coverageExecuted(String file, Integer line,                    // Coverage analysis: check that a line was executed
     TreeMap<String,TreeMap<Integer,Integer>> executed)
-   {if (!executed.containsKey(file)) return false;                               // Nothing in this file was ever executed
+   {if (!executed.containsKey(file)) return false;                              // Nothing in this file was ever executed
     final TreeMap<Integer,Integer> e = executed.get(file);
     return e.containsKey(line);                                                 // Whether this line in this file was executed
    }
 
 // Uncomment zz for methods not called analysis
 // Uncomment z  for blocks not called analysis
-  final static String coverageAnalysisSubStart = "zz();";                       // A string indicating the start of a subroutine - smethod entries only
-//final static String coverageAnalysisSubStart = "z();";                        // Any labelled statament
+  final static String coverageAnalysisSubStart = "zz();";                       // A string indicating the start of a subroutine - method entries only
+//final static String coverageAnalysisSubStart = "z();";                        // Any labelled statement
 
   static void coverageAnalysis(int top, String...Ignore)                        // Coverage analysis: unexecuted lines and top lines most frequently executed over all files encountered in a Geany clickable format.
    {final TreeMap<String,TreeSet<Integer>> notExecuted      = new TreeMap<>();  // File, lines not executed
@@ -559,14 +559,18 @@ public class Test                                                               
     boolean matches   = false;                                                  // Whether the two files match or not
     String location   = null;                                                   // Last location record pripro to point of failure
     final int N = 100;
-    final Deque<Match> q = new ArrayDeque<>(2*N);                               // The last so many lines before and after the point of fialure
+    final Deque<Match> q = new ArrayDeque<>(2*N);                               // The last so many lines before and after the point of failure
 
     class Match
      {final String  a, b;
       final int     line;
       final boolean ahead;
-      Match(int Line, String A, String B)                {line = Line; a = A; b = B; ahead = false;}                                                                                //
-      Match(int Line, String A, String B, boolean Ahead) {line = Line; a = A; b = B; ahead = Ahead;}                                                                                //
+      Match(int Line, String A, String B)
+       {line = Line; a = A; b = B; ahead = false;
+       }
+      Match(int Line, String A, String B, boolean Ahead)
+       {line = Line; a = A; b = B; ahead = Ahead;
+       }
      }
 
 
@@ -581,7 +585,7 @@ public class Test                                                               
        )
        {final Iterator<String> ia = sa.iterator();
         final Iterator<String> ib = sb.iterator();
-        while (ia.hasNext() && ib.hasNext())                                    // Read fiels line by line
+        while (ia.hasNext() && ib.hasNext())                                    // Read files line by line
          {final String aa = ia.next();
           final String bb = ib.next();
           ++line;
@@ -697,11 +701,11 @@ public class Test                                                               
     return files;
    }
 
-  static void deleteAllFiles(String filePath, int limit)                        // Delete files and folders in the specified folder and its sub folders iuf the number of such files is less than the limit specifiedd
+  static void deleteAllFiles(String filePath, int limit)                        // Delete files and folders in the specified folder and its sub folders if the number of such files is less than the limit specified
    {final Path dir = Paths.get(filePath);                                       // Specify the directory path
     final int[]limits = {limit};
     final int N = findFiles(filePath).size();
-    if (N > limit)                                                              // Check that the request would not result in the deletion of an unexpectdly large number of files
+    if (N > limit)                                                              // Check that the request would not result in the deletion of an unexpectedly large number of files
      {stop("Delete request would delete "+N+
        " files, which is more than the specified limit of: "+limit+
        " files under folder:\n"+filePath);
@@ -792,19 +796,6 @@ public class Test                                                               
 
   static Timer timer() {return new Timer();}                                    // Create a new timer
 
-//D2 Methodology                                                                // Testing methodology
-
-  public enum Methodology
-   {small_memory("small_memory"),                                               // Use a small amount of meory to build limited trees that can by routed more easily
-    all_tree_ops("all_tree_ops");                                               // Memory is large enough to reuire all possible tree operations
-
-    private final String mode;                                                  // Name of the mode
-
-    Methodology(String mode) {this.mode = mode;}                                // Construct a mode (an object of this class)
-
-    public String toString() {return mode;}                                     // Return the name fo a mode
-   }
-
 //D2 Printing                                                                   // Print log messages
 
   static void sayf(String format, Object...O)                                   // Say something under the control of a format string
@@ -819,7 +810,7 @@ public class Test                                                               
       if (o == null) {b.append("(null)"); continue;}
       final String s = o.toString();
 
-      if (b.length() > 0 && s.length() > 0 && s.charAt(s.length()-1) == '\n')   // Print a string that has a new line at the end indicating it is vertially aligned
+      if (b.length() > 0 && s.length() > 0 && s.charAt(s.length()-1) == '\n')   // Print a string that has a new line at the end indicating it is vertically aligned
        {b.append("\n"+s);
        }
 
@@ -836,7 +827,7 @@ public class Test                                                               
 
     if (sayThisOrStop.size() > 0)                                               // Convert the say into a stop if the expected message does not eventuate
      {final String act = b.toString() .replace("\n", "\\n").trim();             // Message we actually got
-      final String exp = sayThisOrStop.removeFirst().replace("\n", "\\n").trim();// Message we expected
+      final String exp = sayThisOrStop.removeFirst().replace("\n","\\n").trim();// Message we expected
       if (!act.startsWith(exp))                                                 // Expected message does not match what we have got
        {stop("Actual message does not equal expected message:\n"+
           "Actual  :"+act+" length("+act.length()+")\n"+
@@ -891,7 +882,7 @@ public class Test                                                               
     if (!testing) System.err.println(traceBack());
    }
 
-  static void errTest(Object...O)                                               // Say something abut the currest test
+  static void errTest(Object...O)                                               // Say something about the current test
    {say(O);
     final String t = testLine();
     if (t != null) System.err.println(t);
@@ -929,7 +920,7 @@ public class Test                                                               
      {S.elementAt(j).append(" ".repeat(m - S.elementAt(j).length()));
      }
 
-    columns: for(int i = m; i >= collapse; i--)                                 // Each solumn working backwards through each string
+    columns: for(int i = m; i >= collapse; i--)                                 // Each column working backwards through each string
      {for(StringBuilder s: S)                                                   // Check there are two spaces that can be squeezed to one in all rows in this column
        {if (!s.substring(i-collapse, i).equals(" ".repeat(collapse))) continue columns;
        }
@@ -1315,11 +1306,6 @@ BBBB
    {ok(md5Sum("Hello World"), "b10a8db164e0754105b7a99be72e3fe5");
    }
 
-  static void test_methodology()
-   {ok(""+Methodology.small_memory, "small_memory");
-    ok(""+Methodology.all_tree_ops, "all_tree_ops");
-   }
-
   static void test_fileNames()
    {ok(fne("/home/phil", "a", "b", "c"), "/home/phil/a/b.c");
     ok(fn ("/home/phil", "a", "b.c"),    "/home/phil/a/b.c");
@@ -1374,7 +1360,6 @@ a   aa    AAA
     test_properties();
     test_ifs();
     test_md5();
-    test_methodology();
     test_fileNames();
     test_executed();
     test_squeezeVerticalSpaces();
