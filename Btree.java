@@ -7544,8 +7544,8 @@ Merge     : 0
             P.GoNotZero(start, l);
            }
           void verilog(Verilog v)
-           {l.lt(i, N);
-            P.GoNotZero(start, l);
+           {l.lt(v, i, N);
+            P.GoNotZero(v, start, l);
            }
          };
        }
@@ -7880,7 +7880,7 @@ Merge     : 0
 //    test_delete();
 //    test_delete_random();
 //    test_delete_reverse();
-//    test_delete_random_reverse();
+      test_delete_random_reverse();
    }
 
   public static void main(String[] args)                                        // Test if called as a program
