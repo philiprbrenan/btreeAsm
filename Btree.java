@@ -7877,13 +7877,6 @@ Merge     : 0
 //    test_put_reload();
 //    test_put_reverse();
 //    test_put_random();
-//    test_splitRootLeaf();
-//    test_mergeLeavesIntoRoot();
-//    test_mergeLeavesNotTop();
-//    test_mergeLeavesAtTop();
-//    test_mergeBranchesIntoRoot();
-//    test_mergeBranchesNotTop();
-//    test_mergeBranchesAtTop();
 //    test_delete();
 //    test_delete_random();
 //    test_delete_reverse();
