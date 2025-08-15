@@ -292,7 +292,8 @@ endmodule
 
     final var c = "rm -f "+chipName+" "+verilogTraceFile+                       // Verilog command
                   " ;  iverilog -g2012 -o "+chipName+" "+source+
-                  " && timeout 5m ./"      +chipName;
+//                " && timeout 5m ./"      +chipName;
+                  " &&            ./"      +chipName;
     final var e = new ExecCommand(c);                                           // Run verilog
 
     final FileCompareAndLocate fcl = new FileCompareAndLocate                   // Compare trace files
