@@ -2620,7 +2620,7 @@ chipStop = true;
     s.stuckGetRoot();
 
     b.maxSteps = 200;
-    b.chipRunJava();
+    b.chipRunJava();                                                            // We are creating the tree not testing it
 
     //stop(s);
     ok(s, """
@@ -3875,7 +3875,7 @@ Stuck: stuck size: 8, leaf: 1, root
     final Stuck   r = b.new Stuck(P, "right");
     final Process.Register L = P.register("l", 8);
     final Process.Register R = P.register("r", 8);
-
+    P.processTrace = true;
     P.processClear();
     s.stuckGetRoot();
 
@@ -4110,6 +4110,581 @@ Chip: Btree            step: 29, maxSteps: 100, running: 0, returnCode: 0
     stuckData_3           memory:                     4 *  8 =  0  0  0  0
 """);
     ok(i, "alloc_index1_0 = 1");
+   }
+
+  static void test_mergeLeavesIntoRoot()
+   {sayCurrentTestName();
+    final Btree            b = new Btree(32, 4, 8, 8);
+    final Process          P = b.new Process("findAndInsert");
+    final Process.Register k = P.register("k", b.bitsPerKey);
+    final Process.Register d = P.register("d", b.bitsPerData);
+    final Process.Register i = P.register("i", b.btreeAddressSize);
+    final Process.Register j = P.register("j", b.stuckAddressSize);
+
+    final FindAndInsert f = b.new FindAndInsert(P);
+    b.maxSteps = 2000;
+    P.processTrace = true;
+
+    P.processClear();
+    P.new Instruction()
+     {void action()
+       {k.registerSet(1);
+        d.registerSet(2);
+       }
+      void verilog(Verilog v)
+       {k.registerSet(v, 1);
+        d.registerSet(v, 2);
+       }
+     };
+    f.findAndInsert(k, d);
+    b.chipRun();
+
+    P.processClear();
+    P.new Instruction()
+     {void action()
+       {k.registerSet(2);
+        d.registerSet(3);
+       }
+      void verilog(Verilog v)
+       {k.registerSet(v, 2);
+        d.registerSet(v, 3);
+       }
+     };
+    f.findAndInsert(k, d);
+    b.chipRun();
+
+    P.processClear();
+    P.new Instruction()
+     {void action()
+       {k.registerSet(4);
+        d.registerSet(5);
+       }
+      void verilog(Verilog v)
+       {k.registerSet(v, 4);
+        d.registerSet(v, 5);
+       }
+     };
+    f.findAndInsert(k, d);
+    b.chipRun();
+
+    P.processClear();
+    P.new Instruction()
+     {void action()
+       {k.registerSet(3);
+        d.registerSet(4);
+       }
+      void verilog(Verilog v)
+       {k.registerSet(v, 3);
+        d.registerSet(v, 4);
+       }
+    };
+    f.findAndInsert(k, d);
+    b.chipRun();
+
+    final Stuck S = b.new Stuck(P, "Test");
+    P.processClear();
+    b.splitRootLeaf(P);
+    b.chipRun();
+    //stop(b.btreePrint());
+    ok(b.btreePrint(), """
+      2      |
+      0      |
+      1      |
+      2      |
+1,2=1  3,4=2 |
+""");
+
+    P.processClear();
+    Process.Register r = b.mergeLeavesIntoRoot(P);
+    b.chipRun();
+    //stop(b.chipPrintMemory());
+    //stop(b.btreePrint());
+    ok(r, "findAndInsert_success_176 = 1");
+    ok(b.btreePrint(), """
+1,2,3,4=0 |
+""");
+   }
+
+  static void test_mergeLeavesNotTop()
+   {sayCurrentTestName();
+    final Btree            b = new Btree(32, 4, 8, 8);
+    final Process          P = b.new Process("findAndInsert");
+    final Stuck            s = b.new Stuck(P, "findAndInsert");
+    final Process.Register k = P.register("k", b.bitsPerKey);
+    final Process.Register d = P.register("d", b.bitsPerData);
+    final Process.Register i = P.register("i", b.btreeAddressSize);
+    final Process.Register j = P.register("j", b.stuckAddressSize);
+    P.processTrace = true;
+
+    final FindAndInsert f = b.new FindAndInsert(P);
+    b.maxSteps = 2000;
+
+    P.new Instruction()
+     {void action()
+       {k.registerSet(10);
+        d.registerSet(20);
+       }
+      void verilog(Verilog v)
+       {k.registerSet(v, 10);
+        d.registerSet(v, 20);
+       }
+     };
+    f.findAndInsert(k, d);
+
+    P.new Instruction()
+     {void action()
+       {k.registerSet(20);
+        d.registerSet(30);
+       }
+      void verilog(Verilog v)
+       {k.registerSet(v, 20);
+        d.registerSet(v, 30);
+       }
+     };
+    f.findAndInsert(k, d);
+
+    P.new Instruction()
+     {void action()
+       {k.registerSet(40);
+        d.registerSet(50);
+       }
+      void verilog(Verilog v)
+       {k.registerSet(v, 40);
+        d.registerSet(v, 50);
+       }
+     };
+    f.findAndInsert(k, d);
+
+    P.new Instruction()
+     {void action()
+       {k.registerSet(30);
+        d.registerSet(40);
+       }
+      void verilog(Verilog v)
+       {k.registerSet(v, 30);
+        d.registerSet(v, 40);
+       }
+    };
+    f.findAndInsert(k, d);
+
+    b.splitRootLeaf(P);
+
+    P.new Instruction()
+     {void action()
+       {k.registerSet(50);
+        d.registerSet(60);
+       }
+      void verilog(Verilog v)
+       {k.registerSet(v, 50);
+        d.registerSet(v, 60);
+       }
+     };
+    f.findAndInsert(k, d);
+
+    P.new Instruction()
+     {void action()
+       {k.registerSet(60);
+        d.registerSet(70);
+       }
+      void verilog(Verilog v)
+       {k.registerSet(v, 60);
+        d.registerSet(v, 70);
+       }
+     };
+    f.findAndInsert(k, d);
+
+    i.registerSet(0);
+
+    P.new Instruction()
+     {void action()
+       {i.registerSet(0);
+       }
+      void verilog(Verilog v)
+       {i.registerSet(v, 0);
+       }
+     };
+    b.splitLeafAtTop(i);
+
+    P.new Instruction()
+     {void action()
+       {i.registerSet(0);
+        j.registerSet(0);
+       }
+      void verilog(Verilog v)
+       {i.registerSet(v, 0);
+        j.registerSet(v, 0);
+       }
+     };
+    s.stuckGet(i);
+    final Process.Register r = b.mergeLeavesNotTop(s, i, j);
+    b.chipRun();
+    //stop(b.btreePrint());
+    ok(b.btreePrint(), """
+              45        |
+              0         |
+              1         |
+              2         |
+10,20,30,40=1   50,60=2 |
+""");
+    ok(r, "findAndInsert_success_223 = 1");
+   }
+
+  static void test_mergeLeavesAtTop()
+   {sayCurrentTestName();
+    final Btree            b = new Btree(32, 4, 8, 8);
+    b.btreeLoad(test_mergeLeavesNotTop_dump());
+    final Process          P = b.new Process("findAndInsert");
+    final Stuck            p = b.new Stuck(P, "findAndInsert");
+    final Process.Register i = P.register("i", b.btreeAddressSize);
+
+    //stop(b.btreePrint());
+    ok(b.btreePrint(), """
+        25        45         |
+        0         0.1        |
+        1         3          |
+                  2          |
+10,20=1   30,40=3    50,60=2 |
+""");
+
+    P.processClear();
+    i.registerSet(0);
+    p.stuckGet(i);
+    final Process.Register r = b.mergeLeavesAtTop(p, i);
+    b.maxSteps = 100;
+    b.chipRun();
+    //stop(b.btreePrint());
+    ok(b.btreePrint(), """
+        25              |
+        0               |
+        1               |
+        3               |
+10,20=1   30,40,50,60=3 |
+""");
+    ok(r, "findAndInsert_success_64 = 1");
+   }
+
+  static String test_mergeLeavesNotTop_dump()
+   {return """
+32
+4
+8
+8
+6
+3
+1 32 0 1 1 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+1 32 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+6 32 4 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31 0
+3 32 2 2 2 2 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+8 32 25 10 50 30 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+8 32 45 20 60 40 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+8 32 45 0 50 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+8 32 40 0 60 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+8 32 1 20 60 40 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+8 32 3 30 70 50 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+8 32 2 0 60 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+8 32 50 0 70 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+""";
+   }
+
+  static void test_mergeBranchesIntoRoot()
+   {sayCurrentTestName();
+    final Btree            b = new Btree(32, 4, 8, 8);
+    final Process          P = b.new Process("findAndInsert");
+    final Process.Register k = P.register("k", b.bitsPerKey);
+    final Process.Register d = P.register("d", b.bitsPerData);
+    final Process.Register i = P.register("i", b.btreeAddressSize);
+    final Process.Register j = P.register("j", b.stuckAddressSize);
+    P.processTrace = true;
+
+    final FindAndInsert f = b.new FindAndInsert(P);
+    b.maxSteps = 2000;
+
+    P.new Instruction()
+     {void action()
+       {k.registerSet(10);
+        d.registerSet(20);
+       }
+      void verilog(Verilog v)
+       {k.registerSet(v, 10);
+        d.registerSet(v, 20);
+       }
+     };
+    f.findAndInsert(k, d);
+
+    P.new Instruction()
+     {void action()
+       {k.registerSet(20);
+        d.registerSet(30);
+       }
+      void verilog(Verilog v)
+       {k.registerSet(v, 20);
+        d.registerSet(v, 30);
+       }
+     };
+    f.findAndInsert(k, d);
+
+    P.new Instruction()
+     {void action()
+       {k.registerSet(40);
+        d.registerSet(50);
+       }
+      void verilog(Verilog v)
+       {k.registerSet(v, 40);
+        d.registerSet(v, 50);
+       }
+     };
+    f.findAndInsert(k, d);
+
+    P.new Instruction()
+     {void action()
+       {k.registerSet(30);
+        d.registerSet(40);
+       }
+      void verilog(Verilog v)
+       {k.registerSet(v, 30);
+        d.registerSet(v, 40);
+       }
+    };
+    f.findAndInsert(k, d);
+
+    b.splitRootLeaf(P);
+
+    P.new Instruction()
+     {void action()
+       {k.registerSet(50);
+        d.registerSet(60);
+       }
+      void verilog(Verilog v)
+       {k.registerSet(v, 50);
+        d.registerSet(v, 60);
+       }
+     };
+    f.findAndInsert(k, d);
+
+    P.new Instruction()
+     {void action()
+       {k.registerSet(60);
+        d.registerSet(70);
+       }
+      void verilog(Verilog v)
+       {k.registerSet(v, 60);
+        d.registerSet(v, 70);
+       }
+    };
+    f.findAndInsert(k, d);
+
+    P.new Instruction()
+     {void action()
+       {i.registerSet(0);
+       }
+      void verilog(Verilog v)
+       {i.registerSet(v, 0);
+       }
+     };
+
+    b.splitLeafAtTop(i);
+
+    P.new Instruction()
+     {void action()
+       {k.registerSet(70);
+        d.registerSet(80);
+       }
+      void verilog(Verilog v)
+       {k.registerSet(v, 70);
+        d.registerSet(v, 80);
+       }
+     };
+    f.findAndInsert(k, d);
+
+    P.new Instruction()
+     {void action()
+       {k.registerSet(80);
+        d.registerSet(90);
+       }
+      void verilog(Verilog v)
+       {k.registerSet(v, 80);
+        d.registerSet(v, 90);
+       }
+    };
+    f.findAndInsert(k, d);
+
+    P.new Instruction()
+     {void action()
+       {i.registerSet(0);
+       }
+      void verilog(Verilog v)
+       {i.registerSet(v, 0);
+       }
+     };
+
+    b.splitLeafAtTop(i);
+
+    b.splitRootBranch(P);
+    b.chipRun();
+    //stop(b.btreePrint());
+    ok(b.btreePrint(), """
+                  45                  |
+                  0                   |
+                  5                   |
+                  6                   |
+        25                  65        |
+        5                   6         |
+        1                   4         |
+        3                   2         |
+10,20=1   30,40=3   50,60=4   70,80=2 |
+""");
+
+    P.processClear();
+    final Process.Register r = b.mergeBranchesIntoRoot(P);
+    b.chipRun();
+    //stop(b.btreePrint());
+    ok(b.btreePrint(), """
+        25        45         65         |
+        0         0.1        0.2        |
+        1         3          4          |
+                             2          |
+10,20=1   30,40=3    50,60=4    70,80=2 |
+""");
+   ok(r, "findAndInsert_success_359 = 1");
+  }
+
+  static void test_mergeBranchesNotTop()
+   {sayCurrentTestName();
+    final Btree            b = test_put_reload();
+    final Process          P = b.new Process("findAndInsert");
+    final Stuck            s = b.new Stuck(P, "findAndInsert");
+    final Process.Register i = P.register("i", b.btreeAddressSize);
+    final Process.Register j = P.register("j", b.stuckAddressSize);
+    P.processTrace = true;
+
+    ok(b.btreePrint(), """
+                            8                                         16                                                                                    |
+                            0                                         0.1                                                                                   |
+                            14                                        22                                                                                    |
+                                                                      15                                                                                    |
+             4                                  12                                           20                    24                                       |
+             14                                 22                                           15                    15.1                                     |
+             5                                  12                                           20                    24                                       |
+             9                                  17                                                                 6                                        |
+      2              6               10                    14                     18                    22                      26         28               |
+      5              9               12                    17                     20                    24                      6          6.1              |
+      1              4               8                     11                     16                    19                      23         25               |
+      3              7               10                    13                     18                    21                                 2                |
+1,2=1  3,4=3   5,6=4  7,8=7   9,10=8   11,12=10   13,14=11   15,16=13    17,18=16   19,20=18   21,22=19   23,24=21     25,26=23   27,28=25    29,30,31,32=2 |
+""");
+
+    P.new Instruction()
+     {void action()
+       {i.registerSet(15);
+        j.registerSet(0);
+       }
+      void verilog(Verilog v)
+       {i.registerSet(v, 15);
+        j.registerSet(v,  0);
+       }
+     };
+
+    s.stuckGet(i);
+    b.mergeBranchesNotTop(s, i, j);
+    b.maxSteps = 2000;
+    b.chipRun();
+    //stop(b.btreePrint());
+    ok(b.btreePrint(), """
+                            8                                         16                                                                                      |
+                            0                                         0.1                                                                                     |
+                            14                                        22                                                                                      |
+                                                                      15                                                                                      |
+             4                                  12                                                                     24                                     |
+             14                                 22                                                                     15                                     |
+             5                                  12                                                                     20                                     |
+             9                                  17                                                                     6                                      |
+      2              6               10                    14                     18         20           22                      26         28               |
+      5              9               12                    17                     20         20.1         20.2                    6          6.1              |
+      1              4               8                     11                     16         18           19                      23         25               |
+      3              7               10                    13                                             21                                 2                |
+1,2=1  3,4=3   5,6=4  7,8=7   9,10=8   11,12=10   13,14=11   15,16=13    17,18=16   19,20=18     21,22=19     23,24=21   25,26=23   27,28=25    29,30,31,32=2 |
+""");
+   }
+
+  static void test_mergeBranchesAtTop()
+   {sayCurrentTestName();
+    final Btree            b = test_put_reload();
+    final Process          P = b.new Process("findAndInsert");
+    final Stuck            s = b.new Stuck(P, "stuck");
+    final Process.Register i = P.register("i", b.btreeAddressSize);
+    final Process.Register j = P.register("j", b.stuckAddressSize);
+    P.processTrace = true;
+
+    P.new Instruction()
+     {void action()
+       {i.registerSet(6);
+       }
+      void verilog(Verilog v)
+       {i.registerSet(v, 6);
+       }
+     };
+
+    s.stuckGet(i);
+
+    P.new Instruction()
+     {void action()
+       {s.pop();
+       }
+      void verilog(Verilog v)
+       {s.pop(v);
+       }
+     };
+    s.stuckPut();
+    b.maxSteps = 2000;
+    b.chipRun();
+
+    //stop(b.btreePrint());
+    ok(b.btreePrint(), """
+                            8                                         16                                                                   |
+                            0                                         0.1                                                                  |
+                            14                                        22                                                                   |
+                                                                      15                                                                   |
+             4                                  12                                           20                    24                      |
+             14                                 22                                           15                    15.1                    |
+             5                                  12                                           20                    24                      |
+             9                                  17                                                                 6                       |
+      2              6               10                    14                     18                    22                      26         |
+      5              9               12                    17                     20                    24                      6          |
+      1              4               8                     11                     16                    19                      23         |
+      3              7               10                    13                     18                    21                      25         |
+1,2=1  3,4=3   5,6=4  7,8=7   9,10=8   11,12=10   13,14=11   15,16=13    17,18=16   19,20=18   21,22=19   23,24=21     25,26=23   27,28=25 |
+""");
+
+    P.processClear();
+
+    P.new Instruction()
+     {void action()
+       {i.registerSet(15);
+       }
+      void verilog(Verilog v)
+       {i.registerSet(v, 15);
+       }
+     };
+    s.stuckGet(i);
+    b.mergeBranchesAtTop(s, i);
+    b.maxSteps = 2000;
+    b.chipRun();
+    //stop(b.btreePrint());
+    ok(b.btreePrint(), """
+                            8                                         16                                                                     |
+                            0                                         0.1                                                                    |
+                            14                                        22                                                                     |
+                                                                      15                                                                     |
+             4                                  12                                           20                                              |
+             14                                 22                                           15                                              |
+             5                                  12                                           20                                              |
+             9                                  17                                           24                                              |
+      2              6               10                    14                     18                    22         24           26           |
+      5              9               12                    17                     20                    24         24.1         24.2         |
+      1              4               8                     11                     16                    19         21           23           |
+      3              7               10                    13                     18                                            25           |
+1,2=1  3,4=3   5,6=4  7,8=7   9,10=8   11,12=10   13,14=11   15,16=13    17,18=16   19,20=18   21,22=19   23,24=21     25,26=23     27,28=25 |
+""");
    }
 
   static Btree test_createTree()
@@ -4730,7 +5305,1371 @@ Merge     : 0
 """);
    }
 
-  static void test_put()
+  static void test_splitRootLeaf()
+   {sayCurrentTestName();
+    final Btree            b = new Btree(4, 4, 8, 8);
+    final Process          P = b.new Process("splitRootLeaf");
+    final Stuck            s = b.new Stuck(P, "stuck");
+    final Process.Register k = P.register("k", b.bitsPerKey);
+    final Process.Register d = P.register("d", b.bitsPerData);
+    final Process.Register i = P.register("i", b.btreeAddressSize);
+    final Process.Register j = P.register("j", b.stuckAddressSize);
+    P.processTrace = true;
+
+    b.maxSteps = 2000;
+    s.stuckGetRoot();
+    P.processClear();
+    P.new Instruction()
+     {void action()
+       {k.registerSet(10);
+        d.registerSet(20);
+        s.push(k, d);
+       }
+      void verilog(Verilog v)
+       {k.registerSet(v, 10);
+        d.registerSet(v, 20);
+        s.push(v, k, d);
+       }
+     };
+
+    P.new Instruction()
+     {void action()
+       {k.registerSet(20);
+        d.registerSet(30);
+        s.push(k, d);
+       }
+      void verilog(Verilog v)
+       {k.registerSet(v, 20);
+        d.registerSet(v, 30);
+        s.push(v, k, d);
+       }
+     };
+
+    P.new Instruction()
+     {void action()
+       {k.registerSet(30);
+        d.registerSet(40);
+        s.push(k, d);
+       }
+      void verilog(Verilog v)
+       {k.registerSet(v, 30);
+        d.registerSet(v, 40);
+        s.push(v, k, d);
+       }
+     };
+
+    P.new Instruction()
+     {void action()
+       {k.registerSet(40);
+        d.registerSet(50);
+        s.push(k, d);
+       }
+      void verilog(Verilog v)
+       {k.registerSet(v, 40);
+        d.registerSet(v, 50);
+        s.push(v, k, d);
+       }
+     };
+    s.stuckPut();
+
+    b.splitRootLeaf(P);
+    b.chipRun();
+    //stop(b.chipPrintMemory());
+    //stop(b.btreePrint());
+   }
+
+  static void test_delete_ascending()
+   {sayCurrentTestName();
+    final Btree b = new Btree(32, 4, 8, 8);
+    final int   N = 32;
+    b.btreeLoad(test_put_save_32());
+
+    final Process          P = b.new Process("delete");
+    final Stuck            s = b.new Stuck(P, "stuck");
+    final Process.Register k = P.register("k", b.bitsPerKey);
+    final Process.Register n = P.register("n", 1);
+    final StringBuilder    t = new StringBuilder();
+
+    P.processTrace = true;
+    b.maxSteps = 30000;
+
+    P.new Instruction()
+     {void action()
+       {k.registerSet(0);
+       }
+      void verilog(Verilog v)
+       {k.registerSet(v, 0);
+       }
+     };
+
+    P.new Block()
+     {void code()
+       {P.new Instruction()
+         {void action()
+           {k.inc();
+           }
+          void verilog(Verilog v)
+           {k.inc(v);
+           }
+         };
+        b.delete(k);
+        P.new Instruction()
+         {void action()
+           {t.append(b.btreePrint());
+            n.lt(k, N);
+            P.GoNotZero(start, n);
+           }
+          void verilog(Verilog v)
+           {n.lt(v, k, N);
+            P.GoNotZero(v, start, n);
+           }
+         };
+       }
+     };
+
+    b.chipRun();
+
+    //stop(t);
+    ok(t, """
+                                                                 16                                                                                   |
+                                                                 0                                                                                    |
+                                                                 14                                                                                   |
+                                                                 15                                                                                   |
+                   8                                                                   20                    24                                       |
+                   14                                                                  15                    15.1                                     |
+                   5                                                                   20                    24                                       |
+                   12                                                                                        6                                        |
+        4                   10         12           14                      18                    22                      26         28               |
+        5                   12         12.1         12.2                    20                    24                      6          6.1              |
+        1                   8          10           11                      16                    19                      23         25               |
+        4                                           13                      18                    21                                 2                |
+2,3,4=1  5,6,7,8=4   9,10=8   11,12=10     13,14=11     15,16=13   17,18=16   19,20=18   21,22=19   23,24=21     25,26=23   27,28=25    29,30,31,32=2 |
+                                                               16                                                                                   |
+                                                               0                                                                                    |
+                                                               14                                                                                   |
+                                                               15                                                                                   |
+                 8                                                                   20                    24                                       |
+                 14                                                                  15                    15.1                                     |
+                 5                                                                   20                    24                                       |
+                 12                                                                                        6                                        |
+      4                   10         12           14                      18                    22                      26         28               |
+      5                   12         12.1         12.2                    20                    24                      6          6.1              |
+      1                   8          10           11                      16                    19                      23         25               |
+      4                                           13                      18                    21                                 2                |
+3,4=1  5,6,7,8=4   9,10=8   11,12=10     13,14=11     15,16=13   17,18=16   19,20=18   21,22=19   23,24=21     25,26=23   27,28=25    29,30,31,32=2 |
+                                                             16                                                                                   |
+                                                             0                                                                                    |
+                                                             14                                                                                   |
+                                                             15                                                                                   |
+               8                                                                   20                    24                                       |
+               14                                                                  15                    15.1                                     |
+               5                                                                   20                    24                                       |
+               12                                                                                        6                                        |
+    4                   10         12           14                      18                    22                      26         28               |
+    5                   12         12.1         12.2                    20                    24                      6          6.1              |
+    1                   8          10           11                      16                    19                      23         25               |
+    4                                           13                      18                    21                                 2                |
+4=1  5,6,7,8=4   9,10=8   11,12=10     13,14=11     15,16=13   17,18=16   19,20=18   21,22=19   23,24=21     25,26=23   27,28=25    29,30,31,32=2 |
+                                                              16                                                                                   |
+                                                              0                                                                                    |
+                                                              14                                                                                   |
+                                                              15                                                                                   |
+                8                                                                   20                    24                                       |
+                14                                                                  15                    15.1                                     |
+                5                                                                   20                    24                                       |
+                12                                                                                        6                                        |
+5Empty                   10         12           14                      18                    22                      26         28               |
+                         12         12.1         12.2                    20                    24                      6          6.1              |
+                         8          10           11                      16                    19                      23         25               |
+1                                                13                      18                    21                                 2                |
+      5,6,7,8=1   9,10=8   11,12=10     13,14=11     15,16=13   17,18=16   19,20=18   21,22=19   23,24=21     25,26=23   27,28=25    29,30,31,32=2 |
+                                                            16                                                                                   |
+                                                            0                                                                                    |
+                                                            14                                                                                   |
+                                                            15                                                                                   |
+              8                                                                   20                    24                                       |
+              14                                                                  15                    15.1                                     |
+              5                                                                   20                    24                                       |
+              12                                                                                        6                                        |
+5Empty                 10         12           14                      18                    22                      26         28               |
+                       12         12.1         12.2                    20                    24                      6          6.1              |
+                       8          10           11                      16                    19                      23         25               |
+1                                              13                      18                    21                                 2                |
+      6,7,8=1   9,10=8   11,12=10     13,14=11     15,16=13   17,18=16   19,20=18   21,22=19   23,24=21     25,26=23   27,28=25    29,30,31,32=2 |
+                                                          16                                                                                   |
+                                                          0                                                                                    |
+                                                          14                                                                                   |
+                                                          15                                                                                   |
+            8                                                                   20                    24                                       |
+            14                                                                  15                    15.1                                     |
+            5                                                                   20                    24                                       |
+            12                                                                                        6                                        |
+5Empty               10         12           14                      18                    22                      26         28               |
+                     12         12.1         12.2                    20                    24                      6          6.1              |
+                     8          10           11                      16                    19                      23         25               |
+1                                            13                      18                    21                                 2                |
+      7,8=1   9,10=8   11,12=10     13,14=11     15,16=13   17,18=16   19,20=18   21,22=19   23,24=21     25,26=23   27,28=25    29,30,31,32=2 |
+                                                        16                                                                                   |
+                                                        0                                                                                    |
+                                                        14                                                                                   |
+                                                        15                                                                                   |
+          8                                                                   20                    24                                       |
+          14                                                                  15                    15.1                                     |
+          5                                                                   20                    24                                       |
+          12                                                                                        6                                        |
+5Empty             10         12           14                      18                    22                      26         28               |
+                   12         12.1         12.2                    20                    24                      6          6.1              |
+                   8          10           11                      16                    19                      23         25               |
+1                                          13                      18                    21                                 2                |
+      8=1   9,10=8   11,12=10     13,14=11     15,16=13   17,18=16   19,20=18   21,22=19   23,24=21     25,26=23   27,28=25    29,30,31,32=2 |
+                                                       16                                                                                   |
+                                                       0                                                                                    |
+                                                       14                                                                                   |
+                                                       15                                                                                   |
+         8                                                                   20                    24                                       |
+         14                                                                  15                    15.1                                     |
+         5                                                                   20                    24                                       |
+         12                                                                                        6                                        |
+5Empty            10         12           14                      18                    22                      26         28               |
+                  12         12.1         12.2                    20                    24                      6          6.1              |
+                  8          10           11                      16                    19                      23         25               |
+1                                         13                      18                    21                                 2                |
+      =1   9,10=8   11,12=10     13,14=11     15,16=13   17,18=16   19,20=18   21,22=19   23,24=21     25,26=23   27,28=25    29,30,31,32=2 |
+                                       16                                                                                   |
+                                       0                                                                                    |
+                                       14                                                                                   |
+                                       15                                                                                   |
+         8                                                   20                    24                                       |
+         14                                                  15                    15.1                                     |
+         5                                                   20                    24                                       |
+         12                                                                        6                                        |
+5Empty                12                          18                    22                      26         28               |
+                      12                          20                    24                      6          6.1              |
+                      8                           16                    19                      23         25               |
+1                     11                          18                    21                                 2                |
+      =1   10,11,12=8   13,14,15,16=11   17,18=16   19,20=18   21,22=19   23,24=21     25,26=23   27,28=25    29,30,31,32=2 |
+                                16                                                                                   |
+                                0                                                                                    |
+                                14                                                                                   |
+                                15                                                                                   |
+14Empty                                               20                    24                                       |
+                                                      15                    15.1                                     |
+                                                      20                    24                                       |
+5                                                                           6                                        |
+               12                          18                    22                      26         28               |
+               5                           20                    24                      6          6.1              |
+               1                           16                    19                      23         25               |
+               11                          18                    21                                 2                |
+       11,12=1   13,14,15,16=11   17,18=16   19,20=18   21,22=19   23,24=21     25,26=23   27,28=25    29,30,31,32=2 |
+                      16                                              24                                      |
+                      0                                               0.1                                     |
+                      5                                               20                                      |
+                                                                      6                                       |
+     12                          18         20           22                       26         28               |
+     5                           20         20.1         20.2                     6          6.1              |
+     1                           16         18           19                       23         25               |
+     11                                                  21                                  2                |
+12=1   13,14,15,16=11   17,18=16   19,20=18     21,22=19     23,24=21    25,26=23   27,28=25    29,30,31,32=2 |
+                    16                                              24                                      |
+                    0                                               0.1                                     |
+                    5                                               20                                      |
+                                                                    6                                       |
+5Empty                         18         20           22                       26         28               |
+                               20         20.1         20.2                     6          6.1              |
+                               16         18           19                       23         25               |
+1                                                      21                                  2                |
+      13,14,15,16=1   17,18=16   19,20=18     21,22=19     23,24=21    25,26=23   27,28=25    29,30,31,32=2 |
+                 16                                              24                                      |
+                 0                                               0.1                                     |
+                 5                                               20                                      |
+                                                                 6                                       |
+5Empty                      18         20           22                       26         28               |
+                            20         20.1         20.2                     6          6.1              |
+                            16         18           19                       23         25               |
+1                                                   21                                  2                |
+      14,15,16=1   17,18=16   19,20=18     21,22=19     23,24=21    25,26=23   27,28=25    29,30,31,32=2 |
+              16                                              24                                      |
+              0                                               0.1                                     |
+              5                                               20                                      |
+                                                              6                                       |
+5Empty                   18         20           22                       26         28               |
+                         20         20.1         20.2                     6          6.1              |
+                         16         18           19                       23         25               |
+1                                                21                                  2                |
+      15,16=1   17,18=16   19,20=18     21,22=19     23,24=21    25,26=23   27,28=25    29,30,31,32=2 |
+           16                                              24                                      |
+           0                                               0.1                                     |
+           5                                               20                                      |
+                                                           6                                       |
+5Empty                18         20           22                       26         28               |
+                      20         20.1         20.2                     6          6.1              |
+                      16         18           19                       23         25               |
+1                                             21                                  2                |
+      16=1   17,18=16   19,20=18     21,22=19     23,24=21    25,26=23   27,28=25    29,30,31,32=2 |
+         16                                              24                                      |
+         0                                               0.1                                     |
+         5                                               20                                      |
+                                                         6                                       |
+5Empty              18         20           22                       26         28               |
+                    20         20.1         20.2                     6          6.1              |
+                    16         18           19                       23         25               |
+1                                           21                                  2                |
+      =1   17,18=16   19,20=18     21,22=19     23,24=21    25,26=23   27,28=25    29,30,31,32=2 |
+         16                             24                                      |
+         0                              0.1                                     |
+         5                              20                                      |
+                                        6                                       |
+5Empty                 20                           26         28               |
+                       20                           6          6.1              |
+                       16                           23         25               |
+1                      19                                      2                |
+      =1   18,19,20=16   21,22,23,24=19    25,26=23   27,28=25    29,30,31,32=2 |
+                         24                                     |
+                         0                                      |
+                         5                                      |
+                         6                                      |
+        20                          26         28               |
+        5                           6          6.1              |
+        1                           23         25               |
+        19                                     2                |
+19,20=1   21,22,23,24=19   25,26=23   27,28=25    29,30,31,32=2 |
+                      24                                     |
+                      0                                      |
+                      5                                      |
+                      6                                      |
+     20                          26         28               |
+     5                           6          6.1              |
+     1                           23         25               |
+     19                                     2                |
+20=1   21,22,23,24=19   25,26=23   27,28=25    29,30,31,32=2 |
+                    24                                     |
+                    0                                      |
+                    5                                      |
+                    6                                      |
+5Empty                         26         28               |
+                               6          6.1              |
+                               23         25               |
+1                                         2                |
+      21,22,23,24=1   25,26=23   27,28=25    29,30,31,32=2 |
+           24               28               |
+           0                0.1              |
+           1                23               |
+                            2                |
+22,23,24=1   25,26,27,28=23    29,30,31,32=2 |
+        24               28               |
+        0                0.1              |
+        1                23               |
+                         2                |
+23,24=1   25,26,27,28=23    29,30,31,32=2 |
+     24               28               |
+     0                0.1              |
+     1                23               |
+                      2                |
+24=1   25,26,27,28=23    29,30,31,32=2 |
+              28              |
+              0               |
+              1               |
+              2               |
+25,26,27,28=1   29,30,31,32=2 |
+           28              |
+           0               |
+           1               |
+           2               |
+26,27,28=1   29,30,31,32=2 |
+        28              |
+        0               |
+        1               |
+        2               |
+27,28=1   29,30,31,32=2 |
+     28              |
+     0               |
+     1               |
+     2               |
+28=1   29,30,31,32=2 |
+29,30,31,32=0 |
+30,31,32=0 |
+31,32=0 |
+32=0 |
+=0 |
+""");
+   }
+
+  static void test_delete_random()
+   {sayCurrentTestName();
+    final Btree            b = test_put_reload();
+    final Process          P = b.new Process("delete");
+    final Stuck            s = b.new Stuck(P, "stuck");
+    final Process.Register i = P.register("i", b.btreeAddressSize);
+    final Process.Register k = P.register("k", b.bitsPerKey);
+    final Process.Register l = P.register("l", 1);
+    final StringBuilder    t = new StringBuilder();
+    b.maxSteps = 30000;
+    P.processTrace = true;
+    final int N = 32;
+
+    P.new Instruction()
+     {void action()
+       {i.registerSet(0);
+       }
+      void verilog(Verilog v)
+       {i.registerSet(v, 0);
+       }
+     };
+
+    P.new Block()
+     {void code()
+       {P.new Instruction()
+         {void action()
+           {k.registerSet(random_32[i.registerGet()]);
+            i.inc();
+           }
+          void verilog(Verilog v)
+           {v.new Case(random_32.length, i.registerName())
+             {void Choice(int I)
+               {k.registerSet(v, random_32[I]);
+                i.inc(v);
+               }
+             };
+           }
+         };
+
+        b.delete(k);
+        P.new Instruction()
+         {void action()
+           {t.append(b.btreePrint());
+            l.lt(i, N);
+            P.GoNotZero(start, l);
+           }
+          void verilog(Verilog v)
+           {l.lt(v, i, N);
+            P.GoNotZero(v, start, l);
+           }
+         };
+       }
+     };
+    b.chipRun();
+
+    //stop(t);
+    ok(t, """
+                                                            16                                                                                   |
+                                                            0                                                                                    |
+                                                            14                                                                                   |
+                                                            15                                                                                   |
+                               8                                                  20                    24                                       |
+                               14                                                 15                    15.1                                     |
+                               5                                                  20                    24                                       |
+                               12                                                                       6                                        |
+      2      4        6                    12                          18                    22                      26         28               |
+      5      5.1      5.2                  12                          20                    24                      6          6.1              |
+      1      3        4                    8                           16                    19                      23         25               |
+                      7                    11                          18                    21                                 2                |
+1,2=1  3,4=3    5,6=4    7,8=7   9,10,11=8   13,14,15,16=11   17,18=16   19,20=18   21,22=19   23,24=21     25,26=23   27,28=25    29,30,31,32=2 |
+                                                16                                                                                   |
+                                                0                                                                                    |
+                                                14                                                                                   |
+                                                15                                                                                   |
+                   8                                                  20                    24                                       |
+                   14                                                 15                    15.1                                     |
+                   5                                                  20                    24                                       |
+                   12                                                                       6                                        |
+        4                      12                          18                    22                      26         28               |
+        5                      12                          20                    24                      6          6.1              |
+        1                      8                           16                    19                      23         25               |
+        4                      11                          18                    21                                 2                |
+1,2,4=1  5,6,7,8=4   9,10,11=8   13,14,15,16=11   17,18=16   19,20=18   21,22=19   23,24=21     25,26=23   27,28=25    29,30,31,32=2 |
+                                                16                                                                            |
+                                                0                                                                             |
+                                                14                                                                            |
+                                                15                                                                            |
+                   8                                                                            24                            |
+                   14                                                                           15                            |
+                   5                                                                            20                            |
+                   12                                                                           6                             |
+        4                      12                          18         20           22                         28              |
+        5                      12                          20         20.1         20.2                       6               |
+        1                      8                           16         18           19                         23              |
+        4                      11                                                  21                         2               |
+1,2,4=1  5,6,7,8=4   9,10,11=8   13,14,15,16=11   17,18=16   19,20=18     21,22=19     23,24=21   25,26,28=23   29,30,31,32=2 |
+                                                16                                              24                             |
+                                                0                                               0.1                            |
+                                                5                                               20                             |
+                                                                                                6                              |
+      4          8            12                           18         20           22                          28              |
+      5          5.1          5.2                          20         20.1         20.2                        6               |
+      1          4            8                            16         18           19                          23              |
+                              11                                                   21                          2               |
+2,4=1  5,6,7,8=4    9,10,11=8    13,14,15,16=11   17,18=16   19,20=18     21,22=19     23,24=21    25,26,28=23   29,30,31,32=2 |
+                                                16                             24                             |
+                                                0                              0.1                            |
+                                                5                              20                             |
+                                                                               6                              |
+      4          8            12                                 20                           28              |
+      5          5.1          5.2                                20                           6               |
+      1          4            8                                  16                           23              |
+                              11                                 19                           2               |
+2,4=1  5,6,7,8=4    9,10,11=8    13,14,15,16=11   17,18,19,20=16   21,22,24=19    25,26,28=23   29,30,31,32=2 |
+                                                16                                                            |
+                                                0                                                             |
+                                                5                                                             |
+                                                20                                                            |
+      4          8            12                              20            24              28                |
+      5          5.1          5.2                             20            20.1            20.2              |
+      1          4            8                               16            19              23                |
+                              11                                                            2                 |
+2,4=1  5,6,7,8=4    9,10,11=8    13,14,15,16=11   17,18,19=16   21,22,24=19     25,26,28=23     29,30,31,32=2 |
+                                              16                                                            |
+                                              0                                                             |
+                                              5                                                             |
+                                              20                                                            |
+      4        8            12                              20            24              28                |
+      5        5.1          5.2                             20            20.1            20.2              |
+      1        4            8                               16            19              23                |
+                            11                                                            2                 |
+2,4=1  5,6,7=4    9,10,11=8    13,14,15,16=11   17,18,19=16   21,22,24=19     25,26,28=23     29,30,31,32=2 |
+                                              16                                                         |
+                                              0                                                          |
+                                              5                                                          |
+                                              20                                                         |
+      4        8            12                           20            24              28                |
+      5        5.1          5.2                          20            20.1            20.2              |
+      1        4            8                            16            19              23                |
+                            11                                                         2                 |
+2,4=1  5,6,7=4    9,10,11=8    13,14,15,16=11   17,19=16   21,22,24=19     25,26,28=23     29,30,31,32=2 |
+                                       16                                                         |
+                                       0                                                          |
+                                       5                                                          |
+                                       20                                                         |
+          8          12                           20            24              28                |
+          5          5.1                          20            20.1            20.2              |
+          1          8                            16            19              23                |
+                     11                                                         2                 |
+4,5,6,7=1  9,10,11=8    13,14,15,16=11   17,19=16   21,22,24=19     25,26,28=23     29,30,31,32=2 |
+                                       16                                                      |
+                                       0                                                       |
+                                       5                                                       |
+                                       20                                                      |
+          8          12                           20            24              28             |
+          5          5.1                          20            20.1            20.2           |
+          1          8                            16            19              23             |
+                     11                                                         2              |
+4,5,6,7=1  9,10,11=8    13,14,15,16=11   17,19=16   21,22,24=19     25,26,28=23     29,30,32=2 |
+                                       16                                                   |
+                                       0                                                    |
+                                       5                                                    |
+                                       20                                                   |
+          8          12                           20            24           28             |
+          5          5.1                          20            20.1         20.2           |
+          1          8                            16            19           23             |
+                     11                                                      2              |
+4,5,6,7=1  9,10,11=8    13,14,15,16=11   17,19=16   21,22,24=19     26,28=23     29,30,32=2 |
+                                    16                                                   |
+                                    0                                                    |
+                                    5                                                    |
+                                    20                                                   |
+          8          12                        20            24           28             |
+          5          5.1                       20            20.1         20.2           |
+          1          8                         16            19           23             |
+                     11                                                   2              |
+4,5,6,7=1  9,10,11=8    13,14,15=11   17,19=16   21,22,24=19     26,28=23     29,30,32=2 |
+                                 16                                                   |
+                                 0                                                    |
+                                 5                                                    |
+                                 20                                                   |
+          8          12                     20            24           28             |
+          5          5.1                    20            20.1         20.2           |
+          1          8                      16            19           23             |
+                     11                                                2              |
+4,5,6,7=1  9,10,11=8    14,15=11   17,19=16   21,22,24=19     26,28=23     29,30,32=2 |
+                                 16                                          |
+                                 0                                           |
+                                 5                                           |
+                                 20                                          |
+          8          12                     20            24                 |
+          5          5.1                    20            20.1               |
+          1          8                      16            19                 |
+                     11                                   23                 |
+4,5,6,7=1  9,10,11=8    14,15=11   17,19=16   21,22,24=19     26,28,29,30=23 |
+                        16                                          |
+                        0                                           |
+                        5                                           |
+                        20                                          |
+          8                        20            24                 |
+          5                        20            20.1               |
+          1                        16            19                 |
+          8                                      23                 |
+4,5,6,7=1  9,10,14,15=8   17,19=16   21,22,24=19     26,28,29,30=23 |
+                        16                                |
+                        0                                 |
+                        5                                 |
+                        20                                |
+          8                              24               |
+          5                              20               |
+          1                              16               |
+          8                              23               |
+4,5,6,7=1  9,10,14,15=8   17,19,22,24=16   26,28,29,30=23 |
+        8             16                24                |
+        0             0.1               0.2               |
+        1             8                 16                |
+                                        23                |
+4,6,7=1  9,10,14,15=8    17,19,22,24=16    26,28,29,30=23 |
+        8             16             24                |
+        0             0.1            0.2               |
+        1             8              16                |
+                                     23                |
+4,6,7=1  9,10,14,15=8    17,19,22=16    26,28,29,30=23 |
+      8             16             24                |
+      0             0.1            0.2               |
+      1             8              16                |
+                                   23                |
+6,7=1  9,10,14,15=8    17,19,22=16    26,28,29,30=23 |
+      8          16             24                |
+      0          0.1            0.2               |
+      1          8              16                |
+                                23                |
+6,7=1  9,14,15=8    17,19,22=16    26,28,29,30=23 |
+      8          16             24             |
+      0          0.1            0.2            |
+      1          8              16             |
+                                23             |
+6,7=1  9,14,15=8    17,19,22=16    28,29,30=23 |
+      8          16             24          |
+      0          0.1            0.2         |
+      1          8              16          |
+                                23          |
+6,7=1  9,14,15=8    17,19,22=16    28,29=23 |
+            16            24          |
+            0             0.1         |
+            1             16          |
+                          23          |
+6,7,14,15=1   17,19,22=16    28,29=23 |
+          16            24          |
+          0             0.1         |
+          1             16          |
+                        23          |
+7,14,15=1   17,19,22=16    28,29=23 |
+          16               |
+          0                |
+          1                |
+          16               |
+7,14,15=1   17,19,22,28=16 |
+          16            |
+          0             |
+          1             |
+          16            |
+7,14,15=1   19,22,28=16 |
+          16         |
+          0          |
+          1          |
+          16         |
+7,14,15=1   19,22=16 |
+7,14,19,22=0 |
+7,19,22=0 |
+7,22=0 |
+22=0 |
+=0 |
+""");
+   }
+
+  static void test_delete_descending()
+   {sayCurrentTestName();
+    final Btree            b = test_put_reload();
+    final Process          P = b.new Process("delete");
+    final Stuck            s = b.new Stuck(P, "stuck");
+    final Process.Register i = P.register("i", b.btreeAddressSize);
+    final Process.Register k = P.register("k", b.bitsPerKey);
+    final Process.Register l = P.register("l", 1);
+    final StringBuilder    t = new StringBuilder();
+    b.maxSteps = 30000;
+    P.processTrace = true;
+    final int N = 32;
+
+    P.new Instruction()
+     {void action()
+       {i.registerSet(0);
+       }
+      void verilog(Verilog v)
+       {i.registerSet(v, 0);
+       }
+     };
+
+    P.new Block()
+     {void code()
+       {P.new Instruction()
+         {void action()
+           {k.registerSet(N-i.registerGet());
+            i.inc();
+           }
+          void verilog(Verilog v)
+           {v.new Case(random_32.length, i.registerName())
+             {void Choice(int I)
+               {k.registerSet(v, N-I);
+                i.inc(v);
+               }
+             };
+           }
+         };
+
+        b.delete(k);
+        P.new Instruction()
+         {void action()
+           {t.append(b.btreePrint());
+            l.lt(i, N);
+            P.GoNotZero(start, l);
+           }
+          void verilog(Verilog v)
+           {l.lt(v, i, N);
+            P.GoNotZero(v, start, l);
+           }
+         };
+       }
+     };
+    b.chipRun();
+
+    //stop(t);
+    ok(t, """
+                                                                          16                                                                            |
+                                                                          0                                                                             |
+                                                                          14                                                                            |
+                                                                          15                                                                            |
+             4              8                     12                                                                      24                            |
+             14             14.1                  14.2                                                                    15                            |
+             5              9                     12                                                                      20                            |
+                                                  17                                                                      6                             |
+      2              6                 10                      14                    18         20           22                            28           |
+      5              9                 12                      17                    20         20.1         20.2                          6            |
+      1              4                 8                       11                    16         18           19                            23           |
+      3              7                 10                      13                                            21                            2            |
+1,2=1  3,4=3   5,6=4  7,8=7     9,10=8   11,12=10     13,14=11   15,16=13   17,18=16   19,20=18     21,22=19     23,24=21   25,26,27,28=23   29,30,31=2 |
+                                                                          16                                                                         |
+                                                                          0                                                                          |
+                                                                          14                                                                         |
+                                                                          15                                                                         |
+             4              8                     12                                                                      24                         |
+             14             14.1                  14.2                                                                    15                         |
+             5              9                     12                                                                      20                         |
+                                                  17                                                                      6                          |
+      2              6                 10                      14                    18         20           22                            28        |
+      5              9                 12                      17                    20         20.1         20.2                          6         |
+      1              4                 8                       11                    16         18           19                            23        |
+      3              7                 10                      13                                            21                            2         |
+1,2=1  3,4=3   5,6=4  7,8=7     9,10=8   11,12=10     13,14=11   15,16=13   17,18=16   19,20=18     21,22=19     23,24=21   25,26,27,28=23   29,30=2 |
+                                                                          16                                                                      |
+                                                                          0                                                                       |
+                                                                          14                                                                      |
+                                                                          15                                                                      |
+             4              8                     12                                                                      24                      |
+             14             14.1                  14.2                                                                    15                      |
+             5              9                     12                                                                      20                      |
+                                                  17                                                                      6                       |
+      2              6                 10                      14                    18         20           22                            28     |
+      5              9                 12                      17                    20         20.1         20.2                          6      |
+      1              4                 8                       11                    16         18           19                            23     |
+      3              7                 10                      13                                            21                            2      |
+1,2=1  3,4=3   5,6=4  7,8=7     9,10=8   11,12=10     13,14=11   15,16=13   17,18=16   19,20=18     21,22=19     23,24=21   25,26,27,28=23   29=2 |
+                                                                          16                                                                     |
+                                                                          0                                                                      |
+                                                                          14                                                                     |
+                                                                          15                                                                     |
+             4              8                     12                                                                      24                     |
+             14             14.1                  14.2                                                                    15                     |
+             5              9                     12                                                                      20                     |
+                                                  17                                                                      6                      |
+      2              6                 10                      14                    18         20           22             6Empty               |
+      5              9                 12                      17                    20         20.1         20.2                                |
+      1              4                 8                       11                    16         18           19                                  |
+      3              7                 10                      13                                            21             23                   |
+1,2=1  3,4=3   5,6=4  7,8=7     9,10=8   11,12=10     13,14=11   15,16=13   17,18=16   19,20=18     21,22=19     23,24=21         25,26,27,28=23 |
+                                                                          16                                                                  |
+                                                                          0                                                                   |
+                                                                          14                                                                  |
+                                                                          15                                                                  |
+             4              8                     12                                                                      24                  |
+             14             14.1                  14.2                                                                    15                  |
+             5              9                     12                                                                      20                  |
+                                                  17                                                                      6                   |
+      2              6                 10                      14                    18         20           22             6Empty            |
+      5              9                 12                      17                    20         20.1         20.2                             |
+      1              4                 8                       11                    16         18           19                               |
+      3              7                 10                      13                                            21             23                |
+1,2=1  3,4=3   5,6=4  7,8=7     9,10=8   11,12=10     13,14=11   15,16=13   17,18=16   19,20=18     21,22=19     23,24=21         25,26,27=23 |
+                                                                          16                                                               |
+                                                                          0                                                                |
+                                                                          14                                                               |
+                                                                          15                                                               |
+             4              8                     12                                                                      24               |
+             14             14.1                  14.2                                                                    15               |
+             5              9                     12                                                                      20               |
+                                                  17                                                                      6                |
+      2              6                 10                      14                    18         20           22             6Empty         |
+      5              9                 12                      17                    20         20.1         20.2                          |
+      1              4                 8                       11                    16         18           19                            |
+      3              7                 10                      13                                            21             23             |
+1,2=1  3,4=3   5,6=4  7,8=7     9,10=8   11,12=10     13,14=11   15,16=13   17,18=16   19,20=18     21,22=19     23,24=21         25,26=23 |
+                                                                          16                                                            |
+                                                                          0                                                             |
+                                                                          14                                                            |
+                                                                          15                                                            |
+             4              8                     12                                                                      24            |
+             14             14.1                  14.2                                                                    15            |
+             5              9                     12                                                                      20            |
+                                                  17                                                                      6             |
+      2              6                 10                      14                    18         20           22             6Empty      |
+      5              9                 12                      17                    20         20.1         20.2                       |
+      1              4                 8                       11                    16         18           19                         |
+      3              7                 10                      13                                            21             23          |
+1,2=1  3,4=3   5,6=4  7,8=7     9,10=8   11,12=10     13,14=11   15,16=13   17,18=16   19,20=18     21,22=19     23,24=21         25=23 |
+                                                                          16                                                          |
+                                                                          0                                                           |
+                                                                          14                                                          |
+                                                                          15                                                          |
+             4              8                     12                                                                      24          |
+             14             14.1                  14.2                                                                    15          |
+             5              9                     12                                                                      20          |
+                                                  17                                                                      6           |
+      2              6                 10                      14                    18         20           22             6Empty    |
+      5              9                 12                      17                    20         20.1         20.2                     |
+      1              4                 8                       11                    16         18           19                       |
+      3              7                 10                      13                                            21             23        |
+1,2=1  3,4=3   5,6=4  7,8=7     9,10=8   11,12=10     13,14=11   15,16=13   17,18=16   19,20=18     21,22=19     23,24=21         =23 |
+                                                                          16                                         |
+                                                                          0                                          |
+                                                                          14                                         |
+                                                                          15                                         |
+             4              8                     12                                                     24          |
+             14             14.1                  14.2                                                   15          |
+             5              9                     12                                                     20          |
+                                                  17                                                     6           |
+      2              6                 10                      14                          20              6Empty    |
+      5              9                 12                      17                          20                        |
+      1              4                 8                       11                          16                        |
+      3              7                 10                      13                          19              23        |
+1,2=1  3,4=3   5,6=4  7,8=7     9,10=8   11,12=10     13,14=11   15,16=13   17,18,19,20=16   21,22,23=19         =23 |
+                                                                          16                                 |
+                                                                          0                                  |
+                                                                          14                                 |
+                                                                          15                                 |
+             4              8                     12                        15Empty                          |
+             14             14.1                  14.2                                                       |
+             5              9                     12                                                         |
+                                                  17                        20                               |
+      2              6                 10                      14                                 20         |
+      5              9                 12                      17                                 20         |
+      1              4                 8                       11                                 16         |
+      3              7                 10                      13                                 19         |
+1,2=1  3,4=3   5,6=4  7,8=7     9,10=8   11,12=10     13,14=11   15,16=13          17,18,19,20=16   21,22=19 |
+                                                                          16                              |
+                                                                          0                               |
+                                                                          14                              |
+                                                                          15                              |
+             4              8                     12                        15Empty                       |
+             14             14.1                  14.2                                                    |
+             5              9                     12                                                      |
+                                                  17                        20                            |
+      2              6                 10                      14                                 20      |
+      5              9                 12                      17                                 20      |
+      1              4                 8                       11                                 16      |
+      3              7                 10                      13                                 19      |
+1,2=1  3,4=3   5,6=4  7,8=7     9,10=8   11,12=10     13,14=11   15,16=13          17,18,19,20=16   21=19 |
+                                                                          16                             |
+                                                                          0                              |
+                                                                          14                             |
+                                                                          15                             |
+             4              8                     12                        15Empty                      |
+             14             14.1                  14.2                                                   |
+             5              9                     12                                                     |
+                                                  17                        20                           |
+      2              6                 10                      14                  20Empty               |
+      5              9                 12                      17                                        |
+      1              4                 8                       11                                        |
+      3              7                 10                      13                  16                    |
+1,2=1  3,4=3   5,6=4  7,8=7     9,10=8   11,12=10     13,14=11   15,16=13                 17,18,19,20=16 |
+                                                                          16                          |
+                                                                          0                           |
+                                                                          14                          |
+                                                                          15                          |
+             4              8                     12                        15Empty                   |
+             14             14.1                  14.2                                                |
+             5              9                     12                                                  |
+                                                  17                        20                        |
+      2              6                 10                      14                  20Empty            |
+      5              9                 12                      17                                     |
+      1              4                 8                       11                                     |
+      3              7                 10                      13                  16                 |
+1,2=1  3,4=3   5,6=4  7,8=7     9,10=8   11,12=10     13,14=11   15,16=13                 17,18,19=16 |
+                                                                          16                       |
+                                                                          0                        |
+                                                                          14                       |
+                                                                          15                       |
+             4              8                     12                        15Empty                |
+             14             14.1                  14.2                                             |
+             5              9                     12                                               |
+                                                  17                        20                     |
+      2              6                 10                      14                  20Empty         |
+      5              9                 12                      17                                  |
+      1              4                 8                       11                                  |
+      3              7                 10                      13                  16              |
+1,2=1  3,4=3   5,6=4  7,8=7     9,10=8   11,12=10     13,14=11   15,16=13                 17,18=16 |
+                                                                          16                    |
+                                                                          0                     |
+                                                                          14                    |
+                                                                          15                    |
+             4              8                     12                        15Empty             |
+             14             14.1                  14.2                                          |
+             5              9                     12                                            |
+                                                  17                        20                  |
+      2              6                 10                      14                  20Empty      |
+      5              9                 12                      17                               |
+      1              4                 8                       11                               |
+      3              7                 10                      13                  16           |
+1,2=1  3,4=3   5,6=4  7,8=7     9,10=8   11,12=10     13,14=11   15,16=13                 17=16 |
+                                                                          16                  |
+                                                                          0                   |
+                                                                          14                  |
+                                                                          15                  |
+             4              8                     12                        15Empty           |
+             14             14.1                  14.2                                        |
+             5              9                     12                                          |
+                                                  17                        20                |
+      2              6                 10                      14                  20Empty    |
+      5              9                 12                      17                             |
+      1              4                 8                       11                             |
+      3              7                 10                      13                  16         |
+1,2=1  3,4=3   5,6=4  7,8=7     9,10=8   11,12=10     13,14=11   15,16=13                 =16 |
+                                                            16                  |
+                                                            0                   |
+                                                            14                  |
+                                                            15                  |
+                               8                              15Empty           |
+                               14                                               |
+                               5                                                |
+                               12                             20                |
+      2      4        6                       12                     20Empty    |
+      5      5.1      5.2                     12                                |
+      1      3        4                       8                                 |
+                      7                       11                     16         |
+1,2=1  3,4=3    5,6=4    7,8=7   9,10,11,12=8   13,14,15=11                 =16 |
+                               8                         |
+                               0                         |
+                               5                         |
+                               12                        |
+      2      4        6                       12         |
+      5      5.1      5.2                     12         |
+      1      3        4                       8          |
+                      7                       11         |
+1,2=1  3,4=3    5,6=4    7,8=7   9,10,11,12=8   13,14=11 |
+                               8                      |
+                               0                      |
+                               5                      |
+                               12                     |
+      2      4        6                       12      |
+      5      5.1      5.2                     12      |
+      1      3        4                       8       |
+                      7                       11      |
+1,2=1  3,4=3    5,6=4    7,8=7   9,10,11,12=8   13=11 |
+                               8                     |
+                               0                     |
+                               5                     |
+                               12                    |
+      2      4        6          12Empty             |
+      5      5.1      5.2                            |
+      1      3        4                              |
+                      7          8                   |
+1,2=1  3,4=3    5,6=4    7,8=7          9,10,11,12=8 |
+                               8                  |
+                               0                  |
+                               5                  |
+                               12                 |
+      2      4        6          12Empty          |
+      5      5.1      5.2                         |
+      1      3        4                           |
+                      7          8                |
+1,2=1  3,4=3    5,6=4    7,8=7          9,10,11=8 |
+                               8               |
+                               0               |
+                               5               |
+                               12              |
+      2      4        6          12Empty       |
+      5      5.1      5.2                      |
+      1      3        4                        |
+                      7          8             |
+1,2=1  3,4=3    5,6=4    7,8=7          9,10=8 |
+                               8            |
+                               0            |
+                               5            |
+                               12           |
+      2      4        6          12Empty    |
+      5      5.1      5.2                   |
+      1      3        4                     |
+                      7          8          |
+1,2=1  3,4=3    5,6=4    7,8=7          9=8 |
+                               8           |
+                               0           |
+                               5           |
+                               12          |
+      2      4        6          12Empty   |
+      5      5.1      5.2                  |
+      1      3        4                    |
+                      7          8         |
+1,2=1  3,4=3    5,6=4    7,8=7          =8 |
+                   8           |
+                   0           |
+                   5           |
+                   12          |
+          4          12Empty   |
+          5                    |
+          1                    |
+          4          8         |
+1,2,3,4=1  5,6,7=4          =8 |
+          4      |
+          0      |
+          1      |
+          4      |
+1,2,3,4=1  5,6=4 |
+          4    |
+          0    |
+          1    |
+          4    |
+1,2,3,4=1  5=4 |
+1,2,3,4=0 |
+1,2,3=0 |
+1,2=0 |
+1=0 |
+=0 |
+""");
+   }
+
+  static void test_delete_random_descending()
+   {sayCurrentTestName();
+    final Btree            b = test_put_reload();
+    final Process          P = b.new Process("delete");
+    final Stuck            s = b.new Stuck(P, "stuck");
+    final Process.Register i = P.register("i", b.btreeAddressSize);
+    final Process.Register k = P.register("k", b.bitsPerKey);
+    final Process.Register l = P.register("l", 1);
+    final StringBuilder    t = new StringBuilder();
+    b.maxSteps = 30000;
+    P.processTrace = true;
+
+    final int N = 32;
+
+    P.new Instruction()
+     {void action()
+       {i.registerSet(0);
+       }
+      void verilog(Verilog v)
+       {i.registerSet(v, 0);
+       }
+     };
+
+    P.new Block()
+     {void code()
+       {P.new Instruction()
+         {void action()
+           {k.registerSet(random_32[N-1-i.registerGet()]);
+            i.inc();
+           }
+          void verilog(Verilog v)
+           {v.new Case(random_32.length, i.registerName())
+             {void Choice(int I)
+               {k.registerSet(v, random_32[N-1-I]);
+               }
+             };
+            i.inc(v);
+           }
+         };
+
+        b.delete(k);
+        P.new Instruction()
+         {void action()
+           {t.append(b.btreePrint());
+            l.lt(i, N);
+            P.GoNotZero(start, l);
+           }
+          void verilog(Verilog v)
+           {l.lt(v, i, N);
+            P.GoNotZero(v, start, l);
+           }
+         };
+       }
+     };
+    b.chipRun();
+
+    //stop(t);
+    ok(t, """
+                                                                          16                                                                    |
+                                                                          0                                                                     |
+                                                                          14                                                                    |
+                                                                          15                                                                    |
+             4              8                     12                                                     24                                     |
+             14             14.1                  14.2                                                   15                                     |
+             5              9                     12                                                     20                                     |
+                                                  17                                                     6                                      |
+      2              6                 10                      14                          20                       26         28               |
+      5              9                 12                      17                          20                       6          6.1              |
+      1              4                 8                       11                          16                       23         25               |
+      3              7                 10                      13                          19                                  2                |
+1,2=1  3,4=3   5,6=4  7,8=7     9,10=8   11,12=10     13,14=11   15,16=13   17,18,19,20=16   21,23,24=19   25,26=23   27,28=25    29,30,31,32=2 |
+                                                                 16                                                                    |
+                                                                 0                                                                     |
+                                                                 14                                                                    |
+                                                                 15                                                                    |
+                   8                                                                            24                                     |
+                   14                                                                           15                                     |
+                   5                                                                            20                                     |
+                   12                                                                           6                                      |
+          4                 10         12           14                            20                       26         28               |
+          5                 12         12.1         12.2                          20                       6          6.1              |
+          1                 8          10           11                            16                       23         25               |
+          4                                         13                            19                                  2                |
+1,2,3,4=1  5,6,8=4   9,10=8   11,12=10     13,14=11     15,16=13   17,18,19,20=16   21,23,24=19   25,26=23   27,28=25    29,30,31,32=2 |
+                   8                                            16                           24                                      |
+                   0                                            0.1                          0.2                                     |
+                   5                                            12                           20                                      |
+                                                                                             6                                       |
+          4                10         12           14                          20                        26         28               |
+          5                12         12.1         12.2                        20                        6          6.1              |
+          1                8          10           11                          16                        23         25               |
+          4                                        13                          19                                   2                |
+1,2,3,4=1  5,6,8=4  9,10=8   11,12=10     13,14=11     15,16=13    17,18,20=16   21,23,24=19    25,26=23   27,28=25    29,30,31,32=2 |
+                   8                           16                           24                                      |
+                   0                           0.1                          0.2                                     |
+                   5                           12                           20                                      |
+                                                                            6                                       |
+          4                      12                           20                        26         28               |
+          5                      12                           20                        6          6.1              |
+          1                      8                            16                        23         25               |
+          4                      11                           19                                   2                |
+1,2,3,4=1  5,6,8=4  9,10,11,12=8   13,15,16=11    17,18,20=16   21,23,24=19    25,26=23   27,28=25    29,30,31,32=2 |
+                   8                                                        24                                      |
+                   0                                                        0.1                                     |
+                   5                                                        12                                      |
+                                                                            6                                       |
+          4                      12         16              20                          26         28               |
+          5                      12         12.1            12.2                        6          6.1              |
+          1                      8          11              16                          23         25               |
+          4                                                 19                                     2                |
+1,2,3,4=1  5,6,8=4  9,10,11,12=8   13,16=11     17,18,20=16     21,23,24=19    25,26=23   27,28=25    29,30,31,32=2 |
+                   8                                                        24                             |
+                   0                                                        0.1                            |
+                   5                                                        12                             |
+                                                                            6                              |
+          4                      12         16              20                             28              |
+          5                      12         12.1            12.2                           6               |
+          1                      8          11              16                             23              |
+          4                                                 19                             2               |
+1,2,3,4=1  5,6,8=4  9,10,11,12=8   13,16=11     17,18,20=16     21,23,24=19    25,26,27=23   29,30,31,32=2 |
+                   8                                              24                             |
+                   0                                              0.1                            |
+                   5                                              12                             |
+                                                                  6                              |
+          4                      12               20                             28              |
+          5                      12               12.1                           6               |
+          1                      8                11                             23              |
+          4                                       19                             2               |
+1,2,3,4=1  5,6,8=4  9,10,11,12=8   13,16,18,20=11     21,23,24=19    25,26,27=23   29,30,31,32=2 |
+                   8                                              24                          |
+                   0                                              0.1                         |
+                   5                                              12                          |
+                                                                  6                           |
+          4                      12               20                             28           |
+          5                      12               12.1                           6            |
+          1                      8                11                             23           |
+          4                                       19                             2            |
+1,2,3,4=1  5,6,8=4  9,10,11,12=8   13,16,18,20=11     21,23,24=19    25,26,27=23   30,31,32=2 |
+                 8                                              24                          |
+                 0                                              0.1                         |
+                 5                                              12                          |
+                                                                6                           |
+          4                    12               20                             28           |
+          5                    12               12.1                           6            |
+          1                    8                11                             23           |
+          4                                     19                             2            |
+1,2,3,4=1  5,8=4  9,10,11,12=8   13,16,18,20=11     21,23,24=19    25,26,27=23   30,31,32=2 |
+                 8                                            24                          |
+                 0                                            0.1                         |
+                 5                                            12                          |
+                                                              6                           |
+          4                  12               20                             28           |
+          5                  12               12.1                           6            |
+          1                  8                11                             23           |
+          4                                   19                             2            |
+1,2,3,4=1  5,8=4  10,11,12=8   13,16,18,20=11     21,23,24=19    25,26,27=23   30,31,32=2 |
+                 8                                            24                       |
+                 0                                            0.1                      |
+                 5                                            12                       |
+                                                              6                        |
+          4                  12               20                             28        |
+          5                  12               12.1                           6         |
+          1                  8                11                             23        |
+          4                                   19                             2         |
+1,2,3,4=1  5,8=4  10,11,12=8   13,16,18,20=11     21,23,24=19    25,26,27=23   31,32=2 |
+                 8                                            24                      |
+                 0                                            0.1                     |
+                 5                                            12                      |
+                                                              6                       |
+          4                  12               20                 6Empty               |
+          5                  12               12.1                                    |
+          1                  8                11                                      |
+          4                                   19                 23                   |
+1,2,3,4=1  5,8=4  10,11,12=8   13,16,18,20=11     21,23,24=19          25,27,31,32=23 |
+                 8                                                             |
+                 0                                                             |
+                 5                                                             |
+                 12                                                            |
+          4                12               20              24                 |
+          5                12               12.1            12.2               |
+          1                8                11              19                 |
+          4                                                 23                 |
+1,2,3,4=1  5,8=4   11,12=8   13,16,18,20=11     21,23,24=19     25,27,31,32=23 |
+               8                                                             |
+               0                                                             |
+               5                                                             |
+               12                                                            |
+        4                12               20              24                 |
+        5                12               12.1            12.2               |
+        1                8                11              19                 |
+        4                                                 23                 |
+1,2,3=1  5,8=4   11,12=8   13,16,18,20=11     21,23,24=19     25,27,31,32=23 |
+               8                                                          |
+               0                                                          |
+               5                                                          |
+               12                                                         |
+        4                12               20           24                 |
+        5                12               12.1         12.2               |
+        1                8                11           19                 |
+        4                                              23                 |
+1,2,3=1  5,8=4   11,12=8   13,16,18,20=11     21,23=19     25,27,31,32=23 |
+                8                                                          |
+                0                                                          |
+                5                                                          |
+                12                                                         |
+5Empty                    12               20           24                 |
+                          12               12.1         12.2               |
+                          8                11           19                 |
+1                                                       23                 |
+      1,2,3,8=1   11,12=8   13,16,18,20=11     21,23=19     25,27,31,32=23 |
+                8                                                       |
+                0                                                       |
+                5                                                       |
+                12                                                      |
+5Empty                    12               20        24                 |
+                          12               12.1      12.2               |
+                          8                11        19                 |
+1                                                    23                 |
+      1,2,3,8=1   11,12=8   13,16,18,20=11     23=19     25,27,31,32=23 |
+                8                                                    |
+                0                                                    |
+                5                                                    |
+                12                                                   |
+5Empty                 12               20        24                 |
+                       12               12.1      12.2               |
+                       8                11        19                 |
+1                                                 23                 |
+      1,2,3,8=1   12=8   13,16,18,20=11     23=19     25,27,31,32=23 |
+                8                                          |
+                0                                          |
+                5                                          |
+                12                                         |
+5Empty                 12               20                 |
+                       12               12.1               |
+                       8                11                 |
+1                                       19                 |
+      1,2,3,8=1   12=8   13,16,18,20=11     23,25,27,31=19 |
+          8              20                |
+          0              0.1               |
+          1              8                 |
+                         19                |
+1,2,3,8=1  12,16,18,20=8    23,25,27,31=19 |
+          8           20                |
+          0           0.1               |
+          1           8                 |
+                      19                |
+1,2,3,8=1  12,18,20=8    23,25,27,31=19 |
+          8           20             |
+          0           0.1            |
+          1           8              |
+                      19             |
+1,2,3,8=1  12,18,20=8    23,27,31=19 |
+          8           20          |
+          0           0.1         |
+          1           8           |
+                      19          |
+1,2,3,8=1  12,18,20=8    23,27=19 |
+        8           20          |
+        0           0.1         |
+        1           8           |
+                    19          |
+1,3,8=1  12,18,20=8    23,27=19 |
+        8              |
+        0              |
+        1              |
+        8              |
+1,3,8=1  12,20,23,27=8 |
+      8              |
+      0              |
+      1              |
+      8              |
+1,3=1  12,20,23,27=8 |
+      8           |
+      0           |
+      1           |
+      8           |
+1,3=1  12,23,27=8 |
+1,3,12,27=0 |
+3,12,27=0 |
+3,12=0 |
+12=0 |
+=0 |
+""");
+   }
+
+  static void test_verilog_push()
+   {sayCurrentTestName();
+    final Btree   b = new Btree(4, 4, 8, 8);
+    final Process P = b.new Process("Stuck");
+    final Stuck   s = b.new Stuck(P, "stuck");
+    final Process.Register k = P.register("k", b.bitsPerKey);
+    final Process.Register d = P.register("d", b.bitsPerData);
+    P.processTrace = true;
+
+    for (int i = 0; i < b.maxStuckSize; i++)
+     {final int I = i;
+      P.new Instruction()
+       {void action()
+         {k.registerSet(I+1); d.registerSet(I+2); s.push(k, d);
+         }
+        void verilog(Verilog v)
+         {k.registerSet(v, I+1); d.registerSet(v, I+2); s.push(v, k, d);
+         }
+       };
+     }
+    b.chipRun();
+   }
+
+  static void test_verilog_pop()
+   {sayCurrentTestName();
+    final Btree   b = test_push();
+    final Process P = b.processes.get("Stuck");
+    final Stuck   s = b.new Stuck(P, "stuck");
+    final Process.Register k = s.Key;
+    final Process.Register d = s.Data;
+    P.processTrace = true;
+    P.processClear();
+    s.stuckGetRoot();
+    P.new Instruction()
+     {void action()
+       {s.pop();
+       }
+      void verilog(Verilog v)
+       {s.pop(v);
+       }
+     };
+
+    b.maxSteps = 1000;
+    b.chipRun();
+   }
+
+  static void test_put_ascending()
    {sayCurrentTestName();
     final Btree            b = new Btree(32, 4, 8, 8);
     final Process          P = b.new Process("put");
@@ -5799,7 +7738,7 @@ Merge     : 0
 """;
    }
 
-  static void test_put_reverse()
+  static void test_put_descending()
    {sayCurrentTestName();
     final Btree            b = new Btree(32, 4, 8, 8);
     final Process          P = b.new Process("put");
@@ -5891,1945 +7830,6 @@ Merge     : 0
 """);
    }
 
-  static void test_splitRootLeaf()
-   {sayCurrentTestName();
-    final Btree            b = new Btree(4, 4, 8, 8);
-    final Process          P = b.new Process("splitRootLeaf");
-    final Stuck            s = b.new Stuck(P, "stuck");
-    final Process.Register k = P.register("k", b.bitsPerKey);
-    final Process.Register d = P.register("d", b.bitsPerData);
-    final Process.Register i = P.register("i", b.btreeAddressSize);
-    final Process.Register j = P.register("j", b.stuckAddressSize);
-    P.processTrace = true;
-
-    b.maxSteps = 2000;
-    s.stuckGetRoot();
-    P.processClear();
-    P.new Instruction()
-     {void action()
-       {k.registerSet(10);
-        d.registerSet(20);
-        s.push(k, d);
-       }
-      void verilog(Verilog v)
-       {k.registerSet(v, 10);
-        d.registerSet(v, 20);
-        s.push(v, k, d);
-       }
-     };
-
-    P.new Instruction()
-     {void action()
-       {k.registerSet(20);
-        d.registerSet(30);
-        s.push(k, d);
-       }
-      void verilog(Verilog v)
-       {k.registerSet(v, 20);
-        d.registerSet(v, 30);
-        s.push(v, k, d);
-       }
-     };
-
-    P.new Instruction()
-     {void action()
-       {k.registerSet(30);
-        d.registerSet(40);
-        s.push(k, d);
-       }
-      void verilog(Verilog v)
-       {k.registerSet(v, 30);
-        d.registerSet(v, 40);
-        s.push(v, k, d);
-       }
-     };
-
-    P.new Instruction()
-     {void action()
-       {k.registerSet(40);
-        d.registerSet(50);
-        s.push(k, d);
-       }
-      void verilog(Verilog v)
-       {k.registerSet(v, 40);
-        d.registerSet(v, 50);
-        s.push(v, k, d);
-       }
-     };
-    s.stuckPut();
-
-    b.splitRootLeaf(P);
-    b.chipRun();
-    //stop(b.chipPrintMemory());
-    //stop(b.btreePrint());
-   }
-
-  static void test_mergeLeavesIntoRoot()
-   {sayCurrentTestName();
-    final Btree            b = new Btree(32, 4, 8, 8);
-    final Process          P = b.new Process("findAndInsert");
-    final Process.Register k = P.register("k", b.bitsPerKey);
-    final Process.Register d = P.register("d", b.bitsPerData);
-    final Process.Register i = P.register("i", b.btreeAddressSize);
-    final Process.Register j = P.register("j", b.stuckAddressSize);
-
-    final FindAndInsert f = b.new FindAndInsert(P);
-    b.maxSteps = 2000;
-    P.processTrace = true;
-
-    P.processClear();
-    P.new Instruction()
-     {void action()
-       {k.registerSet(1);
-        d.registerSet(2);
-       }
-      void verilog(Verilog v)
-       {k.registerSet(v, 1);
-        d.registerSet(v, 2);
-       }
-     };
-    f.findAndInsert(k, d);
-    b.chipRun();
-
-    P.processClear();
-    P.new Instruction()
-     {void action()
-       {k.registerSet(2);
-        d.registerSet(3);
-       }
-      void verilog(Verilog v)
-       {k.registerSet(v, 2);
-        d.registerSet(v, 3);
-       }
-     };
-    f.findAndInsert(k, d);
-    b.chipRun();
-
-    P.processClear();
-    P.new Instruction()
-     {void action()
-       {k.registerSet(4);
-        d.registerSet(5);
-       }
-      void verilog(Verilog v)
-       {k.registerSet(v, 4);
-        d.registerSet(v, 5);
-       }
-     };
-    f.findAndInsert(k, d);
-    b.chipRun();
-
-    P.processClear();
-    P.new Instruction()
-     {void action()
-       {k.registerSet(3);
-        d.registerSet(4);
-       }
-      void verilog(Verilog v)
-       {k.registerSet(v, 3);
-        d.registerSet(v, 4);
-       }
-    };
-    f.findAndInsert(k, d);
-    b.chipRun();
-
-    final Stuck S = b.new Stuck(P, "Test");
-    P.processClear();
-    b.splitRootLeaf(P);
-    b.chipRun();
-    //stop(b.btreePrint());
-    ok(b.btreePrint(), """
-      2      |
-      0      |
-      1      |
-      2      |
-1,2=1  3,4=2 |
-""");
-
-    P.processClear();
-    Process.Register r = b.mergeLeavesIntoRoot(P);
-    b.chipRun();
-    //stop(b.chipPrintMemory());
-    //stop(b.btreePrint());
-    ok(r, "findAndInsert_success_176 = 1");
-    ok(b.btreePrint(), """
-1,2,3,4=0 |
-""");
-   }
-
-  static void test_mergeLeavesNotTop()
-   {sayCurrentTestName();
-    final Btree            b = new Btree(32, 4, 8, 8);
-    final Process          P = b.new Process("findAndInsert");
-    final Stuck            s = b.new Stuck(P, "findAndInsert");
-    final Process.Register k = P.register("k", b.bitsPerKey);
-    final Process.Register d = P.register("d", b.bitsPerData);
-    final Process.Register i = P.register("i", b.btreeAddressSize);
-    final Process.Register j = P.register("j", b.stuckAddressSize);
-    P.processTrace = true;
-
-    final FindAndInsert f = b.new FindAndInsert(P);
-    b.maxSteps = 2000;
-
-    P.new Instruction()
-     {void action()
-       {k.registerSet(10);
-        d.registerSet(20);
-       }
-      void verilog(Verilog v)
-       {k.registerSet(v, 10);
-        d.registerSet(v, 20);
-       }
-     };
-    f.findAndInsert(k, d);
-
-    P.new Instruction()
-     {void action()
-       {k.registerSet(20);
-        d.registerSet(30);
-       }
-      void verilog(Verilog v)
-       {k.registerSet(v, 20);
-        d.registerSet(v, 30);
-       }
-     };
-    f.findAndInsert(k, d);
-
-    P.new Instruction()
-     {void action()
-       {k.registerSet(40);
-        d.registerSet(50);
-       }
-      void verilog(Verilog v)
-       {k.registerSet(v, 40);
-        d.registerSet(v, 50);
-       }
-     };
-    f.findAndInsert(k, d);
-
-    P.new Instruction()
-     {void action()
-       {k.registerSet(30);
-        d.registerSet(40);
-       }
-      void verilog(Verilog v)
-       {k.registerSet(v, 30);
-        d.registerSet(v, 40);
-       }
-    };
-    f.findAndInsert(k, d);
-
-    b.splitRootLeaf(P);
-
-    P.new Instruction()
-     {void action()
-       {k.registerSet(50);
-        d.registerSet(60);
-       }
-      void verilog(Verilog v)
-       {k.registerSet(v, 50);
-        d.registerSet(v, 60);
-       }
-     };
-    f.findAndInsert(k, d);
-
-    P.new Instruction()
-     {void action()
-       {k.registerSet(60);
-        d.registerSet(70);
-       }
-      void verilog(Verilog v)
-       {k.registerSet(v, 60);
-        d.registerSet(v, 70);
-       }
-     };
-    f.findAndInsert(k, d);
-
-    i.registerSet(0);
-
-    P.new Instruction()
-     {void action()
-       {i.registerSet(0);
-       }
-      void verilog(Verilog v)
-       {i.registerSet(v, 0);
-       }
-     };
-    b.splitLeafAtTop(i);
-
-    P.new Instruction()
-     {void action()
-       {i.registerSet(0);
-        j.registerSet(0);
-       }
-      void verilog(Verilog v)
-       {i.registerSet(v, 0);
-        j.registerSet(v, 0);
-       }
-     };
-    s.stuckGet(i);
-    final Process.Register r = b.mergeLeavesNotTop(s, i, j);
-    b.chipRun();
-    //stop(b.btreePrint());
-    ok(b.btreePrint(), """
-              45        |
-              0         |
-              1         |
-              2         |
-10,20,30,40=1   50,60=2 |
-""");
-    ok(r, "findAndInsert_success_223 = 1");
-   }
-
-  static void test_mergeLeavesAtTop()
-   {sayCurrentTestName();
-    final Btree            b = new Btree(32, 4, 8, 8);
-    b.btreeLoad(test_mergeLeavesNotTop_dump());
-    final Process          P = b.new Process("findAndInsert");
-    final Stuck            p = b.new Stuck(P, "findAndInsert");
-    final Process.Register i = P.register("i", b.btreeAddressSize);
-
-    //stop(b.btreePrint());
-    ok(b.btreePrint(), """
-        25        45         |
-        0         0.1        |
-        1         3          |
-                  2          |
-10,20=1   30,40=3    50,60=2 |
-""");
-
-    P.processClear();
-    i.registerSet(0);
-    p.stuckGet(i);
-    final Process.Register r = b.mergeLeavesAtTop(p, i);
-    b.maxSteps = 100;
-    b.chipRun();
-    //stop(b.btreePrint());
-    ok(b.btreePrint(), """
-        25              |
-        0               |
-        1               |
-        3               |
-10,20=1   30,40,50,60=3 |
-""");
-    ok(r, "findAndInsert_success_64 = 1");
-   }
-
-  static String test_mergeLeavesNotTop_dump()
-   {return """
-32
-4
-8
-8
-6
-3
-1 32 0 1 1 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
-1 32 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
-6 32 4 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31 0
-3 32 2 2 2 2 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
-8 32 25 10 50 30 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
-8 32 45 20 60 40 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
-8 32 45 0 50 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
-8 32 40 0 60 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
-8 32 1 20 60 40 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
-8 32 3 30 70 50 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
-8 32 2 0 60 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
-8 32 50 0 70 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
-""";
-   }
-
-  static void test_mergeBranchesIntoRoot()
-   {sayCurrentTestName();
-    final Btree            b = new Btree(32, 4, 8, 8);
-    final Process          P = b.new Process("findAndInsert");
-    final Process.Register k = P.register("k", b.bitsPerKey);
-    final Process.Register d = P.register("d", b.bitsPerData);
-    final Process.Register i = P.register("i", b.btreeAddressSize);
-    final Process.Register j = P.register("j", b.stuckAddressSize);
-    P.processTrace = true;
-
-    final FindAndInsert f = b.new FindAndInsert(P);
-    b.maxSteps = 2000;
-
-    P.new Instruction()
-     {void action()
-       {k.registerSet(10);
-        d.registerSet(20);
-       }
-      void verilog(Verilog v)
-       {k.registerSet(v, 10);
-        d.registerSet(v, 20);
-       }
-     };
-    f.findAndInsert(k, d);
-
-    P.new Instruction()
-     {void action()
-       {k.registerSet(20);
-        d.registerSet(30);
-       }
-      void verilog(Verilog v)
-       {k.registerSet(v, 20);
-        d.registerSet(v, 30);
-       }
-     };
-    f.findAndInsert(k, d);
-
-    P.new Instruction()
-     {void action()
-       {k.registerSet(40);
-        d.registerSet(50);
-       }
-      void verilog(Verilog v)
-       {k.registerSet(v, 40);
-        d.registerSet(v, 50);
-       }
-     };
-    f.findAndInsert(k, d);
-
-    P.new Instruction()
-     {void action()
-       {k.registerSet(30);
-        d.registerSet(40);
-       }
-      void verilog(Verilog v)
-       {k.registerSet(v, 30);
-        d.registerSet(v, 40);
-       }
-    };
-    f.findAndInsert(k, d);
-
-    b.splitRootLeaf(P);
-
-    P.new Instruction()
-     {void action()
-       {k.registerSet(50);
-        d.registerSet(60);
-       }
-      void verilog(Verilog v)
-       {k.registerSet(v, 50);
-        d.registerSet(v, 60);
-       }
-     };
-    f.findAndInsert(k, d);
-
-    P.new Instruction()
-     {void action()
-       {k.registerSet(60);
-        d.registerSet(70);
-       }
-      void verilog(Verilog v)
-       {k.registerSet(v, 60);
-        d.registerSet(v, 70);
-       }
-    };
-    f.findAndInsert(k, d);
-
-    P.new Instruction()
-     {void action()
-       {i.registerSet(0);
-       }
-      void verilog(Verilog v)
-       {i.registerSet(v, 0);
-       }
-     };
-
-    b.splitLeafAtTop(i);
-
-    P.new Instruction()
-     {void action()
-       {k.registerSet(70);
-        d.registerSet(80);
-       }
-      void verilog(Verilog v)
-       {k.registerSet(v, 70);
-        d.registerSet(v, 80);
-       }
-     };
-    f.findAndInsert(k, d);
-
-    P.new Instruction()
-     {void action()
-       {k.registerSet(80);
-        d.registerSet(90);
-       }
-      void verilog(Verilog v)
-       {k.registerSet(v, 80);
-        d.registerSet(v, 90);
-       }
-    };
-    f.findAndInsert(k, d);
-
-    P.new Instruction()
-     {void action()
-       {i.registerSet(0);
-       }
-      void verilog(Verilog v)
-       {i.registerSet(v, 0);
-       }
-     };
-
-    b.splitLeafAtTop(i);
-
-    b.splitRootBranch(P);
-    b.chipRun();
-    //stop(b.btreePrint());
-    ok(b.btreePrint(), """
-                  45                  |
-                  0                   |
-                  5                   |
-                  6                   |
-        25                  65        |
-        5                   6         |
-        1                   4         |
-        3                   2         |
-10,20=1   30,40=3   50,60=4   70,80=2 |
-""");
-
-    P.processClear();
-    final Process.Register r = b.mergeBranchesIntoRoot(P);
-    b.chipRun();
-    //stop(b.btreePrint());
-    ok(b.btreePrint(), """
-        25        45         65         |
-        0         0.1        0.2        |
-        1         3          4          |
-                             2          |
-10,20=1   30,40=3    50,60=4    70,80=2 |
-""");
-   ok(r, "findAndInsert_success_359 = 1");
-  }
-
-  static void test_mergeBranchesNotTop()
-   {sayCurrentTestName();
-    final Btree            b = test_put_reload();
-    final Process          P = b.new Process("findAndInsert");
-    final Stuck            s = b.new Stuck(P, "findAndInsert");
-    final Process.Register i = P.register("i", b.btreeAddressSize);
-    final Process.Register j = P.register("j", b.stuckAddressSize);
-    P.processTrace = true;
-
-    ok(b.btreePrint(), """
-                            8                                         16                                                                                    |
-                            0                                         0.1                                                                                   |
-                            14                                        22                                                                                    |
-                                                                      15                                                                                    |
-             4                                  12                                           20                    24                                       |
-             14                                 22                                           15                    15.1                                     |
-             5                                  12                                           20                    24                                       |
-             9                                  17                                                                 6                                        |
-      2              6               10                    14                     18                    22                      26         28               |
-      5              9               12                    17                     20                    24                      6          6.1              |
-      1              4               8                     11                     16                    19                      23         25               |
-      3              7               10                    13                     18                    21                                 2                |
-1,2=1  3,4=3   5,6=4  7,8=7   9,10=8   11,12=10   13,14=11   15,16=13    17,18=16   19,20=18   21,22=19   23,24=21     25,26=23   27,28=25    29,30,31,32=2 |
-""");
-
-    P.new Instruction()
-     {void action()
-       {i.registerSet(15);
-        j.registerSet(0);
-       }
-      void verilog(Verilog v)
-       {i.registerSet(v, 15);
-        j.registerSet(v,  0);
-       }
-     };
-
-    s.stuckGet(i);
-    b.mergeBranchesNotTop(s, i, j);
-    b.maxSteps = 2000;
-    b.chipRun();
-    //stop(b.btreePrint());
-    ok(b.btreePrint(), """
-                            8                                         16                                                                                      |
-                            0                                         0.1                                                                                     |
-                            14                                        22                                                                                      |
-                                                                      15                                                                                      |
-             4                                  12                                                                     24                                     |
-             14                                 22                                                                     15                                     |
-             5                                  12                                                                     20                                     |
-             9                                  17                                                                     6                                      |
-      2              6               10                    14                     18         20           22                      26         28               |
-      5              9               12                    17                     20         20.1         20.2                    6          6.1              |
-      1              4               8                     11                     16         18           19                      23         25               |
-      3              7               10                    13                                             21                                 2                |
-1,2=1  3,4=3   5,6=4  7,8=7   9,10=8   11,12=10   13,14=11   15,16=13    17,18=16   19,20=18     21,22=19     23,24=21   25,26=23   27,28=25    29,30,31,32=2 |
-""");
-   }
-
-  static void test_mergeBranchesAtTop()
-   {sayCurrentTestName();
-    final Btree            b = test_put_reload();
-    final Process          P = b.new Process("findAndInsert");
-    final Stuck            s = b.new Stuck(P, "stuck");
-    final Process.Register i = P.register("i", b.btreeAddressSize);
-    final Process.Register j = P.register("j", b.stuckAddressSize);
-    P.processTrace = true;
-
-    P.new Instruction()
-     {void action()
-       {i.registerSet(6);
-       }
-      void verilog(Verilog v)
-       {i.registerSet(v, 6);
-       }
-     };
-
-    s.stuckGet(i);
-
-    P.new Instruction()
-     {void action()
-       {s.pop();
-       }
-      void verilog(Verilog v)
-       {s.pop(v);
-       }
-     };
-    s.stuckPut();
-    b.maxSteps = 2000;
-    b.chipRun();
-
-    //stop(b.btreePrint());
-    ok(b.btreePrint(), """
-                            8                                         16                                                                   |
-                            0                                         0.1                                                                  |
-                            14                                        22                                                                   |
-                                                                      15                                                                   |
-             4                                  12                                           20                    24                      |
-             14                                 22                                           15                    15.1                    |
-             5                                  12                                           20                    24                      |
-             9                                  17                                                                 6                       |
-      2              6               10                    14                     18                    22                      26         |
-      5              9               12                    17                     20                    24                      6          |
-      1              4               8                     11                     16                    19                      23         |
-      3              7               10                    13                     18                    21                      25         |
-1,2=1  3,4=3   5,6=4  7,8=7   9,10=8   11,12=10   13,14=11   15,16=13    17,18=16   19,20=18   21,22=19   23,24=21     25,26=23   27,28=25 |
-""");
-
-    P.processClear();
-
-    P.new Instruction()
-     {void action()
-       {i.registerSet(15);
-       }
-      void verilog(Verilog v)
-       {i.registerSet(v, 15);
-       }
-     };
-    s.stuckGet(i);
-    b.mergeBranchesAtTop(s, i);
-    b.maxSteps = 2000;
-    b.chipRun();
-    //stop(b.btreePrint());
-    ok(b.btreePrint(), """
-                            8                                         16                                                                     |
-                            0                                         0.1                                                                    |
-                            14                                        22                                                                     |
-                                                                      15                                                                     |
-             4                                  12                                           20                                              |
-             14                                 22                                           15                                              |
-             5                                  12                                           20                                              |
-             9                                  17                                           24                                              |
-      2              6               10                    14                     18                    22         24           26           |
-      5              9               12                    17                     20                    24         24.1         24.2         |
-      1              4               8                     11                     16                    19         21           23           |
-      3              7               10                    13                     18                                            25           |
-1,2=1  3,4=3   5,6=4  7,8=7   9,10=8   11,12=10   13,14=11   15,16=13    17,18=16   19,20=18   21,22=19   23,24=21     25,26=23     27,28=25 |
-""");
-   }
-
-  static void test_delete()
-   {sayCurrentTestName();
-    final Btree b = new Btree(32, 4, 8, 8);
-    final int   N = 32;
-    b.btreeLoad(test_put_save_32());
-
-    final Process          P = b.new Process("delete");
-    final Stuck            s = b.new Stuck(P, "stuck");
-    final Process.Register k = P.register("k", b.bitsPerKey);
-    final Process.Register n = P.register("n", 1);
-    final StringBuilder    t = new StringBuilder();
-
-    P.processTrace = true;
-    b.maxSteps = 30000;
-
-    P.new Instruction()
-     {void action()
-       {k.registerSet(0);
-       }
-      void verilog(Verilog v)
-       {k.registerSet(v, 0);
-       }
-     };
-
-    P.new Block()
-     {void code()
-       {P.new Instruction()
-         {void action()
-           {k.inc();
-           }
-          void verilog(Verilog v)
-           {k.inc(v);
-           }
-         };
-        b.delete(k);
-        P.new Instruction()
-         {void action()
-           {t.append(b.btreePrint());
-            n.lt(k, N);
-            P.GoNotZero(start, n);
-           }
-          void verilog(Verilog v)
-           {n.lt(v, k, N);
-            P.GoNotZero(v, start, n);
-           }
-         };
-       }
-     };
-
-    b.chipRun();
-
-    //stop(t);
-    ok(t, """
-                                                                 16                                                                                   |
-                                                                 0                                                                                    |
-                                                                 14                                                                                   |
-                                                                 15                                                                                   |
-                   8                                                                   20                    24                                       |
-                   14                                                                  15                    15.1                                     |
-                   5                                                                   20                    24                                       |
-                   12                                                                                        6                                        |
-        4                   10         12           14                      18                    22                      26         28               |
-        5                   12         12.1         12.2                    20                    24                      6          6.1              |
-        1                   8          10           11                      16                    19                      23         25               |
-        4                                           13                      18                    21                                 2                |
-2,3,4=1  5,6,7,8=4   9,10=8   11,12=10     13,14=11     15,16=13   17,18=16   19,20=18   21,22=19   23,24=21     25,26=23   27,28=25    29,30,31,32=2 |
-                                                               16                                                                                   |
-                                                               0                                                                                    |
-                                                               14                                                                                   |
-                                                               15                                                                                   |
-                 8                                                                   20                    24                                       |
-                 14                                                                  15                    15.1                                     |
-                 5                                                                   20                    24                                       |
-                 12                                                                                        6                                        |
-      4                   10         12           14                      18                    22                      26         28               |
-      5                   12         12.1         12.2                    20                    24                      6          6.1              |
-      1                   8          10           11                      16                    19                      23         25               |
-      4                                           13                      18                    21                                 2                |
-3,4=1  5,6,7,8=4   9,10=8   11,12=10     13,14=11     15,16=13   17,18=16   19,20=18   21,22=19   23,24=21     25,26=23   27,28=25    29,30,31,32=2 |
-                                                             16                                                                                   |
-                                                             0                                                                                    |
-                                                             14                                                                                   |
-                                                             15                                                                                   |
-               8                                                                   20                    24                                       |
-               14                                                                  15                    15.1                                     |
-               5                                                                   20                    24                                       |
-               12                                                                                        6                                        |
-    4                   10         12           14                      18                    22                      26         28               |
-    5                   12         12.1         12.2                    20                    24                      6          6.1              |
-    1                   8          10           11                      16                    19                      23         25               |
-    4                                           13                      18                    21                                 2                |
-4=1  5,6,7,8=4   9,10=8   11,12=10     13,14=11     15,16=13   17,18=16   19,20=18   21,22=19   23,24=21     25,26=23   27,28=25    29,30,31,32=2 |
-                                                              16                                                                                   |
-                                                              0                                                                                    |
-                                                              14                                                                                   |
-                                                              15                                                                                   |
-                8                                                                   20                    24                                       |
-                14                                                                  15                    15.1                                     |
-                5                                                                   20                    24                                       |
-                12                                                                                        6                                        |
-5Empty                   10         12           14                      18                    22                      26         28               |
-                         12         12.1         12.2                    20                    24                      6          6.1              |
-                         8          10           11                      16                    19                      23         25               |
-1                                                13                      18                    21                                 2                |
-      5,6,7,8=1   9,10=8   11,12=10     13,14=11     15,16=13   17,18=16   19,20=18   21,22=19   23,24=21     25,26=23   27,28=25    29,30,31,32=2 |
-                                                            16                                                                                   |
-                                                            0                                                                                    |
-                                                            14                                                                                   |
-                                                            15                                                                                   |
-              8                                                                   20                    24                                       |
-              14                                                                  15                    15.1                                     |
-              5                                                                   20                    24                                       |
-              12                                                                                        6                                        |
-5Empty                 10         12           14                      18                    22                      26         28               |
-                       12         12.1         12.2                    20                    24                      6          6.1              |
-                       8          10           11                      16                    19                      23         25               |
-1                                              13                      18                    21                                 2                |
-      6,7,8=1   9,10=8   11,12=10     13,14=11     15,16=13   17,18=16   19,20=18   21,22=19   23,24=21     25,26=23   27,28=25    29,30,31,32=2 |
-                                                          16                                                                                   |
-                                                          0                                                                                    |
-                                                          14                                                                                   |
-                                                          15                                                                                   |
-            8                                                                   20                    24                                       |
-            14                                                                  15                    15.1                                     |
-            5                                                                   20                    24                                       |
-            12                                                                                        6                                        |
-5Empty               10         12           14                      18                    22                      26         28               |
-                     12         12.1         12.2                    20                    24                      6          6.1              |
-                     8          10           11                      16                    19                      23         25               |
-1                                            13                      18                    21                                 2                |
-      7,8=1   9,10=8   11,12=10     13,14=11     15,16=13   17,18=16   19,20=18   21,22=19   23,24=21     25,26=23   27,28=25    29,30,31,32=2 |
-                                                        16                                                                                   |
-                                                        0                                                                                    |
-                                                        14                                                                                   |
-                                                        15                                                                                   |
-          8                                                                   20                    24                                       |
-          14                                                                  15                    15.1                                     |
-          5                                                                   20                    24                                       |
-          12                                                                                        6                                        |
-5Empty             10         12           14                      18                    22                      26         28               |
-                   12         12.1         12.2                    20                    24                      6          6.1              |
-                   8          10           11                      16                    19                      23         25               |
-1                                          13                      18                    21                                 2                |
-      8=1   9,10=8   11,12=10     13,14=11     15,16=13   17,18=16   19,20=18   21,22=19   23,24=21     25,26=23   27,28=25    29,30,31,32=2 |
-                                                       16                                                                                   |
-                                                       0                                                                                    |
-                                                       14                                                                                   |
-                                                       15                                                                                   |
-         8                                                                   20                    24                                       |
-         14                                                                  15                    15.1                                     |
-         5                                                                   20                    24                                       |
-         12                                                                                        6                                        |
-5Empty            10         12           14                      18                    22                      26         28               |
-                  12         12.1         12.2                    20                    24                      6          6.1              |
-                  8          10           11                      16                    19                      23         25               |
-1                                         13                      18                    21                                 2                |
-      =1   9,10=8   11,12=10     13,14=11     15,16=13   17,18=16   19,20=18   21,22=19   23,24=21     25,26=23   27,28=25    29,30,31,32=2 |
-                                       16                                                                                   |
-                                       0                                                                                    |
-                                       14                                                                                   |
-                                       15                                                                                   |
-         8                                                   20                    24                                       |
-         14                                                  15                    15.1                                     |
-         5                                                   20                    24                                       |
-         12                                                                        6                                        |
-5Empty                12                          18                    22                      26         28               |
-                      12                          20                    24                      6          6.1              |
-                      8                           16                    19                      23         25               |
-1                     11                          18                    21                                 2                |
-      =1   10,11,12=8   13,14,15,16=11   17,18=16   19,20=18   21,22=19   23,24=21     25,26=23   27,28=25    29,30,31,32=2 |
-                                16                                                                                   |
-                                0                                                                                    |
-                                14                                                                                   |
-                                15                                                                                   |
-14Empty                                               20                    24                                       |
-                                                      15                    15.1                                     |
-                                                      20                    24                                       |
-5                                                                           6                                        |
-               12                          18                    22                      26         28               |
-               5                           20                    24                      6          6.1              |
-               1                           16                    19                      23         25               |
-               11                          18                    21                                 2                |
-       11,12=1   13,14,15,16=11   17,18=16   19,20=18   21,22=19   23,24=21     25,26=23   27,28=25    29,30,31,32=2 |
-                      16                                              24                                      |
-                      0                                               0.1                                     |
-                      5                                               20                                      |
-                                                                      6                                       |
-     12                          18         20           22                       26         28               |
-     5                           20         20.1         20.2                     6          6.1              |
-     1                           16         18           19                       23         25               |
-     11                                                  21                                  2                |
-12=1   13,14,15,16=11   17,18=16   19,20=18     21,22=19     23,24=21    25,26=23   27,28=25    29,30,31,32=2 |
-                    16                                              24                                      |
-                    0                                               0.1                                     |
-                    5                                               20                                      |
-                                                                    6                                       |
-5Empty                         18         20           22                       26         28               |
-                               20         20.1         20.2                     6          6.1              |
-                               16         18           19                       23         25               |
-1                                                      21                                  2                |
-      13,14,15,16=1   17,18=16   19,20=18     21,22=19     23,24=21    25,26=23   27,28=25    29,30,31,32=2 |
-                 16                                              24                                      |
-                 0                                               0.1                                     |
-                 5                                               20                                      |
-                                                                 6                                       |
-5Empty                      18         20           22                       26         28               |
-                            20         20.1         20.2                     6          6.1              |
-                            16         18           19                       23         25               |
-1                                                   21                                  2                |
-      14,15,16=1   17,18=16   19,20=18     21,22=19     23,24=21    25,26=23   27,28=25    29,30,31,32=2 |
-              16                                              24                                      |
-              0                                               0.1                                     |
-              5                                               20                                      |
-                                                              6                                       |
-5Empty                   18         20           22                       26         28               |
-                         20         20.1         20.2                     6          6.1              |
-                         16         18           19                       23         25               |
-1                                                21                                  2                |
-      15,16=1   17,18=16   19,20=18     21,22=19     23,24=21    25,26=23   27,28=25    29,30,31,32=2 |
-           16                                              24                                      |
-           0                                               0.1                                     |
-           5                                               20                                      |
-                                                           6                                       |
-5Empty                18         20           22                       26         28               |
-                      20         20.1         20.2                     6          6.1              |
-                      16         18           19                       23         25               |
-1                                             21                                  2                |
-      16=1   17,18=16   19,20=18     21,22=19     23,24=21    25,26=23   27,28=25    29,30,31,32=2 |
-         16                                              24                                      |
-         0                                               0.1                                     |
-         5                                               20                                      |
-                                                         6                                       |
-5Empty              18         20           22                       26         28               |
-                    20         20.1         20.2                     6          6.1              |
-                    16         18           19                       23         25               |
-1                                           21                                  2                |
-      =1   17,18=16   19,20=18     21,22=19     23,24=21    25,26=23   27,28=25    29,30,31,32=2 |
-         16                             24                                      |
-         0                              0.1                                     |
-         5                              20                                      |
-                                        6                                       |
-5Empty                 20                           26         28               |
-                       20                           6          6.1              |
-                       16                           23         25               |
-1                      19                                      2                |
-      =1   18,19,20=16   21,22,23,24=19    25,26=23   27,28=25    29,30,31,32=2 |
-                         24                                     |
-                         0                                      |
-                         5                                      |
-                         6                                      |
-        20                          26         28               |
-        5                           6          6.1              |
-        1                           23         25               |
-        19                                     2                |
-19,20=1   21,22,23,24=19   25,26=23   27,28=25    29,30,31,32=2 |
-                      24                                     |
-                      0                                      |
-                      5                                      |
-                      6                                      |
-     20                          26         28               |
-     5                           6          6.1              |
-     1                           23         25               |
-     19                                     2                |
-20=1   21,22,23,24=19   25,26=23   27,28=25    29,30,31,32=2 |
-                    24                                     |
-                    0                                      |
-                    5                                      |
-                    6                                      |
-5Empty                         26         28               |
-                               6          6.1              |
-                               23         25               |
-1                                         2                |
-      21,22,23,24=1   25,26=23   27,28=25    29,30,31,32=2 |
-           24               28               |
-           0                0.1              |
-           1                23               |
-                            2                |
-22,23,24=1   25,26,27,28=23    29,30,31,32=2 |
-        24               28               |
-        0                0.1              |
-        1                23               |
-                         2                |
-23,24=1   25,26,27,28=23    29,30,31,32=2 |
-     24               28               |
-     0                0.1              |
-     1                23               |
-                      2                |
-24=1   25,26,27,28=23    29,30,31,32=2 |
-              28              |
-              0               |
-              1               |
-              2               |
-25,26,27,28=1   29,30,31,32=2 |
-           28              |
-           0               |
-           1               |
-           2               |
-26,27,28=1   29,30,31,32=2 |
-        28              |
-        0               |
-        1               |
-        2               |
-27,28=1   29,30,31,32=2 |
-     28              |
-     0               |
-     1               |
-     2               |
-28=1   29,30,31,32=2 |
-29,30,31,32=0 |
-30,31,32=0 |
-31,32=0 |
-32=0 |
-=0 |
-""");
-   }
-
-  static void test_delete_random()
-   {sayCurrentTestName();
-    final Btree            b = test_put_reload();
-    final Process          P = b.new Process("delete");
-    final Stuck            s = b.new Stuck(P, "stuck");
-    final Process.Register i = P.register("i", b.btreeAddressSize);
-    final Process.Register k = P.register("k", b.bitsPerKey);
-    final Process.Register l = P.register("l", 1);
-    final StringBuilder    t = new StringBuilder();
-    b.maxSteps = 30000;
-    P.processTrace = true;
-    final int N = 32;
-
-    P.new Instruction()
-     {void action()
-       {i.registerSet(0);
-       }
-      void verilog(Verilog v)
-       {i.registerSet(v, 0);
-       }
-     };
-
-    P.new Block()
-     {void code()
-       {P.new Instruction()
-         {void action()
-           {k.registerSet(random_32[i.registerGet()]);
-            i.inc();
-           }
-          void verilog(Verilog v)
-           {v.new Case(random_32.length, i.registerName())
-             {void Choice(int I)
-               {k.registerSet(v, random_32[I]);
-                i.inc(v);
-               }
-             };
-           }
-         };
-
-        b.delete(k);
-        P.new Instruction()
-         {void action()
-           {t.append(b.btreePrint());
-            l.lt(i, N);
-            P.GoNotZero(start, l);
-           }
-          void verilog(Verilog v)
-           {l.lt(v, i, N);
-            P.GoNotZero(v, start, l);
-           }
-         };
-       }
-     };
-    b.chipRun();
-
-    //stop(t);
-    ok(t, """
-                                                            16                                                                                   |
-                                                            0                                                                                    |
-                                                            14                                                                                   |
-                                                            15                                                                                   |
-                               8                                                  20                    24                                       |
-                               14                                                 15                    15.1                                     |
-                               5                                                  20                    24                                       |
-                               12                                                                       6                                        |
-      2      4        6                    12                          18                    22                      26         28               |
-      5      5.1      5.2                  12                          20                    24                      6          6.1              |
-      1      3        4                    8                           16                    19                      23         25               |
-                      7                    11                          18                    21                                 2                |
-1,2=1  3,4=3    5,6=4    7,8=7   9,10,11=8   13,14,15,16=11   17,18=16   19,20=18   21,22=19   23,24=21     25,26=23   27,28=25    29,30,31,32=2 |
-                                                16                                                                                   |
-                                                0                                                                                    |
-                                                14                                                                                   |
-                                                15                                                                                   |
-                   8                                                  20                    24                                       |
-                   14                                                 15                    15.1                                     |
-                   5                                                  20                    24                                       |
-                   12                                                                       6                                        |
-        4                      12                          18                    22                      26         28               |
-        5                      12                          20                    24                      6          6.1              |
-        1                      8                           16                    19                      23         25               |
-        4                      11                          18                    21                                 2                |
-1,2,4=1  5,6,7,8=4   9,10,11=8   13,14,15,16=11   17,18=16   19,20=18   21,22=19   23,24=21     25,26=23   27,28=25    29,30,31,32=2 |
-                                                16                                                                            |
-                                                0                                                                             |
-                                                14                                                                            |
-                                                15                                                                            |
-                   8                                                                            24                            |
-                   14                                                                           15                            |
-                   5                                                                            20                            |
-                   12                                                                           6                             |
-        4                      12                          18         20           22                         28              |
-        5                      12                          20         20.1         20.2                       6               |
-        1                      8                           16         18           19                         23              |
-        4                      11                                                  21                         2               |
-1,2,4=1  5,6,7,8=4   9,10,11=8   13,14,15,16=11   17,18=16   19,20=18     21,22=19     23,24=21   25,26,28=23   29,30,31,32=2 |
-                                                16                                              24                             |
-                                                0                                               0.1                            |
-                                                5                                               20                             |
-                                                                                                6                              |
-      4          8            12                           18         20           22                          28              |
-      5          5.1          5.2                          20         20.1         20.2                        6               |
-      1          4            8                            16         18           19                          23              |
-                              11                                                   21                          2               |
-2,4=1  5,6,7,8=4    9,10,11=8    13,14,15,16=11   17,18=16   19,20=18     21,22=19     23,24=21    25,26,28=23   29,30,31,32=2 |
-                                                16                             24                             |
-                                                0                              0.1                            |
-                                                5                              20                             |
-                                                                               6                              |
-      4          8            12                                 20                           28              |
-      5          5.1          5.2                                20                           6               |
-      1          4            8                                  16                           23              |
-                              11                                 19                           2               |
-2,4=1  5,6,7,8=4    9,10,11=8    13,14,15,16=11   17,18,19,20=16   21,22,24=19    25,26,28=23   29,30,31,32=2 |
-                                                16                                                            |
-                                                0                                                             |
-                                                5                                                             |
-                                                20                                                            |
-      4          8            12                              20            24              28                |
-      5          5.1          5.2                             20            20.1            20.2              |
-      1          4            8                               16            19              23                |
-                              11                                                            2                 |
-2,4=1  5,6,7,8=4    9,10,11=8    13,14,15,16=11   17,18,19=16   21,22,24=19     25,26,28=23     29,30,31,32=2 |
-                                              16                                                            |
-                                              0                                                             |
-                                              5                                                             |
-                                              20                                                            |
-      4        8            12                              20            24              28                |
-      5        5.1          5.2                             20            20.1            20.2              |
-      1        4            8                               16            19              23                |
-                            11                                                            2                 |
-2,4=1  5,6,7=4    9,10,11=8    13,14,15,16=11   17,18,19=16   21,22,24=19     25,26,28=23     29,30,31,32=2 |
-                                              16                                                         |
-                                              0                                                          |
-                                              5                                                          |
-                                              20                                                         |
-      4        8            12                           20            24              28                |
-      5        5.1          5.2                          20            20.1            20.2              |
-      1        4            8                            16            19              23                |
-                            11                                                         2                 |
-2,4=1  5,6,7=4    9,10,11=8    13,14,15,16=11   17,19=16   21,22,24=19     25,26,28=23     29,30,31,32=2 |
-                                       16                                                         |
-                                       0                                                          |
-                                       5                                                          |
-                                       20                                                         |
-          8          12                           20            24              28                |
-          5          5.1                          20            20.1            20.2              |
-          1          8                            16            19              23                |
-                     11                                                         2                 |
-4,5,6,7=1  9,10,11=8    13,14,15,16=11   17,19=16   21,22,24=19     25,26,28=23     29,30,31,32=2 |
-                                       16                                                      |
-                                       0                                                       |
-                                       5                                                       |
-                                       20                                                      |
-          8          12                           20            24              28             |
-          5          5.1                          20            20.1            20.2           |
-          1          8                            16            19              23             |
-                     11                                                         2              |
-4,5,6,7=1  9,10,11=8    13,14,15,16=11   17,19=16   21,22,24=19     25,26,28=23     29,30,32=2 |
-                                       16                                                   |
-                                       0                                                    |
-                                       5                                                    |
-                                       20                                                   |
-          8          12                           20            24           28             |
-          5          5.1                          20            20.1         20.2           |
-          1          8                            16            19           23             |
-                     11                                                      2              |
-4,5,6,7=1  9,10,11=8    13,14,15,16=11   17,19=16   21,22,24=19     26,28=23     29,30,32=2 |
-                                    16                                                   |
-                                    0                                                    |
-                                    5                                                    |
-                                    20                                                   |
-          8          12                        20            24           28             |
-          5          5.1                       20            20.1         20.2           |
-          1          8                         16            19           23             |
-                     11                                                   2              |
-4,5,6,7=1  9,10,11=8    13,14,15=11   17,19=16   21,22,24=19     26,28=23     29,30,32=2 |
-                                 16                                                   |
-                                 0                                                    |
-                                 5                                                    |
-                                 20                                                   |
-          8          12                     20            24           28             |
-          5          5.1                    20            20.1         20.2           |
-          1          8                      16            19           23             |
-                     11                                                2              |
-4,5,6,7=1  9,10,11=8    14,15=11   17,19=16   21,22,24=19     26,28=23     29,30,32=2 |
-                                 16                                          |
-                                 0                                           |
-                                 5                                           |
-                                 20                                          |
-          8          12                     20            24                 |
-          5          5.1                    20            20.1               |
-          1          8                      16            19                 |
-                     11                                   23                 |
-4,5,6,7=1  9,10,11=8    14,15=11   17,19=16   21,22,24=19     26,28,29,30=23 |
-                        16                                          |
-                        0                                           |
-                        5                                           |
-                        20                                          |
-          8                        20            24                 |
-          5                        20            20.1               |
-          1                        16            19                 |
-          8                                      23                 |
-4,5,6,7=1  9,10,14,15=8   17,19=16   21,22,24=19     26,28,29,30=23 |
-                        16                                |
-                        0                                 |
-                        5                                 |
-                        20                                |
-          8                              24               |
-          5                              20               |
-          1                              16               |
-          8                              23               |
-4,5,6,7=1  9,10,14,15=8   17,19,22,24=16   26,28,29,30=23 |
-        8             16                24                |
-        0             0.1               0.2               |
-        1             8                 16                |
-                                        23                |
-4,6,7=1  9,10,14,15=8    17,19,22,24=16    26,28,29,30=23 |
-        8             16             24                |
-        0             0.1            0.2               |
-        1             8              16                |
-                                     23                |
-4,6,7=1  9,10,14,15=8    17,19,22=16    26,28,29,30=23 |
-      8             16             24                |
-      0             0.1            0.2               |
-      1             8              16                |
-                                   23                |
-6,7=1  9,10,14,15=8    17,19,22=16    26,28,29,30=23 |
-      8          16             24                |
-      0          0.1            0.2               |
-      1          8              16                |
-                                23                |
-6,7=1  9,14,15=8    17,19,22=16    26,28,29,30=23 |
-      8          16             24             |
-      0          0.1            0.2            |
-      1          8              16             |
-                                23             |
-6,7=1  9,14,15=8    17,19,22=16    28,29,30=23 |
-      8          16             24          |
-      0          0.1            0.2         |
-      1          8              16          |
-                                23          |
-6,7=1  9,14,15=8    17,19,22=16    28,29=23 |
-            16            24          |
-            0             0.1         |
-            1             16          |
-                          23          |
-6,7,14,15=1   17,19,22=16    28,29=23 |
-          16            24          |
-          0             0.1         |
-          1             16          |
-                        23          |
-7,14,15=1   17,19,22=16    28,29=23 |
-          16               |
-          0                |
-          1                |
-          16               |
-7,14,15=1   17,19,22,28=16 |
-          16            |
-          0             |
-          1             |
-          16            |
-7,14,15=1   19,22,28=16 |
-          16         |
-          0          |
-          1          |
-          16         |
-7,14,15=1   19,22=16 |
-7,14,19,22=0 |
-7,19,22=0 |
-7,22=0 |
-22=0 |
-=0 |
-""");
-   }
-
-  static void test_delete_reverse()
-   {sayCurrentTestName();
-    final Btree            b = test_put_reload();
-    final Process          P = b.new Process("delete");
-    final Stuck            s = b.new Stuck(P, "stuck");
-    final Process.Register i = P.register("i", b.btreeAddressSize);
-    final Process.Register k = P.register("k", b.bitsPerKey);
-    final Process.Register l = P.register("l", 1);
-    final StringBuilder    t = new StringBuilder();
-    b.maxSteps = 30000;
-    P.processTrace = true;
-    final int N = 32;
-
-    P.new Instruction()
-     {void action()
-       {i.registerSet(0);
-       }
-      void verilog(Verilog v)
-       {i.registerSet(v, 0);
-       }
-     };
-
-    P.new Block()
-     {void code()
-       {P.new Instruction()
-         {void action()
-           {k.registerSet(N-i.registerGet());
-            i.inc();
-           }
-          void verilog(Verilog v)
-           {v.new Case(random_32.length, i.registerName())
-             {void Choice(int I)
-               {k.registerSet(v, N-I);
-                i.inc(v);
-               }
-             };
-           }
-         };
-
-        b.delete(k);
-        P.new Instruction()
-         {void action()
-           {t.append(b.btreePrint());
-            l.lt(i, N);
-            P.GoNotZero(start, l);
-           }
-          void verilog(Verilog v)
-           {l.lt(v, i, N);
-            P.GoNotZero(v, start, l);
-           }
-         };
-       }
-     };
-    b.chipRun();
-
-    //stop(t);
-    ok(t, """
-                                                                          16                                                                            |
-                                                                          0                                                                             |
-                                                                          14                                                                            |
-                                                                          15                                                                            |
-             4              8                     12                                                                      24                            |
-             14             14.1                  14.2                                                                    15                            |
-             5              9                     12                                                                      20                            |
-                                                  17                                                                      6                             |
-      2              6                 10                      14                    18         20           22                            28           |
-      5              9                 12                      17                    20         20.1         20.2                          6            |
-      1              4                 8                       11                    16         18           19                            23           |
-      3              7                 10                      13                                            21                            2            |
-1,2=1  3,4=3   5,6=4  7,8=7     9,10=8   11,12=10     13,14=11   15,16=13   17,18=16   19,20=18     21,22=19     23,24=21   25,26,27,28=23   29,30,31=2 |
-                                                                          16                                                                         |
-                                                                          0                                                                          |
-                                                                          14                                                                         |
-                                                                          15                                                                         |
-             4              8                     12                                                                      24                         |
-             14             14.1                  14.2                                                                    15                         |
-             5              9                     12                                                                      20                         |
-                                                  17                                                                      6                          |
-      2              6                 10                      14                    18         20           22                            28        |
-      5              9                 12                      17                    20         20.1         20.2                          6         |
-      1              4                 8                       11                    16         18           19                            23        |
-      3              7                 10                      13                                            21                            2         |
-1,2=1  3,4=3   5,6=4  7,8=7     9,10=8   11,12=10     13,14=11   15,16=13   17,18=16   19,20=18     21,22=19     23,24=21   25,26,27,28=23   29,30=2 |
-                                                                          16                                                                      |
-                                                                          0                                                                       |
-                                                                          14                                                                      |
-                                                                          15                                                                      |
-             4              8                     12                                                                      24                      |
-             14             14.1                  14.2                                                                    15                      |
-             5              9                     12                                                                      20                      |
-                                                  17                                                                      6                       |
-      2              6                 10                      14                    18         20           22                            28     |
-      5              9                 12                      17                    20         20.1         20.2                          6      |
-      1              4                 8                       11                    16         18           19                            23     |
-      3              7                 10                      13                                            21                            2      |
-1,2=1  3,4=3   5,6=4  7,8=7     9,10=8   11,12=10     13,14=11   15,16=13   17,18=16   19,20=18     21,22=19     23,24=21   25,26,27,28=23   29=2 |
-                                                                          16                                                                     |
-                                                                          0                                                                      |
-                                                                          14                                                                     |
-                                                                          15                                                                     |
-             4              8                     12                                                                      24                     |
-             14             14.1                  14.2                                                                    15                     |
-             5              9                     12                                                                      20                     |
-                                                  17                                                                      6                      |
-      2              6                 10                      14                    18         20           22             6Empty               |
-      5              9                 12                      17                    20         20.1         20.2                                |
-      1              4                 8                       11                    16         18           19                                  |
-      3              7                 10                      13                                            21             23                   |
-1,2=1  3,4=3   5,6=4  7,8=7     9,10=8   11,12=10     13,14=11   15,16=13   17,18=16   19,20=18     21,22=19     23,24=21         25,26,27,28=23 |
-                                                                          16                                                                  |
-                                                                          0                                                                   |
-                                                                          14                                                                  |
-                                                                          15                                                                  |
-             4              8                     12                                                                      24                  |
-             14             14.1                  14.2                                                                    15                  |
-             5              9                     12                                                                      20                  |
-                                                  17                                                                      6                   |
-      2              6                 10                      14                    18         20           22             6Empty            |
-      5              9                 12                      17                    20         20.1         20.2                             |
-      1              4                 8                       11                    16         18           19                               |
-      3              7                 10                      13                                            21             23                |
-1,2=1  3,4=3   5,6=4  7,8=7     9,10=8   11,12=10     13,14=11   15,16=13   17,18=16   19,20=18     21,22=19     23,24=21         25,26,27=23 |
-                                                                          16                                                               |
-                                                                          0                                                                |
-                                                                          14                                                               |
-                                                                          15                                                               |
-             4              8                     12                                                                      24               |
-             14             14.1                  14.2                                                                    15               |
-             5              9                     12                                                                      20               |
-                                                  17                                                                      6                |
-      2              6                 10                      14                    18         20           22             6Empty         |
-      5              9                 12                      17                    20         20.1         20.2                          |
-      1              4                 8                       11                    16         18           19                            |
-      3              7                 10                      13                                            21             23             |
-1,2=1  3,4=3   5,6=4  7,8=7     9,10=8   11,12=10     13,14=11   15,16=13   17,18=16   19,20=18     21,22=19     23,24=21         25,26=23 |
-                                                                          16                                                            |
-                                                                          0                                                             |
-                                                                          14                                                            |
-                                                                          15                                                            |
-             4              8                     12                                                                      24            |
-             14             14.1                  14.2                                                                    15            |
-             5              9                     12                                                                      20            |
-                                                  17                                                                      6             |
-      2              6                 10                      14                    18         20           22             6Empty      |
-      5              9                 12                      17                    20         20.1         20.2                       |
-      1              4                 8                       11                    16         18           19                         |
-      3              7                 10                      13                                            21             23          |
-1,2=1  3,4=3   5,6=4  7,8=7     9,10=8   11,12=10     13,14=11   15,16=13   17,18=16   19,20=18     21,22=19     23,24=21         25=23 |
-                                                                          16                                                          |
-                                                                          0                                                           |
-                                                                          14                                                          |
-                                                                          15                                                          |
-             4              8                     12                                                                      24          |
-             14             14.1                  14.2                                                                    15          |
-             5              9                     12                                                                      20          |
-                                                  17                                                                      6           |
-      2              6                 10                      14                    18         20           22             6Empty    |
-      5              9                 12                      17                    20         20.1         20.2                     |
-      1              4                 8                       11                    16         18           19                       |
-      3              7                 10                      13                                            21             23        |
-1,2=1  3,4=3   5,6=4  7,8=7     9,10=8   11,12=10     13,14=11   15,16=13   17,18=16   19,20=18     21,22=19     23,24=21         =23 |
-                                                                          16                                         |
-                                                                          0                                          |
-                                                                          14                                         |
-                                                                          15                                         |
-             4              8                     12                                                     24          |
-             14             14.1                  14.2                                                   15          |
-             5              9                     12                                                     20          |
-                                                  17                                                     6           |
-      2              6                 10                      14                          20              6Empty    |
-      5              9                 12                      17                          20                        |
-      1              4                 8                       11                          16                        |
-      3              7                 10                      13                          19              23        |
-1,2=1  3,4=3   5,6=4  7,8=7     9,10=8   11,12=10     13,14=11   15,16=13   17,18,19,20=16   21,22,23=19         =23 |
-                                                                          16                                 |
-                                                                          0                                  |
-                                                                          14                                 |
-                                                                          15                                 |
-             4              8                     12                        15Empty                          |
-             14             14.1                  14.2                                                       |
-             5              9                     12                                                         |
-                                                  17                        20                               |
-      2              6                 10                      14                                 20         |
-      5              9                 12                      17                                 20         |
-      1              4                 8                       11                                 16         |
-      3              7                 10                      13                                 19         |
-1,2=1  3,4=3   5,6=4  7,8=7     9,10=8   11,12=10     13,14=11   15,16=13          17,18,19,20=16   21,22=19 |
-                                                                          16                              |
-                                                                          0                               |
-                                                                          14                              |
-                                                                          15                              |
-             4              8                     12                        15Empty                       |
-             14             14.1                  14.2                                                    |
-             5              9                     12                                                      |
-                                                  17                        20                            |
-      2              6                 10                      14                                 20      |
-      5              9                 12                      17                                 20      |
-      1              4                 8                       11                                 16      |
-      3              7                 10                      13                                 19      |
-1,2=1  3,4=3   5,6=4  7,8=7     9,10=8   11,12=10     13,14=11   15,16=13          17,18,19,20=16   21=19 |
-                                                                          16                             |
-                                                                          0                              |
-                                                                          14                             |
-                                                                          15                             |
-             4              8                     12                        15Empty                      |
-             14             14.1                  14.2                                                   |
-             5              9                     12                                                     |
-                                                  17                        20                           |
-      2              6                 10                      14                  20Empty               |
-      5              9                 12                      17                                        |
-      1              4                 8                       11                                        |
-      3              7                 10                      13                  16                    |
-1,2=1  3,4=3   5,6=4  7,8=7     9,10=8   11,12=10     13,14=11   15,16=13                 17,18,19,20=16 |
-                                                                          16                          |
-                                                                          0                           |
-                                                                          14                          |
-                                                                          15                          |
-             4              8                     12                        15Empty                   |
-             14             14.1                  14.2                                                |
-             5              9                     12                                                  |
-                                                  17                        20                        |
-      2              6                 10                      14                  20Empty            |
-      5              9                 12                      17                                     |
-      1              4                 8                       11                                     |
-      3              7                 10                      13                  16                 |
-1,2=1  3,4=3   5,6=4  7,8=7     9,10=8   11,12=10     13,14=11   15,16=13                 17,18,19=16 |
-                                                                          16                       |
-                                                                          0                        |
-                                                                          14                       |
-                                                                          15                       |
-             4              8                     12                        15Empty                |
-             14             14.1                  14.2                                             |
-             5              9                     12                                               |
-                                                  17                        20                     |
-      2              6                 10                      14                  20Empty         |
-      5              9                 12                      17                                  |
-      1              4                 8                       11                                  |
-      3              7                 10                      13                  16              |
-1,2=1  3,4=3   5,6=4  7,8=7     9,10=8   11,12=10     13,14=11   15,16=13                 17,18=16 |
-                                                                          16                    |
-                                                                          0                     |
-                                                                          14                    |
-                                                                          15                    |
-             4              8                     12                        15Empty             |
-             14             14.1                  14.2                                          |
-             5              9                     12                                            |
-                                                  17                        20                  |
-      2              6                 10                      14                  20Empty      |
-      5              9                 12                      17                               |
-      1              4                 8                       11                               |
-      3              7                 10                      13                  16           |
-1,2=1  3,4=3   5,6=4  7,8=7     9,10=8   11,12=10     13,14=11   15,16=13                 17=16 |
-                                                                          16                  |
-                                                                          0                   |
-                                                                          14                  |
-                                                                          15                  |
-             4              8                     12                        15Empty           |
-             14             14.1                  14.2                                        |
-             5              9                     12                                          |
-                                                  17                        20                |
-      2              6                 10                      14                  20Empty    |
-      5              9                 12                      17                             |
-      1              4                 8                       11                             |
-      3              7                 10                      13                  16         |
-1,2=1  3,4=3   5,6=4  7,8=7     9,10=8   11,12=10     13,14=11   15,16=13                 =16 |
-                                                            16                  |
-                                                            0                   |
-                                                            14                  |
-                                                            15                  |
-                               8                              15Empty           |
-                               14                                               |
-                               5                                                |
-                               12                             20                |
-      2      4        6                       12                     20Empty    |
-      5      5.1      5.2                     12                                |
-      1      3        4                       8                                 |
-                      7                       11                     16         |
-1,2=1  3,4=3    5,6=4    7,8=7   9,10,11,12=8   13,14,15=11                 =16 |
-                               8                         |
-                               0                         |
-                               5                         |
-                               12                        |
-      2      4        6                       12         |
-      5      5.1      5.2                     12         |
-      1      3        4                       8          |
-                      7                       11         |
-1,2=1  3,4=3    5,6=4    7,8=7   9,10,11,12=8   13,14=11 |
-                               8                      |
-                               0                      |
-                               5                      |
-                               12                     |
-      2      4        6                       12      |
-      5      5.1      5.2                     12      |
-      1      3        4                       8       |
-                      7                       11      |
-1,2=1  3,4=3    5,6=4    7,8=7   9,10,11,12=8   13=11 |
-                               8                     |
-                               0                     |
-                               5                     |
-                               12                    |
-      2      4        6          12Empty             |
-      5      5.1      5.2                            |
-      1      3        4                              |
-                      7          8                   |
-1,2=1  3,4=3    5,6=4    7,8=7          9,10,11,12=8 |
-                               8                  |
-                               0                  |
-                               5                  |
-                               12                 |
-      2      4        6          12Empty          |
-      5      5.1      5.2                         |
-      1      3        4                           |
-                      7          8                |
-1,2=1  3,4=3    5,6=4    7,8=7          9,10,11=8 |
-                               8               |
-                               0               |
-                               5               |
-                               12              |
-      2      4        6          12Empty       |
-      5      5.1      5.2                      |
-      1      3        4                        |
-                      7          8             |
-1,2=1  3,4=3    5,6=4    7,8=7          9,10=8 |
-                               8            |
-                               0            |
-                               5            |
-                               12           |
-      2      4        6          12Empty    |
-      5      5.1      5.2                   |
-      1      3        4                     |
-                      7          8          |
-1,2=1  3,4=3    5,6=4    7,8=7          9=8 |
-                               8           |
-                               0           |
-                               5           |
-                               12          |
-      2      4        6          12Empty   |
-      5      5.1      5.2                  |
-      1      3        4                    |
-                      7          8         |
-1,2=1  3,4=3    5,6=4    7,8=7          =8 |
-                   8           |
-                   0           |
-                   5           |
-                   12          |
-          4          12Empty   |
-          5                    |
-          1                    |
-          4          8         |
-1,2,3,4=1  5,6,7=4          =8 |
-          4      |
-          0      |
-          1      |
-          4      |
-1,2,3,4=1  5,6=4 |
-          4    |
-          0    |
-          1    |
-          4    |
-1,2,3,4=1  5=4 |
-1,2,3,4=0 |
-1,2,3=0 |
-1,2=0 |
-1=0 |
-=0 |
-""");
-   }
-
-  static void test_delete_random_reverse()
-   {sayCurrentTestName();
-    final Btree            b = test_put_reload();
-    final Process          P = b.new Process("delete");
-    final Stuck            s = b.new Stuck(P, "stuck");
-    final Process.Register i = P.register("i", b.btreeAddressSize);
-    final Process.Register k = P.register("k", b.bitsPerKey);
-    final Process.Register l = P.register("l", 1);
-    final StringBuilder    t = new StringBuilder();
-    b.maxSteps = 30000;
-    P.processTrace = true;
-
-    final int N = 32;
-
-    P.new Instruction()
-     {void action()
-       {i.registerSet(0);
-       }
-      void verilog(Verilog v)
-       {i.registerSet(v, 0);
-       }
-     };
-
-    P.new Block()
-     {void code()
-       {P.new Instruction()
-         {void action()
-           {k.registerSet(random_32[N-1-i.registerGet()]);
-            i.inc();
-           }
-          void verilog(Verilog v)
-           {v.new Case(random_32.length, i.registerName())
-             {void Choice(int I)
-               {k.registerSet(v, random_32[N-1-I]);
-               }
-             };
-            i.inc(v);
-           }
-         };
-
-        b.delete(k);
-        P.new Instruction()
-         {void action()
-           {t.append(b.btreePrint());
-            l.lt(i, N);
-            P.GoNotZero(start, l);
-           }
-          void verilog(Verilog v)
-           {l.lt(v, i, N);
-            P.GoNotZero(v, start, l);
-           }
-         };
-       }
-     };
-    b.chipRun();
-
-    //stop(t);
-    ok(t, """
-                                                                          16                                                                    |
-                                                                          0                                                                     |
-                                                                          14                                                                    |
-                                                                          15                                                                    |
-             4              8                     12                                                     24                                     |
-             14             14.1                  14.2                                                   15                                     |
-             5              9                     12                                                     20                                     |
-                                                  17                                                     6                                      |
-      2              6                 10                      14                          20                       26         28               |
-      5              9                 12                      17                          20                       6          6.1              |
-      1              4                 8                       11                          16                       23         25               |
-      3              7                 10                      13                          19                                  2                |
-1,2=1  3,4=3   5,6=4  7,8=7     9,10=8   11,12=10     13,14=11   15,16=13   17,18,19,20=16   21,23,24=19   25,26=23   27,28=25    29,30,31,32=2 |
-                                                                 16                                                                    |
-                                                                 0                                                                     |
-                                                                 14                                                                    |
-                                                                 15                                                                    |
-                   8                                                                            24                                     |
-                   14                                                                           15                                     |
-                   5                                                                            20                                     |
-                   12                                                                           6                                      |
-          4                 10         12           14                            20                       26         28               |
-          5                 12         12.1         12.2                          20                       6          6.1              |
-          1                 8          10           11                            16                       23         25               |
-          4                                         13                            19                                  2                |
-1,2,3,4=1  5,6,8=4   9,10=8   11,12=10     13,14=11     15,16=13   17,18,19,20=16   21,23,24=19   25,26=23   27,28=25    29,30,31,32=2 |
-                   8                                            16                           24                                      |
-                   0                                            0.1                          0.2                                     |
-                   5                                            12                           20                                      |
-                                                                                             6                                       |
-          4                10         12           14                          20                        26         28               |
-          5                12         12.1         12.2                        20                        6          6.1              |
-          1                8          10           11                          16                        23         25               |
-          4                                        13                          19                                   2                |
-1,2,3,4=1  5,6,8=4  9,10=8   11,12=10     13,14=11     15,16=13    17,18,20=16   21,23,24=19    25,26=23   27,28=25    29,30,31,32=2 |
-                   8                           16                           24                                      |
-                   0                           0.1                          0.2                                     |
-                   5                           12                           20                                      |
-                                                                            6                                       |
-          4                      12                           20                        26         28               |
-          5                      12                           20                        6          6.1              |
-          1                      8                            16                        23         25               |
-          4                      11                           19                                   2                |
-1,2,3,4=1  5,6,8=4  9,10,11,12=8   13,15,16=11    17,18,20=16   21,23,24=19    25,26=23   27,28=25    29,30,31,32=2 |
-                   8                                                        24                                      |
-                   0                                                        0.1                                     |
-                   5                                                        12                                      |
-                                                                            6                                       |
-          4                      12         16              20                          26         28               |
-          5                      12         12.1            12.2                        6          6.1              |
-          1                      8          11              16                          23         25               |
-          4                                                 19                                     2                |
-1,2,3,4=1  5,6,8=4  9,10,11,12=8   13,16=11     17,18,20=16     21,23,24=19    25,26=23   27,28=25    29,30,31,32=2 |
-                   8                                                        24                             |
-                   0                                                        0.1                            |
-                   5                                                        12                             |
-                                                                            6                              |
-          4                      12         16              20                             28              |
-          5                      12         12.1            12.2                           6               |
-          1                      8          11              16                             23              |
-          4                                                 19                             2               |
-1,2,3,4=1  5,6,8=4  9,10,11,12=8   13,16=11     17,18,20=16     21,23,24=19    25,26,27=23   29,30,31,32=2 |
-                   8                                              24                             |
-                   0                                              0.1                            |
-                   5                                              12                             |
-                                                                  6                              |
-          4                      12               20                             28              |
-          5                      12               12.1                           6               |
-          1                      8                11                             23              |
-          4                                       19                             2               |
-1,2,3,4=1  5,6,8=4  9,10,11,12=8   13,16,18,20=11     21,23,24=19    25,26,27=23   29,30,31,32=2 |
-                   8                                              24                          |
-                   0                                              0.1                         |
-                   5                                              12                          |
-                                                                  6                           |
-          4                      12               20                             28           |
-          5                      12               12.1                           6            |
-          1                      8                11                             23           |
-          4                                       19                             2            |
-1,2,3,4=1  5,6,8=4  9,10,11,12=8   13,16,18,20=11     21,23,24=19    25,26,27=23   30,31,32=2 |
-                 8                                              24                          |
-                 0                                              0.1                         |
-                 5                                              12                          |
-                                                                6                           |
-          4                    12               20                             28           |
-          5                    12               12.1                           6            |
-          1                    8                11                             23           |
-          4                                     19                             2            |
-1,2,3,4=1  5,8=4  9,10,11,12=8   13,16,18,20=11     21,23,24=19    25,26,27=23   30,31,32=2 |
-                 8                                            24                          |
-                 0                                            0.1                         |
-                 5                                            12                          |
-                                                              6                           |
-          4                  12               20                             28           |
-          5                  12               12.1                           6            |
-          1                  8                11                             23           |
-          4                                   19                             2            |
-1,2,3,4=1  5,8=4  10,11,12=8   13,16,18,20=11     21,23,24=19    25,26,27=23   30,31,32=2 |
-                 8                                            24                       |
-                 0                                            0.1                      |
-                 5                                            12                       |
-                                                              6                        |
-          4                  12               20                             28        |
-          5                  12               12.1                           6         |
-          1                  8                11                             23        |
-          4                                   19                             2         |
-1,2,3,4=1  5,8=4  10,11,12=8   13,16,18,20=11     21,23,24=19    25,26,27=23   31,32=2 |
-                 8                                            24                      |
-                 0                                            0.1                     |
-                 5                                            12                      |
-                                                              6                       |
-          4                  12               20                 6Empty               |
-          5                  12               12.1                                    |
-          1                  8                11                                      |
-          4                                   19                 23                   |
-1,2,3,4=1  5,8=4  10,11,12=8   13,16,18,20=11     21,23,24=19          25,27,31,32=23 |
-                 8                                                             |
-                 0                                                             |
-                 5                                                             |
-                 12                                                            |
-          4                12               20              24                 |
-          5                12               12.1            12.2               |
-          1                8                11              19                 |
-          4                                                 23                 |
-1,2,3,4=1  5,8=4   11,12=8   13,16,18,20=11     21,23,24=19     25,27,31,32=23 |
-               8                                                             |
-               0                                                             |
-               5                                                             |
-               12                                                            |
-        4                12               20              24                 |
-        5                12               12.1            12.2               |
-        1                8                11              19                 |
-        4                                                 23                 |
-1,2,3=1  5,8=4   11,12=8   13,16,18,20=11     21,23,24=19     25,27,31,32=23 |
-               8                                                          |
-               0                                                          |
-               5                                                          |
-               12                                                         |
-        4                12               20           24                 |
-        5                12               12.1         12.2               |
-        1                8                11           19                 |
-        4                                              23                 |
-1,2,3=1  5,8=4   11,12=8   13,16,18,20=11     21,23=19     25,27,31,32=23 |
-                8                                                          |
-                0                                                          |
-                5                                                          |
-                12                                                         |
-5Empty                    12               20           24                 |
-                          12               12.1         12.2               |
-                          8                11           19                 |
-1                                                       23                 |
-      1,2,3,8=1   11,12=8   13,16,18,20=11     21,23=19     25,27,31,32=23 |
-                8                                                       |
-                0                                                       |
-                5                                                       |
-                12                                                      |
-5Empty                    12               20        24                 |
-                          12               12.1      12.2               |
-                          8                11        19                 |
-1                                                    23                 |
-      1,2,3,8=1   11,12=8   13,16,18,20=11     23=19     25,27,31,32=23 |
-                8                                                    |
-                0                                                    |
-                5                                                    |
-                12                                                   |
-5Empty                 12               20        24                 |
-                       12               12.1      12.2               |
-                       8                11        19                 |
-1                                                 23                 |
-      1,2,3,8=1   12=8   13,16,18,20=11     23=19     25,27,31,32=23 |
-                8                                          |
-                0                                          |
-                5                                          |
-                12                                         |
-5Empty                 12               20                 |
-                       12               12.1               |
-                       8                11                 |
-1                                       19                 |
-      1,2,3,8=1   12=8   13,16,18,20=11     23,25,27,31=19 |
-          8              20                |
-          0              0.1               |
-          1              8                 |
-                         19                |
-1,2,3,8=1  12,16,18,20=8    23,25,27,31=19 |
-          8           20                |
-          0           0.1               |
-          1           8                 |
-                      19                |
-1,2,3,8=1  12,18,20=8    23,25,27,31=19 |
-          8           20             |
-          0           0.1            |
-          1           8              |
-                      19             |
-1,2,3,8=1  12,18,20=8    23,27,31=19 |
-          8           20          |
-          0           0.1         |
-          1           8           |
-                      19          |
-1,2,3,8=1  12,18,20=8    23,27=19 |
-        8           20          |
-        0           0.1         |
-        1           8           |
-                    19          |
-1,3,8=1  12,18,20=8    23,27=19 |
-        8              |
-        0              |
-        1              |
-        8              |
-1,3,8=1  12,20,23,27=8 |
-      8              |
-      0              |
-      1              |
-      8              |
-1,3=1  12,20,23,27=8 |
-      8           |
-      0           |
-      1           |
-      8           |
-1,3=1  12,23,27=8 |
-1,3,12,27=0 |
-3,12,27=0 |
-3,12=0 |
-12=0 |
-=0 |
-""");
-   }
-
-  static void test_verilog_push()
-   {sayCurrentTestName();
-    final Btree   b = new Btree(4, 4, 8, 8);
-    final Process P = b.new Process("Stuck");
-    final Stuck   s = b.new Stuck(P, "stuck");
-    final Process.Register k = P.register("k", b.bitsPerKey);
-    final Process.Register d = P.register("d", b.bitsPerData);
-    P.processTrace = true;
-
-    for (int i = 0; i < b.maxStuckSize; i++)
-     {final int I = i;
-      P.new Instruction()
-       {void action()
-         {k.registerSet(I+1); d.registerSet(I+2); s.push(k, d);
-         }
-        void verilog(Verilog v)
-         {k.registerSet(v, I+1); d.registerSet(v, I+2); s.push(v, k, d);
-         }
-       };
-     }
-    b.chipRun();
-   }
-
-  static void test_verilog_pop()
-   {sayCurrentTestName();
-    final Btree   b = test_push();
-    final Process P = b.processes.get("Stuck");
-    final Stuck   s = b.new Stuck(P, "stuck");
-    final Process.Register k = s.Key;
-    final Process.Register d = s.Data;
-    P.processTrace = true;
-    P.processClear();
-    s.stuckGetRoot();
-    P.new Instruction()
-     {void action()
-       {s.pop();
-       }
-      void verilog(Verilog v)
-       {s.pop(v);
-       }
-     };
-
-    b.maxSteps = 1000;
-    b.chipRun();
-   }
-
   static void oldTests()                                                        // Tests thought to be in good shape
    {test_create1();
     test_create2();
@@ -7855,13 +7855,6 @@ Merge     : 0
     test_mergeButOne();
     test_mergeButOne2();
     test_allocate();
-    test_find();
-    test_findAndInsert();
-    test_put();
-    test_put_merge();
-    test_put_reload();
-    test_put_reverse();
-    test_put_random();
     test_splitRootLeaf();
     test_mergeLeavesIntoRoot();
     test_mergeLeavesNotTop();
@@ -7869,22 +7862,29 @@ Merge     : 0
     test_mergeBranchesIntoRoot();
     test_mergeBranchesNotTop();
     test_mergeBranchesAtTop();
-    test_delete();
+    test_find();
+    test_findAndInsert();
+    test_delete_ascending();
     test_delete_random();
-    test_delete_reverse();
-    test_delete_random_reverse();
+    test_delete_descending();
+    test_delete_random_descending();
+    test_put_ascending();
+    test_put_merge();
+    test_put_reload();
+    test_put_descending();
+    test_put_random();
    }
 
   static void newTests()                                                        // Tests being worked on
    {oldTests();
-      test_put_random();
+    //test_put_random();
    }
 
   public static void main(String[] args)                                        // Test if called as a program
    {try                                                                         // Get a traceback in a format clickable in Geany if something goes wrong to speed up debugging.
      {if (github_actions) oldTests(); else newTests();                          // Tests to run
       if (github_actions)                                                       // Coverage analysis
-       {coverageAnalysis(sourceFileName(), 12);
+       {//coverageAnalysis(sourceFileName(), 12);
        }
       testSummary();                                                            // Summarize test results
       System.exit(testsFailed);
