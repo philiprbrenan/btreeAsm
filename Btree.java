@@ -7529,7 +7529,7 @@ Merge     : 0
           void verilog(Verilog v)
            {v.new Case(random_32.length, i.registerName())
              {void Choice(int I)
-               {k.registerSet(random_32[N-1-I]);
+               {k.registerSet(v, random_32[N-1-I]);
                }
              };
             i.inc(v);
