@@ -38,7 +38,7 @@ The [memory](https://en.wikipedia.org/wiki/Computer_memory) associated with a [p
 
 - Memory is typically accessed over multiple [clock](https://en.wikipedia.org/wiki/Clock_generator) cycles by issuing transactions that copy [memory](https://en.wikipedia.org/wiki/Computer_memory) elements to or from local [registers](https://en.wikipedia.org/wiki/Processor_register) for faster access.
 
-- Each memeory is owned by a [process](https://en.wikipedia.org/wiki/Process_management_(computing)) .
+- Each [memory](https://en.wikipedia.org/wiki/Computer_memory) is owned by a [process](https://en.wikipedia.org/wiki/Process_management_(computing)) .
 
 ## Registers
 
@@ -117,7 +117,7 @@ the [process](https://en.wikipedia.org/wiki/Process_management_(computing)) unde
 
 # Status
 
-2025-07-12 Java implemntation of the [B-Tree](https://en.wikipedia.org/wiki/B-tree) [algorithm](https://en.wikipedia.org/wiki/Algorithm) 2025-08-15 Verilog trace matches [Java](https://en.wikipedia.org/wiki/Java_(programming_language)) trace
+2025-07-12 Java implementation of the [B-Tree](https://en.wikipedia.org/wiki/B-tree) [algorithm](https://en.wikipedia.org/wiki/Algorithm) 2025-08-15 Verilog trace matches [Java](https://en.wikipedia.org/wiki/Java_(programming_language)) trace
 
 # Next Step
 
