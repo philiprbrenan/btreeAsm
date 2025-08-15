@@ -1,6 +1,6 @@
 //------------------------------------------------------------------------------
 // Verilog constants and formatter
-// Philip R Brenan at appaapps dot com, Appa Apps Ltd Inc., 2024
+// Philip R Brenan at appaapps dot com, Appa Apps Ltd Inc., 2025
 //------------------------------------------------------------------------------
 package com.AppaApps.Silicon;                                                   // Btree in a block on the surface of a silicon chip.
 
@@ -172,6 +172,17 @@ class Verilog extends Test                                                      
     a(";");
    }
 
+  class IfNotDef                                                                // If a prepreocessor variable is not defined
+   {IfNotDef(String Variable)
+     {A("`ifndef "+Variable.toUpperCase());
+      indent();
+      Then();
+      dedent();
+      A("`endif");
+     }
+    void Then() {}
+   }
+
 //D0 Tests                                                                      // Testing
 
   static void test_ext()
@@ -289,6 +300,20 @@ end
 """);
    }
 
+  static void test_ifndef()
+   {final Verilog v = new Verilog();
+    v.new IfNotDef("SYNTHESIS")
+     {void Then()
+       {v.comment("Ignored during synthesis");
+       }
+     };
+    ok(v, """
+`ifndef SYNTHESIS
+  // Ignored during synthesis
+`endif
+""");
+   }
+
   static void oldTests()                                                        // Tests thought to be in good shape
    {test_ext();
     test_assign();
@@ -299,6 +324,7 @@ end
     test_display();
     test_begin();
     test_sum();
+    test_ifndef();
    }
 
   static void newTests()                                                        // Tests being worked on
