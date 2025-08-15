@@ -2,10 +2,16 @@
    <p><a href="https://github.com/philiprbrenan/btreeAsm"><img src="https://github.com/philiprbrenan/btreeAsm/workflows/Test/badge.svg"></a>
 </div>
 
+# Goal
+
+Use Java to generate synthesizable Verilog to layout a [B-Tree](https://en.wikipedia.org/wiki/B-tree) on the surface of
+a specialized [Silicon](https://en.wikipedia.org/wiki/Silicon) chip so that the [find](https://en.wikipedia.org/wiki/Find_(Unix)), put and delete operations on a [B-Tree](https://en.wikipedia.org/wiki/B-tree) can be performed more quickly than [software](https://en.wikipedia.org/wiki/Software) running on a generic
+processor.
+
 # Chip
 
 A [chip](https://en.wikipedia.org/wiki/Integrated_circuit) implements an [algorithm](https://en.wikipedia.org/wiki/Algorithm) in [Silicon](https://en.wikipedia.org/wiki/Silicon). 
-A [chip](https://en.wikipedia.org/wiki/Integrated_circuit) exists in one of two states:
+A [chip](https://en.wikipedia.org/wiki/Integrated_circuit) design exists in one of two states:
 
 - **Design**: The stage where the layout of the [chip](https://en.wikipedia.org/wiki/Integrated_circuit) is defined on [Silicon](https://en.wikipedia.org/wiki/Silicon). 
 - **Execution**: When the [chip](https://en.wikipedia.org/wiki/Integrated_circuit) runs a fixed set of parallel [processes](https://en.wikipedia.org/wiki/Process_management_(computing)) to perform work.
