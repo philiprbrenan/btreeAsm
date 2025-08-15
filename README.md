@@ -90,25 +90,35 @@ Programs are implemented using a `case` statement where:
 
 - Each [instruction](https://en.wikipedia.org/wiki/Instruction_set_architecture) corresponds to a case branch.
 
-- The process's [program](https://en.wikipedia.org/wiki/Computer_program) counter selects the next [instruction](https://en.wikipedia.org/wiki/Instruction_set_architecture) to execute.
+- Each [process](https://en.wikipedia.org/wiki/Process_management_(computing)) has a [program](https://en.wikipedia.org/wiki/Computer_program) counter that selects the next [instruction](https://en.wikipedia.org/wiki/Instruction_set_architecture) to be executed.
 
 This is **not** a general-purpose processor. It is a specialized [chip](https://en.wikipedia.org/wiki/Integrated_circuit) with **statically optimized** execution paths for minimal time and power consumption.
 
 ## Java Simulation
 
-Writing [Verilog](https://en.wikipedia.org/wiki/Verilog) directly is time-consuming and error-prone. Therefore:
+Writing [Verilog](https://en.wikipedia.org/wiki/Verilog) directly is time-consuming and error-prone. To mitigate this problem:
 
 - The [algorithm](https://en.wikipedia.org/wiki/Algorithm) is first written and debugged in [Java](https://en.wikipedia.org/wiki/Java_(programming_language)) using familiar programming paradigms and tools.
 
-- The [Java](https://en.wikipedia.org/wiki/Java_(programming_language)) [code](https://en.wikipedia.org/wiki/Computer_program) is then **semi-automatically translated** into [Verilog](https://en.wikipedia.org/wiki/Verilog). 
-- The [Java](https://en.wikipedia.org/wiki/Java_(programming_language)) [code](https://en.wikipedia.org/wiki/Computer_program) is executed to produce a trace showing how the [memory](https://en.wikipedia.org/wiki/Computer_memory) and [registers](https://en.wikipedia.org/wiki/Processor_register) of the chip evolve in time.
+- The [Java](https://en.wikipedia.org/wiki/Java_(programming_language)) [code](https://en.wikipedia.org/wiki/Computer_program) is then **almost-automatically translated** into [Verilog](https://en.wikipedia.org/wiki/Verilog). 
+- The [Java](https://en.wikipedia.org/wiki/Java_(programming_language)) [code](https://en.wikipedia.org/wiki/Computer_program) is executed to produce a trace showing how the [memory](https://en.wikipedia.org/wiki/Computer_memory) and [registers](https://en.wikipedia.org/wiki/Processor_register) of the chip should evolve in time.
 
 - The [Verilog](https://en.wikipedia.org/wiki/Verilog) [code](https://en.wikipedia.org/wiki/Computer_program) is executed and check to confirm that it produces the same [memory](https://en.wikipedia.org/wiki/Computer_memory) and [register](https://en.wikipedia.org/wiki/Processor_register) trace as the [Java](https://en.wikipedia.org/wiki/Java_(programming_language)) [code](https://en.wikipedia.org/wiki/Computer_program) does
 
-- This approach produces [Verilog](https://en.wikipedia.org/wiki/Verilog) [code](https://en.wikipedia.org/wiki/Computer_program) **more efficiently** and **reliably** than writing it by hand.
+This approach produces [Verilog](https://en.wikipedia.org/wiki/Verilog) [code](https://en.wikipedia.org/wiki/Computer_program) **more efficiently** and **reliably** than
+writing it by hand.
 
 As a consequence, no additional tests are required within the [Verilog](https://en.wikipedia.org/wiki/Verilog) [code](https://en.wikipedia.org/wiki/Computer_program) itself; it is sufficient to [verify](https://en.wikipedia.org/wiki/Software_verification_and_validation) that the [Verilog](https://en.wikipedia.org/wiki/Verilog) implementation updates the [memory](https://en.wikipedia.org/wiki/Computer_memory) and [registers](https://en.wikipedia.org/wiki/Processor_register) on the chip in lockstep with the [Java](https://en.wikipedia.org/wiki/Java_(programming_language)) version to confirm
 that the [Verilog](https://en.wikipedia.org/wiki/Verilog) version accurately represents the [Java](https://en.wikipedia.org/wiki/Java_(programming_language)) version.
 
-If the [Verilog](https://en.wikipedia.org/wiki/Verilog) trace and the [Java](https://en.wikipedia.org/wiki/Java_(programming_language)) trace do not match, the [instruction](https://en.wikipedia.org/wiki/Instruction_set_architecture) that caused
-the mismatch can be located by setting "processTrace" to true for the [process](https://en.wikipedia.org/wiki/Process_management_(computing)) under development to get a traceback identifying the problem [instruction](https://en.wikipedia.org/wiki/Instruction_set_architecture). 
+If the [Verilog](https://en.wikipedia.org/wiki/Verilog) trace and the [Java](https://en.wikipedia.org/wiki/Java_(programming_language)) trace do not match, the [instruction](https://en.wikipedia.org/wiki/Instruction_set_architecture) that is
+causing the mismatch can be located by setting "processTrace" to **true** for
+the [process](https://en.wikipedia.org/wiki/Process_management_(computing)) under development to get a traceback identifying the [instruction](https://en.wikipedia.org/wiki/Instruction_set_architecture) that is executing differently in the [Java](https://en.wikipedia.org/wiki/Java_(programming_language)) version versus the [Verilog](https://en.wikipedia.org/wiki/Verilog) version.
+
+# Status
+
+2025-07-12 Java implemntation of the [B-Tree](https://en.wikipedia.org/wiki/B-tree) [algorithm](https://en.wikipedia.org/wiki/Algorithm) 2025-08-15 Verilog trace matches [Java](https://en.wikipedia.org/wiki/Java_(programming_language)) trace
+
+# Next Step
+
+Confirm that the generated [Verilog](https://en.wikipedia.org/wiki/Verilog) can be synthesized for a range of [B-Tree](https://en.wikipedia.org/wiki/B-tree) configurations.
