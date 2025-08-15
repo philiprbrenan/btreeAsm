@@ -25,6 +25,8 @@ class Verilog extends Test                                                      
     --indent;
    }
 
+  boolean isEmpty() {return lines.size() == 0;}                                 // Whether any code was generated                                                                 // Decrease indentation
+
   public String toString()                                                      // Verilog as a string
    {final StringBuilder s = new StringBuilder();
     for(Line l: lines)                                                          // Print the lines of verilog
