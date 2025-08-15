@@ -1415,7 +1415,7 @@ Chip: Test             step: 0, maxSteps: 10, running: 0, returnCode: 0
        {a.registerSet(1);
        }
       void verilog(Verilog v)
-       {a.registerSet(v, 2);
+       {a.registerSet(v, 1);
        }
      };
 
