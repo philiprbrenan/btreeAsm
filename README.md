@@ -5,7 +5,7 @@
 # Goal
 
 Use Java to generate synthesizable Verilog to layout a [B-Tree](https://en.wikipedia.org/wiki/B-tree) on the surface of
-a specialized [Silicon](https://en.wikipedia.org/wiki/Silicon) chip so that the [find](https://en.wikipedia.org/wiki/Find_(Unix)), put and delete operations on a [B-Tree](https://en.wikipedia.org/wiki/B-tree) can be performed more quickly than [software](https://en.wikipedia.org/wiki/Software) running on a generic
+a specialized [chip](https://en.wikipedia.org/wiki/Integrated_circuit) so that the [find](https://en.wikipedia.org/wiki/Find_(Unix)), put and delete operations on a [B-Tree](https://en.wikipedia.org/wiki/B-tree) can be performed more quickly than [software](https://en.wikipedia.org/wiki/Software) running on a generic
 processor.
 
 # Chip
