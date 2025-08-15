@@ -7788,6 +7788,29 @@ Merge     : 0
 """);
    }
 
+
+  static void test_verilog_put()
+   {sayCurrentTestName();
+    final Btree            b = new Btree(32, 4, 8, 8);
+    final Process          P = b.new Process("put");
+    final Process.Register k = P.register("k", b.bitsPerKey);
+    final Process.Register d = P.register("d", b.bitsPerData);
+
+    P.new Instruction()
+     {void action()
+       {k.registerSet(1);
+        d.registerSet(11);
+       }
+      void verilog(Verilog v)
+       {k.registerSet(v, 1);
+        d.registerSet(v, 11);
+       }
+     };
+    b.chipRunJava();
+    b.put(P, k, d);
+    b.chipGenerateVerilog();
+   }
+
   static void oldTests()                                                        // Tests thought to be in good shape
    {test_create1();
     test_create2();
@@ -7834,7 +7857,8 @@ Merge     : 0
    }
 
   static void newTests()                                                        // Tests being worked on
-   {oldTests();
+   {//oldTests();
+    test_verilog_put();
    }
 
   public static void main(String[] args)                                        // Test if called as a program
