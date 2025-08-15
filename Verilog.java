@@ -163,7 +163,7 @@ class Verilog extends Test                                                      
     a(");");
    }
 
-  void sum(String...s)                                                          // Sum ssintegers
+  void sum(String...s)                                                          // Sum integers
    {if (s.length < 2) stop("Nothing to sum");
     A(s[0]+" = "+ s[1]);
     for (int i = 2; i < s.length; i++)
