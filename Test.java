@@ -327,7 +327,7 @@ public class Test                                                               
    }
 
   static void sayCurrentTestName()                                              // Name of the current test
-   {say(String.format("%2d %6.2f", ++currentTestNumber, elapsedTime()),
+   {say(String.format("%2d %8.2f", ++currentTestNumber, elapsedTime()),
       currentTestName());
    }
 
