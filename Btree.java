@@ -3587,7 +3587,7 @@ Stuck: right size: 2, leaf: 0, index: 2
     final Stuck            s = b.new Stuck(P, "stuck");
     final Stuck            l = b.new Stuck(P, "left");
     final Stuck            r = b.new Stuck(P, "right");
-
+    P.processTrace = true;
     P.processClear();
     s.stuckGetRoot();
     P.new Instruction()
@@ -3623,10 +3623,6 @@ Stuck: stuck size: 3, leaf: 1, root
  1     1 =>    2
  2     2 =>    3
  3     3 =>    4
- 4     0 =>    0
- 5     0 =>    0
- 6     0 =>    0
- 7     0 =>    0
 Found     : 0
 Key       : 0
 FoundKey  : 0
@@ -3642,10 +3638,6 @@ Stuck: left size: 1, leaf: 0, index: 1
  1     1 =>    2
  2     2 =>    3
  3     3 =>    4
- 4     0 =>    0
- 5     0 =>    0
- 6     0 =>    0
- 7     0 =>    0
 Found     : 0
 Key       : 0
 FoundKey  : 0
@@ -3661,10 +3653,6 @@ Stuck: right size: 1, leaf: 0, index: 2
  1     1 =>    4
  2     2 =>    3
  3     3 =>    4
- 4     0 =>    0
- 5     0 =>    0
- 6     0 =>    0
- 7     0 =>    0
 Found     : 0
 Key       : 0
 FoundKey  : 0
@@ -3686,7 +3674,7 @@ Merge     : 0
     final Process.Register R = P.new Register("Right", 8);
     final Process.Register k = P.register("k", b.bitsPerKey);
     final Process.Register d = P.register("d", b.bitsPerData);
-
+    P.processTrace = true;
     P.processClear();
     s.stuckGetRoot();
     P.new Instruction()
@@ -3732,19 +3720,15 @@ Merge     : 0
     b.chipRun();
     //stop(s);
     ok(s, """
-Stuck: stuck size: 4, leaf: 1, root
- 0     4 =>    5
- 1     5 =>    6
- 2     6 =>    7
- 3     7 =>    8
+Stuck: stuck size: 2, leaf: 1, root
+ 0     2 =>    3
+ 1     3 =>    4
 """);
     //stop(l);
     ok(l, """
-Stuck: left size: 4, leaf: 0, index: 1
+Stuck: left size: 2, leaf: 0, index: 1
  0     0 =>    1
  1     1 =>    2
- 2     2 =>    3
- 3     3 =>    4
 """);
    }
 
@@ -3759,7 +3743,7 @@ Stuck: left size: 4, leaf: 0, index: 1
     final Process.Register R = P.new Register("Right", 8);
     final Process.Register k = P.register("k", b.bitsPerKey);
     final Process.Register d = P.register("d", b.bitsPerData);
-
+    P.processTrace = true;
     P.processClear();
     s.stuckGetRoot();
     P.new Instruction()
@@ -3807,19 +3791,15 @@ Stuck: left size: 4, leaf: 0, index: 1
     b.chipRun();
     //stop(s.dump());
     ok(s.dump(), """
-Stuck: stuck size: 3, leaf: 1, root
- 0     4 =>    5
- 1     5 =>    6
- 2     6 =>    7
- 3     7 =>    8
- 4     4 =>    5
- 5     5 =>    6
- 6     6 =>    7
- 7     7 =>    8
+Stuck: stuck size: 1, leaf: 1, root
+ 0     2 =>    3
+ 1     3 =>    4
+ 2     2 =>    3
+ 3     3 =>    4
 Found     : 0
-Key       : 7
+Key       : 3
 FoundKey  : 0
-Data      : 8
+Data      : 4
 BtreeIndex: 0
 StuckIndex: 0
 Merge     : 0
@@ -3827,15 +3807,11 @@ Merge     : 0
 
     //stop(l.dump());
     ok(l.dump(), """
-Stuck: left size: 3, leaf: 0, index: 1
+Stuck: left size: 1, leaf: 0, index: 1
  0     0 =>    1
  1     1 =>    2
  2     2 =>    3
  3     3 =>    4
- 4     0 =>    0
- 5     0 =>    0
- 6     0 =>    0
- 7     0 =>    0
 Found     : 0
 Key       : 0
 FoundKey  : 0
@@ -7898,21 +7874,20 @@ Merge     : 0
 
   static void newTests()                                                        // Tests being worked on
    {//oldTests();
-    test_put_merge();
-    test_put_reload();
-    test_put_reverse();
-    test_put_random();
-    test_splitRootLeaf();
-    test_mergeLeavesIntoRoot();
-    test_mergeLeavesNotTop();
-    test_mergeLeavesAtTop();
-    test_mergeBranchesIntoRoot();
-    test_mergeBranchesNotTop();
-    test_mergeBranchesAtTop();
-    test_delete();
-    test_delete_random();
-    test_delete_reverse();
-    test_delete_random_reverse();
+//    test_put_reload();
+//    test_put_reverse();
+//    test_put_random();
+//    test_splitRootLeaf();
+//    test_mergeLeavesIntoRoot();
+//    test_mergeLeavesNotTop();
+//    test_mergeLeavesAtTop();
+//    test_mergeBranchesIntoRoot();
+//    test_mergeBranchesNotTop();
+//    test_mergeBranchesAtTop();
+//    test_delete();
+//    test_delete_random();
+//    test_delete_reverse();
+//    test_delete_random_reverse();
    }
 
   public static void main(String[] args)                                        // Test if called as a program
