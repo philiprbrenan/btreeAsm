@@ -1184,7 +1184,6 @@ chipStop = true;
                    {P.Goto(v, bEnd);
                    }
                  };
-                P.new Instruction() {void action() {P.Goto(bEnd);}};            // Exit outer block
                }
              };
             Branch();                                                           // On a branch
@@ -1358,7 +1357,7 @@ chipStop = true;
      {void action()
        {if (p.size.registerGet() < maxStuckSize-1) stop("Root must be full");
        }
-      void verilog(Verilog v) {}
+      void verilog(Verilog v) {v.A("");}
      };
     p.splitIntoThree(l, r, midPoint);                                           // Split the branch root in two down the middle
     allocateBranch(il); l.stuckPut(il);                                         // Allocate and save left branch
@@ -1415,7 +1414,7 @@ chipStop = true;
         if (c.isLeaf.registerGet() == 0)              stop("Child must be a leaf");
         if (c.size  .registerGet() <  maxStuckSize)   stop("Child must be full");
        }
-      void verilog(Verilog v) {}
+      void verilog(Verilog v) {v.A("");}
      };
     c.splitLow(l);                                                              // Split the leaf in two down the middle copying out the lower half
     allocateLeaf(il); c.stuckPut(cd);                                           // Allocate and save split out left of leaf
@@ -1467,7 +1466,7 @@ chipStop = true;
         if (c.isLeaf.registerGet() == 0)             stop("Child must be a leaf");
         if (c.size.registerGet()   != maxStuckSize)  stop("Child must be a full");    // Leaves fill the stuck completely
        }
-      void verilog(Verilog v) {}
+      void verilog(Verilog v) {v.A("");}
      };
 
     c.splitLow(l);                                                              // Split the leaf in two down the middle copying out the lower half
@@ -1527,7 +1526,7 @@ chipStop = true;
         if (c.isLeaf.registerGet() >  0) stop("Child must be a branch");
         if (c.size  .registerGet() <  maxStuckSize-1) stop("Child must not full");
        }
-      void verilog(Verilog v) {}
+      void verilog(Verilog v) {v.A("");}
      };
 
     c.splitLowButOne(l, ck);                                                    // Split the leaf in two down the middle copying out the lower half
@@ -1582,7 +1581,7 @@ chipStop = true;
         if (c.isLeaf.registerGet() >  0) stop("Child must be a branch");
         if (c.size.registerGet()   <  maxStuckSize-1) stop("Child branch must be full");
        }
-      void verilog(Verilog v) {}
+      void verilog(Verilog v) {v.A("");}
      };
 
     c.splitLowButOne(l, mk);                                                    // Split the leaf in two down the middle copying out the lower half
@@ -2745,7 +2744,7 @@ Chip: Btree            step: 0, maxSteps: 10, running: 0, returnCode: 0
       s.stuckPut();
 
       b.maxSteps = 100;
-      b.chipRun();
+      b.chipRunJava();
      }
     return b;
    }
@@ -4087,7 +4086,7 @@ Chip: Btree            step: 16, maxSteps: 100, running: 1, returnCode: 0
         ok(i, "alloc_index1_0 = 1");
         ok(j, "alloc_index2_1 = 2");
        }
-      void verilog(Verilog v) {}
+      void verilog(Verilog v) {v.A("");}
      };
     b.free(i);
     b.free(j);
@@ -7877,14 +7876,8 @@ Merge     : 0
    }
 
   static void newTests()                                                        // Tests being worked on
-   {//oldTests();
-//    test_put_reload();
-//    test_put_reverse();
+   {oldTests();
       test_put_random();
-//    test_delete();
-//    test_delete_random();
-//    test_delete_reverse();
-//    test_delete_random_reverse();
    }
 
   public static void main(String[] args)                                        // Test if called as a program
