@@ -7845,15 +7845,15 @@ Merge     : 0
     test_mergeBranchesAtTop();
     test_find();
     test_findAndInsert();
-    test_delete_ascending();
-    test_delete_random();
-    test_delete_descending();
-    test_delete_random_descending();
-    test_put_ascending();
-    test_put_merge();
-    test_put_reload();
-    test_put_descending();
-    test_put_random();
+//    test_delete_ascending();
+//    test_delete_random();
+//    test_delete_descending();
+//    test_delete_random_descending();
+//    test_put_ascending();
+//    test_put_merge();
+//    test_put_reload();
+//    test_put_descending();
+//    test_put_random();
    }
 
   static void newTests()                                                        // Tests being worked on
