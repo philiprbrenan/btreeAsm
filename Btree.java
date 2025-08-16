@@ -629,7 +629,7 @@ chipStop = true;
       data[N].copy(Data);
      }
 
-    void setDataAt(Verilog v, Process.Register Index, Process.Register Data)               // Set the indexed data pair
+    void setDataAt(Verilog v, Process.Register Index, Process.Register Data)    // Set the indexed data pair
      {v.new Case(maxStuckSize, Index.registerName())
        {void Choice(int i)
          {data[i].copy(v, Data);
@@ -637,7 +637,8 @@ chipStop = true;
        };
      }
 
-    void insertElementAt(Process.Register Index, Process.Register Key, Process.Register Data)           // Set the indexed key, data pair
+    void insertElementAt                                                        // Set the indexed key, data pair
+     (Process.Register Index, Process.Register Key, Process.Register Data)
      {R(); final int N = Index.registerGet();
       final int S = size.registerGet();
       if (N >= maxStuckSize)                                                    // No reason left in stuck
@@ -657,8 +658,10 @@ chipStop = true;
       data[N].copy(Data);
      }
 
-    void insertElementAt(Verilog v, Process.Register Index, Process.Register Key, Process.Register Data)           // Set the indexed key, data pair
-     {size.inc(v);                                                               // Increase number of elements
+    void insertElementAt                                                        // Set the indexed key, data pair
+     (Verilog v, Process.Register Index,
+      Process.Register Key, Process.Register Data)
+     {size.inc(v);                                                              // Increase number of elements
       for (int i = maxStuckSize-1; i > 0; i--)
        {final int I = i;
          v.new If(""+i+" > "+Index.registerName())
@@ -1443,7 +1446,7 @@ chipStop = true;
     final Stuck l = new Stuck(P, "splitLeafAtTopLeft");                         // Left split of leaf
     final Process.Register ci  = P.register("childIndex" , btreeAddressSize);   // Btree index of child
     final Process.Register cl  = P.register("leftIndex" ,  btreeAddressSize);   // Btree index of left child of child
-    final Process.Register mk  = P.register("midKey",            bitsPerKey);   //
+    final Process.Register mk  = P.register("midKey",            bitsPerKey);   // Mid key
 
     p.stuckGet(ParentIndex);                                                    // Load parent stuck from btree
     P.new Instruction()
@@ -7746,7 +7749,7 @@ Merge     : 0
     final Process.Register d = P.register("d", b.bitsPerData);
     P.processTrace = true;
     b.maxSteps     = 2000;
-    b.suppressMerge = true;                                                      // Supress merges as they have not been developed yet
+    b.suppressMerge = true;                                                      // Suppress merges as they have not been developed yet
 
     final int N = 32;
     for (int i = N; i > 0; i--)
@@ -7792,7 +7795,7 @@ Merge     : 0
     final Process.Register d = P.register("d", b.bitsPerData);
     P.processTrace = true;
     b.maxSteps     = 2000;
-    b.suppressMerge = true;                                                      // Supress merges as they have not been developed yet
+    b.suppressMerge = true;                                                      // Suppress merges as they have not been developed yet
 
     final int N = random_32.length;
     for (int i = 0; i < N; ++i)
@@ -7828,6 +7831,28 @@ Merge     : 0
                1                         4                                                          7                            2         |
 1,2=8   3,4=14     5,6,7=1   8,9,10,11=9   12,13,14,15=4   16,17,18,19=12   20,21=3     22,23,24=17     25,26=7   27,28,29,30=10   31,32=2 |
 """);
+   }
+
+  static void test_verilog_put()
+   {sayCurrentTestName();
+    final Btree            b = new Btree(32, 4, 8, 8);
+    final Process          P = b.new Process("verilogPut");
+    final Process.Register k = P.register("k", b.bitsPerKey);   k.input();
+    final Process.Register d = P.register("d", b.bitsPerData);  d.input();
+
+    P.new Instruction()
+     {void action()
+       {k.registerSet(1);
+        d.registerSet(11);
+       }
+      void verilog(Verilog v)
+       {k.registerSet(v, 1);
+        d.registerSet(v, 11);
+       }
+     };
+    b.chipRunJava();
+    b.put(P, k, d);
+    b.chipSynthesize();
    }
 
   static void oldTests()                                                        // Tests thought to be in good shape
@@ -7873,11 +7898,13 @@ Merge     : 0
     test_put_reload();
     test_put_descending();
     test_put_random();
+    test_verilog_put();
    }
 
   static void newTests()                                                        // Tests being worked on
    {//oldTests();
-    test_delete_ascending();
+    //test_delete_ascending();
+    test_verilog_put();
    }
 
   public static void main(String[] args)                                        // Test if called as a program
