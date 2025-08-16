@@ -38,11 +38,11 @@ The [memory](https://en.wikipedia.org/wiki/Computer_memory) associated with a [p
 
 - Memory is typically accessed over multiple [clock](https://en.wikipedia.org/wiki/Clock_generator) cycles by issuing transactions that copy [memory](https://en.wikipedia.org/wiki/Computer_memory) elements to or from local [registers](https://en.wikipedia.org/wiki/Processor_register) for faster access.
 
-- Each [memory](https://en.wikipedia.org/wiki/Computer_memory) is owned by a [process](https://en.wikipedia.org/wiki/Process_management_(computing)) .
+- Each [memory](https://en.wikipedia.org/wiki/Computer_memory) is owned by a single [process](https://en.wikipedia.org/wiki/Process_management_(computing)) .
 
 ## Registers
 
-Registers are local blocks of [memory](https://en.wikipedia.org/wiki/Computer_memory) :
+Registers are local blocks of [memory](https://en.wikipedia.org/wiki/Computer_memory) that:
 
 - Have a fixed size determined at **compile time**.
 
@@ -54,8 +54,10 @@ Registers are local blocks of [memory](https://en.wikipedia.org/wiki/Computer_me
 
 Each [process](https://en.wikipedia.org/wiki/Process_management_(computing)) executes a single [program](https://en.wikipedia.org/wiki/Computer_program) composed of sequential [instructions](https://en.wikipedia.org/wiki/Instruction_set_architecture). A [chip](https://en.wikipedia.org/wiki/Integrated_circuit) may contain multiple [processes](https://en.wikipedia.org/wiki/Process_management_(computing)). 
 Processes can be driven by transactions, which are parameter lists of [registers](https://en.wikipedia.org/wiki/Processor_register) provided by the calling [processes](https://en.wikipedia.org/wiki/Process_management_(computing)). 
-Processes execute in a fixed round-robin order, allowing behavior in [Verilog](https://en.wikipedia.org/wiki/Verilog) to be compared with [Java](https://en.wikipedia.org/wiki/Java_(programming_language)) simulations reliably.
-
+Processes are execute in a fixed, round-robin order set at design time,
+allowing the behavior of the [Verilog](https://en.wikipedia.org/wiki/Verilog) [code](https://en.wikipedia.org/wiki/Computer_program) to be validated by comparing the time
+evolution of memories and [registers](https://en.wikipedia.org/wiki/Processor_register) under [Verilog](https://en.wikipedia.org/wiki/Verilog) with the trace of the same
+under [Java](https://en.wikipedia.org/wiki/Java_(programming_language)). 
 ### Transactions
 
 A [transaction](https://en.wikipedia.org/wiki/Database_transaction) enables one [process](https://en.wikipedia.org/wiki/Process_management_(computing)) to request work from another [process](https://en.wikipedia.org/wiki/Process_management_(computing)) using a parameter [list](https://en.wikipedia.org/wiki/Linked_list) comprised of [registers](https://en.wikipedia.org/wiki/Processor_register). 
@@ -65,10 +67,9 @@ Processes handle transactions in round-robin polling mode, fixed at design time.
 2. When a [transaction](https://en.wikipedia.org/wiki/Database_transaction) is found:
 
    - Copies data from the transaction's parameter [registers](https://en.wikipedia.org/wiki/Processor_register) into its own [registers](https://en.wikipedia.org/wiki/Processor_register). 
-   - Processes the data.
-
-   - Writes results into the transaction's output [registers](https://en.wikipedia.org/wiki/Processor_register). 
-   - Marks the [transaction](https://en.wikipedia.org/wiki/Database_transaction) as complete.
+   - Processes the data by excuting the indicated [transaction](https://en.wikipedia.org/wiki/Database_transaction). 
+   - Writes the execution results into the transaction's output [registers](https://en.wikipedia.org/wiki/Processor_register). 
+   - Marks the [transaction](https://en.wikipedia.org/wiki/Database_transaction) as complete and thius usable by the caller.
 
 3. The requesting [process](https://en.wikipedia.org/wiki/Process_management_(computing)) waits for the completion of a [transaction](https://en.wikipedia.org/wiki/Database_transaction) by spinning on an [instruction](https://en.wikipedia.org/wiki/Instruction_set_architecture). 
 The output remains in the [transaction](https://en.wikipedia.org/wiki/Database_transaction) [registers](https://en.wikipedia.org/wiki/Processor_register) until they are overwritten by the next use of the same [transaction](https://en.wikipedia.org/wiki/Database_transaction). 
@@ -103,7 +104,7 @@ Writing [Verilog](https://en.wikipedia.org/wiki/Verilog) directly is time-consum
 - The [Java](https://en.wikipedia.org/wiki/Java_(programming_language)) [code](https://en.wikipedia.org/wiki/Computer_program) is then **almost-automatically translated** into [Verilog](https://en.wikipedia.org/wiki/Verilog). 
 - The [Java](https://en.wikipedia.org/wiki/Java_(programming_language)) [code](https://en.wikipedia.org/wiki/Computer_program) is executed to produce a trace showing how the [memory](https://en.wikipedia.org/wiki/Computer_memory) and [registers](https://en.wikipedia.org/wiki/Processor_register) of the chip should evolve in time.
 
-- The [Verilog](https://en.wikipedia.org/wiki/Verilog) [code](https://en.wikipedia.org/wiki/Computer_program) is executed and check to confirm that it produces the same [memory](https://en.wikipedia.org/wiki/Computer_memory) and [register](https://en.wikipedia.org/wiki/Processor_register) trace as the [Java](https://en.wikipedia.org/wiki/Java_(programming_language)) [code](https://en.wikipedia.org/wiki/Computer_program) does
+- The [Verilog](https://en.wikipedia.org/wiki/Verilog) [code](https://en.wikipedia.org/wiki/Computer_program) is executed and checked to confirm that it produces the same [memory](https://en.wikipedia.org/wiki/Computer_memory) and [register](https://en.wikipedia.org/wiki/Processor_register) trace as the [Java](https://en.wikipedia.org/wiki/Java_(programming_language)) [code](https://en.wikipedia.org/wiki/Computer_program) does
 
 This approach produces [Verilog](https://en.wikipedia.org/wiki/Verilog) [code](https://en.wikipedia.org/wiki/Computer_program) **more efficiently** and **reliably** than
 writing it by hand.
