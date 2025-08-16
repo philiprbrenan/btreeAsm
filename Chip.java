@@ -166,81 +166,72 @@ class Chip extends Test                                                         
    {appendFile(javaTraceFile, toString());
    }
 
-  String chipPrintV()                                                           // Verilog to print the state of the chip as a callable Verilog task
-   {final StringBuilder s = new StringBuilder();
-        s.append("`ifndef SYNTHESIS\n");
-        s.append(" task chipPrint;\n");
-        s.append("   begin\n");
-        s.append("   integer o;\n");
-        s.append("   o = $fopen(\""+verilogTraceFile+"\", \"a\");\n");
-        s.append("   if (!o) $display(\"Cannot create trace folder: "+verilogTraceFile+"\");");
+  String chipPrintV(boolean synthesize)                                         // Verilog to print the state of the chip as a callable Verilog task
+   {if (synthesize) return "";
+    final Verilog v = new Verilog(1);
+    v.new Task("chipPrint")
+     {void body()
+       {v.begin("o");
+        v.A("o = $fopen(\""+verilogTraceFile+"\", \"a\");");
+        v.A("if (!o) $display(\"Cannot create trace folder: "+verilogTraceFile+"\");");
 
-        s.append(
-         "$fwrite(o, \"Chip: %-16s step: %1d, maxSteps: %1d, running: %1d, returnCode: %1d\\n\", "+
-         "\""+chipName+"\", step, maxSteps, !stop, returnCode);\n");
+        v.A("$fwrite(o, \"Chip: %-16s step: %1d, maxSteps: %1d, running: %1d, returnCode: %1d\\n\", "+
+             "\""+chipName+"\", step, maxSteps, !stop, returnCode);");
 
-        s.append("$fwrite(o, \"  Processes:\\n\");\n");
+        v.A("$fwrite(o, \"  Processes:\\n\");\n");
 
-      for (Process p: processes)                                                // Each process
-       {s.append(
-         "$fwrite(o, \"    Process: %1d - %-21s instructions: %1d, pc: %1d, nextPc: %1d\", "+
-         " "+p.processNumber+", \""+p.processName+"\", "+p.code.size()+", "+p.processPcName()+", "+p.processNextPcName()+");\n");
+        for (Process p: processes)                                                  // Each process
+         {v.A("$fwrite(o, \"    Process: %1d - %-21s instructions: %1d, pc: %1d, nextPc: %1d\", "+
+             " "+p.processNumber+", \""+p.processName+"\", "+p.code.size()+", "+p.processPcName()+", "+p.processNextPcName()+");");
 
-        if (p.memory.length > 0)                                                // Print memory
-         {final StringBuilder m = new StringBuilder();
-          s.append(
-         "$fwrite(o, \", memory: %1d * %1d\", "+p.memorySize+", "+p.memoryWidth+");\n");
-          m.append("$fwrite(o, \" = %1d\", "+p.processMemoryName()+"[0]);\n");
-          for (int i = 1; i < p.memory.length; i++)
-           {m.append("$fwrite(o, \", %1d\", "+p.processMemoryName()+"["+i+"]);\n");
-           }
-          s.append(m);
-         }
-
-        s.append("$fwrite(o, \"\\n      Registers :\\n\");\n");
-      for (Process.Register r: p.registers)                                     // Registers
-       {s.append(
-         "$fwrite(o, \"        Register: %-32s = %1d\\n\", "+
-         " \""+r.registerName()+"\", "+r.registerName()+");\n");
-       }
-      if (p.transactions.size() > 0)                                            // Transactions
-       {s.append("$fwrite(o, \"      Transactions:\\n\");\n");
-        for (Process.Transaction t: p.transactions)
-         {final String ra = t.transactionRequestedAt();
-          final String fa = t.transactionFinishedAt();
-          s.append("$fwrite(o, \"        Transaction   : %-8s - %-16s  requested at: %1d, finished at: %1d, returnCode: %1d, executable: %1d, finished: %1d\\n\""+
-            ", \""+t.transactionOpCode+"\", \""+t.transactionName+"\""+
-            ", "+ra+", "+fa+", "+t.transactionRcName()+
-            ", "+t.transactionExecutableV()+", "+t.transactionFinishedV()+");\n");
-
-          if (t.transactionInputRegisters.size() > 0)                           // Transaction inputs
-           {s.append("$fwrite(o, \"          Inputs      :\\n\");\n");
-            for (Process.Register r : t.transactionInputRegisters)
-             {s.append(
-               "$fwrite(o, \"            %-38s = %1d\\n\", \""+
-               r.registerName()+"\", "+r.registerName()+");\n");
+          if (p.memory.length > 0)                                                // Print memory
+           {v.A("$fwrite(o, \", memory: %1d * %1d\", "+p.memorySize+", "+p.memoryWidth+");");
+            v.A("$fwrite(o, \" = %1d\", "+p.processMemoryName()+"[0]);");
+            for (int i = 1; i < p.memory.length; i++)
+             {v.A("$fwrite(o, \", %1d\", "+p.processMemoryName()+"["+i+"]);");
              }
            }
 
-          if (t.transactionOutputRegisters.size() > 0)                          // Transaction outputs
-           {s.append("$fwrite(o, \"          Outputs     :\\n\");\n");
-            for (Process.Register r : t.transactionOutputRegisters)
-             {s.append(
-               "$fwrite(o, \"            %-38s = %1d\\n\", \""+
-               r.registerName()+"\", "+r.registerName()+");\n");
+          v.A("$fwrite(o, \"\\n      Registers :\\n\");\n");
+          for (Process.Register r: p.registers)                                     // Registers
+           {v.A("$fwrite(o, \"        Register: %-32s = %1d\\n\", "+
+             " \""+r.registerName()+"\", "+r.registerName()+");");
+           }
+
+          if (p.transactions.size() > 0)                                            // Transactions
+           {v.A("$fwrite(o, \"      Transactions:\\n\");");
+            for (Process.Transaction t: p.transactions)
+             {final String ra = t.transactionRequestedAt();
+              final String fa = t.transactionFinishedAt();
+              v.A("$fwrite(o, \"        Transaction   : %-8s - %-16s  requested at: %1d, finished at: %1d, returnCode: %1d, executable: %1d, finished: %1d\\n\""+
+                ", \""+t.transactionOpCode+"\", \""+t.transactionName+"\""+
+                ", "+ra+", "+fa+", "+t.transactionRcName()+
+                ", "+t.transactionExecutableV()+", "+t.transactionFinishedV()+");\n");
+
+              if (t.transactionInputRegisters.size() > 0)                           // Transaction inputs
+               {v.A("$fwrite(o, \"          Inputs      :\\n\");");
+                for (Process.Register r : t.transactionInputRegisters)
+                 {v.A("$fwrite(o, \"            %-38s = %1d\\n\", \""+
+                      r.registerName()+"\", "+r.registerName()+");\n");
+                 }
+               }
+
+              if (t.transactionOutputRegisters.size() > 0)                          // Transaction outputs
+               {v.A("$fwrite(o, \"          Outputs     :\\n\");\n");
+                for (Process.Register r : t.transactionOutputRegisters)
+                 {v.A("$fwrite(o, \"            %-38s = %1d\\n\", \""+
+                   r.registerName()+"\", "+r.registerName()+");\n");
+                 }
+               }
              }
            }
          }
+        v.A("$fclose(o);");
+        v.end();
        }
-     }
-    s.append("""
-      $fclose(o);
-    end
-  endtask
-`endif
-""");
-   return ""+s;
-  }
+     };
+    return ""+v;
+   }
 
 //D2 Verilog                                                                    // Verilog describing the chip
 
@@ -355,15 +346,15 @@ endmodule
 //------------------------------------------------------------------------------
 `timescale 10ps/1ps
 module %s(                                                                      // Test bench for database on a chip
-  input  reg            clock,                                                  // Clock
-  input  reg            reset,                                                  // Reset chip
+  input                 clock,                                                  // Clock
+  input                 reset,                                                  // Reset chip
 """, chipName));
 
     for(Process.Register r: registersInput ()) v.append("      "+r.registerDeclare()+"\n");
     for(Process.Register r: registersOutput()) v.append("      "+r.registerDeclare()+"\n");
 
     v.append("""
-  output integer         stop                                                   // Program has stopped when this goes high
+  output reg             stop                                                   // Program has stopped when this goes high
   );
   integer                step;                                                  // Step of the simulation
   integer          returnCode;                                                  // Return code
@@ -584,8 +575,12 @@ endmodule
       public String toString() {return registerName()+" = "+registerGet();}     // Print the register
 
       String registerDeclare()                                                  // Declare a register in Verilog
-       {return (input ? "input " : output ? "output " : "")+
-         "reg ["+registerBits+"-1:0] "+registerName+",";
+       {if (input)
+         {return "input wire ["+registerBits+"-1:0] "+registerName+",";
+         }
+        else
+         {return "output reg ["+registerBits+"-1:0] "+registerName+",";
+         }
        }
 
       void registerDeclare(Verilog v) {v.A(registerDeclare());}                 // Declare a register in Verilog
@@ -710,7 +705,8 @@ endmodule
       N();
       v.append("\n// Process: "+processName+"  "+processNameAndNumber()+"\n\n");
       if (hasMemory())                                                          // Not all processes have memory attached to them: declare memory for those that do.
-       {v.append("  reg ["+memoryWidth+"-1:0] "+processMemoryName()+"["+memorySize+"];\n");
+       {v.append("(* ram_style = \"block\" *)\n");
+        v.append("  reg ["+memoryWidth+"-1:0] "+processMemoryName()+"["+memorySize+"];\n");
        }
 
       for (Register r: registers)                                               // Registers associated with this process
@@ -1031,7 +1027,7 @@ endmodule
        {super(processName+"_"+(++memoryProcessTransactionNumber),
           Memory.this, "get");
         process = Process;                                                      // The calling process requesting a value from the memory of this memory process
-        index   = register(transactionName+"_index", logTwo(memorySize));       // A register that will index the memory managed by this process
+        index   = transactionCallingProcess.register(transactionName+"_index", logTwo(memorySize));  // A register that will index the memory managed by this process
         result  = register(transactionName+"_result", memoryWidth);             // The register that will contain the result
         transactionInputRegisters(index);                                       // Make the index an input register
         transactionOutputRegisters(result);                                     // Make the result an output register
@@ -1071,8 +1067,8 @@ endmodule
        {super(processName+"_"+(++memoryProcessTransactionNumber),
           Memory.this, "set");
         process = Process;                                                      // The calling process requesting that a value be written into the memory of this process
-        index   = register(transactionName+"_index", logTwo(memorySize));       // A register that will index the memory managed by this process
-        value   = register(transactionName+"_value", memoryWidth);              // The register that will contain the value to be written into memory
+        index   = transactionCallingProcess.register(transactionName+"_index", logTwo(memorySize)); // A register that will index the memory managed by this process
+        value   = transactionCallingProcess.register(transactionName+"_value", memoryWidth);        // The register that will contain the value to be written into memory
         transactionInputRegisters(index);                                       // Make the index an input register
         transactionInputRegisters(value);                                       // Make the value an input register
        }
@@ -1382,7 +1378,7 @@ Chip: Test             step: 50, maxSteps: 100, running: 0, returnCode: 1
     ok(a, "Main_a_0 = 987");
     C.chipRunVerilog();
     C.chipRunJava();
-    C.chipRunVerilog();
+    C.chipSynthesize();
    }
 
   static void test_block()
@@ -1556,7 +1552,8 @@ Chip: Test             step: 0, maxSteps: 10, running: 0, returnCode: 0
    }
 
   static void newTests()                                                        // Tests being worked on
-   {oldTests();
+   {//oldTests();
+    test_arithmeticFibonacci();
    }
 
   public static void main(String[] args)                                        // Test if called as a program
