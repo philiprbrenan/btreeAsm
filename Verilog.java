@@ -187,11 +187,10 @@ class Verilog extends Test                                                      
    {final String task;
      Task(String Task)
      {task = Task;
-      A("task "+Task+";\n");
+      A("task "+Task+";");
       indent();
       Body();
-      dedent();
-      A("`end");
+      end();
      }
     void Body() {}
    }
@@ -334,6 +333,11 @@ end
        {v.comment("Task body");
        }
      };
+    ok(v, """
+task aaa;
+  // Task body
+end
+""");
    }
 
   static void oldTests()                                                        // Tests thought to be in good shape
