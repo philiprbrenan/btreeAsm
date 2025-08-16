@@ -183,6 +183,19 @@ class Verilog extends Test                                                      
     void Then() {}
    }
 
+  class Task                                                                    // Task definition
+   {final String task;
+     Task(String Task)
+     {task = Task;
+      A("task "+Task+";\n");
+      indent();
+      Body();
+      dedent();
+      A("`end");
+     }
+    void Body() {}
+   }
+
 //D0 Tests                                                                      // Testing
 
   static void test_ext()
@@ -314,6 +327,15 @@ end
 """);
    }
 
+  static void test_task()
+   {final Verilog v = new Verilog();
+    v.new Task("aaa")
+     {void Body()
+       {v.comment("Task body");
+       }
+     };
+   }
+
   static void oldTests()                                                        // Tests thought to be in good shape
    {test_ext();
     test_assign();
@@ -325,6 +347,7 @@ end
     test_begin();
     test_sum();
     test_ifndef();
+    test_task();
    }
 
   static void newTests()                                                        // Tests being worked on
