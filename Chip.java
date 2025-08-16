@@ -244,7 +244,9 @@ class Chip extends Test                                                         
 
 //D2 Verilog                                                                    // Verilog describing the chip
 
-  String chipGenerateVerilog()                                                  // Generate Verilog describing the chip
+//D3 Simulation                                                                 // Verilog used to simulate the chip
+
+  String chipGenerateVerilogRun()                                                  // Generate Verilog describing the chip
    {final StringBuilder v = new StringBuilder();
     v.append(String.format("""
 //-----------------------------------------------------------------------------
@@ -252,7 +254,7 @@ class Chip extends Test                                                         
 // Philip R Brenan at appaapps dot com, Appa Apps Ltd Inc., 2025
 //------------------------------------------------------------------------------
 `timescale 10ps/1ps
-module $chip_name;                                                              // Test bench for database on a chip
+module %s;                                                                      // Test bench for database on a chip
   integer                stop;                                                  // Program has stopped when this goes high
   reg                   clock;                                                  // Clock
   integer                step;                                                  // Step of the simulation
@@ -268,7 +270,7 @@ module $chip_name;                                                              
     for(iStep = 0; iStep < %d; iStep = iStep + 1) begin                         // Steps below zero are used for initialization so that Java and Verilog start in sync at step zero
       if (!stop) begin                                                          // While not stopped
         step = iStep - 1;
-""", maxSteps, maxSteps));
+""", chipName, maxSteps, maxSteps));
 
     for(Process p: processes)                                                   // Single thread the processes in a constant order
      {v.append("        processCurrent = "+p.processNumber+";");
@@ -286,15 +288,13 @@ module $chip_name;                                                              
   end
 """);
 
-    for(Process p: processes) v.append(p.generateProcessVerilog());             // Generate
+    for(Process p: processes) v.append(p.generateProcessVerilog(false));        // Generate
 
     v.append(chipPrintV());
 
     v.append("""
 endmodule
 """);
-    replaceAll(v, "$chip_name", chipName);
-    replaceAll(v, "$max_steps", ""+maxSteps);
 
     final String source = fne(Verilog.folder, chipName, Verilog.ext);           // Source code in Verilog
     writeFile(source,  ""+v);
@@ -302,7 +302,7 @@ endmodule
    }
 
   void chipRunVerilog()                                                         // Run Verilog describing the chip confirming that it follows the same execution path as the Java
-   {final String source = chipGenerateVerilog();                                // Source code in Verilog
+   {final String source = chipGenerateVerilogRun();                             // Source code in Verilog to run the test in a way that matches the java run
 
     deleteFile(verilogTraceFile);                                               // Remove Java trace file
 
@@ -330,6 +330,75 @@ endmodule
        }
      }
     else stop("Trace files do not contain location records");
+   }
+
+//D3 Synthesis                                                                  // Verilog used to synthesize the chip
+
+  Stack<Process.Register> registersIO(boolean input)                            // Get the input or output registers so they can be attached to the pins of the chip
+   {final Stack<Process.Register> s = new Stack<>();
+    for(Process p: processes)                                                   // Input registers
+     {for(Process.Register r: p.registers)
+       {if ((input && r.input) || (!input && r.output)) s.push(r);
+       }
+     }
+    return s;
+   }
+  Stack<Process.Register> registersInput () {return registersIO(true);}         // Get the input registers so they can be attached to the pins of the chip
+  Stack<Process.Register> registersOutput() {return registersIO(false);}        // Get the output registers so they can be attached to the pins of the chip
+
+  String chipSynthesizeVerilog()                                                // Generate Verilog used to synthesize the chip using OpenRoad
+   {final StringBuilder v = new StringBuilder();
+    v.append(String.format("""
+//-----------------------------------------------------------------------------
+// Database on a chip synthesis
+// Philip R Brenan at appaapps dot com, Appa Apps Ltd Inc., 2025
+//------------------------------------------------------------------------------
+`timescale 10ps/1ps
+module %s(                                                                      // Test bench for database on a chip
+  input  reg            clock,                                                  // Clock
+  input  reg            reset,                                                  // Reset chip
+""", chipName));
+
+    for(Process.Register r: registersInput ()) v.append("      "+r.registerDeclare()+"\n");
+    for(Process.Register r: registersOutput()) v.append("      "+r.registerDeclare()+"\n");
+
+    v.append("""
+  output integer         stop                                                   // Program has stopped when this goes high
+  );
+  integer                step;                                                  // Step of the simulation
+  integer          returnCode;                                                  // Return code
+
+  always @ (posedge clock) begin                                                // Execute next step in program
+    if (reset) begin                                                            // Restart on reset
+      step = -2;
+    end
+    else begin                                                                  // Step on each clock edge
+      step = step + 1;
+    end
+  end
+""");
+
+    for(Process p: processes) v.append(p.generateProcessVerilog(true));         // Generate verilog
+
+    v.append("""
+endmodule
+""");
+
+    final String source = fne(Verilog.folder, chipName, Verilog.ext);           // Source code in Verilog
+    writeFile(source,  ""+v);
+    return source;
+   }
+
+  void chipSynthesize()                                                         // Generate Veilog describing the chip and synthesize it
+   {final String source = chipSynthesizeVerilog();                              // Source code in Verilog to be synthsized
+
+    deleteFile(verilogTraceFile);                                               // Remove Java trace file
+
+    final var c = "rm -f "+chipName+" "+verilogTraceFile+                       // Verilog command
+                  " ;  iverilog -g2012 -o "+chipName+" "+source+
+//                " && timeout 5m ./"      +chipName;
+                  " &&            ./"      +chipName;
+    final var e = new ExecCommand(c);                                           // Run Verilog
    }
 
 //D2 Process
@@ -457,6 +526,7 @@ endmodule
      {final String registerName;                                                // The name of the register
       final int    registerBits;                                                // Number of bits the register can hold
       BitSet value = new BitSet();                                              // Current value of the register in Java
+      boolean input = false, output = false;                                    // Register uis comnectd to input pins or output pins
 
       Register(String RegisterName, int RegisterBits)                           // Create the register
        {N();
@@ -466,6 +536,14 @@ endmodule
        }
 
       String registerName() {return processName + "_" + registerName;}          // Create a name for a register that includes its register name
+      void input()                                                              // Mark a register a being connected to input pins
+       {if (output) stop("Already used for output");
+        input = true;
+       }
+      void output()                                                             // Mark a register a being connected to output pins
+       {if (input) stop("Already used for input");
+        output = true;
+       }
       private String rn  () {return registerName();}                            // The shorter is his daughter
       private int    rg  () {return registerGet();}                             // The shorter is his daughter
       private void   rs  (int v) {registerSet(v);}                              // The shorter is his daughter
@@ -505,9 +583,12 @@ endmodule
 
       public String toString() {return registerName()+" = "+registerGet();}     // Print the register
 
-      void registerDeclare(Verilog v)                                           // Declare a register in Verilog
-       {v.A("reg ["+registerBits+"-1:0] "+registerName+";");
+      String registerDeclare()                                                  // Declare a register in Verilog
+       {return (input ? "input " : output ? "output " : "")+
+         "reg ["+registerBits+"-1:0] "+registerName+",";
        }
+
+      void registerDeclare(Verilog v) {v.A(registerDeclare());}                 // Declare a register in Verilog
 
 //D3 Arithmetic                                                                 // Operations on registers
 
@@ -624,7 +705,7 @@ endmodule
     String processMemoryName() {return processName+"_memory";}                  // Name of the memory block used by this process
     boolean hasMemory()        {return memoryWidth > 0 && memorySize > 0;}      // Whether this process has any memory attached directly to it
 
-    String generateProcessVerilog()                                             // Generate Verilog code for this process
+    String generateProcessVerilog(boolean parallel)                             // Generate Verilog code for this process
      {final StringBuilder v = new StringBuilder();
       N();
       v.append("\n// Process: "+processName+"  "+processNameAndNumber()+"\n\n");
@@ -677,7 +758,16 @@ endmodule
 
       v.append("""
     end
+""");
+      if (parallel) v.append("""
+    else begin                                                                  // Run the process in full parallel
+""");
+
+    else v.append("""
     else if (processCurrent == $processNumber) begin                            // Run the process if it is the current one.  Normally the processes will run in parallel but this is difficult to coordinate with the Java implementation so the processes are forced to run single threaded sequentially in a specified order.  This order should be varied to demonstrate that the design is not dependent on a specific process order
+""");
+
+      v.append("""
       $next_pc = -1;
       case($pc)                                                                 // Execute instructions in process
 """);
