@@ -3023,7 +3023,7 @@ BtreeIndex: 0
 StuckIndex: 0
 Merge     : 0
 """);
-    ok(d, "Stuck_Data_324 = 1");
+    ok(d.registerGet(), 1);
 
     P.processClear();
     s.stuckGetRoot();
@@ -3038,8 +3038,8 @@ Merge     : 0
 
     b.chipRun();
 
-    ok(k, "Stuck_Key_322 = 3");
-    ok(d, "Stuck_Data_324 = 4");
+    ok(k.registerGet(), 3);
+    ok(d.registerGet(), 4);
 
     P.processClear();
     s.stuckGetRoot();
@@ -3092,8 +3092,8 @@ Merge     : 0
 
     b.chipRun();
 
-    ok(k, "Stuck_Key_322 = 5");
-    ok(d, "Stuck_Data_324 = 55");
+    ok(k.registerGet(),  5);
+    ok(d.registerGet(), 55);
    }
 
   static void test_elementAt()
@@ -3390,8 +3390,8 @@ Stuck: stuck size: 3, leaf: 1, root
  1     2 =>    3
  2     3 =>    4
 """);
-    ok(k, "Stuck_Key_322 = 1");
-    ok(d, "Stuck_Data_324 = 2");
+    ok(k.registerGet(), 1);
+    ok(d.registerGet(), 2);
    }
 
   static void test_search_eq()
@@ -3420,7 +3420,7 @@ Stuck: stuck size: 3, leaf: 1, root
 
     b.maxSteps = 100;
     b.chipRun();
-    ok(f, "Stuck_Found_321 = 0");
+    ok(f.registerGet(), 0);
 
     final int N = 4;
     for (int j = 0; j < N; j++)
@@ -3440,10 +3440,10 @@ Stuck: stuck size: 3, leaf: 1, root
 
       b.maxSteps = 100;
       b.chipRun();
-      ok(f, "Stuck_Found_321 = 1");
-      ok(i, "Stuck_StuckIndex_326 = "+J);
-      ok(k, "Stuck_Key_322 = "+J);
-      ok(d, "Stuck_Data_324 = "+(J+1));
+      ok(f.registerGet(), 1);
+      ok(i.registerGet(), J);
+      ok(k.registerGet(), J);
+      ok(d.registerGet(), J+1);
      }
    }
 
@@ -4226,7 +4226,7 @@ Chip: Btree            step: 31, maxSteps: 100, running: 0
     b.chipRun();
     //stop(b.chipPrintMemory());
     //stop(b.btreePrint());
-    ok(r, "findAndInsert_success_430 = 1");
+    ok(r.registerGet(), 1);
     ok(b.btreePrint(), """
 1,2,3,4=0 |
 """);
@@ -4353,7 +4353,7 @@ Chip: Btree            step: 31, maxSteps: 100, running: 0
               2         |
 10,20,30,40=1   50,60=2 |
 """);
-    ok(r, "findAndInsert_success_544 = 1");
+    ok(r.registerGet(), 1);
    }
 
   static void test_mergeLeavesAtTop()
@@ -4387,7 +4387,7 @@ Chip: Btree            step: 31, maxSteps: 100, running: 0
         3               |
 10,20=1   30,40,50,60=3 |
 """);
-    ok(r, "findAndInsert_success_154 = 1");
+    ok(r.registerGet(), 1);
    }
 
   static String test_mergeLeavesNotTop_dump()
@@ -4572,7 +4572,7 @@ Chip: Btree            step: 31, maxSteps: 100, running: 0
                              2          |
 10,20=1   30,40=3    50,60=4    70,80=2 |
 """);
-   ok(r, "findAndInsert_success_881 = 1");
+   ok(r.registerGet(), 1);
   }
 
   static void test_mergeBranchesNotTop()
@@ -7926,7 +7926,7 @@ Merge     : 0
    }
 
   static void newTests()                                                        // Tests being worked on
-   {//oldTests();
+   {oldTests();
     test_allocate();
     test_verilog_put();
    }
