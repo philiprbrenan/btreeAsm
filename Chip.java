@@ -11,13 +11,12 @@ class Chip extends Test                                                         
   final Children<Process>  processes = new Children<>();                        // A fixed set of processes for this chip in definition order
   final String         javaTraceFile = fn(Verilog.folder, "trace_java.txt");    // Java trace file for comparison with verilog
   final String      verilogTraceFile = fn(Verilog.folder, "trace_verilog.txt"); // Verilog trace file
+  static boolean            chipStop = true;                                    // False when the chip is running, true when it is not
   int memoryProcessTransactionNumber = 0;                                       // Make transaction names unique
-  boolean                chipRunning;                                           // True when the chip is running
   int                           step;                                           // Current simulation step being executed
   int                       maxSteps = 10;                                      // Maximum number of steps to execute in the simulation
-  int                     returnCode;                                           // The return code from the first process to finish which effectively terminates the simulation
+//int                     returnCode;                                           // The return code from the first process to finish which effectively terminates the simulation
   static boolean               debug = false;                                   // Debug when true
-  static boolean            chipStop = false;                                   // Exit on program error if true - useful for debugging
 
 //D1 Chip                                                                       // A chip is constructed from a fixed number of communicating processes that execute code on the chip to produce the desired outputs from the inputs to the chip
 
@@ -26,15 +25,15 @@ class Chip extends Test                                                         
   static Chip chip(String Name) {return new Chip(Name);}                        // Create a new chip
 
   void chipRunJava()                                                            // Run the processes == programs defined on this chip using the Java implementation
-   {returnCode = 0;                                                             // Reset return code
+   {//returnCode = 0;                                                             // Reset return code
     for(Process p : processes) p.processInit();                                 // Initialize each process == program
-    chipRunning = true;                                                         // Show the program as running
+    chipStop = false;                                                           // Show the program as running
     deleteFile(javaTraceFile);                                                  // Remove Java trace file
-    for(step = 0; chipRunning && step < maxSteps; ++step)                       // Run each program
+    for(step = 0; !chipStop && step < maxSteps; ++step)                         // Run each program
      {for(Process p : processes) p.processStep();                               // Step each program
       chipPrint();                                                              // Print chip state after each step
      }
-    if (chipRunning)                                                            // Still running after too many steps
+    if (!chipStop)                                                              // Still running after too many steps
      {//say(this);
       stop("Out of steps after:", maxSteps);
      }
@@ -45,26 +44,25 @@ class Chip extends Test                                                         
     chipRunVerilog();
    }
 
-  void chipStop(int ReturnCode)                                                 // Stop the chip
-   {if (chipStop) err("Error:", ReturnCode);
-    returnCode = ReturnCode; chipRunning = false;
-   }
+  void R() {if ( chipStop) stop("Not running");}                                // Confirm that the simulation of the chip is running
+  void N() {if (!chipStop) stop("Running");}                                    // Confirm that the simulation of the chip is not running
 
-  void chipStop(Verilog v, int ReturnCode)                                      // Stop the chip in Verilog
-   {v.assign("returnCode", ReturnCode);
-    v.assign("stop", 1);
+  String chipStopExpression()                                                   // The or of all the process stop fields as a process can only write directly to its own variables not to global ones.
+   {final StringBuilder s = new StringBuilder();                                    // a
+    for (Process p: processes)                                                  // Each process
+     {s.append(p.processStopName() + "||");
+     }
+    if (s.length() > 0) s.setLength(s.length()-2);
+    return ""+s;
    }
-
-  void R() {if (!chipRunning) stop("Not running");}                             // Confirm that the simulation of the chip is running
-  void N() {if ( chipRunning) stop("Running");}                                 // Confirm that the simulation of the chip is not running
 
 //D2 Print                                                                      // Print the state of a chip
 
   public String chipPrintMemory()                                               // Print the memory of the Java emulation of the chip
    {final StringBuilder s = new StringBuilder();
         s.append(String.format(
-         "Chip: %-16s step: %1d, maxSteps: %1d, running: %1d, returnCode: %1d\n",
-          chipName, step, maxSteps, (chipRunning ? 1 : 0), returnCode));
+         "Chip: %-16s step: %1d, maxSteps: %1d, running: %1d\n",
+          chipName, step, maxSteps, chipStop ? 0 : 1));
 
         s.append("  Processes:"+(" ".repeat(50)));
     for (int i = 0; i < 25; i++)
@@ -100,28 +98,27 @@ class Chip extends Test                                                         
   public String toString()                                                      // Print a description of the Java emulation of the chip
    {final StringBuilder s = new StringBuilder();
         s.append(String.format(
-         "Chip: %-16s step: %1d, maxSteps: %1d, running: %1d, returnCode: %1d\n",
-          chipName, step, maxSteps, (chipRunning ? 1 : 0), returnCode));
+         "Chip: %-16s step: %1d, maxSteps: %1d, running: %1d\n",
+          chipName, step, maxSteps, (chipStop ? 0 : 1)));
 
         s.append("  Processes:\n");
 
     for (Process p: processes)                                                  // Each process
      {  s.append(String.format(
-         "    Process: %1d - %-21s instructions: %1d, pc: %1d, nextPc: %1d",
-          p.processNumber, p.processName, p.code.size(), p.processPc, p.processNextPc));
+         "    Process: %1d - %-21s instructions: %1d, pc: %1d, nextPc: %1d, rc: %1d\n",
+          p.processNumber, p.processName, p.code.size(), p.processPc, p.processNextPc, p.processRC));
 
         if (p.hasMemory())                                                      // Print memory if this process has memory attached to it
-         {final StringBuilder m = new StringBuilder();
+         {s.append(String.format("      Memory: %1d * %1d = %1d",
+            p.memorySize, p.memoryWidth, p.memoryGetNoSet(0)));
+
           for (int i = 1; i < p.memorySize; i++)
-           {m.append(", "+p.memoryGetNoSet(i));
+           {s.append(String.format(", %2d", p.memoryGetNoSet(i)));
            }
-          s.append(String.format(
-         ", memory: %1d * %1d = %1d",
-          p.memorySize, p.memoryWidth, p.memoryGetNoSet(0)));
-          s.append(m);
+          s.append("\n");
          }
 
-        s.append("\n      Registers :\n");
+        s.append("      Registers :\n");
       for (Process.Register r: p.registers)                                     // Print registers associated with this process
        {s.append(String.format(
          "        Register: %-32s = %1d\n",
@@ -166,39 +163,40 @@ class Chip extends Test                                                         
    {appendFile(javaTraceFile, toString());
    }
 
-  String chipPrintV(boolean synthesize)                                         // Verilog to print the state of the chip as a callable Verilog task
-   {if (synthesize) return "";
-    final Verilog v = new Verilog(1);
+  String chipPrintFromVerilog()                                                 // Verilog to print the state of the chip as a callable Verilog task
+   {final Verilog v = new Verilog(1);
     v.new Task("chipPrint")
-     {void body()
+     {void Body()
        {v.begin("o");
         v.A("o = $fopen(\""+verilogTraceFile+"\", \"a\");");
         v.A("if (!o) $display(\"Cannot create trace folder: "+verilogTraceFile+"\");");
 
-        v.A("$fwrite(o, \"Chip: %-16s step: %1d, maxSteps: %1d, running: %1d, returnCode: %1d\\n\", "+
-             "\""+chipName+"\", step, maxSteps, !stop, returnCode);");
+        v.A("$fwrite(o, \"Chip: %-16s step: %1d, maxSteps: %1d, running: %1d\\n\", "+
+             "\""+chipName+"\", step, maxSteps, !stop);");
 
         v.A("$fwrite(o, \"  Processes:\\n\");\n");
 
-        for (Process p: processes)                                                  // Each process
-         {v.A("$fwrite(o, \"    Process: %1d - %-21s instructions: %1d, pc: %1d, nextPc: %1d\", "+
-             " "+p.processNumber+", \""+p.processName+"\", "+p.code.size()+", "+p.processPcName()+", "+p.processNextPcName()+");");
+        for (Process p: processes)                                              // Each process
+         {v.A("$fwrite(o, \"    Process: %1d - %-21s instructions: %1d, pc: %1d, nextPc: %1d, rc: %1d\\n\","+
+             " "+p.processNumber+", \""+p.processName+"\", "+p.code.size()+", "+
+             p.processPcName()+", "+p.processNextPcName()+", "+p.processRCName()+");");
 
-          if (p.memory.length > 0)                                                // Print memory
-           {v.A("$fwrite(o, \", memory: %1d * %1d\", "+p.memorySize+", "+p.memoryWidth+");");
+          if (p.memory.length > 0)                                              // Print memory
+           {v.A("$fwrite(o, \"      Memory: %1d * %1d\", "+p.memorySize+", "+p.memoryWidth+");");
             v.A("$fwrite(o, \" = %1d\", "+p.processMemoryName()+"[0]);");
             for (int i = 1; i < p.memory.length; i++)
-             {v.A("$fwrite(o, \", %1d\", "+p.processMemoryName()+"["+i+"]);");
+             {v.A("$fwrite(o, \", %2d\", "+p.processMemoryName()+"["+i+"]);");
              }
+            v.A("$fwrite(o, \"\\n\");");
            }
 
-          v.A("$fwrite(o, \"\\n      Registers :\\n\");\n");
-          for (Process.Register r: p.registers)                                     // Registers
+          v.A("$fwrite(o, \"      Registers :\\n\");");
+          for (Process.Register r: p.registers)                                 // Registers
            {v.A("$fwrite(o, \"        Register: %-32s = %1d\\n\", "+
              " \""+r.registerName()+"\", "+r.registerName()+");");
            }
 
-          if (p.transactions.size() > 0)                                            // Transactions
+          if (p.transactions.size() > 0)                                        // Transactions
            {v.A("$fwrite(o, \"      Transactions:\\n\");");
             for (Process.Transaction t: p.transactions)
              {final String ra = t.transactionRequestedAt();
@@ -237,55 +235,45 @@ class Chip extends Test                                                         
 
 //D3 Simulation                                                                 // Verilog used to simulate the chip
 
-  String chipGenerateVerilogRun()                                                  // Generate Verilog describing the chip
-   {final StringBuilder v = new StringBuilder();
-    v.append(String.format("""
+  String chipRunVerilogGenerate()                                                  // Generate Verilog describing the chip
+   {final Verilog v = new Verilog();
+    v.A(String.format("""
 //-----------------------------------------------------------------------------
 // Database on a chip test bench
 // Philip R Brenan at appaapps dot com, Appa Apps Ltd Inc., 2025
 //------------------------------------------------------------------------------
 `timescale 10ps/1ps
 module %s;                                                                      // Test bench for database on a chip
-  integer                stop;                                                  // Program has stopped when this goes high
+  reg                    stop;                                                  // Program has stopped when this goes high
   reg                   clock;                                                  // Clock
   integer                step;                                                  // Step of the simulation
-  integer               iStep;                                                  // Step of the simulation
   integer            maxSteps;                                                  // Maximum number of steps to execute
   integer          returnCode;                                                  // Return code
   integer      processCurrent;                                                  // To ensure we get the same results in Java and Verilog we have to run the processes single threaded in a constant order
 
+  assign stop = %s;                                                             // Or of process stop fields
+
   initial begin
-    stop = 0;
     returnCode = 0;
     maxSteps = %d;
-    for(iStep = 0; iStep < %d; iStep = iStep + 1) begin                         // Steps below zero are used for initialization so that Java and Verilog start in sync at step zero
-      if (!stop) begin                                                          // While not stopped
-        step = iStep - 1;
-""", chipName, maxSteps, maxSteps));
+    for(step = -1; step < 0 || step < maxSteps && !stop; step = step + 1) begin // Steps below zero are run unconditionally to initialize each process so that Java and Verilog start in sync at step zero
+""", chipName, chipStopExpression(), maxSteps));
+
+    v.indent(); v.indent(); v.indent();
 
     for(Process p: processes)                                                   // Single thread the processes in a constant order
-     {v.append("        processCurrent = "+p.processNumber+";");
-      v.append("   clock = 0; #1; clock = 1; #1; // "+p.processNameAndNumber()+"\n");
+     {v.A("processCurrent = "+p.processNumber+";");
+      v.a("clock = 0; #1; clock = 1; #1; // "+p.processNameAndNumber());
      }
-    v.append("""
-        `ifndef SYNTHESIS
-        if (step >= 0) chipPrint();                                               // Steps prior to zero are for initialization to make Java and Verilog match
-        `endif
-      end
-    end
-    `ifndef SYNTHESIS
-    if (!stop) $finish(1); else $finish(0);                                     // Set return code depending on whether the simulation halted
-    `endif
-  end
-""");
+    v.A("if (step >= 0) chipPrint();                                            // Steps prior to zero are for initialization to make Java and Verilog match");
+    v.end();
+    v.A("if (!stop) $finish(1); else $finish(0);                                // Set return code depending on whether the simulation halted");
+    v.end();
 
-    for(Process p: processes) v.append(p.generateProcessVerilog(false));        // Generate
+    for(Process p: processes) p.generateProcessVerilog(v, false);               // Generate
 
-    v.append(chipPrintV());
-
-    v.append("""
-endmodule
-""");
+    v.A(chipPrintFromVerilog());
+    v.endModule();
 
     final String source = fne(Verilog.folder, chipName, Verilog.ext);           // Source code in Verilog
     writeFile(source,  ""+v);
@@ -293,14 +281,14 @@ endmodule
    }
 
   void chipRunVerilog()                                                         // Run Verilog describing the chip confirming that it follows the same execution path as the Java
-   {final String source = chipGenerateVerilogRun();                             // Source code in Verilog to run the test in a way that matches the java run
+   {final String source = chipRunVerilogGenerate();                             // Source code in Verilog to run the test in a way that matches the java run
 
     deleteFile(verilogTraceFile);                                               // Remove Java trace file
 
-    final var c = "rm -f "+chipName+" "+verilogTraceFile+                       // Verilog command
-                  " ;  iverilog -g2012 -o "+chipName+" "+source+
-//                " && timeout 5m ./"      +chipName;
-                  " &&            ./"      +chipName;
+    final var n = chipName;
+    final var c = String.format(
+"rm -f %s %s; iverilog -g2012 -o %s %s && ./%s && rm ./%s",
+n, verilogTraceFile, n, source, n, n);
     final var e = new ExecCommand(c);                                           // Run Verilog
 
     final FileCompareAndLocate fcl = new FileCompareAndLocate                   // Compare trace files
@@ -338,8 +326,8 @@ endmodule
   Stack<Process.Register> registersOutput() {return registersIO(false);}        // Get the output registers so they can be attached to the pins of the chip
 
   String chipSynthesizeVerilog()                                                // Generate Verilog used to synthesize the chip using OpenRoad
-   {final StringBuilder v = new StringBuilder();
-    v.append(String.format("""
+   {final Verilog v = new Verilog(); v.synthesis = true;
+    v.A(String.format("""
 //-----------------------------------------------------------------------------
 // Database on a chip synthesis
 // Philip R Brenan at appaapps dot com, Appa Apps Ltd Inc., 2025
@@ -349,46 +337,48 @@ module %s(                                                                      
   input                 clock,                                                  // Clock
   input                 reset,                                                  // Reset chip
 """, chipName));
+    v.indent();
+    for(Process.Register r: registersInput ()) v.A(r.registerDeclare()+";");
+    for(Process.Register r: registersOutput()) v.A(r.registerDeclare()+";");
 
-    for(Process.Register r: registersInput ()) v.append("      "+r.registerDeclare()+"\n");
-    for(Process.Register r: registersOutput()) v.append("      "+r.registerDeclare()+"\n");
+    v.A("output wire            stop                                            // Program has stopped when this goes high");
+    v.A(");");
 
-    v.append("""
-  output reg             stop                                                   // Program has stopped when this goes high
-  );
-  integer                step;                                                  // Step of the simulation
-  integer          returnCode;                                                  // Return code
+    v.i("step");                                                                // Step of the simulation
+    v.i("returnCode");                                                          // Return code
+    v.A("assign stop = "+chipStopExpression()+";");                             // Stop if any process stops otherwise why do we need that process if we can continue without it
 
-  always @ (posedge clock) begin                                                // Execute next step in program
-    if (reset) begin                                                            // Restart on reset
-      step = -2;
-    end
-    else begin                                                                  // Step on each clock edge
-      step = step + 1;
-    end
-  end
-""");
+    v.new Always()                                                              // Execute next step in program
+     {void Body()
+       {v.new If("reset")
+         {void Then()
+           {v.assign("step", "-2");
+           }
+          void Else()
+           {v.assign("step", "step + 1");
+           }
+         };
+       }
+     };
 
-    for(Process p: processes) v.append(p.generateProcessVerilog(true));         // Generate verilog
+    for(Process p: processes) p.generateProcessVerilog(v, true);                // Generate verilog
 
-    v.append("""
-endmodule
-""");
+    v.endModule();
+
 
     final String source = fne(Verilog.folder, chipName, Verilog.ext);           // Source code in Verilog
     writeFile(source,  ""+v);
     return source;
    }
 
-  void chipSynthesize()                                                         // Generate Veilog describing the chip and synthesize it
-   {final String source = chipSynthesizeVerilog();                              // Source code in Verilog to be synthsized
+  void chipSynthesize()                                                         // Generate Verilog describing the chip and synthesize it
+   {final String sourceFile = chipSynthesizeVerilog();                          // Source code written to a file
+    final String jsonFile   = fne(Verilog.folder, chipName, "json");            // Save of synthesis results
+    final String stdoutFile = fne(Verilog.folder, chipName, "txt");             // Yosys log
 
-    deleteFile(verilogTraceFile);                                               // Remove Java trace file
-
-    final var c = "rm -f "+chipName+" "+verilogTraceFile+                       // Verilog command
-                  " ;  iverilog -g2012 -o "+chipName+" "+source+
-//                " && timeout 5m ./"      +chipName;
-                  " &&            ./"      +chipName;
+    final String c =
+      String.format("yosys -q -T -p \"read_verilog %s; synth -top %s; write_json %s\" 2> %s",
+        sourceFile, chipName, jsonFile, stdoutFile);
     final var e = new ExecCommand(c);                                           // Run Verilog
    }
 
@@ -408,6 +398,8 @@ endmodule
     final Stack<Label>       labels          = new Stack<>();                   // Labels for instructions in this process
     int                      processPc       = 0;                               // The index of the next instruction to be executed
     int                      processNextPc   = -1;                              // The next program counter requested
+    int                      processRC       = 0;                               // The return code for this process
+    boolean                  processStop     = false;                           // Stop this process - if any process gets stopped the whole chip is brought to a stop on the basis that it needs all of its processes to function
     boolean                  processTrace    = false;                           // Trace this process if true by writing location statements into the log file to identify where in the source code this instruction was generated
 
 //D2 Instruction                                                                // An instruction represents code to be executed by a process in a single clock cycle == process step
@@ -675,7 +667,7 @@ endmodule
      {processNextPc = -1;                                                       // The executed instruction can optionally set this variable to change the execution flow
       if (code.size() == 0) return;                                             // No code to run
       if (processPc >= code.size())                                             // Stop the run if we go off the end of the code
-       {chipRunning = false;
+       {processStop = chipStop = true;
         processPc++;                                                            // This matches the default clause in the generated Verilog code
         //err("Stopped by process:", processName);                              // Make sure we know who stopped the chip
         return;
@@ -690,117 +682,129 @@ endmodule
 
     void processClear() {code.clear();}                                         // Clear current process code. This facilitates testing by allowing a program to be written and executed incrementally.
 
+    void processStop(int ReturnCode)                                            // Stop the chip
+     {processRC = ReturnCode;
+      processStop = chipStop = true;
+     }
+
+    void processStop(Verilog v, int ReturnCode)                                 // Stop the chip in Verilog
+     {v.assign(processRCName(), ReturnCode);
+      v.assign(processStopName(),       1);
+     }
+
 //D3 Verilog                                                                    // Generate a Verilog always block to implement this process
 
-    String processNameAndNumber()                                               // Used to generate skip to comments
-     {return String.format("process_%s_%04d", processName, processNumber);
-     }
-    String processPcName()     {return processName+"_pc";}                      // Program counter
-    String processNextPcName() {return processName+"_next_pc";}                 // Next program counter
-    String processMemoryName() {return processName+"_memory";}                  // Name of the memory block used by this process
-    boolean hasMemory()        {return memoryWidth > 0 && memorySize > 0;}      // Whether this process has any memory attached directly to it
-
-    String generateProcessVerilog(boolean parallel)                             // Generate Verilog code for this process
-     {final StringBuilder v = new StringBuilder();
-      N();
-      v.append("\n// Process: "+processName+"  "+processNameAndNumber()+"\n\n");
+    String generateProcessVerilog(Verilog v, boolean synthesis)                 // Generate Verilog code for this process
+     {N();
+      v.comment("Process: "+processName+"  "+processNameAndNumber());
       if (hasMemory())                                                          // Not all processes have memory attached to them: declare memory for those that do.
-       {v.append("(* ram_style = \"block\" *)\n");
-        v.append("  reg ["+memoryWidth+"-1:0] "+processMemoryName()+"["+memorySize+"];\n");
+       {v.A("(* ram_style = \"block\" *)");
+        v.A("reg ["+memoryWidth+"-1:0] "+processMemoryName()+"["+memorySize+"];");
        }
 
       for (Register r: registers)                                               // Registers associated with this process
-       {v.append("  reg ["+r.registerBits+"-1:0] "+r.registerName()+";\n");
+       {v.A("reg ["+r.registerBits+"-1:0] "+r.registerName()+";");
        }
 
       for (Transaction t: transactions)                                         // Transactions associated with this process
        {final String n = t.transactionName;
-        v.append("  integer "+n+"_requestedAt;\n");
-        v.append("  integer "+n+"_finishedAt;\n");
-        v.append("  integer "+t.transactionRcName()+";\n");
+        v.i(n+"_requestedAt");
+        v.i(n+"_finishedAt");
+        v.i(t.transactionRcName());
        }
 
-      v.append("""
-  integer $pc;                                                                  // Program counter
-  integer $next_pc;                                                             // Next program counter
-  always @ (posedge clock) begin                                                // Execute next step in program
-    if (step < 0) begin                                                         // Steps less than zero are used for initilization
-      $pc = 0;
-      $next_pc = 0;                                                             // Next program counter
-""");
-      for (Register r: registers)                                               // Clear all registers
-       {v.append("      "+r.registerName()+" = 0;\n");
-       }
-      for (Transaction t: transactions)                                         // Initialize transactions
-       {final String n = t.transactionName;
-        v.append("      "+n+"_finishedAt = -1;\n");
-        v.append("      "+t.transactionRcName()+" = 0;\n");
-       }
-      for (Process p: processes)                                                // Find transactions of which we are the source
-       {for (Transaction t: p.transactions)
-         {if (t.transactionCallingProcess == Process.this)                      // This transaction is a source of requests against this process
-           {final String n = t.transactionName;
-            v.append("      "+n+"_requestedAt = -1;\n");                        // Clear step at which the transaction was requested
-           }
-         }
-       }
+      v.i(processPcName());
+      v.i(processNextPcName());
+      v.i(processStopName());
+      v.i(processRCName());
+      v.new Always()
+       {void Body()
+         {v.new If("step < 0")                                                  // Execute next step in program
+           {void Then()                                                         // Steps less than zero are used for initilization
+             {v.assign(processPcName(),     "0");                               // Program counter for this process
+              v.assign(processNextPcName(), "0");                               // Next program counter for this process
+              v.assign(processStopName(),   "0");                               // Stop process when true
+              v.assign(processRCName(),     "0");                               // Return code after stopping
+              for (Register r: registers)                                       // Clear all registers
+               {if (!r.input && !r.output) v.assign(r.registerName(), "0");
+               }
+              for (Transaction t: transactions)                                 // Initialize transactions
+               {v.assign(t.transactionName+"_finishedAt", "-1");
+                v.assign(t.transactionRcName(), "0");
+               }
 
-      if (hasMemory())                                                          // Load memory to match the state at the start of the Java run
-       {for(int i = 0; i < memorySize; i++)
-         {final int m = memoryGetBackUp(i);
-          v.append("       "+processMemoryName()+"["+i+"] = "+m+";\n");
-         }
-       }
+              for (Process p: processes)                                        // Find transactions of which we are the source
+               {for (Transaction t: p.transactions)
+                 {if (t.transactionCallingProcess == Process.this)              // This transaction is a source of requests against this process
+                   {final String n = t.transactionName;
+                    v.assign(t.transactionName+"_requestedAt", "-1");           // Clear step at which the transaction was requested
+                   }
+                 }
+               }
 
-      v.append("""
-    end
-""");
-      if (parallel) v.append("""
-    else begin                                                                  // Run the process in full parallel
-""");
+              if (hasMemory())                                                  // Load memory to match the state at the start of the Java run
+               {for(int i = 0; i < memorySize; i++)
+                 {v.assign(processMemoryName()+"["+i+"]", memoryGetBackUp(i));
+                 }
+               }
 
-    else v.append("""
-    else if (processCurrent == $processNumber) begin                            // Run the process if it is the current one.  Normally the processes will run in parallel but this is difficult to coordinate with the Java implementation so the processes are forced to run single threaded sequentially in a specified order.  This order should be varied to demonstrate that the design is not dependent on a specific process order
-""");
+              v.end();
+              if (synthesis) v.A("else begin                                    // Run the process in full parallel");
+              else v.A(String.format("else if (processCurrent == %s) begin", processNumber));
 
-      v.append("""
-      $next_pc = -1;
-      case($pc)                                                                 // Execute instructions in process
-""");
-      for(Instruction i: code)                                                  // Each instruction
-       {final StringBuilder s = new StringBuilder();
-        s.append("        "+i.instructionNumber+": begin\n");
+              v.indent();
+              v.assign(processNextPcName(), "-1");
+              v.A(String.format("case(%s)", processPcName()));                  // Execute instructions in process
+              v.indent();
 
-        final Verilog V = new Verilog(5);
-        i.verilog(V);
-        if (V.isEmpty()) err("No Verilog generated by this instruction:\n"+i.traceBack);
+              for(Instruction i: code)                                          // Each instruction
+               {v.A(""+i.instructionNumber+": begin");
+                v.indent();
+                final Verilog V = new Verilog(); V.synthesis = v.synthesis;
+                i.verilog(V);
+                if (V.isEmpty()) err("No Verilog generated by this instruction:\n"+i.traceBack);
 
-        if (processTrace)                                                       // Add a location statement if this process is being traced. Domne in  line because Icarus does not pass the string correctly as a parameter
-         {V.new IfNotDef("SYNTHESIS")
-           {void Then()
-             {V.begin("f");
-              V.A("f = $fopen(\""+verilogTraceFile+"\", \"a\");");
-              V.A("$fdisplay(f, \"Location: "+i.traceBackOnOneLine()+"\");");
-              V.A("$fclose(f);");
-              V.end();
+                if (processTrace)                                                       // Add a location statement if this process is being traced. Domne in  line because Icarus does not pass the string correctly as a parameter
+                 {if (!synthesis)                                                       // Add a location statement if this process is being traced. Domne in  line because Icarus does not pass the string correctly as a parameter
+                   {V.begin("f");
+                    V.A("f = $fopen(\""+verilogTraceFile+"\", \"a\");");
+                    V.A("$fdisplay(f, \"Location: "+i.traceBackOnOneLine()+"\");");
+                    V.A("$fclose(f);");
+                    V.end();
+                   }
+                 }
+                v.A(V);
+                v.end();
+               }
+              v.A("default: "+processStopName()+" "+v.assignOp()+" 1;");
+              v.endCase();
+
+              v.new If(processNextPcName()+" != -1")
+               {void Then()
+                 {v.assign(processPcName(), processNextPcName());               // Jump to indication location in code
+                 }
+                void Else()
+                 {v.assign(processPcName(), processPcName()+" + 1;");           // Next instruction
+                 }
+               };
              }
            };
          }
-        s.append(""+V);
-        s.append("        end\n");
-        v.append(s);
-       }
-      v.append("        default: stop = 1;\n");
-      v.append("      endcase\n");
-      v.append("      if ($next_pc != -1) $pc = $next_pc; else $pc = $pc + 1;   // Interpret next program counter as either a redirection or continuation of flow\n");
-      v.append("    end\n");
-      v.append("  end\n");
-
-      replaceAll(v, "$pc",               processPcName());                      // Substitute text variables
-      replaceAll(v, "$next_pc",          processNextPcName());
-      replaceAll(v, "$processNumber", ""+processNumber);
+       };
       return ""+v;
      }
+
+    String processNameAndNumber()                                               // Used to generate skip to comments
+     {return String.format("process_%s_%04d", processName, processNumber);
+     }
+
+    String processPcName()     {return processName+"_pc";}                      // Program counter
+    String processNextPcName() {return processName+"_next_pc";}                 // Next program counter
+    String processMemoryName() {return processName+"_memory";}                  // Name of the memory block used by this process
+    String processStopName()   {return processName+"_stop";}                    // Name of the stop field in verilog for this process
+    String processRCName()     {return processName+"_returnCode";}              // Name of the return code in verilog for this process
+
+    boolean hasMemory()        {return memoryWidth > 0 && memorySize > 0;}      // Whether this process has any memory attached directly to it
 
 //D3 Memory                                                                     // Process operations on memory
 
@@ -959,7 +963,7 @@ endmodule
        }
       void transactionSetExecutable(Verilog v)                                  // Mark a transaction as executable in verilog
        {v.assign(transactionRequestedAt(), "step");
-        v.assign(transactionFinishedAt(), -1);
+        if (!v.synthesis) v.assign(transactionFinishedAt(), -1);                // We cannot use the process clear feature that is so useful for testing the java version in verilog being synthesized
        }
       void transactionSetFinished()                                             // Mark a transaction as finished
        {R(); transactionFinishedAt = step;
@@ -1025,7 +1029,7 @@ endmodule
       final Register result;                                                    // The value of the memory at the specified index
       Get(Process Process)                                                      // Get the value from memory at the indicated index
        {super(processName+"_"+(++memoryProcessTransactionNumber),
-          Memory.this, "get");
+          Process, "get");
         process = Process;                                                      // The calling process requesting a value from the memory of this memory process
         index   = transactionCallingProcess.register(transactionName+"_index", logTwo(memorySize));  // A register that will index the memory managed by this process
         result  = register(transactionName+"_result", memoryWidth);             // The register that will contain the result
@@ -1065,7 +1069,7 @@ endmodule
       final Register value;                                                     // The value to be written into memory
       Set(Process Process)                                                      // Get the value from memory at the indicated index
        {super(processName+"_"+(++memoryProcessTransactionNumber),
-          Memory.this, "set");
+          Process, "set");
         process = Process;                                                      // The calling process requesting that a value be written into the memory of this process
         index   = transactionCallingProcess.register(transactionName+"_index", logTwo(memorySize)); // A register that will index the memory managed by this process
         value   = transactionCallingProcess.register(transactionName+"_value", memoryWidth);        // The register that will contain the value to be written into memory
@@ -1159,8 +1163,15 @@ endmodule
    {final int B = 8, N = 16;
     var c = chip("Test");
     var p = c.process("Process");
-
-    p.new Instruction() {void action() {c.chipStop(1);} void verilog(Verilog v) {c.chipStop(v, 1);}};
+    p.processTrace = true;
+    p.new Instruction()
+     {void action()
+       {p.processStop(1);
+       }
+      void verilog(Verilog v)
+       {p.processStop(v, 1);
+       }
+     };
     c.chipRun();
    }
 
@@ -1237,10 +1248,10 @@ endmodule
 
     r.new Instruction()                                                         // Request the value of an indexed element of memory
      {void action()
-       {c.chipStop(1);                                                          // Halt the run
+       {r.processStop(1);                                                          // Halt the run
        }
       void verilog(Verilog v)
-       {c.chipStop(v, 1);
+       {r.processStop(v, 1);
        }
      };
 
@@ -1251,37 +1262,38 @@ endmodule
     ok(st.transactionOutputRegisters.firstElement().registerGet(), 3);
     //stop(c);
     ok(""+c, """
-Chip: Test             step: 8, maxSteps: 10, running: 0, returnCode: 1
+Chip: Test             step: 8, maxSteps: 10, running: 0
   Processes:
-    Process: 0 - Memory                instructions: 2, pc: 0, nextPc: 0, memory: 16 * 8 = 1, 2, 33, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16
+    Process: 0 - Memory                instructions: 2, pc: 0, nextPc: 0, rc: 0
+      Memory: 16 * 8 = 1,  2, 33,  4,  5,  6,  7,  8,  9, 10, 11, 12, 13, 14, 15, 16
       Registers :
         Register: Memory_Memory_Value_0            = 33
-        Register: Memory_Memory_1_index_1          = 1
-        Register: Memory_Memory_1_result_2         = 2
-        Register: Memory_Memory_2_index_3          = 2
-        Register: Memory_Memory_2_result_4         = 3
-        Register: Memory_Memory_3_index_5          = 2
-        Register: Memory_Memory_3_value_6          = 33
+        Register: Memory_Memory_1_result_1         = 2
+        Register: Memory_Memory_2_result_2         = 3
       Transactions:
         Transaction   : get      - Memory_1          requested at: 1, finished at: 2, returnCode: 0, executable: 0, finished: 1
           Inputs      :
-            Memory_Memory_1_index_1                = 1
+            Requests_Memory_1_index_1              = 1
           Outputs     :
-            Memory_Memory_1_result_2               = 2
+            Memory_Memory_1_result_1               = 2
         Transaction   : get      - Memory_2          requested at: 2, finished at: 3, returnCode: 0, executable: 0, finished: 1
           Inputs      :
-            Memory_Memory_2_index_3                = 2
+            Requests_Memory_2_index_3              = 2
           Outputs     :
-            Memory_Memory_2_result_4               = 3
+            Memory_Memory_2_result_2               = 3
         Transaction   : set      - Memory_3          requested at: 5, finished at: 6, returnCode: 0, executable: 0, finished: 1
           Inputs      :
-            Memory_Memory_3_index_5                = 2
-            Memory_Memory_3_value_6                = 33
-    Process: 1 - Requests              instructions: 8, pc: 8, nextPc: -1
+            Requests_Memory_3_index_5              = 2
+            Requests_Memory_3_value_6              = 33
+    Process: 1 - Requests              instructions: 8, pc: 8, nextPc: -1, rc: 1
       Registers :
         Register: Requests_index1_0                = 1
-        Register: Requests_index2_1                = 2
-        Register: Requests_value_2                 = 33
+        Register: Requests_Memory_1_index_1        = 1
+        Register: Requests_index2_2                = 2
+        Register: Requests_Memory_2_index_3        = 2
+        Register: Requests_value_4                 = 33
+        Register: Requests_Memory_3_index_5        = 2
+        Register: Requests_Memory_3_value_6        = 33
 """);
     c.chipRunVerilog();
    }
@@ -1336,10 +1348,10 @@ Chip: Test             step: 8, maxSteps: 10, running: 0, returnCode: 1
 
     p.new Instruction()                                                         // Request the value of an indexed element of memory
      {void action()
-       {C.chipStop(1);                                                          // Halt the run
+       {p.processStop(1);                                                          // Halt the run
        }
       void verilog(Verilog v)
-       {C.chipStop(v, 1);
+       {p.processStop(v, 1);
        }
      };
 
@@ -1347,30 +1359,31 @@ Chip: Test             step: 8, maxSteps: 10, running: 0, returnCode: 1
     C.chipRunJava();
     //stop(C);
     ok(""+C, """
-Chip: Test             step: 50, maxSteps: 100, running: 0, returnCode: 1
+Chip: Test             step: 50, maxSteps: 100, running: 0
   Processes:
-    Process: 0 - Main                  instructions: 50, pc: 50, nextPc: -1
+    Process: 0 - Main                  instructions: 50, pc: 50, nextPc: -1, rc: 1
       Registers :
         Register: Main_a_0                         = 987
         Register: Main_b_1                         = 1597
         Register: Main_c_2                         = 1597
         Register: Main_i_3                         = 16
-    Process: 1 - Memory                instructions: 1, pc: 0, nextPc: 0, memory: 16 * 16 = 1, 2, 3, 5, 8, 13, 21, 34, 55, 89, 144, 233, 377, 610, 987, 1597
+        Register: Main_Memory_1_index_4            = 15
+        Register: Main_Memory_1_value_5            = 1597
+    Process: 1 - Memory                instructions: 1, pc: 0, nextPc: 0, rc: 0
+      Memory: 16 * 16 = 1,  2,  3,  5,  8, 13, 21, 34, 55, 89, 144, 233, 377, 610, 987, 1597
       Registers :
         Register: Memory_Memory_Value_0            = 1597
-        Register: Memory_Memory_1_index_1          = 15
-        Register: Memory_Memory_1_value_2          = 1597
       Transactions:
         Transaction   : set      - Memory_1          requested at: 46, finished at: 47, returnCode: 0, executable: 0, finished: 1
           Inputs      :
-            Memory_Memory_1_index_1                = 15
-            Memory_Memory_1_value_2                = 1597
+            Main_Memory_1_index_4                  = 15
+            Main_Memory_1_value_5                  = 1597
 """);
 
     //stop(C.chipPrintMemory());
 
     ok(C.chipPrintMemory(), """
-Chip: Test             step: 50, maxSteps: 100, running: 0, returnCode: 1
+Chip: Test             step: 50, maxSteps: 100, running: 0
   Processes:                                                    0  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24
     Memory                memory:                    16 * 16 =  1  2  3  5  8 13 21 34 55 89 144 233 377 610 987 1597
 """);
@@ -1499,7 +1512,7 @@ Chip: Test             step: 50, maxSteps: 100, running: 0, returnCode: 1
     m.processLoad(m.processSave());
     //stop(c.chipPrintMemory());
     ok(c.chipPrintMemory(), """
-Chip: Test             step: 0, maxSteps: 10, running: 0, returnCode: 0
+Chip: Test             step: 0, maxSteps: 10, running: 0
   Processes:                                                    0  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24
     Memory                memory:                    16 *  8 =  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16
 """);
@@ -1552,8 +1565,8 @@ Chip: Test             step: 0, maxSteps: 10, running: 0, returnCode: 0
    }
 
   static void newTests()                                                        // Tests being worked on
-   {//oldTests();
-    test_arithmeticFibonacci();
+   {oldTests();
+    test_stop();
    }
 
   public static void main(String[] args)                                        // Test if called as a program
