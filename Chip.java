@@ -338,8 +338,8 @@ module %s(                                                                      
   input                 reset,                                                  // Reset chip
 """, chipName));
     v.indent();
-    for(Process.Register r: registersInput ()) v.A(r.registerDeclare()+";");
-    for(Process.Register r: registersOutput()) v.A(r.registerDeclare()+";");
+    for(Process.Register r: registersInput ()) v.A(r.registerDeclare());
+    for(Process.Register r: registersOutput()) v.A(r.registerDeclare());
 
     v.A("output wire            stop                                            // Program has stopped when this goes high");
     v.A(");");
