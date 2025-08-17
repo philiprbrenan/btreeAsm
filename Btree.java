@@ -77,10 +77,14 @@ chipStop = true;
 
   private void allocate(Process.Register ref, boolean leaf)                     // Allocate a stuck and set a ref to the allocated node
    {final Process       P         = ref.registerProcess();
-    final Memory.Get    gFreeNext = freeNext.new Get(P);                        // Get next free stuck
-    final Memory.Set    sFreeNext = freeNext.new Set(P);                        // Set next free stuck
-    final Memory.Set    sIsLeaf   = stuckIsLeaf.new Set(P);                     // Set leaf or branch
-    final Memory.Set    sIsFree   = stuckIsFree.new Set(P);                     // Set stuck is free field
+//  final Memory.Get    gFreeNext = freeNext.new Get(P);                        // Get next free stuck
+    final Memory.Get    gFreeNext = freeNext.memoryGetFromProcess(P);           // Get next free stuck
+//  final Memory.Set    sFreeNext = freeNext   .new Set(P);                     // Set next free stuck
+    final Memory.Set    sFreeNext = freeNext   .memorySetIntoProcess(P);        // Set next free stuck
+//  final Memory.Set    sIsLeaf   = stuckIsLeaf.new Set(P);                     // Set leaf or branch
+    final Memory.Set    sIsLeaf   = stuckIsLeaf.memorySetIntoProcess(P);        // Set leaf or branch
+//  final Memory.Set    sIsFree   = stuckIsFree.new Set(P);                     // Set stuck is free field
+    final Memory.Set    sIsFree   = stuckIsFree.memorySetIntoProcess(P);        // Set stuck is free field
     final Process.Register   root = btreeIndex(P, "root");                      // Index of the first free stuck in the btree
     final Process.Register   next = btreeIndex(P, "next");                      // Index of the second free stuck in the btree
     final Process.Register isLeaf = P.register("isLeaf", 1);                    // Indicate whether the allocated stuck is a leaf or a branch
@@ -136,12 +140,17 @@ chipStop = true;
 
   private void free(Process.Register ref)                                       // Free the referenced stuck and put it on the free chain
    {final Process     P           = ref.registerProcess();
-    final Memory.Get  gFreeNext   = freeNext.new Get(P);                        // Get next free stuck
-    final Memory.Set  sFreeRoot   = freeNext.new Set(P);                        // Set next free stuck
-    final Memory.Set  sFreeNext   = freeNext.new Set(P);                        // Set next free stuck
-    final Memory.Set    sIsFree   = stuckIsFree.new Set(P);                     // Set stuck is free field
-    final Process.Register root   = btreeIndex(P, "root");                      // Index of the first free stuck in the btree
     final Process.Register next   = btreeIndex(P, "next");                      // Index of the second free stuck in the btree
+//  final Memory.Get  gFreeNext   = freeNext.new Get(P);                        // Get next free stuck
+    final Memory.Get  gFreeNext   = freeNext.memoryGetFromProcess(P);           // Get next free stuck
+//  final Memory.Set  sFreeRoot   = freeNext.new Set(P);                        // Set next free stuck
+    final Memory.Set  sFreeRoot   = freeNext.memorySetIntoProcess(P);           // Set next free stuck
+//  final Memory.Set  sFreeNext   = freeNext.new Set(P);                        // Set next free stuck
+    final Memory.Set  sFreeNext   = freeNext.memorySetIntoProcess(P);           // Set next free stuck
+//  final Memory.Set    sIsFree   = stuckIsFree.new Set(P);                     // Set stuck is free field
+    final Memory.Set    sIsFree   = stuckIsFree.memorySetIntoProcess(P);        // Set stuck is free field
+    final Process.Register root   = btreeIndex(P, "root");                      // Index of the first free stuck in the btree
+
     final Process.Register isFree = P.register("isFree", 1);                    // Indicate that the allocated stuck is not free but in use
     P.new Instruction()                                                         // Get first free stuck
      {void action()
@@ -175,8 +184,8 @@ chipStop = true;
     sIsFree  .waitResultOfTransaction();
    }
 
-  private void  allocateLeaf  (Process.Register ref) { allocate(ref, true);}    // Allocate a stuck, set a ref to the allocated node and mark it a leaf
-  private void  allocateBranch(Process.Register ref) { allocate(ref, false);}   // Allocate a stuck, set a ref to the allocated node and mark it a branch
+  private void allocateLeaf  (Process.Register ref) {allocate(ref, true);}      // Allocate a stuck, set a ref to the allocated node and mark it a leaf
+  private void allocateBranch(Process.Register ref) {allocate(ref, false);}     // Allocate a stuck, set a ref to the allocated node and mark it a branch
 
 //D2 Save and Load                                                              // Save a btree to a string and reload it from a string
 
@@ -268,15 +277,24 @@ chipStop = true;
       for (int i = 0; i < maxStuckSize; i++)                                    // Create registers to hold stuck
        {keys[i]  = P.new Register("Key_"+i, bitsPerKey);                        // Keys in the stuck copied out of the memory of the btree into local registers
         data[i]  = P.new Register("Data_"+i, bitsPerData);                      // Data in the stuck copied out of the memory of the btree into local registers
-        gKeys[i] = stuckKeys[i].new Get(P);                                     // Transactions to get each key in the stuck
-        sKeys[i] = stuckKeys[i].new Set(P);                                     // Transactions to set each key in the stuck
-        gData[i] = stuckData[i].new Get(P);                                     // Transactions to get each data element in the stuck
-        sData[i] = stuckData[i].new Set(P);                                     // Transactions to set each data element in the stuck
+//      gKeys[i] = stuckKeys[i].new Get(P);                                     // Transactions to get each key in the stuck
+        gKeys[i] = stuckKeys[i].memoryGetFromProcess(P);                        // Transactions to get each key in the stuck. Reuseing the transaction reduces generated Verilog code size by 30% at the cost of requiring each stuck Get/Set from/into memory to finish before the next one can start.
+//      sKeys[i] = stuckKeys[i].new Set(P);                                     // Transactions to set each key in the stuck
+        sKeys[i] = stuckKeys[i].memorySetIntoProcess(P);                        // Transactions to set each key in the stuck
+//      gData[i] = stuckData[i].new Get(P);                                     // Transactions to get each data element in the stuck
+        gData[i] = stuckData[i].memoryGetFromProcess(P);                        // Transactions to get each data element in the stuck
+//      sData[i] = stuckData[i].new Set(P);                                     // Transactions to set each data element in the stuck
+        sData[i] = stuckData[i].memorySetIntoProcess(P);                        // Transactions to set each data element in the stuck
        }
 
-      gSize = stuckSize  .new Get(P);                                           // Transaction to get the current size of the stuck
-      sSize = stuckSize  .new Set(P);                                           // Transaction to set the current size of the stuck
-      gLeaf = stuckIsLeaf.new Get(P);                                           // Transaction to discover whether this stuck is acting as a leaf or a branch
+//    gSize = stuckSize  .new Get(P);                                           // Transaction to get the current size of the stuck
+      gSize = stuckSize  .memoryGetFromProcess(P);                              // Transaction to get the current size of the stuck
+//    sSize = stuckSize  .new Set(P);                                           // Transaction to set the current size of the stuck
+      sSize = stuckSize  .memorySetIntoProcess(P);                              // Transaction to set the current size of the stuck
+//    gLeaf = stuckIsLeaf.new Get(P);                                           // Transaction to discover whether this stuck is acting as a leaf or a branch
+      gLeaf = stuckIsLeaf.memoryGetFromProcess(P);                              // Transaction to discover whether this stuck is acting as a leaf or a branch
+//    sLeaf = stuckIsLeaf.new Set(P);                                           // Transaction to set the stuck in memory to  a leaf or a branch
+      sLeaf = stuckIsLeaf.memorySetIntoProcess(P);                              // Transaction to set the stuck in memory to  a leaf or a branch
       Found        = P.register("Found",        1);                             // Whether the key was found
       Key          = P.register("Key",          bitsPerKey);                    // Data associated with the key if found
       FoundKey     = P.register("FoundKey",     bitsPerKey);                    // Data associated with the key if found
@@ -284,7 +302,6 @@ chipStop = true;
       BtreeIndex   = P.register("BtreeIndex",   btreeAddressSize);              // Index of stuck in Btree in which the key should reside
       StuckIndex   = P.register("StuckIndex",   stuckAddressSize);              // Index of stuck in Btree in which the key should reside
       MergeSuccess = P.register("MergeSuccess", 1);                             // Whether a merge was completed successfully or not
-      sLeaf = stuckIsLeaf.new Set(P);                                           // Transaction to set the stuck in memory to  a leaf or a branch
      }
 
 //D3 Memory                                                                     // Get a stuck from memory or return it to memory
