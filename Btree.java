@@ -99,7 +99,7 @@ chipStop = true;
     P.new Instruction()                                                         // First free stuck if any is the allocated stuck
      {void action()
        {ref.copy(gFreeNext.transactionOutputRegisters.firstElement());          // Save reference to allocated stuck
-        if (ref.registerGet() == 0) chipStop(20);
+        if (ref.registerGet() == 0) P.processStop(20);
         gFreeNext.executeTransaction(ref);                                      // Next free stuck
         if (leaf) isLeaf.one(); else isLeaf.zero();                             // Leaf or branch
         sIsLeaf.executeTransaction(ref, isLeaf);                                // Set allocated stuck to leaf or branch
@@ -109,7 +109,7 @@ chipStop = true;
       void verilog(Verilog v)
        {ref.copy(v, gFreeNext.transactionOutputRegisters.firstElement());       // Save reference to allocated stuck
         v.new If (ref.registerName() + " == 0")
-         {void Then() {chipStop(v, 20);}
+         {void Then() {P.processStop(v, 20);}
          };
         gFreeNext.executeTransaction(v, ref);                                   // Next free stuck
         if (leaf) isLeaf.one(v); else isLeaf.zero(v);                           // Leaf or branch
@@ -451,7 +451,7 @@ chipStop = true;
     void push(Process.Register Key, Process.Register Data)                      // Push a key, data pair to the local copy of the stuck
      {R(); final int N = size.registerGet();
       if (N >= maxStuckSize)
-       {chipStop(1);
+       {P.processStop(1);
        }
       else
        {keys[N].copy(Key);
@@ -473,7 +473,7 @@ chipStop = true;
     void pop()                                                                  // Pop a key, data pair from the local copy of the stuck
      {R(); final int N = size.registerGet();
       if (N == 0)
-       {chipStop(2);
+       {P.processStop(2);
        }
       else
        {Key.copy (keys[N-1]);
@@ -495,7 +495,7 @@ chipStop = true;
     void setPastLastElement(Process.Register Key, Process.Register Data)        // Push a key, data pair to the local copy of the stuck without changing the size
      {R(); final int N = size.registerGet();
       if (N >= maxStuckSize)
-       {chipStop(3);
+       {P.processStop(3);
        }
       else
        {keys[N].copy(Key);
@@ -515,7 +515,7 @@ chipStop = true;
     void firstElement()                                                         // Get the first key, data pair
      {R(); final int N = size.registerGet();
       if (N == 0)
-       {chipStop(4);
+       {P.processStop(4);
        }
       else
        {Key.copy (keys[0]);
@@ -531,7 +531,7 @@ chipStop = true;
     void lastElement()                                                          // Get the last key, data pair
      {R(); final int N = size.registerGet();
       if (N >= maxStuckSize)
-       {chipStop(5);
+       {P.processStop(5);
        }
       else
        {Key.copy (keys[N-1]);
@@ -551,7 +551,7 @@ chipStop = true;
     void pastLastElement()                                                      // Get the past last key, data pair
      {R(); final int N = size.registerGet();
       if (N >= maxStuckSize-1)
-       {chipStop(6);
+       {P.processStop(6);
        }
       else
        {Key.copy (keys[N]);
@@ -571,7 +571,7 @@ chipStop = true;
     void elementAt(Process.Register Index)                                      // Get the indexed key, data pair
      {R(); final int N = Index.registerGet();
       if (N >= maxStuckSize)
-       {chipStop(7);
+       {P.processStop(7);
         return;
        }
       Key.copy (keys[N]);
@@ -591,11 +591,11 @@ chipStop = true;
      {R(); final int N = Index.registerGet();
       final int M = size.registerGet();
       if (N >= maxStuckSize)
-       {chipStop(8);
+       {P.processStop(8);
         return;
        }
       if (N > M)
-       {chipStop(9);
+       {P.processStop(9);
         return;
        }
       if (N == M)
@@ -623,7 +623,7 @@ chipStop = true;
      {R(); final int N = Index.registerGet();
       final int M = size.registerGet();
       if (N >= M)
-       {chipStop(10);
+       {P.processStop(10);
         return;
        }
       data[N].copy(Data);
@@ -642,11 +642,11 @@ chipStop = true;
      {R(); final int N = Index.registerGet();
       final int S = size.registerGet();
       if (N >= maxStuckSize)                                                    // No reason left in stuck
-       {chipStop(11);
+       {P.processStop(11);
         return;
        }
       if (N > S)                                                                // An insertion would leave gap
-       {chipStop(12);
+       {P.processStop(12);
         return;
        }
       size.inc();                                                               // Increase number of elements
@@ -682,7 +682,7 @@ chipStop = true;
     void removeElementAt(Process.Register Index)                                // Set the indexed key, data pair
      {R(); final int N = Index.registerGet();
       if (N >= size.registerGet())
-       {chipStop(13);
+       {P.processStop(13);
         return;
        }
       size.dec();
@@ -811,7 +811,7 @@ chipStop = true;
        {void action()
          {final int N = size.registerGet();                                     // Current size of stuck
           if (N != maxStuckSize)                                                // Stuck must be full
-           {chipStop(14);
+           {P.processStop(14);
            }
 
           for (int i = 0; i < C; ++i)                                           // Move left keys
@@ -848,7 +848,7 @@ chipStop = true;
        {void action()
          {final int N = size.registerGet();
           if (Copy >= N)
-           {chipStop(15);
+           {P.processStop(15);
             return;
            }
           for (int i = 0; i < Copy; ++i)
@@ -893,11 +893,11 @@ chipStop = true;
      {P.new Instruction()
        {void action()
          {if (maxStuckSize % 2 == 1)
-           {chipStop(16);
+           {P.processStop(16);
             return;
            }
           if (maxStuckSize != size.registerGet())
-           {chipStop(17);
+           {P.processStop(17);
             return;
            }
           final int N = maxStuckSize / 2;
@@ -934,11 +934,11 @@ chipStop = true;
      {P.new Instruction()
        {void action()
          {if (maxStuckSize % 2 == 1)
-           {chipStop(18);
+           {P.processStop(18);
             return;  // Not needed
            }
           if (maxStuckSize-1 != size.registerGet())
-           {chipStop(19);
+           {P.processStop(19);
             return;  // Not needed
            }
           final int N = (maxStuckSize-1) / 2;
@@ -2645,7 +2645,7 @@ Stuck: Stuck size: 2, leaf: 1, root
 
     //stop(b.chipPrintMemory());
     ok(b.chipPrintMemory(), """
-Chip: Btree            step: 14, maxSteps: 200, running: 0, returnCode: 0
+Chip: Btree            step: 14, maxSteps: 200, running: 0
   Processes:                                                    0  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24
     stuckIsLeaf           memory:                     1 *  1 =  1
     stuckIsFree           memory:                     1 *  1 =  0
@@ -2665,7 +2665,7 @@ Chip: Btree            step: 14, maxSteps: 200, running: 0, returnCode: 0
 
     //stop(b.chipPrintMemory());
     ok(b.chipPrintMemory(), """
-Chip: Btree            step: 26, maxSteps: 200, running: 0, returnCode: 0
+Chip: Btree            step: 26, maxSteps: 200, running: 0
   Processes:                                                    0  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24
     stuckIsLeaf           memory:                     1 *  1 =  0
     stuckIsFree           memory:                     1 *  1 =  0
@@ -2687,7 +2687,7 @@ Chip: Btree            step: 26, maxSteps: 200, running: 0, returnCode: 0
 
     //stop(b.chipPrintMemory());
     ok(b.chipPrintMemory(), """
-Chip: Btree            step: 0, maxSteps: 10, running: 0, returnCode: 0
+Chip: Btree            step: 0, maxSteps: 10, running: 0
   Processes:                                                    0  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24
     stuckIsLeaf           memory:                     2 *  1 =  1  0
     stuckIsFree           memory:                     2 *  1 =  0  1
@@ -2999,7 +2999,7 @@ BtreeIndex: 0
 StuckIndex: 0
 Merge     : 0
 """);
-    ok(d, "Stuck_Data_110 = 1");
+    ok(d, "Stuck_Data_324 = 1");
 
     P.processClear();
     s.stuckGetRoot();
@@ -3014,8 +3014,8 @@ Merge     : 0
 
     b.chipRun();
 
-    ok(k, "Stuck_Key_108 = 3");
-    ok(d, "Stuck_Data_110 = 4");
+    ok(k, "Stuck_Key_322 = 3");
+    ok(d, "Stuck_Data_324 = 4");
 
     P.processClear();
     s.stuckGetRoot();
@@ -3068,8 +3068,8 @@ Merge     : 0
 
     b.chipRun();
 
-    ok(k, "Stuck_Key_108 = 5");
-    ok(d, "Stuck_Data_110 = 55");
+    ok(k, "Stuck_Key_322 = 5");
+    ok(d, "Stuck_Data_324 = 55");
    }
 
   static void test_elementAt()
@@ -3366,8 +3366,8 @@ Stuck: stuck size: 3, leaf: 1, root
  1     2 =>    3
  2     3 =>    4
 """);
-    ok(k, "Stuck_Key_108 = 1");
-    ok(d, "Stuck_Data_110 = 2");
+    ok(k, "Stuck_Key_322 = 1");
+    ok(d, "Stuck_Data_324 = 2");
    }
 
   static void test_search_eq()
@@ -3396,7 +3396,7 @@ Stuck: stuck size: 3, leaf: 1, root
 
     b.maxSteps = 100;
     b.chipRun();
-    ok(f, "Stuck_Found_107 = 0");
+    ok(f, "Stuck_Found_321 = 0");
 
     final int N = 4;
     for (int j = 0; j < N; j++)
@@ -3416,10 +3416,10 @@ Stuck: stuck size: 3, leaf: 1, root
 
       b.maxSteps = 100;
       b.chipRun();
-      ok(f, "Stuck_Found_107 = 1");
-      ok(i, "Stuck_StuckIndex_112 = "+J);
-      ok(k, "Stuck_Key_108 = "+J);
-      ok(d, "Stuck_Data_110 = "+(J+1));
+      ok(f, "Stuck_Found_321 = 1");
+      ok(i, "Stuck_StuckIndex_326 = "+J);
+      ok(k, "Stuck_Key_322 = "+J);
+      ok(d, "Stuck_Data_324 = "+(J+1));
      }
    }
 
@@ -4049,7 +4049,7 @@ Merge     : 1
 
     //stop(b.chipPrintMemory());
     ok(""+b.chipPrintMemory(), """
-Chip: Btree            step: 0, maxSteps: 10, running: 0, returnCode: 0
+Chip: Btree            step: 0, maxSteps: 10, running: 0
   Processes:                                                    0  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24
     stuckIsLeaf           memory:                     4 *  1 =  1  0  0  0
     stuckIsFree           memory:                     4 *  1 =  0  1  1  1
@@ -4071,7 +4071,7 @@ Chip: Btree            step: 0, maxSteps: 10, running: 0, returnCode: 0
     if (false) p.new Instruction()
      {void action()
        {ok(b.chipPrintMemory(), """
-Chip: Btree            step: 16, maxSteps: 100, running: 1, returnCode: 0
+Chip: Btree            step: 16, maxSteps: 100, running: 1
   Processes:                                                    0  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24
     stuckIsLeaf           memory:                     4 *  1 =  1  1  0  0
     stuckIsFree           memory:                     4 *  1 =  0  0  0  1
@@ -4097,7 +4097,7 @@ Chip: Btree            step: 16, maxSteps: 100, running: 1, returnCode: 0
     b.chipRun();
     //stop(b.chipPrintMemory());
     ok(b.chipPrintMemory(), """
-Chip: Btree            step: 29, maxSteps: 100, running: 0, returnCode: 0
+Chip: Btree            step: 29, maxSteps: 100, running: 0
   Processes:                                                    0  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24
     stuckIsLeaf           memory:                     4 *  1 =  1  1  0  0
     stuckIsFree           memory:                     4 *  1 =  0  1  1  1
@@ -4202,7 +4202,7 @@ Chip: Btree            step: 29, maxSteps: 100, running: 0, returnCode: 0
     b.chipRun();
     //stop(b.chipPrintMemory());
     //stop(b.btreePrint());
-    ok(r, "findAndInsert_success_176 = 1");
+    ok(r, "findAndInsert_success_430 = 1");
     ok(b.btreePrint(), """
 1,2,3,4=0 |
 """);
@@ -4329,7 +4329,7 @@ Chip: Btree            step: 29, maxSteps: 100, running: 0, returnCode: 0
               2         |
 10,20,30,40=1   50,60=2 |
 """);
-    ok(r, "findAndInsert_success_223 = 1");
+    ok(r, "findAndInsert_success_544 = 1");
    }
 
   static void test_mergeLeavesAtTop()
@@ -4363,7 +4363,7 @@ Chip: Btree            step: 29, maxSteps: 100, running: 0, returnCode: 0
         3               |
 10,20=1   30,40,50,60=3 |
 """);
-    ok(r, "findAndInsert_success_64 = 1");
+    ok(r, "findAndInsert_success_154 = 1");
    }
 
   static String test_mergeLeavesNotTop_dump()
@@ -4548,7 +4548,7 @@ Chip: Btree            step: 29, maxSteps: 100, running: 0, returnCode: 0
                              2          |
 10,20=1   30,40=3    50,60=4    70,80=2 |
 """);
-   ok(r, "findAndInsert_success_359 = 1");
+   ok(r, "findAndInsert_success_881 = 1");
   }
 
   static void test_mergeBranchesNotTop()
@@ -7902,9 +7902,7 @@ Merge     : 0
    }
 
   static void newTests()                                                        // Tests being worked on
-   {//oldTests();
-    //test_delete_ascending();
-    test_verilog_put();
+   {oldTests();
    }
 
   public static void main(String[] args)                                        // Test if called as a program
