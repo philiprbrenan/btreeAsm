@@ -34,8 +34,7 @@ class Chip extends Test                                                         
       chipPrint();                                                              // Print chip state after each step
      }
     if (!chipStop)                                                              // Still running after too many steps
-     {//say(this);
-      stop("Out of steps after:", maxSteps);
+     {stop("Out of steps after:", maxSteps);
      }
    }
 
@@ -48,7 +47,7 @@ class Chip extends Test                                                         
   void N() {if (!chipStop) stop("Running");}                                    // Confirm that the simulation of the chip is not running
 
   String chipStopExpression()                                                   // The or of all the process stop fields as a process can only write directly to its own variables not to global ones.
-   {final StringBuilder s = new StringBuilder();                                    // a
+   {final StringBuilder s = new StringBuilder();
     for (Process p: processes)                                                  // Each process
      {s.append(p.processStopName() + "||");
      }
