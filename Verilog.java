@@ -12,7 +12,7 @@ class Verilog extends Test                                                      
   static final String header  = "vh";                                           // Header file extension name recognized by Vivado
   static final String testExt = "tb";                                           // Extension for test bench
   static final String constraintsExt = "xdc";                                   // Extension for constraints file
-
+  boolean synthesis = false;                                                    // Assign in parallel if true and do the other things required for a successful synthesis
   int indent = 0;                                                               // Current indentation
   final Stack<Line> lines = new Stack<>();                                      // Lines of verilog
 
@@ -38,13 +38,18 @@ class Verilog extends Test                                                      
   class Line
    {final StringBuilder line = new StringBuilder();                             // A line of verilog
     int lineIndent = indent;                                                    // Indentation of this line
-    Line() {lines.push(this);}
+    Line()       {lines.push(this);}
+    Line(Line l) {l.lineIndent += indent;lines.push(l);}
     void a(String s) {line.append(s);}
    }
 
   void A(String s)                                                              // Start of the line
    {final Line l = new Line();
     l.a(s);
+   }
+
+  void A(Verilog v)                                                             // Add verilog within veriopg
+   {for(Line l : v.lines) new Line(l);
    }
 
   void a(String s)                                                              // Continue a line
@@ -61,13 +66,24 @@ class Verilog extends Test                                                      
 
   void begin(String...ints) {A("begin"); indent(); i(ints);}                    // Begin with some optional integer declarations
   void end()                {dedent(); A("end");}                               // End
+  void endCase()            {dedent(); A("endcase");}                           // End
+  void endModule()          {dedent(); A("endmodule");}                         // End
+
+  class Always
+   {Always()
+     {A("always @ (posedge clock) begin"); indent(); Body(); end();             // Always block
+     }
+    void Body() {}
+   }
+
+  String assignOp() {return synthesis ? "<=" : "=";}                            // Assignment operator in use
 
   void assign(String a, String b)                                               // Assign
-   {A(a + " = " + b + ";");
+   {A(a + " " + assignOp()+ " " + b + ";");
    }
 
   void assign(String a, int b)                                                  // Assign
-   {A(a + " = " + b + ";");
+   {A(a + " " + assignOp() + " " + b + ";");
    }
 
   class If                                                                      // If
@@ -190,7 +206,8 @@ class Verilog extends Test                                                      
       A("task "+Task+";");
       indent();
       Body();
-      end();
+      dedent();
+      A("endtask");
      }
     void Body() {}
    }
@@ -203,6 +220,23 @@ class Verilog extends Test                                                      
     ok(Verilog.header .equals("vh"));
     ok(Verilog.testExt.equals("tb"));
     ok(Verilog.constraintsExt.equals("xdc"));
+   }
+
+  static void test_A()
+   {final Verilog v = new Verilog();
+    v.begin();
+    v.end();
+    final Verilog w = new Verilog();
+    w.begin();
+    w.A(v);
+    w.end();
+    //stop(w);
+    ok(w, """
+begin
+  begin
+  end
+end
+""");
    }
 
   static void test_assign()
@@ -336,12 +370,27 @@ end
     ok(v, """
 task aaa;
   // Task body
+endtask
+""");
+   }
+
+  static void test_always()
+   {final Verilog v = new Verilog();
+    v.new Always()
+     {void Body()
+       {v.comment("Always body");
+       }
+     };
+    ok(v, """
+always @ (posedge clock) begin
+  // Always body
 end
 """);
    }
 
   static void oldTests()                                                        // Tests thought to be in good shape
    {test_ext();
+    test_A();
     test_assign();
     test_if();
     test_for();
@@ -352,6 +401,7 @@ end
     test_sum();
     test_ifndef();
     test_task();
+    test_always();
    }
 
   static void newTests()                                                        // Tests being worked on
