@@ -167,19 +167,26 @@ chipStop = true;
      {void action()
        {next.copy(gFreeNext.transactionOutputRegisters.firstElement());
         sFreeRoot.executeTransaction(root, ref);                                // Root points to the stuck being freed
-        sFreeNext.executeTransaction(ref, next);                                // Stuck Root points to the stuck being freed
         isFree.one();
         sIsFree.executeTransaction(ref, isFree);                                // Stuck Root points to the stuck being freed
        }
       void verilog(Verilog v)
        {next.copy(v, gFreeNext.transactionOutputRegisters.firstElement());
         sFreeRoot.executeTransaction(v, root, ref);                             // Root points to the stuck being freed
-        sFreeNext.executeTransaction(v, ref, next);                             // Stuck Root points to the stuck being freed
         isFree.one(v);
         sIsFree.executeTransaction(v, ref, isFree);                             // Stuck Root points to the stuck being freed
        }
      };
     sFreeRoot.waitResultOfTransaction();
+
+    P.new Instruction()                                                         // Next free stuck
+     {void action()
+       {sFreeNext.executeTransaction(ref, next);                                // Stuck Root points to the stuck being freed
+       }
+      void verilog(Verilog v)
+       {sFreeNext.executeTransaction(v, ref, next);                             // Stuck Root points to the stuck being freed
+       }
+     };
     sFreeNext.waitResultOfTransaction();
     sIsFree  .waitResultOfTransaction();
    }
@@ -4114,7 +4121,7 @@ Chip: Btree            step: 16, maxSteps: 100, running: 1
     b.chipRun();
     //stop(b.chipPrintMemory());
     ok(b.chipPrintMemory(), """
-Chip: Btree            step: 29, maxSteps: 100, running: 0
+Chip: Btree            step: 31, maxSteps: 100, running: 0
   Processes:                                                    0  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24
     stuckIsLeaf           memory:                     4 *  1 =  1  1  0  0
     stuckIsFree           memory:                     4 *  1 =  0  1  1  1
@@ -7920,6 +7927,7 @@ Merge     : 0
 
   static void newTests()                                                        // Tests being worked on
    {//oldTests();
+    test_allocate();
     test_verilog_put();
    }
 
