@@ -361,6 +361,8 @@ module %s(                                                                      
        }
      };
 
+    for(Process p: processes) v.comment(p.processNameAndNumber());              // List processes
+
     for(Process p: processes) p.generateProcessVerilog(v, true);                // Generate verilog
 
     v.endModule();
