@@ -1,4 +1,4 @@
-# Test 2025-08-17 at 02:27:29
+# Test 2025-08-17 at 02:30:31
 
 name: Test
 run-name: btreeAsm
@@ -34,7 +34,7 @@ jobs:
 
     - name: Verilog install
       run: |
-        sudo apt install iverilog
+        sudo apt install iverilog yosys
 
     - name: Position files in package
       run: |
