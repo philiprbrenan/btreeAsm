@@ -91,7 +91,7 @@ jobs:
 
     - name: Verilog install
       run: |
-        sudo apt install iverilog
+        sudo apt install iverilog yosys
 
     - name: Position files in package
       run: |
