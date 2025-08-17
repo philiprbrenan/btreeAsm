@@ -206,7 +206,7 @@ class Chip extends Test                                                         
                 ", "+ra+", "+fa+", "+t.transactionRcName()+
                 ", "+t.transactionExecutableV()+", "+t.transactionFinishedV()+");\n");
 
-              if (t.transactionInputRegisters.size() > 0)                           // Transaction inputs
+              if (t.transactionInputRegisters.size() > 0)                       // Transaction inputs
                {v.A("$fwrite(o, \"          Inputs      :\\n\");");
                 for (Process.Register r : t.transactionInputRegisters)
                  {v.A("$fwrite(o, \"            %-38s = %1d\\n\", \""+
@@ -214,7 +214,7 @@ class Chip extends Test                                                         
                  }
                }
 
-              if (t.transactionOutputRegisters.size() > 0)                          // Transaction outputs
+              if (t.transactionOutputRegisters.size() > 0)                      // Transaction outputs
                {v.A("$fwrite(o, \"          Outputs     :\\n\");\n");
                 for (Process.Register r : t.transactionOutputRegisters)
                  {v.A("$fwrite(o, \"            %-38s = %1d\\n\", \""+
@@ -235,7 +235,7 @@ class Chip extends Test                                                         
 
 //D3 Simulation                                                                 // Verilog used to simulate the chip
 
-  String chipRunVerilogGenerate()                                                  // Generate Verilog describing the chip
+  String chipRunVerilogGenerate()                                               // Generate Verilog describing the chip
    {final Verilog v = new Verilog();
     v.A(String.format("""
 //-----------------------------------------------------------------------------
@@ -338,8 +338,8 @@ module %s(                                                                      
   input                 reset,                                                  // Reset chip
 """, chipName));
     v.indent();
-    for(Process.Register r: registersInput ()) v.A(r.registerDeclare());
-    for(Process.Register r: registersOutput()) v.A(r.registerDeclare());
+    for(Process.Register r: registersInput ()) v.A(r.registerDeclareModuleParameter()+",");
+    for(Process.Register r: registersOutput()) v.A(r.registerDeclareModuleParameter()+",");
 
     v.A("output wire            stop                                            // Program has stopped when this goes high");
     v.A(");");
@@ -379,7 +379,8 @@ module %s(                                                                      
     final String c =
       String.format("yosys -q -T -p \"read_verilog %s; synth -top %s; write_json %s\" 2> %s",
         sourceFile, chipName, jsonFile, stdoutFile);
-    final var e = new ExecCommand(c);                                           // Run Verilog
+    say(c);
+//    final var e = new ExecCommand(c);                                         // Run Verilog
    }
 
 //D2 Process
@@ -506,15 +507,17 @@ module %s(                                                                      
 //D2 Register                                                                   // A register is a block of memory that can be accessed within the current clock cycle
 
     class Register                                                              // A register is a block of memory that can be accessed within the current clock cycle
-     {final String registerName;                                                // The name of the register
+     {final String registerBaseName;                                            // The base name of the register with a uniqu making number appended
+      final String registerName;                                                // The name of the register
       final int    registerBits;                                                // Number of bits the register can hold
-      BitSet value = new BitSet();                                              // Current value of the register in Java
+      BitSet  value = new BitSet();                                             // Current value of the register in Java
       boolean input = false, output = false;                                    // Register uis comnectd to input pins or output pins
 
       Register(String RegisterName, int RegisterBits)                           // Create the register
        {N();
-        final String n = registerName = RegisterName + "_" + registers.size();
-        registerBits = RegisterBits;
+        registerBaseName = RegisterName;
+        final String n   = registerName = RegisterName + "_" + registers.size();
+        registerBits     = RegisterBits;
         registers.put(n, this);                                                 // Save registers associated with each process
        }
 
@@ -566,16 +569,18 @@ module %s(                                                                      
 
       public String toString() {return registerName()+" = "+registerGet();}     // Print the register
 
-      String registerDeclare()                                                  // Declare a register in Verilog
+      String registerDeclareModuleParameter()                                   // Declare a register in Verilog
        {if (input)
-         {return "input wire ["+registerBits+"-1:0] "+registerName+",";
+         {return "input wire ["+registerBits+"-1:0] "+registerBaseName;
          }
-        else
-         {return "output reg ["+registerBits+"-1:0] "+registerName+",";
+        else if (output)
+         {return "output reg ["+registerBits+"-1:0] "+registerBaseName;
+         }
+        else                                                                    // The caller has not told us whether the parameter is for input or output
+         {stop("Module parameter:", registerBaseName, "must be input or output");
+          return null;
          }
        }
-
-      void registerDeclare(Verilog v) {v.A(registerDeclare());}                 // Declare a register in Verilog
 
 //D3 Arithmetic                                                                 // Operations on registers
 
@@ -1019,7 +1024,9 @@ module %s(                                                                      
 //D2 Memory Process                                                             // Processes that manage memory used by other processes
 
   class Memory extends Process                                                  // A process whose main purpose is to maintain memory
-   {Memory(String ProcessName, int MemorySize, int MemoryWidth)                 // Create a memory process
+   {final Map<String, Get> memoryGetFromProcess = new TreeMap<>();              // Locate a get transaction associated with this memory by name
+    final Map<String, Set> memorySetIntoProcess = new TreeMap<>();              // Locate a set transaction associated with this memory by name
+    Memory(String ProcessName, int MemorySize, int MemoryWidth)                 // Create a memory process
      {super(ProcessName, MemorySize, MemoryWidth);
       memoryProcessGenerate();                                                  // Generate the code to execute this process
      }
@@ -1027,7 +1034,7 @@ module %s(                                                                      
      {final Process  process;                                                   // The calling process
       final Register index;                                                     // The index of the element whose value is required
       final Register result;                                                    // The value of the memory at the specified index
-      Get(Process Process)                                                      // Get the value from memory at the indicated index
+      Get(Process Process)                                                      // Get a value from memory at the indicated index for the calling process
        {super(processName+"_"+(++memoryProcessTransactionNumber),
           Process, "get");
         process = Process;                                                      // The calling process requesting a value from the memory of this memory process
@@ -1035,6 +1042,7 @@ module %s(                                                                      
         result  = register(transactionName+"_result", memoryWidth);             // The register that will contain the result
         transactionInputRegisters(index);                                       // Make the index an input register
         transactionOutputRegisters(result);                                     // Make the result an output register
+        memoryGetFromProcess.put(Process.processName, this);                    // Make it possible to reuse this transaction from the calling proccess rather than creating a new one each time
        }
 
       void executeTransaction(Register Index)                                   // Execute the request in Java
@@ -1063,6 +1071,13 @@ module %s(                                                                      
        }
      } // Get
 
+    Memory.Get memoryGetFromProcess(Process Caller)                             // Reuse the existing transaction if it exists else create a new one
+     {if (memoryGetFromProcess.containsKey(Caller.processName))
+       {return memoryGetFromProcess.get(Caller.processName);                    // Return existing transaction
+       }
+      return new Get(Caller);                                                   // Create a transaction to allow the caller to get items from this memory process
+     }
+
     class Set extends Process.Transaction                                       // Set an indexed memory element to a specified value
      {final Process  process;                                                   // The calling process
       final Register index;                                                     // The index of the element whose value is required
@@ -1075,6 +1090,7 @@ module %s(                                                                      
         value   = transactionCallingProcess.register(transactionName+"_value", memoryWidth);        // The register that will contain the value to be written into memory
         transactionInputRegisters(index);                                       // Make the index an input register
         transactionInputRegisters(value);                                       // Make the value an input register
+        memorySetIntoProcess.put(Process.processName, this);                    // Make it possible to reuse this transaction from the calling proccess rather than creating a new one each time
        }
 
       void executeTransaction(Register Index, Register Value)                   // Execute the requested memory update request
@@ -1102,6 +1118,13 @@ module %s(                                                                      
          };
        }
      } // Set
+
+    Memory.Set memorySetIntoProcess(Process Caller)                             // Reuse the existing transaction if it exists else create a new one
+     {if (memorySetIntoProcess.containsKey(Caller.processName))
+       {return memorySetIntoProcess.get(Caller.processName);                    // Return existing transaction
+       }
+      return new Set(Caller);                                                   // Create a transaction to allow the caller to set items into this memory process
+     }
 
     void memoryProcessGenerate()                                                // Generate the code needed to support the transactions against this memory process
      {new Instruction()                                                         // Process memory requests
@@ -1137,7 +1160,7 @@ module %s(                                                                      
                {if (t.transactionOpCode.equals("get"))                          // Memory get requests
                  {final Register I = t.transactionInputRegisters.elementAt(0);  // Address index register
                   final Register O = t.transactionOutputRegisters.elementAt(0); // Register to hold value of memory at index
-                  v.A(memoryGetV(I)+"; //AAAAA "+I.registerName());             // Set output register with value of memory at index
+                  v.A(memoryGetV(I)+";");                                       // Set output register with value of memory at index
                   O.copy(v, memoryRegister);                                    // Set output register with value of memory at index
                   t.transactionSetFinished(v);                                  // Mark the transaction as complete
                  }
@@ -1175,7 +1198,73 @@ module %s(                                                                      
     c.chipRun();
    }
 
-  static void test_memoryProcess()
+  static void test_memoryProcessReuse()
+   {final int B = 8, N = 16;
+    var c  = chip("Test");
+    var m  = c.new Memory("Memory", N, B);
+    var r  = c.process("Requests");
+
+    var ri = r.register("index1",  B);
+    var rt = m.new Get(r);
+
+    r.new Instruction()                                                         // Preload memory
+     {void action()
+       {for (int i = 0; i < N; i++)
+         {m.memoryRegister.registerSet(i+1);
+          m.memorySet(i);
+         }
+        m.memoryRegister.registerSet(0);
+       }
+
+      void verilog(Verilog v)
+       {for (int i = 0; i < N; i++)
+         {m.memoryRegister.registerSet(v, i+1);
+          m.memorySet(v, i);
+         }
+        m.memoryRegister.registerSet(v, 0);
+       }
+     };
+
+    r.new Instruction()                                                         // Request the value of an indexed element of memory
+     {final Memory.Get g = m.memoryGetFromProcess(r);                           // Find the transaction so it can be reused
+      void action()
+       {ri.registerSet(1);                                                      // Index of memory requested
+        g.executeTransaction(ri);                                               // Request value of memory at the index
+       }
+      void verilog(Verilog v)
+       {ri.registerSet      (v, 1);
+        g.executeTransaction(v, ri);
+       }
+     };
+    rt.waitResultOfTransaction();                                               // Request value of memory at the index
+
+    c.chipRunJava();
+
+    ok(rt.transactionOutputRegisters.firstElement().registerGet(), 2);
+    //stop(c);
+    ok(""+c, """
+Chip: Test             step: 4, maxSteps: 10, running: 0
+  Processes:
+    Process: 0 - Memory                instructions: 1, pc: 0, nextPc: 0, rc: 0
+      Memory: 16 * 8 = 1,  2,  3,  4,  5,  6,  7,  8,  9, 10, 11, 12, 13, 14, 15, 16
+      Registers :
+        Register: Memory_Memory_Value_0            = 2
+        Register: Memory_Memory_1_result_1         = 2
+      Transactions:
+        Transaction   : get      - Memory_1          requested at: 1, finished at: 2, returnCode: 0, executable: 0, finished: 1
+          Inputs      :
+            Requests_Memory_1_index_1              = 1
+          Outputs     :
+            Memory_Memory_1_result_1               = 2
+    Process: 1 - Requests              instructions: 3, pc: 4, nextPc: -1, rc: 0
+      Registers :
+        Register: Requests_index1_0                = 1
+        Register: Requests_Memory_1_index_1        = 1
+""");
+    c.chipRunVerilog();
+   }
+
+  static void test_memoryProcessParallel()
    {final int B = 8, N = 16;
     var c  = chip("Test");
     var m  = c.new Memory("Memory", N, B);
@@ -1189,7 +1278,6 @@ module %s(                                                                      
 
     var tv = r.register("value",   B);
     var tt = m.new Set(r);
-    var in = "          ";
 
     r.new Instruction()                                                         // Preload memory
      {void action()
@@ -1239,8 +1327,7 @@ module %s(                                                                      
         tt.executeTransaction(si, tv);                                          // Request value of memory at the index
        }
       void verilog(Verilog v)
-       {v.A("$display(\"AAA %d\", "+si.registerName()+");");
-        tv.registerSet(v, 33);
+       {tv.registerSet(v, 33);
         tt.executeTransaction(v, si, tv);
        }
      };
@@ -1255,7 +1342,6 @@ module %s(                                                                      
        }
      };
 
-    m.memoryProcessGenerate();
     c.chipRunJava();
 
     ok(rt.transactionOutputRegisters.firstElement().registerGet(), 2);
@@ -1264,7 +1350,7 @@ module %s(                                                                      
     ok(""+c, """
 Chip: Test             step: 8, maxSteps: 10, running: 0
   Processes:
-    Process: 0 - Memory                instructions: 2, pc: 0, nextPc: 0, rc: 0
+    Process: 0 - Memory                instructions: 1, pc: 0, nextPc: 0, rc: 0
       Memory: 16 * 8 = 1,  2, 33,  4,  5,  6,  7,  8,  9, 10, 11, 12, 13, 14, 15, 16
       Registers :
         Register: Memory_Memory_Value_0            = 33
@@ -1556,7 +1642,8 @@ Chip: Test             step: 0, maxSteps: 10, running: 0
 
   static void oldTests()                                                        // Tests thought to be in good shape
    {test_stop();
-    test_memoryProcess();
+    test_memoryProcessReuse();
+    test_memoryProcessParallel();
     test_arithmeticFibonacci();
     test_block();
     test_if();
@@ -1566,7 +1653,6 @@ Chip: Test             step: 0, maxSteps: 10, running: 0
 
   static void newTests()                                                        // Tests being worked on
    {oldTests();
-    test_stop();
    }
 
   public static void main(String[] args)                                        // Test if called as a program
