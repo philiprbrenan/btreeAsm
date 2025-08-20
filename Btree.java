@@ -7926,8 +7926,8 @@ Merge     : 0
    }
 
   static void newTests()                                                        // Tests being worked on
-   {oldTests();
-    test_allocate();
+   {//oldTests();
+    //test_allocate();
     test_verilog_put();
    }
 
