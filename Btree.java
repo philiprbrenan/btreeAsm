@@ -4,11 +4,7 @@
 //------------------------------------------------------------------------------
 package com.AppaApps.Silicon;                                                   // Btree in a block on the surface of a silicon chip.
 // Squeeze out all redundant variables and check all code paths are being tested
-// Remove stuckIsFree if possible
-// Remove Instructions from split and  merge
-// Write a tree to a file and reload it
-// Improve chipPrint memory so the columns line up vertically
-// Add verilog
+// Remove Instructions from split and merge stuck operations
 import java.util.*;
 
 class Btree extends Chip                                                        // Manipulate a btree in a block of memory
@@ -756,7 +752,7 @@ chipStop = true;
        }
      }
 
-    void search_eq(Verilog v, Process.Register Key)                                        // Find the specified key if possible in the stuck
+    void search_eq(Verilog v, Process.Register Key)                             // Find the specified key if possible in the stuck
      {Found.zero(v);
       for (int i = 0; i < maxStuckSize; ++i)
        {final int I = i;
@@ -1030,7 +1026,6 @@ chipStop = true;
                       data[T+I].copy(v, source.data[I]);
                      }
                     size.add(v, S);
-                    v.comment("BBBBBB");
                     MergeSuccess.one(v);
                    }
                  };
@@ -1190,20 +1185,24 @@ chipStop = true;
             P.new Block()                                                       // Inner block contains leaf code
              {void code()
                {final Process.Label lEnd = end;
-                P.new Instruction()
+                P.new Instruction(true)
                  {void action()
                    {if (isLeaf.registerGet() == 0) P.Goto(lEnd);                // Not a leaf so go to code for branch
+                    else P.processPc++;
                    }
                   void verilog(Verilog v)                                       // Not a leaf so go to code for branch
                    {v.new If (isLeaf.registerName() + " == 0")
                      {void Then()
                        {P.Goto(v, lEnd);
                        }
+                      void Else()
+                       {v.inc(P.processPcName());
+                       }
                      };
                    }
                  };
                 Leaf();                                                         // On a leaf
-                P.new Instruction()                                             // Exit outer block
+                P.new Instruction(true)                                         // Exit outer block
                  {void action()
                    {P.Goto(bEnd);
                    }
@@ -1231,8 +1230,8 @@ chipStop = true;
      {padStrings(P, level);
 
       final StringBuilder s = new StringBuilder();                              // String builder
-      for  (int i = 0; i < stuckSize.memoryGetNoSet(BtreeIndex); i++)
-       {s.append(""+stuckKeys[i].memoryGetNoSet(BtreeIndex)+",");
+      for  (int i = 0; i < stuckSize.memoryGet(BtreeIndex); i++)
+       {s.append(""+stuckKeys[i].memoryGet(BtreeIndex)+",");
        }
       if (s.length() > 0) s.setLength(s.length()-1);                            // Remove trailing comma if present
       s.append("="+BtreeIndex+" ");
@@ -1244,31 +1243,31 @@ chipStop = true;
      {if (level > maxPrintLevels) return;
       padStrings(P, level);
       final int L = level * linesToPrintABranch;                                // Start line at which to print branch
-      final int K = stuckSize.memoryGetNoSet(BtreeIndex);                            // Size of branch
+      final int K = stuckSize.memoryGet(BtreeIndex);                            // Size of branch
 
       if (K > 0)                                                                // Branch has key, next pairs
        {for  (int i = 0; i < K; i++)
-         {final int key  = stuckKeys[i].memoryGetNoSet(BtreeIndex);
-          final int data = stuckData[i].memoryGetNoSet(BtreeIndex);
-          if (stuckIsLeaf.memoryGetNoSet(data) > 0)
+         {final int key  = stuckKeys[i].memoryGet(BtreeIndex);
+          final int data = stuckData[i].memoryGet(BtreeIndex);
+          if (stuckIsLeaf.memoryGet(data) > 0)
            {printLeaf  (data, P, level+1);
            }
           else
            {printBranch(data, P, level+1);
            }
 
-          P.elementAt(L+0).append(""+stuckKeys[i].memoryGetNoSet(BtreeIndex));       // Key
+          P.elementAt(L+0).append(""+stuckKeys[i].memoryGet(BtreeIndex));       // Key
           P.elementAt(L+1).append(""+BtreeIndex+(i > 0 ?  "."+i : ""));         // Branch,key, next pair
-          P.elementAt(L+2).append(""+stuckData[i].memoryGetNoSet(BtreeIndex));
+          P.elementAt(L+2).append(""+stuckData[i].memoryGet(BtreeIndex));
          }
        }
       else                                                                      // Branch is empty so print just the index of the branch
        {P.elementAt(L+0).append(""+BtreeIndex+"Empty");
        }
-      final int top = stuckData[K].memoryGetNoSet(BtreeIndex);                       // Top next will always be present
+      final int top = stuckData[K].memoryGet(BtreeIndex);                       // Top next will always be present
       P.elementAt(L+3).append(top);                                             // Append top next
 
-      if (stuckIsLeaf.memoryGetNoSet(top) > 0)                                       // Print leaf
+      if (stuckIsLeaf.memoryGet(top) > 0)                                       // Print leaf
        {printLeaf  (top, P, level+1);
        }
       else                                                                      // Print branch
@@ -1311,7 +1310,7 @@ chipStop = true;
 
   String btreePrint()                                                           // Print a tree horizontally
    {final Stack<StringBuilder> P = new Stack<>();
-    if (stuckIsLeaf.memoryGetNoSet(0) > 0) printLeaf(0, P, 0); else printBranch(0, P, 0);
+    if (stuckIsLeaf.memoryGet(0) > 0) printLeaf(0, P, 0); else printBranch(0, P, 0);
     return printCollapsed(P);
    }
 
@@ -1680,7 +1679,7 @@ chipStop = true;
          };
         p.stuckGetRoot();                                                       // Load root
 
-        P.new Instruction()                                                     // Check that the root has one entry and thus two children
+        P.new Instruction(true)                                                     // Check that the root has one entry and thus two children
          {void action()
            {test.eq(p.size, 1);                                                 // Number of entries in root
             P.GoZero(end, test);                                                // Wrong number of entries in root
@@ -2213,10 +2212,9 @@ chipStop = true;
       P.new Block()
        {void code()
          {stuckGet(BtreeIndex);                                                 // Load current stuck
-
           new IsLeaf()
            {void Leaf()                                                         // At a leaf - search for exact match
-             {P.new Instruction()
+             {P.new Instruction(true)
                {void action()
                  {search_eq(Key);                                               // Search
                   P.Goto(end);                                                  // Key not present
@@ -2228,7 +2226,7 @@ chipStop = true;
                };
              }
             void Branch()                                                       // On a branch - step to next level down
-             {P.new Instruction()
+             {P.new Instruction(true)
                {void action()
                  {search_le(Key);                                               // Search stuck for matching key
                   BtreeIndex.copy(Data);
@@ -2265,15 +2263,17 @@ chipStop = true;
        {void code()
          {findSearch(Key);                                                      // Find the leaf that should contain the key and possibly the key.
 
-          P.new Instruction()
+          P.new Instruction(true)
            {void action()
              {if (Found.registerGet() > 0)                                      // Found the key in the leaf so update it with the new data
                {setElementAt(StuckIndex, Key, Data);
+                P.processPc++;
                }
               else if (size.registerGet() < maxStuckSize)                       // Check whether the stuck is full
                {search_le(Key);
                 insertElementAt(StuckIndex, Key, Data);
                 Found.one();
+                P.processPc++;
                }
               else P.Goto(end);                                                 // No insertion so no need to update memory
              }
@@ -2281,6 +2281,7 @@ chipStop = true;
              {v.new If (Found.registerName() + " > 0")                          // Found the key in the leaf so update it with the new data
                {void Then()
                  {setElementAt(v, StuckIndex, Key, Data);
+                  v.inc(P.processPcName());
                  }
                 void Else()
                  {v.new If (size.registerName() + " < " + maxStuckSize)         // Check whether the stuck is full
@@ -2288,6 +2289,7 @@ chipStop = true;
                      {search_le(v, Key);
                       insertElementAt(v, StuckIndex, Key, Data);
                       Found.one(v);
+                      v.inc(P.processPcName());
                      }
                     void Else()
                      {P.Goto(v, end);                                           // No insertion so no need to update memory
@@ -2760,11 +2762,17 @@ Chip: Btree            step: 0, maxSteps: 10, running: 0
         P.new Instruction()
          {void action()
            {k.registerSet(I); d.registerSet(I+1);
-            s.push(k, d);
            }
           void verilog(Verilog v)
            {k.registerSet(v, I); d.registerSet(v, I+1);
-            s.push(v, k, d);
+           }
+         };
+        P.new Instruction()
+         {void action()
+           {s.push(k, d);
+           }
+          void verilog(Verilog v)
+           {s.push(v, k, d);
            }
          };
        }
@@ -2781,7 +2789,7 @@ Chip: Btree            step: 0, maxSteps: 10, running: 0
     final Btree   b = test_push();
     final Process P = b.processes.get("Stuck");
     final Stuck   s = b.new Stuck(P, "root");
-
+    P.processTrace = true;
     s.stuckGetRoot();
     b.maxSteps = 100;
     b.chipRun();
@@ -2990,6 +2998,7 @@ Merge     : 0
     final Stuck   s = b.new Stuck(P, "stuck");
     final Process.Register k = s.Key;
     final Process.Register d = s.Data;
+    P.processTrace = true;
 
     P.processClear();
     s.stuckGetRoot();
@@ -3047,12 +3056,18 @@ Merge     : 0
      {void action()
        {s.pop();
         k.registerSet(5); d.registerSet(55);
-        s.setPastLastElement(k, d);
        }
       void verilog(Verilog v)
        {s.pop(v);
         k.registerSet(v, 5); d.registerSet(v, 55);
-        s.setPastLastElement(v, k, d);
+       }
+     };
+    P.new Instruction()
+     {void action()
+       {s.setPastLastElement(k, d);
+       }
+      void verilog(Verilog v)
+       {s.setPastLastElement(v, k, d);
        }
      };
 
@@ -3103,6 +3118,7 @@ Merge     : 0
     final Stuck   s = b.new Stuck(P, "stuck");
     final Process.Register i = P.register("i", b.stuckAddressSize);
     final StringBuilder    S = new StringBuilder();
+    P.processTrace = true;
 
     final int N = 4;
     for (int j = 0; j < N; j++)
@@ -3112,11 +3128,17 @@ Merge     : 0
       P.new Instruction()
        {void action()
          {i.registerSet(J);
-          s.elementAt(i);
          }
         void verilog(Verilog v)
          {i.registerSet(v, J);
-          s.elementAt(v, i);
+         }
+       };
+      P.new Instruction()
+       {void action()
+         {s.elementAt(i);
+         }
+        void verilog(Verilog v)
+         {s.elementAt(v, i);
          }
        };
 
@@ -3201,6 +3223,7 @@ Merge     : 0
     final Process.Register k = P.register("k", b.bitsPerKey);
     final Process.Register d = P.register("d", b.bitsPerData);
     final Process.Register i = P.register("i", b.stuckAddressSize);
+    P.processTrace = true;
 
     P.processClear();
     s.stuckGetRoot();
@@ -3212,13 +3235,19 @@ Merge     : 0
          {i.registerSet(J);
           k.registerSet(J+1);
           d.registerSet((J+1)*2);
-          s.setElementAt(i, k, d);
          }
         void verilog(Verilog v)
          {i.registerSet(v, J);
           k.registerSet(v, J+1);
           d.registerSet(v, (J+1)*2);
-          s.setElementAt(v, i, k, d);
+         }
+       };
+      P.new Instruction()
+       {void action()
+         {s.setElementAt(i, k, d);
+         }
+        void verilog(Verilog v)
+         {s.setElementAt(v, i, k, d);
          }
        };
      }
@@ -3243,6 +3272,7 @@ Stuck: stuck size: 5, leaf: 1, root
     final Process.Register k = P.register("k", b.bitsPerKey);
     final Process.Register d = P.register("d", b.bitsPerData);
     final Process.Register i = P.register("i", b.stuckAddressSize);
+    P.processTrace = true;
 
     P.processClear();
     s.stuckGetRoot();
@@ -3253,12 +3283,18 @@ Stuck: stuck size: 5, leaf: 1, root
        {void action()
          {i.registerSet(J);
           d.registerSet((J+1)*2);
-          s.setDataAt(i, d);
          }
         void verilog(Verilog v)
          {i.registerSet(v, J);
           d.registerSet(v, (J+1)*2);
-          s.setDataAt(v, i, d);
+         }
+       };
+      P.new Instruction()
+       {void action()
+         {s.setDataAt(i, d);
+         }
+        void verilog(Verilog v)
+         {s.setDataAt(v, i, d);
          }
        };
      }
@@ -3276,11 +3312,12 @@ Stuck: stuck size: 4, leaf: 1, root
 
   static void test_setPastLastElement()
    {sayCurrentTestName();
-    final Btree b = test_push();
+    final Btree   b = test_push();
     final Process P = b.processes.get("Stuck");
     final Stuck   s = b.new Stuck(P, "stuck");
     final Process.Register k = P.register("k", b.bitsPerKey);
     final Process.Register d = P.register("d", b.bitsPerData);
+    P.processTrace = true;
 
     P.processClear();
     s.stuckGetRoot();
@@ -3288,12 +3325,18 @@ Stuck: stuck size: 4, leaf: 1, root
      {void action()
        {k.registerSet(5);
         d.registerSet(55);
-        s.setPastLastElement(k, d);
        }
       void verilog(Verilog v)
        {k.registerSet(v, 5);
         d.registerSet(v, 55);
-        s.setPastLastElement(v, k, d);
+       }
+     };
+    P.new Instruction()
+     {void action()
+       {s.setPastLastElement(k, d);
+       }
+      void verilog(Verilog v)
+       {s.setPastLastElement(v, k, d);
        }
      };
 
@@ -3328,6 +3371,7 @@ Merge     : 0
     final Process.Register k = P.register("k", b.bitsPerKey);
     final Process.Register d = P.register("d", b.bitsPerData);
     final Process.Register i = P.register("i", b.stuckAddressSize);
+    P.processTrace = true;
 
     P.processClear();
     s.stuckGetRoot();
@@ -3336,13 +3380,19 @@ Merge     : 0
        {i.registerSet(1);
         k.registerSet(5);
         d.registerSet(55);
-        s.insertElementAt(i, k, d);
        }
      void verilog(Verilog v)
        {i.registerSet(v, 1);
         k.registerSet(v, 5);
         d.registerSet(v, 55);
-        s.insertElementAt(v, i, k, d);
+       }
+     };
+    P.new Instruction()
+     {void action()
+       {s.insertElementAt(i, k, d);
+       }
+     void verilog(Verilog v)
+       {s.insertElementAt(v, i, k, d);
        }
      };
 
@@ -3367,17 +3417,24 @@ Stuck: stuck size: 5, leaf: 1, root
     final Process.Register k = s.Key;
     final Process.Register d = s.Data;
     final Process.Register i = P.register("i", b.stuckAddressSize);
+    P.processTrace = true;
 
     P.processClear();
     s.stuckGetRoot();
     P.new Instruction()
      {void action()
        {i.registerSet(1);
-        s.removeElementAt(i);
        }
       void verilog(Verilog v)
        {i.registerSet(v, 1);
-        s.removeElementAt(v, i);
+       }
+     };
+    P.new Instruction()
+     {void action()
+       {s.removeElementAt(i);
+       }
+      void verilog(Verilog v)
+       {s.removeElementAt(v, i);
        }
      };
 
@@ -3403,6 +3460,7 @@ Stuck: stuck size: 3, leaf: 1, root
     final Process.Register d = s.Data;
     final Process.Register i = s.StuckIndex;
     final Process.Register f = s.Found;
+    P.processTrace = true;
 
     P.processClear();
     s.stuckGetRoot();
@@ -3410,11 +3468,18 @@ Stuck: stuck size: 3, leaf: 1, root
     P.new Instruction()
      {void action()
        {k.registerSet(11);
-        s.search_eq(k);
        }
       void verilog(Verilog v)
        {k.registerSet(v, 11);
-        s.search_eq(v, k);
+       }
+     };
+
+    P.new Instruction()
+     {void action()
+       {s.search_eq(k);
+       }
+      void verilog(Verilog v)
+       {s.search_eq(v, k);
        }
      };
 
@@ -3430,11 +3495,17 @@ Stuck: stuck size: 3, leaf: 1, root
       P.new Instruction()
        {void action()
          {k.registerSet(J);
-          s.search_eq(k);
          }
         void verilog(Verilog v)
          {k.registerSet(v, J);
-          s.search_eq(v, k);
+         }
+       };
+      P.new Instruction()
+       {void action()
+         {s.search_eq(k);
+         }
+        void verilog(Verilog v)
+         {s.search_eq(v, k);
          }
        };
 
@@ -3458,6 +3529,7 @@ Stuck: stuck size: 3, leaf: 1, root
     final Process.Register d = P.register("d", D);
     final Process.Register i = P.register("i", b.stuckAddressSize);
     final Process.Register f = P.register("f", 1);
+    P.processTrace = true;
 
     s.stuckGetRoot();
     for (int j = 0; j < S; j++)
@@ -3465,11 +3537,17 @@ Stuck: stuck size: 3, leaf: 1, root
       P.new Instruction()
        {void action()
          {k.registerSet(J); d.registerSet(J+1);
-          s.push(k, d);
          }
         void verilog(Verilog v)
          {k.registerSet(v, J); d.registerSet(v, J+1);
-          s.push(v, k, d);
+         }
+       };
+      P.new Instruction()
+       {void action()
+         {s.push(k, d);
+         }
+        void verilog(Verilog v)
+         {s.push(v, k, d);
          }
        };
      }
@@ -3489,11 +3567,17 @@ Stuck: stuck size: 4, leaf: 1, root
     P.new Instruction()
      {void action()
        {k.registerSet(11);
-        s.search_le(k);
        }
       void verilog(Verilog v)
        {k.registerSet(v, 11);
-        s.search_le(v, k);
+       }
+     };
+    P.new Instruction()
+     {void action()
+       {s.search_le(k);
+       }
+      void verilog(Verilog v)
+       {s.search_le(v, k);
        }
      };
 
@@ -3946,6 +4030,7 @@ Stuck: stuck size: 8, leaf: 1, root
     final Stuck   S = b.new Stuck(P, "Stuck");
     final Process.Register k = P.register("k", b.bitsPerKey);
     final Process.Register o = P.register("o", 8);
+    P.processTrace = true;
 
     P.processClear();
     s.stuckGetRoot();
@@ -4208,7 +4293,6 @@ Chip: Btree            step: 31, maxSteps: 100, running: 0
     f.findAndInsert(k, d);
     b.chipRun();
 
-    final Stuck S = b.new Stuck(P, "Test");
     P.processClear();
     b.splitRootLeaf(P);
     b.chipRun();
@@ -4806,7 +4890,7 @@ Merge     : 0
 
     final FindAndInsert f = b.new FindAndInsert(P);
     b.maxSteps = 2000;
-
+    P.processTrace = true;
     P.processClear();
     P.new Instruction()
      {void action()
@@ -4904,8 +4988,10 @@ Merge     : 0
         d.registerSet(v, 60);
        }
      };
+
     f.findAndInsert(k, d);
     b.chipRun();
+    //stop(b.chipPrintMemory());
     //stop(b.btreePrint());
     ok(b.btreePrint(), """
         25           |
@@ -5076,6 +5162,7 @@ Merge     : 0
      };
     f.findAndInsert(k, d);
     b.chipRun();
+
     //stop(b.btreePrint());
     ok(b.btreePrint(), """
                   45                        |
@@ -7926,9 +8013,10 @@ Merge     : 0
    }
 
   static void newTests()                                                        // Tests being worked on
-   {//oldTests();
-    //test_allocate();
-    test_verilog_put();
+   {oldTests();
+    //test_verilog_put();
+    //test_findAndInsert();
+    test_mergeLeavesIntoRoot();
    }
 
   public static void main(String[] args)                                        // Test if called as a program
