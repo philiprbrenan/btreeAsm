@@ -12,6 +12,7 @@ class Verilog extends Test                                                      
   static final String header  = "vh";                                           // Header file extension name recognized by Vivado
   static final String testExt = "tb";                                           // Extension for test bench
   static final String constraintsExt = "xdc";                                   // Extension for constraints file
+  boolean parallel  = false;                                                    // Assign in parallel if true - inplied by synthesis being true
   boolean synthesis = false;                                                    // Assign in parallel if true and do the other things required for a successful synthesis
   int indent = 0;                                                               // Current indentation
   final Stack<Line> lines = new Stack<>();                                      // Lines of verilog
@@ -76,7 +77,7 @@ class Verilog extends Test                                                      
     void Body() {}
    }
 
-  String assignOp() {return synthesis ? "<=" : "=";}                            // Assignment operator in use
+  String assignOp() {return synthesis || parallel ? "<=" : "=";}                // Assignment operator in use
 
   void assign(String a, String b)                                               // Assign
    {A(a + " " + assignOp()+ " " + b + ";");
@@ -84,6 +85,14 @@ class Verilog extends Test                                                      
 
   void assign(String a, int b)                                                  // Assign
    {A(a + " " + assignOp() + " " + b + ";");
+   }
+
+  void inc(String a)                                                            // Increment
+   {A(a + " " + assignOp() + " " + a + " + 1;");
+   }
+
+  void dec(String a)                                                            // Decrement
+   {A(a + " " + assignOp() + " " + a + " - 1;");
    }
 
   class If                                                                      // If
@@ -100,6 +109,26 @@ class Verilog extends Test                                                      
       end();
       if (E == e)                                                               // Suppress empty else
        {lines.pop(); lines.pop();
+       }
+     }
+    void Then() {}
+    void Else() {}
+   }
+
+  class ElseIf                                                                  // Else If chain
+   {ElseIf(String condition, boolean Start, boolean End)
+     {final String ie = Start ? "if" : "else if";
+      A(ie+" ("+condition+") begin");
+      indent();
+      Then();
+      end();
+      if (End)
+       {A("else begin");
+        indent();
+        final int e = lines.size();
+        Else();
+        final int E = lines.size();
+        end();
        }
      }
     void Then() {}
@@ -263,6 +292,35 @@ end
 """);
    }
 
+  static void test_elseIf()
+   {final Verilog v = new Verilog();
+    v.new ElseIf ("a == 1", true, false)
+     {void Then() {v.assign("A", "1");}
+     };
+    v.new ElseIf ("a == 2", false, false)
+     {void Then() {v.assign("A", "2");}
+     };
+    v.new ElseIf ("a == 3", false, true)
+     {void Then() {v.assign("A", "3");}
+      void Else() {v.assign("A", "-1");}
+     };
+    //stop(v);
+    ok(""+v, """
+if (a == 1) begin
+  A = 1;
+end
+else if (a == 2) begin
+  A = 2;
+end
+else if (a == 3) begin
+  A = 3;
+end
+else begin
+  A = -1;
+end
+""");
+   }
+
   static void test_for()
    {final Verilog v = new Verilog();
     v.new For ("i", "i < n")
@@ -388,11 +446,22 @@ end
 """);
    }
 
+  static void test_inc()
+   {final Verilog v = new Verilog();
+    v.inc("a");
+    v.dec("b");
+    ok(v, """
+a = a + 1;
+b = b - 1;
+""");
+   }
+
   static void oldTests()                                                        // Tests thought to be in good shape
    {test_ext();
     test_A();
     test_assign();
     test_if();
+    test_elseIf();
     test_for();
     test_case();
     test_comment();
@@ -402,10 +471,12 @@ end
     test_ifndef();
     test_task();
     test_always();
+    test_inc();
    }
 
   static void newTests()                                                        // Tests being worked on
-   {oldTests();
+   {//oldTests();
+    test_elseIf();
    }
 
   public static void main(String[] args)                                        // Test if called as a program
