@@ -3,7 +3,8 @@
 // Philip R Brenan at appaapps dot com, Appa Apps Ltd Inc., 2025
 //------------------------------------------------------------------------------
 package com.AppaApps.Silicon;                                                   // B-tree implemented in a memory block on a silicon chip.
-
+// Make add accept multiple arguments.
+// Produce instruction level versions of each arithmetic operation
 import java.util.*;
 
 class Chip extends Test                                                         // A chip designed to manipulate a B-tree stored in a memory block
@@ -553,6 +554,13 @@ module %s(                                                                      
        {v.assign(registerName(), Value);
        }
 
+      void registerSet(int Value)                                               // Set a register instruction
+       {new Instruction()
+         {void action()           {registerSet(Source);};
+          void verilog(Verilog v) {registerSet(v, Source);};
+         };
+       }
+
       void copy(Register Source)                                                // Copy a source register into this register which we can do because each, and only each, process can write to its own registers
        {R();
         if (registerBits <= Source.registerBits)                                // Make sure the target register is big enough
@@ -566,6 +574,13 @@ module %s(                                                                      
        }
 
       void copy(Verilog v, Register Source) {v.assign(rn(), Source.rn());}      // Copy a source register into this register which we can do because each and only each process can write to its own registers
+
+      void Copy(Register Source)                                                // Copy instruction
+       {new Instruction()
+         {void action()           {copy(Source);};
+          void verilog(Verilog v) {copy(v, Source);};
+         };
+       }
 
       public String toString() {return registerName()+" = "+registerGet();}     // Print the register
 
@@ -634,17 +649,31 @@ module %s(                                                                      
       void lt(Verilog v, Register a, int b) {v.assign(rn(), a.rn() +"< "+ b +" ? 1 : 0");} // Set the target register to one if the test between the 'a' and 'b' register is true else 0
 
 
-      void Zero()                                                               // Zero a register
-       {new Instruction(true)
+      void Zero()                                                               // Zero a register instruction
+       {new Instruction()
          {void action()           {zero();};
           void verilog(Verilog v) {zero(v);};
          };
        }
 
-      void One()                                                                // One a register
-       {new Instruction(true)
+      void One()                                                                // One a register instruction
+       {new Instruction()
          {void action()           {one();};
           void verilog(Verilog v) {one(v);};
+         };
+       }
+
+      void Inc()                                                                // Increment a register instruction
+       {new Instruction()
+         {void action()           {inc();};
+          void verilog(Verilog v) {inc(v);};
+         };
+       }
+
+      void Dec()                                                                // Decrement a register instruction
+       {new Instruction()
+         {void action()           {dec();};
+          void verilog(Verilog v) {dec(v);};
          };
        }
      } // Register
@@ -1666,6 +1695,23 @@ Chip: Test             step: 0, maxSteps: 10, running: 0
     c.chipRun();
    }
 
+  static void test_zeroOne()
+   {var c = chip("Test");
+    var p = c.new Process("process");
+    p.processTrace = true;
+    var a = p.register("a",  8);
+    var b = p.register("b",  8);
+
+    a.Zero();
+    b.One();
+    a.Inc();
+    a.Inc();
+
+    c.chipRun();
+    ok(a.registerGet(), 2);
+    ok(b.registerGet(), 1);
+   }
+
   static void oldTests()                                                        // Tests thought to be in good shape
    {test_stop();
     test_memoryProcessReuse();
@@ -1675,6 +1721,7 @@ Chip: Test             step: 0, maxSteps: 10, running: 0
     test_if();
     test_saveLoad();
     test_trace();
+    test_zeroOne();
    }
 
   static void newTests()                                                        // Tests being worked on
