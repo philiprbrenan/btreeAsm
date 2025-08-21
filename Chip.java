@@ -554,10 +554,10 @@ module %s(                                                                      
        {v.assign(registerName(), Value);
        }
 
-      void registerSet(int Value)                                               // Set a register instruction
+      void RegisterSet(int Value)                                               // Set a register instruction
        {new Instruction()
-         {void action()           {registerSet(Source);};
-          void verilog(Verilog v) {registerSet(v, Source);};
+         {void action()           {registerSet(Value);};
+          void verilog(Verilog v) {registerSet(v, Value);};
          };
        }
 
@@ -736,6 +736,13 @@ module %s(                                                                      
      {v.assign(processRCName(), ReturnCode);
       v.assign(processStopName(),       1);
      }
+
+    void ProcessStop(int ReturnCode)                                            // Process stop instruction
+       {new Instruction()
+         {void action()           {processStop(ReturnCode);};
+          void verilog(Verilog v) {processStop(v, ReturnCode);};
+         };
+       }
 
 //D3 Verilog                                                                    // Generate a Verilog always block to implement this process
 
@@ -1063,6 +1070,13 @@ module %s(                                                                      
         transactionSetExecutable(v);
        }
 
+      void ExecuteTransaction(Register Index)                                   // Execute the requested memory read instruction
+       {process.new Instruction()
+         {void action ()          {executeTransaction(   Index);}
+          void verilog(Verilog v) {executeTransaction(v, Index);}
+         };
+       }
+
       void waitResultOfTransaction()                                            // Wait for the request to finish
        {process.new Instruction(true)
          {void action()
@@ -1109,6 +1123,13 @@ module %s(                                                                      
        {index.copy(v, Index);
         value.copy(v, Value);
         transactionSetExecutable(v);
+       }
+
+      void ExecuteTransaction(Register Index, Register Value)                   // Execute the requested memory update instruction
+       {process.new Instruction()
+         {void action ()          {executeTransaction(   Index, Value);}
+          void verilog(Verilog v) {executeTransaction(v, Index, Value);}
+         };
        }
 
       void waitResultOfTransaction()                                            // Wait for the update request to finish
@@ -1190,14 +1211,7 @@ module %s(                                                                      
     var c = chip("Test");
     var p = c.process("Process");
     p.processTrace = true;
-    p.new Instruction()
-     {void action()
-       {p.processStop(1);
-       }
-      void verilog(Verilog v)
-       {p.processStop(v, 1);
-       }
-     };
+    p.ProcessStop(1);
     c.chipRun();
    }
 
@@ -1224,24 +1238,10 @@ module %s(                                                                      
        }
      };
 
-    r.new Instruction()                                                         // Request the value of an indexed element of memory
-     {void action()
-       {ri.registerSet(1);                                                      // Index of memory requested
-       }
-      void verilog(Verilog v)
-       {ri.registerSet      (v, 1);
-       }
-     };
+    ri.RegisterSet(1);                                                          // Request the value of an indexed element of memory
 
     final Memory.Get g = m.memoryGetFromProcess(r);                             // Find the transaction so it can be reused
-    r.new Instruction()                                                         // Request the value of an indexed element of memory
-     {void action()
-       {g.executeTransaction(ri);                                               // Request value of memory at the index
-       }
-      void verilog(Verilog v)
-       {g.executeTransaction(v, ri);
-       }
-     };
+    g.ExecuteTransaction(ri);                                               // Request value of memory at the index
     g.waitResultOfTransaction();                                                // Request value of memory at the index
 
     c.chipRunJava();
@@ -1298,71 +1298,22 @@ Chip: Test             step: 5, maxSteps: 10, running: 0
        }
      };
 
-    r.new Instruction()                                                         // Request the value of an indexed element of memory
-     {void action()
-       {ri.registerSet(1);                                                      // Index of memory requested
-       }
-      void verilog(Verilog v)
-       {ri.registerSet       (v, 1);
-       }
-     };
+    ri.RegisterSet(1);                                                          // Index of memory requested
 
-    r.new Instruction()                                                         // Request the value of an indexed element of memory
-     {void action()
-       {rt.executeTransaction(ri);                                              // Request value of memory at the index
-       }
-      void verilog(Verilog v)
-       {rt.executeTransaction(v, ri);
-       }
-     };
+    rt.ExecuteTransaction(ri);                                              // Request value of memory at the index
 
-    r.new Instruction()                                                         // Request the value of an indexed element of memory
-     {void action()
-       {si.registerSet(2);                                                      // Index of memory requested
-       }
-      void verilog(Verilog v)
-       {si.registerSet(v, 2);
-       }
-     };
+    si.RegisterSet(2);                                                      // Index of memory requested
 
-    r.new Instruction()                                                         // Request the value of an indexed element of memory
-     {void action()
-       {st.executeTransaction(si);                                              // Request value of memory at the index
-       }
-      void verilog(Verilog v)
-       {st.executeTransaction(v, si);
-       }
-     };
+    st.ExecuteTransaction(si);                                              // Request value of memory at the index
     st.waitResultOfTransaction();                                               // Request value of memory at the index
     rt.waitResultOfTransaction();                                               // Request value of memory at the index
 
-    r.new Instruction()                                                         // Request the value of an indexed element of memory
-     {void action()
-       {tv.registerSet(33);                                                     // Value to set into memory
-       }
-      void verilog(Verilog v)
-       {tv.registerSet(v, 33);
-       }
-     };
+    tv.RegisterSet(33);                                                     // Value to set into memory
 
-    r.new Instruction()                                                         // Request the value of an indexed element of memory
-     {void action()
-       {tt.executeTransaction(si, tv);                                          // Request value of memory at the index
-       }
-      void verilog(Verilog v)
-       {tt.executeTransaction(v, si, tv);
-       }
-     };
+    tt.ExecuteTransaction(si, tv);                                          // Request value of memory at the index
     tt.waitResultOfTransaction();                                               // Request value of memory at the index
 
-    r.new Instruction()                                                         // Request the value of an indexed element of memory
-     {void action()
-       {r.processStop(1);                                                          // Halt the run
-       }
-      void verilog(Verilog v)
-       {r.processStop(v, 1);
-       }
-     };
+    r.ProcessStop(1);                                                          // Halt the run
 
     c.maxSteps = 100;
     c.chipRun();
@@ -1417,8 +1368,6 @@ Chip: Test             step: 11, maxSteps: 100, running: 0
 
     var m  = C.new Memory("Memory", B, N);                                      // Memory controller
     var t  = m.new Set(p);                                                      // Create a transaction to update memory
-    var i1 = "             ";
-    var i2 = "          ";
 
     p.new Instruction()                                                         // Initialize
      {void action()
@@ -1430,14 +1379,8 @@ Chip: Test             step: 11, maxSteps: 100, running: 0
      };
 
     for (int j = 0; j < N; j++)                                                 // Fibonacci numbers
-     {p.new Instruction()
-       {void action()
-         {c.copy(a);
-         }
-        void verilog(Verilog v)
-         {c.copy(v, a);
-         }
-       };
+     {c.Copy(a);
+
       p.new Instruction()
        {void action()
          {c.add(b); a.copy(b);
@@ -1457,26 +1400,12 @@ Chip: Test             step: 11, maxSteps: 100, running: 0
          }
        };
 
-      p.new Instruction()
-       {void action()
-         {i.inc();
-         }
-        void verilog(Verilog v)
-         {i.inc(v);
-         }
-       };
+      i.Inc();
 
       t.waitResultOfTransaction();                                              // Request value of memory at the index
      }
 
-    p.new Instruction()                                                         // Request the value of an indexed element of memory
-     {void action()
-       {p.processStop(1);                                                          // Halt the run
-       }
-      void verilog(Verilog v)
-       {p.processStop(v, 1);
-       }
-     };
+    p.ProcessStop(1);                                                           // Halt the run
 
     C.maxSteps = 100;
     C.chipRun();
@@ -1545,14 +1474,7 @@ Chip: Test             step: 82, maxSteps: 100, running: 0
 
     p.new Block()
      {void code()
-       {p.new Instruction()
-         {void action()
-           {c.copy(a); i.inc();
-           }
-          void verilog(Verilog v)
-           {c.copy(v, a); i.inc (v);
-           }
-         };
+       {c.Copy(a); i.Inc();
         p.new Instruction()
          {void action()
            {c.add(b);
@@ -1573,14 +1495,7 @@ Chip: Test             step: 82, maxSteps: 100, running: 0
            }
          };
 
-        p.new Instruction()
-         {void action()
-           {a.copy(b);
-           }
-          void verilog(Verilog v)
-           {a.copy(v, b);
-           }
-         };
+        a.Copy(b);
 
         p.new Instruction(true)
          {void action()
@@ -1610,12 +1525,8 @@ Chip: Test             step: 82, maxSteps: 100, running: 0
 
     final StringBuilder s = new StringBuilder();                                //
 
-    p.new Instruction()
-     {void action()
-       {a.registerSet(1);
-        b.registerSet(0);
-       }
-     };
+    a.RegisterSet(1);
+    b.RegisterSet(0);
 
     p.new Instruction() {void action() {b.ge(a, 1);}};
 
@@ -1665,14 +1576,7 @@ Chip: Test             step: 0, maxSteps: 10, running: 0
     p.processTrace = true;
     var a = p.register("a",  8);
 
-    p.new Instruction()
-     {void action()
-       {a.registerSet(1);
-       }
-      void verilog(Verilog v)
-       {a.registerSet(v, 1);
-       }
-     };
+    a.RegisterSet(1);
 
     p.new Instruction()
      {void action()
@@ -1683,15 +1587,7 @@ Chip: Test             step: 0, maxSteps: 10, running: 0
        }
      };
 
-    p.new Instruction()
-     {void action()
-       {a.registerSet(1);
-       }
-      void verilog(Verilog v)
-       {a.registerSet(v, 1);
-       }
-     };
-
+    a.RegisterSet(1);
     c.chipRun();
    }
 
