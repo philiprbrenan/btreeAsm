@@ -450,13 +450,14 @@ module %s(                                                                      
     void GoNotZero(Label label, Register condition)                             // Go to a specified label if the value of a field is not zero
      {R();
       if (condition.registerGet() >  0) processPc = label.offset;
-      else processPc++;
+      else Continue();
      }
     void GoZero   (Label label, Register condition)                             // Go to a specified label if the value of a field is zero
      {R();
       if (condition.registerGet() == 0) processPc = label.offset;
-      else processPc++;
+      else Continue();
      }
+    void Continue() {processPc++;}                                              // Continue with the next instruction
 
     void Goto       (Verilog v, Label label)                                    // Goto a label unconditionally
      {v.assign(processPcName(), label.offset);
@@ -464,15 +465,16 @@ module %s(                                                                      
     void GoNotZero  (Verilog v, Label label, Register condition)                // Go to a specified label if the value of a field is not zero
      {v.new If(condition.registerName()+" >  0")
        {void Then() {v.assign(processPcName(), label.offset);}
-        void Else() {v.inc   (processPcName());}
+        void Else() {Continue(v);}
        };
      }
     void GoZero     (Verilog v, Label label, Register condition)                // Go to a specified label if the value of a field is zero
      {v.new If(condition.registerName()+" == 0")
        {void Then() {v.assign(processPcName(), label.offset);}
-        void Else() {v.inc   (processPcName());}
+        void Else() {Continue(v);}
        };
      }
+    void Continue(Verilog v) {v.inc(processPcName());}                          // Continue with the next instruction
 
     abstract class If                                                           // An implementation of an if statement
      {final Label Else = new Label(), End = new Label();                        // Components of an if statement
@@ -673,7 +675,7 @@ module %s(                                                                      
        }
       final Instruction i = code.elementAt(processPc);                          // The action associated with the current instruction
       i.action();                                                               // Perform the action associated with the current instruction
-      if (!i.mightJump) processPc++;                                            // If the instruction does not set the next instruction to execute then set the next program instruction to execute for it
+      if (!i.mightJump) Continue();                                             // If the instruction does not set the next instruction to execute then set the next program instruction to execute for it
       if (processTrace)                                                         // Write a trace element to the log
        {appendFile(javaTraceFile, "Location: "+i.traceBackOnOneLine()+"\n");
        }
@@ -1020,11 +1022,11 @@ module %s(                                                                      
       void waitResultOfTransaction()                                            // Wait for the request to finish
        {process.new Instruction(true)
          {void action()
-           {if (transactionFinished()) process.processPc++;
+           {if (transactionFinished()) process.Continue();
            }
           void verilog(Verilog v)
            {v.new If (transactionFinishedV())
-             {void Then() {v.inc(process.processPcName());}
+             {void Then() {process.Continue(v);}
              };
            }
          };
@@ -1068,11 +1070,11 @@ module %s(                                                                      
       void waitResultOfTransaction()                                            // Wait for the update request to finish
        {process.new Instruction(true)
          {void action()
-           {if (transactionFinished()) process.processPc++;
+           {if (transactionFinished()) process.Continue();
            }
           void verilog(Verilog v)
            {v.new If(transactionFinishedV())
-             {void Then() {v.inc(process.processPcName());}
+             {void Then() {process.Continue(v);}
              };
            }
          };
