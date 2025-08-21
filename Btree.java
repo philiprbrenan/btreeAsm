@@ -2474,24 +2474,18 @@ chipStop = true;
     final Process.Register isLeaf     = P.new Register("isLeaf",   1);          // Success of merge - the result of this operation
     final Process.Register level      = P.new Register("level",    8);          // Level within tree
 
+P.new Instruction() {void action() {say("MMMM11", Key);}};
+
     P.new Block()                                                               // The block is left as soon as possible
      {void code()
-       {P.new Instruction()
-         {void action()
-           {s.zero();                                                           // Start at the root and step down through the tree along the path of the key merging on each side of the key as we go
-            level.zero();
-           }
-          void verilog(Verilog v)
-           {s.zero(v);                                                           // Start at the root and step down through the tree along the path of the key merging on each side of the key as we go
-            level.zero(v);
-           }
-         };
+       {s.Zero();
+        level.Zero();
 
         S.stuckGetRoot();                                                       // Load current stuck
 
         S.new IsLeaf()                                                          // Root is a leaf - nothing to merge
          {void Leaf()
-           {P.new Instruction()
+           {P.new Instruction(true)
              {void action()
                {P.Goto(end);
                }
@@ -2501,9 +2495,10 @@ chipStop = true;
              };
            }
          };
+P.new Instruction() {void action() {say("AAAA22", Key);}};
         P.new If (mergeLeavesIntoRoot(P))                                       // Try merging leaves into root
          {void Then()
-           {P.new Instruction()
+           {P.new Instruction(true)
              {void action()
                {P.Goto(end);                                                    // The root is now a leaf so there is nothing else to do
                }
@@ -2519,6 +2514,7 @@ chipStop = true;
            {S.stuckGetRoot();                                                   // Reload root if the merge was successful
            }
          };
+P.new Instruction() {void action() {say("AAAA33", Key);}};
 
         P.new Block()                                                           // Step down through tree
          {void code()
@@ -2548,6 +2544,7 @@ chipStop = true;
              }
 
             S.stuckGet(s);                                                      // Reload in case any changes have been made
+P.new Instruction() {void action() {say("AAAA44", Key);}};
 
             P.new Instruction()
              {void action()
@@ -2561,10 +2558,11 @@ chipStop = true;
              };
 
             S.stuckGet(s);                                                      // Load child
+P.new Instruction() {void action() {say("AAAA55", Key);}};
 
             S.new IsLeaf()                                                      // Child is a leaf or a branch
              {void Leaf()                                                       // At a leaf - end of merging
-               {P.new Instruction()
+               {P.new Instruction(true)
                  {void action()
                    {P.Goto(end);
                    }
@@ -2574,7 +2572,7 @@ chipStop = true;
                  };
                }
               void Branch()                                                     // Child is a branch - try again
-               {P.new Instruction()
+               {P.new Instruction(true)
                  {void action()
                    {level.inc();
                     P.Goto(start);
@@ -2612,7 +2610,9 @@ chipStop = true;
                }
              };
             f.stuckPut();                                                       // Save modified stuck back into btree
+P.new Instruction() {void action() {say("DDDD11", Key);}};
             merge(Key);                                                         // Merge along key path
+P.new Instruction() {void action() {say("DDDD22", Key);}};
            }
          };
        }
@@ -5517,6 +5517,7 @@ Merge     : 0
         P.new Instruction(true)
          {void action()
            {t.append(b.btreePrint());
+            say("AAAA", b.btreePrint());
             n.lt(k, N);
             P.GoNotZero(start, n);
            }
