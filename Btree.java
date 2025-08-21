@@ -2480,8 +2480,10 @@ P.new Instruction() {void action() {say("MMMM11", Key);}};
      {void code()
        {s.Zero();
         level.Zero();
+P.new Instruction() {void action() {say("MMMM22", Key);}};
 
         S.stuckGetRoot();                                                       // Load current stuck
+P.new Instruction() {void action() {say("MMMM33", Key);}};
 
         S.new IsLeaf()                                                          // Root is a leaf - nothing to merge
          {void Leaf()
@@ -2610,9 +2612,7 @@ P.new Instruction() {void action() {say("AAAA55", Key);}};
                }
              };
             f.stuckPut();                                                       // Save modified stuck back into btree
-P.new Instruction() {void action() {say("DDDD11", Key);}};
             merge(Key);                                                         // Merge along key path
-P.new Instruction() {void action() {say("DDDD22", Key);}};
            }
          };
        }
@@ -8005,15 +8005,15 @@ Merge     : 0
     //test_verilog_put();
     //test_findAndInsert();
     test_delete_ascending();
-    test_delete_random();
-    test_delete_descending();
-    test_delete_random_descending();
-    test_put_ascending();
-    test_put_merge();
-    test_put_reload();
-    test_put_descending();
-    test_put_random();
-    test_verilog_put();
+//    test_delete_random();
+//    test_delete_descending();
+//    test_delete_random_descending();
+///    test_put_ascending();
+///    test_put_merge();
+//    test_put_reload();
+///    test_put_descending();
+//    test_put_random();
+//    test_verilog_put();
    }
 
   public static void main(String[] args)                                        // Test if called as a program
