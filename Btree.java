@@ -1188,7 +1188,7 @@ chipStop = true;
                 P.new Instruction(true)
                  {void action()
                    {if (isLeaf.registerGet() == 0) P.Goto(lEnd);                // Not a leaf so go to code for branch
-                    else P.processPc++;
+                    else P.Continue();
                    }
                   void verilog(Verilog v)                                       // Not a leaf so go to code for branch
                    {v.new If (isLeaf.registerName() + " == 0")
@@ -1328,15 +1328,19 @@ chipStop = true;
 
     P.new Block()
      {void code()
-       {P.new Instruction()
+       {P.new Instruction(true)
          {void action()
            {if (p.isLeaf.registerGet() == 0) stop("Root must be a leaf");
             if (p.size.registerGet() < maxStuckSize) P.Goto(end);               // Check size of root
+            else P.Continue();
            }
           void verilog(Verilog v)
            {v.new If (p.size.registerName() + " < " + maxStuckSize)
              {void Then()
                {P.Goto(v, end);
+               }
+              void Else()
+               {P.Continue(v);
                }
              };
            }
@@ -1634,8 +1638,9 @@ chipStop = true;
    {final Process P = ParentIndex.registerProcess();
     final int s = ParentIndex.registerGet();
     final int r = p.size.registerGet();
-    if      (s == 0 && r > 1) {}                                                // Can be used on root if there is more than one entry
+    if      (s == 0 && r > 1) P.Continue();                                     // Can be used on root if there is more than one entry
     else if (s == 0 || r < 1) P.Goto(end);                                      // Cannot be used on root or on empty branches
+    else P.Continue();
    }
 
   private void mergePermitted                                                   // Whether a  merge is permitted or not.
@@ -1644,10 +1649,16 @@ chipStop = true;
     final String s = ParentIndex.registerName();
     final String r = p.size.registerName();
     v    .new If (s + " == 0 && " + r + " > 1")                                 // Can be used on root if there is more than one entry
-     {void Else()
+     {void Then()
+       {P.Continue(v);
+       }
+      void Else()
        {v.new If (s + " == 0 || " + r + " < 1")                                 // Cannot be used on root or on empty branches
          {void Then()
            {P.Goto(v, end);
+           }
+          void Else()
+           {P.Continue(v);
            }
          };
        }
@@ -1762,7 +1773,7 @@ chipStop = true;
     //p.stuckGet(ParentIndex);                                                  // Load parent
     P.new Block()
      {void code()
-       {P.new Instruction()                                                     // Check that the parent has a child at the specified index
+       {P.new Instruction(true)                                                 // Check that the parent has a child at the specified index
          {void action()
            {success.zero();                                                     // Assume failure
             mergePermitted(ParentIndex, p, end);
@@ -1850,7 +1861,7 @@ chipStop = true;
 
     P.new Block()
      {void code()
-       {P.new Instruction()
+       {P.new Instruction(true)                                                 // Check merge is permitted
          {void action()
            {success.zero();                                                     // Assume failure
             mergePermitted(ParentIndex, p, end);
@@ -1933,16 +1944,19 @@ chipStop = true;
 
     P.new Block()
      {void code()
-       {P.new Instruction()                                                     // Check that the root has one entry and thus two children
+       {P.new Instruction(true)                                                 // Check that the root has one entry and thus two children
          {void action()
            {success.zero();                                                     // Assume failure
-            if (p.size.registerGet() != 1) P.Goto(end);
+            if (p.size.registerGet() != 1) P.Goto(end); else P.Continue();
            };
           void verilog(Verilog v)
            {success.zero(v);                                                    // Assume failure
             v.new If (p.size.registerName() + " != 1")
              {void Then()
                {P.Goto(v, end);
+               }
+              void Else()
+               {P.Continue(v);
                }
              };
            }
@@ -2015,13 +2029,13 @@ chipStop = true;
 
     P.new Block()
      {void code()
-       {P.new Instruction()                                                     // Check that the parent has a child at the specified index
+       {P.new Instruction(true)                                                 // Check that the parent has a child at the specified index
          {void action()
            {success.zero();                                                     // Assume failure
             mergePermitted(ParentIndex, p, end);
            };
           void verilog(Verilog v)
-           {success.zero(v);                                                     // Assume failure
+           {success.zero(v);                                                    // Assume failure
             mergePermitted(v, ParentIndex, p, end);
            };
          };
@@ -2117,7 +2131,7 @@ chipStop = true;
 
     P.new Block()
      {void code()
-       {P.new Instruction()                                                     // Check that the parent has a child at the specified index
+       {P.new Instruction(true)                                                 // Check that the parent has a child at the specified index
          {void action()
            {success.zero();                                                     // Assume failure
             mergePermitted(ParentIndex, p, end);
@@ -2267,13 +2281,13 @@ chipStop = true;
            {void action()
              {if (Found.registerGet() > 0)                                      // Found the key in the leaf so update it with the new data
                {setElementAt(StuckIndex, Key, Data);
-                P.processPc++;
+                P.Continue();
                }
               else if (size.registerGet() < maxStuckSize)                       // Check whether the stuck is full
                {search_le(Key);
                 insertElementAt(StuckIndex, Key, Data);
                 Found.one();
-                P.processPc++;
+                P.Continue();
                }
               else P.Goto(end);                                                 // No insertion so no need to update memory
              }
@@ -2281,7 +2295,7 @@ chipStop = true;
              {v.new If (Found.registerName() + " > 0")                          // Found the key in the leaf so update it with the new data
                {void Then()
                  {setElementAt(v, StuckIndex, Key, Data);
-                  v.inc(P.processPcName());
+                  P.Continue(v);
                  }
                 void Else()
                  {v.new If (size.registerName() + " < " + maxStuckSize)         // Check whether the stuck is full
@@ -2289,7 +2303,7 @@ chipStop = true;
                      {search_le(v, Key);
                       insertElementAt(v, StuckIndex, Key, Data);
                       Found.one(v);
-                      v.inc(P.processPcName());
+                      P.Continue(v);
                      }
                     void Else()
                      {P.Goto(v, end);                                           // No insertion so no need to update memory
@@ -8013,10 +8027,10 @@ Merge     : 0
    }
 
   static void newTests()                                                        // Tests being worked on
-   {oldTests();
+   {//oldTests();
     //test_verilog_put();
     //test_findAndInsert();
-    test_mergeLeavesIntoRoot();
+    test_mergeBranchesIntoRoot();
    }
 
   public static void main(String[] args)                                        // Test if called as a program
