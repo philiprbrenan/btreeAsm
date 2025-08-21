@@ -5,6 +5,7 @@
 package com.AppaApps.Silicon;                                                   // Btree in a block on the surface of a silicon chip.
 // Squeeze out all redundant variables and check all code paths are being tested
 // Remove Instructions from split and merge stuck operations
+// make .zero(), .one() instructions as in Zero(), One()
 import java.util.*;
 
 class Btree extends Chip                                                        // Manipulate a btree in a block of memory
@@ -1633,32 +1634,34 @@ chipStop = true;
 
 //D1 Merge                                                                      // Merge two nodes
 
-  private void mergePermitted                                                   // Whether a  merge is permitted or not.
-   (Process.Register ParentIndex, Stuck p, Process.Label end)                   // Merge two leaves into the root
-   {final Process P = ParentIndex.registerProcess();
-    final int s = ParentIndex.registerGet();
-    final int r = p.size.registerGet();
-    if      (s == 0 && r > 1) P.Continue();                                     // Can be used on root if there is more than one entry
-    else if (s == 0 || r < 1) P.Goto(end);                                      // Cannot be used on root or on empty branches
-    else P.Continue();
-   }
 
   private void mergePermitted                                                   // Whether a  merge is permitted or not.
-   (Verilog v, Process.Register ParentIndex, Stuck p, Process.Label end)        // Merge two leaves into the root
-   {final Process P = ParentIndex.registerProcess();
-    final String s = ParentIndex.registerName();
-    final String r = p.size.registerName();
-    v    .new If (s + " == 0 && " + r + " > 1")                                 // Can be used on root if there is more than one entry
-     {void Then()
-       {P.Continue(v);
+   (Process P, Process.Register ParentIndex, Stuck p, Process.Label end)        // Merge two leaves into the root
+   {P.new Instruction(true)
+     {void action()
+       {final int s = ParentIndex.registerGet();
+        final int r = p.size.registerGet();                                     // Size of parent stuck
+        if      (s == 0 && r > 1) P.Continue();                                 // Can be used on root if there is more than one entry
+        else if (s == 0 || r < 1) P.Goto(end);                                  // Cannot be used on root or on empty branches
+        else P.Continue();
        }
-      void Else()
-       {v.new If (s + " == 0 || " + r + " < 1")                                 // Cannot be used on root or on empty branches
+
+      void verilog(Verilog v)                                                   // Whether a  merge is permitted or not.
+       {final String  s = ParentIndex.registerName();
+        final String  r = p.size.registerName();
+        v    .new If (s + " == 0 && " + r + " > 1")                             // Can be used on root if there is more than one entry
          {void Then()
-           {P.Goto(v, end);
+           {P.Continue(v);
            }
           void Else()
-           {P.Continue(v);
+           {v.new If (s + " == 0 || " + r + " < 1")                            // Cannot be used on root or on empty branches
+             {void Then()
+               {P.Goto(v, end);
+               }
+              void Else()
+               {P.Continue(v);
+               }
+             };
            }
          };
        }
@@ -1773,16 +1776,7 @@ chipStop = true;
     //p.stuckGet(ParentIndex);                                                  // Load parent
     P.new Block()
      {void code()
-       {P.new Instruction(true)                                                 // Check that the parent has a child at the specified index
-         {void action()
-           {success.zero();                                                     // Assume failure
-            mergePermitted(ParentIndex, p, end);
-           }
-          void verilog(Verilog v)
-           {success.zero(v);                                                    // Assume failure
-            mergePermitted(v, ParentIndex, p, end);
-           }
-         };
+       {mergePermitted(P, ParentIndex, p, end);
 
         P.new Instruction()                                                     // Indexes of left and right leaves with the indicated child being the left leaf
          {void action()
@@ -1856,21 +1850,16 @@ chipStop = true;
     final Process.Register test    = P.new Register("test",    1);              // A generic test
 
     //P.new Instruction() {void action() {say("AAAA 33 mergeLeavesAtTop", ParentIndex);}};
+    P.new Instruction()                                                         // Assume we cannot merge
+     {void action()           {success.zero();}
+      void verilog(Verilog v) {success.zero(v);}
+     };
 
     //p.stuckGet(ParentIndex);                                                  // Load parent
 
     P.new Block()
      {void code()
-       {P.new Instruction(true)                                                 // Check merge is permitted
-         {void action()
-           {success.zero();                                                     // Assume failure
-            mergePermitted(ParentIndex, p, end);
-           }
-          void verilog(Verilog v)
-           {success.zero(v);                                                    // Assume failure
-            mergePermitted(v, ParentIndex, p, end);
-           }
-         };
+       {mergePermitted(P, ParentIndex, p, end);
 
         P.new Instruction()
          {void action()
@@ -2029,16 +2018,8 @@ chipStop = true;
 
     P.new Block()
      {void code()
-       {P.new Instruction(true)                                                 // Check that the parent has a child at the specified index
-         {void action()
-           {success.zero();                                                     // Assume failure
-            mergePermitted(ParentIndex, p, end);
-           };
-          void verilog(Verilog v)
-           {success.zero(v);                                                    // Assume failure
-            mergePermitted(v, ParentIndex, p, end);
-           };
-         };
+       {mergePermitted(P, ParentIndex, p, end);
+        success.Zero();                                                         // Assume failure
 
         P.new Instruction()                                                     // Check that the parent has a child at the specified index
          {void action()
@@ -2131,16 +2112,8 @@ chipStop = true;
 
     P.new Block()
      {void code()
-       {P.new Instruction(true)                                                 // Check that the parent has a child at the specified index
-         {void action()
-           {success.zero();                                                     // Assume failure
-            mergePermitted(ParentIndex, p, end);
-           };
-          void verilog(Verilog v)
-           {success.zero(v);                                                    // Assume failure
-            mergePermitted(v, ParentIndex, p, end);
-           };
-         };
+       {mergePermitted(P, ParentIndex, p, end);
+        success.Zero();                                                         // Assume failure
 
         P.new Instruction()                                                     // Check that the parent has a child at the specified index
          {void action()
@@ -5541,7 +5514,7 @@ Merge     : 0
            }
          };
         b.delete(k);
-        P.new Instruction()
+        P.new Instruction(true)
          {void action()
            {t.append(b.btreePrint());
             n.lt(k, N);
@@ -5862,7 +5835,7 @@ Merge     : 0
          };
 
         b.delete(k);
-        P.new Instruction()
+        P.new Instruction(true)
          {void action()
            {t.append(b.btreePrint());
             l.lt(i, N);
@@ -6138,7 +6111,7 @@ Merge     : 0
          };
 
         b.delete(k);
-        P.new Instruction()
+        P.new Instruction(true)
          {void action()
            {t.append(b.btreePrint());
             l.lt(i, N);
@@ -6507,7 +6480,7 @@ Merge     : 0
          };
 
         b.delete(k);
-        P.new Instruction()
+        P.new Instruction(true)
          {void action()
            {t.append(b.btreePrint());
             l.lt(i, N);
@@ -6832,7 +6805,7 @@ Merge     : 0
              }
            };
          }
-        P.new Instruction()
+        P.new Instruction(true)
          {void action()
            {P.GoNotZero(start, l.lt(k, N));
            }
@@ -6879,7 +6852,7 @@ Merge     : 0
            }
          };
         b.put(P, k, d);
-        P.new Instruction()
+        P.new Instruction(true)
          {void action()
            {s.append(b.btreePrint());
             l.lt(k, N);
@@ -8030,7 +8003,16 @@ Merge     : 0
    {//oldTests();
     //test_verilog_put();
     //test_findAndInsert();
-    test_mergeBranchesIntoRoot();
+    test_delete_ascending();
+    test_delete_random();
+    test_delete_descending();
+    test_delete_random_descending();
+    test_put_ascending();
+    test_put_merge();
+    test_put_reload();
+    test_put_descending();
+    test_put_random();
+    test_verilog_put();
    }
 
   public static void main(String[] args)                                        // Test if called as a program
