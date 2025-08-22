@@ -903,11 +903,11 @@ chipStop = true;
        {void action()
          {if (maxStuckSize % 2 == 1)
            {P.processStop(18);
-            return;  // Not needed
+            return;
            }
           if (maxStuckSize-1 != size.registerGet())
            {P.processStop(19);
-            return;  // Not needed
+            return;
            }
           final int N = (maxStuckSize-1) / 2;
           for (int i = 0; i < N; ++i)
@@ -4086,7 +4086,7 @@ Chip: Btree            step: 16, maxSteps: 100, running: 1
     b.chipRun();
     //stop(b.chipPrintMemory());
     ok(b.chipPrintMemory(), """
-Chip: Btree            step: 31, maxSteps: 100, running: 0
+Chip: Btree            step: 35, maxSteps: 100, running: 0
   Processes:                                                    0  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24
     stuckIsLeaf           memory:                     4 *  1 =  1  1  0  0
     stuckIsFree           memory:                     4 *  1 =  0  1  1  1
@@ -7887,7 +7887,7 @@ Merge     : 0
   static void newTests()                                                        // Tests being worked on
    {//oldTests();
     //test_verilog_put();
-    test_put_ascending();
+    test_allocate();
    }
 
   public static void main(String[] args)                                        // Test if called as a program
