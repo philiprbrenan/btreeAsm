@@ -1,4 +1,4 @@
-# Test 2025-08-22 at 03:29:25
+# Test 2025-08-22 at 03:31:54
 
 name: Test
 run-name: btreeAsm
@@ -8,8 +8,8 @@ on:
     paths:
       - '**/main.yml'
 
-concurrency:
-  group: ${{ github.workflow }}-${{ github.ref }}
+#concurrency:
+#  group: ${{ github.workflow }}-${{ github.ref }}
 # cancel-in-progress: true
 
 jobs:
