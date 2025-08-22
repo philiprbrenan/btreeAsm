@@ -3291,14 +3291,7 @@ Stuck: stuck size: 3, leaf: 1, root
 
     k.RegisterSet(11);
 
-    P.new Instruction()
-     {void action()
-       {s.search_eq(k);
-       }
-      void verilog(Verilog v)
-       {s.search_eq(v, k);
-       }
-     };
+    s.Search_eq(k);
 
     b.maxSteps = 100;
     b.chipRun();
@@ -3344,14 +3337,8 @@ Stuck: stuck size: 3, leaf: 1, root
     s.stuckGetRoot();
     for (int j = 0; j < S; j++)
      {final int J = j*10;
-      P.new Instruction()
-       {void action()
-         {k.registerSet(J); d.registerSet(J+1);
-         }
-        void verilog(Verilog v)
-         {k.registerSet(v, J); d.registerSet(v, J+1);
-         }
-       };
+      k.RegisterSet(J); d.RegisterSet(J+1);
+
       P.new Instruction()
        {void action()
          {s.push(k, d);
