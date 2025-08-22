@@ -1901,14 +1901,7 @@ chipStop = true;
                  {void Then()
                    {p.stuckPut();                                               // Save the modified root back into the tree
                     free(il); free(ir);                                         // Free left and right leaves as they are no longer needed
-                    P.new Instruction()
-                     {void action()
-                       {success.one();
-                       }
-                      void verilog(Verilog v)
-                       {success.one(v);
-                       }
-                     };
+                    success.One();
                    }
                  };
                }
@@ -2322,18 +2315,11 @@ chipStop = true;
                      };
                    }                                                            // No split occurred so we can safely step down (from the heights)
                   void Else()
-                   {P.new Instruction()
-                     {void action()
-                       {p.copy(c);                                              // Step down from parent to child
-                       }
-                      void verilog(Verilog v)
-                       {p.copy(v, c);                                              // Step down from parent to child
-                       }
-                     };
+                   {p.Copy(c);                                                  // Step down from parent to child
                    }
                  };
 
-                P.GOto(loopStart);                                          // Process next level of tree
+                P.GOto(loopStart);                                              // Process next level of tree
                }
              };
            }
@@ -2341,7 +2327,7 @@ chipStop = true;
        }
      };
 
-    if (!suppressMerge) merge(Key);                                              // Merge along path to key
+    if (!suppressMerge) merge(Key);                                             // Merge along path to key
    }
 
   public void merge(Process.Register Key)                                       // Merge stucks on either side of the path to the key
@@ -2363,26 +2349,12 @@ chipStop = true;
 
         S.new IsLeaf()                                                          // Root is a leaf - nothing to merge
          {void Leaf()
-           {P.new Instruction(true)
-             {void action()
-               {P.Goto(end);
-               }
-              void verilog(Verilog v)
-               {P.Goto(v, end);
-               }
-             };
+           {P.GOto(end);
            }
          };
         P.new If (mergeLeavesIntoRoot(P))                                       // Try merging leaves into root
          {void Then()
-           {P.new Instruction(true)
-             {void action()
-               {P.Goto(end);                                                    // The root is now a leaf so there is nothing else to do
-               }
-              void verilog(Verilog v)
-               {P.Goto(v, end);                                                 // The root is now a leaf so there is nothing else to do
-               }
-             };
+           {P.GOto(end);                                                    // The root is now a leaf so there is nothing else to do
            }
          };
 
@@ -2436,14 +2408,7 @@ chipStop = true;
 
             S.new IsLeaf()                                                      // Child is a leaf or a branch
              {void Leaf()                                                       // At a leaf - end of merging
-               {P.new Instruction(true)
-                 {void action()
-                   {P.Goto(end);
-                   }
-                  void verilog(Verilog v)
-                   {P.Goto(v, end);
-                   }
-                 };
+               {P.GOto(end);
                }
               void Branch()                                                     // Child is a branch - try again
                {P.new Instruction(true)
