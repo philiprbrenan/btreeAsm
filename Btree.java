@@ -1692,7 +1692,6 @@ chipStop = true;
 
 //D1 Merge                                                                      // Merge two nodes
 
-
   private void mergePermitted                                                   // Whether a  merge is permitted or not.
    (Process P, Process.Register ParentIndex, Stuck p, Process.Label end)        // Merge two leaves into the root
    {P.new Instruction(true)
