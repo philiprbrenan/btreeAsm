@@ -65,8 +65,8 @@ on:
     paths:
       - '**/main.yml'
 
-concurrency:
-  group: \${{ github.workflow }}-\${{ github.ref }}
+#concurrency:
+#  group: \${{ github.workflow }}-\${{ github.ref }}
 # cancel-in-progress: true
 
 jobs:
