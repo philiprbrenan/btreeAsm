@@ -416,6 +416,13 @@ chipStop = true;
      {size.zero(v);
      }
 
+    void Clear()                                                                // Set the size of the stuck to zero to clear as a single instruction
+     {P.new Instruction()
+       {void action()           {clear(); }
+        void verilog(Verilog v) {clear(v);}
+       };
+     }
+
     void push(Process.Register Key, Process.Register Data)                      // Push a key, data pair to the local copy of the stuck
      {R(); final int N = size.registerGet();
       if (N >= maxStuckSize)
@@ -433,9 +440,16 @@ chipStop = true;
        {void Choice(int i)
          {keys[i].copy(v, Key);
           data[i].copy(v, Data);
-         }                                                                                //
+         }
        };
       size.inc(v);
+     }
+
+    void Push(Process.Register Key, Process.Register Data)                      // Push a key, data pair to the local copy of the stuck as a single instruction
+     {P.new Instruction()
+       {void action()           {push(   Key, Data); }
+        void verilog(Verilog v) {push(v, Key, Data);}
+       };
      }
 
     void pop()                                                                  // Pop a key, data pair from the local copy of the stuck
@@ -450,14 +464,21 @@ chipStop = true;
        }
      }
 
-    void pop(Verilog v)                                                                  // Pop a key, data pair from the local copy of the stuck
+    void pop(Verilog v)                                                         // Pop a key, data pair from the local copy of the stuck
      {v.new Case(1, maxStuckSize+1, size.registerName())
        {void Choice(int N)
          {Key.copy (v, keys[N-1]);
           Data.copy(v, data[N-1]);
-         }                                                                                //
+         }
        };
       size.dec(v);
+     }
+
+    void Pop()                                                                  // Pop a key, data pair from the local copy of the stuck as a single instruction
+     {P.new Instruction()
+       {void action()           {push(   Key, Data); }
+        void verilog(Verilog v) {push(v, Key, Data);}
+       };
      }
 
     void setPastLastElement(Process.Register Key, Process.Register Data)        // Push a key, data pair to the local copy of the stuck without changing the size
@@ -471,12 +492,20 @@ chipStop = true;
        }
      }
 
-    void setPastLastElement(Verilog v, Process.Register Key, Process.Register Data)        // Push a key, data pair to the local copy of the stuck without changing the size
+    void setPastLastElement                                                     // Push a key, data pair to the local copy of the stuck without changing the size
+     (Verilog v, Process.Register Key, Process.Register Data)
      {v.new Case(maxStuckSize, size.registerName())
        {void Choice(int i)
          {keys[i].copy(v, Key);
           data[i].copy(v, Data);
-         }                                                                                //
+         }
+       };
+     }
+
+    void SetPastLastElement(Process.Register Key, Process.Register Data)        // Push a key, data pair to the local copy of the stuck without changing the size as a single instruction
+     {P.new Instruction()
+       {void action()           {setPastLastElement(   Key, Data); }
+        void verilog(Verilog v) {setPastLastElement(v, Key, Data);}
        };
      }
 
