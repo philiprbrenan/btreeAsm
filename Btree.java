@@ -133,7 +133,7 @@ chipStop = true;
     final Process.Register root   = btreeIndex(P, "root");                      // Index of the first free stuck in the btree
 
     final Process.Register isFree = P.register("isFree", 1);                    // Indicate that the allocated stuck is not free but in use
-    root.Zero();                                                            // The free chain depends from the root which is never freed and so can never be on the free chain
+    root.Zero();                                                                // The free chain depends from the root which is never freed and so can never be on the free chain
     gFreeNext.ExecuteTransaction(root);
     gFreeNext.waitResultOfTransaction();
     P.new Instruction()                                                         // Next free stuck
@@ -152,7 +152,7 @@ chipStop = true;
      };
     sFreeRoot.waitResultOfTransaction();
 
-    sFreeNext.ExecuteTransaction(ref, next);                                // Stuck Root points to the stuck being freed
+    sFreeNext.ExecuteTransaction(ref, next);                                    // Stuck Root points to the stuck being freed
     sFreeNext.waitResultOfTransaction();
     sIsFree  .waitResultOfTransaction();
    }
@@ -1585,7 +1585,7 @@ chipStop = true;
     final Stuck c = new Stuck(P, "splitBranchNotTopChild");                     // Left split stuck
     final Stuck l = new Stuck(P, "splitBranchNotTopLeft");                      // Left split stuck
     final Stuck r = new Stuck(P, "splitBranchNotTopRight");                     // Right split stuck
-    final Process.Register ck = P.new Register("childKey",   bitsPerKey); // Index in memory of the left stuck
+    final Process.Register ck = P.new Register("childKey",   bitsPerKey);       // Index in memory of the left stuck
     final Process.Register cd = P.new Register("childData",  btreeAddressSize); // Index in memory of the left stuck
     final Process.Register il = P.new Register("indexLeft",  btreeAddressSize); // Index in memory of the left stuck
     final Process.Register ir = P.new Register("indexRight", btreeAddressSize); // Index in memory of the right stuck
@@ -1679,7 +1679,7 @@ chipStop = true;
                                                                                 // Update root with new children
     P.new Instruction()
      {void action()
-       {p.push(mk, il);     // Differs on push                                                    // Add reference to left child
+       {p.push(mk, il);                                                         // Add reference to left child
         p.setPastLastElement(mk, cd);                                           // Add reference to not split top child on the right
        }
       void verilog(Verilog v)
@@ -1711,7 +1711,7 @@ chipStop = true;
            {P.Continue(v);
            }
           void Else()
-           {v.new If (s + " == 0 || " + r + " < 1")                            // Cannot be used on root or on empty branches
+           {v.new If (s + " == 0 || " + r + " < 1")                             // Cannot be used on root or on empty branches
              {void Then()
                {P.Goto(v, end);
                }
@@ -1743,7 +1743,7 @@ chipStop = true;
        {success.Zero();                                                         // Assume failure
         p.stuckGetRoot();                                                       // Load root
 
-        P.new Instruction(true)                                                     // Check that the root has one entry and thus two children
+        P.new Instruction(true)                                                 // Check that the root has one entry and thus two children
          {void action()
            {test.eq(p.size, 1);                                                 // Number of entries in root
             P.GoZero(end, test);                                                // Wrong number of entries in root
@@ -1799,7 +1799,7 @@ chipStop = true;
     final Stuck   p = Stuck;
     final Stuck   l = new Stuck(P, "mergeLeavesIntoRootLeft");                  // Left split stuck
     final Stuck   r = new Stuck(P, "mergeLeavesIntoRootRight");                 // Right split stuck
-    final Process.Register ck = P.new Register("childKey",   bitsPerKey); // Index in memory of the left stuck
+    final Process.Register ck = P.new Register("childKey",   bitsPerKey);       // Index in memory of the left stuck
     final Process.Register cd = P.new Register("childData",  btreeAddressSize); // Index in memory of the left stuck
     final Process.Register il = P.new Register("indexLeft",  btreeAddressSize); // Index in memory of the left stuck
     final Process.Register ir = P.new Register("indexRight", btreeAddressSize); // Index in memory of the right stuck
@@ -1876,7 +1876,7 @@ chipStop = true;
     final Stuck   p = Stuck;                                                    // Parent stuck
     final Stuck   l = new Stuck(P, "mergeLeavesIntoRootLeft");                  // Left split stuck
     final Stuck   r = new Stuck(P, "mergeLeavesIntoRootRight");                 // Right split stuck
-    final Process.Register ck = P.new Register("childKey",   bitsPerKey); // Index in memory of the left stuck
+    final Process.Register ck = P.new Register("childKey",   bitsPerKey);       // Index in memory of the left stuck
     final Process.Register sz = P.new Register("size",       stuckAddressSize); // Index in memory of the left stuck
     final Process.Register cd = P.new Register("childData",  btreeAddressSize); // Index in memory of the left stuck
     final Process.Register il = P.new Register("indexLeft",  btreeAddressSize); // Index in memory of the left stuck
@@ -1953,7 +1953,7 @@ chipStop = true;
    {final Stuck   p = new Stuck(P, "mergeLeavesIntoRootParent");                // Parent stuck
     final Stuck   l = new Stuck(P, "mergeLeavesIntoRootLeft");                  // Left split stuck
     final Stuck   r = new Stuck(P, "mergeLeavesIntoRootRight");                 // Right split stuck
-    final Process.Register ck = P.new Register("childKey",   bitsPerKey); // Index in memory of the left stuck
+    final Process.Register ck = P.new Register("childKey",   bitsPerKey);       // Index in memory of the left stuck
     final Process.Register ls = P.new Register("leftChild",  stuckAddressSize); // Index in memory of the left stuck
     final Process.Register rs = P.new Register("rightChild", stuckAddressSize); // Index in memory of the left stuck
     final Process.Register cd = P.new Register("childData",  btreeAddressSize); // Index in memory of the left stuck
@@ -2006,7 +2006,7 @@ chipStop = true;
              {void Branch()
                {l.stuckGet(il);                                                 // Load left  branch from btree
                 r.stuckGet(ir);                                                 // Load right branch from btree
-                p.mergeButOne(l, mk, r);                                    // Merge left branch, splitting key, right branch into root
+                p.mergeButOne(l, mk, r);                                        // Merge left branch, splitting key, right branch into root
                 P.new If (p.MergeSuccess)
                  {void Then()
                    {p.stuckPut();                                               // Save the modified root back into the tree
@@ -2031,7 +2031,7 @@ chipStop = true;
     final Stuck   p = Stuck;                                                    // Parent stuck
     final Stuck   l = new Stuck(P, "mergeBranchesNotTopLeft");                  // Left split stuck
     final Stuck   r = new Stuck(P, "mergeBranchesNotTopRight");                 // Right split stuck
-    final Process.Register ck = P.new Register("childKey",   bitsPerKey); // Index in memory of the left stuck
+    final Process.Register ck = P.new Register("childKey",   bitsPerKey);       // Index in memory of the left stuck
     final Process.Register ls = P.new Register("leftChild",  stuckAddressSize); // Index in memory of the left stuck
     final Process.Register rs = P.new Register("rightChild", stuckAddressSize); // Index in memory of the left stuck
     final Process.Register cd = P.new Register("childData",  btreeAddressSize); // Index in memory of the left stuck
@@ -2126,7 +2126,7 @@ chipStop = true;
     final Stuck   p = Stuck;                                                    // Parent stuck
     final Stuck   l = new Stuck(P, "mergeLeavesIntoRootLeft");                  // Left split stuck
     final Stuck   r = new Stuck(P, "mergeLeavesIntoRootRight");                 // Right split stuck
-    final Process.Register ck = P.new Register("childKey",   bitsPerKey); // Index in memory of the left stuck
+    final Process.Register ck = P.new Register("childKey",   bitsPerKey);       // Index in memory of the left stuck
     final Process.Register sz = P.new Register("size",       stuckAddressSize); // Index in memory of the left stuck
     final Process.Register cd = P.new Register("childData",  btreeAddressSize); // Index in memory of the left stuck
     final Process.Register il = P.new Register("indexLeft",  btreeAddressSize); // Index in memory of the left stuck
@@ -2216,7 +2216,7 @@ chipStop = true;
     Stuck stuck() {return (Stuck)this;}                                         // Stuck found
 
     void findSearch(Process.Register Key)
-     {BtreeIndex.Zero();                                                    // Start at the root
+     {BtreeIndex.Zero();                                                        // Start at the root
 
       P.new Block()
        {void code()
@@ -2329,13 +2329,13 @@ chipStop = true;
     P.new Block()                                                               // The block is left as soon as possible
      {void code()
        {final Process.Label oStart = start, oEnd = end;
-        P.GONotZero(oEnd, f.Found);                                         // Direct insertion succeeded so nothing more to do
+        P.GONotZero(oEnd, f.Found);                                             // Direct insertion succeeded so nothing more to do
 
         P.new If(f.BtreeIndex)                                                  // Failed to insert because the root is a leaf which must be full else the operation would have succeeded
          {void Else()
            {splitRootLeaf(P);                                                   // Split the leaf root to make room
             f.findAndInsert(Key, Data);                                         // Splitting a leaf root will make more space in the tree so this operation will now succeed
-            P.GOto(oEnd);                                                   // Direct insertion succeeded so nothing more to do
+            P.GOto(oEnd);                                                       // Direct insertion succeeded so nothing more to do
            }
          };
 
@@ -2352,7 +2352,7 @@ chipStop = true;
         P.new If (full)                                                         // If root branch is full split it using the dedicated method and restart
          {void Then()
            {splitRootBranch(P);                                                 // Split the full branch root
-            P.GOto(start);                                                  // Restart descent to make sure we are on the right path
+            P.GOto(start);                                                      // Restart descent to make sure we are on the right path
            }
          };
 
@@ -2400,7 +2400,7 @@ chipStop = true;
                    }
                  };
                 f.findAndInsert(Key, Data);                                     // Must be insertable now because we have split everything in the path of the key
-                P.GOto(loopEnd);                                            // On leaf so descent has been completed
+                P.GOto(loopEnd);                                                // On leaf so descent has been completed
                }
 
               void Branch()                                                     // On a branch
@@ -2449,7 +2449,6 @@ chipStop = true;
     final Process.Register isLeaf     = P.new Register("isLeaf",   1);          // Success of merge - the result of this operation
     final Process.Register level      = P.new Register("level",    8);          // Level within tree
 
-
     P.new Block()                                                               // The block is left as soon as possible
      {void code()
        {s.Zero();
@@ -2464,7 +2463,7 @@ chipStop = true;
          };
         P.new If (mergeLeavesIntoRoot(P))                                       // Try merging leaves into root
          {void Then()
-           {P.GOto(end);                                                    // The root is now a leaf so there is nothing else to do
+           {P.GOto(end);                                                        // The root is now a leaf so there is nothing else to do
            }
          };
 
@@ -6678,7 +6677,7 @@ Merge     : 0
     final Process.Register l = P.register("l", 1);
     P.processTrace  = true;
     b.maxSteps      = 40000;
-    b.suppressMerge = true;                                                      // Suppress merges as they have not been developed yet
+    b.suppressMerge = true;                                                     // Suppress merges as they have not been developed yet
 
     final int N = 32;
     k.RegisterSet(0);
@@ -7737,7 +7736,7 @@ Merge     : 0
     final Process.Register d = P.register("d", b.bitsPerData);
     P.processTrace = true;
     b.maxSteps     = 2000;
-    b.suppressMerge = true;                                                      // Suppress merges as they have not been developed yet
+    b.suppressMerge = true;                                                     // Suppress merges as they have not been developed yet
 
     final int N = 32;
     for (int i = N; i > 0; i--)
@@ -7783,7 +7782,7 @@ Merge     : 0
     final Process.Register d = P.register("d", b.bitsPerData);
     P.processTrace = true;
     b.maxSteps     = 2000;
-    b.suppressMerge = true;                                                      // Suppress merges as they have not been developed yet
+    b.suppressMerge = true;                                                     // Suppress merges as they have not been developed yet
 
     final int N = random_32.length;
     for (int i = 0; i < N; ++i)
