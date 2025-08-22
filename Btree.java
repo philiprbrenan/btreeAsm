@@ -525,6 +525,13 @@ chipStop = true;
       Data.copy(v, data[0]);
      }
 
+    void FirstElement()                                                         // Get the first key, data pair as a single instruction
+     {P.new Instruction()
+       {void action()           {firstElement(); }
+        void verilog(Verilog v) {firstElement(v);}
+       };
+     }
+
     void lastElement()                                                          // Get the last key, data pair
      {R(); final int N = size.registerGet();
       if (N >= maxStuckSize)
@@ -541,7 +548,14 @@ chipStop = true;
        {void Choice(int i)
          {Key.copy (v, keys[i-1]);
           Data.copy(v, data[i-1]);
-         }                                                                                //
+         }
+       };
+     }
+
+    void LastElement()                                                          // Get the last key, data pair as a single instruction
+     {P.new Instruction()
+       {void action()           {lastElement(); }
+        void verilog(Verilog v) {lastElement(v);}
        };
      }
 
@@ -561,7 +575,14 @@ chipStop = true;
        {void Choice(int i)
          {Key.copy (v, keys[i]);
           Data.copy(v, data[i]);
-         }                                                                                //
+         }
+       };
+     }
+
+    void PastLastElement()                                                      // Get the past last key, data pair as a single instruction
+     {P.new Instruction()
+       {void action()           {pastLastElement(); }
+        void verilog(Verilog v) {pastLastElement(v);}
        };
      }
 
@@ -575,7 +596,7 @@ chipStop = true;
       Data.copy(data[N]);
      }
 
-    void elementAt(Verilog v, Process.Register Index)                                      // Get the indexed key, data pair
+    void elementAt(Verilog v, Process.Register Index)                           // Get the indexed key, data pair
      {v.new Case(maxStuckSize, Index.registerName())
        {void Choice(int i)
          {Key.copy (v, keys[i]);
@@ -584,7 +605,15 @@ chipStop = true;
        };
      }
 
-    void setElementAt(Process.Register Index, Process.Register Key, Process.Register Data)              // Set the indexed key, data pair
+    void ElementAt(Process.Register Index)                                      // Get the indexed key, data pair as a single instruction
+     {P.new Instruction()
+       {void action()           {elementAt(   Index);}
+        void verilog(Verilog v) {elementAt(v, Index);}
+       };
+     }
+
+    void setElementAt                                                           // Set the indexed key, data pair
+     (Process.Register Index, Process.Register Key, Process.Register Data)
      {R(); final int N = Index.registerGet();
       final int M = size.registerGet();
       if (N >= maxStuckSize)
@@ -602,7 +631,8 @@ chipStop = true;
       data[N].copy(Data);
      }
 
-    void setElementAt(Verilog v, Process.Register Index, Process.Register Key, Process.Register Data)              // Set the indexed key, data pair
+    void setElementAt(Verilog v,                                                // Set the indexed key, data pair
+      Process.Register Index, Process.Register Key, Process.Register Data)
      {v.new If (Index.registerName()+" == "+size.registerName())
        {void Then()
          {size.inc(v);
@@ -612,7 +642,15 @@ chipStop = true;
        {void Choice(int i)
          {keys[i].copy(v, Key);
           data[i].copy(v, Data);
-         }                                                                                //
+         }
+       };
+     }
+
+    void SetElementAt                                                           // Set the indexed key, data pair as a single instruction
+     (Process.Register Index, Process.Register Key, Process.Register Data)
+     {P.new Instruction()
+       {void action()           {setElementAt(   Index, Key, Data);}
+        void verilog(Verilog v) {setElementAt(v, Index, Key, Data);}
        };
      }
 
@@ -631,6 +669,13 @@ chipStop = true;
        {void Choice(int i)
          {data[i].copy(v, Data);
          }
+       };
+     }
+
+    void SetDataAt(Process.Register Index, Process.Register Data)               // Set the indexed data pair  as a single instruction
+     {P.new Instruction()
+       {void action()           {setDataAt(   Index, Data);}
+        void verilog(Verilog v) {setDataAt(v, Index, Data);}
        };
      }
 
