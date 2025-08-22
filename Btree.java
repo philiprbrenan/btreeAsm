@@ -74,28 +74,16 @@ chipStop = true;
 
   private void allocate(Process.Register ref, boolean leaf)                     // Allocate a stuck and set a ref to the allocated node
    {final Process       P         = ref.registerProcess();
-//  final Memory.Get    gFreeNext = freeNext.new Get(P);                        // Get next free stuck
     final Memory.Get    gFreeNext = freeNext.memoryGetFromProcess(P);           // Get next free stuck
-//  final Memory.Set    sFreeNext = freeNext   .new Set(P);                     // Set next free stuck
     final Memory.Set    sFreeNext = freeNext   .memorySetIntoProcess(P);        // Set next free stuck
-//  final Memory.Set    sIsLeaf   = stuckIsLeaf.new Set(P);                     // Set leaf or branch
     final Memory.Set    sIsLeaf   = stuckIsLeaf.memorySetIntoProcess(P);        // Set leaf or branch
-//  final Memory.Set    sIsFree   = stuckIsFree.new Set(P);                     // Set stuck is free field
     final Memory.Set    sIsFree   = stuckIsFree.memorySetIntoProcess(P);        // Set stuck is free field
     final Process.Register   root = btreeIndex(P, "root");                      // Index of the first free stuck in the btree
     final Process.Register   next = btreeIndex(P, "next");                      // Index of the second free stuck in the btree
     final Process.Register isLeaf = P.register("isLeaf", 1);                    // Indicate whether the allocated stuck is a leaf or a branch
     final Process.Register isFree = P.register("isFree", 1);                    // Indicate that the allocated stuck is not free but in use
-    P.new Instruction()                                                         // Get first free stuck
-     {void action()
-       {root.zero();                                                            // The free chain depends from the root which is never freed and so can never be on the free chain
-        gFreeNext.executeTransaction(root);
-       }
-      void verilog(Verilog v)
-       {root.zero(v);                                                            // The free chain depends from the root which is never freed and so can never be on the free chain
-        gFreeNext.executeTransaction(v, root);
-       }
-     };
+    root.Zero();
+    gFreeNext.ExecuteTransaction(root);
     gFreeNext.waitResultOfTransaction();
     P.new Instruction()                                                         // First free stuck if any is the allocated stuck
      {void action()
@@ -138,27 +126,15 @@ chipStop = true;
   private void free(Process.Register ref)                                       // Free the referenced stuck and put it on the free chain
    {final Process     P           = ref.registerProcess();
     final Process.Register next   = btreeIndex(P, "next");                      // Index of the second free stuck in the btree
-//  final Memory.Get  gFreeNext   = freeNext.new Get(P);                        // Get next free stuck
     final Memory.Get  gFreeNext   = freeNext.memoryGetFromProcess(P);           // Get next free stuck
-//  final Memory.Set  sFreeRoot   = freeNext.new Set(P);                        // Set next free stuck
     final Memory.Set  sFreeRoot   = freeNext.memorySetIntoProcess(P);           // Set next free stuck
-//  final Memory.Set  sFreeNext   = freeNext.new Set(P);                        // Set next free stuck
     final Memory.Set  sFreeNext   = freeNext.memorySetIntoProcess(P);           // Set next free stuck
-//  final Memory.Set    sIsFree   = stuckIsFree.new Set(P);                     // Set stuck is free field
     final Memory.Set    sIsFree   = stuckIsFree.memorySetIntoProcess(P);        // Set stuck is free field
     final Process.Register root   = btreeIndex(P, "root");                      // Index of the first free stuck in the btree
 
     final Process.Register isFree = P.register("isFree", 1);                    // Indicate that the allocated stuck is not free but in use
-    P.new Instruction()                                                         // Get first free stuck
-     {void action()
-       {root.zero();                                                            // The free chain depends from the root which is never freed and so can never be on the free chain
-        gFreeNext.executeTransaction(root);
-       }
-      void verilog(Verilog v)
-       {root.zero(v);                                                           // The free chain depends from the root which is never freed and so can never be on the free chain
-        gFreeNext.executeTransaction(v, root);
-       }
-     };
+    root.Zero();                                                            // The free chain depends from the root which is never freed and so can never be on the free chain
+    gFreeNext.ExecuteTransaction(root);
     gFreeNext.waitResultOfTransaction();
     P.new Instruction()                                                         // Next free stuck
      {void action()
@@ -176,14 +152,7 @@ chipStop = true;
      };
     sFreeRoot.waitResultOfTransaction();
 
-    P.new Instruction()                                                         // Next free stuck
-     {void action()
-       {sFreeNext.executeTransaction(ref, next);                                // Stuck Root points to the stuck being freed
-       }
-      void verilog(Verilog v)
-       {sFreeNext.executeTransaction(v, ref, next);                             // Stuck Root points to the stuck being freed
-       }
-     };
+    sFreeNext.ExecuteTransaction(ref, next);                                // Stuck Root points to the stuck being freed
     sFreeNext.waitResultOfTransaction();
     sIsFree  .waitResultOfTransaction();
    }
