@@ -475,7 +475,36 @@ module %s(                                                                      
         void Else() {Continue(v);}
        };
      }
+
     void Continue(Verilog v) {v.inc(processPcName());}                          // Continue with the next instruction
+
+    void GOto(Label Label)                                                      // Goto instruction
+     {new Instruction(true)
+       {void action()           {Goto(   Label);};
+        void verilog(Verilog v) {Goto(v, Label);};
+       };
+     }
+
+    void GONotZero(Label Label, Register Condition)                             // Go if not zero instruction
+     {new Instruction(true)
+       {void action()           {GoNotZero(   Label, Condition);};
+        void verilog(Verilog v) {GoNotZero(v, Label, Condition);};
+       };
+     }
+
+    void GOZero(Label Label, Register Condition)                                // Go if zero instruction
+     {new Instruction(true)
+       {void action()           {GoZero(   Label, Condition);};
+        void verilog(Verilog v) {GoZero(v, Label, Condition);};
+       };
+     }
+
+    void COntinue()                                                             // Continue instruction
+     {new Instruction(true)
+       {void action()           {Continue();};
+        void verilog(Verilog v) {Continue(v);};
+       };
+     }
 
     abstract class If                                                           // An implementation of an if statement
      {final Label Else = new Label(), End = new Label();                        // Components of an if statement
