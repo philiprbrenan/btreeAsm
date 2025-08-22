@@ -250,23 +250,15 @@ chipStop = true;
       for (int i = 0; i < maxStuckSize; i++)                                    // Create registers to hold stuck
        {keys[i]  = P.new Register("Key_"+i, bitsPerKey);                        // Keys in the stuck copied out of the memory of the btree into local registers
         data[i]  = P.new Register("Data_"+i, bitsPerData);                      // Data in the stuck copied out of the memory of the btree into local registers
-//      gKeys[i] = stuckKeys[i].new Get(P);                                     // Transactions to get each key in the stuck
         gKeys[i] = stuckKeys[i].memoryGetFromProcess(P);                        // Transactions to get each key in the stuck. Reuseing the transaction reduces generated Verilog code size by 30% at the cost of requiring each stuck Get/Set from/into memory to finish before the next one can start.
-//      sKeys[i] = stuckKeys[i].new Set(P);                                     // Transactions to set each key in the stuck
         sKeys[i] = stuckKeys[i].memorySetIntoProcess(P);                        // Transactions to set each key in the stuck
-//      gData[i] = stuckData[i].new Get(P);                                     // Transactions to get each data element in the stuck
         gData[i] = stuckData[i].memoryGetFromProcess(P);                        // Transactions to get each data element in the stuck
-//      sData[i] = stuckData[i].new Set(P);                                     // Transactions to set each data element in the stuck
         sData[i] = stuckData[i].memorySetIntoProcess(P);                        // Transactions to set each data element in the stuck
        }
 
-//    gSize = stuckSize  .new Get(P);                                           // Transaction to get the current size of the stuck
       gSize = stuckSize  .memoryGetFromProcess(P);                              // Transaction to get the current size of the stuck
-//    sSize = stuckSize  .new Set(P);                                           // Transaction to set the current size of the stuck
       sSize = stuckSize  .memorySetIntoProcess(P);                              // Transaction to set the current size of the stuck
-//    gLeaf = stuckIsLeaf.new Get(P);                                           // Transaction to discover whether this stuck is acting as a leaf or a branch
       gLeaf = stuckIsLeaf.memoryGetFromProcess(P);                              // Transaction to discover whether this stuck is acting as a leaf or a branch
-//    sLeaf = stuckIsLeaf.new Set(P);                                           // Transaction to set the stuck in memory to  a leaf or a branch
       sLeaf = stuckIsLeaf.memorySetIntoProcess(P);                              // Transaction to set the stuck in memory to  a leaf or a branch
       Found        = P.register("Found",        1);                             // Whether the key was found
       Key          = P.register("Key",          bitsPerKey);                    // Data associated with the key if found
@@ -280,26 +272,12 @@ chipStop = true;
 //D3 Memory                                                                     // Get a stuck from memory or return it to memory
 
     void stuckGet(Process.Register Index)                                       // Copy a stuck indexed by a register out of memory into a set of registers. Currently this is done sequentially, but multiple stuck loads could be overlapped if this method was fragmented into smaller steps.  Most stuck methods do not actually require the retrieval of a full stuck from memory but doing so makes it easier to write an initial version of the btree algorithm at the cost of considerable inefficiency.
-     {P.new Instruction()
-       {void action()
-         {index.copy(Index);
-         }
-        void verilog(Verilog v)
-         {index.copy(v, Index);
-         }
-       };
+     {index.Copy(Index);
       stuckGet();
      }
 
     void stuckGetRoot()                                                         // Copy the root stuck out of memory into a set of registers. Currently this is done sequentially, but multiple stuck loads could be overlapped if this method was fragmented into smaller steps.  Most stuck methods do not actually require the retrieval of a full stuck from memory but doing so makes it easier to write an initial version of the btree algorithm at the cost of considerable inefficiency.
-     {P.new Instruction()
-       {void action()
-         {index.registerSet(0);
-         }
-        void verilog(Verilog v)
-         {index.registerSet(v, 0);
-         }
-       };
+     {index.Zero();
       stuckGet();
      }
 
