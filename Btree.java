@@ -721,7 +721,15 @@ chipStop = true;
        };
      }
 
-    void removeElementAt(Process.Register Index)                                // Set the indexed key, data pair
+    void InsertElementAt                                                        // Set the indexed key, data pair as a single instruction
+     (Process.Register Index, Process.Register Key, Process.Register Data)
+     {P.new Instruction()
+       {void action()           {insertElementAt(   Index, Key, Data);}
+        void verilog(Verilog v) {insertElementAt(v, Index, Key, Data);}
+       };
+     }
+
+    void removeElementAt(Process.Register Index)                                // Remove the indexed key, data pair from the stuck as a single instruction
      {R(); final int N = Index.registerGet();
       if (N >= size.registerGet())
        {P.processStop(13);
@@ -737,7 +745,7 @@ chipStop = true;
        }
      }
 
-    void removeElementAt(Verilog v, Process.Register Index)                                // Set the indexed key, data pair
+    void removeElementAt(Verilog v, Process.Register Index)                     // Remove the indexed key, data pair from the stuck as a single instruction
      {size.dec(v);
       v.new Case(maxStuckSize, Index.registerName())
        {void Choice(int i)
@@ -754,6 +762,13 @@ chipStop = true;
            }
          };
        }
+     }
+
+    void RemoveElementAt(Process.Register Index)                                // Remove the indexed key, data pair from the stuck as a single instruction
+     {P.new Instruction()
+       {void action()           {removeElementAt(   Index);}
+        void verilog(Verilog v) {removeElementAt(v, Index);}
+       };
      }
 
 //D3 Search                                                                     // Search the stuck
