@@ -2571,16 +2571,9 @@ Chip: Btree            step: 0, maxSteps: 10, running: 0
       final Process.Register d = P.register("d", D);
       final Process.Register n = P.register("n", b.btreeAddressSize);
 
-      P.new Instruction()
-       {void action()
-         {n.registerSet(J);
-         }
-        void verilog(Verilog v)
-         {n.registerSet(v, J);
-         }
-       };
-
+      n.RegisterSet(J);
       s.stuckGet(n);
+
       for (int i = 0; i < S; i++)
        {final int I = i;
         P.new Instruction()
@@ -2635,7 +2628,6 @@ Stuck: root size: 4, leaf: 1, root
        {s.clear(v);
        }
      };
-
     b.maxSteps = 100;
     b.chipRun();
 
@@ -2949,14 +2941,7 @@ Merge     : 0
      {final int J = j;
       P.processClear();
       s.stuckGetRoot();
-      P.new Instruction()
-       {void action()
-         {i.registerSet(J);
-         }
-        void verilog(Verilog v)
-         {i.registerSet(v, J);
-         }
-       };
+      i.RegisterSet(J);
       P.new Instruction()
        {void action()
          {s.elementAt(i);
@@ -3245,14 +3230,7 @@ Stuck: stuck size: 5, leaf: 1, root
 
     P.processClear();
     s.stuckGetRoot();
-    P.new Instruction()
-     {void action()
-       {i.registerSet(1);
-       }
-      void verilog(Verilog v)
-       {i.registerSet(v, 1);
-       }
-     };
+    i.RegisterSet(1);
     P.new Instruction()
      {void action()
        {s.removeElementAt(i);
@@ -3289,14 +3267,7 @@ Stuck: stuck size: 3, leaf: 1, root
     P.processClear();
     s.stuckGetRoot();
 
-    P.new Instruction()
-     {void action()
-       {k.registerSet(11);
-       }
-      void verilog(Verilog v)
-       {k.registerSet(v, 11);
-       }
-     };
+    k.RegisterSet(11);
 
     P.new Instruction()
      {void action()
@@ -3316,14 +3287,7 @@ Stuck: stuck size: 3, leaf: 1, root
      {final int J = j;
       P.processClear();
       s.stuckGetRoot();
-      P.new Instruction()
-       {void action()
-         {k.registerSet(J);
-         }
-        void verilog(Verilog v)
-         {k.registerSet(v, J);
-         }
-       };
+      k.RegisterSet(J);
       P.new Instruction()
        {void action()
          {s.search_eq(k);
