@@ -1630,14 +1630,7 @@ chipStop = true;
 
     P.new Block()
      {void code()
-       {P.new Instruction()                                                     // Check that the root has one entry and thus two children
-         {void action()
-           {success.zero();                                                     // Assume failure
-           };
-          void verilog(Verilog v)
-           {success.zero(v);                                                    // Assume failure
-           };
-         };
+       {success.Zero();                                                         // Assume failure
         p.stuckGetRoot();                                                       // Load root
 
         P.new Instruction(true)                                                     // Check that the root has one entry and thus two children
@@ -1673,24 +1666,10 @@ chipStop = true;
                {p.merge(l, r);                                                  // Merge leaves into root
                 P.new If (p.MergeSuccess)                                       // Check that the root has one entry and thus two children
                  {void Then()
-                   {P.new Instruction()
-                     {void action()
-                       {p.isLeaf.one();
-                       }
-                      void verilog(Verilog v)
-                       {p.isLeaf.one(v);
-                       }
-                     };
+                   {p.isLeaf.One();
                     p.stuckPut(true);                                           // Save the modified root back into the tree
                     free(il); free(ir);                                         // Free left and right leaves as they are no longer needed
-                    P.new Instruction()
-                     {void action()
-                       {success.one();                                          // Success
-                       }
-                      void verilog(Verilog v)
-                       {success.one(v);                                         // Success
-                       }
-                     };
+                    success.One();                                              // Success
                    }
                  };
                }
