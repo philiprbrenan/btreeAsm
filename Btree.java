@@ -6754,11 +6754,11 @@ Merge     : 0
          };
        }
      };
-    b.chipRunJava();
-    stop(b.btreePrint());
+    b.chipRun();
+    //stop(b.btreePrint());
     //stop(b.btreeSave());
-    //ok(b.btreePrint(), test_put_print());
-    //ok(b.btreeSave(),  test_put_save());
+    ok(b.btreePrint(), test_put_print());
+    ok(b.btreeSave(),  test_put_save());
    }
 
   static void test_put_merge()
@@ -7939,7 +7939,8 @@ Merge     : 0
 
   static void newTests()                                                        // Tests being worked on
    {//oldTests();
-    test_verilog_put();
+    //test_verilog_put();
+    test_put_ascending();
    }
 
   public static void main(String[] args)                                        // Test if called as a program
