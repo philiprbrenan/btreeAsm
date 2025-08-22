@@ -723,6 +723,17 @@ chipStop = true;
        }
      }
 
+    void Search_eq(Process.Register Key)                                        // Find the specified key if possible in the stuck
+     {P.new Instruction()
+       {void action()
+         {search_eq(Key);
+         }
+        void verilog(Verilog v)
+         {search_eq(v, Key);
+         }
+       };
+     }
+
     void search_le(Process.Register Key)                                        // Find the first key in the stuck so that the search key is less than or equal to this key
      {R(); final int N = size.registerGet();
       Found.zero();
@@ -769,6 +780,17 @@ chipStop = true;
            }
          };
        }
+     }
+
+    void Search_le(Process.Register Key)                                        // Find the first key in the stuck so that the search key is less than or equal to this key
+     {P.new Instruction()
+       {void action()
+         {search_le(Key);
+         }
+        void verilog(Verilog v)
+         {search_le(v, Key);
+         }
+       };
      }
 
 //D3 Split                                                                      // Split stucks in many and various ways
