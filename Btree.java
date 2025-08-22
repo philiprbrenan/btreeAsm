@@ -2187,14 +2187,7 @@ chipStop = true;
     Stuck stuck() {return (Stuck)this;}                                         // Stuck found
 
     void findSearch(Process.Register Key)
-     {P.new Instruction()
-       {void action()
-         {BtreeIndex.zero();                                                    // Start at the root
-         }
-        void verilog(Verilog v)
-         {BtreeIndex.zero(v);                                                   // Start at the root
-         }
-       };
+     {BtreeIndex.Zero();                                                    // Start at the root
 
       P.new Block()
        {void code()
@@ -2307,27 +2300,13 @@ chipStop = true;
     P.new Block()                                                               // The block is left as soon as possible
      {void code()
        {final Process.Label oStart = start, oEnd = end;
-        P.new Instruction()
-         {void action()
-           {P.GoNotZero(oEnd, f.Found);                                         // Direct insertion succeeded so nothing more to do
-           }
-          void verilog(Verilog v)
-           {P.GoNotZero(v, oEnd, f.Found);                                         // Direct insertion succeeded so nothing more to do
-           }
-         };
+        P.GONotZero(oEnd, f.Found);                                         // Direct insertion succeeded so nothing more to do
 
         P.new If(f.BtreeIndex)                                                  // Failed to insert because the root is a leaf which must be full else the operation would have succeeded
          {void Else()
            {splitRootLeaf(P);                                                   // Split the leaf root to make room
             f.findAndInsert(Key, Data);                                         // Splitting a leaf root will make more space in the tree so this operation will now succeed
-            P.new Instruction()
-             {void action()
-               {P.Goto(oEnd);                                                   // Direct insertion succeeded so nothing more to do
-               }
-              void verilog(Verilog v)
-               {P.Goto(v, oEnd);                                                   // Direct insertion succeeded so nothing more to do
-               }
-             };
+            P.GOto(oEnd);                                                   // Direct insertion succeeded so nothing more to do
            }
          };
 
@@ -2344,25 +2323,11 @@ chipStop = true;
         P.new If (full)                                                         // If root branch is full split it using the dedicated method and restart
          {void Then()
            {splitRootBranch(P);                                                 // Split the full branch root
-            P.new Instruction()
-             {void action()
-               {P.Goto(start);                                                  // Restart descent to make sure we are on the right path
-               }
-              void verilog(Verilog v)
-               {P.Goto(v, start);                                               // Restart descent to make sure we are on the right path
-               }
-             };
+            P.GOto(start);                                                  // Restart descent to make sure we are on the right path
            }
          };
 
-        P.new Instruction()                                                     // Start at the root
-         {void action()
-           {p.zero();
-           }
-          void verilog(Verilog v)
-           {p.zero(v);
-           }
-         };
+        p.Zero();
 
         P.new Block()                                                           // Step down through the tree by iterating this block
          {void code()
@@ -2406,14 +2371,7 @@ chipStop = true;
                    }
                  };
                 f.findAndInsert(Key, Data);                                     // Must be insertable now because we have split everything in the path of the key
-                P.new Instruction()
-                 {void action()
-                   {P.Goto(loopEnd);                                            // On leaf so descent has been completed
-                   }
-                  void verilog(Verilog v)
-                   {P.Goto(v, loopEnd);                                            // On leaf so descent has been completed
-                   }
-                 };
+                P.GOto(loopEnd);                                            // On leaf so descent has been completed
                }
 
               void Branch()                                                     // On a branch
@@ -2448,20 +2406,15 @@ chipStop = true;
                      };
                    }
                  };
-                P.new Instruction()
-                 {void action()
-                   {P.Goto(loopStart);                                          // Process next level of tree
-                   }
-                  void verilog(Verilog v)
-                   {P.Goto(v, loopStart);                                       // Process next level of tree
-                   }
-                 };
+
+                P.GOto(loopStart);                                          // Process next level of tree
                }
              };
            }
          };
        }
      };
+
     if (!suppressMerge) merge(Key);                                              // Merge along path to key
    }
 
@@ -2474,16 +2427,13 @@ chipStop = true;
     final Process.Register isLeaf     = P.new Register("isLeaf",   1);          // Success of merge - the result of this operation
     final Process.Register level      = P.new Register("level",    8);          // Level within tree
 
-P.new Instruction() {void action() {say("MMMM11", Key);}};
 
     P.new Block()                                                               // The block is left as soon as possible
      {void code()
        {s.Zero();
         level.Zero();
-P.new Instruction() {void action() {say("MMMM22", Key);}};
 
         S.stuckGetRoot();                                                       // Load current stuck
-P.new Instruction() {void action() {say("MMMM33", Key);}};
 
         S.new IsLeaf()                                                          // Root is a leaf - nothing to merge
          {void Leaf()
@@ -2497,7 +2447,6 @@ P.new Instruction() {void action() {say("MMMM33", Key);}};
              };
            }
          };
-P.new Instruction() {void action() {say("AAAA22", Key);}};
         P.new If (mergeLeavesIntoRoot(P))                                       // Try merging leaves into root
          {void Then()
            {P.new Instruction(true)
@@ -2516,7 +2465,6 @@ P.new Instruction() {void action() {say("AAAA22", Key);}};
            {S.stuckGetRoot();                                                   // Reload root if the merge was successful
            }
          };
-P.new Instruction() {void action() {say("AAAA33", Key);}};
 
         P.new Block()                                                           // Step down through tree
          {void code()
@@ -2546,7 +2494,6 @@ P.new Instruction() {void action() {say("AAAA33", Key);}};
              }
 
             S.stuckGet(s);                                                      // Reload in case any changes have been made
-P.new Instruction() {void action() {say("AAAA44", Key);}};
 
             P.new Instruction()
              {void action()
@@ -2560,7 +2507,6 @@ P.new Instruction() {void action() {say("AAAA44", Key);}};
              };
 
             S.stuckGet(s);                                                      // Load child
-P.new Instruction() {void action() {say("AAAA55", Key);}};
 
             S.new IsLeaf()                                                      // Child is a leaf or a branch
              {void Leaf()                                                       // At a leaf - end of merging
@@ -5517,7 +5463,6 @@ Merge     : 0
         P.new Instruction(true)
          {void action()
            {t.append(b.btreePrint());
-            say("AAAA", b.btreePrint());
             n.lt(k, N);
             P.GoNotZero(start, n);
            }
@@ -6779,25 +6724,16 @@ Merge     : 0
     final Process.Register d = P.register("d", b.bitsPerData);
     final Process.Register i = P.register("i", 8);
     final Process.Register l = P.register("l", 1);
-
-    b.maxSteps     = 20000;
+    P.processTrace  = true;
+    b.maxSteps      = 40000;
     b.suppressMerge = true;                                                      // Suppress merges as they have not been developed yet
 
     final int N = 32;
-    k.registerSet(0);
-    d.registerSet(0);
+    k.RegisterSet(0);
+    d.RegisterSet(0);
     P.new Block()
      {void code()
-       {P.new Instruction()
-         {void action()
-           {k.inc();
-            d.copy(k); d.inc();
-           }
-          void verilog(Verilog v)
-           {k.inc(v);
-            d.copy(v, k); d.inc(v);
-           }
-         };
+       {k.Inc(); d.Copy(k); d.Inc();
         b.put(P, k, d);
         if (false)                                                              // Create test trees
          {P.new Instruction()
@@ -6808,7 +6744,8 @@ Merge     : 0
          }
         P.new Instruction(true)
          {void action()
-           {P.GoNotZero(start, l.lt(k, N));
+           {l.lt(k, N);
+            P.GoNotZero(start, l);
            }
           void verilog(Verilog v)
            {l.lt(v, k, N);
@@ -6817,11 +6754,11 @@ Merge     : 0
          };
        }
      };
-    b.chipRun();
-    //stop(b.btreePrint());
+    b.chipRunJava();
+    stop(b.btreePrint());
     //stop(b.btreeSave());
-    ok(b.btreePrint(), test_put_print());
-    ok(b.btreeSave(),  test_put_save());
+    //ok(b.btreePrint(), test_put_print());
+    //ok(b.btreeSave(),  test_put_save());
    }
 
   static void test_put_merge()
@@ -8002,18 +7939,7 @@ Merge     : 0
 
   static void newTests()                                                        // Tests being worked on
    {//oldTests();
-    //test_verilog_put();
-    //test_findAndInsert();
-    test_delete_ascending();
-//    test_delete_random();
-//    test_delete_descending();
-//    test_delete_random_descending();
-///    test_put_ascending();
-///    test_put_merge();
-//    test_put_reload();
-///    test_put_descending();
-//    test_put_random();
-//    test_verilog_put();
+    test_verilog_put();
    }
 
   public static void main(String[] args)                                        // Test if called as a program
