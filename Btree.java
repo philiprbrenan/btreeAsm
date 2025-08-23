@@ -1057,7 +1057,6 @@ chipStop = true;
               v.new Case(maxStuckSize, size.registerName())
                {void Choice(int I)
                  {StuckIndex.registerSet(v, I);
-                  Stuck.this.Key .copy(v, keys[I]);
                   Stuck.this.Data.copy(v, data[I]);
                  }
                };
@@ -1673,19 +1672,10 @@ chipStop = true;
     allocateLeaf(il); c.stuckPut(cd);                                           // Allocate and save split out left of leaf
                       l.stuckPut(il);                                           // Save remainder of leaf
 
-    P.new Instruction()
-     {void action()
-       {l.lastElement();  mk.copy(l.Key);                                       // Last element of left child
-        c.firstElement(); mk.add (c.Key); mk.half();                            // First element of right child
-        p.insertElementAt(StuckIndex, mk, il);                                  // Add reference to left child
-       }
-      void verilog(Verilog v)
-       {l.lastElement (v); mk.copy(v, l.Key);                                   // Last element of left child
-        c.firstElement(v); mk.add (v, c.Key); mk.half(v);                       // First element of right child
-        p.insertElementAt(v, StuckIndex, mk, il);                               // Add reference to left child
-       }
-     };
-
+    l.LastElement();                                                            // Last element of left child
+    c.FirstElement();                                                           // First element of right child
+    mk.Average(l.Key, c.Key);                                                   // Mid key is average of surrounding keys
+    p.InsertElementAt(StuckIndex, mk, il);                                  // Add reference to left child
     p.stuckPut();                                                               // Save the parent stuck back into the btree
    }
 
@@ -1793,20 +1783,8 @@ chipStop = true;
 
     p.stuckGet(ParentIndex);                                                    // Load parent stuck from btree
 
-    P.new Instruction()
-     {void action()
-       {p.pastLastElement();                                                    // Key of child
-        cd.copy(p.data[p.size.registerGet()]);                                  // Reference to child in btree
-       }
-      void verilog(Verilog v)
-       {v.new Case(maxStuckSize, p.size.registerName())
-         {void Choice(int i)
-           {p.pastLastElement(v);                                               // Key of child
-            cd.copy(v, p.data[i]);                                              // Reference to child in btree
-           }
-         };
-       }
-     };
+    p.PastLastElement();                                                        // Key of child
+    cd.Copy(p.Data);                                                            // Reference to child in btree
     c.stuckGet(cd);                                                             // Load child from btree
 
     P.new Instruction()
@@ -1823,16 +1801,8 @@ chipStop = true;
     allocateBranch(il); l.stuckPut(il);                                         // Allocate and save left leaf
                         c.stuckPut(cd);                                         // Allocate and save left leaf
                                                                                 // Update root with new children
-    P.new Instruction()
-     {void action()
-       {p.push(mk, il);                                                         // Add reference to left child
-        p.setPastLastElement(mk, cd);                                           // Add reference to not split top child on the right
-       }
-      void verilog(Verilog v)
-       {p.push(v, mk, il);                                                      // Add reference to left child
-        p.setPastLastElement(v, mk, cd);                                        // Add reference to not split top child on the right
-       }
-     };
+    p.Push(mk, il);                                                             // Add reference to left child
+    p.SetPastLastElement(mk, cd);                                               // Add reference to not split top child on the right
     p.stuckPut();                                                               // Save the parent stuck back into the btree
    }
 
@@ -4641,517 +4611,54 @@ Merge     : 0
     b.maxSteps = 2000;
     P.processTrace = true;
     P.processClear();
-    P.new Instruction()
-     {void action()
-       {k.registerSet(10);
-        d.registerSet(20);
-       }
-      void verilog(Verilog v)
-       {k.registerSet(v, 10);
-        d.registerSet(v, 20);
-       }
-     };
-    f.findAndInsert(k, d);
 
-    b.chipRun();
-    //stop(b.btreePrint());
-    ok(b.btreePrint(), """
-10=0 |
-""");
+    k.RegisterSet(10); d.RegisterSet(20); f.findAndInsert(k, d);
+    k.RegisterSet(20); d.RegisterSet(30); f.findAndInsert(k, d);
+    k.RegisterSet(40); d.RegisterSet(50); f.findAndInsert(k, d);
+    k.RegisterSet(30); d.RegisterSet(40); f.findAndInsert(k, d);
 
-    P.processClear();
-    P.new Instruction()
-     {void action()
-       {k.registerSet(20);
-        d.registerSet(30);
-       }
-      void verilog(Verilog v)
-       {k.registerSet(v, 20);
-        d.registerSet(v, 30);
-       }
-     };
-    f.findAndInsert(k, d);
-    b.chipRun();
-    //stop(b.btreePrint());
-    ok(b.btreePrint(), """
-10,20=0 |
-""");
-
-    P.processClear();
-    P.new Instruction()
-     {void action()
-       {k.registerSet(40);
-        d.registerSet(50);
-       }
-      void verilog(Verilog v)
-       {k.registerSet(v, 40);
-        d.registerSet(v, 50);
-       }
-     };
-    f.findAndInsert(k, d);
-    b.chipRun();
-    //stop(b.btreePrint());
-    ok(b.btreePrint(), """
-10,20,40=0 |
-""");
-
-     P.processClear();
-     P.new Instruction()
-      {void action()
-        {k.registerSet(30);
-         d.registerSet(40);
-        }
-       void verilog(Verilog v)
-        {k.registerSet(v, 30);
-         d.registerSet(v, 40);
-        }
-      };
-     f.findAndInsert(k, d);
-     b.chipRun();
-    //stop(b.btreePrint());
-    ok(b.btreePrint(), """
-10,20,30,40=0 |
-""");
-    //stop(b.chipPrintMemory());
-
-    P.processClear();
     b.splitRootLeaf(P);
-    b.chipRun();
-    //stop(b.btreePrint());
-    ok(b.btreePrint(), """
-        25        |
-        0         |
-        1         |
-        2         |
-10,20=1   30,40=2 |
-""");
+    k.RegisterSet(50); d.RegisterSet(60); f.findAndInsert(k, d);
+    k.RegisterSet(60); d.RegisterSet(70); f.findAndInsert(k, d);
 
-    P.processClear();
-    P.new Instruction()
-     {void action()
-       {k.registerSet(50);
-        d.registerSet(60);
-       }
-      void verilog(Verilog v)
-       {k.registerSet(v, 50);
-        d.registerSet(v, 60);
-       }
-     };
-
-    f.findAndInsert(k, d);
-    b.chipRun();
-    //stop(b.chipPrintMemory());
-    //stop(b.btreePrint());
-    ok(b.btreePrint(), """
-        25           |
-        0            |
-        1            |
-        2            |
-10,20=1   30,40,50=2 |
-""");
-
-    P.processClear();
-    P.new Instruction()
-    {void action()
-      {k.registerSet(60);
-        d.registerSet(70);
-      }
-      void verilog(Verilog v)
-      {k.registerSet(v, 60);
-        d.registerSet(v, 70);
-      }
-    };
-    f.findAndInsert(k, d);
-    b.chipRun();
-    //stop(b.btreePrint());
-    ok(b.btreePrint(), """
-        25              |
-        0               |
-        1               |
-        2               |
-10,20=1   30,40,50,60=2 |
-""");
-
-    P.processClear();
-    P.new Instruction()
-     {void action()
-       {i.registerSet(0);
-       }
-      void verilog(Verilog v)
-       {i.registerSet(v, 0);
-       }
-     };
+    i.RegisterSet(0);
     b.splitLeafAtTop(i);
-    b.chipRun();
-    //stop(b.btreePrint());
-    ok(b.btreePrint(), """
-        25        45         |
-        0         0.1        |
-        1         3          |
-                  2          |
-10,20=1   30,40=3    50,60=2 |
-""");
 
-    P.processClear();
-    P.new Instruction()
-     {void action()
-       {k.registerSet(70);
-        d.registerSet(80);
-       }
-      void verilog(Verilog v)
-       {k.registerSet(v, 70);
-        d.registerSet(v, 80);
-       }
-     };
-    f.findAndInsert(k, d);
-    b.chipRun();
-    //stop(b.btreePrint());
-    ok(b.btreePrint(), """
-        25        45            |
-        0         0.1           |
-        1         3             |
-                  2             |
-10,20=1   30,40=3    50,60,70=2 |
-""");
+    k.RegisterSet(70); d.RegisterSet(80); f.findAndInsert(k, d);
+    k.RegisterSet(80); d.RegisterSet(90); f.findAndInsert(k, d);
 
-    P.processClear();
-    P.new Instruction()
-     {void action()
-       {k.registerSet(80);
-        d.registerSet(90);
-       }
-      void verilog(Verilog v)
-       {k.registerSet(v, 80);
-        d.registerSet(v, 90);
-       }
-     };
-    f.findAndInsert(k, d);
-    b.chipRun();
-    //stop(b.btreePrint());
-    ok(b.btreePrint(), """
-        25        45               |
-        0         0.1              |
-        1         3                |
-                  2                |
-10,20=1   30,40=3    50,60,70,80=2 |
-""");
-
-    P.processClear();
-    P.new Instruction()
-     {void action()
-       {i.registerSet(0);
-       }
-      void verilog(Verilog v)
-       {i.registerSet(v, 0);
-       }
-     };
+    i.RegisterSet(0);
     b.splitLeafAtTop(i);
-    b.chipRun();
-    //stop(b.btreePrint());
-    ok(b.btreePrint(), """
-        25        45         65         |
-        0         0.1        0.2        |
-        1         3          4          |
-                             2          |
-10,20=1   30,40=3    50,60=4    70,80=2 |
-""");
-
-    P.processClear();
     b.splitRootBranch(P);
-    b.chipRun();
-    //stop(b.btreePrint());
-    ok(b.btreePrint(), """
-                  45                  |
-                  0                   |
-                  5                   |
-                  6                   |
-        25                  65        |
-        5                   6         |
-        1                   4         |
-        3                   2         |
-10,20=1   30,40=3   50,60=4   70,80=2 |
-""");
 
-    P.processClear();
-    P.new Instruction()
-     {void action()
-       {k.registerSet(62);
-        d.registerSet(63);
-       }
-      void verilog(Verilog v)
-       {k.registerSet(v, 62);
-        d.registerSet(v, 63);
-       }
-     };
-    f.findAndInsert(k, d);
-    b.chipRun();
-    //stop(b.btreePrint());
-    ok(b.btreePrint(), """
-                  45                     |
-                  0                      |
-                  5                      |
-                  6                      |
-        25                     65        |
-        5                      6         |
-        1                      4         |
-        3                      2         |
-10,20=1   30,40=3   50,60,62=4   70,80=2 |
-""");
+    k.RegisterSet(62); d.RegisterSet(63); f.findAndInsert(k, d);
+    k.RegisterSet(64); d.RegisterSet(65); f.findAndInsert(k, d);
 
-    P.processClear();
-    P.new Instruction()
-     {void action()
-       {k.registerSet(64);
-        d.registerSet(65);
-       }
-      void verilog(Verilog v)
-       {k.registerSet(v, 64);
-        d.registerSet(v, 65);
-       }
-     };
-    f.findAndInsert(k, d);
-    b.chipRun();
-
-    //stop(b.btreePrint());
-    ok(b.btreePrint(), """
-                  45                        |
-                  0                         |
-                  5                         |
-                  6                         |
-        25                        65        |
-        5                         6         |
-        1                         4         |
-        3                         2         |
-10,20=1   30,40=3   50,60,62,64=4   70,80=2 |
-""");
-
-    P.processClear();
-    P.new Instruction()
-     {void action()
-       {i.registerSet(6);
-        j.registerSet(0);
-       }
-      void verilog(Verilog v)
-       {i.registerSet(v, 6);
-        j.registerSet(v, 0);
-       }
-     };
+    i.RegisterSet(6); j.RegisterSet(0);
     b.splitLeafNotTop(i, j);
-    b.chipRun();
-    //stop(b.btreePrint());
-    ok(b.btreePrint(), """
-                  45                             |
-                  0                              |
-                  5                              |
-                  6                              |
-        25                  61        65         |
-        5                   6         6.1        |
-        1                   7         4          |
-        3                             2          |
-10,20=1   30,40=3   50,60=7   62,64=4    70,80=2 |
-""");
 
-    P.processClear();
-    P.new Instruction()
-     {void action()
-       {k.registerSet( 90);
-        d.registerSet(100);
-       }
-      void verilog(Verilog v)
-       {k.registerSet(v,  90);
-        d.registerSet(v, 100);
-       }
-     };
-    f.findAndInsert(k, d);
-    b.chipRun();
-    P.processClear();
-    P.new Instruction()
-     {void action()
-       {k.registerSet(100);
-        d.registerSet(110);
-       }
-      void verilog(Verilog v)
-       {k.registerSet(v, 100);
-        d.registerSet(v, 110);
-       }
-     };
-    f.findAndInsert(k, d);
-    b.chipRun();
-    P.processClear();
-    P.new Instruction()
-     {void action()
-       {i.registerSet(6);
-       }
-      void verilog(Verilog v)
-       {i.registerSet(v, 6);
-       }
-     };
+    k.RegisterSet( 90); d.RegisterSet(100); f.findAndInsert(k, d);
+    k.RegisterSet(100); d.RegisterSet(110); f.findAndInsert(k, d);
+
+    i.RegisterSet(6);
     b.splitLeafAtTop(i);
-    b.chipRun();
-    //stop(b.btreePrint());
-    ok(b.btreePrint(), """
-                  45                                         |
-                  0                                          |
-                  5                                          |
-                  6                                          |
-        25                  61        65         85          |
-        5                   6         6.1        6.2         |
-        1                   7         4          8           |
-        3                                        2           |
-10,20=1   30,40=3   50,60=7   62,64=4    70,80=8    90,100=2 |
-""");
-    P.processClear();
-    P.new Instruction()
-     {void action()
-       {i.registerSet(0);
-       }
-      void verilog(Verilog v)
-       {i.registerSet(v, 0);
-       }
-     };
+
+    i.RegisterSet(0);
     b.splitBranchAtTop(i);
-    b.chipRun();
-    //stop(b.btreePrint());
-    ok(b.btreePrint(), """
-                  45                  65                    |
-                  0                   0.1                   |
-                  5                   9                     |
-                                      6                     |
-        25                  61                   85         |
-        5                   9                    6          |
-        1                   7                    8          |
-        3                   4                    2          |
-10,20=1   30,40=3   50,60=7   62,64=4    70,80=8   90,100=2 |
-""");
 
-    P.processClear();
-    P.new Instruction()
-     {void action()
-       {k.registerSet(21);
-        d.registerSet(22);
-       }
-      void verilog(Verilog v)
-       {k.registerSet(v, 21);
-        d.registerSet(v, 22);
-       }
-     };
-    f.findAndInsert(k, d);
-    b.chipRun();
-    P.processClear();
-    P.new Instruction()
-     {void action()
-       {k.registerSet(22);
-        d.registerSet(23);
-       }
-      void verilog(Verilog v)
-       {k.registerSet(v, 22);
-        d.registerSet(v, 23);
-       }
-     };
-    f.findAndInsert(k, d);
-    b.chipRun();
-    P.processClear();
-    P.new Instruction()
-     {void action()
-       {i.registerSet(5);
-        j.registerSet(0);
-       }
-      void verilog(Verilog v)
-       {i.registerSet(v, 5);
-        j.registerSet(v, 0);
-       }
-     };
+    k.RegisterSet(21); d.RegisterSet(22); f.findAndInsert(k, d);
+    k.RegisterSet(22); d.RegisterSet(23); f.findAndInsert(k, d);
+
+    i.RegisterSet(5);  j.RegisterSet(0);
     b.splitLeafNotTop(i, j);
-    b.chipRun();
-    //stop(b.btreePrint());
-    ok(b.btreePrint(), """
-                              45                  65                    |
-                              0                   0.1                   |
-                              5                   9                     |
-                                                  6                     |
-         20        25                   61                   85         |
-         5         5.1                  9                    6          |
-         10        1                    7                    8          |
-                   3                    4                    2          |
-10,20=10   21,22=1    30,40=3   50,60=7   62,64=4    70,80=8   90,100=2 |
-""");
 
-    P.processClear();
-    P.new Instruction()
-     {void action()
-       {k.registerSet(12);
-        d.registerSet(13);
-       }
-      void verilog(Verilog v)
-       {k.registerSet(v, 12);
-        d.registerSet(v, 13);
-       }
-     };
-    f.findAndInsert(k, d);
-    b.chipRun();
-    P.processClear();
-    P.new Instruction()
-     {void action()
-       {k.registerSet(14);
-        d.registerSet(15);
-       }
-      void verilog(Verilog v)
-       {k.registerSet(v, 14);
-        d.registerSet(v, 15);
-       }
-     };
-    f.findAndInsert(k, d);
-    b.chipRun();
-    //stop(b.btreePrint());
-    ok(b.btreePrint(), """
-                                    45                  65                    |
-                                    0                   0.1                   |
-                                    5                   9                     |
-                                                        6                     |
-               20        25                   61                   85         |
-               5         5.1                  9                    6          |
-               10        1                    7                    8          |
-                         3                    4                    2          |
-10,12,14,20=10   21,22=1    30,40=3   50,60=7   62,64=4    70,80=8   90,100=2 |
-""");
+    k.RegisterSet(12); d.RegisterSet(13); f.findAndInsert(k, d);
+    k.RegisterSet(14); d.RegisterSet(15); f.findAndInsert(k, d);
 
-    P.processClear();
-    P.new Instruction()
-     {void action()
-       {i.registerSet(5);
-        j.registerSet(0);
-       }
-      void verilog(Verilog v)
-       {i.registerSet(v, 5);
-        j.registerSet(v, 0);
-       }
-     };
+    i.RegisterSet(5);  j.RegisterSet(0);
     b.splitLeafNotTop(i, j);
-    b.chipRun();
-    //stop(b.btreePrint());
-    ok(b.btreePrint(), """
-                                          45                  65                    |
-                                          0                   0.1                   |
-                                          5                   9                     |
-                                                              6                     |
-         13         20         25                   61                   85         |
-         5          5.1        5.2                  9                    6          |
-         11         10         1                    7                    8          |
-                               3                    4                    2          |
-10,12=11   14,20=10    21,22=1    30,40=3   50,60=7   62,64=4    70,80=8   90,100=2 |
-""");
 
-    P.processClear();
-    P.new Instruction()
-     {void action()
-       {i.registerSet(0);
-        j.registerSet(0);
-       }
-      void verilog(Verilog v)
-       {i.registerSet(v, 0);
-        j.registerSet(v, 0);
-       }
-     };
+    i.RegisterSet(0); j.RegisterSet(0);
     b.splitBranchNotTop(i, j);
     b.chipRun();
     //stop(b.btreePrint());
@@ -7709,7 +7216,16 @@ Merge     : 0
 
   static void newTests()                                                        // Tests being worked on
    {//oldTests();
-    test_find();
+    //test_delete_ascending();
+    //test_delete_random();
+    //test_delete_descending();
+    //test_delete_random_descending();
+    //test_put_ascending();
+    //test_put_merge();
+    //test_put_reload();
+    //test_put_descending();
+    //test_put_random();
+    //test_verilog_put();
    }
 
   public static void main(String[] args)                                        // Test if called as a program
