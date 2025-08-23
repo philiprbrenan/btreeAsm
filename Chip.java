@@ -635,8 +635,9 @@ module %s(                                                                      
       Process.Register dec () {R(); rs(rg()-1); return this;}                                            // Decrement a register in Java
       Process.Register not () {R(); rs(rg() != 0 ? 0 : 1); return this;}                                 // Not a register in Java
       Process.Register half() {R(); rs(rg() >> 1); return this;}                                         // Halve a register
-      Process.Register add (Register source) {R(); rs(rg()+source.rg()); return this;}                   // Add the source register to the current register in Java
-      Process.Register add (int      source) {R(); rs(rg()+source);      return this;}                   // Add the source register to the current register in Java
+      Process.Register add (Register source) {R(); rs(rg()+source.rg());   return this;}                 // Add the source register to the current register in Java
+      Process.Register add1(Register source) {R(); rs(rg()+source.rg()+1); return this;}                 // Add the source register to the current register plus one in Java
+      Process.Register add (int      source) {R(); rs(rg()+source);        return this;}                 // Add the source register to the current register in Java
 
       Process.Register gt (Register a, Register b) {R(); rs(a.rg() >  b.rg() ? 1 : 0); return this;}     // Set the target register to one if the test between the 'a' and 'b' register is true else 0
       Process.Register ge (Register a, Register b) {R(); rs(a.rg() >= b.rg() ? 1 : 0); return this;}     // Set the target register to one if the test between the 'a' and 'b' register is true else 0
@@ -660,6 +661,9 @@ module %s(                                                                      
       void half(Verilog v) {v.assign(rn(), rn()+" >> 1");}                      // Half a number
       void add (Verilog v, Register source)                                     // Add the source register to the current register in Verilog
        {v.assign(rn(), rn() + " + " +source.rn());
+       }
+      void add1(Verilog v, Register source)                                     // Add the source register to the current register plus one in Verilog
+       {v.assign(rn(), rn() + " + 1 + " +source.rn());
        }
       void add (Verilog v, int source)                                          // Add the source register to the current register in Verilog
        {v.assign(rn(), rn() + " + " +source);
@@ -704,6 +708,20 @@ module %s(                                                                      
        {new Instruction()
          {void action()           {dec();};
           void verilog(Verilog v) {dec(v);};
+         };
+       }
+
+      void Add(Register Source)                                                 // Add the value of a register to the specified register as an instruction
+       {new Instruction()
+         {void action()           {add(   Source);};
+          void verilog(Verilog v) {add(v, Source);};
+         };
+       }
+
+      void Add1(Register Source)                                                // Add the value of a register plus one to the specified register as an instruction
+       {new Instruction()
+         {void action()           {add1(   Source);};
+          void verilog(Verilog v) {add1(v, Source);};
          };
        }
      } // Register
@@ -1638,6 +1656,28 @@ Chip: Test             step: 0, maxSteps: 10, running: 0
     ok(b.registerGet(), 1);
    }
 
+  static void test_add()
+   {var C = chip("Test");
+    var p = C.new Process("process");
+    p.processTrace = true;
+    var a = p.register("a",  8);
+    var b = p.register("b",  8);
+    var c = p.register("c",  8);
+    var d = p.register("d",  8);
+
+    a.One();
+    b.One();
+    b.Inc();
+    c.Copy(a); c.Add (b);
+    d.Copy(a); d.Add1(b);
+
+    C.chipRun();
+    ok(a.registerGet(), 1);
+    ok(b.registerGet(), 2);
+    ok(c.registerGet(), 3);
+    ok(d.registerGet(), 4);
+   }
+
   static void oldTests()                                                        // Tests thought to be in good shape
    {test_stop();
     test_memoryProcessReuse();
@@ -1648,6 +1688,7 @@ Chip: Test             step: 0, maxSteps: 10, running: 0
     test_saveLoad();
     test_trace();
     test_zeroOne();
+    test_add();
    }
 
   static void newTests()                                                        // Tests being worked on
