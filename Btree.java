@@ -85,39 +85,39 @@ chipStop = true;
     root.Zero();
     gFreeNext.ExecuteTransaction(root);
     gFreeNext.waitResultOfTransaction();
+    ref.Copy(gFreeNext.transactionOutputRegisters.firstElement());              // Save reference to allocated stuck
+
     P.new Instruction()                                                         // First free stuck if any is the allocated stuck
      {void action()
-       {ref.copy(gFreeNext.transactionOutputRegisters.firstElement());          // Save reference to allocated stuck
-        if (ref.registerGet() == 0) P.processStop(20);
-        gFreeNext.executeTransaction(ref);                                      // Next free stuck
+       {if (ref.registerGet() == 0) P.processStop(20);
         if (leaf) isLeaf.one(); else isLeaf.zero();                             // Leaf or branch
-        sIsLeaf.executeTransaction(ref, isLeaf);                                // Set allocated stuck to leaf or branch
         isFree.zero();
+       }
+      void verilog(Verilog v)
+       {v.new If (ref.registerName() + " == 0")
+         {void Then() {P.processStop(v, 20);}
+         };
+        if (leaf) isLeaf.one(v); else isLeaf.zero(v);                           // Leaf or branch
+        isFree.zero(v);
+       }
+     };
+
+    P.new Instruction()                                                         // First free stuck if any is the allocated stuck
+     {void action()
+       {gFreeNext.executeTransaction(ref);                                      // Next free stuck
+        sIsLeaf.executeTransaction(ref, isLeaf);                                // Set allocated stuck to leaf or branch
         sIsFree.executeTransaction(ref, isFree);                                // Set allocated stuck to leaf or branch
        }
       void verilog(Verilog v)
-       {ref.copy(v, gFreeNext.transactionOutputRegisters.firstElement());       // Save reference to allocated stuck
-        v.new If (ref.registerName() + " == 0")
-         {void Then() {P.processStop(v, 20);}
-         };
-        gFreeNext.executeTransaction(v, ref);                                   // Next free stuck
-        if (leaf) isLeaf.one(v); else isLeaf.zero(v);                           // Leaf or branch
+       {gFreeNext.executeTransaction(v, ref);                                   // Next free stuck
         sIsLeaf.executeTransaction(v, ref, isLeaf);                             // Set allocated stuck to leaf or branch
-        isFree.zero(v);
         sIsFree.executeTransaction(v, ref, isFree);                             // Set allocated stuck to leaf or branch
        }
      };
+
     gFreeNext.waitResultOfTransaction();
-    P.new Instruction()                                                         // Next free stuck
-     {void action()
-       {next.copy(gFreeNext.transactionOutputRegisters.firstElement());
-        sFreeNext.executeTransaction(root, next);                               // Next free stuck is now first on free chain from root
-       }
-      void verilog(Verilog v)
-       {next.copy(v, gFreeNext.transactionOutputRegisters.firstElement());
-        sFreeNext.executeTransaction(v, root, next);                            // Next free stuck is now first on free chain from root
-       }
-     };
+    next.Copy(gFreeNext.transactionOutputRegisters.firstElement());
+    sFreeNext.ExecuteTransaction(root, next);                                   // Next free stuck is now first on free chain from root
     sFreeNext.waitResultOfTransaction();
     sIsLeaf  .waitResultOfTransaction();
     sIsFree  .waitResultOfTransaction();
@@ -136,22 +136,22 @@ chipStop = true;
     root.Zero();                                                                // The free chain depends from the root which is never freed and so can never be on the free chain
     gFreeNext.ExecuteTransaction(root);
     gFreeNext.waitResultOfTransaction();
+
     P.new Instruction()                                                         // Next free stuck
      {void action()
        {next.copy(gFreeNext.transactionOutputRegisters.firstElement());
         sFreeRoot.executeTransaction(root, ref);                                // Root points to the stuck being freed
         isFree.one();
-        sIsFree.executeTransaction(ref, isFree);                                // Stuck Root points to the stuck being freed
        }
       void verilog(Verilog v)
        {next.copy(v, gFreeNext.transactionOutputRegisters.firstElement());
         sFreeRoot.executeTransaction(v, root, ref);                             // Root points to the stuck being freed
         isFree.one(v);
-        sIsFree.executeTransaction(v, ref, isFree);                             // Stuck Root points to the stuck being freed
        }
      };
-    sFreeRoot.waitResultOfTransaction();
 
+    sIsFree.ExecuteTransaction(ref, isFree);                                    // Stuck Root points to the stuck being freed
+    sFreeRoot.waitResultOfTransaction();
     sFreeNext.ExecuteTransaction(ref, next);                                    // Stuck Root points to the stuck being freed
     sFreeNext.waitResultOfTransaction();
     sIsFree  .waitResultOfTransaction();
@@ -1321,25 +1321,21 @@ chipStop = true;
        {void action()
          {final int S = Source.size.registerGet();
           final int T =        size.registerGet();
-          MergeSuccess.zero();
-          if (S + T + 1 >= maxStuckSize)
-           {return;
+          if (S + T + 1 < maxStuckSize)
+           {keys[T].copy(Key);                                                  // Add key over past last data element of target
+            for (int i = 0; i < S; ++i)                                         // Concatenate each key, data pair from source
+             {keys[T+i+1].copy(Source.keys[i]);
+              data[T+i+1].copy(Source.data[i]);
+             }
+            data[S+T+1].copy(Source.data[S]);                                   // Past last data element from source
+            size.add1(Source.size);                                             // New size of target
+            MergeSuccess.one();
            }
-
-          keys[T].copy(Key);                                                    // Add key over past last data element of target
-          for (int i = 0; i < S; ++i)                                           // Concatenate each key, data pair from source
-           {keys[T+i+1].copy(Source.keys[i]);
-            data[T+i+1].copy(Source.data[i]);
-           }
-          data[S+T+1].copy(Source.data[S]);                                     // Past last data element from source
-          size.add(Source.size);                                                // New size of target
-          size.inc();
-          MergeSuccess.one();
+          else MergeSuccess.zero();                                             // Cannot merge
          }
 
         void verilog(Verilog v)
-         {MergeSuccess.zero(v);
-          v.new Case(maxStuckSize, size.registerName())
+         {v.new Case(maxStuckSize, size.registerName())
            {void Choice(int T)
              {v.new Case(maxStuckSize, Source.size.registerName())
                {void Choice(int S)
@@ -1351,12 +1347,14 @@ chipStop = true;
                       data[T+I+1].copy(v, Source.data[I]);
                      }
                     data[S+T+1].copy(v, Source.data[S]);                        // Past last data element from source
-                    size.add(v, S);                                             // New size of target
-                    size.inc(v);
+                    size.add(v, S+1);                                           // New size of target
                     MergeSuccess.one(v);
                    }
                  }
                };
+             }
+            void Default()
+             {MergeSuccess.zero(v);                                             // Merge not possible
              }
            };
          }
@@ -3952,39 +3950,16 @@ Merge     : 0
     P.processTrace = true;
     P.processClear();
     s.stuckGetRoot();
-    P.new Instruction()
-     {void action()
-       {s.size.zero();
-       }
-      void verilog(Verilog v)
-       {s.size.zero(v);
-       }
-     };
+    s.size.Zero();
 
     for (int i = 0; i < b.maxStuckSize; i++)
      {final int I = i;
-      P.new Instruction()
-       {void action()
-         {k.registerSet(I); d.registerSet(I+1);
-          s.push(k, d);
-         }
-        void verilog(Verilog v)
-         {k.registerSet(v, I); d.registerSet(v, I+1);
-          s.push(v, k, d);
-         }
-       };
+      k.RegisterSet(I); d.RegisterSet(I+1);
+      s.Push(k, d);
      }
 
-    P.new Instruction()
-     {void action()
-       {L.registerSet(1);
-        R.registerSet(2);
-       }
-      void verilog(Verilog v)
-       {L.registerSet(v, 1);
-        R.registerSet(v, 2);
-       }
-     };
+    L.RegisterSet(1);
+    R.RegisterSet(2);
 
     l.stuckGet(L);
     r.stuckGet(R);
@@ -3992,6 +3967,7 @@ Merge     : 0
     s.splitLow(l);
 
     b.maxSteps = 100;
+
     b.chipRun();
     //stop(s);
     ok(s, """
@@ -4021,41 +3997,14 @@ Stuck: left size: 2, leaf: 0, index: 1
     P.processTrace = true;
     P.processClear();
     s.stuckGetRoot();
-    P.new Instruction()
-     {void action()
-       {s.size.zero();
-       }
-      void verilog(Verilog v)
-       {s.size.zero(v);
-       }
-     };
+    s.size.Zero();
 
     for (int i = 0; i < b.maxStuckSize; i++)
      {final int I = i;
-      P.new Instruction()
-       {void action()
-         {k.registerSet(I); d.registerSet(I+1);
-          s.push(k, d);
-         }
-        void verilog(Verilog v)
-         {k.registerSet(v, I); d.registerSet(v, I+1);
-          s.push(v, k, d);
-         }
-       };
+      k.RegisterSet(I); d.RegisterSet(I+1); s.Push(k, d);
      }
 
-    P.new Instruction()
-     {void action()
-       {L.registerSet(1);
-        R.registerSet(2);
-        s.pop();
-       }
-      void verilog(Verilog v)
-       {L.registerSet(v, 1);
-        R.registerSet(v, 2);
-        s.pop(v);
-       }
-     };
+    L.RegisterSet(1); R.RegisterSet(2); s.Pop();
 
     l.stuckGet(L);
     r.stuckGet(R);
@@ -4222,6 +4171,7 @@ Stuck: stuck size: 8, leaf: 1, root
     s.mergeButOne(k, S);
 
     b.maxSteps = 100;
+
     b.chipRun();
     //stop(s.dump());
     ok(s.dump(), """
@@ -4364,10 +4314,11 @@ Chip: Btree            step: 16, maxSteps: 100, running: 1
     b.free(i);
     b.free(j);
     b.maxSteps = 100;
+    b.nonBlockingAssignment = true;
     b.chipRun();
     //stop(b.chipPrintMemory());
     ok(b.chipPrintMemory(), """
-Chip: Btree            step: 35, maxSteps: 100, running: 0
+Chip: Btree            step: 43, maxSteps: 100, running: 0
   Processes:                                                    0  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24
     stuckIsLeaf           memory:                     4 *  1 =  1  1  0  0
     stuckIsFree           memory:                     4 *  1 =  0  1  1  1
@@ -8168,7 +8119,7 @@ Merge     : 0
 
   static void newTests()                                                        // Tests being worked on
    {//oldTests();
-    test_search_le_parallel();
+    test_allocate();
    }
 
   public static void main(String[] args)                                        // Test if called as a program
