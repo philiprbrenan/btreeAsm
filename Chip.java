@@ -270,7 +270,7 @@ module %s;                                                                      
     v.A("if (!stop) $finish(1); else $finish(0);                                // Set return code depending on whether the simulation halted");
     v.end();
 
-//  v.parallel = true;                                                          // Use parallel assign in Verilog being matched with Java
+    v.parallel = true;                                                          // Use parallel assign in Verilog being matched with Java
     for(Process p: processes) p.generateProcessVerilog(v);                      // Generate
 
     chipPrintFromVerilog(v);
@@ -295,9 +295,10 @@ n, verilogTraceFile, n, source, n, n);
     final FileCompareAndLocate fcl = new FileCompareAndLocate                   // Compare trace files
      (javaTraceFile, verilogTraceFile);
 
-    if (fcl.matches) ok(1,1);                                                   // Passed
+    if (fcl.matches) ok(true);                                                 // Passed
     else if (fcl.location != null)
      {say("Traces do NOT match on line:", fcl.line, "\n", fcl.location);        // Location of instruction causing first failure
+      ok(false);
       for (FileCompareAndLocate.Match l : fcl.q)
        {if (l.ahead)
          {say(String.format("%10d J: %s", l.line, l.a));
@@ -511,7 +512,7 @@ module %s(                                                                      
 
       If (Process.Register Condition)                                           // If a condition
        {N();
-        new Instruction(true)                                                       // Branch on the current value of condition
+        new Instruction(true)                                                   // Branch on the current value of condition
          {void action()
            {GoZero(Else, Condition);
            }
