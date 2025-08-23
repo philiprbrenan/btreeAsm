@@ -638,6 +638,7 @@ module %s(                                                                      
       Process.Register add (Register source) {R(); rs(rg()+source.rg());   return this;}                 // Add the source register to the current register in Java
       Process.Register add1(Register source) {R(); rs(rg()+source.rg()+1); return this;}                 // Add the source register to the current register plus one in Java
       Process.Register add (int      source) {R(); rs(rg()+source);        return this;}                 // Add the source register to the current register in Java
+      Process.Register average(Register source1, Register source2) {R(); rs((source1.rg()+source2.rg())/2); return this;} // Average of two registers
 
       Process.Register gt (Register a, Register b) {R(); rs(a.rg() >  b.rg() ? 1 : 0); return this;}     // Set the target register to one if the test between the 'a' and 'b' register is true else 0
       Process.Register ge (Register a, Register b) {R(); rs(a.rg() >= b.rg() ? 1 : 0); return this;}     // Set the target register to one if the test between the 'a' and 'b' register is true else 0
@@ -667,6 +668,9 @@ module %s(                                                                      
        }
       void add (Verilog v, int source)                                          // Add the source register to the current register in Verilog
        {v.assign(rn(), rn() + " + " +source);
+       }
+      void average(Verilog v, Register source1, Register source2)               // Average of two registers
+       {v.assign(rn(), "(" + source1.rn() + " + " + source2.rn() + ") / 2");
        }
       void gt(Verilog v, Register a, Register b) {v.assign(rn(), a.rn() +"> "+ b.rn()+" ? 1 : 0");} // Set the target register to one if the test between the 'a' and 'b' register is true else 0
       void ge(Verilog v, Register a, Register b) {v.assign(rn(), a.rn() +">="+ b.rn()+" ? 1 : 0");} // Set the target register to one if the test between the 'a' and 'b' register is true else 0
@@ -722,6 +726,12 @@ module %s(                                                                      
        {new Instruction()
          {void action()           {add1(   Source);};
           void verilog(Verilog v) {add1(v, Source);};
+         };
+       }
+      void Average(Register Source1, Register Source2)                          // Average of two registers as an instruction
+       {new Instruction()
+         {void action()           {average(   Source1, Source2);};
+          void verilog(Verilog v) {average(v, Source1, Source2);};
          };
        }
      } // Register
@@ -1676,6 +1686,24 @@ Chip: Test             step: 0, maxSteps: 10, running: 0
     ok(b.registerGet(), 2);
     ok(c.registerGet(), 3);
     ok(d.registerGet(), 4);
+   }
+
+  static void test_average()
+   {var C = chip("Test");
+    var p = C.new Process("process");
+    p.processTrace = true;
+    var a = p.register("a",  8);
+    var b = p.register("b",  8);
+    var c = p.register("c",  8);
+
+    a.RegisterSet(2);
+    b.RegisterSet(5);
+    c.Average(a, b);
+
+    C.chipRun();
+    ok(a.registerGet(), 2);
+    ok(b.registerGet(), 5);
+    ok(c.registerGet(), 3);
    }
 
   static void oldTests()                                                        // Tests thought to be in good shape
