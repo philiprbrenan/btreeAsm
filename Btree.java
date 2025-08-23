@@ -1626,20 +1626,10 @@ chipStop = true;
     allocateBranch(il); l.stuckPut(il);                                         // Allocate and save left branch
     allocateBranch(ir); r.stuckPut(ir);                                         // Allocate and save right branch
                                                                                 // Update root with new children
-    P.new Instruction()
-     {void action()
-       {mk.copy(p.keys[midPoint]);                                              // Get splitting key
-        p.clear();                                                              // Clear the root so we can add the left and right children to it.
-        p.push(mk, il);                                                         // Add reference to left child
-        p.setPastLastElement(mk, ir);                                           // Add reference to right child as top element past the end of the stuck
-       }
-      void verilog(Verilog v)
-       {mk.copy(v, p.keys[midPoint]);                                           // Get splitting key
-        p.clear(v);                                                             // Clear the root so we can add the left and right children to it.
-        p.push(v, mk, il);                                                      // Add reference to left child
-        p.setPastLastElement(v, mk, ir);                                        // Add reference to right child as top element past the end of the stuck
-       }
-     };
+    mk.Copy(p.keys[midPoint]);                                                  // Get splitting key
+    p.Clear();                                                                  // Clear the root so we can add the left and right children to it.
+    p.Push(mk, il);                                                             // Add reference to left child
+    p.SetPastLastElement(mk, ir);                                               // Add reference to right child as top element past the end of the stuck
     p.stuckPut();                                                               // Save the root stuck back into the btree whence it came
    }
 
@@ -1709,17 +1699,8 @@ chipStop = true;
     final Process.Register mk  = P.register("midKey",            bitsPerKey);   // Mid key
 
     p.stuckGet(ParentIndex);                                                    // Load parent stuck from btree
-    P.new Instruction()
-     {void action()
-       {p.pastLastElement();                                                    // Get index of child
-        ci.copy(p.Data);                                                        // Index of child
-       }
-      void verilog(Verilog v)
-       {p.pastLastElement(v);                                                   // Get index of child
-        ci.copy(v, p.Data);                                                     // Index of child
-       }
-     };
-
+    p.PastLastElement();                                                        // Get index of child
+    ci.Copy(p.Data);                                                            // Index of child
     c.stuckGet(ci);                                                             // Load child from btree
 
     P.new Instruction()
@@ -1735,20 +1716,11 @@ chipStop = true;
     c.splitLow(l);                                                              // Split the leaf in two down the middle copying out the lower half
     allocateLeaf(cl); l.stuckPut(cl); c.stuckPut(ci);                           // Split leaf in two and save both parts
 
-    P.new Instruction()
-     {void action()
-       {l.lastElement();  mk.copy(l.Key);                                       // Mid key
-        c.firstElement(); mk.add (c.Key); mk.half();
-        p.push(mk, cl);                                                         // Add reference to left child
-        p.setPastLastElement(mk, ci);                                           // Add reference to not split out top child on the right
-       }
-      void verilog(Verilog v)
-       {l.lastElement (v); mk.copy(v, l.Key);                                   // Mid key
-        c.firstElement(v); mk.add (v, c.Key); mk.half(v);
-        p.push(v, mk, cl);                                                      // Add reference to left child
-        p.setPastLastElement(v, mk, ci);                                        // Add reference to not split out top child on the right
-       }
-     };
+    l.LastElement();                                                            // Mid key
+    c.FirstElement();
+    mk.Average(l.Key, c.Key);
+    p.Push(mk, cl);                                                             // Add reference to left child
+    p.SetPastLastElement(mk, ci);                                               // Add reference to not split out top child on the right
     p.stuckPut();                                                               // Save the parent stuck back into the btree whence it came
    }
 
@@ -1917,17 +1889,16 @@ chipStop = true;
        {success.Zero();                                                         // Assume failure
         p.stuckGetRoot();                                                       // Load root
 
-        P.new Instruction(true)                                                 // Check that the root has one entry and thus two children
+        P.new Instruction()                                                     // Check that the root has one entry and thus two children
          {void action()
            {test.eq(p.size, 1);                                                 // Number of entries in root
-            P.GoZero(end, test);                                                // Wrong number of entries in root
            };
           void verilog(Verilog v)
            {test.eq(v, p.size, 1);                                              // Number of entries in root
-            P.GoZero(v, end, test);                                             // Wrong number of entries in root
            };
          };
 
+        P.GOZero(end, test);                                                    // Wrong number of entries in root
 
         P.new Instruction()                                                     // Check that the root has one entry and thus two children
          {void action()
@@ -2014,20 +1985,10 @@ chipStop = true;
 
                 P.new If (l.MergeSuccess)                                       // Modify the parent only if the merge succeeded
                  {void Then()
-                   {P.new Instruction()
-                     {void action()
-                       {p.removeElementAt(LeftLeaf);                            // Remove the left child moving the right child down into its space
-                        p.elementAt(LeftLeaf);                                  // Get details of what was the right child
-                        p.setElementAt(LeftLeaf, p.Key, il);                    // Replace the right child with the left child
-                        success.one();                                          // Success: The 95th Rifles - "First onto the field of battle, last off".
-                       }
-                      void verilog(Verilog v)
-                       {p.removeElementAt(v, LeftLeaf);                         // Remove the left child moving the right child down into its space
-                        p.elementAt(v, LeftLeaf);                               // Get details of what was the right child
-                        p.setElementAt(v, LeftLeaf, p.Key, il);                 // Replace the right child with the left child
-                        success.one(v);                                         // Success: The 95th Rifles - "First onto the field of battle, last off".
-                       }
-                     };
+                   {p.RemoveElementAt(LeftLeaf);                                // Remove the left child moving the right child down into its space
+                    p.ElementAt(LeftLeaf);                                      // Get details of what was the right child
+                    p.SetElementAt(LeftLeaf, p.Key, il);                        // Replace the right child with the left child
+                    success.One();                                              // Success: The 95th Rifles - "First onto the field of battle, last off".
                     l.stuckPut();                                               // Save the merge into left child back into the tree
                     p.stuckPut();                                               // Save the parent back into the tree
                     free(ir);                                                   // Free right leaf as it is no longer in use
@@ -2070,16 +2031,15 @@ chipStop = true;
     P.new Block()
      {void code()
        {mergePermitted(P, ParentIndex, p, end);
+        sz.Copy(p.size);                                                        // Index of left leaf known to be valid as the parent contains at least one entry resulting in two children
 
         P.new Instruction()
          {void action()
-           {sz.copy(p.size);                                                    // Index of left leaf known to be valid as the parent contains at least one entry resulting in two children
-            il.copy(p.data[sz.registerGet()-1]);                                // Get the btree index of the left child leaf
+           {il.copy(p.data[sz.registerGet()-1]);                                // Get the btree index of the left child leaf
             ir.copy(p.data[sz.registerGet()]);                                  // Get the btree index of the right child leaf
            }
           void verilog(Verilog v)
-           {sz.copy(v, p.size);                                                 // Index of left leaf known to be valid as the parent contains at least one entry resulting in two children
-            v.new Case(1, maxStuckSize, sz.registerName())
+           {v.new Case(1, maxStuckSize, sz.registerName())
              {void Choice(int i)
                {il.copy(v, p.data[i-1]);                                        // Get the btree index of the left child leaf
                 ir.copy(v, p.data[i]);                                          // Get the btree index of the right child leaf
@@ -2409,18 +2369,9 @@ chipStop = true;
                };
              }
             void Branch()                                                       // On a branch - step to next level down
-             {P.new Instruction(true)
-               {void action()
-                 {search_le(Key);                                               // Search stuck for matching key
-                  BtreeIndex.copy(Data);
-                  P.Goto(start);                                                // Key not present
-                 }
-                void verilog(Verilog v)
-                 {search_le(v, Key);                                            // Search stuck for matching key
-                  BtreeIndex.copy(v, Data);
-                  P.Goto(v, start);                                             // Key not present
-                 }
-               };
+             {Search_le(Key);                                                   // Search stuck for matching key
+              BtreeIndex.Copy(Data);                                            // Data found at index
+              P.GOto(start);                                                    // Key not present
              }
            };
          };
@@ -2441,48 +2392,38 @@ chipStop = true;
     Stuck stuck() {return (Stuck)this;}
 
     void findAndInsert(Process.Register Key, Process.Register Data)             // Find the leaf stuck that should contain this key and insert or update it if possible
-     {final Process.Register i = P.new Register("i", stuckAddressSize);
+     {final Process.Register i       = P.new Register("i", stuckAddressSize);
+      final Process.Register notFull = P.new Register("notFull", 1);            // The leaf is not full
+
       P.new Block()
        {void code()
          {findSearch(Key);                                                      // Find the leaf that should contain the key and possibly the key.
 
-          P.new Instruction(true)
-           {void action()
-             {if (Found.registerGet() > 0)                                      // Found the key in the leaf so update it with the new data
-               {setElementAt(StuckIndex, Key, Data);
-                P.Continue();
-               }
-              else if (size.registerGet() < maxStuckSize)                       // Check whether the stuck is full
-               {search_le(Key);
-                insertElementAt(StuckIndex, Key, Data);
-                Found.one();
-                P.Continue();
-               }
-              else P.Goto(end);                                                 // No insertion so no need to update memory
+          P.new If (Found)                                                      // Found the key in the leaf so update it with the new data
+           {void Then()
+             {SetElementAt(StuckIndex, Key, Data);
+              P.Continue();
              }
-            void verilog(Verilog v)
-             {v.new If (Found.registerName() + " > 0")                          // Found the key in the leaf so update it with the new data
-               {void Then()
-                 {setElementAt(v, StuckIndex, Key, Data);
-                  P.Continue(v);
+            void Else()                                                         // Key does not exiust in leaf
+             {P.new Instruction()
+               {void action()           {notFull.lt(   size, maxStuckSize);}
+                void verilog(Verilog v) {notFull.lt(v, size, maxStuckSize);}
+               };
+
+              P.new If (notFull)                                                // Leaf not full so we can insert into this leaf
+               {void Then()                                                     // Position in leaf - we know it is not present and thatthere is room for the key, data pair in the leaf
+                 {Search_le(Key);                                               // Find pinsert position in leaf
+                  InsertElementAt(StuckIndex, Key, Data);                       // Insert into leaf
+                  Found.One();                                                  // Show success
+                  P.COntinue();                                                 // Finished
                  }
                 void Else()
-                 {v.new If (size.registerName() + " < " + maxStuckSize)         // Check whether the stuck is full
-                   {void Then()
-                     {search_le(v, Key);
-                      insertElementAt(v, StuckIndex, Key, Data);
-                      Found.one(v);
-                      P.Continue(v);
-                     }
-                    void Else()
-                     {P.Goto(v, end);                                           // No insertion so no need to update memory
-                     }
-                   };
+                 {P.GOto(end);                                                  // No insertion so no need to update memory
                  }
                };
              }
            };
-          stuckPut(false);
+          stuckPut(false);                                                      // Stuck modified so write it back into memory
          }
        };
      }
@@ -4340,64 +4281,13 @@ Chip: Btree            step: 43, maxSteps: 100, running: 0
     b.maxSteps = 2000;
     P.processTrace = true;
 
-    P.processClear();
-    P.new Instruction()
-     {void action()
-       {k.registerSet(1);
-        d.registerSet(2);
-       }
-      void verilog(Verilog v)
-       {k.registerSet(v, 1);
-        d.registerSet(v, 2);
-       }
-     };
-    f.findAndInsert(k, d);
-    b.chipRun();
+    k.RegisterSet(1); d.RegisterSet(2); f.findAndInsert(k, d);
+    k.RegisterSet(2); d.RegisterSet(3); f.findAndInsert(k, d);
+    k.RegisterSet(4); d.RegisterSet(5); f.findAndInsert(k, d);
+    k.RegisterSet(3); d.RegisterSet(4); f.findAndInsert(k, d);
 
-    P.processClear();
-    P.new Instruction()
-     {void action()
-       {k.registerSet(2);
-        d.registerSet(3);
-       }
-      void verilog(Verilog v)
-       {k.registerSet(v, 2);
-        d.registerSet(v, 3);
-       }
-     };
-    f.findAndInsert(k, d);
-    b.chipRun();
-
-    P.processClear();
-    P.new Instruction()
-     {void action()
-       {k.registerSet(4);
-        d.registerSet(5);
-       }
-      void verilog(Verilog v)
-       {k.registerSet(v, 4);
-        d.registerSet(v, 5);
-       }
-     };
-    f.findAndInsert(k, d);
-    b.chipRun();
-
-    P.processClear();
-    P.new Instruction()
-     {void action()
-       {k.registerSet(3);
-        d.registerSet(4);
-       }
-      void verilog(Verilog v)
-       {k.registerSet(v, 3);
-        d.registerSet(v, 4);
-       }
-    };
-    f.findAndInsert(k, d);
-    b.chipRun();
-
-    P.processClear();
     b.splitRootLeaf(P);
+    b.nonBlockingAssignment = true;
     b.chipRun();
     //stop(b.btreePrint());
     ok(b.btreePrint(), """
@@ -4433,102 +4323,20 @@ Chip: Btree            step: 43, maxSteps: 100, running: 0
     final FindAndInsert f = b.new FindAndInsert(P);
     b.maxSteps = 2000;
 
-    P.new Instruction()
-     {void action()
-       {k.registerSet(10);
-        d.registerSet(20);
-       }
-      void verilog(Verilog v)
-       {k.registerSet(v, 10);
-        d.registerSet(v, 20);
-       }
-     };
-    f.findAndInsert(k, d);
-
-    P.new Instruction()
-     {void action()
-       {k.registerSet(20);
-        d.registerSet(30);
-       }
-      void verilog(Verilog v)
-       {k.registerSet(v, 20);
-        d.registerSet(v, 30);
-       }
-     };
-    f.findAndInsert(k, d);
-
-    P.new Instruction()
-     {void action()
-       {k.registerSet(40);
-        d.registerSet(50);
-       }
-      void verilog(Verilog v)
-       {k.registerSet(v, 40);
-        d.registerSet(v, 50);
-       }
-     };
-    f.findAndInsert(k, d);
-
-    P.new Instruction()
-     {void action()
-       {k.registerSet(30);
-        d.registerSet(40);
-       }
-      void verilog(Verilog v)
-       {k.registerSet(v, 30);
-        d.registerSet(v, 40);
-       }
-    };
-    f.findAndInsert(k, d);
+    k.RegisterSet(10); d.RegisterSet(20); f.findAndInsert(k, d);
+    k.RegisterSet(20); d.RegisterSet(30); f.findAndInsert(k, d);
+    k.RegisterSet(40); d.RegisterSet(50); f.findAndInsert(k, d);
+    k.RegisterSet(30); d.RegisterSet(40); f.findAndInsert(k, d);
 
     b.splitRootLeaf(P);
 
-    P.new Instruction()
-     {void action()
-       {k.registerSet(50);
-        d.registerSet(60);
-       }
-      void verilog(Verilog v)
-       {k.registerSet(v, 50);
-        d.registerSet(v, 60);
-       }
-     };
-    f.findAndInsert(k, d);
+    k.RegisterSet(50); d.RegisterSet(60); f.findAndInsert(k, d);
+    k.RegisterSet(60); d.RegisterSet(70); f.findAndInsert(k, d);
 
-    P.new Instruction()
-     {void action()
-       {k.registerSet(60);
-        d.registerSet(70);
-       }
-      void verilog(Verilog v)
-       {k.registerSet(v, 60);
-        d.registerSet(v, 70);
-       }
-     };
-    f.findAndInsert(k, d);
-
-    i.registerSet(0);
-
-    P.new Instruction()
-     {void action()
-       {i.registerSet(0);
-       }
-      void verilog(Verilog v)
-       {i.registerSet(v, 0);
-       }
-     };
+    i.RegisterSet(0);
     b.splitLeafAtTop(i);
 
-    P.new Instruction()
-     {void action()
-       {i.registerSet(0);
-        j.registerSet(0);
-       }
-      void verilog(Verilog v)
-       {i.registerSet(v, 0);
-        j.registerSet(v, 0);
-       }
-     };
+    i.RegisterSet(0); j.RegisterSet(0);
     s.stuckGet(i);
     final Process.Register r = b.mergeLeavesNotTop(s, i, j);
     b.chipRun();
@@ -4550,7 +4358,7 @@ Chip: Btree            step: 43, maxSteps: 100, running: 0
     final Process          P = b.new Process("findAndInsert");
     final Stuck            p = b.new Stuck(P, "findAndInsert");
     final Process.Register i = P.register("i", b.btreeAddressSize);
-
+    P.processTrace = true;
     //stop(b.btreePrint());
     ok(b.btreePrint(), """
         25        45         |
@@ -4561,7 +4369,7 @@ Chip: Btree            step: 43, maxSteps: 100, running: 0
 """);
 
     P.processClear();
-    i.registerSet(0);
+    i.RegisterSet(0);
     p.stuckGet(i);
     final Process.Register r = b.mergeLeavesAtTop(p, i);
     b.maxSteps = 100;
@@ -4613,123 +4421,20 @@ Chip: Btree            step: 43, maxSteps: 100, running: 0
     final FindAndInsert f = b.new FindAndInsert(P);
     b.maxSteps = 2000;
 
-    P.new Instruction()
-     {void action()
-       {k.registerSet(10);
-        d.registerSet(20);
-       }
-      void verilog(Verilog v)
-       {k.registerSet(v, 10);
-        d.registerSet(v, 20);
-       }
-     };
-    f.findAndInsert(k, d);
-
-    P.new Instruction()
-     {void action()
-       {k.registerSet(20);
-        d.registerSet(30);
-       }
-      void verilog(Verilog v)
-       {k.registerSet(v, 20);
-        d.registerSet(v, 30);
-       }
-     };
-    f.findAndInsert(k, d);
-
-    P.new Instruction()
-     {void action()
-       {k.registerSet(40);
-        d.registerSet(50);
-       }
-      void verilog(Verilog v)
-       {k.registerSet(v, 40);
-        d.registerSet(v, 50);
-       }
-     };
-    f.findAndInsert(k, d);
-
-    P.new Instruction()
-     {void action()
-       {k.registerSet(30);
-        d.registerSet(40);
-       }
-      void verilog(Verilog v)
-       {k.registerSet(v, 30);
-        d.registerSet(v, 40);
-       }
-    };
-    f.findAndInsert(k, d);
+    k.RegisterSet(10); d.RegisterSet(20); f.findAndInsert(k, d);
+    k.RegisterSet(20); d.RegisterSet(30); f.findAndInsert(k, d);
+    k.RegisterSet(40); d.RegisterSet(50); f.findAndInsert(k, d);
+    k.RegisterSet(30); d.RegisterSet(40); f.findAndInsert(k, d);
 
     b.splitRootLeaf(P);
 
-    P.new Instruction()
-     {void action()
-       {k.registerSet(50);
-        d.registerSet(60);
-       }
-      void verilog(Verilog v)
-       {k.registerSet(v, 50);
-        d.registerSet(v, 60);
-       }
-     };
-    f.findAndInsert(k, d);
-
-    P.new Instruction()
-     {void action()
-       {k.registerSet(60);
-        d.registerSet(70);
-       }
-      void verilog(Verilog v)
-       {k.registerSet(v, 60);
-        d.registerSet(v, 70);
-       }
-    };
-    f.findAndInsert(k, d);
-
-    P.new Instruction()
-     {void action()
-       {i.registerSet(0);
-       }
-      void verilog(Verilog v)
-       {i.registerSet(v, 0);
-       }
-     };
-
+    k.RegisterSet(50); d.RegisterSet(60); f.findAndInsert(k, d);
+    k.RegisterSet(60); d.RegisterSet(70); f.findAndInsert(k, d);
+    i.RegisterSet(0);
     b.splitLeafAtTop(i);
 
-    P.new Instruction()
-     {void action()
-       {k.registerSet(70);
-        d.registerSet(80);
-       }
-      void verilog(Verilog v)
-       {k.registerSet(v, 70);
-        d.registerSet(v, 80);
-       }
-     };
-    f.findAndInsert(k, d);
-
-    P.new Instruction()
-     {void action()
-       {k.registerSet(80);
-        d.registerSet(90);
-       }
-      void verilog(Verilog v)
-       {k.registerSet(v, 80);
-        d.registerSet(v, 90);
-       }
-    };
-    f.findAndInsert(k, d);
-
-    P.new Instruction()
-     {void action()
-       {i.registerSet(0);
-       }
-      void verilog(Verilog v)
-       {i.registerSet(v, 0);
-       }
-     };
+    k.RegisterSet(70); d.RegisterSet(80); f.findAndInsert(k, d);
+    k.RegisterSet(80); d.RegisterSet(90); f.findAndInsert(k, d);
 
     b.splitLeafAtTop(i);
 
@@ -8062,8 +7767,7 @@ Merge     : 0
    }
 
   static void newTests()                                                        // Tests being worked on
-   {//oldTests();
-    test_splitRootLeaf();
+   {oldTests();
    }
 
   public static void main(String[] args)                                        // Test if called as a program
