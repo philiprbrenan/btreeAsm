@@ -1316,7 +1316,8 @@ chipStop = true;
      }
 
     void mergeButOne(Process.Register Key, Stuck Source)                        // Concatenate the indicated stuck with a past last data element onto the end of the current stuck with a past last data element with the specified key inserted over the central past last data element separating the two.
-     {P.new Instruction()
+     {MergeSuccess.Zero();                                                      // Assume we cannot merge
+      P.new Instruction()
        {void action()
          {final int S = Source.size.registerGet();
           final int T =        size.registerGet();
@@ -1330,13 +1331,12 @@ chipStop = true;
             size.add1(Source.size);                                             // New size of target
             MergeSuccess.one();
            }
-          else MergeSuccess.zero();                                             // Cannot merge
          }
 
         void verilog(Verilog v)
-         {v.new Case(maxStuckSize, size.registerName())
+         {v.new Case(maxStuckSize+1, size.registerName())
            {void Choice(int T)
-             {v.new Case(maxStuckSize, Source.size.registerName())
+             {v.new Case(maxStuckSize+1, Source.size.registerName())
                {void Choice(int S)
                  {if (S + T + 1 < maxStuckSize)
                    {keys[T].copy(v, Key);                                       // Add key over past last data element of target
@@ -1351,9 +1351,6 @@ chipStop = true;
                    }
                  }
                };
-             }
-            void Default()
-             {MergeSuccess.zero(v);                                             // Merge not possible
              }
            };
          }
@@ -2260,14 +2257,7 @@ chipStop = true;
          {void Branch()                                                         // Children are branches
            {r.new IsLeaf()                                                      // Check that the children are branches
              {void Branch()                                                     // Children are branches
-               {P.new Instruction()                                             // Check that the parent has a child at the specified index
-                 {void action()
-                   {p.pop();
-                   }
-                  void verilog(Verilog v)
-                   {p.pop(v);
-                   }
-                 };                                                             // Key associated with left child branch
+               {p.Pop();
                 l.mergeButOne(p.Key, r);                                        // Merge leaves into left child
                 P.new If(l.MergeSuccess)                                        // Modify the parent only if the merge succeeded
                  {void Then()
@@ -2355,10 +2345,7 @@ chipStop = true;
               P.Continue();
              }
             void Else()                                                         // Key does not exiust in leaf
-             {P.new Instruction()
-               {void action()           {notFull.lt(   size, maxStuckSize);}
-                void verilog(Verilog v) {notFull.lt(v, size, maxStuckSize);}
-               };
+             {notFull.Lt(size, maxStuckSize);
 
               P.new If (notFull)                                                // Leaf not full so we can insert into this leaf
                {void Then()                                                     // Position in leaf - we know it is not present and thatthere is room for the key, data pair in the leaf
@@ -2406,14 +2393,8 @@ chipStop = true;
 
         S.stuckGetRoot();                                                       // Start at the root now known to be a split branch
 
-        P.new Instruction()                                                     // Is the root branch full
-         {void action()
-           {full.ge(S.size, maxStuckSize-1);
-           }
-          void verilog(Verilog v)
-           {full.ge(v, S.size, maxStuckSize-1);
-           }
-         };
+        full.Ge(S.size, maxStuckSize-1);
+
         P.new If (full)                                                         // If root branch is full split it using the dedicated method and restart
          {void Then()
            {splitRootBranch(P);                                                 // Split the full branch root
@@ -2427,15 +2408,13 @@ chipStop = true;
          {void code()
            {final Process.Label loopStart = start, loopEnd = end;
             S.stuckGet(p);
+            S.search_le_parallel(Key);                                          // Step down
             P.new Instruction()
              {void action()
-               {S.search_le(Key);                                               // Step down
-                c.copy(S.Data); ci.copy(S.StuckIndex); found.copy(S.Found);
+               {c.copy(S.Data);    ci.copy(S.StuckIndex);    found.copy(S.Found);
                }
               void verilog(Verilog v)
-               {S.search_le(v, Key);                                            // Step down
-                c.copy(v, S.Data); ci.copy(v, S.StuckIndex);
-                found.copy(v, S.Found);
+               {c.copy(v, S.Data); ci.copy(v, S.StuckIndex); found.copy(v, S.Found);
                }
              };
 
@@ -2443,14 +2422,7 @@ chipStop = true;
 
             s.new IsLeaf()
              {void Leaf()                                                       // At a leaf - search for exact match
-               {P.new Instruction()
-                 {void action()
-                   {full.ge(s.size, maxStuckSize);
-                   }
-                  void verilog(Verilog v)
-                   {full.ge(v, s.size, maxStuckSize);
-                   }
-                 };
+               {full.Ge(s.size, maxStuckSize);
 
                 P.new If (full)
                  {void Then()
@@ -2469,14 +2441,7 @@ chipStop = true;
                }
 
               void Branch()                                                     // On a branch
-               {P.new Instruction()
-                 {void action()
-                   {full.ge(s.size, maxStuckSize-1);
-                   }
-                  void verilog(Verilog v)
-                   {full.ge(v, s.size, maxStuckSize-1);
-                   }
-                 };
+               {full.Ge(s.size, maxStuckSize-1);
 
                 P.new If (full)
                  {void Then()                                                   // Full branch
@@ -2567,16 +2532,8 @@ chipStop = true;
 
             S.stuckGet(s);                                                      // Reload in case any changes have been made
 
-            P.new Instruction()
-             {void action()
-               {S.search_le(Key);                                               // Step down from parent to child
-                s.copy(S.Data);                                                 // Index of child
-               }
-              void verilog(Verilog v)
-               {S.search_le(v, Key);                                            // Step down from parent to child
-                s.copy(v, S.Data);                                              // Index of child
-               }
-             };
+            S.search_le_parallel(Key);                                          // Step down from parent to child
+            s.Copy(S.Data);                                                     // Index of child
 
             S.stuckGet(s);                                                      // Load child
 
@@ -2585,16 +2542,8 @@ chipStop = true;
                {P.GOto(end);
                }
               void Branch()                                                     // Child is a branch - try again
-               {P.new Instruction(true)
-                 {void action()
-                   {level.inc();
-                    P.Goto(start);
-                   }
-                  void verilog(Verilog v)
-                   {level.inc(v);
-                    P.Goto(v, start);
-                   }
-                 };
+               {level.Inc();
+                P.GOto(start);
                }
              };
            };
@@ -4716,37 +4665,22 @@ Merge     : 0
     P.processTrace = true;
     b.maxSteps = 30000;
 
-    P.new Instruction()
-     {void action()
-       {k.registerSet(0);
-       }
-      void verilog(Verilog v)
-       {k.registerSet(v, 0);
-       }
-     };
+    k.RegisterSet(0);
 
     P.new Block()
      {void code()
-       {P.new Instruction()
-         {void action()
-           {k.inc();
-           }
-          void verilog(Verilog v)
-           {k.inc(v);
-           }
-         };
+       {k.Inc();
         b.delete(k);
-        P.new Instruction(true)
+        P.new Instruction()
          {void action()
            {t.append(b.btreePrint());
             n.lt(k, N);
-            P.GoNotZero(start, n);
            }
           void verilog(Verilog v)
            {n.lt(v, k, N);
-            P.GoNotZero(v, start, n);
            }
          };
+        P.GONotZero(start, n);
        }
      };
 
@@ -5030,14 +4964,7 @@ Merge     : 0
     P.processTrace = true;
     final int N = 32;
 
-    P.new Instruction()
-     {void action()
-       {i.registerSet(0);
-       }
-      void verilog(Verilog v)
-       {i.registerSet(v, 0);
-       }
-     };
+    i.RegisterSet(0);
 
     P.new Block()
      {void code()
@@ -5057,17 +4984,16 @@ Merge     : 0
          };
 
         b.delete(k);
-        P.new Instruction(true)
+        P.new Instruction()
          {void action()
            {t.append(b.btreePrint());
             l.lt(i, N);
-            P.GoNotZero(start, l);
            }
           void verilog(Verilog v)
            {l.lt(v, i, N);
-            P.GoNotZero(v, start, l);
            }
          };
+        P.GONotZero(start, l);
        }
      };
     b.chipRun();
@@ -5302,18 +5228,11 @@ Merge     : 0
     final Process.Register k = P.register("k", b.bitsPerKey);
     final Process.Register l = P.register("l", 1);
     final StringBuilder    t = new StringBuilder();
-    b.maxSteps = 30000;
+    b.maxSteps = 40000;
     P.processTrace = true;
     final int N = 32;
 
-    P.new Instruction()
-     {void action()
-       {i.registerSet(0);
-       }
-      void verilog(Verilog v)
-       {i.registerSet(v, 0);
-       }
-     };
+    i.RegisterSet(0);
 
     P.new Block()
      {void code()
@@ -5333,17 +5252,16 @@ Merge     : 0
          };
 
         b.delete(k);
-        P.new Instruction(true)
+        P.new Instruction()
          {void action()
            {t.append(b.btreePrint());
             l.lt(i, N);
-            P.GoNotZero(start, l);
            }
           void verilog(Verilog v)
            {l.lt(v, i, N);
-            P.GoNotZero(v, start, l);
            }
          };
+        P.GONotZero(start, l);
        }
      };
     b.chipRun();
@@ -5675,14 +5593,7 @@ Merge     : 0
 
     final int N = 32;
 
-    P.new Instruction()
-     {void action()
-       {i.registerSet(0);
-       }
-      void verilog(Verilog v)
-       {i.registerSet(v, 0);
-       }
-     };
+    i.RegisterSet(0);
 
     P.new Block()
      {void code()
@@ -5702,17 +5613,16 @@ Merge     : 0
          };
 
         b.delete(k);
-        P.new Instruction(true)
+        P.new Instruction()
          {void action()
            {t.append(b.btreePrint());
             l.lt(i, N);
-            P.GoNotZero(start, l);
            }
           void verilog(Verilog v)
            {l.lt(v, i, N);
-            P.GoNotZero(v, start, l);
            }
          };
+        P.GONotZero(start, l);
        }
      };
     b.chipRun();
@@ -6018,16 +5928,8 @@ Merge     : 0
              }
            };
          }
-        P.new Instruction(true)
-         {void action()
-           {l.lt(k, N);
-            P.GoNotZero(start, l);
-           }
-          void verilog(Verilog v)
-           {l.lt(v, k, N);
-            P.GoNotZero(v, start, l);
-           }
-         };
+        l.Lt(k, N);
+        P.GONotZero(start, l);
        }
      };
     b.chipRun();
@@ -7216,11 +7118,7 @@ Merge     : 0
 
   static void newTests()                                                        // Tests being worked on
    {//oldTests();
-    //test_delete_ascending();
-    //test_delete_random();
-    //test_delete_descending();
-    //test_delete_random_descending();
-    //test_put_ascending();
+    test_put_ascending();
     //test_put_merge();
     //test_put_reload();
     //test_put_descending();
