@@ -531,7 +531,7 @@ public class Test                                                               
 
 //D2 Files                                                                      // Operations on files
 
-  static Long fileSize(String file)
+  static Long fileSize(String file)                                             // Size of a file
    {final Path path = Path.of(file);
     try
      {return Files.size(path);
@@ -541,7 +541,7 @@ public class Test                                                               
      }
    }
 
-  static Long fileCompare(String a, String b)
+  static Long fileCompare(String a, String b)                                   // Compare two files
    {final Path A = Path.of(a);
     final Path B = Path.of(b);
     try
@@ -557,11 +557,11 @@ public class Test                                                               
     final String fileA, fileB;
     int    line       = 0;                                                      // Line in the log at which the first failure as detected
     boolean matches   = false;                                                  // Whether the two files match or not
-    String location   = null;                                                   // Last location record pripro to point of failure
-    final int N = 100;
+    String location   = null;                                                   // Last location record prior to point of failure
+    final int N = 10;                                                           // Number of lines before and after error point
     final Deque<Match> q = new ArrayDeque<>(2*N);                               // The last so many lines before and after the point of failure
 
-    class Match
+    class Match                                                                 // Record pairs of lines from the Java trace and the Verilog trace
      {final String  a, b;
       final int     line;
       final boolean ahead;
