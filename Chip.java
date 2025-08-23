@@ -686,6 +686,20 @@ module %s(                                                                      
       void le(Verilog v, Register a, int b) {v.assign(rn(), a.rn() +"<="+ b +" ? 1 : 0");} // Set the target register to one if the test between the 'a' and 'b' register is true else 0
       void lt(Verilog v, Register a, int b) {v.assign(rn(), a.rn() +"< "+ b +" ? 1 : 0");} // Set the target register to one if the test between the 'a' and 'b' register is true else 0
 
+      void Gt(Register a, Register b) {new Instruction() {void action() {gt(a, b);} void verilog(Verilog v) {gt(v, a, b);}};} // Set the target register to one if the test between the 'a' and 'b' register is true else 0 as an instruction
+      void Ge(Register a, Register b) {new Instruction() {void action() {ge(a, b);} void verilog(Verilog v) {ge(v, a, b);}};} // Set the target register to one if the test between the 'a' and 'b' register is true else 0 as an instruction
+      void Eq(Register a, Register b) {new Instruction() {void action() {eq(a, b);} void verilog(Verilog v) {eq(v, a, b);}};} // Set the target register to one if the test between the 'a' and 'b' register is true else 0 as an instruction
+      void Ne(Register a, Register b) {new Instruction() {void action() {ne(a, b);} void verilog(Verilog v) {ne(v, a, b);}};} // Set the target register to one if the test between the 'a' and 'b' register is true else 0 as an instruction
+      void Le(Register a, Register b) {new Instruction() {void action() {le(a, b);} void verilog(Verilog v) {le(v, a, b);}};} // Set the target register to one if the test between the 'a' and 'b' register is true else 0 as an instruction
+      void Lt(Register a, Register b) {new Instruction() {void action() {lt(a, b);} void verilog(Verilog v) {lt(v, a, b);}};} // Set the target register to one if the test between the 'a' and 'b' register is true else 0 as an instruction
+
+      void Gt(Register a, int b)      {new Instruction() {void action() {gt(a, b);} void verilog(Verilog v) {gt(v, a, b);}};} // Set the target register to one if the test between the 'a' and 'b' register is true else 0 as an instruction
+      void Ge(Register a, int b)      {new Instruction() {void action() {ge(a, b);} void verilog(Verilog v) {ge(v, a, b);}};} // Set the target register to one if the test between the 'a' and 'b' register is true else 0 as an instruction
+      void Eq(Register a, int b)      {new Instruction() {void action() {eq(a, b);} void verilog(Verilog v) {eq(v, a, b);}};} // Set the target register to one if the test between the 'a' and 'b' register is true else 0 as an instruction
+      void Ne(Register a, int b)      {new Instruction() {void action() {ne(a, b);} void verilog(Verilog v) {ne(v, a, b);}};} // Set the target register to one if the test between the 'a' and 'b' register is true else 0 as an instruction
+      void Le(Register a, int b)      {new Instruction() {void action() {le(a, b);} void verilog(Verilog v) {le(v, a, b);}};} // Set the target register to one if the test between the 'a' and 'b' register is true else 0 as an instruction
+      void Lt(Register a, int b)      {new Instruction() {void action() {lt(a, b);} void verilog(Verilog v) {lt(v, a, b);}};} // Set the target register to one if the test between the 'a' and 'b' register is true else 0 as an instruction
+
       void Zero()                                                               // Zero a register instruction
        {new Instruction()
          {void action()           {zero();};
@@ -1705,6 +1719,65 @@ Chip: Test             step: 0, maxSteps: 10, running: 0
     ok(c.registerGet(), 3);
    }
 
+  static void test_comparisons()
+   {var C = chip("Test");
+    var p = C.new Process("process");
+    p.processTrace = true;
+    var a = p.register("a",  8);
+    var b = p.register("b",  8);
+    var c = p.register("c",  8);
+    var d = p.register("d",  8);
+
+    var ge0 = p.register("ge0", 1);
+    var gt0 = p.register("gt0", 1);
+    var le0 = p.register("le0", 1);
+    var lt0 = p.register("lt0", 1);
+    var ne0 = p.register("ne0", 1);
+    var eq0 = p.register("eq0", 1);
+
+    var ge1 = p.register("ge1", 1);
+    var gt1 = p.register("gt1", 1);
+    var le1 = p.register("le1", 1);
+    var lt1 = p.register("lt1", 1);
+    var ne1 = p.register("ne1", 1);
+    var eq1 = p.register("eq1", 1);
+
+    a.Zero();
+    b.One();
+    c.RegisterSet(2);
+    d.RegisterSet(3);
+
+    ge0.Ge(a, b);
+    gt0.Gt(a, b);
+    le0.Le(b, a);
+    lt0.Lt(b, a);
+    ne0.Ne(a, a);
+    eq0.Eq(a, b);
+
+    ge1.Ge(b, a);
+    gt1.Gt(b, a);
+    le1.Le(a, b);
+    lt1.Lt(a, b);
+    ne1.Ne(a, b);
+    eq1.Eq(b, b);
+
+    C.maxSteps = 100;
+    C.chipRun();
+    ok(ge0.registerGet(), 0);
+    ok(gt0.registerGet(), 0);
+    ok(le0.registerGet(), 0);
+    ok(lt0.registerGet(), 0);
+    ok(ne0.registerGet(), 0);
+    ok(eq0.registerGet(), 0);
+
+    ok(ge1.registerGet(), 1);
+    ok(gt1.registerGet(), 1);
+    ok(le1.registerGet(), 1);
+    ok(lt1.registerGet(), 1);
+    ok(ne1.registerGet(), 1);
+    ok(eq1.registerGet(), 1);
+   }
+
   static void oldTests()                                                        // Tests thought to be in good shape
    {test_stop();
     test_memoryProcessReuse();
@@ -1716,6 +1789,8 @@ Chip: Test             step: 0, maxSteps: 10, running: 0
     test_trace();
     test_zeroOne();
     test_add();
+    test_average();
+    test_comparisons();
    }
 
   static void newTests()                                                        // Tests being worked on
