@@ -1650,8 +1650,12 @@ chipStop = true;
         cd.copy(p.data[StuckIndex.registerGet()]);                              // Index of child in btree
        }
       void verilog(Verilog v)
-       {ck.copy(v, p.keys[StuckIndex.registerGet()]);                           // Key of child
-        cd.copy(v, p.data[StuckIndex.registerGet()]);                           // Index of child in btree
+       {v.new Case(maxStuckSize, StuckIndex.registerName())
+         {void Choice(int I)
+           {ck.copy(v, p.keys[I]);                                              // Key of child
+            cd.copy(v, p.data[I]);                                              // Index of child in btree
+           }
+         };
        }
      };
     c.stuckGet(cd);                                                             // Load child
@@ -2349,7 +2353,7 @@ chipStop = true;
 
               P.new If (notFull)                                                // Leaf not full so we can insert into this leaf
                {void Then()                                                     // Position in leaf - we know it is not present and thatthere is room for the key, data pair in the leaf
-                 {Search_le(Key);                                               // Find pinsert position in leaf
+                 {search_le_parallel(Key);                                               // Find pinsert position in leaf
                   InsertElementAt(StuckIndex, Key, Data);                       // Insert into leaf
                   Found.One();                                                  // Show success
                   P.COntinue();                                                 // Finished
@@ -2365,6 +2369,9 @@ chipStop = true;
        };
      }
    } // FindAndInsert
+
+//Pass process via Key register
+//final Process P = Key.registerProcess();
 
   public void put(Process P, Process.Register Key, Process.Register Data)       // Insert a key, data pair into the tree or update and existing key with a new datum
    {final Stuck            S     = new Stuck(P, "putParent");                   // Parent stuck
@@ -4145,7 +4152,6 @@ Chip: Btree            step: 16, maxSteps: 100, running: 1
     b.free(i);
     b.free(j);
     b.maxSteps = 100;
-    b.nonBlockingAssignment = true;
     b.chipRun();
     //stop(b.chipPrintMemory());
     ok(b.chipPrintMemory(), """
@@ -4186,7 +4192,6 @@ Chip: Btree            step: 43, maxSteps: 100, running: 0
     k.RegisterSet(3); d.RegisterSet(4); f.findAndInsert(k, d);
 
     b.splitRootLeaf(P);
-    b.nonBlockingAssignment = true;
     b.chipRun();
     //stop(b.btreePrint());
     ok(b.btreePrint(), """
@@ -6951,28 +6956,24 @@ Merge     : 0
     final Process          P = b.new Process("put");
     final Process.Register k = P.register("k", b.bitsPerKey);
     final Process.Register d = P.register("d", b.bitsPerData);
+    final Process.Register l = P.register("l", 1);
     P.processTrace = true;
-    b.maxSteps     = 2000;
+    b.maxSteps     = 20000;
     b.suppressMerge = true;                                                     // Suppress merges as they have not been developed yet
 
     final int N = 32;
-    for (int i = N; i > 0; i--)
-     {final int I = i;
-      P.processClear();
-      P.new Instruction()
-       {void action()
-         {k.registerSet(I);
-          d.registerSet(I+1);
-         }
-        void verilog(Verilog v)
-         {k.registerSet(v, I);
-          d.registerSet(v, I+1);
-         }
-       };
-      b.put(P, k, d);
-      b.chipRun();
-      //say(i, b.btreePrint());
-     }
+    k.RegisterSet(N);
+    d.RegisterSet(0);
+    P.new Block()
+     {void code()
+       {d.Copy(k); d.Inc();
+        b.put(P, k, d);
+        k.Dec();
+        l.Gt(k, 0);
+        P.GONotZero(start, l);
+       }
+     };
+    b.chipRun();
     //stop(b.btreePrint());
     ok(b.btreePrint(), """
                                                                             16                                        24                                       |
@@ -6995,45 +6996,55 @@ Merge     : 0
    {sayCurrentTestName();
     final Btree            b = new Btree(32, 4, 8, 8);
     final Process          P = b.new Process("putReverse");
+    final Process.Register i = P.register("i", b.btreeAddressSize);
     final Process.Register k = P.register("k", b.bitsPerKey);
     final Process.Register d = P.register("d", b.bitsPerData);
-    P.processTrace = true;
-    b.maxSteps     = 2000;
+    final Process.Register l = P.register("l", 1);
+    P.processTrace  = true;
+    b.maxSteps      = 30000;
     b.suppressMerge = true;                                                     // Suppress merges as they have not been developed yet
 
-    final int N = random_32.length;
-    for (int i = 0; i < N; ++i)
-     {final int I = i;
-      P.processClear();
-      P.new Instruction()
-       {void action()
-         {k.registerSet(random_32[I]);
-          d.registerSet(I);
-         }
-        void verilog(Verilog v)
-         {k.registerSet(v, random_32[I]);
-          d.registerSet(v, I);
-         }
-      };
-      b.put(P, k, d);
-      b.chipRun();
-      //say(i, b.btreePrint());
-     }
+    i.RegisterSet(random_32.length);
+
+    P.new Block()
+     {void code()
+       {P.new Instruction()
+         {void action()
+           {k.registerSet(random_32[i.registerGet()-1]);
+            i.dec();
+           }
+          void verilog(Verilog v)
+           {v.new Case(1, random_32.length+1, i.registerName())
+             {void Choice(int I)
+               {k.registerSet(v, random_32[I-1]);
+                i.dec(v);
+               }
+             };
+           }
+         };
+
+        b.put(P, k, d);
+        l.Gt(i, 0);
+        P.GONotZero(start, l);
+       }
+     };
+    b.chipRun();
+
     //stop(b.btreePrint());
     ok(b.btreePrint(), """
-                                                         15                                                                                |
-                                                         0                                                                                 |
-                                                         15                                                                                |
-                                                         16                                                                                |
-                           7                                                                                    26                         |
-                           15                                                                                   16                         |
-                           13                                                                                   11                         |
-                           5                                                                                    6                          |
-      2        4                         11                               19        21              24                           30        |
-      13       13.1                      5                                11        11.1            11.2                         6         |
-      8        14                        9                                12        3               17                           10        |
-               1                         4                                                          7                            2         |
-1,2=8   3,4=14     5,6,7=1   8,9,10,11=9   12,13,14,15=4   16,17,18,19=12   20,21=3     22,23,24=17     25,26=7   27,28,29,30=10   31,32=2 |
+                                                                    16                                                                     |
+                                                                    0                                                                      |
+                                                                    15                                                                     |
+                                                                    16                                                                     |
+                                         10                                                                   25                           |
+                                         15                                                                   16                           |
+                                         11                                                                   13                           |
+                                         5                                                                    6                            |
+         3        5           8                        13                           20            23                       28              |
+         11       11.1        11.2                     5                            13            13.1                     6               |
+         17       12          8                        10                           3             14                       7               |
+                              4                        1                                          9                        2               |
+1,2,3=17   4,5=12     6,7,8=8     9,10=4   11,12,13=10   14,15,16=1   17,18,19,20=3   21,22,23=14     24,25=9   26,27,28=7   29,30,31,32=2 |
 """);
    }
 
@@ -7108,12 +7119,7 @@ Merge     : 0
 
   static void newTests()                                                        // Tests being worked on
    {//oldTests();
-    //test_put_ascending();
-    //test_put_merge();
-    //test_put_reload();
-    //test_put_descending();
-    //test_put_random();
-    //test_verilog_put();
+    test_verilog_put();
    }
 
   public static void main(String[] args)                                        // Test if called as a program
