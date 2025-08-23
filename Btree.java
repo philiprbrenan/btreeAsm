@@ -482,8 +482,8 @@ chipStop = true;
 
     void Pop()                                                                  // Pop a key, data pair from the local copy of the stuck as a single instruction
      {P.new Instruction()
-       {void action()           {push(   Key, Data); }
-        void verilog(Verilog v) {push(v, Key, Data);}
+       {void action()           {pop( ); }
+        void verilog(Verilog v) {pop(v);}
        };
      }
 
@@ -961,6 +961,108 @@ chipStop = true;
          }
         void verilog(Verilog v)
          {search_le(v, Key);
+         }
+       };
+     }
+
+    void search_le_parallel(Process.Register Key)                               // Find the specified key if possible in the stuck
+     {P.new Instruction()
+       {void action()
+         {final int N = size.registerGet();
+          if (true)                                                             // Compare first key
+           {final boolean le = Key.registerGet() <= keys[0].registerGet() && 0 < N;
+            compares[0].registerSet(le ? 1 : 0);
+            collapse[0].registerSet(0);
+           }
+          for (int i = 1; i < maxStuckSize; ++i)                                // Compare each key range
+           {final boolean in =
+              Key.registerGet() >  keys[i-1].registerGet() &&
+              Key.registerGet() <= keys[i]  .registerGet() && i < N;
+            compares[i].registerSet(in ? 1 : 0);
+            collapse[i].registerSet(i);
+           }
+         }
+        void verilog(Verilog v)
+         {final String N = size.registerName();
+          if (true)                                                             // Compare first key
+           {final String le = Key.registerName()+" <= "+keys[0].registerName()+
+              " && 0 < "+N;
+            v.assign(compares[0].registerName(), le);
+            collapse[0].registerSet(v, 0);
+           }
+          for (int i = 1; i < maxStuckSize; ++i)                                // Compare each key
+           {final String K = Key.registerName();
+             final String in =
+              K + " >  " + keys[i-1].registerName() + " && " +
+              K + " <= " + keys[i]  .registerName() + " && " +i+ " < "+N;
+            v.assign(compares[i].registerName(), in);
+            collapse[i].registerSet(v, i);
+           }
+         }
+       };
+      for(int i = 1; i < maxStuckSize; i *= 2)                                  // Collapse the comparison
+       {final int I = i;
+        P.new Instruction()
+         {void action()
+           {for (int j = 0; j < maxStuckSize-I; j += I+I)
+             {if (compares[j+I].registerGet() > 0)
+               {compares[j].one();
+                collapse[j].copy(collapse[j+I]);
+               }
+             }
+           }
+          void verilog(Verilog v)
+           {for (int j = 0; j < maxStuckSize-I; j += I+I)
+             {final int J = j;
+               v.new If (compares[J+I].registerName())
+               {void Then()
+                 {compares[J].one(v);
+                  collapse[J].copy(v, collapse[J+I]);
+                 }
+               };
+             }
+           }
+         };
+       }
+      P.new Instruction()                                                       // Set result
+       {void action()
+         {if (compares[0].registerGet() > 0)
+           {Found.one();
+            final int I = collapse[0].registerGet();
+            StuckIndex.registerSet(I);
+            Stuck.this.FoundKey .copy(keys[I]);
+            Stuck.this.Data     .copy(data[I]);
+           }
+          else
+           {final int N = size.registerGet();
+            Found.zero();
+            StuckIndex.registerSet(N);
+            Stuck.this.Data    .copy(data[N]);
+           }
+         };
+        void verilog(Verilog v)
+         {v.new If (compares[0].registerName())
+           {void Then()
+             {Found.one(v);
+              v.new Case(maxStuckSize, collapse[0].registerName())
+               {void Choice(int I)
+                 {StuckIndex.registerSet(v, I);
+                  Stuck.this.FoundKey.copy(v, keys[I]);
+                  Stuck.this.Data    .copy(v, data[I]);
+                 }
+               };
+             }
+            void Else()
+             {Found.zero(v);
+              v.new Case(maxStuckSize, size.registerName())
+               {void Choice(int I)
+                 {StuckIndex.registerSet(v, I);
+                  Stuck.this.Key .copy(v, keys[I]);
+                  Stuck.this.Data.copy(v, data[I]);
+                 }
+               };
+             }
+           };
          }
        };
      }
@@ -3476,6 +3578,7 @@ Stuck: stuck size: 3, leaf: 1, root
       s.Search_eq(k);
 
       b.maxSteps = 100;
+      b.nonBlockingAssignment = false;
       b.chipRun();
       ok(f.registerGet(), 1);
       ok(i.registerGet(), J);
@@ -3541,14 +3644,7 @@ Stuck: stuck size: 3, leaf: 1, root
      {final int J = j*10;
       k.RegisterSet(J); d.RegisterSet(J+1);
 
-      P.new Instruction()
-       {void action()
-         {s.push(k, d);
-         }
-        void verilog(Verilog v)
-         {s.push(v, k, d);
-         }
-       };
+      s.Push(k, d);
      }
     s.stuckPut();
     b.maxSteps = 300;
@@ -3565,6 +3661,95 @@ Stuck: stuck size: 4, leaf: 1, root
     s.stuckGetRoot();
     k.RegisterSet(11);
     s.Search_le(k);
+
+    b.maxSteps = 100;
+    b.nonBlockingAssignment = false;
+    b.chipRun();
+
+    //stop(s.dump());
+    ok(s.dump(), """
+Stuck: stuck size: 4, leaf: 1, root
+ 0     0 =>    1
+ 1    10 =>   11
+ 2    20 =>   21
+ 3    30 =>   31
+ 4     0 =>    0
+ 5     0 =>    0
+ 6     0 =>    0
+ 7     0 =>    0
+Found     : 1
+Key       : 11
+FoundKey  : 20
+Data      : 21
+BtreeIndex: 0
+StuckIndex: 2
+Merge     : 0
+""");
+
+    P.processClear();
+    s.stuckGetRoot();
+    k.RegisterSet(21);
+    s.Pop();
+    s.Search_le(k);
+
+    b.chipRun();
+
+    //stop(s.dump());
+    ok(s.dump(), """
+Stuck: stuck size: 3, leaf: 1, root
+ 0     0 =>    1
+ 1    10 =>   11
+ 2    20 =>   21
+ 3    30 =>   31
+ 4     0 =>    0
+ 5     0 =>    0
+ 6     0 =>    0
+ 7     0 =>    0
+Found     : 0
+Key       : 30
+FoundKey  : 0
+Data      : 31
+BtreeIndex: 0
+StuckIndex: 3
+Merge     : 0
+""");
+   }
+
+  static void test_search_le_parallel()
+   {sayCurrentTestName();
+    final int B = 8, S = 4, K = 8, D = 8;
+    final Btree   b = new Btree(B, S+S, K, D);
+    final Process P = b.new Process("Stuck");
+    final Stuck   s = b.new Stuck(P, "stuck");
+    final Process.Register k = s.Key;
+    final Process.Register l = P.register("l", K);
+    final Process.Register d = P.register("d", D);
+    final Process.Register i = P.register("i", b.stuckAddressSize);
+    final Process.Register f = P.register("f", 1);
+    P.processTrace = true;
+
+    s.stuckGetRoot();
+    for (int j = 0; j < S; j++)
+     {final int J = j*10;
+      k.RegisterSet(J); d.RegisterSet(J+1);
+
+      s.Push(k, d);
+     }
+    s.stuckPut();
+    b.maxSteps = 300;
+    b.chipRun();
+    ok(s, """
+Stuck: stuck size: 4, leaf: 1, root
+ 0     0 =>    1
+ 1    10 =>   11
+ 2    20 =>   21
+ 3    30 =>   31
+""");
+
+    P.processClear();
+    s.stuckGetRoot();
+    k.RegisterSet(11);
+    s.search_le_parallel(k);
 
     b.maxSteps = 100;
     b.chipRun();
@@ -3591,18 +3776,9 @@ Merge     : 0
 
     P.processClear();
     s.stuckGetRoot();
-    P.new Instruction()
-     {void action()
-       {k.registerSet(21);
-        s.pop();
-        s.search_le(k);
-       }
-      void verilog(Verilog v)
-       {k.registerSet(v, 21);
-        s.pop(v);
-        s.search_le(v, k);
-       }
-     };
+    k.RegisterSet(21);
+    s.Pop();
+    s.Search_le(k);
 
     b.chipRun();
 
@@ -7992,7 +8168,7 @@ Merge     : 0
 
   static void newTests()                                                        // Tests being worked on
    {//oldTests();
-    test_search_eq_parallel();
+    test_search_le_parallel();
    }
 
   public static void main(String[] args)                                        // Test if called as a program
