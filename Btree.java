@@ -2266,16 +2266,15 @@ chipStop = true;
      {void code()
        {mergePermitted(P, ParentIndex, p, end);
         success.Zero();                                                         // Assume failure
+        sz.Copy(p.size);                                                        // Index of left branch known to be valid as the parent contains at least one entry resulting in two children
 
         P.new Instruction()                                                     // Check that the parent has a child at the specified index
          {void action()
-           {sz.copy(p.size);                                                    // Index of left branch known to be valid as the parent contains at least one entry resulting in two children
-            il.copy(p.data[sz.registerGet()-1]);                                // Get the btree index of the left branch branch
+           {il.copy(p.data[sz.registerGet()-1]);                                // Get the btree index of the left branch branch
             ir.copy(p.data[sz.registerGet()  ]);                                // Get the btree index of the right branch branch
            }
           void verilog(Verilog v)
-           {sz.copy(v, p.size);                                                 // Index of left branch known to be valid as the parent contains at least one entry resulting in two children
-            v.new Case(1, maxStuckSize, sz.registerName())
+           {v.new Case(1, maxStuckSize, sz.registerName())
              {void Choice(int i)
                {il.copy(v, p.data[i-1]);                                        // Get the btree index of the left branch branch
                 ir.copy(v, p.data[i  ]);                                        // Get the btree index of the right branch branch
@@ -4513,25 +4512,10 @@ Chip: Btree            step: 43, maxSteps: 100, running: 0
     final Process.Register j = P.register("j", b.stuckAddressSize);
     P.processTrace = true;
 
-    P.new Instruction()
-     {void action()
-       {i.registerSet(6);
-       }
-      void verilog(Verilog v)
-       {i.registerSet(v, 6);
-       }
-     };
-
+    i.RegisterSet(6);
     s.stuckGet(i);
 
-    P.new Instruction()
-     {void action()
-       {s.pop();
-       }
-      void verilog(Verilog v)
-       {s.pop(v);
-       }
-     };
+    s.Pop();
     s.stuckPut();
     b.maxSteps = 2000;
     b.chipRun();
@@ -4555,14 +4539,7 @@ Chip: Btree            step: 43, maxSteps: 100, running: 0
 
     P.processClear();
 
-    P.new Instruction()
-     {void action()
-       {i.registerSet(15);
-       }
-      void verilog(Verilog v)
-       {i.registerSet(v, 15);
-       }
-     };
+    i.RegisterSet(15);
     s.stuckGet(i);
     b.mergeBranchesAtTop(s, i);
     b.maxSteps = 2000;
@@ -7746,7 +7723,8 @@ Merge     : 0
    }
 
   static void newTests()                                                        // Tests being worked on
-   {oldTests();
+   {//oldTests();
+    test_mergeBranchesAtTop();
    }
 
   public static void main(String[] args)                                        // Test if called as a program
