@@ -2223,21 +2223,10 @@ chipStop = true;
 
                 P.new If (l.MergeSuccess)                                       // Modify the parent only if the merge succeeded
                  {void Then()                                                   // Check that the parent has a child at the specified index
-                   {P.new Instruction()                                         // Check that the parent has a child at the specified index
-                     {void action()
-                       {p.removeElementAt(LeftBranch);                          // Remove the left child
-                        p.elementAt(LeftBranch);                                // Details of right child which has now been moved down into the position formerly occupied by the left child
-                        p.setElementAt(LeftBranch, p.Key, il);                  // Update left child position with key of right child and index of left child
-                        success.one();
-                       }
-                      void verilog(Verilog v)
-                       {p.removeElementAt(v, LeftBranch);                       // Remove the left child
-                        p.elementAt(v, LeftBranch);                             // Details of right child which has now been moved down into the position formerly occupied by the left child
-                        p.setElementAt(v, LeftBranch, p.Key, il);               // Update left child position with key of right child and index of left child
-                        success.one(v);
-                       }
-                     };
-
+                   {p.RemoveElementAt(LeftBranch);                              // Remove the left child
+                    p.ElementAt(LeftBranch);                                    // Details of right child which has now been moved down into the position formerly occupied by the left child
+                    p.SetElementAt(LeftBranch, p.Key, il);                      // Update left child position with key of right child and index of left child
+                    success.One();                                              // Merge was successful
                     l.stuckPut();                                               // Save the modified left child back into the tree
                     p.stuckPut();                                               // Save the modified root back into the tree
                     free(ir);                                                   // Free right branch as it is no longer in use
@@ -4492,17 +4481,7 @@ Chip: Btree            step: 43, maxSteps: 100, running: 0
 1,2=1  3,4=3   5,6=4  7,8=7   9,10=8   11,12=10   13,14=11   15,16=13    17,18=16   19,20=18   21,22=19   23,24=21     25,26=23   27,28=25    29,30,31,32=2 |
 """);
 
-    P.new Instruction()
-     {void action()
-       {i.registerSet(15);
-        j.registerSet(0);
-       }
-      void verilog(Verilog v)
-       {i.registerSet(v, 15);
-        j.registerSet(v,  0);
-       }
-     };
-
+    i.RegisterSet(15); j.RegisterSet(0);
     s.stuckGet(i);
     b.mergeBranchesNotTop(s, i, j);
     b.maxSteps = 2000;
