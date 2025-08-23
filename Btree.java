@@ -218,6 +218,8 @@ chipStop = true;
     final Process.Register isLeaf;                                              // Whether the stuck is a leaf
     final Process.Register nextFree;                                            // Free chain from root
     final Process.Register[]keys;                                               // Keys in the stuck copied out of memory
+    final Process.Register[]compares;                                           // The results of the latest key comparison against every key in the stuck
+    final Process.Register[]collapse;                                           // The collapse of the key numbers to find the one chosen
     final Process.Register[]data;                                               // Data in the stuck copied out of memory
     final Memory.Get gSize;                                                     // Transaction to get the current size of the stuck
     final Memory.Set sSize;                                                     // Transaction to set the current size of the stuck
@@ -238,22 +240,26 @@ chipStop = true;
 
     Stuck(Process Process, String Name)                                         // Mirror a stuck in memory with one in registers.
      {N();
-      P         = Process;
-      stuckName = Name;
-      index     = P.register("index",    btreeAddressSize);                     // The address of the stuck in main memory
-      size      = P.register("size",     stuckAddressSize);                     // Size of the stuck locally
-      isLeaf    = P.register("isLeaf",   1);                                    // Whether the stuck is a leaf
-      nextFree  = P.register("nextFree", btreeAddressSize);                     // Free chain from root
-      keys      = new Process.Register[maxStuckSize];                           // Keys in the stuck copied out of memory
-      data      = new Process.Register[maxStuckSize];                           // Data in the stuck copied out of memory
+      P            = Process;
+      stuckName    = Name;
+      index        = P.register("index",    btreeAddressSize);                  // The address of the stuck in main memory
+      size         = P.register("size",     stuckAddressSize);                  // Size of the stuck locally
+      isLeaf       = P.register("isLeaf",   1);                                 // Whether the stuck is a leaf
+      nextFree     = P.register("nextFree", btreeAddressSize);                  // Free chain from root
+      keys         = new Process.Register[maxStuckSize];                        // Keys in the stuck copied out of memory
+      compares     = new Process.Register[maxStuckSize];                        // The results of key comparisons
+      collapse     = new Process.Register[maxStuckSize];                        // The collapse of the key comparisons
+      data         = new Process.Register[maxStuckSize];                        // Data in the stuck copied out of memory
 
-      for (int i = 0; i < maxStuckSize; i++)                                    // Create registers to hold stuck
-       {keys[i]  = P.new Register("Key_"+i, bitsPerKey);                        // Keys in the stuck copied out of the memory of the btree into local registers
-        data[i]  = P.new Register("Data_"+i, bitsPerData);                      // Data in the stuck copied out of the memory of the btree into local registers
-        gKeys[i] = stuckKeys[i].memoryGetFromProcess(P);                        // Transactions to get each key in the stuck. Reuseing the transaction reduces generated Verilog code size by 30% at the cost of requiring each stuck Get/Set from/into memory to finish before the next one can start.
-        sKeys[i] = stuckKeys[i].memorySetIntoProcess(P);                        // Transactions to set each key in the stuck
-        gData[i] = stuckData[i].memoryGetFromProcess(P);                        // Transactions to get each data element in the stuck
-        sData[i] = stuckData[i].memorySetIntoProcess(P);                        // Transactions to set each data element in the stuck
+      for (int i   = 0; i < maxStuckSize; i++)                                  // Create registers to hold stuck
+       {keys[i]    = P.new Register("Key_"+i, bitsPerKey);                      // Keys in the stuck copied out of the memory of the btree into local registers
+        compares[i]= P.new Register("KeyCompares_"+i, 1);                       // The result of comparing the search key with each stuck key
+        collapse[i]= P.new Register("KeyCollapse_"+i, stuckAddressSize);        // The result of collapsing the comparisons
+        data[i]    = P.new Register("Data_"+i, bitsPerData);                    // Data in the stuck copied out of the memory of the btree into local registers
+        gKeys[i]   = stuckKeys[i].memoryGetFromProcess(P);                      // Transactions to get each key in the stuck. Reuseing the transaction reduces generated Verilog code size by 30% at the cost of requiring each stuck Get/Set from/into memory to finish before the next one can start.
+        sKeys[i]   = stuckKeys[i].memorySetIntoProcess(P);                      // Transactions to set each key in the stuck
+        gData[i]   = stuckData[i].memoryGetFromProcess(P);                      // Transactions to get each data element in the stuck
+        sData[i]   = stuckData[i].memorySetIntoProcess(P);                      // Transactions to set each data element in the stuck
        }
 
       gSize = stuckSize  .memoryGetFromProcess(P);                              // Transaction to get the current size of the stuck
@@ -823,6 +829,83 @@ chipStop = true;
        };
      }
 
+    void search_eq_parallel(Process.Register Key)                               // Find the specified key if possible in the stuck
+     {P.new Instruction()
+       {void action()
+         {final int N = size.registerGet();
+          for (int i = 0; i < maxStuckSize; ++i)                                // Compare each key
+           {final boolean eq = Key.registerGet() == keys[i].registerGet() && i < N;
+            compares[i].registerSet(eq ? 1 : 0);
+            collapse[i].registerSet(i);
+           }
+         }
+        void verilog(Verilog v)
+         {final String N = size.registerName();
+          for (int i = 0; i < maxStuckSize; ++i)                                // Compare each key
+           {final String eq = Key.registerName()+" == "+keys[i].registerName()+
+              " && "+i+" < "+N;
+            v.assign(compares[i].registerName(), eq);
+            collapse[i].registerSet(v, i);
+           }
+         }
+       };
+      for(int i = 1; i < maxStuckSize; i *= 2)                                  // Collapse the comparison
+       {final int I = i;
+        P.new Instruction()
+         {void action()
+           {for (int j = 0; j < maxStuckSize-I; j += I+I)
+             {if (compares[j+I].registerGet() > 0)
+               {compares[j].one();
+                collapse[j].copy(collapse[j+I]);
+               }
+             }
+           }
+          void verilog(Verilog v)
+           {for (int j = 0; j < maxStuckSize-I; j += I+I)
+             {final int J = j;
+               v.new If (compares[J+I].registerName())
+               {void Then()
+                 {compares[J].one(v);
+                  collapse[J].copy(v, collapse[J+I]);
+                 }
+               };
+             }
+           }
+         };
+       }
+      P.new Instruction()                                                       // Set result
+       {void action()
+         {if (compares[0].registerGet() > 0)
+           {Found.one();
+            final int I = collapse[0].registerGet();
+            StuckIndex.registerSet(I);
+            Stuck.this.Key .copy(keys[I]);
+            Stuck.this.Data.copy(data[I]);
+           }
+          else
+           {Found.zero();
+           }
+         };
+        void verilog(Verilog v)
+         {v.new If (compares[0].registerName())
+           {void Then()
+             {Found.one(v);
+              v.new Case(maxStuckSize, collapse[0].registerName())
+               {void Choice(int I)
+                 {StuckIndex.registerSet(v, I);
+                  Stuck.this.Key .copy(v, keys[I]);
+                  Stuck.this.Data.copy(v, data[I]);
+                 }
+               };
+             }
+            void Else()
+             {Found.zero(v);
+             }
+           };
+         }
+       };
+     }
+
     void search_le(Process.Register Key)                                        // Find the first key in the stuck so that the search key is less than or equal to this key
      {R(); final int N = size.registerGet();
       Found.zero();
@@ -831,7 +914,7 @@ chipStop = true;
       for (int i = 0; i < N; ++i)
        {if (Found.registerGet() == 0)
          {final int I = i;
-          if (Key.registerGet() <= keys[i].registerGet())
+          if (Key.registerGet() <= keys[I].registerGet())
            {Found.one();
             StuckIndex.registerSet(I);
             FoundKey.copy(keys[I]);
@@ -3390,14 +3473,46 @@ Stuck: stuck size: 3, leaf: 1, root
       P.processClear();
       s.stuckGetRoot();
       k.RegisterSet(J);
-      P.new Instruction()
-       {void action()
-         {s.search_eq(k);
-         }
-        void verilog(Verilog v)
-         {s.search_eq(v, k);
-         }
-       };
+      s.Search_eq(k);
+
+      b.maxSteps = 100;
+      b.chipRun();
+      ok(f.registerGet(), 1);
+      ok(i.registerGet(), J);
+      ok(k.registerGet(), J);
+      ok(d.registerGet(), J+1);
+     }
+   }
+
+  static void test_search_eq_parallel()
+   {sayCurrentTestName();
+    final Btree b = test_push();
+    final Process P = b.processes.get("Stuck");
+    final Stuck   s = b.new Stuck(P, "stuck");
+    final Process.Register k = s.Key;
+    final Process.Register d = s.Data;
+    final Process.Register i = s.StuckIndex;
+    final Process.Register f = s.Found;
+    P.processTrace = true;
+
+    P.processClear();
+    s.stuckGetRoot();
+
+    k.RegisterSet(11);
+
+    s.Search_eq(k);
+
+    b.maxSteps = 100;
+    b.chipRun();
+    ok(f.registerGet(), 0);
+
+    final int N = 4;
+    for (int j = 0; j < N; j++)
+     {final int J = j;
+      P.processClear();
+      s.stuckGetRoot();
+      k.RegisterSet(J);
+      s.search_eq_parallel(k);
 
       b.maxSteps = 100;
       b.chipRun();
@@ -3448,22 +3563,8 @@ Stuck: stuck size: 4, leaf: 1, root
 
     P.processClear();
     s.stuckGetRoot();
-    P.new Instruction()
-     {void action()
-       {k.registerSet(11);
-       }
-      void verilog(Verilog v)
-       {k.registerSet(v, 11);
-       }
-     };
-    P.new Instruction()
-     {void action()
-       {s.search_le(k);
-       }
-      void verilog(Verilog v)
-       {s.search_le(v, k);
-       }
-     };
+    k.RegisterSet(11);
+    s.Search_le(k);
 
     b.maxSteps = 100;
     b.chipRun();
@@ -4039,7 +4140,7 @@ Merge     : 1
     final Process          p = b.process("alloc");
     final Process.Register i = b.btreeIndex(p, "index1");
     final Process.Register j = b.btreeIndex(p, "index2");
-
+    p.processTrace = true;
     //stop(b.chipPrintMemory());
     ok(""+b.chipPrintMemory(), """
 Chip: Btree            step: 0, maxSteps: 10, running: 0
@@ -7857,6 +7958,7 @@ Merge     : 0
     test_insertElementAt();
     test_removeElementAt();
     test_search_eq();
+    test_search_eq_parallel();
     test_search_le();
     test_splitIntoTwo();
     test_splitIntoThree();
@@ -7890,8 +7992,7 @@ Merge     : 0
 
   static void newTests()                                                        // Tests being worked on
    {//oldTests();
-    //test_verilog_put();
-    test_allocate();
+    test_search_eq_parallel();
    }
 
   public static void main(String[] args)                                        // Test if called as a program
