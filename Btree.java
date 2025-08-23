@@ -2345,19 +2345,11 @@ chipStop = true;
          {stuckGet(BtreeIndex);                                                 // Load current stuck
           new IsLeaf()
            {void Leaf()                                                         // At a leaf - search for exact match
-             {P.new Instruction(true)
-               {void action()
-                 {search_eq(Key);                                               // Search
-                  P.Goto(end);                                                  // Key not present
-                 }
-                void verilog(Verilog v)
-                 {search_eq(v, Key);                                            // Search
-                  P.Goto(v, end);                                               // Key not present
-                 }
-               };
+             {search_eq_parallel(Key);                                          // Search
+              P.GOto(end);                                                      // Key not present
              }
             void Branch()                                                       // On a branch - step to next level down
-             {Search_le(Key);                                                   // Search stuck for matching key
+             {search_le_parallel(Key);                                          // Search stuck for matching key
               BtreeIndex.Copy(Data);                                            // Data found at index
               P.GOto(start);                                                    // Key not present
              }
@@ -4611,15 +4603,8 @@ Chip: Btree            step: 43, maxSteps: 100, running: 0
     final Btree            b = test_createTree();
     final Process          P = b.processes.get("Stuck");
     final Process.Register k = P.register("k", b.bitsPerKey);
-
-    P.new Instruction()
-     {void action()
-       {k.registerSet(3);
-       }
-      void verilog(Verilog v)
-       {k.registerSet(v, 3);
-       }
-     };
+    P.processTrace = true;
+    k.RegisterSet(3);
 
     final Find f = b.new Find(P);
     f.findSearch(k);
@@ -7724,7 +7709,7 @@ Merge     : 0
 
   static void newTests()                                                        // Tests being worked on
    {//oldTests();
-    test_mergeBranchesAtTop();
+    test_find();
    }
 
   public static void main(String[] args)                                        // Test if called as a program
