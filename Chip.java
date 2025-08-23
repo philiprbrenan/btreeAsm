@@ -16,7 +16,7 @@ class Chip extends Test                                                         
   int memoryProcessTransactionNumber = 0;                                       // Make transaction names unique
   int                           step;                                           // Current simulation step being executed
   int                       maxSteps = 10;                                      // Maximum number of steps to execute in the simulation
-//int                     returnCode;                                           // The return code from the first process to finish which effectively terminates the simulation
+  boolean      nonBlockingAssignment = true;                                    // Use non blocking assignments in generated Verilog
   static boolean               debug = false;                                   // Debug when true
 
 //D1 Chip                                                                       // A chip is constructed from a fixed number of communicating processes that execute code on the chip to produce the desired outputs from the inputs to the chip
@@ -270,7 +270,7 @@ module %s;                                                                      
     v.A("if (!stop) $finish(1); else $finish(0);                                // Set return code depending on whether the simulation halted");
     v.end();
 
-    v.parallel = true;                                                          // Use parallel assign in Verilog being matched with Java
+    v.parallel = nonBlockingAssignment;                                         // Use parallel assign in Verilog being matched with Java
     for(Process p: processes) p.generateProcessVerilog(v);                      // Generate
 
     chipPrintFromVerilog(v);
