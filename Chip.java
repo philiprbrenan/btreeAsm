@@ -686,7 +686,6 @@ module %s(                                                                      
       void le(Verilog v, Register a, int b) {v.assign(rn(), a.rn() +"<="+ b +" ? 1 : 0");} // Set the target register to one if the test between the 'a' and 'b' register is true else 0
       void lt(Verilog v, Register a, int b) {v.assign(rn(), a.rn() +"< "+ b +" ? 1 : 0");} // Set the target register to one if the test between the 'a' and 'b' register is true else 0
 
-
       void Zero()                                                               // Zero a register instruction
        {new Instruction()
          {void action()           {zero();};
