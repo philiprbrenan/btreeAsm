@@ -1440,14 +1440,7 @@ chipStop = true;
                    }
                  };
                 Leaf();                                                         // On a leaf
-                P.new Instruction(true)                                         // Exit outer block
-                 {void action()
-                   {P.Goto(bEnd);
-                   }
-                  void verilog(Verilog v)
-                   {P.Goto(v, bEnd);
-                   }
-                 };
+                P.GOto(bEnd);
                }
              };
             Branch();                                                           // On a branch
@@ -1759,14 +1752,7 @@ chipStop = true;
     allocateBranch(il); l.stuckPut(il);                                         // Allocate and save left leaf
                         c.stuckPut(cd);                                         // Allocate and save left leaf
                                                                                 // Update root with new children
-    P.new Instruction()
-     {void action()
-       {p.insertElementAt(StuckIndex, ck, il);                                  // Add reference to left child
-       }
-      void verilog(Verilog v)
-       {p.insertElementAt(v, StuckIndex, ck, il);                               // Add reference to left child
-       }
-     };
+    p.InsertElementAt(StuckIndex, ck, il);                                      // Add reference to left child
     p.stuckPut();                                                               // Save the parent stuck back into the btree
    }
 
@@ -1860,15 +1846,7 @@ chipStop = true;
        {success.Zero();                                                         // Assume failure
         p.stuckGetRoot();                                                       // Load root
 
-        P.new Instruction()                                                     // Check that the root has one entry and thus two children
-         {void action()
-           {test.eq(p.size, 1);                                                 // Number of entries in root
-           };
-          void verilog(Verilog v)
-           {test.eq(v, p.size, 1);                                              // Number of entries in root
-           };
-         };
-
+        test.Eq(p.size, 1);                                                 // Number of entries in root
         P.GOZero(end, test);                                                    // Wrong number of entries in root
 
         P.new Instruction()                                                     // Check that the root has one entry and thus two children
@@ -2484,12 +2462,10 @@ chipStop = true;
     final Process.Register stuckIndex = P.new Register("index",    stuckAddressSize); // Position within current stuck
     final Process.Register within     = P.new Register("within",   1);          // Success of merge - the result of this operation
     final Process.Register isLeaf     = P.new Register("isLeaf",   1);          // Success of merge - the result of this operation
-    final Process.Register level      = P.new Register("level",    8);          // Level within tree
 
     P.new Block()                                                               // The block is left as soon as possible
      {void code()
        {s.Zero();
-        level.Zero();
 
         S.stuckGetRoot();                                                       // Load current stuck
 
@@ -2549,8 +2525,7 @@ chipStop = true;
                {P.GOto(end);
                }
               void Branch()                                                     // Child is a branch - try again
-               {level.Inc();
-                P.GOto(start);
+               {P.GOto(start);
                }
              };
            };
@@ -7118,8 +7093,7 @@ Merge     : 0
    }
 
   static void newTests()                                                        // Tests being worked on
-   {//oldTests();
-    test_verilog_put();
+   {oldTests();
    }
 
   public static void main(String[] args)                                        // Test if called as a program
