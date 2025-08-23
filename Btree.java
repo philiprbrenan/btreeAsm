@@ -5957,28 +5957,18 @@ Merge     : 0
     d.registerSet(0);
     P.new Block()
      {void code()
-       {P.new Instruction()
-         {void action()
-           {k.inc();
-            d.copy(k); d.inc();
-           }
-          void verilog(Verilog v)
-           {k.inc(v);
-            d.copy(v, k); d.inc(v);
-           }
-         };
+       {k.Inc(); d.Copy(k); d.Inc();
         b.put(P, k, d);
-        P.new Instruction(true)
+        P.new Instruction()
          {void action()
            {s.append(b.btreePrint());
             l.lt(k, N);
-            P.GoNotZero(start, l);
            }
           void verilog(Verilog v)
            {l.lt(v, k, N);
-            P.GoNotZero(v, start, l);
            }
          };
+        P.GONotZero(start, l);
        }
      };
     b.chipRun();
@@ -7118,7 +7108,7 @@ Merge     : 0
 
   static void newTests()                                                        // Tests being worked on
    {//oldTests();
-    test_put_ascending();
+    //test_put_ascending();
     //test_put_merge();
     //test_put_reload();
     //test_put_descending();
