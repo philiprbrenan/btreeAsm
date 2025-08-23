@@ -1593,22 +1593,13 @@ chipStop = true;
         allocateLeaf(il); l.stuckPut(il);                                       // Allocate and save left leaf
         allocateLeaf(ir); r.stuckPut(ir);                                       // Allocate and save right leaf
 
-        P.new Instruction()
-         {void action()
-           {l.lastElement();  r.firstElement();
-            mk.copy(l.Key);   mk.add(r.Key); mk.half();
-            p.clear();
-            p.push(mk, il); p.setPastLastElement(mk, ir);
-            p.isLeaf.zero();
-           }
-          void verilog(Verilog v)
-           {l.lastElement(v);  r.firstElement(v);
-            mk.copy(v, l.Key); mk.add(v, r.Key); mk.half(v);
-            p.clear(v);
-            p.push(v, mk, il); p.setPastLastElement(v, mk, ir);
-            p.isLeaf.zero(v);
-           }
-         };
+        l.LastElement();
+        r.FirstElement();
+        mk.Average(l.Key, r.Key);
+        p.Clear();
+        p.Push(mk, il);
+        p.SetPastLastElement(mk, ir);
+        p.isLeaf.Zero();
         p.stuckPut(true);
        }
      };
@@ -5545,57 +5536,10 @@ Merge     : 0
     b.maxSteps = 2000;
     s.stuckGetRoot();
     P.processClear();
-    P.new Instruction()
-     {void action()
-       {k.registerSet(10);
-        d.registerSet(20);
-        s.push(k, d);
-       }
-      void verilog(Verilog v)
-       {k.registerSet(v, 10);
-        d.registerSet(v, 20);
-        s.push(v, k, d);
-       }
-     };
-
-    P.new Instruction()
-     {void action()
-       {k.registerSet(20);
-        d.registerSet(30);
-        s.push(k, d);
-       }
-      void verilog(Verilog v)
-       {k.registerSet(v, 20);
-        d.registerSet(v, 30);
-        s.push(v, k, d);
-       }
-     };
-
-    P.new Instruction()
-     {void action()
-       {k.registerSet(30);
-        d.registerSet(40);
-        s.push(k, d);
-       }
-      void verilog(Verilog v)
-       {k.registerSet(v, 30);
-        d.registerSet(v, 40);
-        s.push(v, k, d);
-       }
-     };
-
-    P.new Instruction()
-     {void action()
-       {k.registerSet(40);
-        d.registerSet(50);
-        s.push(k, d);
-       }
-      void verilog(Verilog v)
-       {k.registerSet(v, 40);
-        d.registerSet(v, 50);
-        s.push(v, k, d);
-       }
-     };
+    k.RegisterSet(10); d.RegisterSet(20); s.Push(k, d);
+    k.RegisterSet(20); d.RegisterSet(30); s.Push(k, d);
+    k.RegisterSet(30); d.RegisterSet(40); s.Push(k, d);
+    k.RegisterSet(40); d.RegisterSet(50); s.Push(k, d);
     s.stuckPut();
 
     b.splitRootLeaf(P);
@@ -8119,7 +8063,7 @@ Merge     : 0
 
   static void newTests()                                                        // Tests being worked on
    {//oldTests();
-    test_allocate();
+    test_splitRootLeaf();
    }
 
   public static void main(String[] args)                                        // Test if called as a program
