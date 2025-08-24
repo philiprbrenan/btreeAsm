@@ -375,7 +375,7 @@ module %s(                                                                      
     return source;
    }
 
-  void chipSynthesize()                                                         // Generate Verilog describing the chip and synthesize it
+  class Synthesize                                                              // Generate Verilog describing the chip and synthesize it
    {final String sourceFile = chipSynthesizeVerilog();                          // Source code written to a file
     final String jsonFile   = fne(Verilog.folder, chipName, "json");            // Save of synthesis results
     final String stdoutFile = fne(Verilog.folder, chipName, "txt");             // Yosys log
@@ -383,8 +383,7 @@ module %s(                                                                      
     final String c =
       String.format("yosys -q -T -p \"read_verilog %s; synth -top %s; write_json %s\" 2> %s",
         sourceFile, chipName, jsonFile, stdoutFile);
-    say(c);
-//    final var e = new ExecCommand(c);                                         // Run Verilog
+    final ExecCommand e = new ExecCommand(c);                                   // Run Verilog
    }
 
 //D2 Process
@@ -1511,7 +1510,9 @@ Chip: Test             step: 82, maxSteps: 100, running: 0
 """);
 
     ok(a.registerGet(), 987);
-    C.chipSynthesize();
+    final var s = C.new Synthesize();
+    ok(s.e.err, "");
+    ok(s.e.out, "");
    }
 
   static void test_block()
@@ -1654,7 +1655,7 @@ Chip: Test             step: 0, maxSteps: 10, running: 0
        {a.registerSet(1);
        }
       void verilog(Verilog v)
-       {a.registerSet(v, 1);
+       {a.registerSet(v, 1);                                                    // Change to show that tracing works
        }
      };
 
