@@ -375,13 +375,13 @@ module %s(                                                                      
     return source;
    }
 
-  class Synthesize                                                              // Generate Verilog describing the chip and synthesize it
+  class Synthesize                                                              // Generate Verilog describing the chip and synthesize it. Should extend Test.EXecCommand after Java 24
    {final String sourceFile = chipSynthesizeVerilog();                          // Source code written to a file
     final String jsonFile   = fne(Verilog.folder, chipName, "json");            // Save of synthesis results
     final String stdoutFile = fne(Verilog.folder, chipName, "txt");             // Yosys log
-
-    final String c =
-      String.format("yosys -q -T -p \"read_verilog %s; synth -top %s; write_json %s\" 2> %s",
+    final String c =                                                            // Yosys command
+      String.format
+       ("yosys -q -T -p \"read_verilog %s; synth -top %s; write_json %s\"",
         sourceFile, chipName, jsonFile, stdoutFile);
     final ExecCommand e = new ExecCommand(c);                                   // Run Verilog
    }
