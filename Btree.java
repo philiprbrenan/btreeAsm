@@ -7032,7 +7032,9 @@ Merge     : 0
     d.RegisterSet(11);
     b.chipRunJava();                                                            // Set memory
     b.put(k, d);
-    b.chipSynthesize();
+    final Chip.Synthesize S = b.new Synthesize();
+    ok(S.e.out, "");
+    ok(S.e.err, "");
    }
 
   static void oldTests()                                                        // Tests thought to be in good shape
@@ -7083,7 +7085,8 @@ Merge     : 0
    }
 
   static void newTests()                                                        // Tests being worked on
-   {oldTests();
+   {//oldTests();
+    test_verilog_put();
    }
 
   public static void main(String[] args)                                        // Test if called as a program
