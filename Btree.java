@@ -2348,11 +2348,9 @@ chipStop = true;
      }
    } // FindAndInsert
 
-//Pass process via Key register
-//final Process P = Key.registerProcess();
-
-  public void put(Process P, Process.Register Key, Process.Register Data)       // Insert a key, data pair into the tree or update and existing key with a new datum
-   {final Stuck            S     = new Stuck(P, "putParent");                   // Parent stuck
+  public void put(Process.Register Key, Process.Register Data)                  // Insert a key, data pair into the tree or update and existing key with a new datum
+   {final Process          P     = Key.registerProcess();                       // Process in which to write code
+    final Stuck            S     = new Stuck(P, "putParent");                   // Parent stuck
     final Stuck            s     = new Stuck(P, "putChild");                    // Child stuck
     final FindAndInsert    f     = new FindAndInsert(P);                        // Find and insert
     final Process.Register c     = P.new Register("child",  btreeAddressSize);  // Current child in tree
@@ -5900,7 +5898,7 @@ Merge     : 0
     P.new Block()
      {void code()
        {k.Inc(); d.Copy(k); d.Inc();
-        b.put(P, k, d);
+        b.put(k, d);
         if (false)                                                              // Create test trees
          {P.new Instruction()
            {void action()
@@ -5938,7 +5936,7 @@ Merge     : 0
     P.new Block()
      {void code()
        {k.Inc(); d.Copy(k); d.Inc();
-        b.put(P, k, d);
+        b.put(k, d);
         P.new Instruction()
          {void action()
            {s.append(b.btreePrint());
@@ -6942,7 +6940,7 @@ Merge     : 0
     P.new Block()
      {void code()
        {d.Copy(k); d.Inc();
-        b.put(P, k, d);
+        b.put(k, d);
         k.Dec();
         l.Gt(k, 0);
         P.GONotZero(start, l);
@@ -6998,7 +6996,7 @@ Merge     : 0
            }
          };
 
-        b.put(P, k, d);
+        b.put(k, d);
         l.Gt(i, 0);
         P.GONotZero(start, l);
        }
@@ -7030,18 +7028,10 @@ Merge     : 0
     final Process.Register k = P.register("k", b.bitsPerKey);   k.input();
     final Process.Register d = P.register("d", b.bitsPerData);  d.input();
 
-    P.new Instruction()
-     {void action()
-       {k.registerSet(1);
-        d.registerSet(11);
-       }
-      void verilog(Verilog v)
-       {k.registerSet(v, 1);
-        d.registerSet(v, 11);
-       }
-     };
-    b.chipRunJava();
-    b.put(P, k, d);
+    k.RegisterSet(1);
+    d.RegisterSet(11);
+    b.chipRunJava();                                                            // Set memory
+    b.put(k, d);
     b.chipSynthesize();
    }
 
