@@ -118,8 +118,11 @@ the [process](https://en.wikipedia.org/wiki/Process_management_(computing)) unde
 
 # Status
 
-- 2025-07-12 Java implementation of the [B-Tree](https://en.wikipedia.org/wiki/B-tree) [algorithm](https://en.wikipedia.org/wiki/Algorithm) - 2025-08-15 Verilog trace matches [Java](https://en.wikipedia.org/wiki/Java_(programming_language)) trace
+- 2025-07-12 Java implementation of the [B-Tree](https://en.wikipedia.org/wiki/B-tree) [algorithm](https://en.wikipedia.org/wiki/Algorithm) 
+- 2025-08-15 Verilog trace matches [Java](https://en.wikipedia.org/wiki/Java_(programming_language)) trace
+
 - 2025-08-16 Verilog synthesized for [test](https://en.wikipedia.org/wiki/Software_testing) cases in Chip.java using yosys
+
 - 2025-08-22 All Verilog now uses non blocking assignment
 
 # Next Step
