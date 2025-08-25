@@ -390,13 +390,23 @@ module %s(                                                                      
    {final String    sourceFile = chipSynthesizeVerilog();                       // Source code written to a file
     final String    pythonFile = fne(Verilog.folder, chipName, Verilog.pyExt);  // Python commands to layout mask
     final String       sdcFile = fne(Verilog.folder, chipName, Verilog.sdcExt); // Constraints file
+    final String    launchFile = fne(Verilog.folder, "launch", "sh");           // Launch file to run silicon compiler
     final StringBuilder python = new StringBuilder();
     final StringBuilder    sdc = new StringBuilder();
+    final StringBuilder launch = new StringBuilder();
 
     SiliconCompiler()                                                           // Construct the silicon compiler commands
      {writePython();
       writeSdc();
+      writeLaunch();
      }
+
+    void writeLaunch()                                                          // Write launch file
+     {launch.append(String.format("""
+docker run --rm -it -v ~/btreeAsm/:/root/btreeAsm -w /root/btreeAsm btreeasm:v2 bash -ic "source /root/sc/bin/activate; python3 /root/btreeAsm/verilog/Btree.py"
+"""));
+     writeFile(launchFile, launch);
+    }
 
     void writeSdc()                                                             // Write constraints file
      {sdc.append(String.format("""
@@ -416,8 +426,8 @@ if __name__ == "__main__":
   chip = Chip('%s')                                                             # Create chip object.  The name is used to create the summary and mask image file
 # chip.set('option', 'loglevel', 'warning')                                     # Warnings and above
 # chip.set('option', 'loglevel', 'error')                                       # Warnings and above
-  chip.set('option', 'builddir', '%s')                                          # Build folder
-  chip.input('%s/buildFolder')                                                  # Source code
+  chip.set('option', 'builddir', '%s/build')                                    # Build folder
+  chip.input('%s')                                                              # Source code
 # chip.input('/home/azureuser/btreeBlock/verilog/$project/$instance/siliconCompiler/memory.v'   ) # Memory black box
   chip.input('%s')                                                              # Synopsys design constraints file
   chip.set('design', '%s')                                                      # Show the top most module
