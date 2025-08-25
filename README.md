@@ -209,7 +209,7 @@ A **Stuck** combines the **boundedness of a stack**, the **ordered nature of a s
 - **Contiguous [memory](https://en.wikipedia.org/wiki/Computer_memory) layout** : cache-friendly.
 - **Fixed capacity** : simplifies [memory](https://en.wikipedia.org/wiki/Computer_memory) management.
 - **Size field** : explicitly tracks how full the node is.
-- **Order maintenance** maintains the keys in order so they can be searched quickly
+- **Ordered** maintains the keys in order so they can be searched quickly
 
 ---
 
