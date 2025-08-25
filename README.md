@@ -160,11 +160,11 @@ A **Stuck** combines the **boundedness of a stack**, the **ordered nature of a s
 
 ## Operations
 - **Insert(Index, Key, Data)**
-  Insert a new keyâdata pair into the correct position. May require shifting.
+  Insert a new key/data pair into the correct position. May require shifting.
   If the structure is full, insertion fails.
 
 - **Remove(Index)**
-  Remove a keyâdata pair at the specified index, shifting elements down to maintain contiguity.
+  Remove a key/data pair at the specified index, shifting elements down to maintain contiguity.
 
 - **Search(Key)**
   Perform linear or binary search over the active region.
@@ -209,7 +209,7 @@ A **Stuck** combines the **boundedness of a stack**, the **ordered nature of a s
 - **Contiguous [memory](https://en.wikipedia.org/wiki/Computer_memory) layout** : cache-friendly.
 - **Fixed capacity** : simplifies [memory](https://en.wikipedia.org/wiki/Computer_memory) management.
 - **Size field** : explicitly tracks how full the node is.
-- **Ordered** maintains the keys in order so they can be searched quickly
+- **Ordered** : maintains the keys in order so they can be searched quickly
 
 ---
 
