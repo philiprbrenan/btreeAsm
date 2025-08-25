@@ -390,7 +390,9 @@ module %s(                                                                      
    {final String    sourceFile = chipSynthesizeVerilog();                       // Source code written to a file
     final String    pythonFile = fne(Verilog.folder, chipName, Verilog.pyExt);  // Python commands to layout mask
     final String       sdcFile = fne(Verilog.folder, chipName, Verilog.sdcExt); // Constraints file
+    final String       logFile = fne(Verilog.folder, chipName, "log");          // Log file from Silicon Compiler
     final String    launchFile = fne(Verilog.folder, chipName, "sh");           // Launch file to run silicon compiler
+    final String   dockerImage = "ghcr.io/philiprbrenan/btreeasm:latest";       // Docker image
     final StringBuilder python = new StringBuilder();
     final StringBuilder    sdc = new StringBuilder();
     final StringBuilder launch = new StringBuilder();
@@ -407,14 +409,17 @@ module %s(                                                                      
      {final String v = Verilog.folder;
       final String f = fn(resultsFolder, description());
       launch.append(String.format("""
-docker run --rm -it -v ~/btreeAsm/:/root/btreeAsm -w /root/btreeAsm ghcr.io/philiprbrenan/btreeasm bash -ic "source /root/sc/bin/activate; python3 /root/btreeAsm/verilog/Btree.py"
+git pull
+docker pull %s
+docker run --rm -it -v ~/btreeAsm/:/root/btreeAsm -w /root/btreeAsm %s bash -ic "source /root/sc/bin/activate; python3 /root/btreeAsm/verilog/Btree.py"
 mkdir -p %s
 cp "%s/build/Btree/job0/Btree.pkg.json" "%s"
 cp "%s/build/Btree/job0/Btree.png"      "%s"
-EOF
-""",   f,
+cp "%s/build/Btree/job0/job.log"        "%s"
+""",   dockerImage, dockerImage, f,
        v, fne(f, chipName, "json"),
-       v, fne(f, chipName, "png")));
+       v, fne(f, chipName, "png"),
+       v, fne(f, "job",    "log")));
       writeFile(launchFile, launch);
      }
 
