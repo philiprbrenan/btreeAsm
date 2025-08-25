@@ -4,7 +4,7 @@
 
 # Goal
 
-Use Java to generate synthesizable Verilog to layout a [B-Tree](https://en.wikipedia.org/wiki/B-tree) on the surface of
+Use [Java](https://en.wikipedia.org/wiki/Java_(programming_language)) to generate synthesizable [Verilog](https://en.wikipedia.org/wiki/Verilog) to layout a [B-Tree](https://en.wikipedia.org/wiki/B-tree) on the surface of
 a specialized [Silicon](https://en.wikipedia.org/wiki/Silicon) [chip](https://en.wikipedia.org/wiki/Integrated_circuit) so that the [find](https://en.wikipedia.org/wiki/Find_(Unix)), put and delete operations on a [B-Tree](https://en.wikipedia.org/wiki/B-tree) can be performed more quickly than [software](https://en.wikipedia.org/wiki/Software) running on a generic
 processor.
 
@@ -123,12 +123,12 @@ the [process](https://en.wikipedia.org/wiki/Process_management_(computing)) unde
 
 # Status
 
-- 2025-07-12 Java implementation of the [B-Tree](https://en.wikipedia.org/wiki/B-tree) [algorithm](https://en.wikipedia.org/wiki/Algorithm) 
-- 2025-08-15 Verilog trace matches [Java](https://en.wikipedia.org/wiki/Java_(programming_language)) trace
+- 2025-07-12 [Java](https://en.wikipedia.org/wiki/Java_(programming_language)) implementation of the [B-Tree](https://en.wikipedia.org/wiki/B-tree) [algorithm](https://en.wikipedia.org/wiki/Algorithm) 
+- 2025-08-15 [Verilog](https://en.wikipedia.org/wiki/Verilog) trace matches [Java](https://en.wikipedia.org/wiki/Java_(programming_language)) trace
 
-- 2025-08-16 Verilog synthesized for [test](https://en.wikipedia.org/wiki/Software_testing) cases in Chip.java using yosys
+- 2025-08-16 [Verilog](https://en.wikipedia.org/wiki/Verilog) synthesized for [test](https://en.wikipedia.org/wiki/Software_testing) cases in Chip.java using yosys
 
-- 2025-08-22 All Verilog now uses non blocking assignment
+- 2025-08-22 All [Verilog](https://en.wikipedia.org/wiki/Verilog) now uses non blocking assignment
 
 # Next Step
 
