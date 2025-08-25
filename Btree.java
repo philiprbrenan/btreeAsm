@@ -7023,7 +7023,7 @@ Merge     : 0
 
   static void test_verilog_put()
    {sayCurrentTestName();
-    final Btree            b = new Btree(32, 4, 8, 8);
+    final Btree            b = new Btree(256, 4, 8, 8);
     final Process          P = b.new Process("verilogPut");
     final Process.Register k = P.register("k", b.bitsPerKey);   k.input();
     final Process.Register d = P.register("d", b.bitsPerData);  d.input();
@@ -7035,7 +7035,12 @@ Merge     : 0
 //  final Chip.Synthesize S = b.new Synthesize();
 //  ok(S.e.out, "");
 //  ok(S.e.err, "");
-    final Chip.SiliconCompiler S = b.new SiliconCompiler();                     // Create silicon compiler files
+    final Chip.SiliconCompiler S = b.new SiliconCompiler()                      // Create silicon compiler files
+     {String description()
+       {return String.format("%s_%d_%d_%d_%d",
+          b.chipName, b.size, b.maxStuckSize, b.bitsPerKey, b.bitsPerData);
+       }
+     };
     say(S.launchFile);
    }
 
