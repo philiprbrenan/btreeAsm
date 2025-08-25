@@ -220,7 +220,7 @@ The [Verilog](https://en.wikipedia.org/wiki/Verilog) produced by **Btree.java** 
 ## Install OpenROAD in a [Docker](https://en.wikipedia.org/wiki/Docker_(software)) container
  [Open Road](https://openroad-flow-scripts.readthedocs.io/en/latest/mainREADME.html) is needed by [Open Source Silicon Compiler](https://docs.siliconcompiler.com/en/latest/index.html) to do layout.
 
-And [Open Road](https://openroad-flow-scripts.readthedocs.io/en/latest/mainREADME.html) is not available for Ubuntu 24 so we have to use a [Docker](https://en.wikipedia.org/wiki/Docker_(software)) container:
+And [Open Road](https://openroad-flow-scripts.readthedocs.io/en/latest/mainREADME.html) is not available for [Ubuntu](https://ubuntu.com/download/desktop) 24 so we have to use a [Docker](https://en.wikipedia.org/wiki/Docker_(software)) container:
 
 ```
 docker run -it --rm ubuntu:22.04 /bin/bash
