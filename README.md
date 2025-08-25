@@ -289,14 +289,14 @@ docker commit <container> btreeasm:v1
 Give the [Docker](https://en.wikipedia.org/wiki/Docker_(software)) image a name that [GitHub](https://github.com/philiprbrenan) can recognize:
 
 ```
-docker tag btreeasm:v1 ghcr.io/philiprbrenan/btreeasm:v1
+docker tag btreeasm:v1 ghcr.io/philiprbrenan/btreeasm:latest
 ```
 
 ## 4. Push the image
 
 Push the [Docker](https://en.wikipedia.org/wiki/Docker_(software)) image to [GitHub](https://github.com/philiprbrenan): 
 ```
-docker push ghcr.io/philiprbrenan/btreeasm:v1
+docker push ghcr.io/philiprbrenan/btreeasm:latest
 ```
 
 ## 5. (Optional) Make the package public
