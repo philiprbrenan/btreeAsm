@@ -16,12 +16,13 @@ my $user    = q(philiprbrenan);                                                 
 my $home    = fpd q(/home/phil), $repo;                                         # Home folder
 my $shaFile = fpe $home, q(sha);                                                # Sh256 file sums for each known file to detect changes
 my $wf      = q(.github/workflows/main.yml);                                    # Work flow on Ubuntu
-my @ext     = qw(.java .jpg .json .md .pl .png);                                # Extensions of files to upload to github
+my @ext     = qw(.java .jpg .json .md .pl .png .py .v);                         # Extensions of files to upload to github
 
 say STDERR timeStamp,  " push to github $repo";
 
 my @files = searchDirectoryTreesForMatchingFiles($home, @ext);                  # Files to upload
-   @files = grep {!m(/verilog/)} @files;                                        # Select files to upload
+   @files = grep {!m(/verilog/build/)} @files;                                  # Select files to upload
+#say STDERR "AAAA ", dump(\@files); exit(1);
 my @java  = grep {fe($_) =~ m(java)is} @files;                                  # Java files
    @files = changedFiles $shaFile, @files;                                      # Filter out files that have not changed
 
