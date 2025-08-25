@@ -249,7 +249,7 @@ class Verilog extends Test                                                      
     ok(Verilog.ext    .equals("v"));
     ok(Verilog.header .equals("vh"));
     ok(Verilog.testExt.equals("tb"));
-    ok(Verilog.sdcExt .equals("xdc"));
+    ok(Verilog.sdcExt .equals("sdc"));
    }
 
   static void test_A()
@@ -473,11 +473,11 @@ b = b - 1;
     test_task();
     test_always();
     test_inc();
+    test_elseIf();
    }
 
   static void newTests()                                                        // Tests being worked on
-   {//oldTests();
-    test_elseIf();
+   {oldTests();
    }
 
   public static void main(String[] args)                                        // Test if called as a program
