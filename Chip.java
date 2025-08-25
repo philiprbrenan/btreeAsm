@@ -390,7 +390,7 @@ module %s(                                                                      
    {final String    sourceFile = chipSynthesizeVerilog();                       // Source code written to a file
     final String    pythonFile = fne(Verilog.folder, chipName, Verilog.pyExt);  // Python commands to layout mask
     final String       sdcFile = fne(Verilog.folder, chipName, Verilog.sdcExt); // Constraints file
-    final String    launchFile = fne(Verilog.folder, "launch", "sh");           // Launch file to run silicon compiler
+    final String    launchFile = fne(Verilog.folder, chipName, "sh");           // Launch file to run silicon compiler
     final StringBuilder python = new StringBuilder();
     final StringBuilder    sdc = new StringBuilder();
     final StringBuilder launch = new StringBuilder();
