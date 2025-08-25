@@ -217,10 +217,23 @@ A **Stuck** combines the **boundedness of a stack**, the **ordered nature of a s
 
 The [Verilog](https://en.wikipedia.org/wiki/Verilog) produced by **Btree.java** is transformed into a chip [mask](https://en.wikipedia.org/wiki/Integrated_circuit_layout) using [Open Source Silicon Compiler](https://docs.siliconcompiler.com/en/latest/index.html) .
 
-## Install OpenROAD in a [Docker](https://en.wikipedia.org/wiki/Docker_(software)) container
- [Open Road](https://openroad-flow-scripts.readthedocs.io/en/latest/mainREADME.html) is needed by [Open Source Silicon Compiler](https://docs.siliconcompiler.com/en/latest/index.html) to do layout.
+## Run Silicon Compiler
 
-And [Open Road](https://openroad-flow-scripts.readthedocs.io/en/latest/mainREADME.html) is not available for [Ubuntu](https://ubuntu.com/download/desktop) 24 so we have to use a [Docker](https://en.wikipedia.org/wiki/Docker_(software)) container:
+Run [Open Source Silicon Compiler](https://docs.siliconcompiler.com/en/latest/index.html) on **Btree** on any machine with **docker** and **git** installed.
+
+```
+git clone git@github.com:philiprbrenan/btreeAsm.git  # Download repo
+(cd btreeAsm; bash Btree.sh)                         # Run repo via a downloaded docker container
+```
+
+## Create Silicon Compiler Docker Container
+
+The following notes show how to create the [Docker](https://en.wikipedia.org/wiki/Docker_(software)) container referenced above to run [Open Source Silicon Compiler](https://docs.siliconcompiler.com/en/latest/index.html) .
+
+### Install OpenROAD in a [Docker](https://en.wikipedia.org/wiki/Docker_(software)) container
+
+Prebuilt [Open Road](https://openroad-flow-scripts.readthedocs.io/en/latest/mainREADME.html) binaries are avilable for [Ubuntu](https://ubuntu.com/download/desktop) 22:
+
 
 ```
 docker run -it --rm ubuntu:22.04 /bin/bash
@@ -233,7 +246,7 @@ apt install ...deb
 openroad -V
 ```
 
-## Install Silicon compiler
+### Install Silicon compiler
 
 Create a [Python](https://www.python.org/) virtual environment, activate it, [install](https://en.wikipedia.org/wiki/Installation_(computer_programs)) [Open Source Silicon Compiler](https://docs.siliconcompiler.com/en/latest/index.html) and confirm the installation .
 
@@ -247,7 +260,7 @@ pip show siliconcompiler
 python3 -c "import siliconcompiler;print(siliconcompiler.__version__)"
 ```
 
-## Install Yosys
+### Install Yosys
 
 Download **yosys** and confirm correct installation:
 
@@ -258,7 +271,7 @@ export PATH="$PATH:/root/oss-cad-suite/bin/"
 yosys -V
 ```
 
-## Install Klayout
+### Install Klayout
 
 Install **Klayout** and confirm correct installation:
 
@@ -267,16 +280,16 @@ wget https://www.klayout.org/downloads/master/ubuntu22/klayout_master-1_amd64.de
 klayout -v
 ```
 
-# Upload to Github containers
+### Upload to Github containers
 
 To save the configured container to [GitHub](https://github.com/philiprbrenan): 
-## 1. Log in to GHCR
+#### 1. Log in to GHCR
 
 ```
 echo <.githubToken.xxx> | docker login ghcr.io -u philiprbrenan --password-stdin
 ```
 
-## 2. Tag your image
+#### 2. Create an image
 
 Make an image from the [Docker](https://en.wikipedia.org/wiki/Docker_(software)) container:
 
@@ -284,7 +297,7 @@ Make an image from the [Docker](https://en.wikipedia.org/wiki/Docker_(software))
 docker commit <container> btreeasm:v1
 ```
 
-## 3. Tag your image
+#### 3. Tag the image
 
 Give the [Docker](https://en.wikipedia.org/wiki/Docker_(software)) image a name that [GitHub](https://github.com/philiprbrenan) can recognize:
 
@@ -292,7 +305,7 @@ Give the [Docker](https://en.wikipedia.org/wiki/Docker_(software)) image a name 
 docker tag btreeasm:v1 ghcr.io/philiprbrenan/btreeasm:latest
 ```
 
-## 4. Push the image
+#### 4. Push the image
 
 Push the [Docker](https://en.wikipedia.org/wiki/Docker_(software)) image to [GitHub](https://github.com/philiprbrenan): 
 ```
@@ -309,16 +322,6 @@ https://github.com/users/philiprbrenan/packages/container/package/btreeAsm
 
 Then: Package Settings - Change visibility - Public
 
-
-# Run Silicon Compiler
-
-Run [Open Source Silicon Compiler](https://docs.siliconcompiler.com/en/latest/index.html) on **Btree** on any machine with **docker** and **git** installed.
-
-```
-git clone git@github.com:philiprbrenan/btreeAsm.git  # Download repo
-cd btreeAsm
-bash Btree.sh                                        # Run repo via a downloaded docker container
-```
 
 # Status
 
