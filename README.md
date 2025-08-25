@@ -308,7 +308,7 @@ Make the [Docker](https://en.wikipedia.org/wiki/Docker_(software)) image public:
 https://github.com/users/philiprbrenan/packages/container/package/btreeAsm
 ```
 
-Then: Package Settings â Change visibility â Public
+Then: Package Settings - Change visibility - Public
 
 
 # Status
