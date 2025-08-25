@@ -130,6 +130,7 @@ the [process](https://en.wikipedia.org/wiki/Process_management_(computing)) unde
 
 - 2025-08-22 All [Verilog](https://en.wikipedia.org/wiki/Verilog) now uses non blocking assignment
 
+- 2025-08-24 Place and route of synthesized [Verilog](https://en.wikipedia.org/wiki/Verilog) using [Open Source Silicon Compiler](https://docs.siliconcompiler.com/en/latest/index.html) 
 # Next Step
 
 Confirm that the generated [Verilog](https://en.wikipedia.org/wiki/Verilog) can be synthesized for a range of [B-Tree](https://en.wikipedia.org/wiki/B-tree) configurations.
