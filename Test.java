@@ -9,8 +9,8 @@ import java.nio.file.*;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.security.*;
 import java.text.*;
-import java.time.LocalTime;
-import java.time.format.DateTimeFormatter;
+import java.time.*;
+import java.time.format.*;
 import java.util.*;
 import java.util.stream.*;
 
@@ -147,6 +147,11 @@ public class Test                                                               
      {S.replace(i, i + s.length(), t);
       i += t.length();
      }
+   }
+
+  String dateTimeStamp()                                                        // Date and time stamp
+   {return ZonedDateTime.now(ZoneOffset.UTC).
+      format(DateTimeFormatter.ISO_INSTANT).replace(":", "-");
    }
 
 //D2 Numeric routines                                                           // Numeric routines
