@@ -310,6 +310,16 @@ https://github.com/users/philiprbrenan/packages/container/package/btreeAsm
 Then: Package Settings - Change visibility - Public
 
 
+# Run Silicon Compiler
+
+Run [Open Source Silicon Compiler](https://docs.siliconcompiler.com/en/latest/index.html) on **Btree** on any machine with **docker** and **git** installed.
+
+```
+git clone git@github.com:philiprbrenan/btreeAsm.git  # Download repo
+cd btreeAsm
+bash Btree.sh                                        # Run repo via a downloaded docker container
+```
+
 # Status
 
 - 2025-07-12 [Java](https://en.wikipedia.org/wiki/Java_(programming_language)) implementation of the [B-Tree](https://en.wikipedia.org/wiki/B-tree) [algorithm](https://en.wikipedia.org/wiki/Algorithm) 
@@ -320,3 +330,4 @@ Then: Package Settings - Change visibility - Public
 - 2025-08-22 All [Verilog](https://en.wikipedia.org/wiki/Verilog) now uses non blocking assignment
 
 - 2025-08-24 Place and route of synthesized [Verilog](https://en.wikipedia.org/wiki/Verilog) using [Open Source Silicon Compiler](https://docs.siliconcompiler.com/en/latest/index.html) 
+- 2025-08-25 Run Silicon Compiler in a [Docker](https://en.wikipedia.org/wiki/Docker_(software)) container saved on ghcr.io
