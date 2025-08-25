@@ -236,7 +236,7 @@ openroad -V
 
 ## Install Silicon compiler
 
-Create a [Python](https://www.python.org/) virtual environment, activate it, [install](https://en.wikipedia.org/wiki/Installation_(computer_programs)) [Open Source Silicon Compiler](https://docs.siliconcompiler.com/en/latest/index.html) and conform the installation .
+Create a [Python](https://www.python.org/) virtual environment, activate it, [install](https://en.wikipedia.org/wiki/Installation_(computer_programs)) [Open Source Silicon Compiler](https://docs.siliconcompiler.com/en/latest/index.html) and confirm the installation .
 
 ```
 sudo apt update
@@ -250,7 +250,7 @@ python3 -c "import siliconcompiler;print(siliconcompiler.__version__)"
 
 ## Install Yosys
 
-Download **yosys**:
+Download **yosys** and confirm correct installation:
 
 ```
 wget https://github.com/YosysHQ/oss-cad-suite-build/releases/download/2025-08-24/oss-cad-suite-linux-x64-20250824.tgz
@@ -261,7 +261,7 @@ yosys -V
 
 ## Install Klayout
 
-Install **Klayout**
+Install **Klayout** and confirm correct installation:
 
 ```
 wget https://www.klayout.org/downloads/master/ubuntu22/klayout_master-1_amd64.deb
