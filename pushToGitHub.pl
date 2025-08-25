@@ -35,6 +35,7 @@ if  (1)                                                                         
    {my $c = readBinaryFile $s;                                                  # Load file
 
     $c = expandWellKnownWordsAsUrlsInMdFormat $c if $s =~ m(README);            # Expand README
+    say STDERR $c if $s =~ m(README);
 
     my $t = swapFilePrefix $s, $home;                                           # File on github
     my $w = writeFileUsingSavedToken($user, $repo, $t, $c);                     # Write file into github
