@@ -71,9 +71,9 @@ Processes handle transactions in round-robin polling mode, fixed at design time.
 2. When a [transaction](https://en.wikipedia.org/wiki/Database_transaction) is found:
 
    - Copies data from the transaction's parameter [registers](https://en.wikipedia.org/wiki/Processor_register) into its own [registers](https://en.wikipedia.org/wiki/Processor_register). 
-   - Processes the data by excuting the indicated [transaction](https://en.wikipedia.org/wiki/Database_transaction). 
+   - Processes the data by executing the indicated [transaction](https://en.wikipedia.org/wiki/Database_transaction). 
    - Writes the execution results into the transaction's output [registers](https://en.wikipedia.org/wiki/Processor_register). 
-   - Marks the [transaction](https://en.wikipedia.org/wiki/Database_transaction) as complete and thius usable by the caller.
+   - Marks the [transaction](https://en.wikipedia.org/wiki/Database_transaction) as complete so that its results can be used by the caller.
 
 3. The requesting [process](https://en.wikipedia.org/wiki/Process_management_(computing)) waits for the completion of a [transaction](https://en.wikipedia.org/wiki/Database_transaction) by spinning on an [instruction](https://en.wikipedia.org/wiki/Instruction_set_architecture). 
 The output remains in the [transaction](https://en.wikipedia.org/wiki/Database_transaction) [registers](https://en.wikipedia.org/wiki/Processor_register) until they are overwritten by the next use of the same [transaction](https://en.wikipedia.org/wiki/Database_transaction). 
@@ -206,16 +206,16 @@ A **Stuck** combines the **boundedness of a stack**, the **ordered nature of a s
 
 ## Why a Stuck is a Good Fit
 
-- **Contiguous [memory](https://en.wikipedia.org/wiki/Computer_memory) layout** â cache-friendly.
-- **Fixed capacity** â simplifies [memory](https://en.wikipedia.org/wiki/Computer_memory) management.
-- **Size field** â explicitly tracks how full the node is.
+- **Contiguous [memory](https://en.wikipedia.org/wiki/Computer_memory) layout** : cache-friendly.
+- **Fixed capacity** : simplifies [memory](https://en.wikipedia.org/wiki/Computer_memory) management.
+- **Size field** : explicitly tracks how full the node is.
 - **Order maintenance** maintains the keys in order so they can be searched quickly
 
 ---
 
 # Silicon Compiler
 
-The [Verilog](https://en.wikipedia.org/wiki/Verilog) prodcued by **Btree.java** is transformed intoi a chip [mask](https://en.wikipedia.org/wiki/Integrated_circuit_layout) using [Open Source Silicon Compiler](https://docs.siliconcompiler.com/en/latest/index.html) .
+The [Verilog](https://en.wikipedia.org/wiki/Verilog) produced by **Btree.java** is transformed into a chip [mask](https://en.wikipedia.org/wiki/Integrated_circuit_layout) using [Open Source Silicon Compiler](https://docs.siliconcompiler.com/en/latest/index.html) .
 
 ## Install OpenROAD in a [Docker](https://en.wikipedia.org/wiki/Docker_(software)) container
 
