@@ -7036,7 +7036,7 @@ Merge     : 0
 //  ok(S.e.out, "");
 //  ok(S.e.err, "");
     final Chip.SiliconCompiler S = b.new SiliconCompiler();                     // Create silicon compiler files
-    say(S.sdcFile);
+    say(S.launchFile);
    }
 
   static void oldTests()                                                        // Tests thought to be in good shape
