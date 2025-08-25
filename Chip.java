@@ -386,6 +386,60 @@ module %s(                                                                      
     final ExecCommand e = new ExecCommand(c);                                   // Run Verilog
    }
 
+  class SiliconCompiler                                                         // Write to a file the silicon compiler python directives to place and route this design
+   {final String    sourceFile = chipSynthesizeVerilog();                       // Source code written to a file
+    final String    pythonFile = fne(Verilog.folder, chipName, Verilog.pyExt);  // Python commands to layout mask
+    final String       sdcFile = fne(Verilog.folder, chipName, Verilog.sdcExt); // Constraints file
+    final StringBuilder python = new StringBuilder();
+    final StringBuilder    sdc = new StringBuilder();
+
+    SiliconCompiler()                                                           // Construct the silicon compiler commands
+     {writePython();
+      writeSdc();
+     }
+
+    void writeSdc()                                                             // Write constraints file
+     {sdc.append(String.format("""
+create_clock -name clock -period 100 [get_ports {clock}]
+"""));
+     writeFile(sdcFile, sdc);
+    }
+
+    void writePython()                                                          // Construct the silicon compiler python commands
+     {python.append(String.format("""
+#!/usr/bin/env python3
+
+from siliconcompiler import Chip                                                # import python package
+from siliconcompiler.targets import freepdk45_demo
+
+if __name__ == "__main__":
+  chip = Chip('%s')                                                             # Create chip object.  The name is used to create the summary and mask image file
+# chip.set('option', 'loglevel', 'warning')                                     # Warnings and above
+# chip.set('option', 'loglevel', 'error')                                       # Warnings and above
+  chip.input('%s')                                                              # Source code
+# chip.input('/home/azureuser/btreeBlock/verilog/$project/$instance/siliconCompiler/memory.v'   ) # Memory black box
+  chip.input('%s')                                                              # Synopsys design constraints file
+  chip.set('design', '%s')                                                      # Show the top most module
+  chip.use(freepdk45_demo)                                                      # Load predefined technology and flow target
+# chip.set('package', 'description', '$designDescription')                      # Description of design
+  chip.clock('clock', period=10)                                                # Define clock speed of design was 100
+  chip.set('option', 'remote', False)                                           # Run remote in the cloud
+  chip.set('option', 'nodisplay', True)                                         # Do not open displays
+# chip.set('constraint', 'density', $density)                                   # Lowering the density gives more area in which to route connections at the cost of wasting surface area and making the chip run slower. For find it seems best to leave this parameter alone
+  chip.set('option', 'clean', True)                                             # Clean start else it reuses previous results
+  chip.run()                                                                    # Run compilation of design and target
+  chip.summary()                                                                # Create a summary - but at the moment it is only printed on stdout so for automation you have to get the same information from the summary pkg.json
+  chip.snapshot()                                                               # Create the charming image of the chip along with its size, power, clock frequency
+#  chip.show()
+#  chip.set('option', 'define', 'CFG_ASIC=1')
+#  chip.set('option', 'env', 'PDK_HOME', '/disk/mypdk')
+#  chip.set('option', 'idir', './mylib')
+#  chip.set('option', 'nodisplay', True)
+""", chipName, sourceFile, sdcFile, chipName));
+     writeFile(pythonFile, python);
+    }
+  }
+
 //D2 Process
 
   class Process                                                                 // A process consists of memory, registers and a program
