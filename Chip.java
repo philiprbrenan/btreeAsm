@@ -3,8 +3,7 @@
 // Philip R Brenan at appaapps dot com, Appa Apps Ltd Inc., 2025
 //------------------------------------------------------------------------------
 package com.AppaApps.Silicon;                                                   // B-tree implemented in a memory block on a silicon chip.
-// Make add accept multiple arguments.
-// Produce instruction level versions of each arithmetic operation
+
 import java.util.*;
 
 class Chip extends Test                                                         // A chip designed to manipulate a B-tree stored in a memory block
@@ -12,6 +11,7 @@ class Chip extends Test                                                         
   final Children<Process>  processes = new Children<>();                        // A fixed set of processes for this chip in definition order
   final String         javaTraceFile = fn(Verilog.folder, "trace_java.txt");    // Java trace file for comparison with verilog
   final String      verilogTraceFile = fn(Verilog.folder, "trace_verilog.txt"); // Verilog trace file
+  final String         resultsFolder = fn("results/");                          // Results of each synthesis
   static boolean            chipStop = true;                                    // False when the chip is running, true when it is not
   int memoryProcessTransactionNumber = 0;                                       // Make transaction names unique
   int                           step;                                           // Current simulation step being executed
@@ -386,7 +386,7 @@ module %s(                                                                      
     final ExecCommand e = new ExecCommand(c);                                   // Run Verilog
    }
 
-  class SiliconCompiler                                                         // Write to a file the silicon compiler python directives to place and route this design
+  abstract class SiliconCompiler                                                // Write to a file the silicon compiler python directives to place and route this design
    {final String    sourceFile = chipSynthesizeVerilog();                       // Source code written to a file
     final String    pythonFile = fne(Verilog.folder, chipName, Verilog.pyExt);  // Python commands to layout mask
     final String       sdcFile = fne(Verilog.folder, chipName, Verilog.sdcExt); // Constraints file
@@ -401,12 +401,22 @@ module %s(                                                                      
       writeLaunch();
      }
 
+    abstract String description();                                              // Produce a description of the chip
+
     void writeLaunch()                                                          // Write launch file
-     {launch.append(String.format("""
+     {final String v = Verilog.folder;
+      final String f = fn(resultsFolder, description());
+      launch.append(String.format("""
 docker run --rm -it -v ~/btreeAsm/:/root/btreeAsm -w /root/btreeAsm btreeasm:v2 bash -ic "source /root/sc/bin/activate; python3 /root/btreeAsm/verilog/Btree.py"
-"""));
-     writeFile(launchFile, launch);
-    }
+mkdir -p %s
+cp "%s/build/Btree/job0/Btree.pkg.json" "%s"
+cp "%s/build/Btree/job0/Btree.png"      "%s"
+EOF
+""",   f,
+       v, fne(f, chipName, "json"),
+       v, fne(f, chipName, "png")));
+      writeFile(launchFile, launch);
+     }
 
     void writeSdc()                                                             // Write constraints file
      {sdc.append(String.format("""
