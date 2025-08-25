@@ -215,58 +215,98 @@ A **Stuck** combines the **boundedness of a stack**, the **ordered nature of a s
 
 # Silicon Compiler
 
+The [Verilog](https://en.wikipedia.org/wiki/Verilog) prodcued by **Btree.java** is transformed intoi a chip [mask](https://en.wikipedia.org/wiki/Integrated_circuit_layout) using [Open Source Silicon Compiler](https://docs.siliconcompiler.com/en/latest/index.html) .
+
 ## Install OpenROAD in a [Docker](https://en.wikipedia.org/wiki/Docker_(software)) container
 
 OpenRoad is needed by Silicon Compiler to do layout.
 
-And OpenRoad is only available for Ubuntu 22 so we have to use a [Docker](https://en.wikipedia.org/wiki/Docker_(software)) container
+And OpenRoad is not available for Ubuntu 24 so we have to use a [Docker](https://en.wikipedia.org/wiki/Docker_(software)) container:
 
-https://github.com/Precision-Innovations/OpenROAD/releases/download/2024-12-14/openroad_2.0-17598-ga008522d8_amd64-ubuntu-22.04.deb
- [Docker](https://en.wikipedia.org/wiki/Docker_(software)) run -it --rm ubuntu:22.04 /bin/bash
+```
+docker run -it --rm ubuntu:22.04 /bin/bash
+```
+
+Install the following **deb** [file](https://en.wikipedia.org/wiki/Computer_file): 
+```
+wget https://github.com/Precision-Innovations/OpenROAD/releases/download/2024-12-14/openroad_2.0-17598-ga008522d8_amd64-ubuntu-22.04.deb
+apt install ...deb
+openroad -V
+```
 
 ## Install Silicon compiler
+
+Create a [Python](https://www.python.org/) virtual environment, activate it, [install](https://en.wikipedia.org/wiki/Installation_(computer_programs)) [Open Source Silicon Compiler](https://docs.siliconcompiler.com/en/latest/index.html) and conform the installation .
 
 ```
 sudo apt update
 sudo apt install python3-dev python3-pip python3-venv
 python3 -m venv  ./sc
 source ./sc/bin/activate
-pip install --upgrade pip
-pip install --upgrade siliconcompiler
+pip install --upgrade pip siliconcompiler
 pip show siliconcompiler
 python3 -c "import siliconcompiler;print(siliconcompiler.__version__)"
 ```
 
-Use this command to start a [Silicon](https://en.wikipedia.org/wiki/Silicon) compiler [Python](https://www.python.org/) environment
-
-```
-source /root/sc/bin/activate"
-```
-
-
 ## Install Yosys
 
-download https://github.com/YosysHQ/oss-cad-suite-build/releases/download/2025-08-24/oss-cad-suite-linux-x64-20250824.tgz
+Download **yosys**:
 
+```
+wget https://github.com/YosysHQ/oss-cad-suite-build/releases/download/2025-08-24/oss-cad-suite-linux-x64-20250824.tgz
+tar -xvf
+export PATH="$PATH:/root/oss-cad-suite/bin/"
+yosys -V
+```
 
 ## Install Klayout
 
+Install **Klayout**
+
+```
 wget https://www.klayout.org/downloads/master/ubuntu22/klayout_master-1_amd64.deb
+klayout -v
+```
 
 # Upload to Github containers
 
+To save the configured container to [GitHub](https://github.com/philiprbrenan): 
 ## 1. Log in to GHCR
-echo <githubToken.xxx> | [Docker](https://en.wikipedia.org/wiki/Docker_(software)) [login](https://en.wikipedia.org/wiki/Login) ghcr.io -u philiprbrenan --password-stdin
 
-## 2. Tag your image [Docker](https://en.wikipedia.org/wiki/Docker_(software)) commit <container> btreeasm:v1
+```
+echo <.githubToken.xxx> | docker login ghcr.io -u philiprbrenan --password-stdin
+```
 
-## 3. Tag your image [Docker](https://en.wikipedia.org/wiki/Docker_(software)) tag btreeasm:v1 ghcr.io/philiprbrenan/btreeasm:v1
+## 2. Tag your image
 
-## 4. Push the image [Docker](https://en.wikipedia.org/wiki/Docker_(software)) push ghcr.io/philiprbrenan/btreeasm:v1
+Make an image from the [Docker](https://en.wikipedia.org/wiki/Docker_(software)) container:
+
+```
+docker commit <container> btreeasm:v1
+```
+
+## 3. Tag your image
+
+Give the [Docker](https://en.wikipedia.org/wiki/Docker_(software)) image a name that [GitHub](https://github.com/philiprbrenan) can recognize:
+
+```
+docker tag btreeasm:v1 ghcr.io/philiprbrenan/btreeasm:v1
+```
+
+## 4. Push the image
+
+Push the [Docker](https://en.wikipedia.org/wiki/Docker_(software)) image to [GitHub](https://github.com/philiprbrenan): 
+```
+docker push ghcr.io/philiprbrenan/btreeasm:v1
+```
 
 ## 5. (Optional) Make the package public
 
+Make the [Docker](https://en.wikipedia.org/wiki/Docker_(software)) image public:
+
+```
 https://github.com/users/philiprbrenan/packages/container/package/btreeAsm
+```
 
 Then: Package Settings â Change visibility â Public
 
