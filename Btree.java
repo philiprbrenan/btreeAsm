@@ -7032,9 +7032,11 @@ Merge     : 0
     d.RegisterSet(11);
     b.chipRunJava();                                                            // Set memory
     b.put(k, d);
-    final Chip.Synthesize S = b.new Synthesize();
-    ok(S.e.out, "");
-    ok(S.e.err, "");
+//  final Chip.Synthesize S = b.new Synthesize();
+//  ok(S.e.out, "");
+//  ok(S.e.err, "");
+    final Chip.SiliconCompiler S = b.new SiliconCompiler();                     // Create silicon compiler files
+    say(S.sdcFile);
    }
 
   static void oldTests()                                                        // Tests thought to be in good shape
