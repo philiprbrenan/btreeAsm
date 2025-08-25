@@ -7023,7 +7023,7 @@ Merge     : 0
 
   static void test_verilog_put()
    {sayCurrentTestName();
-    final Btree            b = new Btree(256, 4, 8, 8);
+    final Btree            b = new Btree(256, 16, 8, 8);
     final Process          P = b.new Process("verilogPut");
     final Process.Register k = P.register("k", b.bitsPerKey);   k.input();
     final Process.Register d = P.register("d", b.bitsPerData);  d.input();
