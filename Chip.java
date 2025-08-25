@@ -416,7 +416,8 @@ if __name__ == "__main__":
   chip = Chip('%s')                                                             # Create chip object.  The name is used to create the summary and mask image file
 # chip.set('option', 'loglevel', 'warning')                                     # Warnings and above
 # chip.set('option', 'loglevel', 'error')                                       # Warnings and above
-  chip.input('%s')                                                              # Source code
+  chip.set('option', 'builddir', '%s')                                          # Build folder
+  chip.input('%s/buildFolder')                                                  # Source code
 # chip.input('/home/azureuser/btreeBlock/verilog/$project/$instance/siliconCompiler/memory.v'   ) # Memory black box
   chip.input('%s')                                                              # Synopsys design constraints file
   chip.set('design', '%s')                                                      # Show the top most module
@@ -435,7 +436,7 @@ if __name__ == "__main__":
 #  chip.set('option', 'env', 'PDK_HOME', '/disk/mypdk')
 #  chip.set('option', 'idir', './mylib')
 #  chip.set('option', 'nodisplay', True)
-""", chipName, sourceFile, sdcFile, chipName));
+""", chipName, Verilog.folder, sourceFile, sdcFile, chipName));
      writeFile(pythonFile, python);
     }
   }
