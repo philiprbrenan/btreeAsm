@@ -11,7 +11,8 @@ class Verilog extends Test                                                      
   static final String ext     = "v";                                            // File extension recognized by Vivado
   static final String header  = "vh";                                           // Header file extension name recognized by Vivado
   static final String testExt = "tb";                                           // Extension for test bench
-  static final String constraintsExt = "xdc";                                   // Extension for constraints file
+  static final String pyExt   = "py";                                           // Python extension
+  static final String sdcExt  = "sdc";                                          // Extension for constraints file
   boolean parallel  = false;                                                    // Assign in parallel if true - inplied by synthesis being true
   boolean synthesis = false;                                                    // Assign in parallel if true and do the other things required for a successful synthesis
   int indent = 0;                                                               // Current indentation
@@ -248,7 +249,7 @@ class Verilog extends Test                                                      
     ok(Verilog.ext    .equals("v"));
     ok(Verilog.header .equals("vh"));
     ok(Verilog.testExt.equals("tb"));
-    ok(Verilog.constraintsExt.equals("xdc"));
+    ok(Verilog.sdcExt .equals("xdc"));
    }
 
   static void test_A()
