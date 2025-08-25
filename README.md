@@ -27,7 +27,7 @@ Each [process](https://en.wikipedia.org/wiki/Process_management_(computing)) is 
 - A [program](https://en.wikipedia.org/wiki/Computer_program), which in turn is comprised of [instructions](https://en.wikipedia.org/wiki/Instruction_set_architecture). 
 - An optional block of [memory](https://en.wikipedia.org/wiki/Computer_memory) 
 - Optional local [registers](https://en.wikipedia.org/wiki/Processor_register) 
-### Access Rules
+## Access Rules
 
 The [Verilog](https://en.wikipedia.org/wiki/Verilog) `always` blocks enforce access rule requirements for [processes](https://en.wikipedia.org/wiki/Process_management_(computing)): 
 - A [process](https://en.wikipedia.org/wiki/Process_management_(computing)) can **only write** to its own [memory](https://en.wikipedia.org/wiki/Computer_memory) and [registers](https://en.wikipedia.org/wiki/Processor_register). 
@@ -62,7 +62,7 @@ Processes are execute in a fixed, round-robin order set at design time,
 allowing the behavior of the [Verilog](https://en.wikipedia.org/wiki/Verilog) [code](https://en.wikipedia.org/wiki/Computer_program) to be validated by comparing the time
 evolution of memories and [registers](https://en.wikipedia.org/wiki/Processor_register) under [Verilog](https://en.wikipedia.org/wiki/Verilog) with the trace of the same
 under [Java](https://en.wikipedia.org/wiki/Java_(programming_language)). 
-### Transactions
+## Transactions
 
 A [transaction](https://en.wikipedia.org/wiki/Database_transaction) enables one [process](https://en.wikipedia.org/wiki/Process_management_(computing)) to request work from another [process](https://en.wikipedia.org/wiki/Process_management_(computing)) using a parameter [list](https://en.wikipedia.org/wiki/Linked_list) comprised of [registers](https://en.wikipedia.org/wiki/Processor_register). 
 Processes handle transactions in round-robin polling mode, fixed at design time. Each [process](https://en.wikipedia.org/wiki/Process_management_(computing)): 
@@ -77,7 +77,7 @@ Processes handle transactions in round-robin polling mode, fixed at design time.
 
 3. The requesting [process](https://en.wikipedia.org/wiki/Process_management_(computing)) waits for the completion of a [transaction](https://en.wikipedia.org/wiki/Database_transaction) by spinning on an [instruction](https://en.wikipedia.org/wiki/Instruction_set_architecture). 
 The output remains in the [transaction](https://en.wikipedia.org/wiki/Database_transaction) [registers](https://en.wikipedia.org/wiki/Processor_register) until they are overwritten by the next use of the same [transaction](https://en.wikipedia.org/wiki/Database_transaction). 
-### Deadlock Prevention
+## Deadlock Prevention
 
 To avoid deadlocks, [processes](https://en.wikipedia.org/wiki/Process_management_(computing)) may only request work from [processes](https://en.wikipedia.org/wiki/Process_management_(computing)) with lower [process](https://en.wikipedia.org/wiki/Process_management_(computing)) numbers.
 
@@ -182,7 +182,7 @@ A **Stuck** combines the **boundedness of a stack**, the **ordered nature of a s
 
 ---
 
-# Role in a B-tree
+## Role in a B-tree
 
 1. **Key Storage**
    - Each B-tree node maintains its set of keys inside a Stuck.
@@ -223,16 +223,16 @@ Run [Open Source Silicon Compiler](https://docs.siliconcompiler.com/en/latest/in
 
 ```
 git clone git@github.com:philiprbrenan/btreeAsm.git  # Download repo
-(cd btreeAsm; bash Btree.sh)                         # Run repo via a downloaded docker container
+(cd btreeAsm; bash Btree.sh)                         # Run repo in a docker container
 ```
 
 ## Create Silicon Compiler Docker Container
 
-The following notes show how to create the [Docker](https://en.wikipedia.org/wiki/Docker_(software)) container referenced above to run [Open Source Silicon Compiler](https://docs.siliconcompiler.com/en/latest/index.html) .
+The following notes explain how to create the [Docker](https://en.wikipedia.org/wiki/Docker_(software)) container referenced above to run [Open Source Silicon Compiler](https://docs.siliconcompiler.com/en/latest/index.html) .
 
 ### Install OpenROAD in a [Docker](https://en.wikipedia.org/wiki/Docker_(software)) container
 
-Prebuilt [Open Road](https://openroad-flow-scripts.readthedocs.io/en/latest/mainREADME.html) binaries are avilable for [Ubuntu](https://ubuntu.com/download/desktop) 22:
+Prebuilt [Open Road](https://openroad-flow-scripts.readthedocs.io/en/latest/mainREADME.html) binaries are available for [Ubuntu](https://ubuntu.com/download/desktop) 22:
 
 
 ```
@@ -248,7 +248,7 @@ openroad -V
 
 ### Install Silicon compiler
 
-Create a [Python](https://www.python.org/) virtual environment, activate it, [install](https://en.wikipedia.org/wiki/Installation_(computer_programs)) [Open Source Silicon Compiler](https://docs.siliconcompiler.com/en/latest/index.html) and confirm the installation .
+Create a [Python](https://www.python.org/) virtual environment, activate it, [install](https://en.wikipedia.org/wiki/Installation_(computer_programs)) [Open Source Silicon Compiler](https://docs.siliconcompiler.com/en/latest/index.html) and confirm the installation:
 
 ```
 sudo apt update
@@ -320,7 +320,7 @@ Make the [Docker](https://en.wikipedia.org/wiki/Docker_(software)) image public:
 https://github.com/users/philiprbrenan/packages/container/package/btreeAsm
 ```
 
-Then: Package Settings - Change visibility - Public
+Then: Package Settings -> Change visibility -> Public
 
 
 # Status
