@@ -230,7 +230,7 @@ git clone git@github.com:philiprbrenan/btreeAsm.git  # Download repo
 
 The following notes explain how to create the [Docker](https://en.wikipedia.org/wiki/Docker_(software)) container referenced above to run [Open Source Silicon Compiler](https://docs.siliconcompiler.com/en/latest/index.html) .
 
-### Install OpenROAD in a [Docker](https://en.wikipedia.org/wiki/Docker_(software)) container
+### OpenROAD
 
 Prebuilt [Open Road](https://openroad-flow-scripts.readthedocs.io/en/latest/mainREADME.html) binaries are available for [Ubuntu](https://ubuntu.com/download/desktop) 22:
 
@@ -246,7 +246,7 @@ apt install ...deb
 openroad -V
 ```
 
-### Install Silicon compiler
+### Silicon compiler
 
 Create a [Python](https://www.python.org/) virtual environment, activate it, [install](https://en.wikipedia.org/wiki/Installation_(computer_programs)) [Open Source Silicon Compiler](https://docs.siliconcompiler.com/en/latest/index.html) and confirm the installation:
 
@@ -260,7 +260,7 @@ pip show siliconcompiler
 python3 -c "import siliconcompiler;print(siliconcompiler.__version__)"
 ```
 
-### Install Yosys
+### Yosys
 
 Download **yosys** and confirm correct installation:
 
@@ -271,7 +271,7 @@ export PATH="$PATH:/root/oss-cad-suite/bin/"
 yosys -V
 ```
 
-### Install Klayout
+### Klayout
 
 Install **Klayout** and confirm correct installation:
 
