@@ -280,7 +280,7 @@ wget https://www.klayout.org/downloads/master/ubuntu22/klayout_master-1_amd64.de
 klayout -v
 ```
 
-### Upload to Github containers
+### Upload the container to Github containers
 
 To save the configured container to [GitHub](https://github.com/philiprbrenan): 
 #### 1. Log in to GHCR
