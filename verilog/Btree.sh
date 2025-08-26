@@ -1,4 +1,4 @@
-git pull
+git fetch origin && git reset --hard @{u}  # Fetch changes from remote ovewriting any local changes
 docker pull ghcr.io/philiprbrenan/btreeasm:latest
 docker run --rm -it -v ~/btreeAsm/:/root/btreeAsm -w /root/btreeAsm ghcr.io/philiprbrenan/btreeasm:latest bash -ic "source /root/sc/bin/activate; python3 /root/btreeAsm/verilog/Btree.py"
 mkdir -p results/Btree_8_4_8_64
