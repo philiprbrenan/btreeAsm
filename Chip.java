@@ -409,7 +409,7 @@ module %s(                                                                      
      {final String v = Verilog.folder;
       final String f = fn(resultsFolder, description());
       launch.append(String.format("""
-git pull
+git fetch origin && git reset --hard @{u}  # Fetch changes from remote ovewriting any local changes
 docker pull %s
 docker run --rm -it -v ~/btreeAsm/:/root/btreeAsm -w /root/btreeAsm %s bash -ic "source /root/sc/bin/activate; python3 /root/btreeAsm/verilog/Btree.py"
 mkdir -p %s
