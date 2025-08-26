@@ -410,13 +410,13 @@ module %s(                                                                      
       final String f = fn(resultsFolder, description());
       launch.append(String.format("""
 git fetch origin && git reset --hard @{u}  # Fetch changes from remote ovewriting any local changes
+mkdir -p %s
 docker pull %s
 docker run --rm -it -v ~/btreeAsm/:/root/btreeAsm -w /root/btreeAsm %s bash -ic "source /root/sc/bin/activate; python3 /root/btreeAsm/verilog/Btree.py"
-mkdir -p %s
 cp "%s/build/Btree/job0/Btree.pkg.json" "%s"
 cp "%s/build/Btree/job0/Btree.png"      "%s"
 cp "%s/build/Btree/job0/job.log"        "%s"
-""",   dockerImage, dockerImage, f,
+""",   f, dockerImage, dockerImage,
        v, fne(f, chipName, "json"),
        v, fne(f, chipName, "png"),
        v, fne(f, "job",    "log")));
@@ -1191,9 +1191,14 @@ if __name__ == "__main__":
   class Memory extends Process                                                  // A process whose main purpose is to maintain memory
    {final Map<String, Get> memoryGetFromProcess = new TreeMap<>();              // Locate a get transaction associated with this memory by name
     final Map<String, Set> memorySetIntoProcess = new TreeMap<>();              // Locate a set transaction associated with this memory by name
-    Memory(String ProcessName, int MemorySize, int MemoryWidth)                 // Create a memory process
+    final int blockSize;                                                        // Number of elements to read at a time
+    Memory(String ProcessName, int MemorySize, int MemoryWidth, int BlockSize)  // Create a memory process
      {super(ProcessName, MemorySize, MemoryWidth);
+      blockSize = BlockSize;
       memoryProcessGenerate();                                                  // Generate the code to execute this process
+     }
+    Memory(String ProcessName, int MemorySize, int MemoryWidth)                 // Create a memory process to read a single element at a time
+     {this(ProcessName, MemorySize, MemoryWidth, 1);
      }
     class Get extends Process.Transaction                                       // Get a value from the memory controlled by this process
      {final Process  process;                                                   // The calling process
