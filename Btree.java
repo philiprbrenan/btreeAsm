@@ -15,12 +15,12 @@ class Btree extends Chip                                                        
   final int bitsPerData;                                                        // The number of bits needed to define a data field
   final int btreeAddressSize;                                                   // The number of bits needed to address a field in memory holding btree
   final int stuckAddressSize;                                                   // The number of bits needed to address a field in a stuck
-  final Memory  stuckIsLeaf;                                                    // Whether the current stuck is acting as a leaf or a branch in the btree.
-  final Memory  stuckIsFree;                                                    // Whether the stuck is on the free chain
-  final Memory  freeNext;                                                       // Next stuck on the free chain. If this stuck is not on the free chain then this field is zero to show that this stuck in use. If the stuck is the root stuck which is never freed, then its next pointer points to the first free stuck on the free chain.
-  final Memory  stuckSize;                                                      // Current size of stuck up to the maximum size
-  final Memory[]stuckKeys;                                                      // Keys field
-  final Memory[]stuckData;                                                      // Data field
+  final Memory stuckIsLeaf;                                                     // Whether the current stuck is acting as a leaf or a branch in the btree.
+  final Memory stuckIsFree;                                                     // Whether the stuck is on the free chain
+  final Memory freeNext;                                                        // Next stuck on the free chain. If this stuck is not on the free chain then this field is zero to show that this stuck in use. If the stuck is the root stuck which is never freed, then its next pointer points to the first free stuck on the free chain.
+  final Memory stuckSize;                                                       // Current size of stuck up to the maximum size
+  final Memory stuckKeys;                                                       // Keys field
+  final Memory stuckData;                                                       // Data field
   boolean suppressMerge = false;                                                // Suppress merges during put to allow merge steps to be tested individually.  If this is on the trees built for testing are already merged so there is nothing to test.
   static boolean debug  = false;                                                // Debug if enabled
 
@@ -40,16 +40,8 @@ class Btree extends Chip                                                        
     stuckIsFree  = new Memory("stuckIsFree", Size, 1);                          // Whether the stuck is on the free chain
     freeNext     = new Memory("freeNext"   , Size, btreeAddressSize);           // Next element reference on free chain
     stuckSize    = new Memory("stuckSize"  , Size, stuckAddressSize);           // Current size of stuck up to the maximum size
-    stuckKeys    = new Memory[MaxStuckSize];                                    // Keys field
-    stuckData    = new Memory[MaxStuckSize];                                    // Data field
-
-    for (int i = 0; i < MaxStuckSize; i++)
-     {stuckKeys[i] = new Memory("stuckKeys_"+i, Size, bitsPerKey);              // Keys field
-     }
-
-    for (int i = 0; i < MaxStuckSize; i++)
-     {stuckData[i] = new Memory("stuckData_"+i, Size, bitsPerData);             // Data field
-     }
+    stuckKeys    = new Memory("stuckKeys"  , Size * MaxStuckSize, bitsPerKey);  // Keys field
+    stuckData    = new Memory("stuckData"  , Size * MaxStuckSize, bitsPerData); // Keys field
 
 chipStop = true;
     createFreeChain();                                                          // Create the free chain
@@ -174,13 +166,8 @@ chipStop = true;
     s.append(""+stuckIsFree.processSave());
     s.append(""+freeNext   .processSave());
     s.append(""+stuckSize  .processSave());
-    for (int i = 0; i < stuckKeys.length; i++)
-     {s.append(""+stuckKeys[i].processSave());
-     }
-
-    for (int i = 0; i < stuckData.length; i++)
-     {s.append(""+stuckData[i].processSave());
-     }
+    s.append(""+stuckKeys  .processSave());
+    s.append(""+stuckData  .processSave());
     return ""+s;
    }
 
@@ -199,13 +186,8 @@ chipStop = true;
     stuckIsFree.processLoad (l[j++]);
     freeNext   .processLoad (l[j++]);
     stuckSize  .processLoad (l[j++]);
-    for (int i = 0; i < stuckKeys.length; i++)
-     {stuckKeys[i].processLoad(l[j++]);
-     }
-
-    for (int i = 0; i < stuckData.length; i++)
-     {stuckData[i].processLoad(l[j++]);
-     }
+    stuckKeys  .processLoad (l[j++]);
+    stuckData  .processLoad (l[j++]);
    }
 
 //D2 Stuck                                                                      // Get and set stucks within btree
@@ -225,10 +207,10 @@ chipStop = true;
     final Memory.Set sSize;                                                     // Transaction to set the current size of the stuck
     final Memory.Get gLeaf;                                                     // Transaction to discover whether this stuck is acting as a leaf or a branch
     final Memory.Set sLeaf;                                                     // Transaction to set the stuck in memory to  a leaf or a branch
-    final Memory.Get[]gKeys = new Memory.Get[maxStuckSize];                     // Transactions to get each key in the stuck
-    final Memory.Set[]sKeys = new Memory.Set[maxStuckSize];                     // Transactions to set each key in the stuck
-    final Memory.Get[]gData = new Memory.Get[maxStuckSize];                     // Transactions to get each data element in the stuck
-    final Memory.Set[]sData = new Memory.Set[maxStuckSize];                     // Transactions to set each data element in the stuck
+    final Memory.Get gKeys;                                                     // Transactions to get each key in the stuck
+    final Memory.Set sKeys;                                                     // Transactions to set each key in the stuck
+    final Memory.Get gData;                                                     // Transactions to get each data element in the stuck
+    final Memory.Set sData;                                                     // Transactions to set each data element in the stuck
                                                                                 // Output registers so they must be owned by this process so that we can write into them
     final Process.Register Found;                                               // Whether the key was found
     final Process.Register Key;                                                 // Data associated with the key if found
@@ -256,11 +238,11 @@ chipStop = true;
         compares[i]= P.new Register("KeyCompares_"+i, 1);                       // The result of comparing the search key with each stuck key
         collapse[i]= P.new Register("KeyCollapse_"+i, stuckAddressSize);        // The result of collapsing the comparisons
         data[i]    = P.new Register("Data_"+i, bitsPerData);                    // Data in the stuck copied out of the memory of the btree into local registers
-        gKeys[i]   = stuckKeys[i].memoryGetFromProcess(P);                      // Transactions to get each key in the stuck. Reuseing the transaction reduces generated Verilog code size by 30% at the cost of requiring each stuck Get/Set from/into memory to finish before the next one can start.
-        sKeys[i]   = stuckKeys[i].memorySetIntoProcess(P);                      // Transactions to set each key in the stuck
-        gData[i]   = stuckData[i].memoryGetFromProcess(P);                      // Transactions to get each data element in the stuck
-        sData[i]   = stuckData[i].memorySetIntoProcess(P);                      // Transactions to set each data element in the stuck
        }
+      gKeys = stuckKeys.memoryGetFromProcess(P);                                // Transactions to get each key in the stuck. Reuseing the transaction reduces generated Verilog code size by 30% at the cost of requiring each stuck Get/Set from/into memory to finish before the next one can start.
+      sKeys = stuckKeys.memorySetIntoProcess(P);                                // Transactions to set each key in the stuck
+      gData = stuckData.memoryGetFromProcess(P);                                // Transactions to get each data element in the stuck
+      sData = stuckData.memorySetIntoProcess(P);                                // Transactions to set each data element in the stuck
 
       gSize = stuckSize  .memoryGetFromProcess(P);                              // Transaction to get the current size of the stuck
       sSize = stuckSize  .memorySetIntoProcess(P);                              // Transaction to set the current size of the stuck
@@ -292,44 +274,37 @@ chipStop = true;
        {void action()
          {gSize.executeTransaction(index);
           gLeaf.executeTransaction(index);
-          for (int i = 0; i < maxStuckSize; i++)
-           {gKeys[i].executeTransaction(index);
-            gData[i].executeTransaction(index);
-           }
+          gKeys.executeTransaction(index);
+          gData.executeTransaction(index);
          }
         void verilog(Verilog v)
          {gSize.executeTransaction(v, index);
           gLeaf.executeTransaction(v, index);
-          for (int i = 0; i < maxStuckSize; i++)
-           {gKeys[i].executeTransaction(v, index);
-            gData[i].executeTransaction(v, index);
-           }
+          gKeys.executeTransaction(v, index);
+          gData.executeTransaction(v, index);
          }
        };
       gSize.waitResultOfTransaction();                                          // Wait for size from memory
       gLeaf.waitResultOfTransaction();                                          // Wait for leaf status from memory
 
-      for (int i = 0; i < maxStuckSize; i++)                                    // Wait for transactions for keys and data from memory to complete
-       {final int I = i;
-        gKeys[i].waitResultOfTransaction();
-        gData[i].waitResultOfTransaction();
-       }
+      gKeys.waitResultOfTransaction();                                          // Load results from transactions into local registers
+      gData.waitResultOfTransaction();
 
-      P.new Instruction()                                                       // Load results from transactions into local registers
+      P.new Instruction()
        {void action()
          {size.copy(gSize.transactionOutputRegisters.firstElement());
           isLeaf.copy(gLeaf.transactionOutputRegisters.firstElement());
           for (int i = 0; i < maxStuckSize; i++)
-           {keys[i].copy(gKeys[i].transactionOutputRegisters.firstElement());
-            data[i].copy(gData[i].transactionOutputRegisters.firstElement());
+           {keys[i].copy(gKeys.transactionOutputRegisters.elementAt(i));
+            data[i].copy(gData.transactionOutputRegisters.elementAt(i));
            }
          }
         void verilog(Verilog v)
          {size.copy(v, gSize.transactionOutputRegisters.firstElement());
           isLeaf.copy(v, gLeaf.transactionOutputRegisters.firstElement());
           for (int i = 0; i < maxStuckSize; i++)
-           {keys[i].copy(v, gKeys[i].transactionOutputRegisters.firstElement());
-            data[i].copy(v, gData[i].transactionOutputRegisters.firstElement());
+           {keys[i].copy(v, gKeys.transactionOutputRegisters.elementAt(i));
+            data[i].copy(v, gData.transactionOutputRegisters.elementAt(i));
            }
          }
        };
@@ -340,10 +315,8 @@ chipStop = true;
        {void action()
          {sSize.executeTransaction(Index, size);
           if (SetLeaf) sLeaf.executeTransaction(Index, isLeaf);
-          for (int i = 0; i < maxStuckSize; i++)
-           {sKeys[i].executeTransaction(Index, keys[i]);
-            sData[i].executeTransaction(Index, data[i]);
-           }
+          sKeys[i].executeTransaction(Index, keys);
+          sData[i].executeTransaction(Index, data);
          }
         void verilog(Verilog v)
          {sSize.executeTransaction(v, Index, size);
