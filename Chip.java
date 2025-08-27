@@ -1021,17 +1021,37 @@ if __name__ == "__main__":
       Value.registerSet(V.length > 0 ? (int)b.toLongArray()[0] : 0);            // Take the first element if it exists relying on the fact that in the Java code we test with just sufficiently large numbers to test the verilog in priniple
      }
 
+    void memoryGet(Register Value, Register Index, int OffSet)                  // Get a memory element indexed by a register as an integer setting the memory cache register to the value of the element retrieved
+     {final BitSet b = (BitSet)memory[Index.registerGet()+OffSet].clone();      // Read memory as bit set
+      final long[]V = b.toLongArray();                                          // Convert bitset to long
+      Value.registerSet(V.length > 0 ? (int)b.toLongArray()[0] : 0);            // Take the first element if it exists relying on the fact that in the Java code we test with just sufficiently large numbers to test the verilog in priniple
+     }
+
     void memoryGet(Verilog v, Register Value, Register Index)                   // Get a memory element indexed by a register as an integer setting the memory cache register to the value of the element retrieved
      {v.assign(Value.registerName(),                                            // Read memory inrto register
                processMemoryName()+"["+Index.registerName()+"]");
+     }
+
+    void memoryGet(Verilog v, Register Value, Register Index, int OffSet)       // Get a memory element indexed by a register as an integer setting the memory cache register to the value of the element retrieved
+     {v.assign(Value.registerName(),                                            // Read memory inrto register
+               processMemoryName()+"["+Index.registerName()+"+"+OffSet+"]");
      }
 
     void memorySet(Register Value, Register Index)                              // Set a memory element indexed by a register from the associated cache memory register
      {memory[Index.registerGet()] = (BitSet)Value.value.clone();
      }
 
+    void memorySet(Register Value, Register Index, int OffSet)                  // Set a memory element indexed by a register from the associated cache memory register
+     {memory[Index.registerGet()+OffSet] = (BitSet)Value.value.clone();
+     }
+
     void memorySet(Verilog v, Register Value, Register Index)                   // Set a memory element indexed by a register from the associated cache memory register in Verilog
      {v.assign(processMemoryName()+"["+Index.registerName()+"]",
+       Value.registerName());
+     }
+
+    void memorySet(Verilog v, Register Value, Register Index, int OffSet)       // Set a memory element indexed by a register from the associated cache memory register in Verilog
+     {v.assign(processMemoryName()+"["+Index.registerName()+"+"+OffSet+"]",
        Value.registerName());
      }
 
@@ -1203,13 +1223,16 @@ if __name__ == "__main__":
     class Get extends Process.Transaction                                       // Get a value from the memory controlled by this process
      {final Process  process;                                                   // The calling process
       final Register index;                                                     // The index of the element whose value is required
-      final Register result;                                                    // The value of the memory at the specified index
-      Get(Process Process)                                                      // Get a value from memory at the indicated index for the calling process
+      final Register[]result;                                                   // The value of the memory from the specified index to the index plus the block size
+      Get(Process Process)                                                      // Get values from memory  from the specified index to the index plus the block size for the calling process
        {super(processName+"_"+(++memoryProcessTransactionNumber),
           Process, "get");
         process = Process;                                                      // The calling process requesting a value from the memory of this memory process
         index   = transactionCallingProcess.register(transactionName+"_index", logTwo(memorySize));  // A register that will index the memory managed by this process
-        result  = register(transactionName+"_result", memoryWidth);             // The register that will contain the result
+        result  = new Register[blockSize];                                      // The registers that will contain the result
+        for (int i = 0; i < blockSize; i++)
+         {result[i] = register(transactionName+"_result", memoryWidth);         // A register that will contain the result
+         }
         transactionInputRegisters(index);                                       // Make the index an input register
         transactionOutputRegisters(result);                                     // Make the result an output register
         memoryGetFromProcess.put(Process.processName, this);                    // Make it possible to reuse this transaction from the calling proccess rather than creating a new one each time
@@ -1255,32 +1278,40 @@ if __name__ == "__main__":
 
     class Set extends Process.Transaction                                       // Set an indexed memory element to a specified value
      {final Process  process;                                                   // The calling process
-      final Register index;                                                     // The index of the element whose value is required
-      final Register value;                                                     // The value to be written into memory
-      Set(Process Process)                                                      // Get the value from memory at the indicated index
+      final Register index;                                                     // The lements from index to index plus block size will be set
+      final Register[]value;                                                    // The values to be written into memory
+      Set(Process Process)                                                      // Set the values of elements in memory from he indicated index to the index plus block size
        {super(processName+"_"+(++memoryProcessTransactionNumber),
           Process, "set");
         process = Process;                                                      // The calling process requesting that a value be written into the memory of this process
         index   = transactionCallingProcess.register(transactionName+"_index", logTwo(memorySize)); // A register that will index the memory managed by this process
-        value   = transactionCallingProcess.register(transactionName+"_value", memoryWidth);        // The register that will contain the value to be written into memory
+        value   = new Register[blockSize];                                      // The registers that will contain the result
+        for (int i = 0; i < blockSize; i++)
+         {value[i] = transactionCallingProcess.register(transactionName+"_value", memoryWidth);  // The register that will contain the value to be written into memory
+         }
+
         transactionInputRegisters(index);                                       // Make the index an input register
         transactionInputRegisters(value);                                       // Make the value an input register
         memorySetIntoProcess.put(Process.processName, this);                    // Make it possible to reuse this transaction from the calling proccess rather than creating a new one each time
        }
 
-      void executeTransaction(Register Index, Register Value)                   // Execute the requested memory update request
+      void executeTransaction(Register Index, Register...Value)                 // Execute the requested memory update request
        {R(); index.copy(Index);
-        value.copy(Value);
+        for (int i = 0; i < blockSize; i++)
+         {value[i].copy(Value[i]);
+         }
         transactionSetExecutable();
        }
 
-      void executeTransaction(Verilog v, Register Index, Register Value)        // Execute the requested memory update in Verilog
+      void executeTransaction(Verilog v, Register Index, Register...Value)      // Execute the requested memory update in Verilog
        {index.copy(v, Index);
-        value.copy(v, Value);
+        for (int i = 0; i < blockSize; i++)
+         {value[i].copy(v, Value[i]);
+         }
         transactionSetExecutable(v);
        }
 
-      void ExecuteTransaction(Register Index, Register Value)                   // Execute the requested memory update instruction
+      void ExecuteTransaction(Register Index, Register...Value)                 // Execute the requested memory update instruction
        {process.new Instruction()
          {void action ()          {executeTransaction(   Index, Value);}
           void verilog(Verilog v) {executeTransaction(v, Index, Value);}
@@ -1315,15 +1346,19 @@ if __name__ == "__main__":
            {if (t.transactionExecutable())                                      // Executable transactions
              {if (t.transactionOpCode.equals("get"))                            // Memory get requests
                {final Register I = t.transactionInputRegisters.elementAt(0);    // Address index register
-                final Register O = t.transactionOutputRegisters.elementAt(0);   // Register to hold value of memory at index
-                memoryGet(O, I);                                                // Set output register with value of memory at index
+                for (int i = 0; i < blockSize; i++)
+                 {final Register O = t.transactionOutputRegisters.elementAt(i); // Register to hold value of memory at index
+                  memoryGet(O, I, i);                                              // Set output register with value of memory at index
+                 }
                 t.transactionSetFinished();                                     // Mark the transaction as complete
                 break;                                                          // Execute one memory request per clock
                }
               else if (t.transactionOpCode.equals("set"))                       // Set an indexed memory element to a specified value
                {final var I = t.transactionInputRegisters.elementAt(0);         // Address index register
-                final var V = t.transactionInputRegisters.elementAt(1);         // Address value register
-                memorySet(V, I);                                                // Set memory at indexed location
+                for (int i = 0; i < blockSize; i++)
+                 {final var V = t.transactionInputRegisters.elementAt(i+1);     // Address value register
+                  memorySet(V, I, i);                                           // Set memory at indexed location
+                 }
                 t.transactionSetFinished();                                     // Mark the update transaction as complete
                 break;                                                          // Execute one memory request per clock
                }
@@ -1341,14 +1376,18 @@ if __name__ == "__main__":
              {void Then()
                {if (t.transactionOpCode.equals("get"))                          // Memory get requests
                  {final Register I = t.transactionInputRegisters.elementAt(0);  // Address index register
-                  final Register O = t.transactionOutputRegisters.elementAt(0); // Register to hold value of memory at index
-                  memoryGet(v, O, I);                                           // Set output register with value of memory at index
+                  for (int i = 0; i < blockSize; i++)
+                   {final Register O = t.transactionOutputRegisters.elementAt(i); // Register to hold value of memory at index
+                    memoryGet(v, O, I, i);                                      // Set output register with value of memory at index
+                   }
                   t.transactionSetFinished(v);                                  // Mark the transaction as complete
                  }
                 else if (t.transactionOpCode.equals("set"))                     // Set an indexed memory element to a specified value
                  {final var I = t.transactionInputRegisters.elementAt(0);       // Address index register
-                  final var V = t.transactionInputRegisters.elementAt(1);       // Address value register
-                  memorySet(v, V, I);                                           // Update memory at indexed location
+                  for (int i = 0; i < blockSize; i++)
+                   {final var V = t.transactionInputRegisters.elementAt(i+1);   // Address value register
+                    memorySet(v, V, I, i);                                      // Update memory at indexed location
+                   }
                   t.transactionSetFinished(v);                                  // Mark the transaction as complete
                  }
                }
@@ -1371,9 +1410,9 @@ if __name__ == "__main__":
    }
 
   static void test_memoryProcessReuse()
-   {final int B = 8, N = 16;
+   {final int B = 8, N = 16, S = 2;
     var c  = chip("Test");
-    var m  = c.new Memory("Memory", N, B);
+    var m  = c.new Memory("Memory", N, B, S);
     var r  = c.process("Requests");
     r.processTrace = true;
     var ri = r.register("index",  B);
@@ -1410,12 +1449,14 @@ Chip: Test             step: 5, maxSteps: 10, running: 0
       Memory: 16 * 8 = 1,  2,  3,  4,  5,  6,  7,  8,  9, 10, 11, 12, 13, 14, 15, 16
       Registers :
         Register: Memory_Memory_1_result_0         = 2
+        Register: Memory_Memory_1_result_1         = 3
       Transactions:
         Transaction   : get      - Memory_1          requested at: 2, finished at: 3, returnCode: 0, executable: 0, finished: 1
           Inputs      :
             Requests_Memory_1_index_1              = 1
           Outputs     :
             Memory_Memory_1_result_0               = 2
+            Memory_Memory_1_result_1               = 3
     Process: 1 - Requests              instructions: 4, pc: 4, rc: 0
       Registers :
         Register: Requests_index_0                 = 1
@@ -1425,18 +1466,19 @@ Chip: Test             step: 5, maxSteps: 10, running: 0
    }
 
   static void test_memoryProcessParallel()
-   {final int B = 8, N = 16;
+   {final int B = 8, N = 16, S = 2;
     var c  = chip("Test");
-    var m  = c.new Memory("Memory", N, B);
+    var m  = c.new Memory("Memory", N, B, S);
     var r  = c.process("Requests");
         r.processTrace = true;
-    var ri = r.register("index1",  B);
+    var ri = r.register("index",  B);
     var rt = m.new Get(r);
 
-    var si = r.register("index2",  B);
+    var si = r.register("index",  B);
     var st = m.new Get(r);
 
-    var tv = r.register("value",   B);
+    var t1 = r.register("value",  B);
+    var t2 = r.register("value",  B);
     var tt = m.new Set(r);
 
     r.new Instruction()                                                         // Preload memory
@@ -1455,59 +1497,68 @@ Chip: Test             step: 5, maxSteps: 10, running: 0
 
     ri.RegisterSet(1);                                                          // Index of memory requested
 
-    rt.ExecuteTransaction(ri);                                              // Request value of memory at the index
+    rt.ExecuteTransaction(ri);                                                  // Request value of memory at the index
 
-    si.RegisterSet(2);                                                      // Index of memory requested
+    si.RegisterSet(2);                                                          // Index of memory requested
 
-    st.ExecuteTransaction(si);                                              // Request value of memory at the index
+    st.ExecuteTransaction(si);                                                  // Request value of memory at the index
     st.waitResultOfTransaction();                                               // Request value of memory at the index
     rt.waitResultOfTransaction();                                               // Request value of memory at the index
 
-    tv.RegisterSet(33);                                                     // Value to set into memory
+    t1.RegisterSet(11);                                                         // Value to set into memory
+    t2.RegisterSet(22);                                                         // Value to set into memory
 
-    tt.ExecuteTransaction(si, tv);                                          // Request value of memory at the index
+    tt.ExecuteTransaction(si, t1, t2);                                          // Request value of memory at the index
     tt.waitResultOfTransaction();                                               // Request value of memory at the index
 
-    r.ProcessStop(1);                                                          // Halt the run
+    r.ProcessStop(1);                                                           // Halt the run
 
     c.maxSteps = 100;
     c.chipRun();
 
-    ok(rt.transactionOutputRegisters.firstElement().registerGet(), 2);
+    ok(rt.transactionOutputRegisters.elementAt(0).registerGet(), 2);
+    ok(rt.transactionOutputRegisters.elementAt(1).registerGet(), 3);
     ok(st.transactionOutputRegisters.firstElement().registerGet(), 3);
     //stop(c);
     ok(""+c, """
-Chip: Test             step: 11, maxSteps: 100, running: 0
+Chip: Test             step: 12, maxSteps: 100, running: 0
   Processes:
     Process: 0 - Memory                instructions: 1, pc: 0, rc: 0
-      Memory: 16 * 8 = 1,  2, 33,  4,  5,  6,  7,  8,  9, 10, 11, 12, 13, 14, 15, 16
+      Memory: 16 * 8 = 1,  2, 11, 22,  5,  6,  7,  8,  9, 10, 11, 12, 13, 14, 15, 16
       Registers :
         Register: Memory_Memory_1_result_0         = 2
-        Register: Memory_Memory_2_result_1         = 3
+        Register: Memory_Memory_1_result_1         = 3
+        Register: Memory_Memory_2_result_2         = 3
+        Register: Memory_Memory_2_result_3         = 4
       Transactions:
         Transaction   : get      - Memory_1          requested at: 2, finished at: 3, returnCode: 0, executable: 0, finished: 1
           Inputs      :
             Requests_Memory_1_index_1              = 1
           Outputs     :
             Memory_Memory_1_result_0               = 2
+            Memory_Memory_1_result_1               = 3
         Transaction   : get      - Memory_2          requested at: 4, finished at: 5, returnCode: 0, executable: 0, finished: 1
           Inputs      :
             Requests_Memory_2_index_3              = 2
           Outputs     :
-            Memory_Memory_2_result_1               = 3
-        Transaction   : set      - Memory_3          requested at: 8, finished at: 9, returnCode: 0, executable: 0, finished: 1
+            Memory_Memory_2_result_2               = 3
+            Memory_Memory_2_result_3               = 4
+        Transaction   : set      - Memory_3          requested at: 9, finished at: 10, returnCode: 0, executable: 0, finished: 1
           Inputs      :
-            Requests_Memory_3_index_5              = 2
-            Requests_Memory_3_value_6              = 33
-    Process: 1 - Requests              instructions: 11, pc: 11, rc: 1
+            Requests_Memory_3_index_6              = 2
+            Requests_Memory_3_value_7              = 11
+            Requests_Memory_3_value_8              = 22
+    Process: 1 - Requests              instructions: 12, pc: 12, rc: 1
       Registers :
-        Register: Requests_index1_0                = 1
+        Register: Requests_index_0                 = 1
         Register: Requests_Memory_1_index_1        = 1
-        Register: Requests_index2_2                = 2
+        Register: Requests_index_2                 = 2
         Register: Requests_Memory_2_index_3        = 2
-        Register: Requests_value_4                 = 33
-        Register: Requests_Memory_3_index_5        = 2
-        Register: Requests_Memory_3_value_6        = 33
+        Register: Requests_value_4                 = 11
+        Register: Requests_value_5                 = 22
+        Register: Requests_Memory_3_index_6        = 2
+        Register: Requests_Memory_3_value_7        = 11
+        Register: Requests_Memory_3_value_8        = 22
 """);
    }
 
