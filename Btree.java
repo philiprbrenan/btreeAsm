@@ -315,26 +315,22 @@ chipStop = true;
        {void action()
          {sSize.executeTransaction(Index, size);
           if (SetLeaf) sLeaf.executeTransaction(Index, isLeaf);
-          sKeys[i].executeTransaction(Index, keys);
-          sData[i].executeTransaction(Index, data);
+          sKeys.executeTransaction(Index, keys);
+          sData.executeTransaction(Index, data);
          }
         void verilog(Verilog v)
          {sSize.executeTransaction(v, Index, size);
           if (SetLeaf) sLeaf.executeTransaction(v, Index, isLeaf);
-          for (int i = 0; i < maxStuckSize; i++)
-           {sKeys[i].executeTransaction(v, Index, keys[i]);
-            sData[i].executeTransaction(v, Index, data[i]);
-           }
+          sKeys.executeTransaction(v, Index, keys);
+          sData.executeTransaction(v, Index, data);
          }
        };
 
       sSize.waitResultOfTransaction();                                          // Wait for size to complete
       if (SetLeaf) sLeaf.waitResultOfTransaction();                             // Wait for leaf status to complete
 
-      for (int i = 0; i < maxStuckSize; i++)                                    // Wait for transactions for keys and data from memory to complete
-       {sKeys[i].waitResultOfTransaction();
-        sData[i].waitResultOfTransaction();
-       }
+      sKeys.waitResultOfTransaction();                                          // Wait for transactions for keys and data from memory to complete
+      sData.waitResultOfTransaction();
      }
 
     void stuckPut()                       {stuckPut(index, false);}             // Update a stuck in memory from the registers describing his stuck
