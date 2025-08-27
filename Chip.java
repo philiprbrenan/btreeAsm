@@ -479,6 +479,7 @@ if __name__ == "__main__":
     final Children<Register> registers       = new Children<>();                // Registers used in this process
     final Stack<Instruction> code            = new Stack<>();                   // A fixed set of instructions for this process
     final Stack<Label>       labels          = new Stack<>();                   // Labels for instructions in this process
+    final int                blockSize;                                         // Number of elements to read at a time
     int                      processPc       = 0;                               // The index of the next instruction to be executed
     int                      processRC       = 0;                               // The return code for this process
     boolean                  processStop     = false;                           // Stop this process - if any process gets stopped the whole chip is brought to a stop on the basis that it needs all of its processes to function
@@ -834,13 +835,15 @@ if __name__ == "__main__":
 
 //D2 Process                                                                    // Start, step and stop a process while modifying its memory
 
-    Process(String ProcessName) {this(ProcessName, 0, 0);}                      // Create a process without any memory attached to it
+    Process(String ProcessName) {this(ProcessName, 0, 0, 1);}                   // Create a process without any memory attached to it
 
-    Process(String ProcessName, int MemorySize, int MemoryWidth)                // Create a process with the specified memory attached to it
+    Process(String ProcessName, int MemorySize, int MemoryWidth, int BlockSize) // Create a process with the specified memory attached to it
      {N();
       processName   = ProcessName;
       processNumber = processes.size();
       processes.put(processName, this);
+
+      blockSize     = BlockSize;                                                // Block size of memory
 
       memorySize    = MemorySize;                                               // Create memory
       memoryWidth   = MemoryWidth;
@@ -1022,7 +1025,7 @@ if __name__ == "__main__":
      }
 
     void memoryGet(Register Value, Register Index, int OffSet)                  // Get a memory element indexed by a register as an integer setting the memory cache register to the value of the element retrieved
-     {final BitSet b = (BitSet)memory[Index.registerGet()+OffSet].clone();      // Read memory as bit set
+     {final BitSet b = (BitSet)memory[Index.registerGet()*blockSize+OffSet].clone(); // Read memory as bit set
       final long[]V = b.toLongArray();                                          // Convert bitset to long
       Value.registerSet(V.length > 0 ? (int)b.toLongArray()[0] : 0);            // Take the first element if it exists relying on the fact that in the Java code we test with just sufficiently large numbers to test the verilog in priniple
      }
@@ -1034,7 +1037,7 @@ if __name__ == "__main__":
 
     void memoryGet(Verilog v, Register Value, Register Index, int OffSet)       // Get a memory element indexed by a register as an integer setting the memory cache register to the value of the element retrieved
      {v.assign(Value.registerName(),                                            // Read memory inrto register
-               processMemoryName()+"["+Index.registerName()+"+"+OffSet+"]");
+               processMemoryName()+"["+Index.registerName()+"*"+blockSize+"+"+OffSet+"]");
      }
 
     void memorySet(Register Value, Register Index)                              // Set a memory element indexed by a register from the associated cache memory register
@@ -1042,7 +1045,7 @@ if __name__ == "__main__":
      }
 
     void memorySet(Register Value, Register Index, int OffSet)                  // Set a memory element indexed by a register from the associated cache memory register
-     {memory[Index.registerGet()+OffSet] = (BitSet)Value.value.clone();
+     {memory[Index.registerGet()*blockSize+OffSet] = (BitSet)Value.value.clone();
      }
 
     void memorySet(Verilog v, Register Value, Register Index)                   // Set a memory element indexed by a register from the associated cache memory register in Verilog
@@ -1051,7 +1054,7 @@ if __name__ == "__main__":
      }
 
     void memorySet(Verilog v, Register Value, Register Index, int OffSet)       // Set a memory element indexed by a register from the associated cache memory register in Verilog
-     {v.assign(processMemoryName()+"["+Index.registerName()+"+"+OffSet+"]",
+     {v.assign(processMemoryName()+"["+Index.registerName()+"*"+blockSize+"+"+OffSet+"]",
        Value.registerName());
      }
 
@@ -1198,12 +1201,12 @@ if __name__ == "__main__":
      }
    } // Process
 
-  Process process(String ProcessName, int MemorySize, int MemoryWidth)          // Create a process with attached memory
-   {return new Process(ProcessName, MemorySize, MemoryWidth);
+  Process process(String ProcessName, int MemorySize, int MemoryWidth, int BlockSize) // Create a process with attached memory
+   {return new Process(ProcessName, MemorySize, MemoryWidth, BlockSize);
    }
 
   Process process(String ProcessName)                                           // Create a process without attached memory
-   {return new Process(ProcessName, 0, 0);
+   {return new Process(ProcessName, 0, 0, 1);
    }
 
 //D2 Memory Process                                                             // Processes that manage memory used by other processes
@@ -1211,10 +1214,8 @@ if __name__ == "__main__":
   class Memory extends Process                                                  // A process whose main purpose is to maintain memory
    {final Map<String, Get> memoryGetFromProcess = new TreeMap<>();              // Locate a get transaction associated with this memory by name
     final Map<String, Set> memorySetIntoProcess = new TreeMap<>();              // Locate a set transaction associated with this memory by name
-    final int blockSize;                                                        // Number of elements to read at a time
     Memory(String ProcessName, int MemorySize, int MemoryWidth, int BlockSize)  // Create a memory process
-     {super(ProcessName, MemorySize, MemoryWidth);
-      blockSize = BlockSize;
+     {super(ProcessName, MemorySize, MemoryWidth, BlockSize);
       memoryProcessGenerate();                                                  // Generate the code to execute this process
      }
     Memory(String ProcessName, int MemorySize, int MemoryWidth)                 // Create a memory process to read a single element at a time
@@ -1440,7 +1441,7 @@ if __name__ == "__main__":
 
     c.chipRunJava();
 
-    ok(rt.transactionOutputRegisters.firstElement().registerGet(), 2);
+    ok(rt.transactionOutputRegisters.firstElement().registerGet(), 3);
     //stop(c);
     ok(""+c, """
 Chip: Test             step: 5, maxSteps: 10, running: 0
@@ -1448,15 +1449,15 @@ Chip: Test             step: 5, maxSteps: 10, running: 0
     Process: 0 - Memory                instructions: 1, pc: 0, rc: 0
       Memory: 16 * 8 = 1,  2,  3,  4,  5,  6,  7,  8,  9, 10, 11, 12, 13, 14, 15, 16
       Registers :
-        Register: Memory_Memory_1_result_0         = 2
-        Register: Memory_Memory_1_result_1         = 3
+        Register: Memory_Memory_1_result_0         = 3
+        Register: Memory_Memory_1_result_1         = 4
       Transactions:
         Transaction   : get      - Memory_1          requested at: 2, finished at: 3, returnCode: 0, executable: 0, finished: 1
           Inputs      :
             Requests_Memory_1_index_1              = 1
           Outputs     :
-            Memory_Memory_1_result_0               = 2
-            Memory_Memory_1_result_1               = 3
+            Memory_Memory_1_result_0               = 3
+            Memory_Memory_1_result_1               = 4
     Process: 1 - Requests              instructions: 4, pc: 4, rc: 0
       Registers :
         Register: Requests_index_0                 = 1
@@ -1516,33 +1517,33 @@ Chip: Test             step: 5, maxSteps: 10, running: 0
     c.maxSteps = 100;
     c.chipRun();
 
-    ok(rt.transactionOutputRegisters.elementAt(0).registerGet(), 2);
-    ok(rt.transactionOutputRegisters.elementAt(1).registerGet(), 3);
-    ok(st.transactionOutputRegisters.firstElement().registerGet(), 3);
+    ok(rt.transactionOutputRegisters.elementAt(0).registerGet(), 3);
+    ok(rt.transactionOutputRegisters.elementAt(1).registerGet(), 4);
+    ok(st.transactionOutputRegisters.firstElement().registerGet(), 5);
     //stop(c);
     ok(""+c, """
 Chip: Test             step: 12, maxSteps: 100, running: 0
   Processes:
     Process: 0 - Memory                instructions: 1, pc: 0, rc: 0
-      Memory: 16 * 8 = 1,  2, 11, 22,  5,  6,  7,  8,  9, 10, 11, 12, 13, 14, 15, 16
+      Memory: 16 * 8 = 1,  2,  3,  4, 11, 22,  7,  8,  9, 10, 11, 12, 13, 14, 15, 16
       Registers :
-        Register: Memory_Memory_1_result_0         = 2
-        Register: Memory_Memory_1_result_1         = 3
-        Register: Memory_Memory_2_result_2         = 3
-        Register: Memory_Memory_2_result_3         = 4
+        Register: Memory_Memory_1_result_0         = 3
+        Register: Memory_Memory_1_result_1         = 4
+        Register: Memory_Memory_2_result_2         = 5
+        Register: Memory_Memory_2_result_3         = 6
       Transactions:
         Transaction   : get      - Memory_1          requested at: 2, finished at: 3, returnCode: 0, executable: 0, finished: 1
           Inputs      :
             Requests_Memory_1_index_1              = 1
           Outputs     :
-            Memory_Memory_1_result_0               = 2
-            Memory_Memory_1_result_1               = 3
+            Memory_Memory_1_result_0               = 3
+            Memory_Memory_1_result_1               = 4
         Transaction   : get      - Memory_2          requested at: 4, finished at: 5, returnCode: 0, executable: 0, finished: 1
           Inputs      :
             Requests_Memory_2_index_3              = 2
           Outputs     :
-            Memory_Memory_2_result_2               = 3
-            Memory_Memory_2_result_3               = 4
+            Memory_Memory_2_result_2               = 5
+            Memory_Memory_2_result_3               = 6
         Transaction   : set      - Memory_3          requested at: 9, finished at: 10, returnCode: 0, executable: 0, finished: 1
           Inputs      :
             Requests_Memory_3_index_6              = 2
