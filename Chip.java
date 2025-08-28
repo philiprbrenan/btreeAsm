@@ -63,20 +63,24 @@ class Chip extends Test                                                         
          "Chip: %-16s step: %1d, maxSteps: %1d, running: %1d\n",
           chipName, step, maxSteps, chipStop ? 0 : 1));
 
-        s.append("  Processes:"+(" ".repeat(50)));
-    for (int i = 0; i < 25; i++)
-     {s.append(String.format(" %2d", i));
-     }
-    s.append("\n");
+        s.append("  Processes:\n");
 
     for (Process p: processes)                                                  // Each process
      {if (p.hasMemory())                                                        // Print memory if this process has memory attached to it
-       {s.append(String.format("    %-21s ", p.processName));
+       {s.append(String.format("    %s\n", p.processName));
         s.append(String.format(
-         "memory: %21d * %2d = %2d",
-          p.memorySize, p.memoryWidth, p.memoryGet(0)));
+         "      Memory: size: %2d, width: %2d, block: %2d\n",
+          p.memorySize, p.memoryWidth, p.memoryBlockSize));
 
-        for (int i = 1; i < p.memorySize; i++)
+        s.append("      ");
+        for (int i = 0; i < 25; i++)
+         {s.append(String.format(" %2d", i));
+         }
+        s.append("\n");
+
+        s.append(String.format("       %2d", p.memoryGet(0)));
+
+        for (int i = 1; i < p.memory.length; i++)
          {s.append(String.format(" %2d", p.memoryGet(i)));
          }
         s.append("\n");
@@ -1677,8 +1681,11 @@ Chip: Test             step: 82, maxSteps: 100, running: 0
 
     ok(C.chipPrintMemory(), """
 Chip: Test             step: 82, maxSteps: 100, running: 0
-  Processes:                                                    0  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24
-    Memory                memory:                    16 * 16 =  1  2  3  5  8 13 21 34 55 89 144 233 377 610 987 1597
+  Processes:
+    Memory
+      Memory: size: 16, width: 16, block:  1
+        0  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24
+        1  2  3  5  8 13 21 34 55 89 144 233 377 610 987 1597
 """);
 
     ok(a.registerGet(), 987);
