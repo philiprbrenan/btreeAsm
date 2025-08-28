@@ -1,264 +1,512 @@
 //-----------------------------------------------------------------------------
-// Database on a chip test bench
+// Database on a chip synthesis
 // Philip R Brenan at appaapps dot com, Appa Apps Ltd Inc., 2025
 //------------------------------------------------------------------------------
 `timescale 10ps/1ps
-module Test;                                                                      // Test bench for database on a chip
-  reg                    stop;                                                  // Program has stopped when this goes high
-  reg                   clock;                                                  // Clock
-  integer                step;                                                  // Step of the simulation
-  integer            maxSteps;                                                  // Maximum number of steps to execute
-  integer          returnCode;                                                  // Return code
-  integer      processCurrent;                                                  // To ensure we get the same results in Java and Verilog we have to run the processes single threaded in a constant order
+module Test(                                                                      // Test bench for database on a chip
+  input                 clock,                                                  // Clock
+  input                 reset,                                                  // Reset chip
 
-  assign stop = process_stop;                                                             // Or of process stop fields
-
-  initial begin
-    returnCode = 0;
-    maxSteps = 100;
-    for(step = -1; step < 0 || step < maxSteps && !stop; step = step + 1) begin // Steps below zero are run unconditionally to initialize each process so that Java and Verilog start in sync at step zero
-
-      processCurrent = 0; clock = 0; #1; clock = 1; #1; // process_process_0000
-      if (step >= 0) chipPrint();                                            // Steps prior to zero are for initialization to make Java and Verilog match
+  output wire            stop                                            // Program has stopped when this goes high
+  );
+  integer step;
+  integer returnCode;
+  assign stop = Main_stop||Memory_stop;
+  always @ (posedge clock) begin
+    if (reset) begin
+      step <= -2;
     end
-    if (!stop) $finish(1); else $finish(0);                                // Set return code depending on whether the simulation halted
+    else begin
+      step <= step + 1;
+    end
   end
-  // Process: process  process_process_0000
-  reg [8-1:0] process_a_0;
-  reg [8-1:0] process_b_1;
-  reg [8-1:0] process_c_2;
-  reg [8-1:0] process_d_3;
-  reg [1-1:0] process_ge0_4;
-  reg [1-1:0] process_gt0_5;
-  reg [1-1:0] process_le0_6;
-  reg [1-1:0] process_lt0_7;
-  reg [1-1:0] process_ne0_8;
-  reg [1-1:0] process_eq0_9;
-  reg [1-1:0] process_ge1_10;
-  reg [1-1:0] process_gt1_11;
-  reg [1-1:0] process_le1_12;
-  reg [1-1:0] process_lt1_13;
-  reg [1-1:0] process_ne1_14;
-  reg [1-1:0] process_eq1_15;
-  integer process_pc;
-  integer process_stop;
-  integer process_returnCode;
+  // process_Main_0000
+  // process_Memory_0001
+  // Process: Main  process_Main_0000
+  reg [16-1:0] Main_a_0;
+  reg [16-1:0] Main_b_1;
+  reg [16-1:0] Main_c_2;
+  reg [16-1:0] Main_i_3;
+  reg [4-1:0] Main_Memory_1_index_4;
+  reg [16-1:0] Main_Memory_1_value_5;
+  integer Main_pc;
+  integer Main_stop;
+  integer Main_returnCode;
   always @ (posedge clock) begin
     if (step < 0) begin
-      process_pc <= 0;
-      process_stop <= 0;
-      process_returnCode <= 0;
-      process_a_0 <= 0;
-      process_b_1 <= 0;
-      process_c_2 <= 0;
-      process_d_3 <= 0;
-      process_ge0_4 <= 0;
-      process_gt0_5 <= 0;
-      process_le0_6 <= 0;
-      process_lt0_7 <= 0;
-      process_ne0_8 <= 0;
-      process_eq0_9 <= 0;
-      process_ge1_10 <= 0;
-      process_gt1_11 <= 0;
-      process_le1_12 <= 0;
-      process_lt1_13 <= 0;
-      process_ne1_14 <= 0;
-      process_eq1_15 <= 0;
+      Main_pc <= 0;
+      Main_stop <= 0;
+      Main_returnCode <= 0;
+      Main_a_0 <= 0;
+      Main_b_1 <= 0;
+      Main_c_2 <= 0;
+      Main_i_3 <= 0;
+      Main_Memory_1_index_4 <= 0;
+      Main_Memory_1_value_5 <= 0;
+      Memory_1_requestedAt <= -1;
     end
-    else if (processCurrent == 0) begin
-      case(process_pc)
+    else begin                                   // Run the process in full parallel
+      case(Main_pc)
         0: begin
-          process_a_0 <= 0;
-          process_pc <= process_pc + 1;
-          begin
-            integer f;
-            f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:0505:<init>|  Chip.java:0785:<init>|  Chip.java:0784:Zero|  Chip.java:1883:test_comparisons|  Chip.java:1931:oldTests|  Chip.java:1935:newTests|  Chip.java:1940:main|");
-            $fclose(f);
-          end
+          Main_a_0 <= 0;
+          Main_b_1 <= 1;
+          Main_i_3 <= 0;
+          Main_pc <= Main_pc + 1;
         end
         1: begin
-          process_b_1 <= 1;
-          process_pc <= process_pc + 1;
-          begin
-            integer f;
-            f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:0505:<init>|  Chip.java:0792:<init>|  Chip.java:0791:One|  Chip.java:1884:test_comparisons|  Chip.java:1931:oldTests|  Chip.java:1935:newTests|  Chip.java:1940:main|");
-            $fclose(f);
-          end
+          Main_c_2 <= Main_a_0;
+          Main_pc <= Main_pc + 1;
         end
         2: begin
-          process_c_2 <= 2;
-          process_pc <= process_pc + 1;
-          begin
-            integer f;
-            f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:0505:<init>|  Chip.java:0669:<init>|  Chip.java:0668:RegisterSet|  Chip.java:1885:test_comparisons|  Chip.java:1931:oldTests|  Chip.java:1935:newTests|  Chip.java:1940:main|");
-            $fclose(f);
-          end
+          Main_c_2 <= Main_c_2 + Main_b_1;
+          Main_a_0 <= Main_b_1;
+          Main_pc <= Main_pc + 1;
         end
         3: begin
-          process_d_3 <= 3;
-          process_pc <= process_pc + 1;
-          begin
-            integer f;
-            f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:0505:<init>|  Chip.java:0669:<init>|  Chip.java:0668:RegisterSet|  Chip.java:1886:test_comparisons|  Chip.java:1931:oldTests|  Chip.java:1935:newTests|  Chip.java:1940:main|");
-            $fclose(f);
-          end
+          Main_b_1 <= Main_c_2;
+          Main_Memory_1_index_4 <= Main_i_3;
+          Main_Memory_1_value_5 <= Main_c_2;
+          Memory_1_requestedAt <= step;
+          Main_pc <= Main_pc + 1;
         end
         4: begin
-          process_ge0_4 <= process_a_0>=process_b_1 ? 1 : 0;
-          process_pc <= process_pc + 1;
-          begin
-            integer f;
-            f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:0505:<init>|  Chip.java:0770:<init>|  Chip.java:0770:Ge|  Chip.java:1888:test_comparisons|  Chip.java:1931:oldTests|  Chip.java:1935:newTests|  Chip.java:1940:main|");
-            $fclose(f);
-          end
+          Main_i_3 <= Main_i_3+1;
+          Main_pc <= Main_pc + 1;
         end
         5: begin
-          process_gt0_5 <= process_a_0> process_b_1 ? 1 : 0;
-          process_pc <= process_pc + 1;
-          begin
-            integer f;
-            f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:0505:<init>|  Chip.java:0769:<init>|  Chip.java:0769:Gt|  Chip.java:1889:test_comparisons|  Chip.java:1931:oldTests|  Chip.java:1935:newTests|  Chip.java:1940:main|");
-            $fclose(f);
+          if ((Memory_1_requestedAt < Memory_1_finishedAt)) begin
+            Main_pc <= Main_pc + 1;
           end
         end
         6: begin
-          process_le0_6 <= process_b_1<=process_a_0 ? 1 : 0;
-          process_pc <= process_pc + 1;
-          begin
-            integer f;
-            f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:0505:<init>|  Chip.java:0773:<init>|  Chip.java:0773:Le|  Chip.java:1890:test_comparisons|  Chip.java:1931:oldTests|  Chip.java:1935:newTests|  Chip.java:1940:main|");
-            $fclose(f);
-          end
+          Main_c_2 <= Main_a_0;
+          Main_pc <= Main_pc + 1;
         end
         7: begin
-          process_lt0_7 <= process_b_1< process_a_0 ? 1 : 0;
-          process_pc <= process_pc + 1;
-          begin
-            integer f;
-            f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:0505:<init>|  Chip.java:0774:<init>|  Chip.java:0774:Lt|  Chip.java:1891:test_comparisons|  Chip.java:1931:oldTests|  Chip.java:1935:newTests|  Chip.java:1940:main|");
-            $fclose(f);
-          end
+          Main_c_2 <= Main_c_2 + Main_b_1;
+          Main_a_0 <= Main_b_1;
+          Main_pc <= Main_pc + 1;
         end
         8: begin
-          process_ne0_8 <= process_a_0!=process_a_0 ? 1 : 0;
-          process_pc <= process_pc + 1;
-          begin
-            integer f;
-            f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:0505:<init>|  Chip.java:0772:<init>|  Chip.java:0772:Ne|  Chip.java:1892:test_comparisons|  Chip.java:1931:oldTests|  Chip.java:1935:newTests|  Chip.java:1940:main|");
-            $fclose(f);
-          end
+          Main_b_1 <= Main_c_2;
+          Main_Memory_1_index_4 <= Main_i_3;
+          Main_Memory_1_value_5 <= Main_c_2;
+          Memory_1_requestedAt <= step;
+          Main_pc <= Main_pc + 1;
         end
         9: begin
-          process_eq0_9 <= process_a_0==process_b_1 ? 1 : 0;
-          process_pc <= process_pc + 1;
-          begin
-            integer f;
-            f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:0505:<init>|  Chip.java:0771:<init>|  Chip.java:0771:Eq|  Chip.java:1893:test_comparisons|  Chip.java:1931:oldTests|  Chip.java:1935:newTests|  Chip.java:1940:main|");
-            $fclose(f);
-          end
+          Main_i_3 <= Main_i_3+1;
+          Main_pc <= Main_pc + 1;
         end
         10: begin
-          process_ge1_10 <= process_b_1>=process_a_0 ? 1 : 0;
-          process_pc <= process_pc + 1;
-          begin
-            integer f;
-            f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:0505:<init>|  Chip.java:0770:<init>|  Chip.java:0770:Ge|  Chip.java:1895:test_comparisons|  Chip.java:1931:oldTests|  Chip.java:1935:newTests|  Chip.java:1940:main|");
-            $fclose(f);
+          if ((Memory_1_requestedAt < Memory_1_finishedAt)) begin
+            Main_pc <= Main_pc + 1;
           end
         end
         11: begin
-          process_gt1_11 <= process_b_1> process_a_0 ? 1 : 0;
-          process_pc <= process_pc + 1;
-          begin
-            integer f;
-            f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:0505:<init>|  Chip.java:0769:<init>|  Chip.java:0769:Gt|  Chip.java:1896:test_comparisons|  Chip.java:1931:oldTests|  Chip.java:1935:newTests|  Chip.java:1940:main|");
-            $fclose(f);
-          end
+          Main_c_2 <= Main_a_0;
+          Main_pc <= Main_pc + 1;
         end
         12: begin
-          process_le1_12 <= process_a_0<=process_b_1 ? 1 : 0;
-          process_pc <= process_pc + 1;
-          begin
-            integer f;
-            f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:0505:<init>|  Chip.java:0773:<init>|  Chip.java:0773:Le|  Chip.java:1897:test_comparisons|  Chip.java:1931:oldTests|  Chip.java:1935:newTests|  Chip.java:1940:main|");
-            $fclose(f);
-          end
+          Main_c_2 <= Main_c_2 + Main_b_1;
+          Main_a_0 <= Main_b_1;
+          Main_pc <= Main_pc + 1;
         end
         13: begin
-          process_lt1_13 <= process_a_0< process_b_1 ? 1 : 0;
-          process_pc <= process_pc + 1;
-          begin
-            integer f;
-            f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:0505:<init>|  Chip.java:0774:<init>|  Chip.java:0774:Lt|  Chip.java:1898:test_comparisons|  Chip.java:1931:oldTests|  Chip.java:1935:newTests|  Chip.java:1940:main|");
-            $fclose(f);
-          end
+          Main_b_1 <= Main_c_2;
+          Main_Memory_1_index_4 <= Main_i_3;
+          Main_Memory_1_value_5 <= Main_c_2;
+          Memory_1_requestedAt <= step;
+          Main_pc <= Main_pc + 1;
         end
         14: begin
-          process_ne1_14 <= process_a_0!=process_b_1 ? 1 : 0;
-          process_pc <= process_pc + 1;
-          begin
-            integer f;
-            f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:0505:<init>|  Chip.java:0772:<init>|  Chip.java:0772:Ne|  Chip.java:1899:test_comparisons|  Chip.java:1931:oldTests|  Chip.java:1935:newTests|  Chip.java:1940:main|");
-            $fclose(f);
-          end
+          Main_i_3 <= Main_i_3+1;
+          Main_pc <= Main_pc + 1;
         end
         15: begin
-          process_eq1_15 <= process_b_1==process_b_1 ? 1 : 0;
-          process_pc <= process_pc + 1;
-          begin
-            integer f;
-            f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:0505:<init>|  Chip.java:0771:<init>|  Chip.java:0771:Eq|  Chip.java:1900:test_comparisons|  Chip.java:1931:oldTests|  Chip.java:1935:newTests|  Chip.java:1940:main|");
-            $fclose(f);
+          if ((Memory_1_requestedAt < Memory_1_finishedAt)) begin
+            Main_pc <= Main_pc + 1;
           end
         end
-        default: process_stop <= 1;
+        16: begin
+          Main_c_2 <= Main_a_0;
+          Main_pc <= Main_pc + 1;
+        end
+        17: begin
+          Main_c_2 <= Main_c_2 + Main_b_1;
+          Main_a_0 <= Main_b_1;
+          Main_pc <= Main_pc + 1;
+        end
+        18: begin
+          Main_b_1 <= Main_c_2;
+          Main_Memory_1_index_4 <= Main_i_3;
+          Main_Memory_1_value_5 <= Main_c_2;
+          Memory_1_requestedAt <= step;
+          Main_pc <= Main_pc + 1;
+        end
+        19: begin
+          Main_i_3 <= Main_i_3+1;
+          Main_pc <= Main_pc + 1;
+        end
+        20: begin
+          if ((Memory_1_requestedAt < Memory_1_finishedAt)) begin
+            Main_pc <= Main_pc + 1;
+          end
+        end
+        21: begin
+          Main_c_2 <= Main_a_0;
+          Main_pc <= Main_pc + 1;
+        end
+        22: begin
+          Main_c_2 <= Main_c_2 + Main_b_1;
+          Main_a_0 <= Main_b_1;
+          Main_pc <= Main_pc + 1;
+        end
+        23: begin
+          Main_b_1 <= Main_c_2;
+          Main_Memory_1_index_4 <= Main_i_3;
+          Main_Memory_1_value_5 <= Main_c_2;
+          Memory_1_requestedAt <= step;
+          Main_pc <= Main_pc + 1;
+        end
+        24: begin
+          Main_i_3 <= Main_i_3+1;
+          Main_pc <= Main_pc + 1;
+        end
+        25: begin
+          if ((Memory_1_requestedAt < Memory_1_finishedAt)) begin
+            Main_pc <= Main_pc + 1;
+          end
+        end
+        26: begin
+          Main_c_2 <= Main_a_0;
+          Main_pc <= Main_pc + 1;
+        end
+        27: begin
+          Main_c_2 <= Main_c_2 + Main_b_1;
+          Main_a_0 <= Main_b_1;
+          Main_pc <= Main_pc + 1;
+        end
+        28: begin
+          Main_b_1 <= Main_c_2;
+          Main_Memory_1_index_4 <= Main_i_3;
+          Main_Memory_1_value_5 <= Main_c_2;
+          Memory_1_requestedAt <= step;
+          Main_pc <= Main_pc + 1;
+        end
+        29: begin
+          Main_i_3 <= Main_i_3+1;
+          Main_pc <= Main_pc + 1;
+        end
+        30: begin
+          if ((Memory_1_requestedAt < Memory_1_finishedAt)) begin
+            Main_pc <= Main_pc + 1;
+          end
+        end
+        31: begin
+          Main_c_2 <= Main_a_0;
+          Main_pc <= Main_pc + 1;
+        end
+        32: begin
+          Main_c_2 <= Main_c_2 + Main_b_1;
+          Main_a_0 <= Main_b_1;
+          Main_pc <= Main_pc + 1;
+        end
+        33: begin
+          Main_b_1 <= Main_c_2;
+          Main_Memory_1_index_4 <= Main_i_3;
+          Main_Memory_1_value_5 <= Main_c_2;
+          Memory_1_requestedAt <= step;
+          Main_pc <= Main_pc + 1;
+        end
+        34: begin
+          Main_i_3 <= Main_i_3+1;
+          Main_pc <= Main_pc + 1;
+        end
+        35: begin
+          if ((Memory_1_requestedAt < Memory_1_finishedAt)) begin
+            Main_pc <= Main_pc + 1;
+          end
+        end
+        36: begin
+          Main_c_2 <= Main_a_0;
+          Main_pc <= Main_pc + 1;
+        end
+        37: begin
+          Main_c_2 <= Main_c_2 + Main_b_1;
+          Main_a_0 <= Main_b_1;
+          Main_pc <= Main_pc + 1;
+        end
+        38: begin
+          Main_b_1 <= Main_c_2;
+          Main_Memory_1_index_4 <= Main_i_3;
+          Main_Memory_1_value_5 <= Main_c_2;
+          Memory_1_requestedAt <= step;
+          Main_pc <= Main_pc + 1;
+        end
+        39: begin
+          Main_i_3 <= Main_i_3+1;
+          Main_pc <= Main_pc + 1;
+        end
+        40: begin
+          if ((Memory_1_requestedAt < Memory_1_finishedAt)) begin
+            Main_pc <= Main_pc + 1;
+          end
+        end
+        41: begin
+          Main_c_2 <= Main_a_0;
+          Main_pc <= Main_pc + 1;
+        end
+        42: begin
+          Main_c_2 <= Main_c_2 + Main_b_1;
+          Main_a_0 <= Main_b_1;
+          Main_pc <= Main_pc + 1;
+        end
+        43: begin
+          Main_b_1 <= Main_c_2;
+          Main_Memory_1_index_4 <= Main_i_3;
+          Main_Memory_1_value_5 <= Main_c_2;
+          Memory_1_requestedAt <= step;
+          Main_pc <= Main_pc + 1;
+        end
+        44: begin
+          Main_i_3 <= Main_i_3+1;
+          Main_pc <= Main_pc + 1;
+        end
+        45: begin
+          if ((Memory_1_requestedAt < Memory_1_finishedAt)) begin
+            Main_pc <= Main_pc + 1;
+          end
+        end
+        46: begin
+          Main_c_2 <= Main_a_0;
+          Main_pc <= Main_pc + 1;
+        end
+        47: begin
+          Main_c_2 <= Main_c_2 + Main_b_1;
+          Main_a_0 <= Main_b_1;
+          Main_pc <= Main_pc + 1;
+        end
+        48: begin
+          Main_b_1 <= Main_c_2;
+          Main_Memory_1_index_4 <= Main_i_3;
+          Main_Memory_1_value_5 <= Main_c_2;
+          Memory_1_requestedAt <= step;
+          Main_pc <= Main_pc + 1;
+        end
+        49: begin
+          Main_i_3 <= Main_i_3+1;
+          Main_pc <= Main_pc + 1;
+        end
+        50: begin
+          if ((Memory_1_requestedAt < Memory_1_finishedAt)) begin
+            Main_pc <= Main_pc + 1;
+          end
+        end
+        51: begin
+          Main_c_2 <= Main_a_0;
+          Main_pc <= Main_pc + 1;
+        end
+        52: begin
+          Main_c_2 <= Main_c_2 + Main_b_1;
+          Main_a_0 <= Main_b_1;
+          Main_pc <= Main_pc + 1;
+        end
+        53: begin
+          Main_b_1 <= Main_c_2;
+          Main_Memory_1_index_4 <= Main_i_3;
+          Main_Memory_1_value_5 <= Main_c_2;
+          Memory_1_requestedAt <= step;
+          Main_pc <= Main_pc + 1;
+        end
+        54: begin
+          Main_i_3 <= Main_i_3+1;
+          Main_pc <= Main_pc + 1;
+        end
+        55: begin
+          if ((Memory_1_requestedAt < Memory_1_finishedAt)) begin
+            Main_pc <= Main_pc + 1;
+          end
+        end
+        56: begin
+          Main_c_2 <= Main_a_0;
+          Main_pc <= Main_pc + 1;
+        end
+        57: begin
+          Main_c_2 <= Main_c_2 + Main_b_1;
+          Main_a_0 <= Main_b_1;
+          Main_pc <= Main_pc + 1;
+        end
+        58: begin
+          Main_b_1 <= Main_c_2;
+          Main_Memory_1_index_4 <= Main_i_3;
+          Main_Memory_1_value_5 <= Main_c_2;
+          Memory_1_requestedAt <= step;
+          Main_pc <= Main_pc + 1;
+        end
+        59: begin
+          Main_i_3 <= Main_i_3+1;
+          Main_pc <= Main_pc + 1;
+        end
+        60: begin
+          if ((Memory_1_requestedAt < Memory_1_finishedAt)) begin
+            Main_pc <= Main_pc + 1;
+          end
+        end
+        61: begin
+          Main_c_2 <= Main_a_0;
+          Main_pc <= Main_pc + 1;
+        end
+        62: begin
+          Main_c_2 <= Main_c_2 + Main_b_1;
+          Main_a_0 <= Main_b_1;
+          Main_pc <= Main_pc + 1;
+        end
+        63: begin
+          Main_b_1 <= Main_c_2;
+          Main_Memory_1_index_4 <= Main_i_3;
+          Main_Memory_1_value_5 <= Main_c_2;
+          Memory_1_requestedAt <= step;
+          Main_pc <= Main_pc + 1;
+        end
+        64: begin
+          Main_i_3 <= Main_i_3+1;
+          Main_pc <= Main_pc + 1;
+        end
+        65: begin
+          if ((Memory_1_requestedAt < Memory_1_finishedAt)) begin
+            Main_pc <= Main_pc + 1;
+          end
+        end
+        66: begin
+          Main_c_2 <= Main_a_0;
+          Main_pc <= Main_pc + 1;
+        end
+        67: begin
+          Main_c_2 <= Main_c_2 + Main_b_1;
+          Main_a_0 <= Main_b_1;
+          Main_pc <= Main_pc + 1;
+        end
+        68: begin
+          Main_b_1 <= Main_c_2;
+          Main_Memory_1_index_4 <= Main_i_3;
+          Main_Memory_1_value_5 <= Main_c_2;
+          Memory_1_requestedAt <= step;
+          Main_pc <= Main_pc + 1;
+        end
+        69: begin
+          Main_i_3 <= Main_i_3+1;
+          Main_pc <= Main_pc + 1;
+        end
+        70: begin
+          if ((Memory_1_requestedAt < Memory_1_finishedAt)) begin
+            Main_pc <= Main_pc + 1;
+          end
+        end
+        71: begin
+          Main_c_2 <= Main_a_0;
+          Main_pc <= Main_pc + 1;
+        end
+        72: begin
+          Main_c_2 <= Main_c_2 + Main_b_1;
+          Main_a_0 <= Main_b_1;
+          Main_pc <= Main_pc + 1;
+        end
+        73: begin
+          Main_b_1 <= Main_c_2;
+          Main_Memory_1_index_4 <= Main_i_3;
+          Main_Memory_1_value_5 <= Main_c_2;
+          Memory_1_requestedAt <= step;
+          Main_pc <= Main_pc + 1;
+        end
+        74: begin
+          Main_i_3 <= Main_i_3+1;
+          Main_pc <= Main_pc + 1;
+        end
+        75: begin
+          if ((Memory_1_requestedAt < Memory_1_finishedAt)) begin
+            Main_pc <= Main_pc + 1;
+          end
+        end
+        76: begin
+          Main_c_2 <= Main_a_0;
+          Main_pc <= Main_pc + 1;
+        end
+        77: begin
+          Main_c_2 <= Main_c_2 + Main_b_1;
+          Main_a_0 <= Main_b_1;
+          Main_pc <= Main_pc + 1;
+        end
+        78: begin
+          Main_b_1 <= Main_c_2;
+          Main_Memory_1_index_4 <= Main_i_3;
+          Main_Memory_1_value_5 <= Main_c_2;
+          Memory_1_requestedAt <= step;
+          Main_pc <= Main_pc + 1;
+        end
+        79: begin
+          Main_i_3 <= Main_i_3+1;
+          Main_pc <= Main_pc + 1;
+        end
+        80: begin
+          if ((Memory_1_requestedAt < Memory_1_finishedAt)) begin
+            Main_pc <= Main_pc + 1;
+          end
+        end
+        81: begin
+          Main_returnCode <= 1;
+          Main_stop <= 1;
+          Main_pc <= Main_pc + 1;
+        end
+        default: Main_stop <= 1;
       endcase
     end
   end
-  task chipPrint;
-    begin
-      integer o;
-      o = $fopen("verilog/trace_verilog.txt", "a");
-      if (!o) o = $fopen("../verilog/trace_verilog.txt", "a");
-      if (!o) $display("Cannot create trace folder: verilog/trace_verilog.txt");
-      $fwrite(o, "Chip: %-16s step: %1d, maxSteps: %1d, running: %1d\n", "Test", step, maxSteps, !stop);
-      $fwrite(o, "  Processes:\n");
-
-      $fwrite(o, "    Process: %1d - %-21s instructions: %1d, pc: %1d, rc: %1d\n", 0, "process", 16, process_pc, process_returnCode);
-      $fwrite(o, "      Registers :\n");
-      $fwrite(o, "        Register: %-32s = %1d\n",  "process_a_0", process_a_0);
-      $fwrite(o, "        Register: %-32s = %1d\n",  "process_b_1", process_b_1);
-      $fwrite(o, "        Register: %-32s = %1d\n",  "process_c_2", process_c_2);
-      $fwrite(o, "        Register: %-32s = %1d\n",  "process_d_3", process_d_3);
-      $fwrite(o, "        Register: %-32s = %1d\n",  "process_ge0_4", process_ge0_4);
-      $fwrite(o, "        Register: %-32s = %1d\n",  "process_gt0_5", process_gt0_5);
-      $fwrite(o, "        Register: %-32s = %1d\n",  "process_le0_6", process_le0_6);
-      $fwrite(o, "        Register: %-32s = %1d\n",  "process_lt0_7", process_lt0_7);
-      $fwrite(o, "        Register: %-32s = %1d\n",  "process_ne0_8", process_ne0_8);
-      $fwrite(o, "        Register: %-32s = %1d\n",  "process_eq0_9", process_eq0_9);
-      $fwrite(o, "        Register: %-32s = %1d\n",  "process_ge1_10", process_ge1_10);
-      $fwrite(o, "        Register: %-32s = %1d\n",  "process_gt1_11", process_gt1_11);
-      $fwrite(o, "        Register: %-32s = %1d\n",  "process_le1_12", process_le1_12);
-      $fwrite(o, "        Register: %-32s = %1d\n",  "process_lt1_13", process_lt1_13);
-      $fwrite(o, "        Register: %-32s = %1d\n",  "process_ne1_14", process_ne1_14);
-      $fwrite(o, "        Register: %-32s = %1d\n",  "process_eq1_15", process_eq1_15);
-      $fclose(o);
+  // Process: Memory  process_Memory_0001
+  (* ram_style = "block" *)
+  reg [16-1:0] Memory_memory[16*1];
+  integer Memory_1_requestedAt;
+  integer Memory_1_finishedAt;
+  integer Memory_Memory_1_returnCode;
+  integer Memory_pc;
+  integer Memory_stop;
+  integer Memory_returnCode;
+  always @ (posedge clock) begin
+    if (step < 0) begin
+      Memory_pc <= 0;
+      Memory_stop <= 0;
+      Memory_returnCode <= 0;
+      Memory_1_finishedAt <= -1;
+      Memory_Memory_1_returnCode <= 0;
+      Memory_memory[0] <= 0;
+      Memory_memory[1] <= 0;
+      Memory_memory[2] <= 0;
+      Memory_memory[3] <= 0;
+      Memory_memory[4] <= 0;
+      Memory_memory[5] <= 0;
+      Memory_memory[6] <= 0;
+      Memory_memory[7] <= 0;
+      Memory_memory[8] <= 0;
+      Memory_memory[9] <= 0;
+      Memory_memory[10] <= 0;
+      Memory_memory[11] <= 0;
+      Memory_memory[12] <= 0;
+      Memory_memory[13] <= 0;
+      Memory_memory[14] <= 0;
+      Memory_memory[15] <= 0;
     end
-  endtask
+    else begin                                   // Run the process in full parallel
+      case(Memory_pc)
+        0: begin
+          if ((Memory_1_requestedAt > Memory_1_finishedAt && Memory_1_requestedAt != step)) begin
+            Memory_memory[Main_Memory_1_index_4*1+0] <= Main_Memory_1_value_5;
+            Memory_1_finishedAt <= step;
+          end
+          else begin
+          end
+        end
+        default: Memory_stop <= 1;
+      endcase
+    end
+  end
 endmodule
