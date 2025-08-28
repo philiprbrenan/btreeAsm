@@ -1210,6 +1210,7 @@ if __name__ == "__main__":
      {final StringBuilder s = new StringBuilder();
       s.append(" "+memoryWidth);
       s.append(" "+memorySize);
+      s.append(" "+memoryBlockSize);
       for (int i = 0; i < memorySize; i++)
        {s.append(" "+memoryGet(i));
        }
@@ -1221,10 +1222,11 @@ if __name__ == "__main__":
       final int   []n = new int[w.length];
       for (int i = 0; i < w.length; i++) n[i] = Integer.parseInt(w[i]);
 
-      if (memoryWidth != n[0]) stop("Wrong width:", memoryWidth, n[0]);
-      if (memorySize  != n[1]) stop("Wrong size",   memorySize,  n[1]);
+      if (memoryWidth     != n[0]) stop("Wrong width:",     memoryWidth,      n[0]);
+      if (memorySize      != n[1]) stop("Wrong size",       memorySize,       n[1]);
+      if (memoryBlockSize != n[2]) stop("Wrong block size", memoryBlockSize,  n[2]);
       for (int i = 0; i < memorySize; i++)
-       {memorySet(n[i+2], i);
+       {memorySet(n[i+3], i);
        }
      }
    } // Process
@@ -1816,8 +1818,11 @@ Chip: Test             step: 82, maxSteps: 100, running: 0
     //stop(c.chipPrintMemory());
     ok(c.chipPrintMemory(), """
 Chip: Test             step: 0, maxSteps: 10, running: 0
-  Processes:                                                    0  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24
-    Memory                memory:                    16 *  8 =  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16
+  Processes:
+    Memory
+      Memory: size: 16, width:  8, block:  1
+        0  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24
+        1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16
 """);
    }
 
@@ -1974,8 +1979,7 @@ Chip: Test             step: 0, maxSteps: 10, running: 0
    }
 
   static void newTests()                                                        // Tests being worked on
-   {//oldTests();
-    test_arithmeticFibonacci();
+   {oldTests();
    }
 
   public static void main(String[] args)                                        // Test if called as a program
