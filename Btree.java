@@ -4,8 +4,7 @@
 //------------------------------------------------------------------------------
 package com.AppaApps.Silicon;                                                   // Btree in a block on the surface of a silicon chip.
 // Squeeze out all redundant variables and check all code paths are being tested
-// Remove Instructions from split and merge stuck operations
-// make .zero(), .one() instructions as in Zero(), One()
+// Improve chipPrintMemory to make the output more compact and readable
 import java.util.*;
 
 class Btree extends Chip                                                        // Manipulate a btree in a block of memory
@@ -2567,40 +2566,64 @@ Stuck: Stuck size: 2, leaf: 1, root
 
     //stop(b.chipPrintMemory());
     ok(b.chipPrintMemory(), """
-Chip: Btree            step: 14, maxSteps: 200, running: 0
-  Processes:                                                    0  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24
-    stuckIsLeaf           memory:                     1 *  1 =  1
-    stuckIsFree           memory:                     1 *  1 =  0
-    freeNext              memory:                     1 *  1 =  0
-    stuckSize             memory:                     1 *  3 =  2
-    stuckKeys_0           memory:                     1 *  8 =  2
-    stuckKeys_1           memory:                     1 *  8 =  4
-    stuckKeys_2           memory:                     1 *  8 =  0
-    stuckKeys_3           memory:                     1 *  8 =  0
-    stuckData_0           memory:                     1 *  8 =  3
-    stuckData_1           memory:                     1 *  8 =  5
-    stuckData_2           memory:                     1 *  8 =  0
-    stuckData_3           memory:                     1 *  8 =  0
+Chip: Btree            step: 8, maxSteps: 200, running: 0
+  Processes:
+    stuckIsLeaf
+      Memory: size:  1, width:  1, block:  1
+        0  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24
+        1
+    stuckIsFree
+      Memory: size:  1, width:  1, block:  1
+        0  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24
+        0
+    freeNext
+      Memory: size:  1, width:  1, block:  1
+        0  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24
+        0
+    stuckSize
+      Memory: size:  1, width:  3, block:  1
+        0  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24
+        2
+    stuckKeys
+      Memory: size:  1, width:  8, block:  4
+        0  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24
+        2  4  0  0
+    stuckData
+      Memory: size:  1, width:  8, block:  4
+        0  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24
+        3  5  0  0
 """);
 
     b.chipRunJava();
 
     //stop(b.chipPrintMemory());
     ok(b.chipPrintMemory(), """
-Chip: Btree            step: 26, maxSteps: 200, running: 0
-  Processes:                                                    0  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24
-    stuckIsLeaf           memory:                     1 *  1 =  0
-    stuckIsFree           memory:                     1 *  1 =  0
-    freeNext              memory:                     1 *  1 =  0
-    stuckSize             memory:                     1 *  3 =  1
-    stuckKeys_0           memory:                     1 *  8 =  3
-    stuckKeys_1           memory:                     1 *  8 =  4
-    stuckKeys_2           memory:                     1 *  8 =  0
-    stuckKeys_3           memory:                     1 *  8 =  0
-    stuckData_0           memory:                     1 *  8 =  4
-    stuckData_1           memory:                     1 *  8 =  5
-    stuckData_2           memory:                     1 *  8 =  0
-    stuckData_3           memory:                     1 *  8 =  0
+Chip: Btree            step: 14, maxSteps: 200, running: 0
+  Processes:
+    stuckIsLeaf
+      Memory: size:  1, width:  1, block:  1
+        0  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24
+        0
+    stuckIsFree
+      Memory: size:  1, width:  1, block:  1
+        0  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24
+        0
+    freeNext
+      Memory: size:  1, width:  1, block:  1
+        0  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24
+        0
+    stuckSize
+      Memory: size:  1, width:  3, block:  1
+        0  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24
+        1
+    stuckKeys
+      Memory: size:  1, width:  8, block:  4
+        0  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24
+        3  4  0  0
+    stuckData
+      Memory: size:  1, width:  8, block:  4
+        0  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24
+        4  5  0  0
 """);
    }
 
@@ -2610,19 +2633,31 @@ Chip: Btree            step: 26, maxSteps: 200, running: 0
     //stop(b.chipPrintMemory());
     ok(b.chipPrintMemory(), """
 Chip: Btree            step: 0, maxSteps: 10, running: 0
-  Processes:                                                    0  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24
-    stuckIsLeaf           memory:                     2 *  1 =  1  0
-    stuckIsFree           memory:                     2 *  1 =  0  1
-    freeNext              memory:                     2 *  2 =  1  0
-    stuckSize             memory:                     2 *  3 =  0  0
-    stuckKeys_0           memory:                     2 *  8 =  0  0
-    stuckKeys_1           memory:                     2 *  8 =  0  0
-    stuckKeys_2           memory:                     2 *  8 =  0  0
-    stuckKeys_3           memory:                     2 *  8 =  0  0
-    stuckData_0           memory:                     2 *  8 =  0  0
-    stuckData_1           memory:                     2 *  8 =  0  0
-    stuckData_2           memory:                     2 *  8 =  0  0
-    stuckData_3           memory:                     2 *  8 =  0  0
+  Processes:
+    stuckIsLeaf
+      Memory: size:  2, width:  1, block:  1
+        0  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24
+        1  0
+    stuckIsFree
+      Memory: size:  2, width:  1, block:  1
+        0  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24
+        0  1
+    freeNext
+      Memory: size:  2, width:  2, block:  1
+        0  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24
+        1  0
+    stuckSize
+      Memory: size:  2, width:  3, block:  1
+        0  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24
+        0  0
+    stuckKeys
+      Memory: size:  2, width:  8, block:  4
+        0  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24
+        0  0  0  0  0  0  0  0
+    stuckData
+      Memory: size:  2, width:  8, block:  4
+        0  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24
+        0  0  0  0  0  0  0  0
 """);
     return b;
    }
@@ -4050,24 +4085,36 @@ Merge     : 1
     //stop(b.chipPrintMemory());
     ok(""+b.chipPrintMemory(), """
 Chip: Btree            step: 0, maxSteps: 10, running: 0
-  Processes:                                                    0  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24
-    stuckIsLeaf           memory:                     4 *  1 =  1  0  0  0
-    stuckIsFree           memory:                     4 *  1 =  0  1  1  1
-    freeNext              memory:                     4 *  3 =  1  2  3  0
-    stuckSize             memory:                     4 *  3 =  0  0  0  0
-    stuckKeys_0           memory:                     4 *  8 =  0  0  0  0
-    stuckKeys_1           memory:                     4 *  8 =  0  0  0  0
-    stuckKeys_2           memory:                     4 *  8 =  0  0  0  0
-    stuckKeys_3           memory:                     4 *  8 =  0  0  0  0
-    stuckData_0           memory:                     4 *  8 =  0  0  0  0
-    stuckData_1           memory:                     4 *  8 =  0  0  0  0
-    stuckData_2           memory:                     4 *  8 =  0  0  0  0
-    stuckData_3           memory:                     4 *  8 =  0  0  0  0
+  Processes:
+    stuckIsLeaf
+      Memory: size:  4, width:  1, block:  1
+        0  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24
+        1  0  0  0
+    stuckIsFree
+      Memory: size:  4, width:  1, block:  1
+        0  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24
+        0  1  1  1
+    freeNext
+      Memory: size:  4, width:  3, block:  1
+        0  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24
+        1  2  3  0
+    stuckSize
+      Memory: size:  4, width:  3, block:  1
+        0  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24
+        0  0  0  0
+    stuckKeys
+      Memory: size:  4, width:  8, block:  4
+        0  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24
+        0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0
+    stuckData
+      Memory: size:  4, width:  8, block:  4
+        0  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24
+        0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0
 """);
     p.processClear();
     b.allocate(i, true);
     b.allocate(j, false);
-    //stop(b.chipPrintMemory());
+    stop(b.chipPrintMemory());
     if (false) p.new Instruction()
      {void action()
        {ok(b.chipPrintMemory(), """
@@ -7061,8 +7108,8 @@ Merge     : 0
    }
 
   static void newTests()                                                        // Tests being worked on
-   {oldTests();
-    //test_verilog_put();
+   {//oldTests();
+    test_allocate();
    }
 
   public static void main(String[] args)                                        // Test if called as a program
