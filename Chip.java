@@ -1211,7 +1211,7 @@ if __name__ == "__main__":
       s.append(" "+memoryWidth);
       s.append(" "+memorySize);
       s.append(" "+memoryBlockSize);
-      for (int i = 0; i < memorySize; i++)
+      for (int i = 0; i < memory.length; i++)
        {s.append(" "+memoryGet(i));
        }
       return (""+s).trim()+"\n";
@@ -1225,7 +1225,7 @@ if __name__ == "__main__":
       if (memoryWidth     != n[0]) stop("Wrong width:",     memoryWidth,      n[0]);
       if (memorySize      != n[1]) stop("Wrong size",       memorySize,       n[1]);
       if (memoryBlockSize != n[2]) stop("Wrong block size", memoryBlockSize,  n[2]);
-      for (int i = 0; i < memorySize; i++)
+      for (int i = 0; i < memory.length; i++)
        {memorySet(n[i+3], i);
        }
      }
