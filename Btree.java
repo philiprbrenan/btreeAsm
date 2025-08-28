@@ -40,8 +40,8 @@ class Btree extends Chip                                                        
     stuckIsFree  = new Memory("stuckIsFree", Size, 1);                          // Whether the stuck is on the free chain
     freeNext     = new Memory("freeNext"   , Size, btreeAddressSize);           // Next element reference on free chain
     stuckSize    = new Memory("stuckSize"  , Size, stuckAddressSize);           // Current size of stuck up to the maximum size
-    stuckKeys    = new Memory("stuckKeys"  , Size * MaxStuckSize, bitsPerKey);  // Keys field
-    stuckData    = new Memory("stuckData"  , Size * MaxStuckSize, bitsPerData); // Keys field
+    stuckKeys    = new Memory("stuckKeys"  , Size, bitsPerKey , MaxStuckSize);  // Keys fields
+    stuckData    = new Memory("stuckData"  , Size, bitsPerData, MaxStuckSize);  // Data fields
 
 chipStop = true;
     createFreeChain();                                                          // Create the free chain
@@ -1431,7 +1431,7 @@ chipStop = true;
 
       final StringBuilder s = new StringBuilder();                              // String builder
       for  (int i = 0; i < stuckSize.memoryGet(BtreeIndex); i++)
-       {s.append(""+stuckKeys[i].memoryGet(BtreeIndex)+",");
+       {s.append(""+stuckKeys.memoryGet(BtreeIndex, i)+",");
        }
       if (s.length() > 0) s.setLength(s.length()-1);                            // Remove trailing comma if present
       s.append("="+BtreeIndex+" ");
@@ -1447,8 +1447,8 @@ chipStop = true;
 
       if (K > 0)                                                                // Branch has key, next pairs
        {for  (int i = 0; i < K; i++)
-         {final int key  = stuckKeys[i].memoryGet(BtreeIndex);
-          final int data = stuckData[i].memoryGet(BtreeIndex);
+         {final int key  = stuckKeys.memoryGet(BtreeIndex, i);
+          final int data = stuckData.memoryGet(BtreeIndex, i);
           if (stuckIsLeaf.memoryGet(data) > 0)
            {printLeaf  (data, P, level+1);
            }
@@ -1456,15 +1456,15 @@ chipStop = true;
            {printBranch(data, P, level+1);
            }
 
-          P.elementAt(L+0).append(""+stuckKeys[i].memoryGet(BtreeIndex));       // Key
+          P.elementAt(L+0).append(""+stuckKeys.memoryGet(BtreeIndex, i));       // Key
           P.elementAt(L+1).append(""+BtreeIndex+(i > 0 ?  "."+i : ""));         // Branch,key, next pair
-          P.elementAt(L+2).append(""+stuckData[i].memoryGet(BtreeIndex));
+          P.elementAt(L+2).append(""+stuckData.memoryGet(BtreeIndex, i));
          }
        }
       else                                                                      // Branch is empty so print just the index of the branch
        {P.elementAt(L+0).append(""+BtreeIndex+"Empty");
        }
-      final int top = stuckData[K].memoryGet(BtreeIndex);                       // Top next will always be present
+      final int top = stuckData.memoryGet(BtreeIndex, K);                       // Top next will always be present
       P.elementAt(L+3).append(top);                                             // Append top next
 
       if (stuckIsLeaf.memoryGet(top) > 0)                                       // Print leaf
@@ -2538,8 +2538,8 @@ chipStop = true;
     final Process P = b.new Process("test");
     b.stuckIsLeaf .memorySet(1, 0);
     b.stuckSize   .memorySet(2, 0);
-    b.stuckKeys[0].memorySet(2, 0); b.stuckData[0].memorySet(3, 0);
-    b.stuckKeys[1].memorySet(4, 0); b.stuckData[1].memorySet(5, 0);
+    b.stuckKeys.memorySet(2, 0, 0); b.stuckData.memorySet(3, 0, 0);
+    b.stuckKeys.memorySet(4, 0, 1); b.stuckData.memorySet(5, 0, 1);
 
     Stuck s = b.new Stuck(P, "Stuck");
     s.stuckGetRoot();
@@ -4433,25 +4433,25 @@ Chip: Btree            step: 43, maxSteps: 100, running: 0
     b.stuckSize   .memorySet( 4, 2);
     b.stuckSize   .memorySet( 4, 3);
 
-    b.stuckKeys[0].memorySet(10, 0); b.stuckData[0].memorySet( 1, 0);
-    b.stuckKeys[0].memorySet(01, 1); b.stuckData[0].memorySet( 1, 1);
-    b.stuckKeys[0].memorySet(11, 2); b.stuckData[0].memorySet( 2, 2);
-    b.stuckKeys[0].memorySet(21, 3); b.stuckData[0].memorySet( 3, 3);
+    b.stuckKeys.memorySet(10, 0, 0); b.stuckData.memorySet( 1, 0, 0);
+    b.stuckKeys.memorySet(01, 1, 0); b.stuckData.memorySet( 1, 1, 0);
+    b.stuckKeys.memorySet(11, 2, 0); b.stuckData.memorySet( 2, 2, 0);
+    b.stuckKeys.memorySet(21, 3, 0); b.stuckData.memorySet( 3, 3, 0);
 
-    b.stuckKeys[1].memorySet(20, 0); b.stuckData[1].memorySet( 2, 0);
-    b.stuckKeys[1].memorySet(03, 1); b.stuckData[1].memorySet(33, 1);
-    b.stuckKeys[1].memorySet(12, 2); b.stuckData[1].memorySet(12, 2);
-    b.stuckKeys[1].memorySet(22, 3); b.stuckData[1].memorySet(13, 3);
+    b.stuckKeys.memorySet(20, 0, 1); b.stuckData.memorySet( 2, 0, 1);
+    b.stuckKeys.memorySet(03, 1, 1); b.stuckData.memorySet(33, 1, 1);
+    b.stuckKeys.memorySet(12, 2, 1); b.stuckData.memorySet(12, 2, 1);
+    b.stuckKeys.memorySet(22, 3, 1); b.stuckData.memorySet(13, 3, 1);
 
-    b.stuckKeys[2].memorySet(30, 0); b.stuckData[2].memorySet( 3, 0);
-    b.stuckKeys[2].memorySet(05, 1); b.stuckData[2].memorySet(55, 1);
-    b.stuckKeys[2].memorySet(13, 2); b.stuckData[2].memorySet(22, 2);
-    b.stuckKeys[2].memorySet(23, 3); b.stuckData[2].memorySet(23, 3);
+    b.stuckKeys.memorySet(30, 0, 2); b.stuckData.memorySet( 3, 0, 2);
+    b.stuckKeys.memorySet(05, 1, 2); b.stuckData.memorySet(55, 1, 2);
+    b.stuckKeys.memorySet(13, 2, 2); b.stuckData.memorySet(22, 2, 2);
+    b.stuckKeys.memorySet(23, 3, 2); b.stuckData.memorySet(23, 3, 2);
 
-    b.stuckKeys[3].memorySet(40, 0); b.stuckData[3].memorySet( 4, 0);
-    b.stuckKeys[3].memorySet(07, 1); b.stuckData[3].memorySet(77, 1);
-    b.stuckKeys[3].memorySet(14, 2); b.stuckData[3].memorySet(32, 2);
-    b.stuckKeys[3].memorySet(24, 3); b.stuckData[3].memorySet(33, 3);
+    b.stuckKeys.memorySet(40, 0, 3); b.stuckData.memorySet( 4, 0, 3);
+    b.stuckKeys.memorySet(07, 1, 3); b.stuckData.memorySet(77, 1, 3);
+    b.stuckKeys.memorySet(14, 2, 3); b.stuckData.memorySet(32, 2, 3);
+    b.stuckKeys.memorySet(24, 3, 3); b.stuckData.memorySet(33, 3, 3);
 
     //stop(b.print());
     ok(b.btreePrint(), """
@@ -7061,8 +7061,8 @@ Merge     : 0
    }
 
   static void newTests()                                                        // Tests being worked on
-   {//oldTests();
-    test_verilog_put();
+   {oldTests();
+    //test_verilog_put();
    }
 
   public static void main(String[] args)                                        // Test if called as a program
