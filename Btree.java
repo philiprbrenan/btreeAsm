@@ -1448,6 +1448,7 @@ chipStop = true;
        {for  (int i = 0; i < K; i++)
          {final int key  = stuckKeys.memoryGet(BtreeIndex, i);
           final int data = stuckData.memoryGet(BtreeIndex, i);
+say("AAAA", BtreeIndex, i, data, chipPrintMemory());
           if (stuckIsLeaf.memoryGet(data) > 0)
            {printLeaf  (data, P, level+1);
            }
@@ -4114,24 +4115,36 @@ Chip: Btree            step: 0, maxSteps: 10, running: 0
     p.processClear();
     b.allocate(i, true);
     b.allocate(j, false);
-    stop(b.chipPrintMemory());
+    //stop(b.chipPrintMemory());
     if (false) p.new Instruction()
      {void action()
        {ok(b.chipPrintMemory(), """
-Chip: Btree            step: 16, maxSteps: 100, running: 1
-  Processes:                                                    0  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24
-    stuckIsLeaf           memory:                     4 *  1 =  1  1  0  0
-    stuckIsFree           memory:                     4 *  1 =  0  0  0  1
-    freeNext              memory:                     4 *  3 =  3  2  3  0
-    stuckSize             memory:                     4 *  3 =  0  0  0  0
-    stuckKeys_0           memory:                     4 *  8 =  0  0  0  0
-    stuckKeys_1           memory:                     4 *  8 =  0  0  0  0
-    stuckKeys_2           memory:                     4 *  8 =  0  0  0  0
-    stuckKeys_3           memory:                     4 *  8 =  0  0  0  0
-    stuckData_0           memory:                     4 *  8 =  0  0  0  0
-    stuckData_1           memory:                     4 *  8 =  0  0  0  0
-    stuckData_2           memory:                     4 *  8 =  0  0  0  0
-    stuckData_3           memory:                     4 *  8 =  0  0  0  0
+Chip: Btree            step: 0, maxSteps: 10, running: 0
+  Processes:
+    stuckIsLeaf
+      Memory: size:  4, width:  1, block:  1
+        0  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24
+        1  0  0  0
+    stuckIsFree
+      Memory: size:  4, width:  1, block:  1
+        0  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24
+        0  1  1  1
+    freeNext
+      Memory: size:  4, width:  3, block:  1
+        0  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24
+        1  2  3  0
+    stuckSize
+      Memory: size:  4, width:  3, block:  1
+        0  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24
+        0  0  0  0
+    stuckKeys
+      Memory: size:  4, width:  8, block:  4
+        0  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24
+        0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0
+    stuckData
+      Memory: size:  4, width:  8, block:  4
+        0  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24
+        0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0
 """);
         ok(i, "alloc_index1_0 = 1");
         ok(j, "alloc_index2_1 = 2");
@@ -4145,19 +4158,31 @@ Chip: Btree            step: 16, maxSteps: 100, running: 1
     //stop(b.chipPrintMemory());
     ok(b.chipPrintMemory(), """
 Chip: Btree            step: 43, maxSteps: 100, running: 0
-  Processes:                                                    0  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24
-    stuckIsLeaf           memory:                     4 *  1 =  1  1  0  0
-    stuckIsFree           memory:                     4 *  1 =  0  1  1  1
-    freeNext              memory:                     4 *  3 =  2  3  1  0
-    stuckSize             memory:                     4 *  3 =  0  0  0  0
-    stuckKeys_0           memory:                     4 *  8 =  0  0  0  0
-    stuckKeys_1           memory:                     4 *  8 =  0  0  0  0
-    stuckKeys_2           memory:                     4 *  8 =  0  0  0  0
-    stuckKeys_3           memory:                     4 *  8 =  0  0  0  0
-    stuckData_0           memory:                     4 *  8 =  0  0  0  0
-    stuckData_1           memory:                     4 *  8 =  0  0  0  0
-    stuckData_2           memory:                     4 *  8 =  0  0  0  0
-    stuckData_3           memory:                     4 *  8 =  0  0  0  0
+  Processes:
+    stuckIsLeaf
+      Memory: size:  4, width:  1, block:  1
+        0  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24
+        1  1  0  0
+    stuckIsFree
+      Memory: size:  4, width:  1, block:  1
+        0  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24
+        0  1  1  1
+    freeNext
+      Memory: size:  4, width:  3, block:  1
+        0  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24
+        2  3  1  0
+    stuckSize
+      Memory: size:  4, width:  3, block:  1
+        0  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24
+        0  0  0  0
+    stuckKeys
+      Memory: size:  4, width:  8, block:  4
+        0  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24
+        0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0
+    stuckData
+      Memory: size:  4, width:  8, block:  4
+        0  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24
+        0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0
 """);
     ok(i, "alloc_index1_0 = 1");
    }
@@ -5915,7 +5940,7 @@ Merge     : 0
      {void code()
        {k.Inc(); d.Copy(k); d.Inc();
         b.put(k, d);
-        if (false)                                                              // Create test trees
+        if (true)                                                               // Create test trees
          {P.new Instruction()
            {void action()
              {say("  static String test_put_save_"+k.registerGet()+"()\n   {return \"\"\"", b.btreeSave() + "\"\"\";\n   }\n");
@@ -7109,7 +7134,8 @@ Merge     : 0
 
   static void newTests()                                                        // Tests being worked on
    {//oldTests();
-    test_allocate();
+    //test_allocate();
+    test_put_ascending();
    }
 
   public static void main(String[] args)                                        // Test if called as a program
