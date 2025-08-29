@@ -927,9 +927,10 @@ if __name__ == "__main__":
         v.i(t.transactionRcName());
        }
 
-      v.i(processPcName());
+      v.i(processPcName());     // Can these go into one call ???
       v.i(processStopName());
       v.i(processRCName());
+      v.i(processMemoryIndexName());
       v.new Always()
        {void Body()
          {v.new If("step < 0")                                                  // Execute next step in program
@@ -955,8 +956,22 @@ if __name__ == "__main__":
                }
 
               if (hasMemory())                                                  // Load memory to match the state at the start of the Java run
-               {for(int i = 0; i < memory.length; i++)
-                 {v.assign(processMemoryName()+"["+i+"]", memoryGetBackUp(i));
+               {int s = 0, f = 0;
+                for(int i = 0; i < memory.length; i++)
+                 {final int V = memoryGetBackUp(i);
+                  if (V == 0) f++;
+                  else
+                   {if (f > s)
+                     {final String j = processMemoryIndexName();
+                      v.A("for("+j+" = "+s+"; "+j+" < "+f+"; "+j+" = "+j+" + 1) "+processMemoryName()+"["+j+"] <= 0;");
+                     }
+                    v.assign(processMemoryName()+"["+i+"]", V);
+                    s = f = i+1;
+                   }
+                 }
+                if (f > s)
+                 {final String j = processMemoryIndexName();
+                  v.A("for("+j+" = "+s+"; "+j+" < "+f+"; "+j+" = "+j+" + 1) "+processMemoryName()+"["+j+"] <= 0;");
                  }
                }
 
@@ -1010,6 +1025,7 @@ if __name__ == "__main__":
     String processMemoryName() {return processName+"_memory";}                  // Name of the memory block used by this process
     String processStopName()   {return processName+"_stop";}                    // Name of the stop field in verilog for this process
     String processRCName()     {return processName+"_returnCode";}              // Name of the return code in verilog for this process
+    String processMemoryIndexName() {return processName+"_memory_index";}       // Index variable to initialize memory
 
     boolean hasMemory()        {return memoryWidth > 0 && memorySize > 0;}      // Whether this process has any memory attached directly to it
 
