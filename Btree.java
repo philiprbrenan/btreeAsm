@@ -231,7 +231,6 @@ chipStop = true;
       compares     = new Process.Register[maxStuckSize];                        // The results of key comparisons
       collapse     = new Process.Register[maxStuckSize];                        // The collapse of the key comparisons
       data         = new Process.Register[maxStuckSize];                        // Data in the stuck copied out of memory
-
       for (int i   = 0; i < maxStuckSize; i++)                                  // Create registers to hold stuck
        {keys[i]    = P.new Register("Key_"+i, bitsPerKey);                      // Keys in the stuck copied out of the memory of the btree into local registers
         compares[i]= P.new Register("KeyCompares_"+i, 1);                       // The result of comparing the search key with each stuck key
@@ -2422,6 +2421,89 @@ chipStop = true;
    }
 
   public void merge(Process.Register Key)                                       // Merge stucks on either side of the path to the key
+   {final Process          P           = Key.registerProcess();
+    final Stuck            S           = new Stuck(P, "merge");
+    final Process.Register s           = P.new Register("position", btreeAddressSize); // Current position in the btree
+    final Process.Register stuckIndex  = P.new Register("index",    stuckAddressSize); // Position within current stuck
+    final Process.Register stuckIndex1 = P.new Register("index1",   stuckAddressSize); // One step left of the current position
+    final Process.Register within      = P.new Register("within",   1);         // Success of merge - the result of this operation
+    final Process.Register isLeaf      = P.new Register("isLeaf",   1);         // Success of merge - the result of this operation
+
+    P.new Block()                                                               // The block is left as soon as possible
+     {void code()
+       {s.Zero();                                                               // Position in btree
+
+        S.stuckGetRoot();                                                       // Load current stuck
+
+        S.new IsLeaf()                                                          // Root is a leaf - nothing to merge
+         {void Leaf()
+           {P.GOto(end);
+           }
+         };
+        P.new If (mergeLeavesIntoRoot(P))                                       // Try merging leaves into root
+         {void Then()
+           {P.GOto(end);                                                        // The root is now a leaf so there is nothing else to do
+           }
+         };
+
+        P.new If (mergeBranchesIntoRoot(P))                                     // Try merging branches into root
+         {void Then()
+           {S.stuckGetRoot();                                                   // Reload root if the merge was successful
+           }
+         };
+
+        P.new Block()                                                           // Step down through tree
+         {void code()
+           {mergeLeavesAtTop  (S, s);                                           // Try merging leaves at top into parent -  this forces non top siblings into top
+            mergeBranchesAtTop(S, s);                                           // Try merging branches at top into parent -  this forces non top siblings into top
+            S.search_le_parallel(Key);                                          // Step down from parent to child
+P.new Instruction()
+ {void action()
+   {say("AAAA", Key, S.Found, S);
+   }
+};
+
+            P.new If (S.Found)                                                  // Found the key in the body of the stuck
+             {void Then()
+               {P.new If (S.StuckIndex)                                         // Found the key in the body of the stuck
+                 {void Then()
+                   {mergeLeavesNotTop  (S, s, S.StuckIndex);                        // Try merging leaves not at top into parent
+                    mergeBranchesNotTop(S, s, S.StuckIndex);                        // Try merging branches not at top into parent
+                    stuckIndex1.Copy(S.StuckIndex);
+                    stuckIndex1.Dec();
+                    mergeLeavesNotTop  (S, s, stuckIndex1);                     // Try merging leaves not at top into parent
+                    mergeBranchesNotTop(S, s, stuckIndex1);                     // Try merging branches not at top into parent
+                   }
+                  void Else()
+                   {mergeLeavesNotTop  (S, s, S.StuckIndex);                    // Try merging leaves not at top into parent
+                    mergeBranchesNotTop(S, s, S.StuckIndex);                    // Try merging branches not at top into parent
+                   }
+                 };
+               }
+             };
+
+            S.stuckGet(s);                                                      // Reload in case any changes have been made
+
+            S.search_le_parallel(Key);                                          // Step down from parent to child
+            s.Copy(S.Data);                                                     // Index of child
+
+            S.stuckGet(s);                                                      // Load child
+
+            S.new IsLeaf()                                                      // Child is a leaf or a branch
+             {void Leaf()                                                       // At a leaf - end of merging
+               {P.GOto(end);
+               }
+              void Branch()                                                     // Child is a branch - try again
+               {P.GOto(start);
+               }
+             };
+           };
+         };
+       }
+     };
+   }
+
+  public void mergeSquared(Process.Register Key)                                // Merge stucks on either side of the path to the key
    {final Process          P          = Key.registerProcess();
     final Stuck            S          = new Stuck(P, "merge");
     final Process.Register s          = P.new Register("position", btreeAddressSize); // Current position in the btree
@@ -6857,7 +6939,7 @@ Merge     : 0
 
   static void test_verilog_put()
    {sayCurrentTestName();
-    final Btree            b = new Btree(1024, 1024, 32, 32);
+    final Btree            b = new Btree(1024, 32, 32, 32);
     final Process          P = b.new Process("verilogPut");
     final Process.Register k = P.register("k", b.bitsPerKey);   k.input();
     final Process.Register d = P.register("d", b.bitsPerData);  d.input();
@@ -6926,7 +7008,9 @@ Merge     : 0
    }
 
   static void newTests()                                                        // Tests being worked on
-   {oldTests();
+   {//oldTests();
+    test_put_merge();
+    //test_verilog_put();
    }
 
   public static void main(String[] args)                                        // Test if called as a program
