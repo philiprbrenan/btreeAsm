@@ -4382,7 +4382,7 @@ Chip: Btree            step: 43, maxSteps: 100, running: 0
   static void test_mergeLeavesAtTop()
    {sayCurrentTestName();
     final Btree            b = new Btree(32, 4, 8, 8);
-    b.btreeLoad(test_put_save_7());
+    b.btreeLoad(test_put_save_9());
     final Process          P = b.new Process("findAndInsert");
     final Stuck            p = b.new Stuck(P, "findAndInsert");
     final Process.Register i = P.register("i", b.btreeAddressSize);
@@ -4397,11 +4397,11 @@ Chip: Btree            step: 43, maxSteps: 100, running: 0
 
     //stop(b.btreePrint());
     ok(b.btreePrint(), """
-      2      4        |
-      0      0.1      |
-      1      3        |
-             2        |
-1,2=1  3,4=3    5,6=2 |
+          4      6        |
+          0      0.1      |
+          1      3        |
+                 2        |
+1,2,3,4=1  5,6=3    7,8=2 |
 """);
 
     P.processClear();
@@ -4411,11 +4411,11 @@ Chip: Btree            step: 43, maxSteps: 100, running: 0
     b.chipRun();
     //stop(b.btreePrint());
     ok(b.btreePrint(), """
-      2          |
-      0          |
-      1          |
-      3          |
-1,2=1  3,4,5,6=3 |
+          4          |
+          0          |
+          1          |
+          3          |
+1,2,3,4=1  5,6,7,8=3 |
 """);
     ok(r.registerGet(), 1);
    }
@@ -4511,42 +4511,41 @@ Chip: Btree            step: 43, maxSteps: 100, running: 0
     final Process.Register j = P.register("j", b.stuckAddressSize);
     P.processTrace = true;
 
+    i.RegisterSet(0); j.RegisterSet(0);
+    b.splitBranchNotTop(i, j);
+    b.maxSteps = 2000;
+    b.chipRun();
+
+    //stop(b.btreePrint());
     ok(b.btreePrint(), """
-                            8                                         16                                                                                    |
-                            0                                         0.1                                                                                   |
-                            14                                        22                                                                                    |
-                                                                      15                                                                                    |
-             4                                  12                                           20                    24                                       |
-             14                                 22                                           15                    15.1                                     |
-             5                                  12                                           20                    24                                       |
-             9                                  17                                                                 6                                        |
-      2              6               10                    14                     18                    22                      26         28               |
-      5              9               12                    17                     20                    24                      6          6.1              |
-      1              4               8                     11                     16                    19                      23         25               |
-      3              7               10                    13                     18                    21                                 2                |
-1,2=1  3,4=3   5,6=4  7,8=7   9,10=8   11,12=10   13,14=11   15,16=13    17,18=16   19,20=18   21,22=19   23,24=21     25,26=23   27,28=25    29,30,31,32=2 |
+                     8                             16                                                                    |
+                     0                             0.1                                                                   |
+                     6                             5                                                                     |
+                                                   11                                                                    |
+          4                        12                               20               24                28                |
+          6                        5                                11               11.1              11.2              |
+          1                        4                                8                10                9                 |
+          3                        7                                                                   2                 |
+1,2,3,4=1  5,6,7,8=3  9,10,11,12=4   13,14,15,16=7    17,18,19,20=8   21,22,23,24=10     25,26,27,28=9     29,30,31,32=2 |
 """);
 
-    i.RegisterSet(15); j.RegisterSet(0);
+    P.processClear();
+    i.RegisterSet(0); j.RegisterSet(0);
     s.stuckGet(i);
     b.mergeBranchesNotTop(s, i, j);
     b.maxSteps = 2000;
     b.chipRun();
     //stop(b.btreePrint());
     ok(b.btreePrint(), """
-                            8                                         16                                                                                      |
-                            0                                         0.1                                                                                     |
-                            14                                        22                                                                                      |
-                                                                      15                                                                                      |
-             4                                  12                                                                     24                                     |
-             14                                 22                                                                     15                                     |
-             5                                  12                                                                     20                                     |
-             9                                  17                                                                     6                                      |
-      2              6               10                    14                     18         20           22                      26         28               |
-      5              9               12                    17                     20         20.1         20.2                    6          6.1              |
-      1              4               8                     11                     16         18           19                      23         25               |
-      3              7               10                    13                                             21                                 2                |
-1,2=1  3,4=3   5,6=4  7,8=7   9,10=8   11,12=10   13,14=11   15,16=13    17,18=16   19,20=18     21,22=19     23,24=21   25,26=23   27,28=25    29,30,31,32=2 |
+                                                      16                                                                   |
+                                                      0                                                                    |
+                                                      6                                                                    |
+                                                      11                                                                   |
+          4          8               12                               20               24                28                |
+          6          6.1             6.2                              11               11.1              11.2              |
+          1          3               4                                8                10                9                 |
+                                     7                                                                   2                 |
+1,2,3,4=1  5,6,7,8=3    9,10,11,12=4    13,14,15,16=7   17,18,19,20=8   21,22,23,24=10     25,26,27,28=9     29,30,31,32=2 |
 """);
    }
 
@@ -4559,53 +4558,41 @@ Chip: Btree            step: 43, maxSteps: 100, running: 0
     final Process.Register j = P.register("j", b.stuckAddressSize);
     P.processTrace = true;
 
-    i.RegisterSet(6);
-    s.stuckGet(i);
-
-    s.Pop();
-    s.stuckPut();
+    i.RegisterSet(0);
+    b.splitBranchAtTop(i);
     b.maxSteps = 2000;
     b.chipRun();
 
     //stop(b.btreePrint());
     ok(b.btreePrint(), """
-                            8                                         16                                                                   |
-                            0                                         0.1                                                                  |
-                            14                                        22                                                                   |
-                                                                      15                                                                   |
-             4                                  12                                           20                    24                      |
-             14                                 22                                           15                    15.1                    |
-             5                                  12                                           20                    24                      |
-             9                                  17                                                                 6                       |
-      2              6               10                    14                     18                    22                      26         |
-      5              9               12                    17                     20                    24                      6          |
-      1              4               8                     11                     16                    19                      23         |
-      3              7               10                    13                     18                    21                      25         |
-1,2=1  3,4=3   5,6=4  7,8=7   9,10=8   11,12=10   13,14=11   15,16=13    17,18=16   19,20=18   21,22=19   23,24=21     25,26=23   27,28=25 |
+                                                      16                               24                               |
+                                                      0                                0.1                              |
+                                                      5                                6                                |
+                                                                                       11                               |
+          4          8               12                               20                                28              |
+          5          5.1             5.2                              6                                 11              |
+          1          3               4                                8                                 9               |
+                                     7                                10                                2               |
+1,2,3,4=1  5,6,7,8=3    9,10,11,12=4    13,14,15,16=7   17,18,19,20=8   21,22,23,24=10    25,26,27,28=9   29,30,31,32=2 |
 """);
 
     P.processClear();
-
-    i.RegisterSet(15);
+    i.RegisterSet(0);
     s.stuckGet(i);
     b.mergeBranchesAtTop(s, i);
     b.maxSteps = 2000;
     b.chipRun();
     //stop(b.btreePrint());
     ok(b.btreePrint(), """
-                            8                                         16                                                                     |
-                            0                                         0.1                                                                    |
-                            14                                        22                                                                     |
-                                                                      15                                                                     |
-             4                                  12                                           20                                              |
-             14                                 22                                           15                                              |
-             5                                  12                                           20                                              |
-             9                                  17                                           24                                              |
-      2              6               10                    14                     18                    22         24           26           |
-      5              9               12                    17                     20                    24         24.1         24.2         |
-      1              4               8                     11                     16                    19         21           23           |
-      3              7               10                    13                     18                                            25           |
-1,2=1  3,4=3   5,6=4  7,8=7   9,10=8   11,12=10   13,14=11   15,16=13    17,18=16   19,20=18   21,22=19   23,24=21     25,26=23     27,28=25 |
+                                                      16                                                                 |
+                                                      0                                                                  |
+                                                      5                                                                  |
+                                                      6                                                                  |
+          4          8               12                               20               24               28               |
+          5          5.1             5.2                              6                6.1              6.2              |
+          1          3               4                                8                10               9                |
+                                     7                                                                  2                |
+1,2,3,4=1  5,6,7,8=3    9,10,11,12=4    13,14,15,16=7   17,18,19,20=8   21,22,23,24=10    25,26,27,28=9    29,30,31,32=2 |
 """);
    }
 
