@@ -295,7 +295,7 @@ module %s;                                                                      
 
     final var n = chipName;
     final var c = String.format(
-"rm -f %s %s; iverilog -g2012 -o %s %s && ./%s && rm ./%s",
+"rm -f %s %s; iverilog -g2012 -o %s %s && ./%s && rm -f ./%s",
 n, verilogTraceFile, n, source, n, n);
     final var e = new ExecCommand(c);                                           // Run Verilog
 
