@@ -386,6 +386,8 @@ chipStop = true;
        {keys[i].copy(Source.keys[i]);
         data[i].copy(Source.data[i]);
        }
+      size  .copy(Source.size);
+      isLeaf.copy(Source.isLeaf);
      }
 
     void copy(Verilog v, Stuck Source)                                          // Copy a stuck from the specified source to this stuck
@@ -393,6 +395,8 @@ chipStop = true;
        {keys[i].copy(v, Source.keys[i]);
         data[i].copy(v, Source.data[i]);
        }
+      size  .copy(v, Source.size);
+      isLeaf.copy(v, Source.isLeaf);
      }
 
     void Copy(Stuck Source)                                                     // Copy a stuck from the specified source to this stuck as an instruction
@@ -1357,7 +1361,7 @@ chipStop = true;
 //D3 Merge                                                                      // Merge stucks in various ways
 
     void merge(Stuck Source)                                                    // Concatenate the indicated stuck onto the end of the current one
-     {final Process.Register sum = P.new Register("sum", stuckAddressSize);     // Sum of the lengths of the two stucks
+     {final Process.Register sum = P.new Register("sum", 1+stuckAddressSize);   // Sum of the lengths of the two stucks
       final Process.Register can = P.new Register("can", 1);                    // Can merge
       sum.Sum(Source.size, size);
       can.Le (sum, maxStuckSize);
@@ -7241,7 +7245,8 @@ Merge     : 0
   static void newTests()                                                        // Tests being worked on
    {//oldTests();
     //test_verilog_put();
-    test_mergeLeavesIntoRoot();
+    //test_mergeLeavesIntoRoot();
+    test_delete_ascending();
    }
 
   public static void main(String[] args)                                        // Test if called as a program
