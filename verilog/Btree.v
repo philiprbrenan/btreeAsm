@@ -572,7 +572,7 @@ module Btree;                                                                   
           begin
             integer f;
             f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:0512:<init>|  Chip.java:0676:<init>|  Chip.java:0675:RegisterSet|  Btree.java:2941:test_copy|  Btree.java:7201:newTests|  Btree.java:7206:main|");
+            $fdisplay(f, "Location: Chip.java:0512:<init>|  Chip.java:0676:<init>|  Chip.java:0675:RegisterSet|  Btree.java:2964:test_copy|  Btree.java:7224:newTests|  Btree.java:7229:main|");
             $fclose(f);
           end
         end
@@ -582,7 +582,7 @@ module Btree;                                                                   
           begin
             integer f;
             f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:0512:<init>|  Chip.java:0792:<init>|  Chip.java:0791:Zero|  Btree.java:0266:stuckGetRoot|  Btree.java:2942:test_copy|  Btree.java:7201:newTests|  Btree.java:7206:main|");
+            $fdisplay(f, "Location: Chip.java:0512:<init>|  Chip.java:0819:<init>|  Chip.java:0818:Zero|  Btree.java:0266:stuckGetRoot|  Btree.java:2965:test_copy|  Btree.java:7224:newTests|  Btree.java:7229:main|");
             $fclose(f);
           end
         end
@@ -603,7 +603,7 @@ module Btree;                                                                   
           begin
             integer f;
             f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:0512:<init>|  Btree.java:0272:<init>|  Btree.java:0271:stuckGet|  Btree.java:0267:stuckGetRoot|  Btree.java:2942:test_copy|  Btree.java:7201:newTests|  Btree.java:7206:main|");
+            $fdisplay(f, "Location: Chip.java:0512:<init>|  Btree.java:0272:<init>|  Btree.java:0271:stuckGet|  Btree.java:0267:stuckGetRoot|  Btree.java:2965:test_copy|  Btree.java:7224:newTests|  Btree.java:7229:main|");
             $fclose(f);
           end
         end
@@ -614,7 +614,7 @@ module Btree;                                                                   
           begin
             integer f;
             f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:1307:<init>|  Chip.java:1306:waitResultOfTransaction|  Btree.java:0285:stuckGet|  Btree.java:0267:stuckGetRoot|  Btree.java:2942:test_copy|  Btree.java:7201:newTests|  Btree.java:7206:main|");
+            $fdisplay(f, "Location: Chip.java:1334:<init>|  Chip.java:1333:waitResultOfTransaction|  Btree.java:0285:stuckGet|  Btree.java:0267:stuckGetRoot|  Btree.java:2965:test_copy|  Btree.java:7224:newTests|  Btree.java:7229:main|");
             $fclose(f);
           end
         end
@@ -625,7 +625,7 @@ module Btree;                                                                   
           begin
             integer f;
             f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:1307:<init>|  Chip.java:1306:waitResultOfTransaction|  Btree.java:0286:stuckGet|  Btree.java:0267:stuckGetRoot|  Btree.java:2942:test_copy|  Btree.java:7201:newTests|  Btree.java:7206:main|");
+            $fdisplay(f, "Location: Chip.java:1334:<init>|  Chip.java:1333:waitResultOfTransaction|  Btree.java:0286:stuckGet|  Btree.java:0267:stuckGetRoot|  Btree.java:2965:test_copy|  Btree.java:7224:newTests|  Btree.java:7229:main|");
             $fclose(f);
           end
         end
@@ -636,7 +636,7 @@ module Btree;                                                                   
           begin
             integer f;
             f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:1307:<init>|  Chip.java:1306:waitResultOfTransaction|  Btree.java:0288:stuckGet|  Btree.java:0267:stuckGetRoot|  Btree.java:2942:test_copy|  Btree.java:7201:newTests|  Btree.java:7206:main|");
+            $fdisplay(f, "Location: Chip.java:1334:<init>|  Chip.java:1333:waitResultOfTransaction|  Btree.java:0288:stuckGet|  Btree.java:0267:stuckGetRoot|  Btree.java:2965:test_copy|  Btree.java:7224:newTests|  Btree.java:7229:main|");
             $fclose(f);
           end
         end
@@ -647,7 +647,7 @@ module Btree;                                                                   
           begin
             integer f;
             f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:1307:<init>|  Chip.java:1306:waitResultOfTransaction|  Btree.java:0289:stuckGet|  Btree.java:0267:stuckGetRoot|  Btree.java:2942:test_copy|  Btree.java:7201:newTests|  Btree.java:7206:main|");
+            $fdisplay(f, "Location: Chip.java:1334:<init>|  Chip.java:1333:waitResultOfTransaction|  Btree.java:0289:stuckGet|  Btree.java:0267:stuckGetRoot|  Btree.java:2965:test_copy|  Btree.java:7224:newTests|  Btree.java:7229:main|");
             $fclose(f);
           end
         end
@@ -674,7 +674,7 @@ module Btree;                                                                   
           begin
             integer f;
             f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:0512:<init>|  Btree.java:0292:<init>|  Btree.java:0291:stuckGet|  Btree.java:0267:stuckGetRoot|  Btree.java:2942:test_copy|  Btree.java:7201:newTests|  Btree.java:7206:main|");
+            $fdisplay(f, "Location: Chip.java:0512:<init>|  Btree.java:0292:<init>|  Btree.java:0291:stuckGet|  Btree.java:0267:stuckGetRoot|  Btree.java:2965:test_copy|  Btree.java:7224:newTests|  Btree.java:7229:main|");
             $fclose(f);
           end
         end
@@ -699,7 +699,7 @@ module Btree;                                                                   
           begin
             integer f;
             f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:0512:<init>|  Btree.java:0400:<init>|  Btree.java:0399:Copy|  Btree.java:2943:test_copy|  Btree.java:7201:newTests|  Btree.java:7206:main|");
+            $fdisplay(f, "Location: Chip.java:0512:<init>|  Btree.java:0400:<init>|  Btree.java:0399:Copy|  Btree.java:2966:test_copy|  Btree.java:7224:newTests|  Btree.java:7229:main|");
             $fclose(f);
           end
         end
@@ -726,7 +726,7 @@ module Btree;                                                                   
           begin
             integer f;
             f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:0512:<init>|  Btree.java:0494:<init>|  Btree.java:0493:CopyUp|  Btree.java:2944:test_copy|  Btree.java:7201:newTests|  Btree.java:7206:main|");
+            $fdisplay(f, "Location: Chip.java:0512:<init>|  Btree.java:0515:<init>|  Btree.java:0514:CopyUp|  Btree.java:2967:test_copy|  Btree.java:7224:newTests|  Btree.java:7229:main|");
             $fclose(f);
           end
         end
@@ -753,7 +753,7 @@ module Btree;                                                                   
           begin
             integer f;
             f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:0512:<init>|  Btree.java:0494:<init>|  Btree.java:0493:CopyUp|  Btree.java:2944:test_copy|  Btree.java:7201:newTests|  Btree.java:7206:main|");
+            $fdisplay(f, "Location: Chip.java:0512:<init>|  Btree.java:0515:<init>|  Btree.java:0514:CopyUp|  Btree.java:2967:test_copy|  Btree.java:7224:newTests|  Btree.java:7229:main|");
             $fclose(f);
           end
         end
@@ -780,7 +780,7 @@ module Btree;                                                                   
           begin
             integer f;
             f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:0512:<init>|  Btree.java:0494:<init>|  Btree.java:0493:CopyUp|  Btree.java:2944:test_copy|  Btree.java:7201:newTests|  Btree.java:7206:main|");
+            $fdisplay(f, "Location: Chip.java:0512:<init>|  Btree.java:0515:<init>|  Btree.java:0514:CopyUp|  Btree.java:2967:test_copy|  Btree.java:7224:newTests|  Btree.java:7229:main|");
             $fclose(f);
           end
         end
