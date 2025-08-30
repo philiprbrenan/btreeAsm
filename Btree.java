@@ -379,6 +379,134 @@ chipStop = true;
       return ""+S;
      }
 
+//D3 Copy                                                                       // Copy a stuck into itself or another stuck shifting the elements in the stuck by a predetermined amount
+
+    void copy(Stuck Source)                                                     // Copy a stuck from the specified source to this stuck
+     {for (int i = 0; i < maxStuckSize; i++)
+       {keys[i].copy(Source.keys[i]);
+        data[i].copy(Source.data[i]);
+       }
+     }
+
+    void copy(Verilog v, Stuck Source)                                          // Copy a stuck from the specified source to this stuck
+     {for (int i = 0; i < maxStuckSize; i++)
+       {keys[i].copy(v, Source.keys[i]);
+        data[i].copy(v, Source.data[i]);
+       }
+     }
+
+    void Copy(Stuck Source)                                                     // Copy a stuck from the specified source to this stuck as an instruction
+     {P.new Instruction()
+       {void action()           {copy(   Source);}
+        void verilog(Verilog v) {copy(v, Source);}
+       };
+     }
+
+    void copyDown(Stuck Source, int Power)                                      // Copy a stuck into itself or another stuck shifting the elements down in the stuck by a predetermined amount
+     {final int delta = powerTwo(Power);
+      for (int i = 0; i < maxStuckSize-delta; i++)
+       {keys[i].copy(Source.keys[i+delta]);
+        data[i].copy(Source.data[i+delta]);
+       }
+      for (int i = maxStuckSize-delta; i < maxStuckSize; i++)
+       {keys[i].zero();
+        data[i].zero();
+       }
+     }
+
+    void copyDown(Verilog v, Stuck Source, int Power)                           // Copy a stuck into itself or another stuck shifting the elements down in the stuck by a predetermined amount
+     {final int delta = powerTwo(Power);
+      for (int i = 0; i < maxStuckSize - delta; i++)
+       {keys[i].copy(v, Source.keys[i+delta]);
+        data[i].copy(v, Source.data[i+delta]);
+       }
+      for (int i = maxStuckSize - delta; i < maxStuckSize; i++)
+       {keys[i].zero(v);
+        data[i].zero(v);
+       }
+     }
+
+    void CopyDown(Stuck Source, int Power)                                      // Copy a stuck into itself or another stuck shifting the elements down in the stuck by a predetermined amount as an instruction
+     {P.new Instruction()
+       {void action()           {copyDown(   Source, Power);}
+        void verilog(Verilog v) {copyDown(v, Source, Power);}
+       };
+     }
+
+    void CopyDown(Process.Register Delta)                                       // Copy a stuck down into itself a variable number of places
+     {for (int i = logTwo(prevPowerOfTwo(maxStuckSize))-1; i >= 0; i--)
+       {final Stuck source = this;
+        final int I = 1<<i, II = i;
+        P.new Instruction()
+         {void action()
+           {if ((Delta.registerGet() & I) > 0)
+             {copyDown(source, II);
+             };
+           }
+          void verilog(Verilog v)
+           {v.new If(Delta.registerName()+" & " + I)
+             {void Then()
+               {copyDown(v, source, II);
+               }
+             };
+           }
+         };
+       }
+     }
+
+    void copyUp(Stuck Source, int Power)                                        // Copy a stuck into itself or another stuck shifting the elements up in the stuck by a predetermined amount
+     {final int delta = powerTwo(Power);
+      for (int i = maxStuckSize-1; i >= delta; i--)
+       {keys[i].copy(Source.keys[i-delta]);
+        data[i].copy(Source.data[i-delta]);
+       }
+      for (int i = 0; i < delta; i++)
+       {keys[i].zero();
+        data[i].zero();
+       }
+     }
+
+    void copyUp(Verilog v, Stuck Source, int Power)                             // Copy a stuck into itself or another stuck shifting the elements up in the stuck by a predetermined amount
+     {final int delta = powerTwo(Power);
+      for (int i = maxStuckSize-1; i >= delta; i--)
+       {keys[i].copy(v, Source.keys[i-delta]);
+        data[i].copy(v, Source.data[i-delta]);
+       }
+      for (int i = 0; i < delta; i++)
+       {keys[i].zero(v);
+        data[i].zero(v);
+       }
+     }
+
+    void CopyUp(Stuck Source, int Power)                                        // Copy a stuck into itself or another stuck shifting the elements up in the stuck by a predetermined amount as an instruction
+     {P.new Instruction()
+       {void action()           {copyUp(   Source, Power);}
+        void verilog(Verilog v) {copyUp(v, Source, Power);}
+       };
+     }
+
+
+    void CopyUp(Process.Register Delta)                                         // Copy a stuck up into itself a variable number of places
+     {for (int i = logTwo(prevPowerOfTwo(maxStuckSize))-1; i >= 0; i--)
+       {final Stuck source = this;
+        final int I = 1<<i, II = i;
+        P.new Instruction()
+         {void action()
+           {if ((Delta.registerGet() & I) > 0)
+             {copyUp(source, II);
+             };
+           }
+          void verilog(Verilog v)
+           {v.new If(Delta.registerName()+" & " + I)
+             {void Then()
+               {copyUp(v, source, II);
+               }
+             };
+           }
+         };
+       }
+     }
+
 //D3 Actions                                                                    // Just the actions needed on a stuck to support a btree
 
     void clear()                                                                // Set the size of the stuck to zero to clear it
@@ -2642,6 +2770,201 @@ chipStop = true;
 //D1 Tests                                                                      // Test the btree
 
   final static int[]random_32 = {12, 3, 27, 1, 23, 20, 8, 18, 2, 31, 25, 16, 13, 32, 11, 21, 5, 24, 4, 10, 26, 30, 9, 6, 29, 17, 28, 15, 14, 19, 7, 22};
+
+  static void test_copy()
+   {final Btree   b = new Btree(1, 8, 8, 8);
+    final Process P = b.new Process("copy");
+    final Stuck   s = b.new Stuck(P, "Source");
+    final Stuck   t = b.new Stuck(P, "Target");
+    P.processTrace = true;
+    b.stuckIsLeaf .memorySet(1, 0);
+    b.stuckSize   .memorySet(4, 0);
+    b.stuckKeys.memorySet( 2, 0, 0); b.stuckData.memorySet( 3, 0, 0);
+    b.stuckKeys.memorySet( 4, 0, 1); b.stuckData.memorySet( 5, 0, 1);
+    b.stuckKeys.memorySet( 6, 0, 2); b.stuckData.memorySet( 7, 0, 2);
+    b.stuckKeys.memorySet( 8, 0, 3); b.stuckData.memorySet( 9, 0, 3);
+    b.stuckKeys.memorySet(10, 0, 4); b.stuckData.memorySet(11, 0, 4);
+    b.stuckKeys.memorySet(12, 0, 5); b.stuckData.memorySet(13, 0, 5);
+    b.stuckKeys.memorySet(14, 0, 6); b.stuckData.memorySet(15, 0, 6);
+    b.stuckKeys.memorySet(16, 0, 7); b.stuckData.memorySet(17, 0, 7);
+
+    s.stuckGetRoot();
+    t.CopyDown(s, 0);
+
+    b.maxSteps = 200;
+    b.chipRun();
+
+    //stop(s.dump());
+    ok(s.dump(), """
+Stuck: Source size: 4, leaf: 1, root
+ 0     2 =>    3
+ 1     4 =>    5
+ 2     6 =>    7
+ 3     8 =>    9
+ 4    10 =>   11
+ 5    12 =>   13
+ 6    14 =>   15
+ 7    16 =>   17
+Found     : 0
+Key       : 0
+FoundKey  : 0
+Data      : 0
+BtreeIndex: 0
+StuckIndex: 0
+Merge     : 0
+""");
+
+    //stop(t.dump());
+    ok(t.dump(), """
+Stuck: Target size: 0, leaf: 0, root
+ 0     4 =>    5
+ 1     6 =>    7
+ 2     8 =>    9
+ 3    10 =>   11
+ 4    12 =>   13
+ 5    14 =>   15
+ 6    16 =>   17
+ 7     0 =>    0
+Found     : 0
+Key       : 0
+FoundKey  : 0
+Data      : 0
+BtreeIndex: 0
+StuckIndex: 0
+Merge     : 0
+""");
+
+    P.processClear();
+    s.stuckGetRoot();
+    t.CopyDown(s, 1);
+    b.chipRun();
+
+    //stop(t.dump());
+    ok(t.dump(), """
+Stuck: Target size: 0, leaf: 0, root
+ 0     6 =>    7
+ 1     8 =>    9
+ 2    10 =>   11
+ 3    12 =>   13
+ 4    14 =>   15
+ 5    16 =>   17
+ 6     0 =>    0
+ 7     0 =>    0
+Found     : 0
+Key       : 0
+FoundKey  : 0
+Data      : 0
+BtreeIndex: 0
+StuckIndex: 0
+Merge     : 0
+""");
+
+    P.processClear();
+    s.stuckGetRoot();
+    t.CopyUp(s, 0);
+    b.chipRun();
+
+    //stop(t.dump());
+    ok(t.dump(), """
+Stuck: Target size: 0, leaf: 0, root
+ 0     0 =>    0
+ 1     2 =>    3
+ 2     4 =>    5
+ 3     6 =>    7
+ 4     8 =>    9
+ 5    10 =>   11
+ 6    12 =>   13
+ 7    14 =>   15
+Found     : 0
+Key       : 0
+FoundKey  : 0
+Data      : 0
+BtreeIndex: 0
+StuckIndex: 0
+Merge     : 0
+""");
+
+    P.processClear();
+    s.stuckGetRoot();
+    t.CopyUp(s, 1);
+    b.chipRun();
+
+    //stop(t.dump());
+    ok(t.dump(), """
+Stuck: Target size: 0, leaf: 0, root
+ 0     0 =>    0
+ 1     0 =>    0
+ 2     2 =>    3
+ 3     4 =>    5
+ 4     6 =>    7
+ 5     8 =>    9
+ 6    10 =>   11
+ 7    12 =>   13
+Found     : 0
+Key       : 0
+FoundKey  : 0
+Data      : 0
+BtreeIndex: 0
+StuckIndex: 0
+Merge     : 0
+""");
+
+    final Process.Register d = P.new Register("delta", 4);
+    P.processClear();
+    d.RegisterSet(5);
+    s.stuckGetRoot();
+    t.Copy(s);
+    t.CopyDown(d);
+    b.chipRun();
+
+    //stop(t.dump());
+    ok(t.dump(), """
+Stuck: Target size: 0, leaf: 0, root
+ 0    12 =>   13
+ 1    14 =>   15
+ 2    16 =>   17
+ 3     0 =>    0
+ 4     0 =>    0
+ 5     0 =>    0
+ 6     0 =>    0
+ 7     0 =>    0
+Found     : 0
+Key       : 0
+FoundKey  : 0
+Data      : 0
+BtreeIndex: 0
+StuckIndex: 0
+Merge     : 0
+""");
+
+    P.processClear();
+    d.RegisterSet(3);
+    s.stuckGetRoot();
+    t.Copy(s);
+    t.CopyUp(d);
+    b.chipRun();
+
+    //stop(t.dump());
+    ok(t.dump(), """
+Stuck: Target size: 0, leaf: 0, root
+ 0     0 =>    0
+ 1     0 =>    0
+ 2     0 =>    0
+ 3     2 =>    3
+ 4     4 =>    5
+ 5     6 =>    7
+ 6     8 =>    9
+ 7    10 =>   11
+Found     : 0
+Key       : 0
+FoundKey  : 0
+Data      : 0
+BtreeIndex: 0
+StuckIndex: 0
+Merge     : 0
+""");
+
+   }
 
   static void test_create1()
    {final Btree   b = new Btree(1, 4, 8, 8);
@@ -6803,7 +7126,7 @@ Merge     : 0
 
   static void test_verilog_put()
    {sayCurrentTestName();
-    final Btree            b = new Btree(1024, 32, 32, 32);
+    final Btree            b = new Btree(1024, 1024, 32, 32);
     final Process          P = b.new Process("verilogPut");
     final Process.Register k = P.register("k", b.bitsPerKey);   k.input();
     final Process.Register d = P.register("d", b.bitsPerData);  d.input();
@@ -6825,7 +7148,8 @@ Merge     : 0
    }
 
   static void oldTests()                                                        // Tests thought to be in good shape
-   {test_create1();
+   {test_copy();
+    test_create1();
     test_create2();
     test_push();
     test_clear();
@@ -6873,7 +7197,8 @@ Merge     : 0
 
   static void newTests()                                                        // Tests being worked on
    {//oldTests();
-    test_verilog_put();
+    //test_verilog_put();
+    test_copy();
    }
 
   public static void main(String[] args)                                        // Test if called as a program
