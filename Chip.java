@@ -855,10 +855,33 @@ if __name__ == "__main__":
           void verilog(Verilog v) {add1(v, Source);};
          };
        }
+
       void Average(Register Source1, Register Source2)                          // Average of two registers as an instruction
        {new Instruction()
          {void action()           {average(   Source1, Source2);};
           void verilog(Verilog v) {average(v, Source1, Source2);};
+         };
+       }
+
+      void sum(Process.Register...Source)                                       // Sum the source registers in Java
+       {R();
+        int sum = 0;
+        for (int i = 0; i < Source.length; i++) sum += Source[i].registerGet();
+        registerSet(sum);
+       }
+
+      void sum(Verilog v, Process.Register...Source)                            // Sum the source registers in Verilog
+       {if (Source.length == 0)  return;
+        final StringBuilder s = new StringBuilder();
+        s.append(Source[0].registerName());
+        for (int i = 1; i < Source.length; i++) s.append(" + " + Source[i].registerName());
+        v.assign(registerName(), ""+s);
+       }
+
+      void Sum(Register...Source)                                               // Sum the source registers as an instruction
+       {new Instruction()
+         {void action()           {sum(   Source);};
+          void verilog(Verilog v) {sum(v, Source);};
          };
        }
      } // Register
@@ -2029,6 +2052,27 @@ Chip: Test             step: 0, maxSteps: 10, running: 0
     ok(B.registerGet(), 2);
    }
 
+  static void test_sum()
+   {var C = chip("Test");
+    var p = C.new Process("process");
+    p.processTrace = true;
+    var a = p.register("a",  8);
+    var b = p.register("b",  8);
+    var c = p.register("d",  8);
+    var d = p.register("d",  8);
+
+    a.RegisterSet(1);
+    b.RegisterSet(2);
+    c.RegisterSet(3);
+    d.RegisterSet(4);
+
+    a.Sum(a, b, c, d);
+
+    C.chipRun();
+
+    ok(a.registerGet(), 10);
+   }
+
   static void oldTests()                                                        // Tests thought to be in good shape
    {test_stop();
     test_memoryProcessReuse();
@@ -2043,6 +2087,7 @@ Chip: Test             step: 0, maxSteps: 10, running: 0
     test_average();
     test_comparisons();
     test_combine();
+    test_sum();
    }
 
   static void newTests()                                                        // Tests being worked on
