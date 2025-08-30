@@ -680,7 +680,7 @@ if __name__ == "__main__":
 
       void copy(Register Source)                                                // Copy a source register into this register which we can do because each, and only each, process can write to its own registers
        {R();
-        if (registerBits <= Source.registerBits)                                // Make sure the target register is big enough
+        if (registerBits < Source.registerBits)                                 // Make sure the target register is big enough
          {if (false) stop("Target register is smaller than source register.\n",
            "Target register:", registerName, "has a size of:", registerBits,
            "while source register:", Source.registerName, "has a size of:",
@@ -696,6 +696,33 @@ if __name__ == "__main__":
        {new Instruction()
          {void action()           {copy(Source);};
           void verilog(Verilog v) {copy(v, Source);};
+         };
+       }
+
+      void combine(Register Source)                                             // Copy the source register into the target if the source is not zero
+       {R();
+        if (registerBits < Source.registerBits)                                 // Make sure the target register is big enough
+         {if (false) stop("Target register is smaller than source register.\n",
+           "Target register:", registerName, "has a size of:", registerBits,
+           "while source register:", Source.registerName, "has a size of:",
+            Source.registerBits);
+         }
+
+        if (!Source.value.isEmpty()) value = (BitSet)Source.value.clone();      // Combine the source value into the target
+       }
+
+      void combine(Verilog v, Register Source)                                  // Combine a source register into this register which we can do because each and only each process can write to its own registers
+       {v.new If(Source.registerName())
+         {void Then()
+           {v.assign(rn(), Source.rn());
+           }
+         };
+       }
+
+      void Combine(Register Source)                                                // Combine instruction
+       {new Instruction()
+         {void action()           {combine(Source);};
+          void verilog(Verilog v) {combine(v, Source);};
          };
        }
 
@@ -1979,6 +2006,29 @@ Chip: Test             step: 0, maxSteps: 10, running: 0
     ok(eq1.registerGet(), 1);
    }
 
+  static void test_combine()
+   {var C = chip("Test");
+    var p = C.new Process("process");
+    p.processTrace = true;
+    var a = p.register("a",  8);
+    var b = p.register("b",  8);
+    var A = p.register("A",  8);
+    var B = p.register("B",  8);
+
+    a.RegisterSet(0);
+    b.RegisterSet(2);
+    A.RegisterSet(1);
+    B.RegisterSet(1);
+
+    A.Combine(a);
+    B.Combine(b);
+
+    C.chipRun();
+
+    ok(A.registerGet(), 1);
+    ok(B.registerGet(), 2);
+   }
+
   static void oldTests()                                                        // Tests thought to be in good shape
    {test_stop();
     test_memoryProcessReuse();
@@ -1992,6 +2042,7 @@ Chip: Test             step: 0, maxSteps: 10, running: 0
     test_add();
     test_average();
     test_comparisons();
+    test_combine();
    }
 
   static void newTests()                                                        // Tests being worked on
