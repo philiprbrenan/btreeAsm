@@ -402,6 +402,27 @@ chipStop = true;
        };
      }
 
+    void combine(Stuck Source)                                                  // Combine a stuck from the specified source to this stuck
+     {for (int i = 0; i < maxStuckSize; i++)
+       {keys[i].combine(Source.keys[i]);
+        data[i].combine(Source.data[i]);
+       }
+     }
+
+    void combine(Verilog v, Stuck Source)                                       // Combine a stuck from the specified source to this stuck
+     {for (int i = 0; i < maxStuckSize; i++)
+       {keys[i].combine(v, Source.keys[i]);
+        data[i].combine(v, Source.data[i]);
+       }
+     }
+
+    void Combine(Stuck Source)                                                  // Combine a stuck from the specified source to this stuck as an instruction
+     {P.new Instruction()
+       {void action()           {combine(   Source);}
+        void verilog(Verilog v) {combine(v, Source);}
+       };
+     }
+
     void copyDown(Stuck Source, int Power)                                      // Copy a stuck into itself or another stuck shifting the elements down in the stuck by a predetermined amount
      {final int delta = powerTwo(Power);
       for (int i = 0; i < maxStuckSize-delta; i++)
