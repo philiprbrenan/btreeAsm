@@ -1356,7 +1356,27 @@ chipStop = true;
 
 //D3 Merge                                                                      // Merge stucks in various ways
 
-    void merge(Stuck source)                                                    // Concatenate the indicated stuck onto the end of the current one
+    void merge(Stuck Source)                                                    // Concatenate the indicated stuck onto the end of the current one
+     {final Process.Register sum = P.new Register("sum", stuckAddressSize);     // Sum of the lengths of the two stucks
+      final Process.Register can = P.new Register("can", 1);                    // Can merge
+      sum.Sum(Source.size, size);
+      can.Le (sum, maxStuckSize);
+      P.new If(can)
+       {void Then()
+         {final Stuck s = new Stuck(P, "sourceCopy");
+          s.Copy(Source);
+          s.CopyUp(size);
+          Combine(s);
+          size.Add(Source.size);
+          MergeSuccess.One();
+         }
+        void Else()
+         {MergeSuccess.Zero();
+         }
+       };
+     }
+
+    void merge22(Stuck source)                                                    // Concatenate the indicated stuck onto the end of the current one
      {P.new Instruction()
        {void action()
          {final int S = source.size.registerGet();
@@ -7221,7 +7241,7 @@ Merge     : 0
   static void newTests()                                                        // Tests being worked on
    {//oldTests();
     //test_verilog_put();
-    test_copy();
+    test_mergeLeavesIntoRoot();
    }
 
   public static void main(String[] args)                                        // Test if called as a program
