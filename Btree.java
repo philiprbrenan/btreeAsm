@@ -459,7 +459,7 @@ chipStop = true;
      }
 
     void CopyDown(Process.Register Delta)                                       // Copy a stuck down into itself a variable number of places
-     {for (int i = logTwo(prevPowerOfTwo(maxStuckSize))-1; i >= 0; i--)
+     {for (int i = logTwo(prevPowerOfTwo(maxStuckSize)); i >= 0; i--)
        {final Stuck source = this;
         final int I = 1<<i, II = i;
         P.new Instruction()
@@ -512,7 +512,7 @@ chipStop = true;
 
 
     void CopyUp(Process.Register Delta)                                         // Copy a stuck up into itself a variable number of places
-     {for (int i = logTwo(prevPowerOfTwo(maxStuckSize))-1; i >= 0; i--)
+     {for (int i = logTwo(prevPowerOfTwo(maxStuckSize)); i >= 0; i--)
        {final Stuck source = this;
         final int I = 1<<i, II = i;
         P.new Instruction()
@@ -1421,7 +1421,7 @@ chipStop = true;
        };
      }
 
-    void merge22(Stuck Left, Stuck Right)                                         // Replace the current stuck with the concatenation of the two stucks indicated
+    void merge(Stuck Left, Stuck Right)                                         // Replace the current stuck with the concatenation of the two stucks indicated
      {final Process.Register sum = P.new Register("sum", 1+stuckAddressSize);   // Sum of the lengths of the two stucks
       final Process.Register can = P.new Register("can", 1);                    // Can merge
       sum.Sum(Left.size, Right.size);
@@ -1439,7 +1439,7 @@ chipStop = true;
        };
      }
 
-    void merge(Stuck Left, Stuck Right)                                         // Replace the current stuck with the concatenation of the two stucks indicated
+    void merge22(Stuck Left, Stuck Right)                                         // Replace the current stuck with the concatenation of the two stucks indicated
      {P.new Instruction()
        {void action()
          {final int L = Left .size.registerGet();
@@ -3029,6 +3029,111 @@ StuckIndex: 0
 Merge     : 0
 """);
 
+   }
+
+  static void test_merge_two()
+   {final Btree   b = new Btree(2, 8, 8, 8);
+    final Process P = b.new Process("copy");
+    final Stuck   s = b.new Stuck(P, "Source");
+    final Stuck   t = b.new Stuck(P, "Target");
+    final Process.Register index = P.new Register("Index", b.btreeAddressSize);
+    P.processTrace = true;
+    b.stuckIsLeaf .memorySet(1, 0);
+    b.stuckSize   .memorySet(4, 0);
+    b.stuckKeys.memorySet( 2, 0, 0); b.stuckData.memorySet( 3, 0, 0);
+    b.stuckKeys.memorySet( 4, 0, 1); b.stuckData.memorySet( 5, 0, 1);
+    b.stuckKeys.memorySet( 6, 0, 2); b.stuckData.memorySet( 7, 0, 2);
+    b.stuckKeys.memorySet( 8, 0, 3); b.stuckData.memorySet( 9, 0, 3);
+    b.stuckKeys.memorySet(10, 0, 4); b.stuckData.memorySet(11, 0, 4);
+    b.stuckKeys.memorySet(12, 0, 5); b.stuckData.memorySet(13, 0, 5);
+    b.stuckKeys.memorySet(14, 0, 6); b.stuckData.memorySet(15, 0, 6);
+    b.stuckKeys.memorySet(16, 0, 7); b.stuckData.memorySet(17, 0, 7);
+
+    b.stuckIsLeaf .memorySet(1, 1);
+    b.stuckSize   .memorySet(4, 1);
+    b.stuckKeys.memorySet( 3, 1, 0); b.stuckData.memorySet( 2, 1, 0);
+    b.stuckKeys.memorySet( 5, 1, 1); b.stuckData.memorySet( 4, 1, 1);
+    b.stuckKeys.memorySet( 7, 1, 2); b.stuckData.memorySet( 6, 1, 2);
+    b.stuckKeys.memorySet( 9, 1, 3); b.stuckData.memorySet( 8, 1, 3);
+    b.stuckKeys.memorySet(11, 1, 4); b.stuckData.memorySet(10, 1, 4);
+    b.stuckKeys.memorySet(13, 1, 5); b.stuckData.memorySet(12, 1, 5);
+    b.stuckKeys.memorySet(15, 1, 6); b.stuckData.memorySet(14, 1, 6);
+    b.stuckKeys.memorySet(17, 1, 7); b.stuckData.memorySet(16, 1, 7);
+
+    t.stuckGetRoot();
+    index.RegisterSet(1);
+    s.stuckGet(index);
+
+    b.maxSteps = 200;
+    b.chipRun();
+
+    //stop(t.dump());
+    ok(t.dump(), """
+Stuck: Target size: 4, leaf: 1, root
+ 0     2 =>    3
+ 1     4 =>    5
+ 2     6 =>    7
+ 3     8 =>    9
+ 4    10 =>   11
+ 5    12 =>   13
+ 6    14 =>   15
+ 7    16 =>   17
+Found     : 0
+Key       : 0
+FoundKey  : 0
+Data      : 0
+BtreeIndex: 0
+StuckIndex: 0
+Merge     : 0
+""");
+
+    //stop(s.dump());
+    ok(s.dump(), """
+Stuck: Source size: 4, leaf: 1, index: 1
+ 0     3 =>    2
+ 1     5 =>    4
+ 2     7 =>    6
+ 3     9 =>    8
+ 4    11 =>   10
+ 5    13 =>   12
+ 6    15 =>   14
+ 7    17 =>   16
+Found     : 0
+Key       : 0
+FoundKey  : 0
+Data      : 0
+BtreeIndex: 0
+StuckIndex: 0
+Merge     : 0
+""");
+
+    P.processClear();
+    t.stuckGetRoot();
+    t.Pop();
+    index.RegisterSet(1);
+    s.stuckGet(index);
+    t.merge(s);
+    b.chipRun();
+
+    //stop(t.dump());
+    ok(t.dump(), """
+Stuck: Target size: 7, leaf: 1, root
+ 0     2 =>    3
+ 1     4 =>    5
+ 2     6 =>    7
+ 3     3 =>    2
+ 4     5 =>    4
+ 5     7 =>    6
+ 6     9 =>    8
+ 7    11 =>   10
+Found     : 0
+Key       : 8
+FoundKey  : 0
+Data      : 9
+BtreeIndex: 0
+StuckIndex: 0
+Merge     : 1
+""");
    }
 
   static void test_create1()
@@ -5711,11 +5816,7 @@ Merge     : 0
          };
 
         b.delete(k);
-P.new Instruction()
- {void action()
-   {say("AAAA", b.btreePrint());
-   }
-};
+
         P.new Instruction()
          {void action()
            {t.append(b.btreePrint());
@@ -7219,6 +7320,7 @@ P.new Instruction()
 
   static void oldTests()                                                        // Tests thought to be in good shape
    {test_copy();
+    test_merge_two();
     test_create1();
     test_create2();
     test_push();
@@ -7266,9 +7368,10 @@ P.new Instruction()
    }
 
   static void newTests()                                                        // Tests being worked on
-   {//oldTests();
+   {oldTests();
     //test_verilog_put();
-    test_delete_descending();
+    //test_delete_descending();
+    //test_merge_two();
    }
 
   public static void main(String[] args)                                        // Test if called as a program
