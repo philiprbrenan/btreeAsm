@@ -1373,8 +1373,7 @@ chipStop = true;
           MergeSuccess.one();
          }
         void verilog(Verilog v)
-         {MergeSuccess.zero(v);
-          v.new Case(maxStuckSize+1, size.registerName())
+         {v.new Case(maxStuckSize+1, size.registerName())
            {void Choice(int T)
              {v.new Case(maxStuckSize+1-T, source.size.registerName())
                {void Choice(int S)
@@ -1388,6 +1387,9 @@ chipStop = true;
                     MergeSuccess.one(v);
                    }
                  };
+                void Default()
+                  {MergeSuccess.zero(v);
+                  }
                };
              }
            };
