@@ -1422,6 +1422,24 @@ chipStop = true;
      }
 
     void merge(Stuck Left, Stuck Right)                                         // Replace the current stuck with the concatenation of the two stucks indicated
+     {final Process.Register sum = P.new Register("sum", 1+stuckAddressSize);   // Sum of the lengths of the two stucks
+      final Process.Register can = P.new Register("can", 1);                    // Can merge
+      sum.Sum(Left.size, Right.size);
+      can.Le (sum, maxStuckSize);
+      P.new If (can)
+       {void Then()
+         {Clear();
+          merge(Left);
+          merge(Right);
+          MergeSuccess.One();
+         }
+        void Else()
+         {MergeSuccess.Zero();
+         }
+       };
+     }
+
+    void merge22(Stuck Left, Stuck Right)                                         // Replace the current stuck with the concatenation of the two stucks indicated
      {P.new Instruction()
        {void action()
          {final int L = Left .size.registerGet();
@@ -2966,7 +2984,7 @@ Merge     : 0
 
     //stop(t.dump());
     ok(t.dump(), """
-Stuck: Target size: 0, leaf: 0, root
+Stuck: Target size: 4, leaf: 1, root
  0    12 =>   13
  1    14 =>   15
  2    16 =>   17
@@ -2993,7 +3011,7 @@ Merge     : 0
 
     //stop(t.dump());
     ok(t.dump(), """
-Stuck: Target size: 0, leaf: 0, root
+Stuck: Target size: 4, leaf: 1, root
  0     0 =>    0
  1     0 =>    0
  2     0 =>    0
@@ -7243,10 +7261,8 @@ Merge     : 0
    }
 
   static void newTests()                                                        // Tests being worked on
-   {//oldTests();
+   {oldTests();
     //test_verilog_put();
-    //test_mergeLeavesIntoRoot();
-    test_delete_ascending();
    }
 
   public static void main(String[] args)                                        // Test if called as a program
