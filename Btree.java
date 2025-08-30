@@ -1380,7 +1380,7 @@ chipStop = true;
        };
      }
 
-    void merge22(Stuck source)                                                    // Concatenate the indicated stuck onto the end of the current one
+    void merge11(Stuck source)                                                    // Concatenate the indicated stuck onto the end of the current one
      {P.new Instruction()
        {void action()
          {final int S = source.size.registerGet();
@@ -1421,7 +1421,7 @@ chipStop = true;
        };
      }
 
-    void merge(Stuck Left, Stuck Right)                                         // Replace the current stuck with the concatenation of the two stucks indicated
+    void merge22(Stuck Left, Stuck Right)                                         // Replace the current stuck with the concatenation of the two stucks indicated
      {final Process.Register sum = P.new Register("sum", 1+stuckAddressSize);   // Sum of the lengths of the two stucks
       final Process.Register can = P.new Register("can", 1);                    // Can merge
       sum.Sum(Left.size, Right.size);
@@ -1439,7 +1439,7 @@ chipStop = true;
        };
      }
 
-    void merge22(Stuck Left, Stuck Right)                                         // Replace the current stuck with the concatenation of the two stucks indicated
+    void merge(Stuck Left, Stuck Right)                                         // Replace the current stuck with the concatenation of the two stucks indicated
      {P.new Instruction()
        {void action()
          {final int L = Left .size.registerGet();
@@ -3034,10 +3034,10 @@ Merge     : 0
   static void test_create1()
    {final Btree   b = new Btree(1, 4, 8, 8);
     final Process P = b.new Process("test");
-    b.stuckIsLeaf .memorySet(1, 0);
-    b.stuckSize   .memorySet(2, 0);
-    b.stuckKeys.memorySet(2, 0, 0); b.stuckData.memorySet(3, 0, 0);
-    b.stuckKeys.memorySet(4, 0, 1); b.stuckData.memorySet(5, 0, 1);
+    b.stuckIsLeaf.memorySet(1, 0);
+    b.stuckSize  .memorySet(2, 0);
+    b.stuckKeys  .memorySet(2, 0, 0); b.stuckData.memorySet(3, 0, 0);
+    b.stuckKeys  .memorySet(4, 0, 1); b.stuckData.memorySet(5, 0, 1);
 
     Stuck s = b.new Stuck(P, "Stuck");
     s.stuckGetRoot();
@@ -5711,6 +5711,11 @@ Merge     : 0
          };
 
         b.delete(k);
+P.new Instruction()
+ {void action()
+   {say("AAAA", b.btreePrint());
+   }
+};
         P.new Instruction()
          {void action()
            {t.append(b.btreePrint());
@@ -7261,8 +7266,9 @@ Merge     : 0
    }
 
   static void newTests()                                                        // Tests being worked on
-   {oldTests();
+   {//oldTests();
     //test_verilog_put();
+    test_delete_descending();
    }
 
   public static void main(String[] args)                                        // Test if called as a program
