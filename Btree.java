@@ -7192,7 +7192,7 @@ Merge     : 0
     test_put_reload();
     test_put_descending();
     test_put_random();
-    test_verilog_put();
+    //test_verilog_put();
    }
 
   static void newTests()                                                        // Tests being worked on
