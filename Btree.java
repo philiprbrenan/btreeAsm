@@ -219,9 +219,16 @@ chipStop = true;
     final Process.Register StuckIndex;                                          // Index of stuck in Btree in which the key should reside
     final Process.Register MergeSuccess;                                        // Whether a merge was completed successfully or not
 
-    Stuck(Process Process, String Name)                                         // Mirror a stuck in memory with one in registers.
+    final boolean compareable;                                                  // If true allocateregisters to premit keys to be located in log time
+
+    Stuck(Process Process, String Name)                                         // Mirror a stuck in memory with one in registers.  No comparisons will be performed on this stuck
+     {this(Process, Name, false);
+     }
+
+    Stuck(Process Process, String Name, boolean Compareable)                    // Mirror a stuck in memory with one in registers.
      {N();
       P            = Process;
+      compareable  = Compareable;
       stuckName    = Name;
       index        = P.register("index",    btreeAddressSize);                  // The address of the stuck in main memory
       size         = P.register("size",     stuckAddressSize);                  // Size of the stuck locally
@@ -233,8 +240,10 @@ chipStop = true;
       data         = new Process.Register[maxStuckSize];                        // Data in the stuck copied out of memory
       for (int i   = 0; i < maxStuckSize; i++)                                  // Create registers to hold stuck
        {keys[i]    = P.new Register("Key_"+i, bitsPerKey);                      // Keys in the stuck copied out of the memory of the btree into local registers
-        compares[i]= P.new Register("KeyCompares_"+i, 1);                       // The result of comparing the search key with each stuck key
-        collapse[i]= P.new Register("KeyCollapse_"+i, stuckAddressSize);        // The result of collapsing the comparisons
+        if (compareable)
+         {compares[i]= P.new Register("KeyCompares_"+i, 1);                     // The result of comparing the search key with each stuck key
+          collapse[i]= P.new Register("KeyCollapse_"+i, stuckAddressSize);      // The result of collapsing the comparisons
+         }
         data[i]    = P.new Register("Data_"+i, bitsPerData);                    // Data in the stuck copied out of the memory of the btree into local registers
        }
       gKeys = stuckKeys.memoryGetFromProcess(P);                                // Transactions to get each key in the stuck. Reuseing the transaction reduces generated Verilog code size by 30% at the cost of requiring each stuck Get/Set from/into memory to finish before the next one can start.
@@ -952,6 +961,7 @@ chipStop = true;
 
     void search_eq(Process.Register Key)                                        // Find the specified key if possible in the stuck
      {R(); final int N = size.registerGet();
+      if (!compareable) stop("Stuck "+stuckName+" was not declared compareable");
       Found.zero();
       for (int i = 0; i < N; ++i)
        {if (Found.registerGet() == 0)
@@ -1001,7 +1011,8 @@ chipStop = true;
      }
 
     void search_eq_parallel(Process.Register Key)                               // Find the specified key if possible in the stuck
-     {P.new Instruction()
+     {if (!compareable) stop("Stuck "+stuckName+" was not declared compareable");
+      P.new Instruction()
        {void action()
          {final int N = size.registerGet();
           for (int i = 0; i < maxStuckSize; ++i)                                // Compare each key
@@ -1079,6 +1090,7 @@ chipStop = true;
 
     void search_le(Process.Register Key)                                        // Find the first key in the stuck so that the search key is less than or equal to this key
      {R(); final int N = size.registerGet();
+      if (!compareable) stop("Stuck "+stuckName+" was not declared compareable");
       Found.zero();
       StuckIndex.registerSet(N);
       Data.copy(data[N]);
@@ -1137,7 +1149,8 @@ chipStop = true;
      }
 
     void search_le_parallel(Process.Register Key)                               // Find the specified key if possible in the stuck
-     {P.new Instruction()
+     {if (!compareable) stop("Stuck "+stuckName+" was not declared compareable");
+      P.new Instruction()
        {void action()
          {final int N = size.registerGet();
           if (true)                                                             // Compare first key
@@ -1495,61 +1508,6 @@ chipStop = true;
          }
        };
      }
-
-//      P.new Instruction()
-//       {void action()
-//         {final int L = Left .size.registerGet();
-//          final int R = Right.size.registerGet();
-//          MergeSuccess.zero();
-//          if (L + R + 1 >= maxStuckSize)                                        // Check size
-//           {return;
-//           }
-//
-//          for (int i = 0; i < L; ++i)                                           // Concatenate each key, data pair from source
-//           {keys[i].copy(Left.keys[i]);
-//            data[i].copy(Left.data[i]);
-//           }
-//          keys[L].copy(Key);                                                    // Place key over past last data element from left
-//          data[L].copy(Left.data[L]);
-//
-//          for (int i = 0; i < R; ++i)                                           // Concatenate each key, data pair from right
-//           {keys[L+i+1].copy(Right.keys[i]);
-//            data[L+i+1].copy(Right.data[i]);
-//           }
-//          data[L+R+1].copy(Right.data[R]);                                      // Past last data element from right
-//          size.registerSet(L+R+1);                                              // New size of target
-//          MergeSuccess.one();
-//         }
-//
-//        void verilog(Verilog v)
-//         {MergeSuccess.zero(v);
-//          v.new Case(maxStuckSize, Left.size.registerName())
-//           {void Choice(int L)
-//             {v.new Case(maxStuckSize-L, Right.size.registerName())
-//               {void Choice(int R)
-//                 {if (L + R + 1 < maxStuckSize)                                 // Check size
-//                   {for (int i = 0; i < L; ++i)                                 // Concatenate each key, data pair from source
-//                     {keys[i].copy(v, Left.keys[i]);
-//                      data[i].copy(v, Left.data[i]);
-//                     }
-//                    keys[L].copy(v, Key);                                       // Place key over past last data element from left
-//                    data[L].copy(v, Left.data[L]);
-//
-//                    for (int i = 0; i < R; ++i)                                 // Concatenate each key, data pair from right
-//                     {keys[L+i+1].copy(v, Right.keys[i]);
-//                      data[L+i+1].copy(v, Right.data[i]);
-//                     }
-//                    data[L+R+1].copy(v, Right.data[R]);                         // Past last data element from right
-//                    size.registerSet(v, L+R+1);                                 // New size of target
-//                    MergeSuccess.one(v);
-//                   }
-//                 }
-//               };
-//             }
-//           };
-//         }
-//       };
-//     }
 
 //D3 Is a Leaf                                                                  // Determine whether a stuck contains a leaf or a branch of a btree
 
@@ -2412,7 +2370,7 @@ chipStop = true;
   class Find extends Stuck                                                      // Find the leaf stuck associated with a key in the tree
    {final Process P;                                                            // Process to contain generated code
      Find(Process Process)
-     {super(Process, "stuck");
+     {super(Process, "stuck", true);
       P = Process;
      }
     Stuck stuck() {return (Stuck)this;}                                         // Stuck found
@@ -2488,7 +2446,7 @@ chipStop = true;
 
   public void put(Process.Register Key, Process.Register Data)                  // Insert a key, data pair into the tree or update and existing key with a new datum
    {final Process          P     = Key.registerProcess();                       // Process in which to write code
-    final Stuck            S     = new Stuck(P, "putParent");                   // Parent stuck
+    final Stuck            S     = new Stuck(P, "putParent", true);             // Parent stuck
     final Stuck            s     = new Stuck(P, "putChild");                    // Child stuck
     final FindAndInsert    f     = new FindAndInsert(P);                        // Find and insert
     final Process.Register c     = P.new Register("child",  btreeAddressSize);  // Current child in tree
@@ -2593,7 +2551,7 @@ chipStop = true;
 
   public void merge(Process.Register Key)                                       // Merge stucks on either side of the path to the key
    {final Process          P           = Key.registerProcess();
-    final Stuck            S           = new Stuck(P, "merge");
+    final Stuck            S           = new Stuck(P, "merge", true);
     final Process.Register s           = P.new Register("position", btreeAddressSize); // Current position in the btree
     final Process.Register stuckIndex  = P.new Register("index",    stuckAddressSize); // Position within current stuck
     final Process.Register stuckIndex1 = P.new Register("index1",   stuckAddressSize); // One step left of the current position
@@ -3944,7 +3902,7 @@ Stuck: stuck size: 3, leaf: 1, root
    {sayCurrentTestName();
     final Btree b = test_push();
     final Process P = b.processes.get("Stuck");
-    final Stuck   s = b.new Stuck(P, "stuck");
+    final Stuck   s = b.new Stuck(P, "stuck", true);
     final Process.Register k = s.Key;
     final Process.Register d = s.Data;
     final Process.Register i = s.StuckIndex;
@@ -3984,7 +3942,7 @@ Stuck: stuck size: 3, leaf: 1, root
    {sayCurrentTestName();
     final Btree b = test_push();
     final Process P = b.processes.get("Stuck");
-    final Stuck   s = b.new Stuck(P, "stuck");
+    final Stuck   s = b.new Stuck(P, "stuck", true);
     final Process.Register k = s.Key;
     final Process.Register d = s.Data;
     final Process.Register i = s.StuckIndex;
@@ -4024,7 +3982,7 @@ Stuck: stuck size: 3, leaf: 1, root
     final int B = 8, S = 4, K = 8, D = 8;
     final Btree   b = new Btree(B, S+S, K, D);
     final Process P = b.new Process("Stuck");
-    final Stuck   s = b.new Stuck(P, "stuck");
+    final Stuck   s = b.new Stuck(P, "stuck", true);
     final Process.Register k = s.Key;
     final Process.Register l = P.register("l", K);
     final Process.Register d = P.register("d", D);
@@ -7310,7 +7268,7 @@ Merge     : 0
 
   static void newTests()                                                        // Tests being worked on
    {oldTests();
-    //test_verilog_put();
+    test_verilog_put();
    }
 
   public static void main(String[] args)                                        // Test if called as a program
