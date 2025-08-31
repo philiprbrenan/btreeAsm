@@ -1380,47 +1380,6 @@ chipStop = true;
        };
      }
 
-    void merge11(Stuck source)                                                    // Concatenate the indicated stuck onto the end of the current one
-     {P.new Instruction()
-       {void action()
-         {final int S = source.size.registerGet();
-          final int T =        size.registerGet();
-          MergeSuccess.zero();
-          if (S + T > maxStuckSize)
-           {return;
-           }
-          for (int i = 0; i < S; ++i)
-           {keys[T+i].copy(source.keys[i]);
-            data[T+i].copy(source.data[i]);
-           }
-          size.add(source.size);
-          MergeSuccess.one();
-         }
-        void verilog(Verilog v)
-         {v.new Case(maxStuckSize+1, size.registerName())
-           {void Choice(int T)
-             {v.new Case(maxStuckSize+1-T, source.size.registerName())
-               {void Choice(int S)
-                 {if (S + T <= maxStuckSize)
-                   {for (int i = 0; i < S; ++i)
-                     {final int I = i;
-                      keys[T+I].copy(v, source.keys[I]);
-                      data[T+I].copy(v, source.data[I]);
-                     }
-                    size.add(v, S);
-                    MergeSuccess.one(v);
-                   }
-                 };
-                void Default()
-                  {MergeSuccess.zero(v);
-                  }
-               };
-             }
-           };
-         }
-       };
-     }
-
     void merge(Stuck Left, Stuck Right)                                         // Replace the current stuck with the concatenation of the two stucks indicated
      {final Process.Register sum = P.new Register("sum", 1+stuckAddressSize);   // Sum of the lengths of the two stucks
       final Process.Register can = P.new Register("can", 1);                    // Can merge
@@ -1439,43 +1398,30 @@ chipStop = true;
        };
      }
 
-    void merge22(Stuck Left, Stuck Right)                                         // Replace the current stuck with the concatenation of the two stucks indicated
-     {P.new Instruction()
-       {void action()
-         {final int L = Left .size.registerGet();
-          final int R = Right.size.registerGet();
-          MergeSuccess.zero();
-          if (L + R <= maxStuckSize)
-           {clear();
-            MergeSuccess.one();
-           }
-         }
-        void verilog(Verilog v)
-         {MergeSuccess.zero(v);
-          v.new Case(maxStuckSize+1, Left .size.registerName())
-           {void Choice(int L)
-             {v.new Case(maxStuckSize+1-L, Right.size.registerName())
-               {void Choice(int R)
-                 {if (L + R <= maxStuckSize)
-                   {clear(v);
-                    MergeSuccess.one(v);
-                   }
-                 }
-               };
-             }
-           };
-         }
-       };
-
-      P.new If(MergeSuccess)
+    void mergeButOne(Process.Register Key, Stuck Source)                        // Concatenate the indicated stuck with a past last data element onto the end of the current stuck with a past last data element with the specified key inserted over the central past last data element separating the two.
+     {final Process.Register sum = P.new Register("sum", 1+stuckAddressSize);   // Sum of the lengths of the two stucks
+      final Process.Register can = P.new Register("can", 1);                    // Can merge
+      sum.Sum(Source.size, size);
+      sum.Inc();
+      can.Lt (sum, maxStuckSize);
+      P.new If (can)
        {void Then()
-         {merge(Left);
-          merge(Right);
+         {PastLastElement();
+          Push(Key, Data);
+          final Stuck s = new Stuck(P, "sourceCopy");
+          s.Copy(Source);
+          s.CopyUp(size);
+          Combine(s);
+          size.Add(Source.size);
+          MergeSuccess.One();
+         }
+        void Else()
+         {MergeSuccess.Zero();
          }
        };
      }
 
-    void mergeButOne(Process.Register Key, Stuck Source)                        // Concatenate the indicated stuck with a past last data element onto the end of the current stuck with a past last data element with the specified key inserted over the central past last data element separating the two.
+    void mergeButOne11(Process.Register Key, Stuck Source)                        // Concatenate the indicated stuck with a past last data element onto the end of the current stuck with a past last data element with the specified key inserted over the central past last data element separating the two.
      {MergeSuccess.Zero();                                                      // Assume we cannot merge
       P.new Instruction()
        {void action()
@@ -3287,22 +3233,8 @@ Chip: Btree            step: 0, maxSteps: 10, running: 0
 
       for (int i = 0; i < S; i++)
        {final int I = i;
-        P.new Instruction()
-         {void action()
-           {k.registerSet(I); d.registerSet(I+1);
-           }
-          void verilog(Verilog v)
-           {k.registerSet(v, I); d.registerSet(v, I+1);
-           }
-         };
-        P.new Instruction()
-         {void action()
-           {s.push(k, d);
-           }
-          void verilog(Verilog v)
-           {s.push(v, k, d);
-           }
-         };
+        k.RegisterSet(I); d.RegisterSet(I+1);
+        s.Push(k, d);
        }
       s.stuckPut();
 
@@ -4563,35 +4495,18 @@ Stuck: stuck size: 8, leaf: 1, root
 
     P.processClear();
     s.stuckGetRoot();
-    P.new Instruction()
-     {void action()
-       {o.registerSet(1);
-       }
-      void verilog(Verilog v)
-       {o.registerSet(v, 1);
-       }
-     };
-
+    o.RegisterSet(1);
     S.stuckGet(o);
 
-    P.new Instruction()
-     {void action()
-       {k.registerSet(11);
-        s.size.dec();
-        S.size.dec();
-       }
-      void verilog(Verilog v)
-       {k.registerSet(v, 11);
-        s.size.dec(v);
-        S.size.dec(v);
-       }
-     };
+    k.RegisterSet(11);
+    s.size.Dec();
+    S.size.Dec();
 
     s.mergeButOne(k, S);
 
     b.maxSteps = 100;
 
-    b.chipRun();
+    b.chipRunJava();
     //stop(s.dump());
     ok(s.dump(), """
 Stuck: stuck size: 7, leaf: 1, root
@@ -4602,11 +4517,11 @@ Stuck: stuck size: 7, leaf: 1, root
  4     0 =>    1
  5     1 =>    2
  6     2 =>    3
- 7     0 =>    4
+ 7     3 =>    4
 Found     : 0
-Key       : 0
+Key       : 3
 FoundKey  : 0
-Data      : 0
+Data      : 4
 BtreeIndex: 0
 StuckIndex: 0
 Merge     : 1
@@ -4625,34 +4540,16 @@ Merge     : 1
     final Process.Register R = P.register("R", 8);
 
     P.processClear();
-    P.new Instruction()
-     {void action()
-       {L.registerSet(1);
-        R.registerSet(2);
-       }
-      void verilog(Verilog v)
-       {L.registerSet(v, 1);
-        R.registerSet(v, 2);
-       }
-     };
+    L.RegisterSet(1);
+    R.RegisterSet(2);
     s.stuckGetRoot();
     l.stuckGet(L);
     r.stuckGet(R);
 
-    P.new Instruction()
-     {void action()
-       {s.clear();
-        l.size.dec();
-        r.size.dec();
-        k.registerSet(11);
-       }
-      void verilog(Verilog v)
-       {s.clear(v);
-        l.size.dec(v);
-        r.size.dec(v);
-        k.registerSet(v, 11);
-       }
-     };
+    s.Clear();
+    l.size.Dec();
+    r.size.Dec();
+    k.RegisterSet(11);
 
     s.mergeButOne(l, k, r);
 
@@ -7370,8 +7267,8 @@ Merge     : 0
   static void newTests()                                                        // Tests being worked on
    {oldTests();
     //test_verilog_put();
-    //test_delete_descending();
-    //test_merge_two();
+    //test_mergeButOne();
+    test_merge_two();
    }
 
   public static void main(String[] args)                                        // Test if called as a program
