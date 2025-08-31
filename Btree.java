@@ -256,11 +256,11 @@ chipStop = true;
       gLeaf = stuckIsLeaf.memoryGetFromProcess(P);                              // Transaction to discover whether this stuck is acting as a leaf or a branch
       sLeaf = stuckIsLeaf.memorySetIntoProcess(P);                              // Transaction to set the stuck in memory to  a leaf or a branch
       Found        = P.register("Found",        1);                             // Whether the key was found
-      Key          = P.register("Key",          bitsPerKey);                    // Data associated with the key if found
-      FoundKey     = P.register("FoundKey",     bitsPerKey);                    // Data associated with the key if found
+      Key          = P.register("Key",          bitsPerKey);                    // The key that was found as a result of an equal search
+      FoundKey     = P.register("FoundKey",     bitsPerKey);                    // Key found as a result of a less than or equal search
       Data         = P.register("Data",         bitsPerData);                   // Data associated with the key if found
       BtreeIndex   = P.register("BtreeIndex",   btreeAddressSize);              // Index of stuck in Btree in which the key should reside
-      StuckIndex   = P.register("StuckIndex",   stuckAddressSize);              // Index of stuck in Btree in which the key should reside
+      StuckIndex   = P.register("StuckIndex",   stuckAddressSize);              // Index in stuck of the key
       MergeSuccess = P.register("MergeSuccess", 1);                             // Whether a merge was completed successfully or not
      }
 
@@ -7267,7 +7267,7 @@ Merge     : 0
    }
 
   static void newTests()                                                        // Tests being worked on
-   {oldTests();
+   {//oldTests();
     test_verilog_put();
    }
 
