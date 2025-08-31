@@ -13,6 +13,7 @@ import java.time.*;
 import java.time.format.*;
 import java.util.*;
 import java.util.stream.*;
+import java.util.zip.GZIPOutputStream;
 
 //D1 Utility routines                                                           // Utility routines
 
@@ -784,6 +785,35 @@ public class Test                                                               
       f.append("/");
      }
     return ""+f+Names[N-1];
+   }
+
+  class CompressFile
+   {final  String sourceFile;
+    final  String compressedFile;
+           String message;
+    int           read = 0;
+    CompressFile(String SourceFile, String CompressedFile)
+     {final byte[] buffer = new byte[4096 * 4096];
+      sourceFile     = SourceFile;
+      compressedFile = CompressedFile;
+
+      try
+       (final FileInputStream  fis    = new FileInputStream(sourceFile);
+        final FileOutputStream fos    = new FileOutputStream(compressedFile);
+        final GZIPOutputStream gzipOS = new GZIPOutputStream(fos)
+       )
+       {int len;
+        while ((len = fis.read(buffer)) != -1)
+         {gzipOS.write(buffer, 0, len);
+          read += len;
+         }
+        message = "Compressed "+read+" bytes from "+sourceFile+" to "+compressedFile;
+       }
+      catch (IOException e)
+       {e.printStackTrace();
+        stop("Unable to comress file:", sourceFile, "to", compressedFile);
+       }
+     }
    }
 
 //D2 Timing                                                                     // Print log messages
