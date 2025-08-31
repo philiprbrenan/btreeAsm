@@ -278,7 +278,7 @@ module %s;                                                                      
     v.end();
 
     v.parallel = nonBlockingAssignment;                                         // Use parallel assign in Verilog being matched with Java
-    for(Process p: processes) p.processVerilog(v);                      // Generate
+    for(Process p: processes) p.processVerilog(v);                              // Generate
 
     chipPrintVerilog(v);
     v.endModule();
@@ -372,13 +372,13 @@ module %s(                                                                      
 
     for(Process p: processes) v.comment(p.processNameAndNumber());              // List processes
 
-    for(Process p: processes) p.processVerilog(v);                      // Generate verilog
+    for(Process p: processes) p.processVerilog(v);                              // Generate verilog
 
     v.endModule();
 
-
     final String source = fne(Verilog.folder, chipName, Verilog.ext);           // Source code in Verilog
     writeFile(source,  ""+v);
+    new CompressFile(source, fne(source, "zip"));                               // Compress the verilog file as it sometimes get quite big
     return source;
    }
 
