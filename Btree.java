@@ -607,6 +607,57 @@ chipStop = true;
        };
      }
 
+    void setPastLastKey(Process.Register Key)                                   // Set the  key past the top of the stuck
+     {R(); final int N = size.registerGet();
+      if (N >= maxStuckSize)
+       {P.processStop(3);
+       }
+      else
+       {keys[N].copy(Key);
+       }
+     }
+
+    void setPastLastKey                                                         // Set the key past the top of the stuck
+     (Verilog v, Process.Register Key)
+     {v.new Case(maxStuckSize, size.registerName())
+       {void Choice(int i)
+         {keys[i].copy(v, Key);
+         }
+       };
+     }
+
+    void SetPastLastKey(Process.Register Key)                                   // Set the key past the top of the stuck as an instruction
+     {P.new Instruction()
+       {void action()           {setPastLastKey(   Key); }
+        void verilog(Verilog v) {setPastLastKey(v, Key);}
+       };
+     }
+
+    void setPastLastData(Process.Register Data)                                 // Set the data element past the top of the stuck
+     {R(); final int N = size.registerGet();
+      if (N >= maxStuckSize)
+       {P.processStop(3);
+       }
+      else
+       {data[N].copy(Data);
+       }
+     }
+
+    void setPastLastData (Verilog v, Process.Register Data)                     // Set the data past the top of the stuck
+     {v.new Case(maxStuckSize, size.registerName())
+       {void Choice(int i)
+         {data[i].copy(v, Data);
+         }
+       };
+     }
+
+    void SetPastLastData(Process.Register Data)                                 // Set the data element past the top of the stuck as an instruction
+     {P.new Instruction()
+       {void action()           {setPastLastData(   Data); }
+        void verilog(Verilog v) {setPastLastData(v, Data);}
+       };
+     }
+
     void setPastLastElement(Process.Register Key, Process.Register Data)        // Push a key, data pair to the local copy of the stuck without changing the size
      {R(); final int N = size.registerGet();
       if (N >= maxStuckSize)
@@ -1421,103 +1472,84 @@ chipStop = true;
        };
      }
 
-    void mergeButOne11(Process.Register Key, Stuck Source)                        // Concatenate the indicated stuck with a past last data element onto the end of the current stuck with a past last data element with the specified key inserted over the central past last data element separating the two.
-     {MergeSuccess.Zero();                                                      // Assume we cannot merge
-      P.new Instruction()
-       {void action()
-         {final int S = Source.size.registerGet();
-          final int T =        size.registerGet();
-          if (S + T + 1 < maxStuckSize)
-           {keys[T].copy(Key);                                                  // Add key over past last data element of target
-            for (int i = 0; i < S; ++i)                                         // Concatenate each key, data pair from source
-             {keys[T+i+1].copy(Source.keys[i]);
-              data[T+i+1].copy(Source.data[i]);
-             }
-            data[S+T+1].copy(Source.data[S]);                                   // Past last data element from source
-            size.add1(Source.size);                                             // New size of target
-            MergeSuccess.one();
-           }
-         }
-
-        void verilog(Verilog v)
-         {v.new Case(maxStuckSize+1, size.registerName())
-           {void Choice(int T)
-             {v.new Case(maxStuckSize+1-T, Source.size.registerName())
-               {void Choice(int S)
-                 {if (S + T + 1 < maxStuckSize)
-                   {keys[T].copy(v, Key);                                       // Add key over past last data element of target
-                    for (int i = 0; i < S; ++i)                                 // Concatenate each key, data pair from source
-                     {final int I = i;
-                      keys[T+I+1].copy(v, Source.keys[I]);
-                      data[T+I+1].copy(v, Source.data[I]);
-                     }
-                    data[S+T+1].copy(v, Source.data[S]);                        // Past last data element from source
-                    size.add(v, S+1);                                           // New size of target
-                    MergeSuccess.one(v);
-                   }
-                 }
-               };
-             }
-           };
-         }
-       };
-     }
-
     void mergeButOne(Stuck Left, Process.Register Key, Stuck Right)             // Concatenate the past last left and right stucks separated by the key over the past last data element of the left stuck into the target
-     {P.new Instruction()
-       {void action()
-         {final int L = Left .size.registerGet();
-          final int R = Right.size.registerGet();
-          MergeSuccess.zero();
-          if (L + R + 1 >= maxStuckSize)                                        // Check size
-           {return;
-           }
-
-          for (int i = 0; i < L; ++i)                                           // Concatenate each key, data pair from source
-           {keys[i].copy(Left.keys[i]);
-            data[i].copy(Left.data[i]);
-           }
-          keys[L].copy(Key);                                                    // Place key over past last data element from left
-          data[L].copy(Left.data[L]);
-
-          for (int i = 0; i < R; ++i)                                           // Concatenate each key, data pair from right
-           {keys[L+i+1].copy(Right.keys[i]);
-            data[L+i+1].copy(Right.data[i]);
-           }
-          data[L+R+1].copy(Right.data[R]);                                      // Past last data element from right
-          size.registerSet(L+R+1);                                              // New size of target
-          MergeSuccess.one();
+     {final Process.Register sum = P.new Register("sum", 1+stuckAddressSize);   // Sum of the lengths of the two stucks
+      final Process.Register can = P.new Register("can", 1);                    // Can merge
+      sum.Sum(Left.size, Right.size);
+      sum.Inc();
+      can.Lt (sum, maxStuckSize);
+      P.new If (can)
+       {void Then()
+         {Copy(Left);
+          SetPastLastKey(Key);
+          size.Inc();
+          final Stuck s = new Stuck(P, "sourceCopy");
+          s.Copy(Right);
+          s.CopyUp(size);
+          Combine(s);
+          size.Add(Right.size);
+          MergeSuccess.One();
          }
-
-        void verilog(Verilog v)
-         {MergeSuccess.zero(v);
-          v.new Case(maxStuckSize, Left.size.registerName())
-           {void Choice(int L)
-             {v.new Case(maxStuckSize-L, Right.size.registerName())
-               {void Choice(int R)
-                 {if (L + R + 1 < maxStuckSize)                                 // Check size
-                   {for (int i = 0; i < L; ++i)                                 // Concatenate each key, data pair from source
-                     {keys[i].copy(v, Left.keys[i]);
-                      data[i].copy(v, Left.data[i]);
-                     }
-                    keys[L].copy(v, Key);                                       // Place key over past last data element from left
-                    data[L].copy(v, Left.data[L]);
-
-                    for (int i = 0; i < R; ++i)                                 // Concatenate each key, data pair from right
-                     {keys[L+i+1].copy(v, Right.keys[i]);
-                      data[L+i+1].copy(v, Right.data[i]);
-                     }
-                    data[L+R+1].copy(v, Right.data[R]);                         // Past last data element from right
-                    size.registerSet(v, L+R+1);                                 // New size of target
-                    MergeSuccess.one(v);
-                   }
-                 }
-               };
-             }
-           };
+        void Else()
+         {MergeSuccess.Zero();
          }
        };
      }
+
+//      P.new Instruction()
+//       {void action()
+//         {final int L = Left .size.registerGet();
+//          final int R = Right.size.registerGet();
+//          MergeSuccess.zero();
+//          if (L + R + 1 >= maxStuckSize)                                        // Check size
+//           {return;
+//           }
+//
+//          for (int i = 0; i < L; ++i)                                           // Concatenate each key, data pair from source
+//           {keys[i].copy(Left.keys[i]);
+//            data[i].copy(Left.data[i]);
+//           }
+//          keys[L].copy(Key);                                                    // Place key over past last data element from left
+//          data[L].copy(Left.data[L]);
+//
+//          for (int i = 0; i < R; ++i)                                           // Concatenate each key, data pair from right
+//           {keys[L+i+1].copy(Right.keys[i]);
+//            data[L+i+1].copy(Right.data[i]);
+//           }
+//          data[L+R+1].copy(Right.data[R]);                                      // Past last data element from right
+//          size.registerSet(L+R+1);                                              // New size of target
+//          MergeSuccess.one();
+//         }
+//
+//        void verilog(Verilog v)
+//         {MergeSuccess.zero(v);
+//          v.new Case(maxStuckSize, Left.size.registerName())
+//           {void Choice(int L)
+//             {v.new Case(maxStuckSize-L, Right.size.registerName())
+//               {void Choice(int R)
+//                 {if (L + R + 1 < maxStuckSize)                                 // Check size
+//                   {for (int i = 0; i < L; ++i)                                 // Concatenate each key, data pair from source
+//                     {keys[i].copy(v, Left.keys[i]);
+//                      data[i].copy(v, Left.data[i]);
+//                     }
+//                    keys[L].copy(v, Key);                                       // Place key over past last data element from left
+//                    data[L].copy(v, Left.data[L]);
+//
+//                    for (int i = 0; i < R; ++i)                                 // Concatenate each key, data pair from right
+//                     {keys[L+i+1].copy(v, Right.keys[i]);
+//                      data[L+i+1].copy(v, Right.data[i]);
+//                     }
+//                    data[L+R+1].copy(v, Right.data[R]);                         // Past last data element from right
+//                    size.registerSet(v, L+R+1);                                 // New size of target
+//                    MergeSuccess.one(v);
+//                   }
+//                 }
+//               };
+//             }
+//           };
+//         }
+//       };
+//     }
 
 //D3 Is a Leaf                                                                  // Determine whether a stuck contains a leaf or a branch of a btree
 
@@ -3773,24 +3805,9 @@ Stuck: stuck size: 4, leaf: 1, root
 
     P.processClear();
     s.stuckGetRoot();
-    P.new Instruction()
-     {void action()
-       {k.registerSet(5);
-        d.registerSet(55);
-       }
-      void verilog(Verilog v)
-       {k.registerSet(v, 5);
-        d.registerSet(v, 55);
-       }
-     };
-    P.new Instruction()
-     {void action()
-       {s.setPastLastElement(k, d);
-       }
-      void verilog(Verilog v)
-       {s.setPastLastElement(v, k, d);
-       }
-     };
+    k.RegisterSet(5);
+    d.RegisterSet(55);
+    s.SetPastLastElement(k, d);
 
     b.maxSteps = 100;
     b.chipRun();
@@ -3802,6 +3819,33 @@ Stuck: stuck size: 4, leaf: 1, root
  2     2 =>    3
  3     3 =>    4
  4     5 =>   55
+ 5     0 =>    0
+ 6     0 =>    0
+ 7     0 =>    0
+Found     : 0
+Key       : 0
+FoundKey  : 0
+Data      : 0
+BtreeIndex: 0
+StuckIndex: 0
+Merge     : 0
+""");
+
+    P.processClear();
+    s.stuckGetRoot();
+    k.RegisterSet(66);
+    d.RegisterSet(77);
+    s.SetPastLastKey (k);
+    s.SetPastLastData(d);
+    b.chipRun();
+    //stop(s.dump());
+    ok(""+s.dump(), """
+Stuck: stuck size: 4, leaf: 1, root
+ 0     0 =>    1
+ 1     1 =>    2
+ 2     2 =>    3
+ 3     3 =>    4
+ 4    66 =>   77
  5     0 =>    0
  6     0 =>    0
  7     0 =>    0
@@ -4557,7 +4601,7 @@ Merge     : 1
     b.chipRun();
     //stop(s.dump());
     ok(s.dump(), """
-Stuck: stuck size: 7, leaf: 1, root
+Stuck: stuck size: 7, leaf: 0, root
  0     0 =>    1
  1     1 =>    2
  2     2 =>    3
@@ -4565,7 +4609,7 @@ Stuck: stuck size: 7, leaf: 1, root
  4     0 =>    1
  5     1 =>    2
  6     2 =>    3
- 7     0 =>    4
+ 7     3 =>    4
 Found     : 0
 Key       : 0
 FoundKey  : 0
@@ -7267,8 +7311,6 @@ Merge     : 0
   static void newTests()                                                        // Tests being worked on
    {oldTests();
     //test_verilog_put();
-    //test_mergeButOne();
-    test_merge_two();
    }
 
   public static void main(String[] args)                                        // Test if called as a program
