@@ -2580,7 +2580,7 @@ chipStop = true;
            }
          };
 
-        P.new If (mergeBranchesIntoRoot(P))                                     // Try merging branches into root
+        P.new If (mergeBranchesIntoRoot())                                      // Try merging branches into root
          {void Then()
            {S.stuckGetRoot();                                                   // Reload root if the merge was successful
            }
@@ -2691,7 +2691,7 @@ chipStop = true;
            }
          };
 
-        P.new If (mergeBranchesIntoRoot(P))                                     // Try merging branches into root
+        P.new If (mergeBranchesIntoRoot()                                       // Try merging branches into root
          {void Then()
            {S.stuckGetRoot();                                                   // Reload root if the merge was successful
            }
@@ -4886,7 +4886,7 @@ Chip: Btree            step: 53, maxSteps: 100, running: 0
 """);
 
     P.processClear();
-    final Process.Register r = b.mergeBranchesIntoRoot(P);
+    final Process.Register r = b.mergeBranchesIntoRoot();
     b.chipRun();
     //stop(b.btreePrint());
     ok(b.btreePrint(), """
