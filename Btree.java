@@ -1880,10 +1880,9 @@ chipStop = true;
 
   private void splitBranchAtTop(Process.Register ParentIndex)                   // Split a full branch that is not the root and is the last child of its parent branch which is not full
    {Process     P = ParentIndex.registerProcess();
-    final Stuck p = new Stuck(P, "splitBranchAtTopParent");                     // Parent stuck
-    final Stuck c = new Stuck(P, "splitBranchAtTopChild");                      // Left split stuck
-    final Stuck l = new Stuck(P, "splitBranchAtTopLeft");                       // Left split stuck
-    final Stuck r = new Stuck(P, "splitBranchAtTopRight");                      // Right split stuck
+    final Stuck p = ParentStuck;                                                // Parent stuck
+    final Stuck l = LeftSplitStuck;                                             // Left split stuck
+    final Stuck c = RightSplitStuck;                                            // Right split stuck
     final Process.Register ck = P.new Register("childKey",   bitsPerKey);       // Index in memory of the left stuck
     final Process.Register cd = P.new Register("childData",  btreeAddressSize); // Index in memory of the left stuck
     final Process.Register il = P.new Register("indexLeft",  btreeAddressSize); // Index in memory of the left stuck
