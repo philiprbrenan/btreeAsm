@@ -1747,10 +1747,10 @@ chipStop = true;
   private void splitLeafNotTop                                                  // Split a full leaf that is not the root and is not the last child of its parent branch which is not full
    (Process.Register ParentIndex, Process.Register StuckIndex)
    {Process     P = ParentIndex.registerProcess();
-    final Stuck p = new Stuck(P, "splitLeafNotTopParent");                      // Parent stuck
-    final Stuck c = new Stuck(P, "splitLeafNotTopChild");                       // Left split stuck
-    final Stuck l = new Stuck(P, "splitLeafNotTopLeft");                        // Left split stuck
-    final Stuck r = new Stuck(P, "splitLeafNotTopRight");                       // Right split stuck
+    final Stuck p = ParentStuck;                                                // Parent stuck
+    final Stuck l = LeftSplitStuck;                                             // Left split stuck
+    final Stuck r = RightSplitStuck;                                            // Right split stuck
+    final Stuck c = new Stuck(P, "splitLeafNotTopChild"); //////////                     // Left split stuck
     final Process.Register ck = P.new Register("childKey",   bitsPerKey);       // Index in memory of the left stuck
     final Process.Register cd = P.new Register("childData",  btreeAddressSize); // Index in memory of the left stuck
     final Process.Register il = P.new Register("indexLeft",  btreeAddressSize); // Index in memory of the left stuck
@@ -1797,9 +1797,9 @@ chipStop = true;
 
   private void splitLeafAtTop(Process.Register ParentIndex)                     // Split a full leaf that is not the root and is the last child of its parent branch which is not full
    {Process     P = ParentIndex.registerProcess();
-    final Stuck p = new Stuck(P, "splitLeafAtTopParent");                       // Parent which must be a branch which is not full
+    final Stuck p = ParentStuck;                                                // Parent stuck
+    final Stuck l = LeftSplitStuck;                                             // Left split stuck
     final Stuck c = new Stuck(P, "splitLeafAtTopChild");                        // Child at index which must be a full leaf
-    final Stuck l = new Stuck(P, "splitLeafAtTopLeft");                         // Left split of leaf
     final Process.Register ci  = P.register("childIndex" , btreeAddressSize);   // Btree index of child
     final Process.Register cl  = P.register("leftIndex" ,  btreeAddressSize);   // Btree index of left child of child
     final Process.Register mk  = P.register("midKey",            bitsPerKey);   // Mid key
@@ -1833,10 +1833,10 @@ chipStop = true;
   private void splitBranchNotTop                                                // Split a full branch that is not the root and is not the last child of its parent branch which is not full
    (Process.Register ParentIndex, Process.Register StuckIndex)
    {Process     P = ParentIndex.registerProcess();
-    final Stuck p = new Stuck(P, "splitBranchNotTopParent");                    // Parent stuck
-    final Stuck c = new Stuck(P, "splitBranchNotTopChild");                     // Left split stuck
-    final Stuck l = new Stuck(P, "splitBranchNotTopLeft");                      // Left split stuck
-    final Stuck r = new Stuck(P, "splitBranchNotTopRight");                     // Right split stuck
+    final Stuck p = ParentStuck;                                                // Parent stuck
+    final Stuck l = LeftSplitStuck;                                             // Left split stuck
+    final Stuck r = RightSplitStuck;                                            // Right split stuck
+    final Stuck c = new Stuck(P, "splitBranchNotTopChild"); /////               // Left split stuck
     final Process.Register ck = P.new Register("childKey",   bitsPerKey);       // Index in memory of the left stuck
     final Process.Register cd = P.new Register("childData",  btreeAddressSize); // Index in memory of the left stuck
     final Process.Register il = P.new Register("indexLeft",  btreeAddressSize); // Index in memory of the left stuck
