@@ -1932,7 +1932,9 @@ chipStop = true;
      };
    }
 
-  private Process.Register mergeLeavesIntoRoot(Process P)                       // Merge two leaves into the root
+  //final Stuck ParentStuck = new Stuck(P, "Parent");                             // Parent stuck
+
+  private Process.Register mergeLeavesIntoRoot()                                // Merge two leaves into the root
    {final Stuck p = new Stuck(P, "mergeLeavesIntoRootParent");                  // Parent stuck
     final Stuck l = new Stuck(P, "mergeLeavesIntoRootLeft");                    // Left split stuck
     final Stuck r = new Stuck(P, "mergeLeavesIntoRootRight");                   // Right split stuck
@@ -2577,7 +2579,7 @@ chipStop = true;
            {P.GOto(end);
            }
          };
-        P.new If (mergeLeavesIntoRoot(P))                                       // Try merging leaves into root
+        P.new If (mergeLeavesIntoRoot())                                        // Try merging leaves into root
          {void Then()
            {P.GOto(end);                                                        // The root is now a leaf so there is nothing else to do
            }
@@ -2591,8 +2593,8 @@ chipStop = true;
 
         P.new Block()                                                           // Step down through tree
          {void code()
-           {mergeLeavesAtTop  (S, s);                                       // Try merging leaves at top into parent -  this forces non top siblings into top
-            mergeBranchesAtTop(S, s);                                       // Try merging branches at top into parent -  this forces non top siblings into top
+           {mergeLeavesAtTop  (S, s);                                           // Try merging leaves at top into parent -  this forces non top siblings into top
+            mergeBranchesAtTop(S, s);                                           // Try merging branches at top into parent -  this forces non top siblings into top
             S.stuckGet(s);
             S.search_le_parallel(Key);                                          // Step down from parent to child
 
@@ -2688,7 +2690,7 @@ chipStop = true;
            {P.GOto(end);
            }
          };
-        P.new If (mergeLeavesIntoRoot(P))                                       // Try merging leaves into root
+        P.new If (mergeLeavesIntoRoot())                                        // Try merging leaves into root
          {void Then()
            {P.GOto(end);                                                        // The root is now a leaf so there is nothing else to do
            }
@@ -4727,7 +4729,7 @@ Chip: Btree            step: 53, maxSteps: 100, running: 0
 """);
 
     P.processClear();
-    Process.Register r = b.mergeLeavesIntoRoot(P);
+    Process.Register r = b.mergeLeavesIntoRoot();
     b.chipRun();
     //stop(b.chipPrintMemory());
     //stop(b.btreePrint());
