@@ -1712,9 +1712,9 @@ chipStop = true;
    }
 
   private void splitRootBranch(Process P)                                       // Split a full root branch
-   {final Stuck p = new Stuck(P, "splitRootBranchParent");                      // Parent stuck
-    final Stuck l = new Stuck(P, "splitRootBranchLeft");                        // Left split stuck
-    final Stuck r = new Stuck(P, "splitRootBranchRight");                       // Right split stuck
+   {final Stuck p = ParentStuck;                                                // Parent stuck
+    final Stuck l = LeftSplitStuck;                                             // Left split stuck
+    final Stuck r = RightSplitStuck;                                            // Right split stuck
     final Process.Register il = P.new Register("indexLeft",  btreeAddressSize); // Index in memory of the left stuck
     final Process.Register ir = P.new Register("indexRight", btreeAddressSize); // Index in memory of the right stuck
     final Process.Register mk = P.new Register("midKey",     bitsPerKey);       // Mid key
