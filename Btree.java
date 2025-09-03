@@ -1664,7 +1664,7 @@ chipStop = true;
 
 //D2 Split                                                                      // Split nodes in half to increase the number of nodes in the tree
 
-  private void splitRootLeaf(Process P)                                         // Split a full root leaf
+  private void splitRootLeaf()                                                  // Split a full root leaf
    {final Stuck p = new Stuck(P, "splitRootLeafParent");                        // Parent stuck
     final Stuck l = new Stuck(P, "splitRootLeafLeft");                          // Left split stuck
     final Stuck r = new Stuck(P, "splitRootLeafRight");                         // Right split stuck
@@ -2485,7 +2485,7 @@ chipStop = true;
 
         P.new If(f.BtreeIndex)                                                  // Failed to insert because the root is a leaf which must be full else the operation would have succeeded
          {void Else()
-           {splitRootLeaf(P);                                                   // Split the leaf root to make room
+           {splitRootLeaf();                                                    // Split the leaf root to make room
             f.findAndInsert(Key, Data);                                         // Splitting a leaf root will make more space in the tree so this operation will now succeed
             P.GOto(oEnd);                                                       // Direct insertion succeeded so nothing more to do
            }
@@ -4728,7 +4728,7 @@ Chip: Btree            step: 53, maxSteps: 100, running: 0
     k.RegisterSet(4); d.RegisterSet(5); f.findAndInsert(k, d);
     k.RegisterSet(3); d.RegisterSet(4); f.findAndInsert(k, d);
 
-    b.splitRootLeaf(P);
+    b.splitRootLeaf();
     b.chipRun();
     //stop(b.btreePrint());
     ok(b.btreePrint(), """
@@ -4769,7 +4769,7 @@ Chip: Btree            step: 53, maxSteps: 100, running: 0
     k.RegisterSet(40); d.RegisterSet(50); f.findAndInsert(k, d);
     k.RegisterSet(30); d.RegisterSet(40); f.findAndInsert(k, d);
 
-    b.splitRootLeaf(P);
+    b.splitRootLeaf();
 
     k.RegisterSet(50); d.RegisterSet(60); f.findAndInsert(k, d);
     k.RegisterSet(60); d.RegisterSet(70); f.findAndInsert(k, d);
@@ -4874,7 +4874,7 @@ Chip: Btree            step: 53, maxSteps: 100, running: 0
     k.RegisterSet(40); d.RegisterSet(50); f.findAndInsert(k, d);
     k.RegisterSet(30); d.RegisterSet(40); f.findAndInsert(k, d);
 
-    b.splitRootLeaf(P);
+    b.splitRootLeaf();
 
     k.RegisterSet(50); d.RegisterSet(60); f.findAndInsert(k, d);
     k.RegisterSet(60); d.RegisterSet(70); f.findAndInsert(k, d);
@@ -5102,7 +5102,7 @@ Merge     : 0
     k.RegisterSet(40); d.RegisterSet(50); f.findAndInsert(k, d);
     k.RegisterSet(30); d.RegisterSet(40); f.findAndInsert(k, d);
 
-    b.splitRootLeaf(P);
+    b.splitRootLeaf();
     k.RegisterSet(50); d.RegisterSet(60); f.findAndInsert(k, d);
     k.RegisterSet(60); d.RegisterSet(70); f.findAndInsert(k, d);
 
@@ -5180,7 +5180,7 @@ Merge     : 0
     k.RegisterSet(40); d.RegisterSet(50); s.Push(k, d);
     s.stuckPut();
 
-    b.splitRootLeaf(P);
+    b.splitRootLeaf();
     b.chipRun();
     //stop(b.chipPrintMemory());
     //stop(b.btreePrint());
@@ -7288,9 +7288,8 @@ Merge     : 0
    }
 
   static void newTests()                                                        // Tests being worked on
-   {//oldTests();
+   {oldTests();
     //test_verilog_put();
-    test_allocate();
    }
 
   public static void main(String[] args)                                        // Test if called as a program
