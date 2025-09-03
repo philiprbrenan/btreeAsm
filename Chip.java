@@ -378,7 +378,7 @@ module %s(                                                                      
 
     final String source = fne(Verilog.folder, chipName, Verilog.ext);           // Source code in Verilog
     writeFile(source,  ""+v);
-    new CompressFile(source, fne(source, "zip"));                               // Compress the verilog file as it sometimes get quite big
+//  new CompressFile(source, fne(source, "zip"));                               // Compress the verilog file as it sometimes get quite big
     return source;
    }
 
@@ -399,7 +399,7 @@ module %s(                                                                      
     final String       sdcFile = fne(Verilog.folder, chipName, Verilog.sdcExt); // Constraints file
     final String       logFile = fne(Verilog.folder, chipName, "log");          // Log file from Silicon Compiler
     final String    launchFile = fne(Verilog.folder, chipName, "sh");           // Launch file to run silicon compiler
-    final String   dockerImage = "ghcr.io/philiprbrenan/btreeasm:latest";       // Docker image
+    final String   dockerImage = "appaapps/openroad:latest";                    // Docker image
     final StringBuilder python = new StringBuilder();
     final StringBuilder    sdc = new StringBuilder();
     final StringBuilder launch = new StringBuilder();
@@ -416,7 +416,9 @@ module %s(                                                                      
      {final String v = Verilog.folder;
       final String f = fn(resultsFolder, description());
       launch.append(String.format("""
-git fetch origin && git reset --hard @{u}  # Fetch changes from remote ovewriting any local changes
+echo "rsync -r /home/phil/btreeAsm a: # Copy local files to aws"
+#git fetch origin && git reset --hard @{u}  # Fetch changes from remote ovewriting any local changes
+#gzip -dc verilog/Btree.v.gz > verilog/Btree.v # Unzip as large verilog source cannot be stored on github
 mkdir -p %s
 docker pull %s
 docker run --rm -it -v ~/btreeAsm/:/root/btreeAsm -w /root/btreeAsm %s bash -ic "source /root/sc/bin/activate; python3 /root/btreeAsm/verilog/Btree.py"
