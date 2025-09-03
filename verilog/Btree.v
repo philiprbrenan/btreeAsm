@@ -1191,7 +1191,7 @@ module Btree;                                                                   
           begin
             integer f;
             f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:0514:<init>|  Chip.java:0678:<init>|  Chip.java:0677:RegisterSet|  Btree.java:7161:test_put_random|  Btree.java:7273:oldTests|  Btree.java:7278:newTests|  Btree.java:7284:main|");
+            $fdisplay(f, "Location: Chip.java:0514:<init>|  Chip.java:0678:<init>|  Chip.java:0677:RegisterSet|  Btree.java:7163:test_put_random|  Btree.java:7275:oldTests|  Btree.java:7280:newTests|  Btree.java:7286:main|");
             $fclose(f);
           end
         end
@@ -1330,7 +1330,7 @@ module Btree;                                                                   
           begin
             integer f;
             f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:0514:<init>|  Btree.java:7166:<init>|  Btree.java:7165:code|  Chip.java:0532:<init>|  Btree.java:7164:<init>|  Btree.java:7163:test_put_random|  Btree.java:7273:oldTests|  Btree.java:7278:newTests|  Btree.java:7284:main|");
+            $fdisplay(f, "Location: Chip.java:0514:<init>|  Btree.java:7168:<init>|  Btree.java:7167:code|  Chip.java:0532:<init>|  Btree.java:7166:<init>|  Btree.java:7165:test_put_random|  Btree.java:7275:oldTests|  Btree.java:7280:newTests|  Btree.java:7286:main|");
             $fclose(f);
           end
         end
@@ -1340,7 +1340,7 @@ module Btree;                                                                   
           begin
             integer f;
             f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:0514:<init>|  Chip.java:0821:<init>|  Chip.java:0820:Zero|  Btree.java:2387:findSearch|  Btree.java:2426:code|  Chip.java:0532:<init>|  Btree.java:2425:<init>|  Btree.java:2424:findAndInsert|  Btree.java:2466:put|  Btree.java:7180:code|  Chip.java:0532:<init>|  Btree.java:7164:<init>|  Btree.java:7163:test_put_random|  Btree.java:7273:oldTests|  Btree.java:7278:newTests|  Btree.java:7284:main|");
+            $fdisplay(f, "Location: Chip.java:0514:<init>|  Chip.java:0821:<init>|  Chip.java:0820:Zero|  Btree.java:2389:findSearch|  Btree.java:2428:code|  Chip.java:0532:<init>|  Btree.java:2427:<init>|  Btree.java:2426:findAndInsert|  Btree.java:2468:put|  Btree.java:7182:code|  Chip.java:0532:<init>|  Btree.java:7166:<init>|  Btree.java:7165:test_put_random|  Btree.java:7275:oldTests|  Btree.java:7280:newTests|  Btree.java:7286:main|");
             $fclose(f);
           end
         end
@@ -1350,7 +1350,7 @@ module Btree;                                                                   
           begin
             integer f;
             f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:0514:<init>|  Chip.java:0699:<init>|  Chip.java:0698:Copy|  Btree.java:0278:stuckGet|  Btree.java:2391:code|  Chip.java:0532:<init>|  Btree.java:2390:<init>|  Btree.java:2389:findSearch|  Btree.java:2426:code|  Chip.java:0532:<init>|  Btree.java:2425:<init>|  Btree.java:2424:findAndInsert|  Btree.java:2466:put|  Btree.java:7180:code|  Chip.java:0532:<init>|  Btree.java:7164:<init>|  Btree.java:7163:test_put_random|  Btree.java:7273:oldTests|  Btree.java:7278:newTests|  Btree.java:7284:main|");
+            $fdisplay(f, "Location: Chip.java:0514:<init>|  Chip.java:0699:<init>|  Chip.java:0698:Copy|  Btree.java:0278:stuckGet|  Btree.java:2393:code|  Chip.java:0532:<init>|  Btree.java:2392:<init>|  Btree.java:2391:findSearch|  Btree.java:2428:code|  Chip.java:0532:<init>|  Btree.java:2427:<init>|  Btree.java:2426:findAndInsert|  Btree.java:2468:put|  Btree.java:7182:code|  Chip.java:0532:<init>|  Btree.java:7166:<init>|  Btree.java:7165:test_put_random|  Btree.java:7275:oldTests|  Btree.java:7280:newTests|  Btree.java:7286:main|");
             $fclose(f);
           end
         end
@@ -1371,7 +1371,7 @@ module Btree;                                                                   
           begin
             integer f;
             f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:0514:<init>|  Btree.java:0289:<init>|  Btree.java:0288:stuckGet|  Btree.java:0279:stuckGet|  Btree.java:2391:code|  Chip.java:0532:<init>|  Btree.java:2390:<init>|  Btree.java:2389:findSearch|  Btree.java:2426:code|  Chip.java:0532:<init>|  Btree.java:2425:<init>|  Btree.java:2424:findAndInsert|  Btree.java:2466:put|  Btree.java:7180:code|  Chip.java:0532:<init>|  Btree.java:7164:<init>|  Btree.java:7163:test_put_random|  Btree.java:7273:oldTests|  Btree.java:7278:newTests|  Btree.java:7284:main|");
+            $fdisplay(f, "Location: Chip.java:0514:<init>|  Btree.java:0289:<init>|  Btree.java:0288:stuckGet|  Btree.java:0279:stuckGet|  Btree.java:2393:code|  Chip.java:0532:<init>|  Btree.java:2392:<init>|  Btree.java:2391:findSearch|  Btree.java:2428:code|  Chip.java:0532:<init>|  Btree.java:2427:<init>|  Btree.java:2426:findAndInsert|  Btree.java:2468:put|  Btree.java:7182:code|  Chip.java:0532:<init>|  Btree.java:7166:<init>|  Btree.java:7165:test_put_random|  Btree.java:7275:oldTests|  Btree.java:7280:newTests|  Btree.java:7286:main|");
             $fclose(f);
           end
         end
@@ -1382,7 +1382,7 @@ module Btree;                                                                   
           begin
             integer f;
             f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:1359:<init>|  Chip.java:1358:waitResultOfTransaction|  Btree.java:0302:stuckGet|  Btree.java:0279:stuckGet|  Btree.java:2391:code|  Chip.java:0532:<init>|  Btree.java:2390:<init>|  Btree.java:2389:findSearch|  Btree.java:2426:code|  Chip.java:0532:<init>|  Btree.java:2425:<init>|  Btree.java:2424:findAndInsert|  Btree.java:2466:put|  Btree.java:7180:code|  Chip.java:0532:<init>|  Btree.java:7164:<init>|  Btree.java:7163:test_put_random|  Btree.java:7273:oldTests|  Btree.java:7278:newTests|  Btree.java:7284:main|");
+            $fdisplay(f, "Location: Chip.java:1359:<init>|  Chip.java:1358:waitResultOfTransaction|  Btree.java:0302:stuckGet|  Btree.java:0279:stuckGet|  Btree.java:2393:code|  Chip.java:0532:<init>|  Btree.java:2392:<init>|  Btree.java:2391:findSearch|  Btree.java:2428:code|  Chip.java:0532:<init>|  Btree.java:2427:<init>|  Btree.java:2426:findAndInsert|  Btree.java:2468:put|  Btree.java:7182:code|  Chip.java:0532:<init>|  Btree.java:7166:<init>|  Btree.java:7165:test_put_random|  Btree.java:7275:oldTests|  Btree.java:7280:newTests|  Btree.java:7286:main|");
             $fclose(f);
           end
         end
@@ -1393,7 +1393,7 @@ module Btree;                                                                   
           begin
             integer f;
             f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:1359:<init>|  Chip.java:1358:waitResultOfTransaction|  Btree.java:0303:stuckGet|  Btree.java:0279:stuckGet|  Btree.java:2391:code|  Chip.java:0532:<init>|  Btree.java:2390:<init>|  Btree.java:2389:findSearch|  Btree.java:2426:code|  Chip.java:0532:<init>|  Btree.java:2425:<init>|  Btree.java:2424:findAndInsert|  Btree.java:2466:put|  Btree.java:7180:code|  Chip.java:0532:<init>|  Btree.java:7164:<init>|  Btree.java:7163:test_put_random|  Btree.java:7273:oldTests|  Btree.java:7278:newTests|  Btree.java:7284:main|");
+            $fdisplay(f, "Location: Chip.java:1359:<init>|  Chip.java:1358:waitResultOfTransaction|  Btree.java:0303:stuckGet|  Btree.java:0279:stuckGet|  Btree.java:2393:code|  Chip.java:0532:<init>|  Btree.java:2392:<init>|  Btree.java:2391:findSearch|  Btree.java:2428:code|  Chip.java:0532:<init>|  Btree.java:2427:<init>|  Btree.java:2426:findAndInsert|  Btree.java:2468:put|  Btree.java:7182:code|  Chip.java:0532:<init>|  Btree.java:7166:<init>|  Btree.java:7165:test_put_random|  Btree.java:7275:oldTests|  Btree.java:7280:newTests|  Btree.java:7286:main|");
             $fclose(f);
           end
         end
@@ -1404,7 +1404,7 @@ module Btree;                                                                   
           begin
             integer f;
             f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:1359:<init>|  Chip.java:1358:waitResultOfTransaction|  Btree.java:0305:stuckGet|  Btree.java:0279:stuckGet|  Btree.java:2391:code|  Chip.java:0532:<init>|  Btree.java:2390:<init>|  Btree.java:2389:findSearch|  Btree.java:2426:code|  Chip.java:0532:<init>|  Btree.java:2425:<init>|  Btree.java:2424:findAndInsert|  Btree.java:2466:put|  Btree.java:7180:code|  Chip.java:0532:<init>|  Btree.java:7164:<init>|  Btree.java:7163:test_put_random|  Btree.java:7273:oldTests|  Btree.java:7278:newTests|  Btree.java:7284:main|");
+            $fdisplay(f, "Location: Chip.java:1359:<init>|  Chip.java:1358:waitResultOfTransaction|  Btree.java:0305:stuckGet|  Btree.java:0279:stuckGet|  Btree.java:2393:code|  Chip.java:0532:<init>|  Btree.java:2392:<init>|  Btree.java:2391:findSearch|  Btree.java:2428:code|  Chip.java:0532:<init>|  Btree.java:2427:<init>|  Btree.java:2426:findAndInsert|  Btree.java:2468:put|  Btree.java:7182:code|  Chip.java:0532:<init>|  Btree.java:7166:<init>|  Btree.java:7165:test_put_random|  Btree.java:7275:oldTests|  Btree.java:7280:newTests|  Btree.java:7286:main|");
             $fclose(f);
           end
         end
@@ -1415,7 +1415,7 @@ module Btree;                                                                   
           begin
             integer f;
             f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:1359:<init>|  Chip.java:1358:waitResultOfTransaction|  Btree.java:0306:stuckGet|  Btree.java:0279:stuckGet|  Btree.java:2391:code|  Chip.java:0532:<init>|  Btree.java:2390:<init>|  Btree.java:2389:findSearch|  Btree.java:2426:code|  Chip.java:0532:<init>|  Btree.java:2425:<init>|  Btree.java:2424:findAndInsert|  Btree.java:2466:put|  Btree.java:7180:code|  Chip.java:0532:<init>|  Btree.java:7164:<init>|  Btree.java:7163:test_put_random|  Btree.java:7273:oldTests|  Btree.java:7278:newTests|  Btree.java:7284:main|");
+            $fdisplay(f, "Location: Chip.java:1359:<init>|  Chip.java:1358:waitResultOfTransaction|  Btree.java:0306:stuckGet|  Btree.java:0279:stuckGet|  Btree.java:2393:code|  Chip.java:0532:<init>|  Btree.java:2392:<init>|  Btree.java:2391:findSearch|  Btree.java:2428:code|  Chip.java:0532:<init>|  Btree.java:2427:<init>|  Btree.java:2426:findAndInsert|  Btree.java:2468:put|  Btree.java:7182:code|  Chip.java:0532:<init>|  Btree.java:7166:<init>|  Btree.java:7165:test_put_random|  Btree.java:7275:oldTests|  Btree.java:7280:newTests|  Btree.java:7286:main|");
             $fclose(f);
           end
         end
@@ -1434,7 +1434,7 @@ module Btree;                                                                   
           begin
             integer f;
             f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:0514:<init>|  Btree.java:0309:<init>|  Btree.java:0308:stuckGet|  Btree.java:0279:stuckGet|  Btree.java:2391:code|  Chip.java:0532:<init>|  Btree.java:2390:<init>|  Btree.java:2389:findSearch|  Btree.java:2426:code|  Chip.java:0532:<init>|  Btree.java:2425:<init>|  Btree.java:2424:findAndInsert|  Btree.java:2466:put|  Btree.java:7180:code|  Chip.java:0532:<init>|  Btree.java:7164:<init>|  Btree.java:7163:test_put_random|  Btree.java:7273:oldTests|  Btree.java:7278:newTests|  Btree.java:7284:main|");
+            $fdisplay(f, "Location: Chip.java:0514:<init>|  Btree.java:0309:<init>|  Btree.java:0308:stuckGet|  Btree.java:0279:stuckGet|  Btree.java:2393:code|  Chip.java:0532:<init>|  Btree.java:2392:<init>|  Btree.java:2391:findSearch|  Btree.java:2428:code|  Chip.java:0532:<init>|  Btree.java:2427:<init>|  Btree.java:2426:findAndInsert|  Btree.java:2468:put|  Btree.java:7182:code|  Chip.java:0532:<init>|  Btree.java:7166:<init>|  Btree.java:7165:test_put_random|  Btree.java:7275:oldTests|  Btree.java:7280:newTests|  Btree.java:7286:main|");
             $fclose(f);
           end
         end
@@ -1448,7 +1448,7 @@ module Btree;                                                                   
           begin
             integer f;
             f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Btree.java:1531:<init>|  Btree.java:1530:code|  Chip.java:0532:<init>|  Btree.java:1528:<init>|  Btree.java:1527:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2393:<init>|  Btree.java:2392:code|  Chip.java:0532:<init>|  Btree.java:2390:<init>|  Btree.java:2389:findSearch|  Btree.java:2426:code|  Chip.java:0532:<init>|  Btree.java:2425:<init>|  Btree.java:2424:findAndInsert|  Btree.java:2466:put|  Btree.java:7180:code|  Chip.java:0532:<init>|  Btree.java:7164:<init>|  Btree.java:7163:test_put_random|  Btree.java:7273:oldTests|  Btree.java:7278:newTests|  Btree.java:7284:main|");
+            $fdisplay(f, "Location: Btree.java:1531:<init>|  Btree.java:1530:code|  Chip.java:0532:<init>|  Btree.java:1528:<init>|  Btree.java:1527:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2395:<init>|  Btree.java:2394:code|  Chip.java:0532:<init>|  Btree.java:2392:<init>|  Btree.java:2391:findSearch|  Btree.java:2428:code|  Chip.java:0532:<init>|  Btree.java:2427:<init>|  Btree.java:2426:findAndInsert|  Btree.java:2468:put|  Btree.java:7182:code|  Chip.java:0532:<init>|  Btree.java:7166:<init>|  Btree.java:7165:test_put_random|  Btree.java:7275:oldTests|  Btree.java:7280:newTests|  Btree.java:7286:main|");
             $fclose(f);
           end
         end
@@ -1465,7 +1465,7 @@ module Btree;                                                                   
           begin
             integer f;
             f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:0514:<init>|  Btree.java:1024:<init>|  Btree.java:1023:search_eq_parallel|  Btree.java:2394:Leaf|  Btree.java:1546:code|  Chip.java:0532:<init>|  Btree.java:1528:<init>|  Btree.java:1527:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2393:<init>|  Btree.java:2392:code|  Chip.java:0532:<init>|  Btree.java:2390:<init>|  Btree.java:2389:findSearch|  Btree.java:2426:code|  Chip.java:0532:<init>|  Btree.java:2425:<init>|  Btree.java:2424:findAndInsert|  Btree.java:2466:put|  Btree.java:7180:code|  Chip.java:0532:<init>|  Btree.java:7164:<init>|  Btree.java:7163:test_put_random|  Btree.java:7273:oldTests|  Btree.java:7278:newTests|  Btree.java:7284:main|");
+            $fdisplay(f, "Location: Chip.java:0514:<init>|  Btree.java:1024:<init>|  Btree.java:1023:search_eq_parallel|  Btree.java:2396:Leaf|  Btree.java:1546:code|  Chip.java:0532:<init>|  Btree.java:1528:<init>|  Btree.java:1527:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2395:<init>|  Btree.java:2394:code|  Chip.java:0532:<init>|  Btree.java:2392:<init>|  Btree.java:2391:findSearch|  Btree.java:2428:code|  Chip.java:0532:<init>|  Btree.java:2427:<init>|  Btree.java:2426:findAndInsert|  Btree.java:2468:put|  Btree.java:7182:code|  Chip.java:0532:<init>|  Btree.java:7166:<init>|  Btree.java:7165:test_put_random|  Btree.java:7275:oldTests|  Btree.java:7280:newTests|  Btree.java:7286:main|");
             $fclose(f);
           end
         end
@@ -1482,7 +1482,7 @@ module Btree;                                                                   
           begin
             integer f;
             f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:0514:<init>|  Btree.java:1045:<init>|  Btree.java:1044:search_eq_parallel|  Btree.java:2394:Leaf|  Btree.java:1546:code|  Chip.java:0532:<init>|  Btree.java:1528:<init>|  Btree.java:1527:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2393:<init>|  Btree.java:2392:code|  Chip.java:0532:<init>|  Btree.java:2390:<init>|  Btree.java:2389:findSearch|  Btree.java:2426:code|  Chip.java:0532:<init>|  Btree.java:2425:<init>|  Btree.java:2424:findAndInsert|  Btree.java:2466:put|  Btree.java:7180:code|  Chip.java:0532:<init>|  Btree.java:7164:<init>|  Btree.java:7163:test_put_random|  Btree.java:7273:oldTests|  Btree.java:7278:newTests|  Btree.java:7284:main|");
+            $fdisplay(f, "Location: Chip.java:0514:<init>|  Btree.java:1045:<init>|  Btree.java:1044:search_eq_parallel|  Btree.java:2396:Leaf|  Btree.java:1546:code|  Chip.java:0532:<init>|  Btree.java:1528:<init>|  Btree.java:1527:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2395:<init>|  Btree.java:2394:code|  Chip.java:0532:<init>|  Btree.java:2392:<init>|  Btree.java:2391:findSearch|  Btree.java:2428:code|  Chip.java:0532:<init>|  Btree.java:2427:<init>|  Btree.java:2426:findAndInsert|  Btree.java:2468:put|  Btree.java:7182:code|  Chip.java:0532:<init>|  Btree.java:7166:<init>|  Btree.java:7165:test_put_random|  Btree.java:7275:oldTests|  Btree.java:7280:newTests|  Btree.java:7286:main|");
             $fclose(f);
           end
         end
@@ -1495,7 +1495,7 @@ module Btree;                                                                   
           begin
             integer f;
             f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:0514:<init>|  Btree.java:1045:<init>|  Btree.java:1044:search_eq_parallel|  Btree.java:2394:Leaf|  Btree.java:1546:code|  Chip.java:0532:<init>|  Btree.java:1528:<init>|  Btree.java:1527:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2393:<init>|  Btree.java:2392:code|  Chip.java:0532:<init>|  Btree.java:2390:<init>|  Btree.java:2389:findSearch|  Btree.java:2426:code|  Chip.java:0532:<init>|  Btree.java:2425:<init>|  Btree.java:2424:findAndInsert|  Btree.java:2466:put|  Btree.java:7180:code|  Chip.java:0532:<init>|  Btree.java:7164:<init>|  Btree.java:7163:test_put_random|  Btree.java:7273:oldTests|  Btree.java:7278:newTests|  Btree.java:7284:main|");
+            $fdisplay(f, "Location: Chip.java:0514:<init>|  Btree.java:1045:<init>|  Btree.java:1044:search_eq_parallel|  Btree.java:2396:Leaf|  Btree.java:1546:code|  Chip.java:0532:<init>|  Btree.java:1528:<init>|  Btree.java:1527:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2395:<init>|  Btree.java:2394:code|  Chip.java:0532:<init>|  Btree.java:2392:<init>|  Btree.java:2391:findSearch|  Btree.java:2428:code|  Chip.java:0532:<init>|  Btree.java:2427:<init>|  Btree.java:2426:findAndInsert|  Btree.java:2468:put|  Btree.java:7182:code|  Chip.java:0532:<init>|  Btree.java:7166:<init>|  Btree.java:7165:test_put_random|  Btree.java:7275:oldTests|  Btree.java:7280:newTests|  Btree.java:7286:main|");
             $fclose(f);
           end
         end
@@ -1532,7 +1532,7 @@ module Btree;                                                                   
           begin
             integer f;
             f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:0514:<init>|  Btree.java:1067:<init>|  Btree.java:1066:search_eq_parallel|  Btree.java:2394:Leaf|  Btree.java:1546:code|  Chip.java:0532:<init>|  Btree.java:1528:<init>|  Btree.java:1527:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2393:<init>|  Btree.java:2392:code|  Chip.java:0532:<init>|  Btree.java:2390:<init>|  Btree.java:2389:findSearch|  Btree.java:2426:code|  Chip.java:0532:<init>|  Btree.java:2425:<init>|  Btree.java:2424:findAndInsert|  Btree.java:2466:put|  Btree.java:7180:code|  Chip.java:0532:<init>|  Btree.java:7164:<init>|  Btree.java:7163:test_put_random|  Btree.java:7273:oldTests|  Btree.java:7278:newTests|  Btree.java:7284:main|");
+            $fdisplay(f, "Location: Chip.java:0514:<init>|  Btree.java:1067:<init>|  Btree.java:1066:search_eq_parallel|  Btree.java:2396:Leaf|  Btree.java:1546:code|  Chip.java:0532:<init>|  Btree.java:1528:<init>|  Btree.java:1527:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2395:<init>|  Btree.java:2394:code|  Chip.java:0532:<init>|  Btree.java:2392:<init>|  Btree.java:2391:findSearch|  Btree.java:2428:code|  Chip.java:0532:<init>|  Btree.java:2427:<init>|  Btree.java:2426:findAndInsert|  Btree.java:2468:put|  Btree.java:7182:code|  Chip.java:0532:<init>|  Btree.java:7166:<init>|  Btree.java:7165:test_put_random|  Btree.java:7275:oldTests|  Btree.java:7280:newTests|  Btree.java:7286:main|");
             $fclose(f);
           end
         end
@@ -1541,7 +1541,7 @@ module Btree;                                                                   
           begin
             integer f;
             f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:0573:<init>|  Chip.java:0572:GOto|  Btree.java:2395:Leaf|  Btree.java:1546:code|  Chip.java:0532:<init>|  Btree.java:1528:<init>|  Btree.java:1527:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2393:<init>|  Btree.java:2392:code|  Chip.java:0532:<init>|  Btree.java:2390:<init>|  Btree.java:2389:findSearch|  Btree.java:2426:code|  Chip.java:0532:<init>|  Btree.java:2425:<init>|  Btree.java:2424:findAndInsert|  Btree.java:2466:put|  Btree.java:7180:code|  Chip.java:0532:<init>|  Btree.java:7164:<init>|  Btree.java:7163:test_put_random|  Btree.java:7273:oldTests|  Btree.java:7278:newTests|  Btree.java:7284:main|");
+            $fdisplay(f, "Location: Chip.java:0573:<init>|  Chip.java:0572:GOto|  Btree.java:2397:Leaf|  Btree.java:1546:code|  Chip.java:0532:<init>|  Btree.java:1528:<init>|  Btree.java:1527:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2395:<init>|  Btree.java:2394:code|  Chip.java:0532:<init>|  Btree.java:2392:<init>|  Btree.java:2391:findSearch|  Btree.java:2428:code|  Chip.java:0532:<init>|  Btree.java:2427:<init>|  Btree.java:2426:findAndInsert|  Btree.java:2468:put|  Btree.java:7182:code|  Chip.java:0532:<init>|  Btree.java:7166:<init>|  Btree.java:7165:test_put_random|  Btree.java:7275:oldTests|  Btree.java:7280:newTests|  Btree.java:7286:main|");
             $fclose(f);
           end
         end
@@ -1550,7 +1550,7 @@ module Btree;                                                                   
           begin
             integer f;
             f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:0573:<init>|  Chip.java:0572:GOto|  Btree.java:1547:code|  Chip.java:0532:<init>|  Btree.java:1528:<init>|  Btree.java:1527:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2393:<init>|  Btree.java:2392:code|  Chip.java:0532:<init>|  Btree.java:2390:<init>|  Btree.java:2389:findSearch|  Btree.java:2426:code|  Chip.java:0532:<init>|  Btree.java:2425:<init>|  Btree.java:2424:findAndInsert|  Btree.java:2466:put|  Btree.java:7180:code|  Chip.java:0532:<init>|  Btree.java:7164:<init>|  Btree.java:7163:test_put_random|  Btree.java:7273:oldTests|  Btree.java:7278:newTests|  Btree.java:7284:main|");
+            $fdisplay(f, "Location: Chip.java:0573:<init>|  Chip.java:0572:GOto|  Btree.java:1547:code|  Chip.java:0532:<init>|  Btree.java:1528:<init>|  Btree.java:1527:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2395:<init>|  Btree.java:2394:code|  Chip.java:0532:<init>|  Btree.java:2392:<init>|  Btree.java:2391:findSearch|  Btree.java:2428:code|  Chip.java:0532:<init>|  Btree.java:2427:<init>|  Btree.java:2426:findAndInsert|  Btree.java:2468:put|  Btree.java:7182:code|  Chip.java:0532:<init>|  Btree.java:7166:<init>|  Btree.java:7165:test_put_random|  Btree.java:7275:oldTests|  Btree.java:7280:newTests|  Btree.java:7286:main|");
             $fclose(f);
           end
         end
@@ -1567,7 +1567,7 @@ module Btree;                                                                   
           begin
             integer f;
             f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:0514:<init>|  Btree.java:1162:<init>|  Btree.java:1161:search_le_parallel|  Btree.java:2398:Branch|  Btree.java:1550:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2393:<init>|  Btree.java:2392:code|  Chip.java:0532:<init>|  Btree.java:2390:<init>|  Btree.java:2389:findSearch|  Btree.java:2426:code|  Chip.java:0532:<init>|  Btree.java:2425:<init>|  Btree.java:2424:findAndInsert|  Btree.java:2466:put|  Btree.java:7180:code|  Chip.java:0532:<init>|  Btree.java:7164:<init>|  Btree.java:7163:test_put_random|  Btree.java:7273:oldTests|  Btree.java:7278:newTests|  Btree.java:7284:main|");
+            $fdisplay(f, "Location: Chip.java:0514:<init>|  Btree.java:1162:<init>|  Btree.java:1161:search_le_parallel|  Btree.java:2400:Branch|  Btree.java:1550:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2395:<init>|  Btree.java:2394:code|  Chip.java:0532:<init>|  Btree.java:2392:<init>|  Btree.java:2391:findSearch|  Btree.java:2428:code|  Chip.java:0532:<init>|  Btree.java:2427:<init>|  Btree.java:2426:findAndInsert|  Btree.java:2468:put|  Btree.java:7182:code|  Chip.java:0532:<init>|  Btree.java:7166:<init>|  Btree.java:7165:test_put_random|  Btree.java:7275:oldTests|  Btree.java:7280:newTests|  Btree.java:7286:main|");
             $fclose(f);
           end
         end
@@ -1584,7 +1584,7 @@ module Btree;                                                                   
           begin
             integer f;
             f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:0514:<init>|  Btree.java:1198:<init>|  Btree.java:1197:search_le_parallel|  Btree.java:2398:Branch|  Btree.java:1550:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2393:<init>|  Btree.java:2392:code|  Chip.java:0532:<init>|  Btree.java:2390:<init>|  Btree.java:2389:findSearch|  Btree.java:2426:code|  Chip.java:0532:<init>|  Btree.java:2425:<init>|  Btree.java:2424:findAndInsert|  Btree.java:2466:put|  Btree.java:7180:code|  Chip.java:0532:<init>|  Btree.java:7164:<init>|  Btree.java:7163:test_put_random|  Btree.java:7273:oldTests|  Btree.java:7278:newTests|  Btree.java:7284:main|");
+            $fdisplay(f, "Location: Chip.java:0514:<init>|  Btree.java:1198:<init>|  Btree.java:1197:search_le_parallel|  Btree.java:2400:Branch|  Btree.java:1550:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2395:<init>|  Btree.java:2394:code|  Chip.java:0532:<init>|  Btree.java:2392:<init>|  Btree.java:2391:findSearch|  Btree.java:2428:code|  Chip.java:0532:<init>|  Btree.java:2427:<init>|  Btree.java:2426:findAndInsert|  Btree.java:2468:put|  Btree.java:7182:code|  Chip.java:0532:<init>|  Btree.java:7166:<init>|  Btree.java:7165:test_put_random|  Btree.java:7275:oldTests|  Btree.java:7280:newTests|  Btree.java:7286:main|");
             $fclose(f);
           end
         end
@@ -1597,7 +1597,7 @@ module Btree;                                                                   
           begin
             integer f;
             f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:0514:<init>|  Btree.java:1198:<init>|  Btree.java:1197:search_le_parallel|  Btree.java:2398:Branch|  Btree.java:1550:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2393:<init>|  Btree.java:2392:code|  Chip.java:0532:<init>|  Btree.java:2390:<init>|  Btree.java:2389:findSearch|  Btree.java:2426:code|  Chip.java:0532:<init>|  Btree.java:2425:<init>|  Btree.java:2424:findAndInsert|  Btree.java:2466:put|  Btree.java:7180:code|  Chip.java:0532:<init>|  Btree.java:7164:<init>|  Btree.java:7163:test_put_random|  Btree.java:7273:oldTests|  Btree.java:7278:newTests|  Btree.java:7284:main|");
+            $fdisplay(f, "Location: Chip.java:0514:<init>|  Btree.java:1198:<init>|  Btree.java:1197:search_le_parallel|  Btree.java:2400:Branch|  Btree.java:1550:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2395:<init>|  Btree.java:2394:code|  Chip.java:0532:<init>|  Btree.java:2392:<init>|  Btree.java:2391:findSearch|  Btree.java:2428:code|  Chip.java:0532:<init>|  Btree.java:2427:<init>|  Btree.java:2426:findAndInsert|  Btree.java:2468:put|  Btree.java:7182:code|  Chip.java:0532:<init>|  Btree.java:7166:<init>|  Btree.java:7165:test_put_random|  Btree.java:7275:oldTests|  Btree.java:7280:newTests|  Btree.java:7286:main|");
             $fclose(f);
           end
         end
@@ -1652,7 +1652,7 @@ module Btree;                                                                   
           begin
             integer f;
             f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:0514:<init>|  Btree.java:1220:<init>|  Btree.java:1219:search_le_parallel|  Btree.java:2398:Branch|  Btree.java:1550:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2393:<init>|  Btree.java:2392:code|  Chip.java:0532:<init>|  Btree.java:2390:<init>|  Btree.java:2389:findSearch|  Btree.java:2426:code|  Chip.java:0532:<init>|  Btree.java:2425:<init>|  Btree.java:2424:findAndInsert|  Btree.java:2466:put|  Btree.java:7180:code|  Chip.java:0532:<init>|  Btree.java:7164:<init>|  Btree.java:7163:test_put_random|  Btree.java:7273:oldTests|  Btree.java:7278:newTests|  Btree.java:7284:main|");
+            $fdisplay(f, "Location: Chip.java:0514:<init>|  Btree.java:1220:<init>|  Btree.java:1219:search_le_parallel|  Btree.java:2400:Branch|  Btree.java:1550:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2395:<init>|  Btree.java:2394:code|  Chip.java:0532:<init>|  Btree.java:2392:<init>|  Btree.java:2391:findSearch|  Btree.java:2428:code|  Chip.java:0532:<init>|  Btree.java:2427:<init>|  Btree.java:2426:findAndInsert|  Btree.java:2468:put|  Btree.java:7182:code|  Chip.java:0532:<init>|  Btree.java:7166:<init>|  Btree.java:7165:test_put_random|  Btree.java:7275:oldTests|  Btree.java:7280:newTests|  Btree.java:7286:main|");
             $fclose(f);
           end
         end
@@ -1662,7 +1662,7 @@ module Btree;                                                                   
           begin
             integer f;
             f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:0514:<init>|  Chip.java:0699:<init>|  Chip.java:0698:Copy|  Btree.java:2399:Branch|  Btree.java:1550:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2393:<init>|  Btree.java:2392:code|  Chip.java:0532:<init>|  Btree.java:2390:<init>|  Btree.java:2389:findSearch|  Btree.java:2426:code|  Chip.java:0532:<init>|  Btree.java:2425:<init>|  Btree.java:2424:findAndInsert|  Btree.java:2466:put|  Btree.java:7180:code|  Chip.java:0532:<init>|  Btree.java:7164:<init>|  Btree.java:7163:test_put_random|  Btree.java:7273:oldTests|  Btree.java:7278:newTests|  Btree.java:7284:main|");
+            $fdisplay(f, "Location: Chip.java:0514:<init>|  Chip.java:0699:<init>|  Chip.java:0698:Copy|  Btree.java:2401:Branch|  Btree.java:1550:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2395:<init>|  Btree.java:2394:code|  Chip.java:0532:<init>|  Btree.java:2392:<init>|  Btree.java:2391:findSearch|  Btree.java:2428:code|  Chip.java:0532:<init>|  Btree.java:2427:<init>|  Btree.java:2426:findAndInsert|  Btree.java:2468:put|  Btree.java:7182:code|  Chip.java:0532:<init>|  Btree.java:7166:<init>|  Btree.java:7165:test_put_random|  Btree.java:7275:oldTests|  Btree.java:7280:newTests|  Btree.java:7286:main|");
             $fclose(f);
           end
         end
@@ -1671,7 +1671,7 @@ module Btree;                                                                   
           begin
             integer f;
             f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:0573:<init>|  Chip.java:0572:GOto|  Btree.java:2400:Branch|  Btree.java:1550:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2393:<init>|  Btree.java:2392:code|  Chip.java:0532:<init>|  Btree.java:2390:<init>|  Btree.java:2389:findSearch|  Btree.java:2426:code|  Chip.java:0532:<init>|  Btree.java:2425:<init>|  Btree.java:2424:findAndInsert|  Btree.java:2466:put|  Btree.java:7180:code|  Chip.java:0532:<init>|  Btree.java:7164:<init>|  Btree.java:7163:test_put_random|  Btree.java:7273:oldTests|  Btree.java:7278:newTests|  Btree.java:7284:main|");
+            $fdisplay(f, "Location: Chip.java:0573:<init>|  Chip.java:0572:GOto|  Btree.java:2402:Branch|  Btree.java:1550:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2395:<init>|  Btree.java:2394:code|  Chip.java:0532:<init>|  Btree.java:2392:<init>|  Btree.java:2391:findSearch|  Btree.java:2428:code|  Chip.java:0532:<init>|  Btree.java:2427:<init>|  Btree.java:2426:findAndInsert|  Btree.java:2468:put|  Btree.java:7182:code|  Chip.java:0532:<init>|  Btree.java:7166:<init>|  Btree.java:7165:test_put_random|  Btree.java:7275:oldTests|  Btree.java:7280:newTests|  Btree.java:7286:main|");
             $fclose(f);
           end
         end
@@ -1685,7 +1685,7 @@ module Btree;                                                                   
           begin
             integer f;
             f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:0605:<init>|  Chip.java:0604:<init>|  Btree.java:2429:<init>|  Btree.java:2428:code|  Chip.java:0532:<init>|  Btree.java:2425:<init>|  Btree.java:2424:findAndInsert|  Btree.java:2466:put|  Btree.java:7180:code|  Chip.java:0532:<init>|  Btree.java:7164:<init>|  Btree.java:7163:test_put_random|  Btree.java:7273:oldTests|  Btree.java:7278:newTests|  Btree.java:7284:main|");
+            $fdisplay(f, "Location: Chip.java:0605:<init>|  Chip.java:0604:<init>|  Btree.java:2431:<init>|  Btree.java:2430:code|  Chip.java:0532:<init>|  Btree.java:2427:<init>|  Btree.java:2426:findAndInsert|  Btree.java:2468:put|  Btree.java:7182:code|  Chip.java:0532:<init>|  Btree.java:7166:<init>|  Btree.java:7165:test_put_random|  Btree.java:7275:oldTests|  Btree.java:7280:newTests|  Btree.java:7286:main|");
             $fclose(f);
           end
         end
@@ -1715,7 +1715,7 @@ module Btree;                                                                   
           begin
             integer f;
             f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:0514:<init>|  Btree.java:0846:<init>|  Btree.java:0845:SetElementAt|  Btree.java:2430:Then|  Chip.java:0612:<init>|  Btree.java:2429:<init>|  Btree.java:2428:code|  Chip.java:0532:<init>|  Btree.java:2425:<init>|  Btree.java:2424:findAndInsert|  Btree.java:2466:put|  Btree.java:7180:code|  Chip.java:0532:<init>|  Btree.java:7164:<init>|  Btree.java:7163:test_put_random|  Btree.java:7273:oldTests|  Btree.java:7278:newTests|  Btree.java:7284:main|");
+            $fdisplay(f, "Location: Chip.java:0514:<init>|  Btree.java:0846:<init>|  Btree.java:0845:SetElementAt|  Btree.java:2432:Then|  Chip.java:0612:<init>|  Btree.java:2431:<init>|  Btree.java:2430:code|  Chip.java:0532:<init>|  Btree.java:2427:<init>|  Btree.java:2426:findAndInsert|  Btree.java:2468:put|  Btree.java:7182:code|  Chip.java:0532:<init>|  Btree.java:7166:<init>|  Btree.java:7165:test_put_random|  Btree.java:7275:oldTests|  Btree.java:7280:newTests|  Btree.java:7286:main|");
             $fclose(f);
           end
         end
@@ -1724,7 +1724,7 @@ module Btree;                                                                   
           begin
             integer f;
             f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:0614:<init>|  Chip.java:0613:<init>|  Btree.java:2429:<init>|  Btree.java:2428:code|  Chip.java:0532:<init>|  Btree.java:2425:<init>|  Btree.java:2424:findAndInsert|  Btree.java:2466:put|  Btree.java:7180:code|  Chip.java:0532:<init>|  Btree.java:7164:<init>|  Btree.java:7163:test_put_random|  Btree.java:7273:oldTests|  Btree.java:7278:newTests|  Btree.java:7284:main|");
+            $fdisplay(f, "Location: Chip.java:0614:<init>|  Chip.java:0613:<init>|  Btree.java:2431:<init>|  Btree.java:2430:code|  Chip.java:0532:<init>|  Btree.java:2427:<init>|  Btree.java:2426:findAndInsert|  Btree.java:2468:put|  Btree.java:7182:code|  Chip.java:0532:<init>|  Btree.java:7166:<init>|  Btree.java:7165:test_put_random|  Btree.java:7275:oldTests|  Btree.java:7280:newTests|  Btree.java:7286:main|");
             $fclose(f);
           end
         end
@@ -1734,7 +1734,7 @@ module Btree;                                                                   
           begin
             integer f;
             f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:0514:<init>|  Chip.java:0817:<init>|  Chip.java:0817:Lt|  Btree.java:2434:Else|  Chip.java:0622:<init>|  Btree.java:2429:<init>|  Btree.java:2428:code|  Chip.java:0532:<init>|  Btree.java:2425:<init>|  Btree.java:2424:findAndInsert|  Btree.java:2466:put|  Btree.java:7180:code|  Chip.java:0532:<init>|  Btree.java:7164:<init>|  Btree.java:7163:test_put_random|  Btree.java:7273:oldTests|  Btree.java:7278:newTests|  Btree.java:7284:main|");
+            $fdisplay(f, "Location: Chip.java:0514:<init>|  Chip.java:0817:<init>|  Chip.java:0817:Lt|  Btree.java:2436:Else|  Chip.java:0622:<init>|  Btree.java:2431:<init>|  Btree.java:2430:code|  Chip.java:0532:<init>|  Btree.java:2427:<init>|  Btree.java:2426:findAndInsert|  Btree.java:2468:put|  Btree.java:7182:code|  Chip.java:0532:<init>|  Btree.java:7166:<init>|  Btree.java:7165:test_put_random|  Btree.java:7275:oldTests|  Btree.java:7280:newTests|  Btree.java:7286:main|");
             $fclose(f);
           end
         end
@@ -1748,7 +1748,7 @@ module Btree;                                                                   
           begin
             integer f;
             f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:0605:<init>|  Chip.java:0604:<init>|  Btree.java:2437:<init>|  Btree.java:2436:Else|  Chip.java:0622:<init>|  Btree.java:2429:<init>|  Btree.java:2428:code|  Chip.java:0532:<init>|  Btree.java:2425:<init>|  Btree.java:2424:findAndInsert|  Btree.java:2466:put|  Btree.java:7180:code|  Chip.java:0532:<init>|  Btree.java:7164:<init>|  Btree.java:7163:test_put_random|  Btree.java:7273:oldTests|  Btree.java:7278:newTests|  Btree.java:7284:main|");
+            $fdisplay(f, "Location: Chip.java:0605:<init>|  Chip.java:0604:<init>|  Btree.java:2439:<init>|  Btree.java:2438:Else|  Chip.java:0622:<init>|  Btree.java:2431:<init>|  Btree.java:2430:code|  Chip.java:0532:<init>|  Btree.java:2427:<init>|  Btree.java:2426:findAndInsert|  Btree.java:2468:put|  Btree.java:7182:code|  Chip.java:0532:<init>|  Btree.java:7166:<init>|  Btree.java:7165:test_put_random|  Btree.java:7275:oldTests|  Btree.java:7280:newTests|  Btree.java:7286:main|");
             $fclose(f);
           end
         end
@@ -1765,7 +1765,7 @@ module Btree;                                                                   
           begin
             integer f;
             f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:0514:<init>|  Btree.java:1162:<init>|  Btree.java:1161:search_le_parallel|  Btree.java:2438:Then|  Chip.java:0612:<init>|  Btree.java:2437:<init>|  Btree.java:2436:Else|  Chip.java:0622:<init>|  Btree.java:2429:<init>|  Btree.java:2428:code|  Chip.java:0532:<init>|  Btree.java:2425:<init>|  Btree.java:2424:findAndInsert|  Btree.java:2466:put|  Btree.java:7180:code|  Chip.java:0532:<init>|  Btree.java:7164:<init>|  Btree.java:7163:test_put_random|  Btree.java:7273:oldTests|  Btree.java:7278:newTests|  Btree.java:7284:main|");
+            $fdisplay(f, "Location: Chip.java:0514:<init>|  Btree.java:1162:<init>|  Btree.java:1161:search_le_parallel|  Btree.java:2440:Then|  Chip.java:0612:<init>|  Btree.java:2439:<init>|  Btree.java:2438:Else|  Chip.java:0622:<init>|  Btree.java:2431:<init>|  Btree.java:2430:code|  Chip.java:0532:<init>|  Btree.java:2427:<init>|  Btree.java:2426:findAndInsert|  Btree.java:2468:put|  Btree.java:7182:code|  Chip.java:0532:<init>|  Btree.java:7166:<init>|  Btree.java:7165:test_put_random|  Btree.java:7275:oldTests|  Btree.java:7280:newTests|  Btree.java:7286:main|");
             $fclose(f);
           end
         end
@@ -1782,7 +1782,7 @@ module Btree;                                                                   
           begin
             integer f;
             f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:0514:<init>|  Btree.java:1198:<init>|  Btree.java:1197:search_le_parallel|  Btree.java:2438:Then|  Chip.java:0612:<init>|  Btree.java:2437:<init>|  Btree.java:2436:Else|  Chip.java:0622:<init>|  Btree.java:2429:<init>|  Btree.java:2428:code|  Chip.java:0532:<init>|  Btree.java:2425:<init>|  Btree.java:2424:findAndInsert|  Btree.java:2466:put|  Btree.java:7180:code|  Chip.java:0532:<init>|  Btree.java:7164:<init>|  Btree.java:7163:test_put_random|  Btree.java:7273:oldTests|  Btree.java:7278:newTests|  Btree.java:7284:main|");
+            $fdisplay(f, "Location: Chip.java:0514:<init>|  Btree.java:1198:<init>|  Btree.java:1197:search_le_parallel|  Btree.java:2440:Then|  Chip.java:0612:<init>|  Btree.java:2439:<init>|  Btree.java:2438:Else|  Chip.java:0622:<init>|  Btree.java:2431:<init>|  Btree.java:2430:code|  Chip.java:0532:<init>|  Btree.java:2427:<init>|  Btree.java:2426:findAndInsert|  Btree.java:2468:put|  Btree.java:7182:code|  Chip.java:0532:<init>|  Btree.java:7166:<init>|  Btree.java:7165:test_put_random|  Btree.java:7275:oldTests|  Btree.java:7280:newTests|  Btree.java:7286:main|");
             $fclose(f);
           end
         end
@@ -1795,7 +1795,7 @@ module Btree;                                                                   
           begin
             integer f;
             f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:0514:<init>|  Btree.java:1198:<init>|  Btree.java:1197:search_le_parallel|  Btree.java:2438:Then|  Chip.java:0612:<init>|  Btree.java:2437:<init>|  Btree.java:2436:Else|  Chip.java:0622:<init>|  Btree.java:2429:<init>|  Btree.java:2428:code|  Chip.java:0532:<init>|  Btree.java:2425:<init>|  Btree.java:2424:findAndInsert|  Btree.java:2466:put|  Btree.java:7180:code|  Chip.java:0532:<init>|  Btree.java:7164:<init>|  Btree.java:7163:test_put_random|  Btree.java:7273:oldTests|  Btree.java:7278:newTests|  Btree.java:7284:main|");
+            $fdisplay(f, "Location: Chip.java:0514:<init>|  Btree.java:1198:<init>|  Btree.java:1197:search_le_parallel|  Btree.java:2440:Then|  Chip.java:0612:<init>|  Btree.java:2439:<init>|  Btree.java:2438:Else|  Chip.java:0622:<init>|  Btree.java:2431:<init>|  Btree.java:2430:code|  Chip.java:0532:<init>|  Btree.java:2427:<init>|  Btree.java:2426:findAndInsert|  Btree.java:2468:put|  Btree.java:7182:code|  Chip.java:0532:<init>|  Btree.java:7166:<init>|  Btree.java:7165:test_put_random|  Btree.java:7275:oldTests|  Btree.java:7280:newTests|  Btree.java:7286:main|");
             $fclose(f);
           end
         end
@@ -1850,7 +1850,7 @@ module Btree;                                                                   
           begin
             integer f;
             f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:0514:<init>|  Btree.java:1220:<init>|  Btree.java:1219:search_le_parallel|  Btree.java:2438:Then|  Chip.java:0612:<init>|  Btree.java:2437:<init>|  Btree.java:2436:Else|  Chip.java:0622:<init>|  Btree.java:2429:<init>|  Btree.java:2428:code|  Chip.java:0532:<init>|  Btree.java:2425:<init>|  Btree.java:2424:findAndInsert|  Btree.java:2466:put|  Btree.java:7180:code|  Chip.java:0532:<init>|  Btree.java:7164:<init>|  Btree.java:7163:test_put_random|  Btree.java:7273:oldTests|  Btree.java:7278:newTests|  Btree.java:7284:main|");
+            $fdisplay(f, "Location: Chip.java:0514:<init>|  Btree.java:1220:<init>|  Btree.java:1219:search_le_parallel|  Btree.java:2440:Then|  Chip.java:0612:<init>|  Btree.java:2439:<init>|  Btree.java:2438:Else|  Chip.java:0622:<init>|  Btree.java:2431:<init>|  Btree.java:2430:code|  Chip.java:0532:<init>|  Btree.java:2427:<init>|  Btree.java:2426:findAndInsert|  Btree.java:2468:put|  Btree.java:7182:code|  Chip.java:0532:<init>|  Btree.java:7166:<init>|  Btree.java:7165:test_put_random|  Btree.java:7275:oldTests|  Btree.java:7280:newTests|  Btree.java:7286:main|");
             $fclose(f);
           end
         end
@@ -1890,7 +1890,7 @@ module Btree;                                                                   
           begin
             integer f;
             f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:0514:<init>|  Btree.java:0921:<init>|  Btree.java:0920:InsertElementAt|  Btree.java:2439:Then|  Chip.java:0612:<init>|  Btree.java:2437:<init>|  Btree.java:2436:Else|  Chip.java:0622:<init>|  Btree.java:2429:<init>|  Btree.java:2428:code|  Chip.java:0532:<init>|  Btree.java:2425:<init>|  Btree.java:2424:findAndInsert|  Btree.java:2466:put|  Btree.java:7180:code|  Chip.java:0532:<init>|  Btree.java:7164:<init>|  Btree.java:7163:test_put_random|  Btree.java:7273:oldTests|  Btree.java:7278:newTests|  Btree.java:7284:main|");
+            $fdisplay(f, "Location: Chip.java:0514:<init>|  Btree.java:0921:<init>|  Btree.java:0920:InsertElementAt|  Btree.java:2441:Then|  Chip.java:0612:<init>|  Btree.java:2439:<init>|  Btree.java:2438:Else|  Chip.java:0622:<init>|  Btree.java:2431:<init>|  Btree.java:2430:code|  Chip.java:0532:<init>|  Btree.java:2427:<init>|  Btree.java:2426:findAndInsert|  Btree.java:2468:put|  Btree.java:7182:code|  Chip.java:0532:<init>|  Btree.java:7166:<init>|  Btree.java:7165:test_put_random|  Btree.java:7275:oldTests|  Btree.java:7280:newTests|  Btree.java:7286:main|");
             $fclose(f);
           end
         end
@@ -1900,7 +1900,7 @@ module Btree;                                                                   
           begin
             integer f;
             f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:0514:<init>|  Chip.java:0828:<init>|  Chip.java:0827:One|  Btree.java:2440:Then|  Chip.java:0612:<init>|  Btree.java:2437:<init>|  Btree.java:2436:Else|  Chip.java:0622:<init>|  Btree.java:2429:<init>|  Btree.java:2428:code|  Chip.java:0532:<init>|  Btree.java:2425:<init>|  Btree.java:2424:findAndInsert|  Btree.java:2466:put|  Btree.java:7180:code|  Chip.java:0532:<init>|  Btree.java:7164:<init>|  Btree.java:7163:test_put_random|  Btree.java:7273:oldTests|  Btree.java:7278:newTests|  Btree.java:7284:main|");
+            $fdisplay(f, "Location: Chip.java:0514:<init>|  Chip.java:0828:<init>|  Chip.java:0827:One|  Btree.java:2442:Then|  Chip.java:0612:<init>|  Btree.java:2439:<init>|  Btree.java:2438:Else|  Chip.java:0622:<init>|  Btree.java:2431:<init>|  Btree.java:2430:code|  Chip.java:0532:<init>|  Btree.java:2427:<init>|  Btree.java:2426:findAndInsert|  Btree.java:2468:put|  Btree.java:7182:code|  Chip.java:0532:<init>|  Btree.java:7166:<init>|  Btree.java:7165:test_put_random|  Btree.java:7275:oldTests|  Btree.java:7280:newTests|  Btree.java:7286:main|");
             $fclose(f);
           end
         end
@@ -1909,7 +1909,7 @@ module Btree;                                                                   
           begin
             integer f;
             f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:0594:<init>|  Chip.java:0593:COntinue|  Btree.java:2441:Then|  Chip.java:0612:<init>|  Btree.java:2437:<init>|  Btree.java:2436:Else|  Chip.java:0622:<init>|  Btree.java:2429:<init>|  Btree.java:2428:code|  Chip.java:0532:<init>|  Btree.java:2425:<init>|  Btree.java:2424:findAndInsert|  Btree.java:2466:put|  Btree.java:7180:code|  Chip.java:0532:<init>|  Btree.java:7164:<init>|  Btree.java:7163:test_put_random|  Btree.java:7273:oldTests|  Btree.java:7278:newTests|  Btree.java:7284:main|");
+            $fdisplay(f, "Location: Chip.java:0594:<init>|  Chip.java:0593:COntinue|  Btree.java:2443:Then|  Chip.java:0612:<init>|  Btree.java:2439:<init>|  Btree.java:2438:Else|  Chip.java:0622:<init>|  Btree.java:2431:<init>|  Btree.java:2430:code|  Chip.java:0532:<init>|  Btree.java:2427:<init>|  Btree.java:2426:findAndInsert|  Btree.java:2468:put|  Btree.java:7182:code|  Chip.java:0532:<init>|  Btree.java:7166:<init>|  Btree.java:7165:test_put_random|  Btree.java:7275:oldTests|  Btree.java:7280:newTests|  Btree.java:7286:main|");
             $fclose(f);
           end
         end
@@ -1918,7 +1918,7 @@ module Btree;                                                                   
           begin
             integer f;
             f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:0614:<init>|  Chip.java:0613:<init>|  Btree.java:2437:<init>|  Btree.java:2436:Else|  Chip.java:0622:<init>|  Btree.java:2429:<init>|  Btree.java:2428:code|  Chip.java:0532:<init>|  Btree.java:2425:<init>|  Btree.java:2424:findAndInsert|  Btree.java:2466:put|  Btree.java:7180:code|  Chip.java:0532:<init>|  Btree.java:7164:<init>|  Btree.java:7163:test_put_random|  Btree.java:7273:oldTests|  Btree.java:7278:newTests|  Btree.java:7284:main|");
+            $fdisplay(f, "Location: Chip.java:0614:<init>|  Chip.java:0613:<init>|  Btree.java:2439:<init>|  Btree.java:2438:Else|  Chip.java:0622:<init>|  Btree.java:2431:<init>|  Btree.java:2430:code|  Chip.java:0532:<init>|  Btree.java:2427:<init>|  Btree.java:2426:findAndInsert|  Btree.java:2468:put|  Btree.java:7182:code|  Chip.java:0532:<init>|  Btree.java:7166:<init>|  Btree.java:7165:test_put_random|  Btree.java:7275:oldTests|  Btree.java:7280:newTests|  Btree.java:7286:main|");
             $fclose(f);
           end
         end
@@ -1927,7 +1927,7 @@ module Btree;                                                                   
           begin
             integer f;
             f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:0573:<init>|  Chip.java:0572:GOto|  Btree.java:2444:Else|  Chip.java:0622:<init>|  Btree.java:2437:<init>|  Btree.java:2436:Else|  Chip.java:0622:<init>|  Btree.java:2429:<init>|  Btree.java:2428:code|  Chip.java:0532:<init>|  Btree.java:2425:<init>|  Btree.java:2424:findAndInsert|  Btree.java:2466:put|  Btree.java:7180:code|  Chip.java:0532:<init>|  Btree.java:7164:<init>|  Btree.java:7163:test_put_random|  Btree.java:7273:oldTests|  Btree.java:7278:newTests|  Btree.java:7284:main|");
+            $fdisplay(f, "Location: Chip.java:0573:<init>|  Chip.java:0572:GOto|  Btree.java:2446:Else|  Chip.java:0622:<init>|  Btree.java:2439:<init>|  Btree.java:2438:Else|  Chip.java:0622:<init>|  Btree.java:2431:<init>|  Btree.java:2430:code|  Chip.java:0532:<init>|  Btree.java:2427:<init>|  Btree.java:2426:findAndInsert|  Btree.java:2468:put|  Btree.java:7182:code|  Chip.java:0532:<init>|  Btree.java:7166:<init>|  Btree.java:7165:test_put_random|  Btree.java:7275:oldTests|  Btree.java:7280:newTests|  Btree.java:7286:main|");
             $fclose(f);
           end
         end
@@ -1954,7 +1954,7 @@ module Btree;                                                                   
           begin
             integer f;
             f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:0514:<init>|  Btree.java:0330:<init>|  Btree.java:0329:stuckPut|  Btree.java:0353:stuckPut|  Btree.java:2449:code|  Chip.java:0532:<init>|  Btree.java:2425:<init>|  Btree.java:2424:findAndInsert|  Btree.java:2466:put|  Btree.java:7180:code|  Chip.java:0532:<init>|  Btree.java:7164:<init>|  Btree.java:7163:test_put_random|  Btree.java:7273:oldTests|  Btree.java:7278:newTests|  Btree.java:7284:main|");
+            $fdisplay(f, "Location: Chip.java:0514:<init>|  Btree.java:0330:<init>|  Btree.java:0329:stuckPut|  Btree.java:0353:stuckPut|  Btree.java:2451:code|  Chip.java:0532:<init>|  Btree.java:2427:<init>|  Btree.java:2426:findAndInsert|  Btree.java:2468:put|  Btree.java:7182:code|  Chip.java:0532:<init>|  Btree.java:7166:<init>|  Btree.java:7165:test_put_random|  Btree.java:7275:oldTests|  Btree.java:7280:newTests|  Btree.java:7286:main|");
             $fclose(f);
           end
         end
@@ -1965,7 +1965,7 @@ module Btree;                                                                   
           begin
             integer f;
             f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:1422:<init>|  Chip.java:1421:waitResultOfTransaction|  Btree.java:0344:stuckPut|  Btree.java:0353:stuckPut|  Btree.java:2449:code|  Chip.java:0532:<init>|  Btree.java:2425:<init>|  Btree.java:2424:findAndInsert|  Btree.java:2466:put|  Btree.java:7180:code|  Chip.java:0532:<init>|  Btree.java:7164:<init>|  Btree.java:7163:test_put_random|  Btree.java:7273:oldTests|  Btree.java:7278:newTests|  Btree.java:7284:main|");
+            $fdisplay(f, "Location: Chip.java:1422:<init>|  Chip.java:1421:waitResultOfTransaction|  Btree.java:0344:stuckPut|  Btree.java:0353:stuckPut|  Btree.java:2451:code|  Chip.java:0532:<init>|  Btree.java:2427:<init>|  Btree.java:2426:findAndInsert|  Btree.java:2468:put|  Btree.java:7182:code|  Chip.java:0532:<init>|  Btree.java:7166:<init>|  Btree.java:7165:test_put_random|  Btree.java:7275:oldTests|  Btree.java:7280:newTests|  Btree.java:7286:main|");
             $fclose(f);
           end
         end
@@ -1976,7 +1976,7 @@ module Btree;                                                                   
           begin
             integer f;
             f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:1422:<init>|  Chip.java:1421:waitResultOfTransaction|  Btree.java:0347:stuckPut|  Btree.java:0353:stuckPut|  Btree.java:2449:code|  Chip.java:0532:<init>|  Btree.java:2425:<init>|  Btree.java:2424:findAndInsert|  Btree.java:2466:put|  Btree.java:7180:code|  Chip.java:0532:<init>|  Btree.java:7164:<init>|  Btree.java:7163:test_put_random|  Btree.java:7273:oldTests|  Btree.java:7278:newTests|  Btree.java:7284:main|");
+            $fdisplay(f, "Location: Chip.java:1422:<init>|  Chip.java:1421:waitResultOfTransaction|  Btree.java:0347:stuckPut|  Btree.java:0353:stuckPut|  Btree.java:2451:code|  Chip.java:0532:<init>|  Btree.java:2427:<init>|  Btree.java:2426:findAndInsert|  Btree.java:2468:put|  Btree.java:7182:code|  Chip.java:0532:<init>|  Btree.java:7166:<init>|  Btree.java:7165:test_put_random|  Btree.java:7275:oldTests|  Btree.java:7280:newTests|  Btree.java:7286:main|");
             $fclose(f);
           end
         end
@@ -1987,7 +1987,7 @@ module Btree;                                                                   
           begin
             integer f;
             f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:1422:<init>|  Chip.java:1421:waitResultOfTransaction|  Btree.java:0348:stuckPut|  Btree.java:0353:stuckPut|  Btree.java:2449:code|  Chip.java:0532:<init>|  Btree.java:2425:<init>|  Btree.java:2424:findAndInsert|  Btree.java:2466:put|  Btree.java:7180:code|  Chip.java:0532:<init>|  Btree.java:7164:<init>|  Btree.java:7163:test_put_random|  Btree.java:7273:oldTests|  Btree.java:7278:newTests|  Btree.java:7284:main|");
+            $fdisplay(f, "Location: Chip.java:1422:<init>|  Chip.java:1421:waitResultOfTransaction|  Btree.java:0348:stuckPut|  Btree.java:0353:stuckPut|  Btree.java:2451:code|  Chip.java:0532:<init>|  Btree.java:2427:<init>|  Btree.java:2426:findAndInsert|  Btree.java:2468:put|  Btree.java:7182:code|  Chip.java:0532:<init>|  Btree.java:7166:<init>|  Btree.java:7165:test_put_random|  Btree.java:7275:oldTests|  Btree.java:7280:newTests|  Btree.java:7286:main|");
             $fclose(f);
           end
         end
@@ -2001,7 +2001,7 @@ module Btree;                                                                   
           begin
             integer f;
             f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:0580:<init>|  Chip.java:0579:GONotZero|  Btree.java:2471:code|  Chip.java:0532:<init>|  Btree.java:2469:<init>|  Btree.java:2468:put|  Btree.java:7180:code|  Chip.java:0532:<init>|  Btree.java:7164:<init>|  Btree.java:7163:test_put_random|  Btree.java:7273:oldTests|  Btree.java:7278:newTests|  Btree.java:7284:main|");
+            $fdisplay(f, "Location: Chip.java:0580:<init>|  Chip.java:0579:GONotZero|  Btree.java:2473:code|  Chip.java:0532:<init>|  Btree.java:2471:<init>|  Btree.java:2470:put|  Btree.java:7182:code|  Chip.java:0532:<init>|  Btree.java:7166:<init>|  Btree.java:7165:test_put_random|  Btree.java:7275:oldTests|  Btree.java:7280:newTests|  Btree.java:7286:main|");
             $fclose(f);
           end
         end
@@ -2015,7 +2015,7 @@ module Btree;                                                                   
           begin
             integer f;
             f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:0605:<init>|  Chip.java:0604:<init>|  Btree.java:2474:<init>|  Btree.java:2473:code|  Chip.java:0532:<init>|  Btree.java:2469:<init>|  Btree.java:2468:put|  Btree.java:7180:code|  Chip.java:0532:<init>|  Btree.java:7164:<init>|  Btree.java:7163:test_put_random|  Btree.java:7273:oldTests|  Btree.java:7278:newTests|  Btree.java:7284:main|");
+            $fdisplay(f, "Location: Chip.java:0605:<init>|  Chip.java:0604:<init>|  Btree.java:2476:<init>|  Btree.java:2475:code|  Chip.java:0532:<init>|  Btree.java:2471:<init>|  Btree.java:2470:put|  Btree.java:7182:code|  Chip.java:0532:<init>|  Btree.java:7166:<init>|  Btree.java:7165:test_put_random|  Btree.java:7275:oldTests|  Btree.java:7280:newTests|  Btree.java:7286:main|");
             $fclose(f);
           end
         end
@@ -2024,7 +2024,7 @@ module Btree;                                                                   
           begin
             integer f;
             f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:0614:<init>|  Chip.java:0613:<init>|  Btree.java:2474:<init>|  Btree.java:2473:code|  Chip.java:0532:<init>|  Btree.java:2469:<init>|  Btree.java:2468:put|  Btree.java:7180:code|  Chip.java:0532:<init>|  Btree.java:7164:<init>|  Btree.java:7163:test_put_random|  Btree.java:7273:oldTests|  Btree.java:7278:newTests|  Btree.java:7284:main|");
+            $fdisplay(f, "Location: Chip.java:0614:<init>|  Chip.java:0613:<init>|  Btree.java:2476:<init>|  Btree.java:2475:code|  Chip.java:0532:<init>|  Btree.java:2471:<init>|  Btree.java:2470:put|  Btree.java:7182:code|  Chip.java:0532:<init>|  Btree.java:7166:<init>|  Btree.java:7165:test_put_random|  Btree.java:7275:oldTests|  Btree.java:7280:newTests|  Btree.java:7286:main|");
             $fclose(f);
           end
         end
@@ -2034,7 +2034,7 @@ module Btree;                                                                   
           begin
             integer f;
             f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:0514:<init>|  Chip.java:0821:<init>|  Chip.java:0820:Zero|  Btree.java:0283:stuckGetRoot|  Btree.java:1662:splitRootLeaf|  Btree.java:2475:Else|  Chip.java:0622:<init>|  Btree.java:2474:<init>|  Btree.java:2473:code|  Chip.java:0532:<init>|  Btree.java:2469:<init>|  Btree.java:2468:put|  Btree.java:7180:code|  Chip.java:0532:<init>|  Btree.java:7164:<init>|  Btree.java:7163:test_put_random|  Btree.java:7273:oldTests|  Btree.java:7278:newTests|  Btree.java:7284:main|");
+            $fdisplay(f, "Location: Chip.java:0514:<init>|  Chip.java:0821:<init>|  Chip.java:0820:Zero|  Btree.java:0283:stuckGetRoot|  Btree.java:1662:splitRootLeaf|  Btree.java:2477:Else|  Chip.java:0622:<init>|  Btree.java:2476:<init>|  Btree.java:2475:code|  Chip.java:0532:<init>|  Btree.java:2471:<init>|  Btree.java:2470:put|  Btree.java:7182:code|  Chip.java:0532:<init>|  Btree.java:7166:<init>|  Btree.java:7165:test_put_random|  Btree.java:7275:oldTests|  Btree.java:7280:newTests|  Btree.java:7286:main|");
             $fclose(f);
           end
         end
@@ -2055,7 +2055,7 @@ module Btree;                                                                   
           begin
             integer f;
             f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:0514:<init>|  Btree.java:0289:<init>|  Btree.java:0288:stuckGet|  Btree.java:0284:stuckGetRoot|  Btree.java:1662:splitRootLeaf|  Btree.java:2475:Else|  Chip.java:0622:<init>|  Btree.java:2474:<init>|  Btree.java:2473:code|  Chip.java:0532:<init>|  Btree.java:2469:<init>|  Btree.java:2468:put|  Btree.java:7180:code|  Chip.java:0532:<init>|  Btree.java:7164:<init>|  Btree.java:7163:test_put_random|  Btree.java:7273:oldTests|  Btree.java:7278:newTests|  Btree.java:7284:main|");
+            $fdisplay(f, "Location: Chip.java:0514:<init>|  Btree.java:0289:<init>|  Btree.java:0288:stuckGet|  Btree.java:0284:stuckGetRoot|  Btree.java:1662:splitRootLeaf|  Btree.java:2477:Else|  Chip.java:0622:<init>|  Btree.java:2476:<init>|  Btree.java:2475:code|  Chip.java:0532:<init>|  Btree.java:2471:<init>|  Btree.java:2470:put|  Btree.java:7182:code|  Chip.java:0532:<init>|  Btree.java:7166:<init>|  Btree.java:7165:test_put_random|  Btree.java:7275:oldTests|  Btree.java:7280:newTests|  Btree.java:7286:main|");
             $fclose(f);
           end
         end
@@ -2066,7 +2066,7 @@ module Btree;                                                                   
           begin
             integer f;
             f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:1359:<init>|  Chip.java:1358:waitResultOfTransaction|  Btree.java:0302:stuckGet|  Btree.java:0284:stuckGetRoot|  Btree.java:1662:splitRootLeaf|  Btree.java:2475:Else|  Chip.java:0622:<init>|  Btree.java:2474:<init>|  Btree.java:2473:code|  Chip.java:0532:<init>|  Btree.java:2469:<init>|  Btree.java:2468:put|  Btree.java:7180:code|  Chip.java:0532:<init>|  Btree.java:7164:<init>|  Btree.java:7163:test_put_random|  Btree.java:7273:oldTests|  Btree.java:7278:newTests|  Btree.java:7284:main|");
+            $fdisplay(f, "Location: Chip.java:1359:<init>|  Chip.java:1358:waitResultOfTransaction|  Btree.java:0302:stuckGet|  Btree.java:0284:stuckGetRoot|  Btree.java:1662:splitRootLeaf|  Btree.java:2477:Else|  Chip.java:0622:<init>|  Btree.java:2476:<init>|  Btree.java:2475:code|  Chip.java:0532:<init>|  Btree.java:2471:<init>|  Btree.java:2470:put|  Btree.java:7182:code|  Chip.java:0532:<init>|  Btree.java:7166:<init>|  Btree.java:7165:test_put_random|  Btree.java:7275:oldTests|  Btree.java:7280:newTests|  Btree.java:7286:main|");
             $fclose(f);
           end
         end
@@ -2077,7 +2077,7 @@ module Btree;                                                                   
           begin
             integer f;
             f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:1359:<init>|  Chip.java:1358:waitResultOfTransaction|  Btree.java:0303:stuckGet|  Btree.java:0284:stuckGetRoot|  Btree.java:1662:splitRootLeaf|  Btree.java:2475:Else|  Chip.java:0622:<init>|  Btree.java:2474:<init>|  Btree.java:2473:code|  Chip.java:0532:<init>|  Btree.java:2469:<init>|  Btree.java:2468:put|  Btree.java:7180:code|  Chip.java:0532:<init>|  Btree.java:7164:<init>|  Btree.java:7163:test_put_random|  Btree.java:7273:oldTests|  Btree.java:7278:newTests|  Btree.java:7284:main|");
+            $fdisplay(f, "Location: Chip.java:1359:<init>|  Chip.java:1358:waitResultOfTransaction|  Btree.java:0303:stuckGet|  Btree.java:0284:stuckGetRoot|  Btree.java:1662:splitRootLeaf|  Btree.java:2477:Else|  Chip.java:0622:<init>|  Btree.java:2476:<init>|  Btree.java:2475:code|  Chip.java:0532:<init>|  Btree.java:2471:<init>|  Btree.java:2470:put|  Btree.java:7182:code|  Chip.java:0532:<init>|  Btree.java:7166:<init>|  Btree.java:7165:test_put_random|  Btree.java:7275:oldTests|  Btree.java:7280:newTests|  Btree.java:7286:main|");
             $fclose(f);
           end
         end
@@ -2088,7 +2088,7 @@ module Btree;                                                                   
           begin
             integer f;
             f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:1359:<init>|  Chip.java:1358:waitResultOfTransaction|  Btree.java:0305:stuckGet|  Btree.java:0284:stuckGetRoot|  Btree.java:1662:splitRootLeaf|  Btree.java:2475:Else|  Chip.java:0622:<init>|  Btree.java:2474:<init>|  Btree.java:2473:code|  Chip.java:0532:<init>|  Btree.java:2469:<init>|  Btree.java:2468:put|  Btree.java:7180:code|  Chip.java:0532:<init>|  Btree.java:7164:<init>|  Btree.java:7163:test_put_random|  Btree.java:7273:oldTests|  Btree.java:7278:newTests|  Btree.java:7284:main|");
+            $fdisplay(f, "Location: Chip.java:1359:<init>|  Chip.java:1358:waitResultOfTransaction|  Btree.java:0305:stuckGet|  Btree.java:0284:stuckGetRoot|  Btree.java:1662:splitRootLeaf|  Btree.java:2477:Else|  Chip.java:0622:<init>|  Btree.java:2476:<init>|  Btree.java:2475:code|  Chip.java:0532:<init>|  Btree.java:2471:<init>|  Btree.java:2470:put|  Btree.java:7182:code|  Chip.java:0532:<init>|  Btree.java:7166:<init>|  Btree.java:7165:test_put_random|  Btree.java:7275:oldTests|  Btree.java:7280:newTests|  Btree.java:7286:main|");
             $fclose(f);
           end
         end
@@ -2099,7 +2099,7 @@ module Btree;                                                                   
           begin
             integer f;
             f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:1359:<init>|  Chip.java:1358:waitResultOfTransaction|  Btree.java:0306:stuckGet|  Btree.java:0284:stuckGetRoot|  Btree.java:1662:splitRootLeaf|  Btree.java:2475:Else|  Chip.java:0622:<init>|  Btree.java:2474:<init>|  Btree.java:2473:code|  Chip.java:0532:<init>|  Btree.java:2469:<init>|  Btree.java:2468:put|  Btree.java:7180:code|  Chip.java:0532:<init>|  Btree.java:7164:<init>|  Btree.java:7163:test_put_random|  Btree.java:7273:oldTests|  Btree.java:7278:newTests|  Btree.java:7284:main|");
+            $fdisplay(f, "Location: Chip.java:1359:<init>|  Chip.java:1358:waitResultOfTransaction|  Btree.java:0306:stuckGet|  Btree.java:0284:stuckGetRoot|  Btree.java:1662:splitRootLeaf|  Btree.java:2477:Else|  Chip.java:0622:<init>|  Btree.java:2476:<init>|  Btree.java:2475:code|  Chip.java:0532:<init>|  Btree.java:2471:<init>|  Btree.java:2470:put|  Btree.java:7182:code|  Chip.java:0532:<init>|  Btree.java:7166:<init>|  Btree.java:7165:test_put_random|  Btree.java:7275:oldTests|  Btree.java:7280:newTests|  Btree.java:7286:main|");
             $fclose(f);
           end
         end
@@ -2118,7 +2118,7 @@ module Btree;                                                                   
           begin
             integer f;
             f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:0514:<init>|  Btree.java:0309:<init>|  Btree.java:0308:stuckGet|  Btree.java:0284:stuckGetRoot|  Btree.java:1662:splitRootLeaf|  Btree.java:2475:Else|  Chip.java:0622:<init>|  Btree.java:2474:<init>|  Btree.java:2473:code|  Chip.java:0532:<init>|  Btree.java:2469:<init>|  Btree.java:2468:put|  Btree.java:7180:code|  Chip.java:0532:<init>|  Btree.java:7164:<init>|  Btree.java:7163:test_put_random|  Btree.java:7273:oldTests|  Btree.java:7278:newTests|  Btree.java:7284:main|");
+            $fdisplay(f, "Location: Chip.java:0514:<init>|  Btree.java:0309:<init>|  Btree.java:0308:stuckGet|  Btree.java:0284:stuckGetRoot|  Btree.java:1662:splitRootLeaf|  Btree.java:2477:Else|  Chip.java:0622:<init>|  Btree.java:2476:<init>|  Btree.java:2475:code|  Chip.java:0532:<init>|  Btree.java:2471:<init>|  Btree.java:2470:put|  Btree.java:7182:code|  Chip.java:0532:<init>|  Btree.java:7166:<init>|  Btree.java:7165:test_put_random|  Btree.java:7275:oldTests|  Btree.java:7280:newTests|  Btree.java:7286:main|");
             $fclose(f);
           end
         end
@@ -2132,7 +2132,7 @@ module Btree;                                                                   
           begin
             integer f;
             f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Btree.java:1667:<init>|  Btree.java:1666:code|  Chip.java:0532:<init>|  Btree.java:1665:<init>|  Btree.java:1664:splitRootLeaf|  Btree.java:2475:Else|  Chip.java:0622:<init>|  Btree.java:2474:<init>|  Btree.java:2473:code|  Chip.java:0532:<init>|  Btree.java:2469:<init>|  Btree.java:2468:put|  Btree.java:7180:code|  Chip.java:0532:<init>|  Btree.java:7164:<init>|  Btree.java:7163:test_put_random|  Btree.java:7273:oldTests|  Btree.java:7278:newTests|  Btree.java:7284:main|");
+            $fdisplay(f, "Location: Btree.java:1667:<init>|  Btree.java:1666:code|  Chip.java:0532:<init>|  Btree.java:1665:<init>|  Btree.java:1664:splitRootLeaf|  Btree.java:2477:Else|  Chip.java:0622:<init>|  Btree.java:2476:<init>|  Btree.java:2475:code|  Chip.java:0532:<init>|  Btree.java:2471:<init>|  Btree.java:2470:put|  Btree.java:7182:code|  Chip.java:0532:<init>|  Btree.java:7166:<init>|  Btree.java:7165:test_put_random|  Btree.java:7275:oldTests|  Btree.java:7280:newTests|  Btree.java:7286:main|");
             $fclose(f);
           end
         end
@@ -2151,7 +2151,7 @@ module Btree;                                                                   
           begin
             integer f;
             f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:0514:<init>|  Btree.java:1266:<init>|  Btree.java:1265:splitIntoTwo|  Btree.java:1684:code|  Chip.java:0532:<init>|  Btree.java:1665:<init>|  Btree.java:1664:splitRootLeaf|  Btree.java:2475:Else|  Chip.java:0622:<init>|  Btree.java:2474:<init>|  Btree.java:2473:code|  Chip.java:0532:<init>|  Btree.java:2469:<init>|  Btree.java:2468:put|  Btree.java:7180:code|  Chip.java:0532:<init>|  Btree.java:7164:<init>|  Btree.java:7163:test_put_random|  Btree.java:7273:oldTests|  Btree.java:7278:newTests|  Btree.java:7284:main|");
+            $fdisplay(f, "Location: Chip.java:0514:<init>|  Btree.java:1266:<init>|  Btree.java:1265:splitIntoTwo|  Btree.java:1684:code|  Chip.java:0532:<init>|  Btree.java:1665:<init>|  Btree.java:1664:splitRootLeaf|  Btree.java:2477:Else|  Chip.java:0622:<init>|  Btree.java:2476:<init>|  Btree.java:2475:code|  Chip.java:0532:<init>|  Btree.java:2471:<init>|  Btree.java:2470:put|  Btree.java:7182:code|  Chip.java:0532:<init>|  Btree.java:7166:<init>|  Btree.java:7165:test_put_random|  Btree.java:7275:oldTests|  Btree.java:7280:newTests|  Btree.java:7286:main|");
             $fclose(f);
           end
         end
@@ -2161,7 +2161,7 @@ module Btree;                                                                   
           begin
             integer f;
             f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:0514:<init>|  Chip.java:0821:<init>|  Chip.java:0820:Zero|  Btree.java:0078:allocate|  Btree.java:0153:allocateLeaf|  Btree.java:1686:code|  Chip.java:0532:<init>|  Btree.java:1665:<init>|  Btree.java:1664:splitRootLeaf|  Btree.java:2475:Else|  Chip.java:0622:<init>|  Btree.java:2474:<init>|  Btree.java:2473:code|  Chip.java:0532:<init>|  Btree.java:2469:<init>|  Btree.java:2468:put|  Btree.java:7180:code|  Chip.java:0532:<init>|  Btree.java:7164:<init>|  Btree.java:7163:test_put_random|  Btree.java:7273:oldTests|  Btree.java:7278:newTests|  Btree.java:7284:main|");
+            $fdisplay(f, "Location: Chip.java:0514:<init>|  Chip.java:0821:<init>|  Chip.java:0820:Zero|  Btree.java:0078:allocate|  Btree.java:0153:allocateLeaf|  Btree.java:1686:code|  Chip.java:0532:<init>|  Btree.java:1665:<init>|  Btree.java:1664:splitRootLeaf|  Btree.java:2477:Else|  Chip.java:0622:<init>|  Btree.java:2476:<init>|  Btree.java:2475:code|  Chip.java:0532:<init>|  Btree.java:2471:<init>|  Btree.java:2470:put|  Btree.java:7182:code|  Chip.java:0532:<init>|  Btree.java:7166:<init>|  Btree.java:7165:test_put_random|  Btree.java:7275:oldTests|  Btree.java:7280:newTests|  Btree.java:7286:main|");
             $fclose(f);
           end
         end
@@ -2173,7 +2173,7 @@ module Btree;                                                                   
           begin
             integer f;
             f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:0514:<init>|  Chip.java:1352:<init>|  Chip.java:1351:ExecuteTransaction|  Btree.java:0079:allocate|  Btree.java:0153:allocateLeaf|  Btree.java:1686:code|  Chip.java:0532:<init>|  Btree.java:1665:<init>|  Btree.java:1664:splitRootLeaf|  Btree.java:2475:Else|  Chip.java:0622:<init>|  Btree.java:2474:<init>|  Btree.java:2473:code|  Chip.java:0532:<init>|  Btree.java:2469:<init>|  Btree.java:2468:put|  Btree.java:7180:code|  Chip.java:0532:<init>|  Btree.java:7164:<init>|  Btree.java:7163:test_put_random|  Btree.java:7273:oldTests|  Btree.java:7278:newTests|  Btree.java:7284:main|");
+            $fdisplay(f, "Location: Chip.java:0514:<init>|  Chip.java:1352:<init>|  Chip.java:1351:ExecuteTransaction|  Btree.java:0079:allocate|  Btree.java:0153:allocateLeaf|  Btree.java:1686:code|  Chip.java:0532:<init>|  Btree.java:1665:<init>|  Btree.java:1664:splitRootLeaf|  Btree.java:2477:Else|  Chip.java:0622:<init>|  Btree.java:2476:<init>|  Btree.java:2475:code|  Chip.java:0532:<init>|  Btree.java:2471:<init>|  Btree.java:2470:put|  Btree.java:7182:code|  Chip.java:0532:<init>|  Btree.java:7166:<init>|  Btree.java:7165:test_put_random|  Btree.java:7275:oldTests|  Btree.java:7280:newTests|  Btree.java:7286:main|");
             $fclose(f);
           end
         end
@@ -2184,7 +2184,7 @@ module Btree;                                                                   
           begin
             integer f;
             f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:1359:<init>|  Chip.java:1358:waitResultOfTransaction|  Btree.java:0080:allocate|  Btree.java:0153:allocateLeaf|  Btree.java:1686:code|  Chip.java:0532:<init>|  Btree.java:1665:<init>|  Btree.java:1664:splitRootLeaf|  Btree.java:2475:Else|  Chip.java:0622:<init>|  Btree.java:2474:<init>|  Btree.java:2473:code|  Chip.java:0532:<init>|  Btree.java:2469:<init>|  Btree.java:2468:put|  Btree.java:7180:code|  Chip.java:0532:<init>|  Btree.java:7164:<init>|  Btree.java:7163:test_put_random|  Btree.java:7273:oldTests|  Btree.java:7278:newTests|  Btree.java:7284:main|");
+            $fdisplay(f, "Location: Chip.java:1359:<init>|  Chip.java:1358:waitResultOfTransaction|  Btree.java:0080:allocate|  Btree.java:0153:allocateLeaf|  Btree.java:1686:code|  Chip.java:0532:<init>|  Btree.java:1665:<init>|  Btree.java:1664:splitRootLeaf|  Btree.java:2477:Else|  Chip.java:0622:<init>|  Btree.java:2476:<init>|  Btree.java:2475:code|  Chip.java:0532:<init>|  Btree.java:2471:<init>|  Btree.java:2470:put|  Btree.java:7182:code|  Chip.java:0532:<init>|  Btree.java:7166:<init>|  Btree.java:7165:test_put_random|  Btree.java:7275:oldTests|  Btree.java:7280:newTests|  Btree.java:7286:main|");
             $fclose(f);
           end
         end
@@ -2194,7 +2194,7 @@ module Btree;                                                                   
           begin
             integer f;
             f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:0514:<init>|  Chip.java:0699:<init>|  Chip.java:0698:Copy|  Btree.java:0081:allocate|  Btree.java:0153:allocateLeaf|  Btree.java:1686:code|  Chip.java:0532:<init>|  Btree.java:1665:<init>|  Btree.java:1664:splitRootLeaf|  Btree.java:2475:Else|  Chip.java:0622:<init>|  Btree.java:2474:<init>|  Btree.java:2473:code|  Chip.java:0532:<init>|  Btree.java:2469:<init>|  Btree.java:2468:put|  Btree.java:7180:code|  Chip.java:0532:<init>|  Btree.java:7164:<init>|  Btree.java:7163:test_put_random|  Btree.java:7273:oldTests|  Btree.java:7278:newTests|  Btree.java:7284:main|");
+            $fdisplay(f, "Location: Chip.java:0514:<init>|  Chip.java:0699:<init>|  Chip.java:0698:Copy|  Btree.java:0081:allocate|  Btree.java:0153:allocateLeaf|  Btree.java:1686:code|  Chip.java:0532:<init>|  Btree.java:1665:<init>|  Btree.java:1664:splitRootLeaf|  Btree.java:2477:Else|  Chip.java:0622:<init>|  Btree.java:2476:<init>|  Btree.java:2475:code|  Chip.java:0532:<init>|  Btree.java:2471:<init>|  Btree.java:2470:put|  Btree.java:7182:code|  Chip.java:0532:<init>|  Btree.java:7166:<init>|  Btree.java:7165:test_put_random|  Btree.java:7275:oldTests|  Btree.java:7280:newTests|  Btree.java:7286:main|");
             $fclose(f);
           end
         end
@@ -2209,7 +2209,7 @@ module Btree;                                                                   
           begin
             integer f;
             f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:0514:<init>|  Btree.java:0084:<init>|  Btree.java:0083:allocate|  Btree.java:0153:allocateLeaf|  Btree.java:1686:code|  Chip.java:0532:<init>|  Btree.java:1665:<init>|  Btree.java:1664:splitRootLeaf|  Btree.java:2475:Else|  Chip.java:0622:<init>|  Btree.java:2474:<init>|  Btree.java:2473:code|  Chip.java:0532:<init>|  Btree.java:2469:<init>|  Btree.java:2468:put|  Btree.java:7180:code|  Chip.java:0532:<init>|  Btree.java:7164:<init>|  Btree.java:7163:test_put_random|  Btree.java:7273:oldTests|  Btree.java:7278:newTests|  Btree.java:7284:main|");
+            $fdisplay(f, "Location: Chip.java:0514:<init>|  Btree.java:0084:<init>|  Btree.java:0083:allocate|  Btree.java:0153:allocateLeaf|  Btree.java:1686:code|  Chip.java:0532:<init>|  Btree.java:1665:<init>|  Btree.java:1664:splitRootLeaf|  Btree.java:2477:Else|  Chip.java:0622:<init>|  Btree.java:2476:<init>|  Btree.java:2475:code|  Chip.java:0532:<init>|  Btree.java:2471:<init>|  Btree.java:2470:put|  Btree.java:7182:code|  Chip.java:0532:<init>|  Btree.java:7166:<init>|  Btree.java:7165:test_put_random|  Btree.java:7275:oldTests|  Btree.java:7280:newTests|  Btree.java:7286:main|");
             $fclose(f);
           end
         end
@@ -2229,7 +2229,7 @@ module Btree;                                                                   
           begin
             integer f;
             f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:0514:<init>|  Btree.java:0099:<init>|  Btree.java:0098:allocate|  Btree.java:0153:allocateLeaf|  Btree.java:1686:code|  Chip.java:0532:<init>|  Btree.java:1665:<init>|  Btree.java:1664:splitRootLeaf|  Btree.java:2475:Else|  Chip.java:0622:<init>|  Btree.java:2474:<init>|  Btree.java:2473:code|  Chip.java:0532:<init>|  Btree.java:2469:<init>|  Btree.java:2468:put|  Btree.java:7180:code|  Chip.java:0532:<init>|  Btree.java:7164:<init>|  Btree.java:7163:test_put_random|  Btree.java:7273:oldTests|  Btree.java:7278:newTests|  Btree.java:7284:main|");
+            $fdisplay(f, "Location: Chip.java:0514:<init>|  Btree.java:0099:<init>|  Btree.java:0098:allocate|  Btree.java:0153:allocateLeaf|  Btree.java:1686:code|  Chip.java:0532:<init>|  Btree.java:1665:<init>|  Btree.java:1664:splitRootLeaf|  Btree.java:2477:Else|  Chip.java:0622:<init>|  Btree.java:2476:<init>|  Btree.java:2475:code|  Chip.java:0532:<init>|  Btree.java:2471:<init>|  Btree.java:2470:put|  Btree.java:7182:code|  Chip.java:0532:<init>|  Btree.java:7166:<init>|  Btree.java:7165:test_put_random|  Btree.java:7275:oldTests|  Btree.java:7280:newTests|  Btree.java:7286:main|");
             $fclose(f);
           end
         end
@@ -2240,7 +2240,7 @@ module Btree;                                                                   
           begin
             integer f;
             f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:1359:<init>|  Chip.java:1358:waitResultOfTransaction|  Btree.java:0111:allocate|  Btree.java:0153:allocateLeaf|  Btree.java:1686:code|  Chip.java:0532:<init>|  Btree.java:1665:<init>|  Btree.java:1664:splitRootLeaf|  Btree.java:2475:Else|  Chip.java:0622:<init>|  Btree.java:2474:<init>|  Btree.java:2473:code|  Chip.java:0532:<init>|  Btree.java:2469:<init>|  Btree.java:2468:put|  Btree.java:7180:code|  Chip.java:0532:<init>|  Btree.java:7164:<init>|  Btree.java:7163:test_put_random|  Btree.java:7273:oldTests|  Btree.java:7278:newTests|  Btree.java:7284:main|");
+            $fdisplay(f, "Location: Chip.java:1359:<init>|  Chip.java:1358:waitResultOfTransaction|  Btree.java:0111:allocate|  Btree.java:0153:allocateLeaf|  Btree.java:1686:code|  Chip.java:0532:<init>|  Btree.java:1665:<init>|  Btree.java:1664:splitRootLeaf|  Btree.java:2477:Else|  Chip.java:0622:<init>|  Btree.java:2476:<init>|  Btree.java:2475:code|  Chip.java:0532:<init>|  Btree.java:2471:<init>|  Btree.java:2470:put|  Btree.java:7182:code|  Chip.java:0532:<init>|  Btree.java:7166:<init>|  Btree.java:7165:test_put_random|  Btree.java:7275:oldTests|  Btree.java:7280:newTests|  Btree.java:7286:main|");
             $fclose(f);
           end
         end
@@ -2250,7 +2250,7 @@ module Btree;                                                                   
           begin
             integer f;
             f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:0514:<init>|  Chip.java:0699:<init>|  Chip.java:0698:Copy|  Btree.java:0112:allocate|  Btree.java:0153:allocateLeaf|  Btree.java:1686:code|  Chip.java:0532:<init>|  Btree.java:1665:<init>|  Btree.java:1664:splitRootLeaf|  Btree.java:2475:Else|  Chip.java:0622:<init>|  Btree.java:2474:<init>|  Btree.java:2473:code|  Chip.java:0532:<init>|  Btree.java:2469:<init>|  Btree.java:2468:put|  Btree.java:7180:code|  Chip.java:0532:<init>|  Btree.java:7164:<init>|  Btree.java:7163:test_put_random|  Btree.java:7273:oldTests|  Btree.java:7278:newTests|  Btree.java:7284:main|");
+            $fdisplay(f, "Location: Chip.java:0514:<init>|  Chip.java:0699:<init>|  Chip.java:0698:Copy|  Btree.java:0112:allocate|  Btree.java:0153:allocateLeaf|  Btree.java:1686:code|  Chip.java:0532:<init>|  Btree.java:1665:<init>|  Btree.java:1664:splitRootLeaf|  Btree.java:2477:Else|  Chip.java:0622:<init>|  Btree.java:2476:<init>|  Btree.java:2475:code|  Chip.java:0532:<init>|  Btree.java:2471:<init>|  Btree.java:2470:put|  Btree.java:7182:code|  Chip.java:0532:<init>|  Btree.java:7166:<init>|  Btree.java:7165:test_put_random|  Btree.java:7275:oldTests|  Btree.java:7280:newTests|  Btree.java:7286:main|");
             $fclose(f);
           end
         end
@@ -2263,7 +2263,7 @@ module Btree;                                                                   
           begin
             integer f;
             f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:0514:<init>|  Chip.java:1415:<init>|  Chip.java:1414:ExecuteTransaction|  Btree.java:0113:allocate|  Btree.java:0153:allocateLeaf|  Btree.java:1686:code|  Chip.java:0532:<init>|  Btree.java:1665:<init>|  Btree.java:1664:splitRootLeaf|  Btree.java:2475:Else|  Chip.java:0622:<init>|  Btree.java:2474:<init>|  Btree.java:2473:code|  Chip.java:0532:<init>|  Btree.java:2469:<init>|  Btree.java:2468:put|  Btree.java:7180:code|  Chip.java:0532:<init>|  Btree.java:7164:<init>|  Btree.java:7163:test_put_random|  Btree.java:7273:oldTests|  Btree.java:7278:newTests|  Btree.java:7284:main|");
+            $fdisplay(f, "Location: Chip.java:0514:<init>|  Chip.java:1415:<init>|  Chip.java:1414:ExecuteTransaction|  Btree.java:0113:allocate|  Btree.java:0153:allocateLeaf|  Btree.java:1686:code|  Chip.java:0532:<init>|  Btree.java:1665:<init>|  Btree.java:1664:splitRootLeaf|  Btree.java:2477:Else|  Chip.java:0622:<init>|  Btree.java:2476:<init>|  Btree.java:2475:code|  Chip.java:0532:<init>|  Btree.java:2471:<init>|  Btree.java:2470:put|  Btree.java:7182:code|  Chip.java:0532:<init>|  Btree.java:7166:<init>|  Btree.java:7165:test_put_random|  Btree.java:7275:oldTests|  Btree.java:7280:newTests|  Btree.java:7286:main|");
             $fclose(f);
           end
         end
@@ -2274,7 +2274,7 @@ module Btree;                                                                   
           begin
             integer f;
             f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:1422:<init>|  Chip.java:1421:waitResultOfTransaction|  Btree.java:0114:allocate|  Btree.java:0153:allocateLeaf|  Btree.java:1686:code|  Chip.java:0532:<init>|  Btree.java:1665:<init>|  Btree.java:1664:splitRootLeaf|  Btree.java:2475:Else|  Chip.java:0622:<init>|  Btree.java:2474:<init>|  Btree.java:2473:code|  Chip.java:0532:<init>|  Btree.java:2469:<init>|  Btree.java:2468:put|  Btree.java:7180:code|  Chip.java:0532:<init>|  Btree.java:7164:<init>|  Btree.java:7163:test_put_random|  Btree.java:7273:oldTests|  Btree.java:7278:newTests|  Btree.java:7284:main|");
+            $fdisplay(f, "Location: Chip.java:1422:<init>|  Chip.java:1421:waitResultOfTransaction|  Btree.java:0114:allocate|  Btree.java:0153:allocateLeaf|  Btree.java:1686:code|  Chip.java:0532:<init>|  Btree.java:1665:<init>|  Btree.java:1664:splitRootLeaf|  Btree.java:2477:Else|  Chip.java:0622:<init>|  Btree.java:2476:<init>|  Btree.java:2475:code|  Chip.java:0532:<init>|  Btree.java:2471:<init>|  Btree.java:2470:put|  Btree.java:7182:code|  Chip.java:0532:<init>|  Btree.java:7166:<init>|  Btree.java:7165:test_put_random|  Btree.java:7275:oldTests|  Btree.java:7280:newTests|  Btree.java:7286:main|");
             $fclose(f);
           end
         end
@@ -2285,7 +2285,7 @@ module Btree;                                                                   
           begin
             integer f;
             f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:1422:<init>|  Chip.java:1421:waitResultOfTransaction|  Btree.java:0115:allocate|  Btree.java:0153:allocateLeaf|  Btree.java:1686:code|  Chip.java:0532:<init>|  Btree.java:1665:<init>|  Btree.java:1664:splitRootLeaf|  Btree.java:2475:Else|  Chip.java:0622:<init>|  Btree.java:2474:<init>|  Btree.java:2473:code|  Chip.java:0532:<init>|  Btree.java:2469:<init>|  Btree.java:2468:put|  Btree.java:7180:code|  Chip.java:0532:<init>|  Btree.java:7164:<init>|  Btree.java:7163:test_put_random|  Btree.java:7273:oldTests|  Btree.java:7278:newTests|  Btree.java:7284:main|");
+            $fdisplay(f, "Location: Chip.java:1422:<init>|  Chip.java:1421:waitResultOfTransaction|  Btree.java:0115:allocate|  Btree.java:0153:allocateLeaf|  Btree.java:1686:code|  Chip.java:0532:<init>|  Btree.java:1665:<init>|  Btree.java:1664:splitRootLeaf|  Btree.java:2477:Else|  Chip.java:0622:<init>|  Btree.java:2476:<init>|  Btree.java:2475:code|  Chip.java:0532:<init>|  Btree.java:2471:<init>|  Btree.java:2470:put|  Btree.java:7182:code|  Chip.java:0532:<init>|  Btree.java:7166:<init>|  Btree.java:7165:test_put_random|  Btree.java:7275:oldTests|  Btree.java:7280:newTests|  Btree.java:7286:main|");
             $fclose(f);
           end
         end
@@ -2296,7 +2296,7 @@ module Btree;                                                                   
           begin
             integer f;
             f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:1422:<init>|  Chip.java:1421:waitResultOfTransaction|  Btree.java:0116:allocate|  Btree.java:0153:allocateLeaf|  Btree.java:1686:code|  Chip.java:0532:<init>|  Btree.java:1665:<init>|  Btree.java:1664:splitRootLeaf|  Btree.java:2475:Else|  Chip.java:0622:<init>|  Btree.java:2474:<init>|  Btree.java:2473:code|  Chip.java:0532:<init>|  Btree.java:2469:<init>|  Btree.java:2468:put|  Btree.java:7180:code|  Chip.java:0532:<init>|  Btree.java:7164:<init>|  Btree.java:7163:test_put_random|  Btree.java:7273:oldTests|  Btree.java:7278:newTests|  Btree.java:7284:main|");
+            $fdisplay(f, "Location: Chip.java:1422:<init>|  Chip.java:1421:waitResultOfTransaction|  Btree.java:0116:allocate|  Btree.java:0153:allocateLeaf|  Btree.java:1686:code|  Chip.java:0532:<init>|  Btree.java:1665:<init>|  Btree.java:1664:splitRootLeaf|  Btree.java:2477:Else|  Chip.java:0622:<init>|  Btree.java:2476:<init>|  Btree.java:2475:code|  Chip.java:0532:<init>|  Btree.java:2471:<init>|  Btree.java:2470:put|  Btree.java:7182:code|  Chip.java:0532:<init>|  Btree.java:7166:<init>|  Btree.java:7165:test_put_random|  Btree.java:7275:oldTests|  Btree.java:7280:newTests|  Btree.java:7286:main|");
             $fclose(f);
           end
         end
@@ -2323,7 +2323,7 @@ module Btree;                                                                   
           begin
             integer f;
             f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:0514:<init>|  Btree.java:0330:<init>|  Btree.java:0329:stuckPut|  Btree.java:0352:stuckPut|  Btree.java:1686:code|  Chip.java:0532:<init>|  Btree.java:1665:<init>|  Btree.java:1664:splitRootLeaf|  Btree.java:2475:Else|  Chip.java:0622:<init>|  Btree.java:2474:<init>|  Btree.java:2473:code|  Chip.java:0532:<init>|  Btree.java:2469:<init>|  Btree.java:2468:put|  Btree.java:7180:code|  Chip.java:0532:<init>|  Btree.java:7164:<init>|  Btree.java:7163:test_put_random|  Btree.java:7273:oldTests|  Btree.java:7278:newTests|  Btree.java:7284:main|");
+            $fdisplay(f, "Location: Chip.java:0514:<init>|  Btree.java:0330:<init>|  Btree.java:0329:stuckPut|  Btree.java:0352:stuckPut|  Btree.java:1686:code|  Chip.java:0532:<init>|  Btree.java:1665:<init>|  Btree.java:1664:splitRootLeaf|  Btree.java:2477:Else|  Chip.java:0622:<init>|  Btree.java:2476:<init>|  Btree.java:2475:code|  Chip.java:0532:<init>|  Btree.java:2471:<init>|  Btree.java:2470:put|  Btree.java:7182:code|  Chip.java:0532:<init>|  Btree.java:7166:<init>|  Btree.java:7165:test_put_random|  Btree.java:7275:oldTests|  Btree.java:7280:newTests|  Btree.java:7286:main|");
             $fclose(f);
           end
         end
@@ -2334,7 +2334,7 @@ module Btree;                                                                   
           begin
             integer f;
             f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:1422:<init>|  Chip.java:1421:waitResultOfTransaction|  Btree.java:0344:stuckPut|  Btree.java:0352:stuckPut|  Btree.java:1686:code|  Chip.java:0532:<init>|  Btree.java:1665:<init>|  Btree.java:1664:splitRootLeaf|  Btree.java:2475:Else|  Chip.java:0622:<init>|  Btree.java:2474:<init>|  Btree.java:2473:code|  Chip.java:0532:<init>|  Btree.java:2469:<init>|  Btree.java:2468:put|  Btree.java:7180:code|  Chip.java:0532:<init>|  Btree.java:7164:<init>|  Btree.java:7163:test_put_random|  Btree.java:7273:oldTests|  Btree.java:7278:newTests|  Btree.java:7284:main|");
+            $fdisplay(f, "Location: Chip.java:1422:<init>|  Chip.java:1421:waitResultOfTransaction|  Btree.java:0344:stuckPut|  Btree.java:0352:stuckPut|  Btree.java:1686:code|  Chip.java:0532:<init>|  Btree.java:1665:<init>|  Btree.java:1664:splitRootLeaf|  Btree.java:2477:Else|  Chip.java:0622:<init>|  Btree.java:2476:<init>|  Btree.java:2475:code|  Chip.java:0532:<init>|  Btree.java:2471:<init>|  Btree.java:2470:put|  Btree.java:7182:code|  Chip.java:0532:<init>|  Btree.java:7166:<init>|  Btree.java:7165:test_put_random|  Btree.java:7275:oldTests|  Btree.java:7280:newTests|  Btree.java:7286:main|");
             $fclose(f);
           end
         end
@@ -2345,7 +2345,7 @@ module Btree;                                                                   
           begin
             integer f;
             f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:1422:<init>|  Chip.java:1421:waitResultOfTransaction|  Btree.java:0347:stuckPut|  Btree.java:0352:stuckPut|  Btree.java:1686:code|  Chip.java:0532:<init>|  Btree.java:1665:<init>|  Btree.java:1664:splitRootLeaf|  Btree.java:2475:Else|  Chip.java:0622:<init>|  Btree.java:2474:<init>|  Btree.java:2473:code|  Chip.java:0532:<init>|  Btree.java:2469:<init>|  Btree.java:2468:put|  Btree.java:7180:code|  Chip.java:0532:<init>|  Btree.java:7164:<init>|  Btree.java:7163:test_put_random|  Btree.java:7273:oldTests|  Btree.java:7278:newTests|  Btree.java:7284:main|");
+            $fdisplay(f, "Location: Chip.java:1422:<init>|  Chip.java:1421:waitResultOfTransaction|  Btree.java:0347:stuckPut|  Btree.java:0352:stuckPut|  Btree.java:1686:code|  Chip.java:0532:<init>|  Btree.java:1665:<init>|  Btree.java:1664:splitRootLeaf|  Btree.java:2477:Else|  Chip.java:0622:<init>|  Btree.java:2476:<init>|  Btree.java:2475:code|  Chip.java:0532:<init>|  Btree.java:2471:<init>|  Btree.java:2470:put|  Btree.java:7182:code|  Chip.java:0532:<init>|  Btree.java:7166:<init>|  Btree.java:7165:test_put_random|  Btree.java:7275:oldTests|  Btree.java:7280:newTests|  Btree.java:7286:main|");
             $fclose(f);
           end
         end
@@ -2356,7 +2356,7 @@ module Btree;                                                                   
           begin
             integer f;
             f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:1422:<init>|  Chip.java:1421:waitResultOfTransaction|  Btree.java:0348:stuckPut|  Btree.java:0352:stuckPut|  Btree.java:1686:code|  Chip.java:0532:<init>|  Btree.java:1665:<init>|  Btree.java:1664:splitRootLeaf|  Btree.java:2475:Else|  Chip.java:0622:<init>|  Btree.java:2474:<init>|  Btree.java:2473:code|  Chip.java:0532:<init>|  Btree.java:2469:<init>|  Btree.java:2468:put|  Btree.java:7180:code|  Chip.java:0532:<init>|  Btree.java:7164:<init>|  Btree.java:7163:test_put_random|  Btree.java:7273:oldTests|  Btree.java:7278:newTests|  Btree.java:7284:main|");
+            $fdisplay(f, "Location: Chip.java:1422:<init>|  Chip.java:1421:waitResultOfTransaction|  Btree.java:0348:stuckPut|  Btree.java:0352:stuckPut|  Btree.java:1686:code|  Chip.java:0532:<init>|  Btree.java:1665:<init>|  Btree.java:1664:splitRootLeaf|  Btree.java:2477:Else|  Chip.java:0622:<init>|  Btree.java:2476:<init>|  Btree.java:2475:code|  Chip.java:0532:<init>|  Btree.java:2471:<init>|  Btree.java:2470:put|  Btree.java:7182:code|  Chip.java:0532:<init>|  Btree.java:7166:<init>|  Btree.java:7165:test_put_random|  Btree.java:7275:oldTests|  Btree.java:7280:newTests|  Btree.java:7286:main|");
             $fclose(f);
           end
         end
@@ -2366,7 +2366,7 @@ module Btree;                                                                   
           begin
             integer f;
             f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:0514:<init>|  Chip.java:0821:<init>|  Chip.java:0820:Zero|  Btree.java:0078:allocate|  Btree.java:0153:allocateLeaf|  Btree.java:1687:code|  Chip.java:0532:<init>|  Btree.java:1665:<init>|  Btree.java:1664:splitRootLeaf|  Btree.java:2475:Else|  Chip.java:0622:<init>|  Btree.java:2474:<init>|  Btree.java:2473:code|  Chip.java:0532:<init>|  Btree.java:2469:<init>|  Btree.java:2468:put|  Btree.java:7180:code|  Chip.java:0532:<init>|  Btree.java:7164:<init>|  Btree.java:7163:test_put_random|  Btree.java:7273:oldTests|  Btree.java:7278:newTests|  Btree.java:7284:main|");
+            $fdisplay(f, "Location: Chip.java:0514:<init>|  Chip.java:0821:<init>|  Chip.java:0820:Zero|  Btree.java:0078:allocate|  Btree.java:0153:allocateLeaf|  Btree.java:1687:code|  Chip.java:0532:<init>|  Btree.java:1665:<init>|  Btree.java:1664:splitRootLeaf|  Btree.java:2477:Else|  Chip.java:0622:<init>|  Btree.java:2476:<init>|  Btree.java:2475:code|  Chip.java:0532:<init>|  Btree.java:2471:<init>|  Btree.java:2470:put|  Btree.java:7182:code|  Chip.java:0532:<init>|  Btree.java:7166:<init>|  Btree.java:7165:test_put_random|  Btree.java:7275:oldTests|  Btree.java:7280:newTests|  Btree.java:7286:main|");
             $fclose(f);
           end
         end
@@ -2378,7 +2378,7 @@ module Btree;                                                                   
           begin
             integer f;
             f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:0514:<init>|  Chip.java:1352:<init>|  Chip.java:1351:ExecuteTransaction|  Btree.java:0079:allocate|  Btree.java:0153:allocateLeaf|  Btree.java:1687:code|  Chip.java:0532:<init>|  Btree.java:1665:<init>|  Btree.java:1664:splitRootLeaf|  Btree.java:2475:Else|  Chip.java:0622:<init>|  Btree.java:2474:<init>|  Btree.java:2473:code|  Chip.java:0532:<init>|  Btree.java:2469:<init>|  Btree.java:2468:put|  Btree.java:7180:code|  Chip.java:0532:<init>|  Btree.java:7164:<init>|  Btree.java:7163:test_put_random|  Btree.java:7273:oldTests|  Btree.java:7278:newTests|  Btree.java:7284:main|");
+            $fdisplay(f, "Location: Chip.java:0514:<init>|  Chip.java:1352:<init>|  Chip.java:1351:ExecuteTransaction|  Btree.java:0079:allocate|  Btree.java:0153:allocateLeaf|  Btree.java:1687:code|  Chip.java:0532:<init>|  Btree.java:1665:<init>|  Btree.java:1664:splitRootLeaf|  Btree.java:2477:Else|  Chip.java:0622:<init>|  Btree.java:2476:<init>|  Btree.java:2475:code|  Chip.java:0532:<init>|  Btree.java:2471:<init>|  Btree.java:2470:put|  Btree.java:7182:code|  Chip.java:0532:<init>|  Btree.java:7166:<init>|  Btree.java:7165:test_put_random|  Btree.java:7275:oldTests|  Btree.java:7280:newTests|  Btree.java:7286:main|");
             $fclose(f);
           end
         end
@@ -2389,7 +2389,7 @@ module Btree;                                                                   
           begin
             integer f;
             f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:1359:<init>|  Chip.java:1358:waitResultOfTransaction|  Btree.java:0080:allocate|  Btree.java:0153:allocateLeaf|  Btree.java:1687:code|  Chip.java:0532:<init>|  Btree.java:1665:<init>|  Btree.java:1664:splitRootLeaf|  Btree.java:2475:Else|  Chip.java:0622:<init>|  Btree.java:2474:<init>|  Btree.java:2473:code|  Chip.java:0532:<init>|  Btree.java:2469:<init>|  Btree.java:2468:put|  Btree.java:7180:code|  Chip.java:0532:<init>|  Btree.java:7164:<init>|  Btree.java:7163:test_put_random|  Btree.java:7273:oldTests|  Btree.java:7278:newTests|  Btree.java:7284:main|");
+            $fdisplay(f, "Location: Chip.java:1359:<init>|  Chip.java:1358:waitResultOfTransaction|  Btree.java:0080:allocate|  Btree.java:0153:allocateLeaf|  Btree.java:1687:code|  Chip.java:0532:<init>|  Btree.java:1665:<init>|  Btree.java:1664:splitRootLeaf|  Btree.java:2477:Else|  Chip.java:0622:<init>|  Btree.java:2476:<init>|  Btree.java:2475:code|  Chip.java:0532:<init>|  Btree.java:2471:<init>|  Btree.java:2470:put|  Btree.java:7182:code|  Chip.java:0532:<init>|  Btree.java:7166:<init>|  Btree.java:7165:test_put_random|  Btree.java:7275:oldTests|  Btree.java:7280:newTests|  Btree.java:7286:main|");
             $fclose(f);
           end
         end
@@ -2399,7 +2399,7 @@ module Btree;                                                                   
           begin
             integer f;
             f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:0514:<init>|  Chip.java:0699:<init>|  Chip.java:0698:Copy|  Btree.java:0081:allocate|  Btree.java:0153:allocateLeaf|  Btree.java:1687:code|  Chip.java:0532:<init>|  Btree.java:1665:<init>|  Btree.java:1664:splitRootLeaf|  Btree.java:2475:Else|  Chip.java:0622:<init>|  Btree.java:2474:<init>|  Btree.java:2473:code|  Chip.java:0532:<init>|  Btree.java:2469:<init>|  Btree.java:2468:put|  Btree.java:7180:code|  Chip.java:0532:<init>|  Btree.java:7164:<init>|  Btree.java:7163:test_put_random|  Btree.java:7273:oldTests|  Btree.java:7278:newTests|  Btree.java:7284:main|");
+            $fdisplay(f, "Location: Chip.java:0514:<init>|  Chip.java:0699:<init>|  Chip.java:0698:Copy|  Btree.java:0081:allocate|  Btree.java:0153:allocateLeaf|  Btree.java:1687:code|  Chip.java:0532:<init>|  Btree.java:1665:<init>|  Btree.java:1664:splitRootLeaf|  Btree.java:2477:Else|  Chip.java:0622:<init>|  Btree.java:2476:<init>|  Btree.java:2475:code|  Chip.java:0532:<init>|  Btree.java:2471:<init>|  Btree.java:2470:put|  Btree.java:7182:code|  Chip.java:0532:<init>|  Btree.java:7166:<init>|  Btree.java:7165:test_put_random|  Btree.java:7275:oldTests|  Btree.java:7280:newTests|  Btree.java:7286:main|");
             $fclose(f);
           end
         end
@@ -2414,7 +2414,7 @@ module Btree;                                                                   
           begin
             integer f;
             f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:0514:<init>|  Btree.java:0084:<init>|  Btree.java:0083:allocate|  Btree.java:0153:allocateLeaf|  Btree.java:1687:code|  Chip.java:0532:<init>|  Btree.java:1665:<init>|  Btree.java:1664:splitRootLeaf|  Btree.java:2475:Else|  Chip.java:0622:<init>|  Btree.java:2474:<init>|  Btree.java:2473:code|  Chip.java:0532:<init>|  Btree.java:2469:<init>|  Btree.java:2468:put|  Btree.java:7180:code|  Chip.java:0532:<init>|  Btree.java:7164:<init>|  Btree.java:7163:test_put_random|  Btree.java:7273:oldTests|  Btree.java:7278:newTests|  Btree.java:7284:main|");
+            $fdisplay(f, "Location: Chip.java:0514:<init>|  Btree.java:0084:<init>|  Btree.java:0083:allocate|  Btree.java:0153:allocateLeaf|  Btree.java:1687:code|  Chip.java:0532:<init>|  Btree.java:1665:<init>|  Btree.java:1664:splitRootLeaf|  Btree.java:2477:Else|  Chip.java:0622:<init>|  Btree.java:2476:<init>|  Btree.java:2475:code|  Chip.java:0532:<init>|  Btree.java:2471:<init>|  Btree.java:2470:put|  Btree.java:7182:code|  Chip.java:0532:<init>|  Btree.java:7166:<init>|  Btree.java:7165:test_put_random|  Btree.java:7275:oldTests|  Btree.java:7280:newTests|  Btree.java:7286:main|");
             $fclose(f);
           end
         end
@@ -2434,7 +2434,7 @@ module Btree;                                                                   
           begin
             integer f;
             f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:0514:<init>|  Btree.java:0099:<init>|  Btree.java:0098:allocate|  Btree.java:0153:allocateLeaf|  Btree.java:1687:code|  Chip.java:0532:<init>|  Btree.java:1665:<init>|  Btree.java:1664:splitRootLeaf|  Btree.java:2475:Else|  Chip.java:0622:<init>|  Btree.java:2474:<init>|  Btree.java:2473:code|  Chip.java:0532:<init>|  Btree.java:2469:<init>|  Btree.java:2468:put|  Btree.java:7180:code|  Chip.java:0532:<init>|  Btree.java:7164:<init>|  Btree.java:7163:test_put_random|  Btree.java:7273:oldTests|  Btree.java:7278:newTests|  Btree.java:7284:main|");
+            $fdisplay(f, "Location: Chip.java:0514:<init>|  Btree.java:0099:<init>|  Btree.java:0098:allocate|  Btree.java:0153:allocateLeaf|  Btree.java:1687:code|  Chip.java:0532:<init>|  Btree.java:1665:<init>|  Btree.java:1664:splitRootLeaf|  Btree.java:2477:Else|  Chip.java:0622:<init>|  Btree.java:2476:<init>|  Btree.java:2475:code|  Chip.java:0532:<init>|  Btree.java:2471:<init>|  Btree.java:2470:put|  Btree.java:7182:code|  Chip.java:0532:<init>|  Btree.java:7166:<init>|  Btree.java:7165:test_put_random|  Btree.java:7275:oldTests|  Btree.java:7280:newTests|  Btree.java:7286:main|");
             $fclose(f);
           end
         end
@@ -2445,7 +2445,7 @@ module Btree;                                                                   
           begin
             integer f;
             f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:1359:<init>|  Chip.java:1358:waitResultOfTransaction|  Btree.java:0111:allocate|  Btree.java:0153:allocateLeaf|  Btree.java:1687:code|  Chip.java:0532:<init>|  Btree.java:1665:<init>|  Btree.java:1664:splitRootLeaf|  Btree.java:2475:Else|  Chip.java:0622:<init>|  Btree.java:2474:<init>|  Btree.java:2473:code|  Chip.java:0532:<init>|  Btree.java:2469:<init>|  Btree.java:2468:put|  Btree.java:7180:code|  Chip.java:0532:<init>|  Btree.java:7164:<init>|  Btree.java:7163:test_put_random|  Btree.java:7273:oldTests|  Btree.java:7278:newTests|  Btree.java:7284:main|");
+            $fdisplay(f, "Location: Chip.java:1359:<init>|  Chip.java:1358:waitResultOfTransaction|  Btree.java:0111:allocate|  Btree.java:0153:allocateLeaf|  Btree.java:1687:code|  Chip.java:0532:<init>|  Btree.java:1665:<init>|  Btree.java:1664:splitRootLeaf|  Btree.java:2477:Else|  Chip.java:0622:<init>|  Btree.java:2476:<init>|  Btree.java:2475:code|  Chip.java:0532:<init>|  Btree.java:2471:<init>|  Btree.java:2470:put|  Btree.java:7182:code|  Chip.java:0532:<init>|  Btree.java:7166:<init>|  Btree.java:7165:test_put_random|  Btree.java:7275:oldTests|  Btree.java:7280:newTests|  Btree.java:7286:main|");
             $fclose(f);
           end
         end
@@ -2455,7 +2455,7 @@ module Btree;                                                                   
           begin
             integer f;
             f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:0514:<init>|  Chip.java:0699:<init>|  Chip.java:0698:Copy|  Btree.java:0112:allocate|  Btree.java:0153:allocateLeaf|  Btree.java:1687:code|  Chip.java:0532:<init>|  Btree.java:1665:<init>|  Btree.java:1664:splitRootLeaf|  Btree.java:2475:Else|  Chip.java:0622:<init>|  Btree.java:2474:<init>|  Btree.java:2473:code|  Chip.java:0532:<init>|  Btree.java:2469:<init>|  Btree.java:2468:put|  Btree.java:7180:code|  Chip.java:0532:<init>|  Btree.java:7164:<init>|  Btree.java:7163:test_put_random|  Btree.java:7273:oldTests|  Btree.java:7278:newTests|  Btree.java:7284:main|");
+            $fdisplay(f, "Location: Chip.java:0514:<init>|  Chip.java:0699:<init>|  Chip.java:0698:Copy|  Btree.java:0112:allocate|  Btree.java:0153:allocateLeaf|  Btree.java:1687:code|  Chip.java:0532:<init>|  Btree.java:1665:<init>|  Btree.java:1664:splitRootLeaf|  Btree.java:2477:Else|  Chip.java:0622:<init>|  Btree.java:2476:<init>|  Btree.java:2475:code|  Chip.java:0532:<init>|  Btree.java:2471:<init>|  Btree.java:2470:put|  Btree.java:7182:code|  Chip.java:0532:<init>|  Btree.java:7166:<init>|  Btree.java:7165:test_put_random|  Btree.java:7275:oldTests|  Btree.java:7280:newTests|  Btree.java:7286:main|");
             $fclose(f);
           end
         end
@@ -2468,7 +2468,7 @@ module Btree;                                                                   
           begin
             integer f;
             f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:0514:<init>|  Chip.java:1415:<init>|  Chip.java:1414:ExecuteTransaction|  Btree.java:0113:allocate|  Btree.java:0153:allocateLeaf|  Btree.java:1687:code|  Chip.java:0532:<init>|  Btree.java:1665:<init>|  Btree.java:1664:splitRootLeaf|  Btree.java:2475:Else|  Chip.java:0622:<init>|  Btree.java:2474:<init>|  Btree.java:2473:code|  Chip.java:0532:<init>|  Btree.java:2469:<init>|  Btree.java:2468:put|  Btree.java:7180:code|  Chip.java:0532:<init>|  Btree.java:7164:<init>|  Btree.java:7163:test_put_random|  Btree.java:7273:oldTests|  Btree.java:7278:newTests|  Btree.java:7284:main|");
+            $fdisplay(f, "Location: Chip.java:0514:<init>|  Chip.java:1415:<init>|  Chip.java:1414:ExecuteTransaction|  Btree.java:0113:allocate|  Btree.java:0153:allocateLeaf|  Btree.java:1687:code|  Chip.java:0532:<init>|  Btree.java:1665:<init>|  Btree.java:1664:splitRootLeaf|  Btree.java:2477:Else|  Chip.java:0622:<init>|  Btree.java:2476:<init>|  Btree.java:2475:code|  Chip.java:0532:<init>|  Btree.java:2471:<init>|  Btree.java:2470:put|  Btree.java:7182:code|  Chip.java:0532:<init>|  Btree.java:7166:<init>|  Btree.java:7165:test_put_random|  Btree.java:7275:oldTests|  Btree.java:7280:newTests|  Btree.java:7286:main|");
             $fclose(f);
           end
         end
@@ -2479,7 +2479,7 @@ module Btree;                                                                   
           begin
             integer f;
             f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:1422:<init>|  Chip.java:1421:waitResultOfTransaction|  Btree.java:0114:allocate|  Btree.java:0153:allocateLeaf|  Btree.java:1687:code|  Chip.java:0532:<init>|  Btree.java:1665:<init>|  Btree.java:1664:splitRootLeaf|  Btree.java:2475:Else|  Chip.java:0622:<init>|  Btree.java:2474:<init>|  Btree.java:2473:code|  Chip.java:0532:<init>|  Btree.java:2469:<init>|  Btree.java:2468:put|  Btree.java:7180:code|  Chip.java:0532:<init>|  Btree.java:7164:<init>|  Btree.java:7163:test_put_random|  Btree.java:7273:oldTests|  Btree.java:7278:newTests|  Btree.java:7284:main|");
+            $fdisplay(f, "Location: Chip.java:1422:<init>|  Chip.java:1421:waitResultOfTransaction|  Btree.java:0114:allocate|  Btree.java:0153:allocateLeaf|  Btree.java:1687:code|  Chip.java:0532:<init>|  Btree.java:1665:<init>|  Btree.java:1664:splitRootLeaf|  Btree.java:2477:Else|  Chip.java:0622:<init>|  Btree.java:2476:<init>|  Btree.java:2475:code|  Chip.java:0532:<init>|  Btree.java:2471:<init>|  Btree.java:2470:put|  Btree.java:7182:code|  Chip.java:0532:<init>|  Btree.java:7166:<init>|  Btree.java:7165:test_put_random|  Btree.java:7275:oldTests|  Btree.java:7280:newTests|  Btree.java:7286:main|");
             $fclose(f);
           end
         end
@@ -2490,7 +2490,7 @@ module Btree;                                                                   
           begin
             integer f;
             f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:1422:<init>|  Chip.java:1421:waitResultOfTransaction|  Btree.java:0115:allocate|  Btree.java:0153:allocateLeaf|  Btree.java:1687:code|  Chip.java:0532:<init>|  Btree.java:1665:<init>|  Btree.java:1664:splitRootLeaf|  Btree.java:2475:Else|  Chip.java:0622:<init>|  Btree.java:2474:<init>|  Btree.java:2473:code|  Chip.java:0532:<init>|  Btree.java:2469:<init>|  Btree.java:2468:put|  Btree.java:7180:code|  Chip.java:0532:<init>|  Btree.java:7164:<init>|  Btree.java:7163:test_put_random|  Btree.java:7273:oldTests|  Btree.java:7278:newTests|  Btree.java:7284:main|");
+            $fdisplay(f, "Location: Chip.java:1422:<init>|  Chip.java:1421:waitResultOfTransaction|  Btree.java:0115:allocate|  Btree.java:0153:allocateLeaf|  Btree.java:1687:code|  Chip.java:0532:<init>|  Btree.java:1665:<init>|  Btree.java:1664:splitRootLeaf|  Btree.java:2477:Else|  Chip.java:0622:<init>|  Btree.java:2476:<init>|  Btree.java:2475:code|  Chip.java:0532:<init>|  Btree.java:2471:<init>|  Btree.java:2470:put|  Btree.java:7182:code|  Chip.java:0532:<init>|  Btree.java:7166:<init>|  Btree.java:7165:test_put_random|  Btree.java:7275:oldTests|  Btree.java:7280:newTests|  Btree.java:7286:main|");
             $fclose(f);
           end
         end
@@ -2501,7 +2501,7 @@ module Btree;                                                                   
           begin
             integer f;
             f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:1422:<init>|  Chip.java:1421:waitResultOfTransaction|  Btree.java:0116:allocate|  Btree.java:0153:allocateLeaf|  Btree.java:1687:code|  Chip.java:0532:<init>|  Btree.java:1665:<init>|  Btree.java:1664:splitRootLeaf|  Btree.java:2475:Else|  Chip.java:0622:<init>|  Btree.java:2474:<init>|  Btree.java:2473:code|  Chip.java:0532:<init>|  Btree.java:2469:<init>|  Btree.java:2468:put|  Btree.java:7180:code|  Chip.java:0532:<init>|  Btree.java:7164:<init>|  Btree.java:7163:test_put_random|  Btree.java:7273:oldTests|  Btree.java:7278:newTests|  Btree.java:7284:main|");
+            $fdisplay(f, "Location: Chip.java:1422:<init>|  Chip.java:1421:waitResultOfTransaction|  Btree.java:0116:allocate|  Btree.java:0153:allocateLeaf|  Btree.java:1687:code|  Chip.java:0532:<init>|  Btree.java:1665:<init>|  Btree.java:1664:splitRootLeaf|  Btree.java:2477:Else|  Chip.java:0622:<init>|  Btree.java:2476:<init>|  Btree.java:2475:code|  Chip.java:0532:<init>|  Btree.java:2471:<init>|  Btree.java:2470:put|  Btree.java:7182:code|  Chip.java:0532:<init>|  Btree.java:7166:<init>|  Btree.java:7165:test_put_random|  Btree.java:7275:oldTests|  Btree.java:7280:newTests|  Btree.java:7286:main|");
             $fclose(f);
           end
         end
@@ -2528,7 +2528,7 @@ module Btree;                                                                   
           begin
             integer f;
             f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:0514:<init>|  Btree.java:0330:<init>|  Btree.java:0329:stuckPut|  Btree.java:0352:stuckPut|  Btree.java:1687:code|  Chip.java:0532:<init>|  Btree.java:1665:<init>|  Btree.java:1664:splitRootLeaf|  Btree.java:2475:Else|  Chip.java:0622:<init>|  Btree.java:2474:<init>|  Btree.java:2473:code|  Chip.java:0532:<init>|  Btree.java:2469:<init>|  Btree.java:2468:put|  Btree.java:7180:code|  Chip.java:0532:<init>|  Btree.java:7164:<init>|  Btree.java:7163:test_put_random|  Btree.java:7273:oldTests|  Btree.java:7278:newTests|  Btree.java:7284:main|");
+            $fdisplay(f, "Location: Chip.java:0514:<init>|  Btree.java:0330:<init>|  Btree.java:0329:stuckPut|  Btree.java:0352:stuckPut|  Btree.java:1687:code|  Chip.java:0532:<init>|  Btree.java:1665:<init>|  Btree.java:1664:splitRootLeaf|  Btree.java:2477:Else|  Chip.java:0622:<init>|  Btree.java:2476:<init>|  Btree.java:2475:code|  Chip.java:0532:<init>|  Btree.java:2471:<init>|  Btree.java:2470:put|  Btree.java:7182:code|  Chip.java:0532:<init>|  Btree.java:7166:<init>|  Btree.java:7165:test_put_random|  Btree.java:7275:oldTests|  Btree.java:7280:newTests|  Btree.java:7286:main|");
             $fclose(f);
           end
         end
@@ -2539,7 +2539,7 @@ module Btree;                                                                   
           begin
             integer f;
             f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:1422:<init>|  Chip.java:1421:waitResultOfTransaction|  Btree.java:0344:stuckPut|  Btree.java:0352:stuckPut|  Btree.java:1687:code|  Chip.java:0532:<init>|  Btree.java:1665:<init>|  Btree.java:1664:splitRootLeaf|  Btree.java:2475:Else|  Chip.java:0622:<init>|  Btree.java:2474:<init>|  Btree.java:2473:code|  Chip.java:0532:<init>|  Btree.java:2469:<init>|  Btree.java:2468:put|  Btree.java:7180:code|  Chip.java:0532:<init>|  Btree.java:7164:<init>|  Btree.java:7163:test_put_random|  Btree.java:7273:oldTests|  Btree.java:7278:newTests|  Btree.java:7284:main|");
+            $fdisplay(f, "Location: Chip.java:1422:<init>|  Chip.java:1421:waitResultOfTransaction|  Btree.java:0344:stuckPut|  Btree.java:0352:stuckPut|  Btree.java:1687:code|  Chip.java:0532:<init>|  Btree.java:1665:<init>|  Btree.java:1664:splitRootLeaf|  Btree.java:2477:Else|  Chip.java:0622:<init>|  Btree.java:2476:<init>|  Btree.java:2475:code|  Chip.java:0532:<init>|  Btree.java:2471:<init>|  Btree.java:2470:put|  Btree.java:7182:code|  Chip.java:0532:<init>|  Btree.java:7166:<init>|  Btree.java:7165:test_put_random|  Btree.java:7275:oldTests|  Btree.java:7280:newTests|  Btree.java:7286:main|");
             $fclose(f);
           end
         end
@@ -2550,7 +2550,7 @@ module Btree;                                                                   
           begin
             integer f;
             f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:1422:<init>|  Chip.java:1421:waitResultOfTransaction|  Btree.java:0347:stuckPut|  Btree.java:0352:stuckPut|  Btree.java:1687:code|  Chip.java:0532:<init>|  Btree.java:1665:<init>|  Btree.java:1664:splitRootLeaf|  Btree.java:2475:Else|  Chip.java:0622:<init>|  Btree.java:2474:<init>|  Btree.java:2473:code|  Chip.java:0532:<init>|  Btree.java:2469:<init>|  Btree.java:2468:put|  Btree.java:7180:code|  Chip.java:0532:<init>|  Btree.java:7164:<init>|  Btree.java:7163:test_put_random|  Btree.java:7273:oldTests|  Btree.java:7278:newTests|  Btree.java:7284:main|");
+            $fdisplay(f, "Location: Chip.java:1422:<init>|  Chip.java:1421:waitResultOfTransaction|  Btree.java:0347:stuckPut|  Btree.java:0352:stuckPut|  Btree.java:1687:code|  Chip.java:0532:<init>|  Btree.java:1665:<init>|  Btree.java:1664:splitRootLeaf|  Btree.java:2477:Else|  Chip.java:0622:<init>|  Btree.java:2476:<init>|  Btree.java:2475:code|  Chip.java:0532:<init>|  Btree.java:2471:<init>|  Btree.java:2470:put|  Btree.java:7182:code|  Chip.java:0532:<init>|  Btree.java:7166:<init>|  Btree.java:7165:test_put_random|  Btree.java:7275:oldTests|  Btree.java:7280:newTests|  Btree.java:7286:main|");
             $fclose(f);
           end
         end
@@ -2561,7 +2561,7 @@ module Btree;                                                                   
           begin
             integer f;
             f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:1422:<init>|  Chip.java:1421:waitResultOfTransaction|  Btree.java:0348:stuckPut|  Btree.java:0352:stuckPut|  Btree.java:1687:code|  Chip.java:0532:<init>|  Btree.java:1665:<init>|  Btree.java:1664:splitRootLeaf|  Btree.java:2475:Else|  Chip.java:0622:<init>|  Btree.java:2474:<init>|  Btree.java:2473:code|  Chip.java:0532:<init>|  Btree.java:2469:<init>|  Btree.java:2468:put|  Btree.java:7180:code|  Chip.java:0532:<init>|  Btree.java:7164:<init>|  Btree.java:7163:test_put_random|  Btree.java:7273:oldTests|  Btree.java:7278:newTests|  Btree.java:7284:main|");
+            $fdisplay(f, "Location: Chip.java:1422:<init>|  Chip.java:1421:waitResultOfTransaction|  Btree.java:0348:stuckPut|  Btree.java:0352:stuckPut|  Btree.java:1687:code|  Chip.java:0532:<init>|  Btree.java:1665:<init>|  Btree.java:1664:splitRootLeaf|  Btree.java:2477:Else|  Chip.java:0622:<init>|  Btree.java:2476:<init>|  Btree.java:2475:code|  Chip.java:0532:<init>|  Btree.java:2471:<init>|  Btree.java:2470:put|  Btree.java:7182:code|  Chip.java:0532:<init>|  Btree.java:7166:<init>|  Btree.java:7165:test_put_random|  Btree.java:7275:oldTests|  Btree.java:7280:newTests|  Btree.java:7286:main|");
             $fclose(f);
           end
         end
@@ -2584,7 +2584,7 @@ module Btree;                                                                   
           begin
             integer f;
             f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:0514:<init>|  Btree.java:0751:<init>|  Btree.java:0750:LastElement|  Btree.java:1689:code|  Chip.java:0532:<init>|  Btree.java:1665:<init>|  Btree.java:1664:splitRootLeaf|  Btree.java:2475:Else|  Chip.java:0622:<init>|  Btree.java:2474:<init>|  Btree.java:2473:code|  Chip.java:0532:<init>|  Btree.java:2469:<init>|  Btree.java:2468:put|  Btree.java:7180:code|  Chip.java:0532:<init>|  Btree.java:7164:<init>|  Btree.java:7163:test_put_random|  Btree.java:7273:oldTests|  Btree.java:7278:newTests|  Btree.java:7284:main|");
+            $fdisplay(f, "Location: Chip.java:0514:<init>|  Btree.java:0751:<init>|  Btree.java:0750:LastElement|  Btree.java:1689:code|  Chip.java:0532:<init>|  Btree.java:1665:<init>|  Btree.java:1664:splitRootLeaf|  Btree.java:2477:Else|  Chip.java:0622:<init>|  Btree.java:2476:<init>|  Btree.java:2475:code|  Chip.java:0532:<init>|  Btree.java:2471:<init>|  Btree.java:2470:put|  Btree.java:7182:code|  Chip.java:0532:<init>|  Btree.java:7166:<init>|  Btree.java:7165:test_put_random|  Btree.java:7275:oldTests|  Btree.java:7280:newTests|  Btree.java:7286:main|");
             $fclose(f);
           end
         end
@@ -2595,7 +2595,7 @@ module Btree;                                                                   
           begin
             integer f;
             f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:0514:<init>|  Btree.java:0724:<init>|  Btree.java:0723:FirstElement|  Btree.java:1690:code|  Chip.java:0532:<init>|  Btree.java:1665:<init>|  Btree.java:1664:splitRootLeaf|  Btree.java:2475:Else|  Chip.java:0622:<init>|  Btree.java:2474:<init>|  Btree.java:2473:code|  Chip.java:0532:<init>|  Btree.java:2469:<init>|  Btree.java:2468:put|  Btree.java:7180:code|  Chip.java:0532:<init>|  Btree.java:7164:<init>|  Btree.java:7163:test_put_random|  Btree.java:7273:oldTests|  Btree.java:7278:newTests|  Btree.java:7284:main|");
+            $fdisplay(f, "Location: Chip.java:0514:<init>|  Btree.java:0724:<init>|  Btree.java:0723:FirstElement|  Btree.java:1690:code|  Chip.java:0532:<init>|  Btree.java:1665:<init>|  Btree.java:1664:splitRootLeaf|  Btree.java:2477:Else|  Chip.java:0622:<init>|  Btree.java:2476:<init>|  Btree.java:2475:code|  Chip.java:0532:<init>|  Btree.java:2471:<init>|  Btree.java:2470:put|  Btree.java:7182:code|  Chip.java:0532:<init>|  Btree.java:7166:<init>|  Btree.java:7165:test_put_random|  Btree.java:7275:oldTests|  Btree.java:7280:newTests|  Btree.java:7286:main|");
             $fclose(f);
           end
         end
@@ -2605,7 +2605,7 @@ module Btree;                                                                   
           begin
             integer f;
             f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:0514:<init>|  Chip.java:0863:<init>|  Chip.java:0862:Average|  Btree.java:1691:code|  Chip.java:0532:<init>|  Btree.java:1665:<init>|  Btree.java:1664:splitRootLeaf|  Btree.java:2475:Else|  Chip.java:0622:<init>|  Btree.java:2474:<init>|  Btree.java:2473:code|  Chip.java:0532:<init>|  Btree.java:2469:<init>|  Btree.java:2468:put|  Btree.java:7180:code|  Chip.java:0532:<init>|  Btree.java:7164:<init>|  Btree.java:7163:test_put_random|  Btree.java:7273:oldTests|  Btree.java:7278:newTests|  Btree.java:7284:main|");
+            $fdisplay(f, "Location: Chip.java:0514:<init>|  Chip.java:0863:<init>|  Chip.java:0862:Average|  Btree.java:1691:code|  Chip.java:0532:<init>|  Btree.java:1665:<init>|  Btree.java:1664:splitRootLeaf|  Btree.java:2477:Else|  Chip.java:0622:<init>|  Btree.java:2476:<init>|  Btree.java:2475:code|  Chip.java:0532:<init>|  Btree.java:2471:<init>|  Btree.java:2470:put|  Btree.java:7182:code|  Chip.java:0532:<init>|  Btree.java:7166:<init>|  Btree.java:7165:test_put_random|  Btree.java:7275:oldTests|  Btree.java:7280:newTests|  Btree.java:7286:main|");
             $fclose(f);
           end
         end
@@ -2615,7 +2615,7 @@ module Btree;                                                                   
           begin
             integer f;
             f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:0514:<init>|  Btree.java:0564:<init>|  Btree.java:0563:Clear|  Btree.java:1692:code|  Chip.java:0532:<init>|  Btree.java:1665:<init>|  Btree.java:1664:splitRootLeaf|  Btree.java:2475:Else|  Chip.java:0622:<init>|  Btree.java:2474:<init>|  Btree.java:2473:code|  Chip.java:0532:<init>|  Btree.java:2469:<init>|  Btree.java:2468:put|  Btree.java:7180:code|  Chip.java:0532:<init>|  Btree.java:7164:<init>|  Btree.java:7163:test_put_random|  Btree.java:7273:oldTests|  Btree.java:7278:newTests|  Btree.java:7284:main|");
+            $fdisplay(f, "Location: Chip.java:0514:<init>|  Btree.java:0564:<init>|  Btree.java:0563:Clear|  Btree.java:1692:code|  Chip.java:0532:<init>|  Btree.java:1665:<init>|  Btree.java:1664:splitRootLeaf|  Btree.java:2477:Else|  Chip.java:0622:<init>|  Btree.java:2476:<init>|  Btree.java:2475:code|  Chip.java:0532:<init>|  Btree.java:2471:<init>|  Btree.java:2470:put|  Btree.java:7182:code|  Chip.java:0532:<init>|  Btree.java:7166:<init>|  Btree.java:7165:test_put_random|  Btree.java:7275:oldTests|  Btree.java:7280:newTests|  Btree.java:7286:main|");
             $fclose(f);
           end
         end
@@ -2643,7 +2643,7 @@ module Btree;                                                                   
           begin
             integer f;
             f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:0514:<init>|  Btree.java:0593:<init>|  Btree.java:0592:Push|  Btree.java:1693:code|  Chip.java:0532:<init>|  Btree.java:1665:<init>|  Btree.java:1664:splitRootLeaf|  Btree.java:2475:Else|  Chip.java:0622:<init>|  Btree.java:2474:<init>|  Btree.java:2473:code|  Chip.java:0532:<init>|  Btree.java:2469:<init>|  Btree.java:2468:put|  Btree.java:7180:code|  Chip.java:0532:<init>|  Btree.java:7164:<init>|  Btree.java:7163:test_put_random|  Btree.java:7273:oldTests|  Btree.java:7278:newTests|  Btree.java:7284:main|");
+            $fdisplay(f, "Location: Chip.java:0514:<init>|  Btree.java:0593:<init>|  Btree.java:0592:Push|  Btree.java:1693:code|  Chip.java:0532:<init>|  Btree.java:1665:<init>|  Btree.java:1664:splitRootLeaf|  Btree.java:2477:Else|  Chip.java:0622:<init>|  Btree.java:2476:<init>|  Btree.java:2475:code|  Chip.java:0532:<init>|  Btree.java:2471:<init>|  Btree.java:2470:put|  Btree.java:7182:code|  Chip.java:0532:<init>|  Btree.java:7166:<init>|  Btree.java:7165:test_put_random|  Btree.java:7275:oldTests|  Btree.java:7280:newTests|  Btree.java:7286:main|");
             $fclose(f);
           end
         end
@@ -2670,7 +2670,7 @@ module Btree;                                                                   
           begin
             integer f;
             f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:0514:<init>|  Btree.java:0701:<init>|  Btree.java:0700:SetPastLastElement|  Btree.java:1694:code|  Chip.java:0532:<init>|  Btree.java:1665:<init>|  Btree.java:1664:splitRootLeaf|  Btree.java:2475:Else|  Chip.java:0622:<init>|  Btree.java:2474:<init>|  Btree.java:2473:code|  Chip.java:0532:<init>|  Btree.java:2469:<init>|  Btree.java:2468:put|  Btree.java:7180:code|  Chip.java:0532:<init>|  Btree.java:7164:<init>|  Btree.java:7163:test_put_random|  Btree.java:7273:oldTests|  Btree.java:7278:newTests|  Btree.java:7284:main|");
+            $fdisplay(f, "Location: Chip.java:0514:<init>|  Btree.java:0701:<init>|  Btree.java:0700:SetPastLastElement|  Btree.java:1694:code|  Chip.java:0532:<init>|  Btree.java:1665:<init>|  Btree.java:1664:splitRootLeaf|  Btree.java:2477:Else|  Chip.java:0622:<init>|  Btree.java:2476:<init>|  Btree.java:2475:code|  Chip.java:0532:<init>|  Btree.java:2471:<init>|  Btree.java:2470:put|  Btree.java:7182:code|  Chip.java:0532:<init>|  Btree.java:7166:<init>|  Btree.java:7165:test_put_random|  Btree.java:7275:oldTests|  Btree.java:7280:newTests|  Btree.java:7286:main|");
             $fclose(f);
           end
         end
@@ -2680,7 +2680,7 @@ module Btree;                                                                   
           begin
             integer f;
             f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:0514:<init>|  Chip.java:0821:<init>|  Chip.java:0820:Zero|  Btree.java:1695:code|  Chip.java:0532:<init>|  Btree.java:1665:<init>|  Btree.java:1664:splitRootLeaf|  Btree.java:2475:Else|  Chip.java:0622:<init>|  Btree.java:2474:<init>|  Btree.java:2473:code|  Chip.java:0532:<init>|  Btree.java:2469:<init>|  Btree.java:2468:put|  Btree.java:7180:code|  Chip.java:0532:<init>|  Btree.java:7164:<init>|  Btree.java:7163:test_put_random|  Btree.java:7273:oldTests|  Btree.java:7278:newTests|  Btree.java:7284:main|");
+            $fdisplay(f, "Location: Chip.java:0514:<init>|  Chip.java:0821:<init>|  Chip.java:0820:Zero|  Btree.java:1695:code|  Chip.java:0532:<init>|  Btree.java:1665:<init>|  Btree.java:1664:splitRootLeaf|  Btree.java:2477:Else|  Chip.java:0622:<init>|  Btree.java:2476:<init>|  Btree.java:2475:code|  Chip.java:0532:<init>|  Btree.java:2471:<init>|  Btree.java:2470:put|  Btree.java:7182:code|  Chip.java:0532:<init>|  Btree.java:7166:<init>|  Btree.java:7165:test_put_random|  Btree.java:7275:oldTests|  Btree.java:7280:newTests|  Btree.java:7286:main|");
             $fclose(f);
           end
         end
@@ -2711,7 +2711,7 @@ module Btree;                                                                   
           begin
             integer f;
             f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:0514:<init>|  Btree.java:0330:<init>|  Btree.java:0329:stuckPut|  Btree.java:0353:stuckPut|  Btree.java:1696:code|  Chip.java:0532:<init>|  Btree.java:1665:<init>|  Btree.java:1664:splitRootLeaf|  Btree.java:2475:Else|  Chip.java:0622:<init>|  Btree.java:2474:<init>|  Btree.java:2473:code|  Chip.java:0532:<init>|  Btree.java:2469:<init>|  Btree.java:2468:put|  Btree.java:7180:code|  Chip.java:0532:<init>|  Btree.java:7164:<init>|  Btree.java:7163:test_put_random|  Btree.java:7273:oldTests|  Btree.java:7278:newTests|  Btree.java:7284:main|");
+            $fdisplay(f, "Location: Chip.java:0514:<init>|  Btree.java:0330:<init>|  Btree.java:0329:stuckPut|  Btree.java:0353:stuckPut|  Btree.java:1696:code|  Chip.java:0532:<init>|  Btree.java:1665:<init>|  Btree.java:1664:splitRootLeaf|  Btree.java:2477:Else|  Chip.java:0622:<init>|  Btree.java:2476:<init>|  Btree.java:2475:code|  Chip.java:0532:<init>|  Btree.java:2471:<init>|  Btree.java:2470:put|  Btree.java:7182:code|  Chip.java:0532:<init>|  Btree.java:7166:<init>|  Btree.java:7165:test_put_random|  Btree.java:7275:oldTests|  Btree.java:7280:newTests|  Btree.java:7286:main|");
             $fclose(f);
           end
         end
@@ -2722,7 +2722,7 @@ module Btree;                                                                   
           begin
             integer f;
             f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:1422:<init>|  Chip.java:1421:waitResultOfTransaction|  Btree.java:0344:stuckPut|  Btree.java:0353:stuckPut|  Btree.java:1696:code|  Chip.java:0532:<init>|  Btree.java:1665:<init>|  Btree.java:1664:splitRootLeaf|  Btree.java:2475:Else|  Chip.java:0622:<init>|  Btree.java:2474:<init>|  Btree.java:2473:code|  Chip.java:0532:<init>|  Btree.java:2469:<init>|  Btree.java:2468:put|  Btree.java:7180:code|  Chip.java:0532:<init>|  Btree.java:7164:<init>|  Btree.java:7163:test_put_random|  Btree.java:7273:oldTests|  Btree.java:7278:newTests|  Btree.java:7284:main|");
+            $fdisplay(f, "Location: Chip.java:1422:<init>|  Chip.java:1421:waitResultOfTransaction|  Btree.java:0344:stuckPut|  Btree.java:0353:stuckPut|  Btree.java:1696:code|  Chip.java:0532:<init>|  Btree.java:1665:<init>|  Btree.java:1664:splitRootLeaf|  Btree.java:2477:Else|  Chip.java:0622:<init>|  Btree.java:2476:<init>|  Btree.java:2475:code|  Chip.java:0532:<init>|  Btree.java:2471:<init>|  Btree.java:2470:put|  Btree.java:7182:code|  Chip.java:0532:<init>|  Btree.java:7166:<init>|  Btree.java:7165:test_put_random|  Btree.java:7275:oldTests|  Btree.java:7280:newTests|  Btree.java:7286:main|");
             $fclose(f);
           end
         end
@@ -2733,7 +2733,7 @@ module Btree;                                                                   
           begin
             integer f;
             f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:1422:<init>|  Chip.java:1421:waitResultOfTransaction|  Btree.java:0345:stuckPut|  Btree.java:0353:stuckPut|  Btree.java:1696:code|  Chip.java:0532:<init>|  Btree.java:1665:<init>|  Btree.java:1664:splitRootLeaf|  Btree.java:2475:Else|  Chip.java:0622:<init>|  Btree.java:2474:<init>|  Btree.java:2473:code|  Chip.java:0532:<init>|  Btree.java:2469:<init>|  Btree.java:2468:put|  Btree.java:7180:code|  Chip.java:0532:<init>|  Btree.java:7164:<init>|  Btree.java:7163:test_put_random|  Btree.java:7273:oldTests|  Btree.java:7278:newTests|  Btree.java:7284:main|");
+            $fdisplay(f, "Location: Chip.java:1422:<init>|  Chip.java:1421:waitResultOfTransaction|  Btree.java:0345:stuckPut|  Btree.java:0353:stuckPut|  Btree.java:1696:code|  Chip.java:0532:<init>|  Btree.java:1665:<init>|  Btree.java:1664:splitRootLeaf|  Btree.java:2477:Else|  Chip.java:0622:<init>|  Btree.java:2476:<init>|  Btree.java:2475:code|  Chip.java:0532:<init>|  Btree.java:2471:<init>|  Btree.java:2470:put|  Btree.java:7182:code|  Chip.java:0532:<init>|  Btree.java:7166:<init>|  Btree.java:7165:test_put_random|  Btree.java:7275:oldTests|  Btree.java:7280:newTests|  Btree.java:7286:main|");
             $fclose(f);
           end
         end
@@ -2744,7 +2744,7 @@ module Btree;                                                                   
           begin
             integer f;
             f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:1422:<init>|  Chip.java:1421:waitResultOfTransaction|  Btree.java:0347:stuckPut|  Btree.java:0353:stuckPut|  Btree.java:1696:code|  Chip.java:0532:<init>|  Btree.java:1665:<init>|  Btree.java:1664:splitRootLeaf|  Btree.java:2475:Else|  Chip.java:0622:<init>|  Btree.java:2474:<init>|  Btree.java:2473:code|  Chip.java:0532:<init>|  Btree.java:2469:<init>|  Btree.java:2468:put|  Btree.java:7180:code|  Chip.java:0532:<init>|  Btree.java:7164:<init>|  Btree.java:7163:test_put_random|  Btree.java:7273:oldTests|  Btree.java:7278:newTests|  Btree.java:7284:main|");
+            $fdisplay(f, "Location: Chip.java:1422:<init>|  Chip.java:1421:waitResultOfTransaction|  Btree.java:0347:stuckPut|  Btree.java:0353:stuckPut|  Btree.java:1696:code|  Chip.java:0532:<init>|  Btree.java:1665:<init>|  Btree.java:1664:splitRootLeaf|  Btree.java:2477:Else|  Chip.java:0622:<init>|  Btree.java:2476:<init>|  Btree.java:2475:code|  Chip.java:0532:<init>|  Btree.java:2471:<init>|  Btree.java:2470:put|  Btree.java:7182:code|  Chip.java:0532:<init>|  Btree.java:7166:<init>|  Btree.java:7165:test_put_random|  Btree.java:7275:oldTests|  Btree.java:7280:newTests|  Btree.java:7286:main|");
             $fclose(f);
           end
         end
@@ -2755,7 +2755,7 @@ module Btree;                                                                   
           begin
             integer f;
             f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:1422:<init>|  Chip.java:1421:waitResultOfTransaction|  Btree.java:0348:stuckPut|  Btree.java:0353:stuckPut|  Btree.java:1696:code|  Chip.java:0532:<init>|  Btree.java:1665:<init>|  Btree.java:1664:splitRootLeaf|  Btree.java:2475:Else|  Chip.java:0622:<init>|  Btree.java:2474:<init>|  Btree.java:2473:code|  Chip.java:0532:<init>|  Btree.java:2469:<init>|  Btree.java:2468:put|  Btree.java:7180:code|  Chip.java:0532:<init>|  Btree.java:7164:<init>|  Btree.java:7163:test_put_random|  Btree.java:7273:oldTests|  Btree.java:7278:newTests|  Btree.java:7284:main|");
+            $fdisplay(f, "Location: Chip.java:1422:<init>|  Chip.java:1421:waitResultOfTransaction|  Btree.java:0348:stuckPut|  Btree.java:0353:stuckPut|  Btree.java:1696:code|  Chip.java:0532:<init>|  Btree.java:1665:<init>|  Btree.java:1664:splitRootLeaf|  Btree.java:2477:Else|  Chip.java:0622:<init>|  Btree.java:2476:<init>|  Btree.java:2475:code|  Chip.java:0532:<init>|  Btree.java:2471:<init>|  Btree.java:2470:put|  Btree.java:7182:code|  Chip.java:0532:<init>|  Btree.java:7166:<init>|  Btree.java:7165:test_put_random|  Btree.java:7275:oldTests|  Btree.java:7280:newTests|  Btree.java:7286:main|");
             $fclose(f);
           end
         end
@@ -2765,7 +2765,7 @@ module Btree;                                                                   
           begin
             integer f;
             f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:0514:<init>|  Chip.java:0821:<init>|  Chip.java:0820:Zero|  Btree.java:2387:findSearch|  Btree.java:2426:code|  Chip.java:0532:<init>|  Btree.java:2425:<init>|  Btree.java:2424:findAndInsert|  Btree.java:2476:Else|  Chip.java:0622:<init>|  Btree.java:2474:<init>|  Btree.java:2473:code|  Chip.java:0532:<init>|  Btree.java:2469:<init>|  Btree.java:2468:put|  Btree.java:7180:code|  Chip.java:0532:<init>|  Btree.java:7164:<init>|  Btree.java:7163:test_put_random|  Btree.java:7273:oldTests|  Btree.java:7278:newTests|  Btree.java:7284:main|");
+            $fdisplay(f, "Location: Chip.java:0514:<init>|  Chip.java:0821:<init>|  Chip.java:0820:Zero|  Btree.java:2389:findSearch|  Btree.java:2428:code|  Chip.java:0532:<init>|  Btree.java:2427:<init>|  Btree.java:2426:findAndInsert|  Btree.java:2478:Else|  Chip.java:0622:<init>|  Btree.java:2476:<init>|  Btree.java:2475:code|  Chip.java:0532:<init>|  Btree.java:2471:<init>|  Btree.java:2470:put|  Btree.java:7182:code|  Chip.java:0532:<init>|  Btree.java:7166:<init>|  Btree.java:7165:test_put_random|  Btree.java:7275:oldTests|  Btree.java:7280:newTests|  Btree.java:7286:main|");
             $fclose(f);
           end
         end
@@ -2775,7 +2775,7 @@ module Btree;                                                                   
           begin
             integer f;
             f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:0514:<init>|  Chip.java:0699:<init>|  Chip.java:0698:Copy|  Btree.java:0278:stuckGet|  Btree.java:2391:code|  Chip.java:0532:<init>|  Btree.java:2390:<init>|  Btree.java:2389:findSearch|  Btree.java:2426:code|  Chip.java:0532:<init>|  Btree.java:2425:<init>|  Btree.java:2424:findAndInsert|  Btree.java:2476:Else|  Chip.java:0622:<init>|  Btree.java:2474:<init>|  Btree.java:2473:code|  Chip.java:0532:<init>|  Btree.java:2469:<init>|  Btree.java:2468:put|  Btree.java:7180:code|  Chip.java:0532:<init>|  Btree.java:7164:<init>|  Btree.java:7163:test_put_random|  Btree.java:7273:oldTests|  Btree.java:7278:newTests|  Btree.java:7284:main|");
+            $fdisplay(f, "Location: Chip.java:0514:<init>|  Chip.java:0699:<init>|  Chip.java:0698:Copy|  Btree.java:0278:stuckGet|  Btree.java:2393:code|  Chip.java:0532:<init>|  Btree.java:2392:<init>|  Btree.java:2391:findSearch|  Btree.java:2428:code|  Chip.java:0532:<init>|  Btree.java:2427:<init>|  Btree.java:2426:findAndInsert|  Btree.java:2478:Else|  Chip.java:0622:<init>|  Btree.java:2476:<init>|  Btree.java:2475:code|  Chip.java:0532:<init>|  Btree.java:2471:<init>|  Btree.java:2470:put|  Btree.java:7182:code|  Chip.java:0532:<init>|  Btree.java:7166:<init>|  Btree.java:7165:test_put_random|  Btree.java:7275:oldTests|  Btree.java:7280:newTests|  Btree.java:7286:main|");
             $fclose(f);
           end
         end
@@ -2796,7 +2796,7 @@ module Btree;                                                                   
           begin
             integer f;
             f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:0514:<init>|  Btree.java:0289:<init>|  Btree.java:0288:stuckGet|  Btree.java:0279:stuckGet|  Btree.java:2391:code|  Chip.java:0532:<init>|  Btree.java:2390:<init>|  Btree.java:2389:findSearch|  Btree.java:2426:code|  Chip.java:0532:<init>|  Btree.java:2425:<init>|  Btree.java:2424:findAndInsert|  Btree.java:2476:Else|  Chip.java:0622:<init>|  Btree.java:2474:<init>|  Btree.java:2473:code|  Chip.java:0532:<init>|  Btree.java:2469:<init>|  Btree.java:2468:put|  Btree.java:7180:code|  Chip.java:0532:<init>|  Btree.java:7164:<init>|  Btree.java:7163:test_put_random|  Btree.java:7273:oldTests|  Btree.java:7278:newTests|  Btree.java:7284:main|");
+            $fdisplay(f, "Location: Chip.java:0514:<init>|  Btree.java:0289:<init>|  Btree.java:0288:stuckGet|  Btree.java:0279:stuckGet|  Btree.java:2393:code|  Chip.java:0532:<init>|  Btree.java:2392:<init>|  Btree.java:2391:findSearch|  Btree.java:2428:code|  Chip.java:0532:<init>|  Btree.java:2427:<init>|  Btree.java:2426:findAndInsert|  Btree.java:2478:Else|  Chip.java:0622:<init>|  Btree.java:2476:<init>|  Btree.java:2475:code|  Chip.java:0532:<init>|  Btree.java:2471:<init>|  Btree.java:2470:put|  Btree.java:7182:code|  Chip.java:0532:<init>|  Btree.java:7166:<init>|  Btree.java:7165:test_put_random|  Btree.java:7275:oldTests|  Btree.java:7280:newTests|  Btree.java:7286:main|");
             $fclose(f);
           end
         end
@@ -2807,7 +2807,7 @@ module Btree;                                                                   
           begin
             integer f;
             f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:1359:<init>|  Chip.java:1358:waitResultOfTransaction|  Btree.java:0302:stuckGet|  Btree.java:0279:stuckGet|  Btree.java:2391:code|  Chip.java:0532:<init>|  Btree.java:2390:<init>|  Btree.java:2389:findSearch|  Btree.java:2426:code|  Chip.java:0532:<init>|  Btree.java:2425:<init>|  Btree.java:2424:findAndInsert|  Btree.java:2476:Else|  Chip.java:0622:<init>|  Btree.java:2474:<init>|  Btree.java:2473:code|  Chip.java:0532:<init>|  Btree.java:2469:<init>|  Btree.java:2468:put|  Btree.java:7180:code|  Chip.java:0532:<init>|  Btree.java:7164:<init>|  Btree.java:7163:test_put_random|  Btree.java:7273:oldTests|  Btree.java:7278:newTests|  Btree.java:7284:main|");
+            $fdisplay(f, "Location: Chip.java:1359:<init>|  Chip.java:1358:waitResultOfTransaction|  Btree.java:0302:stuckGet|  Btree.java:0279:stuckGet|  Btree.java:2393:code|  Chip.java:0532:<init>|  Btree.java:2392:<init>|  Btree.java:2391:findSearch|  Btree.java:2428:code|  Chip.java:0532:<init>|  Btree.java:2427:<init>|  Btree.java:2426:findAndInsert|  Btree.java:2478:Else|  Chip.java:0622:<init>|  Btree.java:2476:<init>|  Btree.java:2475:code|  Chip.java:0532:<init>|  Btree.java:2471:<init>|  Btree.java:2470:put|  Btree.java:7182:code|  Chip.java:0532:<init>|  Btree.java:7166:<init>|  Btree.java:7165:test_put_random|  Btree.java:7275:oldTests|  Btree.java:7280:newTests|  Btree.java:7286:main|");
             $fclose(f);
           end
         end
@@ -2818,7 +2818,7 @@ module Btree;                                                                   
           begin
             integer f;
             f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:1359:<init>|  Chip.java:1358:waitResultOfTransaction|  Btree.java:0303:stuckGet|  Btree.java:0279:stuckGet|  Btree.java:2391:code|  Chip.java:0532:<init>|  Btree.java:2390:<init>|  Btree.java:2389:findSearch|  Btree.java:2426:code|  Chip.java:0532:<init>|  Btree.java:2425:<init>|  Btree.java:2424:findAndInsert|  Btree.java:2476:Else|  Chip.java:0622:<init>|  Btree.java:2474:<init>|  Btree.java:2473:code|  Chip.java:0532:<init>|  Btree.java:2469:<init>|  Btree.java:2468:put|  Btree.java:7180:code|  Chip.java:0532:<init>|  Btree.java:7164:<init>|  Btree.java:7163:test_put_random|  Btree.java:7273:oldTests|  Btree.java:7278:newTests|  Btree.java:7284:main|");
+            $fdisplay(f, "Location: Chip.java:1359:<init>|  Chip.java:1358:waitResultOfTransaction|  Btree.java:0303:stuckGet|  Btree.java:0279:stuckGet|  Btree.java:2393:code|  Chip.java:0532:<init>|  Btree.java:2392:<init>|  Btree.java:2391:findSearch|  Btree.java:2428:code|  Chip.java:0532:<init>|  Btree.java:2427:<init>|  Btree.java:2426:findAndInsert|  Btree.java:2478:Else|  Chip.java:0622:<init>|  Btree.java:2476:<init>|  Btree.java:2475:code|  Chip.java:0532:<init>|  Btree.java:2471:<init>|  Btree.java:2470:put|  Btree.java:7182:code|  Chip.java:0532:<init>|  Btree.java:7166:<init>|  Btree.java:7165:test_put_random|  Btree.java:7275:oldTests|  Btree.java:7280:newTests|  Btree.java:7286:main|");
             $fclose(f);
           end
         end
@@ -2829,7 +2829,7 @@ module Btree;                                                                   
           begin
             integer f;
             f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:1359:<init>|  Chip.java:1358:waitResultOfTransaction|  Btree.java:0305:stuckGet|  Btree.java:0279:stuckGet|  Btree.java:2391:code|  Chip.java:0532:<init>|  Btree.java:2390:<init>|  Btree.java:2389:findSearch|  Btree.java:2426:code|  Chip.java:0532:<init>|  Btree.java:2425:<init>|  Btree.java:2424:findAndInsert|  Btree.java:2476:Else|  Chip.java:0622:<init>|  Btree.java:2474:<init>|  Btree.java:2473:code|  Chip.java:0532:<init>|  Btree.java:2469:<init>|  Btree.java:2468:put|  Btree.java:7180:code|  Chip.java:0532:<init>|  Btree.java:7164:<init>|  Btree.java:7163:test_put_random|  Btree.java:7273:oldTests|  Btree.java:7278:newTests|  Btree.java:7284:main|");
+            $fdisplay(f, "Location: Chip.java:1359:<init>|  Chip.java:1358:waitResultOfTransaction|  Btree.java:0305:stuckGet|  Btree.java:0279:stuckGet|  Btree.java:2393:code|  Chip.java:0532:<init>|  Btree.java:2392:<init>|  Btree.java:2391:findSearch|  Btree.java:2428:code|  Chip.java:0532:<init>|  Btree.java:2427:<init>|  Btree.java:2426:findAndInsert|  Btree.java:2478:Else|  Chip.java:0622:<init>|  Btree.java:2476:<init>|  Btree.java:2475:code|  Chip.java:0532:<init>|  Btree.java:2471:<init>|  Btree.java:2470:put|  Btree.java:7182:code|  Chip.java:0532:<init>|  Btree.java:7166:<init>|  Btree.java:7165:test_put_random|  Btree.java:7275:oldTests|  Btree.java:7280:newTests|  Btree.java:7286:main|");
             $fclose(f);
           end
         end
@@ -2840,7 +2840,7 @@ module Btree;                                                                   
           begin
             integer f;
             f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:1359:<init>|  Chip.java:1358:waitResultOfTransaction|  Btree.java:0306:stuckGet|  Btree.java:0279:stuckGet|  Btree.java:2391:code|  Chip.java:0532:<init>|  Btree.java:2390:<init>|  Btree.java:2389:findSearch|  Btree.java:2426:code|  Chip.java:0532:<init>|  Btree.java:2425:<init>|  Btree.java:2424:findAndInsert|  Btree.java:2476:Else|  Chip.java:0622:<init>|  Btree.java:2474:<init>|  Btree.java:2473:code|  Chip.java:0532:<init>|  Btree.java:2469:<init>|  Btree.java:2468:put|  Btree.java:7180:code|  Chip.java:0532:<init>|  Btree.java:7164:<init>|  Btree.java:7163:test_put_random|  Btree.java:7273:oldTests|  Btree.java:7278:newTests|  Btree.java:7284:main|");
+            $fdisplay(f, "Location: Chip.java:1359:<init>|  Chip.java:1358:waitResultOfTransaction|  Btree.java:0306:stuckGet|  Btree.java:0279:stuckGet|  Btree.java:2393:code|  Chip.java:0532:<init>|  Btree.java:2392:<init>|  Btree.java:2391:findSearch|  Btree.java:2428:code|  Chip.java:0532:<init>|  Btree.java:2427:<init>|  Btree.java:2426:findAndInsert|  Btree.java:2478:Else|  Chip.java:0622:<init>|  Btree.java:2476:<init>|  Btree.java:2475:code|  Chip.java:0532:<init>|  Btree.java:2471:<init>|  Btree.java:2470:put|  Btree.java:7182:code|  Chip.java:0532:<init>|  Btree.java:7166:<init>|  Btree.java:7165:test_put_random|  Btree.java:7275:oldTests|  Btree.java:7280:newTests|  Btree.java:7286:main|");
             $fclose(f);
           end
         end
@@ -2859,7 +2859,7 @@ module Btree;                                                                   
           begin
             integer f;
             f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:0514:<init>|  Btree.java:0309:<init>|  Btree.java:0308:stuckGet|  Btree.java:0279:stuckGet|  Btree.java:2391:code|  Chip.java:0532:<init>|  Btree.java:2390:<init>|  Btree.java:2389:findSearch|  Btree.java:2426:code|  Chip.java:0532:<init>|  Btree.java:2425:<init>|  Btree.java:2424:findAndInsert|  Btree.java:2476:Else|  Chip.java:0622:<init>|  Btree.java:2474:<init>|  Btree.java:2473:code|  Chip.java:0532:<init>|  Btree.java:2469:<init>|  Btree.java:2468:put|  Btree.java:7180:code|  Chip.java:0532:<init>|  Btree.java:7164:<init>|  Btree.java:7163:test_put_random|  Btree.java:7273:oldTests|  Btree.java:7278:newTests|  Btree.java:7284:main|");
+            $fdisplay(f, "Location: Chip.java:0514:<init>|  Btree.java:0309:<init>|  Btree.java:0308:stuckGet|  Btree.java:0279:stuckGet|  Btree.java:2393:code|  Chip.java:0532:<init>|  Btree.java:2392:<init>|  Btree.java:2391:findSearch|  Btree.java:2428:code|  Chip.java:0532:<init>|  Btree.java:2427:<init>|  Btree.java:2426:findAndInsert|  Btree.java:2478:Else|  Chip.java:0622:<init>|  Btree.java:2476:<init>|  Btree.java:2475:code|  Chip.java:0532:<init>|  Btree.java:2471:<init>|  Btree.java:2470:put|  Btree.java:7182:code|  Chip.java:0532:<init>|  Btree.java:7166:<init>|  Btree.java:7165:test_put_random|  Btree.java:7275:oldTests|  Btree.java:7280:newTests|  Btree.java:7286:main|");
             $fclose(f);
           end
         end
@@ -2873,7 +2873,7 @@ module Btree;                                                                   
           begin
             integer f;
             f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Btree.java:1531:<init>|  Btree.java:1530:code|  Chip.java:0532:<init>|  Btree.java:1528:<init>|  Btree.java:1527:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2393:<init>|  Btree.java:2392:code|  Chip.java:0532:<init>|  Btree.java:2390:<init>|  Btree.java:2389:findSearch|  Btree.java:2426:code|  Chip.java:0532:<init>|  Btree.java:2425:<init>|  Btree.java:2424:findAndInsert|  Btree.java:2476:Else|  Chip.java:0622:<init>|  Btree.java:2474:<init>|  Btree.java:2473:code|  Chip.java:0532:<init>|  Btree.java:2469:<init>|  Btree.java:2468:put|  Btree.java:7180:code|  Chip.java:0532:<init>|  Btree.java:7164:<init>|  Btree.java:7163:test_put_random|  Btree.java:7273:oldTests|  Btree.java:7278:newTests|  Btree.java:7284:main|");
+            $fdisplay(f, "Location: Btree.java:1531:<init>|  Btree.java:1530:code|  Chip.java:0532:<init>|  Btree.java:1528:<init>|  Btree.java:1527:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2395:<init>|  Btree.java:2394:code|  Chip.java:0532:<init>|  Btree.java:2392:<init>|  Btree.java:2391:findSearch|  Btree.java:2428:code|  Chip.java:0532:<init>|  Btree.java:2427:<init>|  Btree.java:2426:findAndInsert|  Btree.java:2478:Else|  Chip.java:0622:<init>|  Btree.java:2476:<init>|  Btree.java:2475:code|  Chip.java:0532:<init>|  Btree.java:2471:<init>|  Btree.java:2470:put|  Btree.java:7182:code|  Chip.java:0532:<init>|  Btree.java:7166:<init>|  Btree.java:7165:test_put_random|  Btree.java:7275:oldTests|  Btree.java:7280:newTests|  Btree.java:7286:main|");
             $fclose(f);
           end
         end
@@ -2890,7 +2890,7 @@ module Btree;                                                                   
           begin
             integer f;
             f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:0514:<init>|  Btree.java:1024:<init>|  Btree.java:1023:search_eq_parallel|  Btree.java:2394:Leaf|  Btree.java:1546:code|  Chip.java:0532:<init>|  Btree.java:1528:<init>|  Btree.java:1527:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2393:<init>|  Btree.java:2392:code|  Chip.java:0532:<init>|  Btree.java:2390:<init>|  Btree.java:2389:findSearch|  Btree.java:2426:code|  Chip.java:0532:<init>|  Btree.java:2425:<init>|  Btree.java:2424:findAndInsert|  Btree.java:2476:Else|  Chip.java:0622:<init>|  Btree.java:2474:<init>|  Btree.java:2473:code|  Chip.java:0532:<init>|  Btree.java:2469:<init>|  Btree.java:2468:put|  Btree.java:7180:code|  Chip.java:0532:<init>|  Btree.java:7164:<init>|  Btree.java:7163:test_put_random|  Btree.java:7273:oldTests|  Btree.java:7278:newTests|  Btree.java:7284:main|");
+            $fdisplay(f, "Location: Chip.java:0514:<init>|  Btree.java:1024:<init>|  Btree.java:1023:search_eq_parallel|  Btree.java:2396:Leaf|  Btree.java:1546:code|  Chip.java:0532:<init>|  Btree.java:1528:<init>|  Btree.java:1527:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2395:<init>|  Btree.java:2394:code|  Chip.java:0532:<init>|  Btree.java:2392:<init>|  Btree.java:2391:findSearch|  Btree.java:2428:code|  Chip.java:0532:<init>|  Btree.java:2427:<init>|  Btree.java:2426:findAndInsert|  Btree.java:2478:Else|  Chip.java:0622:<init>|  Btree.java:2476:<init>|  Btree.java:2475:code|  Chip.java:0532:<init>|  Btree.java:2471:<init>|  Btree.java:2470:put|  Btree.java:7182:code|  Chip.java:0532:<init>|  Btree.java:7166:<init>|  Btree.java:7165:test_put_random|  Btree.java:7275:oldTests|  Btree.java:7280:newTests|  Btree.java:7286:main|");
             $fclose(f);
           end
         end
@@ -2907,7 +2907,7 @@ module Btree;                                                                   
           begin
             integer f;
             f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:0514:<init>|  Btree.java:1045:<init>|  Btree.java:1044:search_eq_parallel|  Btree.java:2394:Leaf|  Btree.java:1546:code|  Chip.java:0532:<init>|  Btree.java:1528:<init>|  Btree.java:1527:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2393:<init>|  Btree.java:2392:code|  Chip.java:0532:<init>|  Btree.java:2390:<init>|  Btree.java:2389:findSearch|  Btree.java:2426:code|  Chip.java:0532:<init>|  Btree.java:2425:<init>|  Btree.java:2424:findAndInsert|  Btree.java:2476:Else|  Chip.java:0622:<init>|  Btree.java:2474:<init>|  Btree.java:2473:code|  Chip.java:0532:<init>|  Btree.java:2469:<init>|  Btree.java:2468:put|  Btree.java:7180:code|  Chip.java:0532:<init>|  Btree.java:7164:<init>|  Btree.java:7163:test_put_random|  Btree.java:7273:oldTests|  Btree.java:7278:newTests|  Btree.java:7284:main|");
+            $fdisplay(f, "Location: Chip.java:0514:<init>|  Btree.java:1045:<init>|  Btree.java:1044:search_eq_parallel|  Btree.java:2396:Leaf|  Btree.java:1546:code|  Chip.java:0532:<init>|  Btree.java:1528:<init>|  Btree.java:1527:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2395:<init>|  Btree.java:2394:code|  Chip.java:0532:<init>|  Btree.java:2392:<init>|  Btree.java:2391:findSearch|  Btree.java:2428:code|  Chip.java:0532:<init>|  Btree.java:2427:<init>|  Btree.java:2426:findAndInsert|  Btree.java:2478:Else|  Chip.java:0622:<init>|  Btree.java:2476:<init>|  Btree.java:2475:code|  Chip.java:0532:<init>|  Btree.java:2471:<init>|  Btree.java:2470:put|  Btree.java:7182:code|  Chip.java:0532:<init>|  Btree.java:7166:<init>|  Btree.java:7165:test_put_random|  Btree.java:7275:oldTests|  Btree.java:7280:newTests|  Btree.java:7286:main|");
             $fclose(f);
           end
         end
@@ -2920,7 +2920,7 @@ module Btree;                                                                   
           begin
             integer f;
             f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:0514:<init>|  Btree.java:1045:<init>|  Btree.java:1044:search_eq_parallel|  Btree.java:2394:Leaf|  Btree.java:1546:code|  Chip.java:0532:<init>|  Btree.java:1528:<init>|  Btree.java:1527:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2393:<init>|  Btree.java:2392:code|  Chip.java:0532:<init>|  Btree.java:2390:<init>|  Btree.java:2389:findSearch|  Btree.java:2426:code|  Chip.java:0532:<init>|  Btree.java:2425:<init>|  Btree.java:2424:findAndInsert|  Btree.java:2476:Else|  Chip.java:0622:<init>|  Btree.java:2474:<init>|  Btree.java:2473:code|  Chip.java:0532:<init>|  Btree.java:2469:<init>|  Btree.java:2468:put|  Btree.java:7180:code|  Chip.java:0532:<init>|  Btree.java:7164:<init>|  Btree.java:7163:test_put_random|  Btree.java:7273:oldTests|  Btree.java:7278:newTests|  Btree.java:7284:main|");
+            $fdisplay(f, "Location: Chip.java:0514:<init>|  Btree.java:1045:<init>|  Btree.java:1044:search_eq_parallel|  Btree.java:2396:Leaf|  Btree.java:1546:code|  Chip.java:0532:<init>|  Btree.java:1528:<init>|  Btree.java:1527:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2395:<init>|  Btree.java:2394:code|  Chip.java:0532:<init>|  Btree.java:2392:<init>|  Btree.java:2391:findSearch|  Btree.java:2428:code|  Chip.java:0532:<init>|  Btree.java:2427:<init>|  Btree.java:2426:findAndInsert|  Btree.java:2478:Else|  Chip.java:0622:<init>|  Btree.java:2476:<init>|  Btree.java:2475:code|  Chip.java:0532:<init>|  Btree.java:2471:<init>|  Btree.java:2470:put|  Btree.java:7182:code|  Chip.java:0532:<init>|  Btree.java:7166:<init>|  Btree.java:7165:test_put_random|  Btree.java:7275:oldTests|  Btree.java:7280:newTests|  Btree.java:7286:main|");
             $fclose(f);
           end
         end
@@ -2957,7 +2957,7 @@ module Btree;                                                                   
           begin
             integer f;
             f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:0514:<init>|  Btree.java:1067:<init>|  Btree.java:1066:search_eq_parallel|  Btree.java:2394:Leaf|  Btree.java:1546:code|  Chip.java:0532:<init>|  Btree.java:1528:<init>|  Btree.java:1527:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2393:<init>|  Btree.java:2392:code|  Chip.java:0532:<init>|  Btree.java:2390:<init>|  Btree.java:2389:findSearch|  Btree.java:2426:code|  Chip.java:0532:<init>|  Btree.java:2425:<init>|  Btree.java:2424:findAndInsert|  Btree.java:2476:Else|  Chip.java:0622:<init>|  Btree.java:2474:<init>|  Btree.java:2473:code|  Chip.java:0532:<init>|  Btree.java:2469:<init>|  Btree.java:2468:put|  Btree.java:7180:code|  Chip.java:0532:<init>|  Btree.java:7164:<init>|  Btree.java:7163:test_put_random|  Btree.java:7273:oldTests|  Btree.java:7278:newTests|  Btree.java:7284:main|");
+            $fdisplay(f, "Location: Chip.java:0514:<init>|  Btree.java:1067:<init>|  Btree.java:1066:search_eq_parallel|  Btree.java:2396:Leaf|  Btree.java:1546:code|  Chip.java:0532:<init>|  Btree.java:1528:<init>|  Btree.java:1527:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2395:<init>|  Btree.java:2394:code|  Chip.java:0532:<init>|  Btree.java:2392:<init>|  Btree.java:2391:findSearch|  Btree.java:2428:code|  Chip.java:0532:<init>|  Btree.java:2427:<init>|  Btree.java:2426:findAndInsert|  Btree.java:2478:Else|  Chip.java:0622:<init>|  Btree.java:2476:<init>|  Btree.java:2475:code|  Chip.java:0532:<init>|  Btree.java:2471:<init>|  Btree.java:2470:put|  Btree.java:7182:code|  Chip.java:0532:<init>|  Btree.java:7166:<init>|  Btree.java:7165:test_put_random|  Btree.java:7275:oldTests|  Btree.java:7280:newTests|  Btree.java:7286:main|");
             $fclose(f);
           end
         end
@@ -2966,7 +2966,7 @@ module Btree;                                                                   
           begin
             integer f;
             f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:0573:<init>|  Chip.java:0572:GOto|  Btree.java:2395:Leaf|  Btree.java:1546:code|  Chip.java:0532:<init>|  Btree.java:1528:<init>|  Btree.java:1527:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2393:<init>|  Btree.java:2392:code|  Chip.java:0532:<init>|  Btree.java:2390:<init>|  Btree.java:2389:findSearch|  Btree.java:2426:code|  Chip.java:0532:<init>|  Btree.java:2425:<init>|  Btree.java:2424:findAndInsert|  Btree.java:2476:Else|  Chip.java:0622:<init>|  Btree.java:2474:<init>|  Btree.java:2473:code|  Chip.java:0532:<init>|  Btree.java:2469:<init>|  Btree.java:2468:put|  Btree.java:7180:code|  Chip.java:0532:<init>|  Btree.java:7164:<init>|  Btree.java:7163:test_put_random|  Btree.java:7273:oldTests|  Btree.java:7278:newTests|  Btree.java:7284:main|");
+            $fdisplay(f, "Location: Chip.java:0573:<init>|  Chip.java:0572:GOto|  Btree.java:2397:Leaf|  Btree.java:1546:code|  Chip.java:0532:<init>|  Btree.java:1528:<init>|  Btree.java:1527:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2395:<init>|  Btree.java:2394:code|  Chip.java:0532:<init>|  Btree.java:2392:<init>|  Btree.java:2391:findSearch|  Btree.java:2428:code|  Chip.java:0532:<init>|  Btree.java:2427:<init>|  Btree.java:2426:findAndInsert|  Btree.java:2478:Else|  Chip.java:0622:<init>|  Btree.java:2476:<init>|  Btree.java:2475:code|  Chip.java:0532:<init>|  Btree.java:2471:<init>|  Btree.java:2470:put|  Btree.java:7182:code|  Chip.java:0532:<init>|  Btree.java:7166:<init>|  Btree.java:7165:test_put_random|  Btree.java:7275:oldTests|  Btree.java:7280:newTests|  Btree.java:7286:main|");
             $fclose(f);
           end
         end
@@ -2975,7 +2975,7 @@ module Btree;                                                                   
           begin
             integer f;
             f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:0573:<init>|  Chip.java:0572:GOto|  Btree.java:1547:code|  Chip.java:0532:<init>|  Btree.java:1528:<init>|  Btree.java:1527:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2393:<init>|  Btree.java:2392:code|  Chip.java:0532:<init>|  Btree.java:2390:<init>|  Btree.java:2389:findSearch|  Btree.java:2426:code|  Chip.java:0532:<init>|  Btree.java:2425:<init>|  Btree.java:2424:findAndInsert|  Btree.java:2476:Else|  Chip.java:0622:<init>|  Btree.java:2474:<init>|  Btree.java:2473:code|  Chip.java:0532:<init>|  Btree.java:2469:<init>|  Btree.java:2468:put|  Btree.java:7180:code|  Chip.java:0532:<init>|  Btree.java:7164:<init>|  Btree.java:7163:test_put_random|  Btree.java:7273:oldTests|  Btree.java:7278:newTests|  Btree.java:7284:main|");
+            $fdisplay(f, "Location: Chip.java:0573:<init>|  Chip.java:0572:GOto|  Btree.java:1547:code|  Chip.java:0532:<init>|  Btree.java:1528:<init>|  Btree.java:1527:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2395:<init>|  Btree.java:2394:code|  Chip.java:0532:<init>|  Btree.java:2392:<init>|  Btree.java:2391:findSearch|  Btree.java:2428:code|  Chip.java:0532:<init>|  Btree.java:2427:<init>|  Btree.java:2426:findAndInsert|  Btree.java:2478:Else|  Chip.java:0622:<init>|  Btree.java:2476:<init>|  Btree.java:2475:code|  Chip.java:0532:<init>|  Btree.java:2471:<init>|  Btree.java:2470:put|  Btree.java:7182:code|  Chip.java:0532:<init>|  Btree.java:7166:<init>|  Btree.java:7165:test_put_random|  Btree.java:7275:oldTests|  Btree.java:7280:newTests|  Btree.java:7286:main|");
             $fclose(f);
           end
         end
@@ -2992,7 +2992,7 @@ module Btree;                                                                   
           begin
             integer f;
             f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:0514:<init>|  Btree.java:1162:<init>|  Btree.java:1161:search_le_parallel|  Btree.java:2398:Branch|  Btree.java:1550:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2393:<init>|  Btree.java:2392:code|  Chip.java:0532:<init>|  Btree.java:2390:<init>|  Btree.java:2389:findSearch|  Btree.java:2426:code|  Chip.java:0532:<init>|  Btree.java:2425:<init>|  Btree.java:2424:findAndInsert|  Btree.java:2476:Else|  Chip.java:0622:<init>|  Btree.java:2474:<init>|  Btree.java:2473:code|  Chip.java:0532:<init>|  Btree.java:2469:<init>|  Btree.java:2468:put|  Btree.java:7180:code|  Chip.java:0532:<init>|  Btree.java:7164:<init>|  Btree.java:7163:test_put_random|  Btree.java:7273:oldTests|  Btree.java:7278:newTests|  Btree.java:7284:main|");
+            $fdisplay(f, "Location: Chip.java:0514:<init>|  Btree.java:1162:<init>|  Btree.java:1161:search_le_parallel|  Btree.java:2400:Branch|  Btree.java:1550:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2395:<init>|  Btree.java:2394:code|  Chip.java:0532:<init>|  Btree.java:2392:<init>|  Btree.java:2391:findSearch|  Btree.java:2428:code|  Chip.java:0532:<init>|  Btree.java:2427:<init>|  Btree.java:2426:findAndInsert|  Btree.java:2478:Else|  Chip.java:0622:<init>|  Btree.java:2476:<init>|  Btree.java:2475:code|  Chip.java:0532:<init>|  Btree.java:2471:<init>|  Btree.java:2470:put|  Btree.java:7182:code|  Chip.java:0532:<init>|  Btree.java:7166:<init>|  Btree.java:7165:test_put_random|  Btree.java:7275:oldTests|  Btree.java:7280:newTests|  Btree.java:7286:main|");
             $fclose(f);
           end
         end
@@ -3009,7 +3009,7 @@ module Btree;                                                                   
           begin
             integer f;
             f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:0514:<init>|  Btree.java:1198:<init>|  Btree.java:1197:search_le_parallel|  Btree.java:2398:Branch|  Btree.java:1550:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2393:<init>|  Btree.java:2392:code|  Chip.java:0532:<init>|  Btree.java:2390:<init>|  Btree.java:2389:findSearch|  Btree.java:2426:code|  Chip.java:0532:<init>|  Btree.java:2425:<init>|  Btree.java:2424:findAndInsert|  Btree.java:2476:Else|  Chip.java:0622:<init>|  Btree.java:2474:<init>|  Btree.java:2473:code|  Chip.java:0532:<init>|  Btree.java:2469:<init>|  Btree.java:2468:put|  Btree.java:7180:code|  Chip.java:0532:<init>|  Btree.java:7164:<init>|  Btree.java:7163:test_put_random|  Btree.java:7273:oldTests|  Btree.java:7278:newTests|  Btree.java:7284:main|");
+            $fdisplay(f, "Location: Chip.java:0514:<init>|  Btree.java:1198:<init>|  Btree.java:1197:search_le_parallel|  Btree.java:2400:Branch|  Btree.java:1550:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2395:<init>|  Btree.java:2394:code|  Chip.java:0532:<init>|  Btree.java:2392:<init>|  Btree.java:2391:findSearch|  Btree.java:2428:code|  Chip.java:0532:<init>|  Btree.java:2427:<init>|  Btree.java:2426:findAndInsert|  Btree.java:2478:Else|  Chip.java:0622:<init>|  Btree.java:2476:<init>|  Btree.java:2475:code|  Chip.java:0532:<init>|  Btree.java:2471:<init>|  Btree.java:2470:put|  Btree.java:7182:code|  Chip.java:0532:<init>|  Btree.java:7166:<init>|  Btree.java:7165:test_put_random|  Btree.java:7275:oldTests|  Btree.java:7280:newTests|  Btree.java:7286:main|");
             $fclose(f);
           end
         end
@@ -3022,7 +3022,7 @@ module Btree;                                                                   
           begin
             integer f;
             f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:0514:<init>|  Btree.java:1198:<init>|  Btree.java:1197:search_le_parallel|  Btree.java:2398:Branch|  Btree.java:1550:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2393:<init>|  Btree.java:2392:code|  Chip.java:0532:<init>|  Btree.java:2390:<init>|  Btree.java:2389:findSearch|  Btree.java:2426:code|  Chip.java:0532:<init>|  Btree.java:2425:<init>|  Btree.java:2424:findAndInsert|  Btree.java:2476:Else|  Chip.java:0622:<init>|  Btree.java:2474:<init>|  Btree.java:2473:code|  Chip.java:0532:<init>|  Btree.java:2469:<init>|  Btree.java:2468:put|  Btree.java:7180:code|  Chip.java:0532:<init>|  Btree.java:7164:<init>|  Btree.java:7163:test_put_random|  Btree.java:7273:oldTests|  Btree.java:7278:newTests|  Btree.java:7284:main|");
+            $fdisplay(f, "Location: Chip.java:0514:<init>|  Btree.java:1198:<init>|  Btree.java:1197:search_le_parallel|  Btree.java:2400:Branch|  Btree.java:1550:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2395:<init>|  Btree.java:2394:code|  Chip.java:0532:<init>|  Btree.java:2392:<init>|  Btree.java:2391:findSearch|  Btree.java:2428:code|  Chip.java:0532:<init>|  Btree.java:2427:<init>|  Btree.java:2426:findAndInsert|  Btree.java:2478:Else|  Chip.java:0622:<init>|  Btree.java:2476:<init>|  Btree.java:2475:code|  Chip.java:0532:<init>|  Btree.java:2471:<init>|  Btree.java:2470:put|  Btree.java:7182:code|  Chip.java:0532:<init>|  Btree.java:7166:<init>|  Btree.java:7165:test_put_random|  Btree.java:7275:oldTests|  Btree.java:7280:newTests|  Btree.java:7286:main|");
             $fclose(f);
           end
         end
@@ -3077,7 +3077,7 @@ module Btree;                                                                   
           begin
             integer f;
             f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:0514:<init>|  Btree.java:1220:<init>|  Btree.java:1219:search_le_parallel|  Btree.java:2398:Branch|  Btree.java:1550:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2393:<init>|  Btree.java:2392:code|  Chip.java:0532:<init>|  Btree.java:2390:<init>|  Btree.java:2389:findSearch|  Btree.java:2426:code|  Chip.java:0532:<init>|  Btree.java:2425:<init>|  Btree.java:2424:findAndInsert|  Btree.java:2476:Else|  Chip.java:0622:<init>|  Btree.java:2474:<init>|  Btree.java:2473:code|  Chip.java:0532:<init>|  Btree.java:2469:<init>|  Btree.java:2468:put|  Btree.java:7180:code|  Chip.java:0532:<init>|  Btree.java:7164:<init>|  Btree.java:7163:test_put_random|  Btree.java:7273:oldTests|  Btree.java:7278:newTests|  Btree.java:7284:main|");
+            $fdisplay(f, "Location: Chip.java:0514:<init>|  Btree.java:1220:<init>|  Btree.java:1219:search_le_parallel|  Btree.java:2400:Branch|  Btree.java:1550:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2395:<init>|  Btree.java:2394:code|  Chip.java:0532:<init>|  Btree.java:2392:<init>|  Btree.java:2391:findSearch|  Btree.java:2428:code|  Chip.java:0532:<init>|  Btree.java:2427:<init>|  Btree.java:2426:findAndInsert|  Btree.java:2478:Else|  Chip.java:0622:<init>|  Btree.java:2476:<init>|  Btree.java:2475:code|  Chip.java:0532:<init>|  Btree.java:2471:<init>|  Btree.java:2470:put|  Btree.java:7182:code|  Chip.java:0532:<init>|  Btree.java:7166:<init>|  Btree.java:7165:test_put_random|  Btree.java:7275:oldTests|  Btree.java:7280:newTests|  Btree.java:7286:main|");
             $fclose(f);
           end
         end
@@ -3087,7 +3087,7 @@ module Btree;                                                                   
           begin
             integer f;
             f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:0514:<init>|  Chip.java:0699:<init>|  Chip.java:0698:Copy|  Btree.java:2399:Branch|  Btree.java:1550:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2393:<init>|  Btree.java:2392:code|  Chip.java:0532:<init>|  Btree.java:2390:<init>|  Btree.java:2389:findSearch|  Btree.java:2426:code|  Chip.java:0532:<init>|  Btree.java:2425:<init>|  Btree.java:2424:findAndInsert|  Btree.java:2476:Else|  Chip.java:0622:<init>|  Btree.java:2474:<init>|  Btree.java:2473:code|  Chip.java:0532:<init>|  Btree.java:2469:<init>|  Btree.java:2468:put|  Btree.java:7180:code|  Chip.java:0532:<init>|  Btree.java:7164:<init>|  Btree.java:7163:test_put_random|  Btree.java:7273:oldTests|  Btree.java:7278:newTests|  Btree.java:7284:main|");
+            $fdisplay(f, "Location: Chip.java:0514:<init>|  Chip.java:0699:<init>|  Chip.java:0698:Copy|  Btree.java:2401:Branch|  Btree.java:1550:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2395:<init>|  Btree.java:2394:code|  Chip.java:0532:<init>|  Btree.java:2392:<init>|  Btree.java:2391:findSearch|  Btree.java:2428:code|  Chip.java:0532:<init>|  Btree.java:2427:<init>|  Btree.java:2426:findAndInsert|  Btree.java:2478:Else|  Chip.java:0622:<init>|  Btree.java:2476:<init>|  Btree.java:2475:code|  Chip.java:0532:<init>|  Btree.java:2471:<init>|  Btree.java:2470:put|  Btree.java:7182:code|  Chip.java:0532:<init>|  Btree.java:7166:<init>|  Btree.java:7165:test_put_random|  Btree.java:7275:oldTests|  Btree.java:7280:newTests|  Btree.java:7286:main|");
             $fclose(f);
           end
         end
@@ -3096,7 +3096,7 @@ module Btree;                                                                   
           begin
             integer f;
             f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:0573:<init>|  Chip.java:0572:GOto|  Btree.java:2400:Branch|  Btree.java:1550:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2393:<init>|  Btree.java:2392:code|  Chip.java:0532:<init>|  Btree.java:2390:<init>|  Btree.java:2389:findSearch|  Btree.java:2426:code|  Chip.java:0532:<init>|  Btree.java:2425:<init>|  Btree.java:2424:findAndInsert|  Btree.java:2476:Else|  Chip.java:0622:<init>|  Btree.java:2474:<init>|  Btree.java:2473:code|  Chip.java:0532:<init>|  Btree.java:2469:<init>|  Btree.java:2468:put|  Btree.java:7180:code|  Chip.java:0532:<init>|  Btree.java:7164:<init>|  Btree.java:7163:test_put_random|  Btree.java:7273:oldTests|  Btree.java:7278:newTests|  Btree.java:7284:main|");
+            $fdisplay(f, "Location: Chip.java:0573:<init>|  Chip.java:0572:GOto|  Btree.java:2402:Branch|  Btree.java:1550:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2395:<init>|  Btree.java:2394:code|  Chip.java:0532:<init>|  Btree.java:2392:<init>|  Btree.java:2391:findSearch|  Btree.java:2428:code|  Chip.java:0532:<init>|  Btree.java:2427:<init>|  Btree.java:2426:findAndInsert|  Btree.java:2478:Else|  Chip.java:0622:<init>|  Btree.java:2476:<init>|  Btree.java:2475:code|  Chip.java:0532:<init>|  Btree.java:2471:<init>|  Btree.java:2470:put|  Btree.java:7182:code|  Chip.java:0532:<init>|  Btree.java:7166:<init>|  Btree.java:7165:test_put_random|  Btree.java:7275:oldTests|  Btree.java:7280:newTests|  Btree.java:7286:main|");
             $fclose(f);
           end
         end
@@ -3110,7 +3110,7 @@ module Btree;                                                                   
           begin
             integer f;
             f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:0605:<init>|  Chip.java:0604:<init>|  Btree.java:2429:<init>|  Btree.java:2428:code|  Chip.java:0532:<init>|  Btree.java:2425:<init>|  Btree.java:2424:findAndInsert|  Btree.java:2476:Else|  Chip.java:0622:<init>|  Btree.java:2474:<init>|  Btree.java:2473:code|  Chip.java:0532:<init>|  Btree.java:2469:<init>|  Btree.java:2468:put|  Btree.java:7180:code|  Chip.java:0532:<init>|  Btree.java:7164:<init>|  Btree.java:7163:test_put_random|  Btree.java:7273:oldTests|  Btree.java:7278:newTests|  Btree.java:7284:main|");
+            $fdisplay(f, "Location: Chip.java:0605:<init>|  Chip.java:0604:<init>|  Btree.java:2431:<init>|  Btree.java:2430:code|  Chip.java:0532:<init>|  Btree.java:2427:<init>|  Btree.java:2426:findAndInsert|  Btree.java:2478:Else|  Chip.java:0622:<init>|  Btree.java:2476:<init>|  Btree.java:2475:code|  Chip.java:0532:<init>|  Btree.java:2471:<init>|  Btree.java:2470:put|  Btree.java:7182:code|  Chip.java:0532:<init>|  Btree.java:7166:<init>|  Btree.java:7165:test_put_random|  Btree.java:7275:oldTests|  Btree.java:7280:newTests|  Btree.java:7286:main|");
             $fclose(f);
           end
         end
@@ -3140,7 +3140,7 @@ module Btree;                                                                   
           begin
             integer f;
             f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:0514:<init>|  Btree.java:0846:<init>|  Btree.java:0845:SetElementAt|  Btree.java:2430:Then|  Chip.java:0612:<init>|  Btree.java:2429:<init>|  Btree.java:2428:code|  Chip.java:0532:<init>|  Btree.java:2425:<init>|  Btree.java:2424:findAndInsert|  Btree.java:2476:Else|  Chip.java:0622:<init>|  Btree.java:2474:<init>|  Btree.java:2473:code|  Chip.java:0532:<init>|  Btree.java:2469:<init>|  Btree.java:2468:put|  Btree.java:7180:code|  Chip.java:0532:<init>|  Btree.java:7164:<init>|  Btree.java:7163:test_put_random|  Btree.java:7273:oldTests|  Btree.java:7278:newTests|  Btree.java:7284:main|");
+            $fdisplay(f, "Location: Chip.java:0514:<init>|  Btree.java:0846:<init>|  Btree.java:0845:SetElementAt|  Btree.java:2432:Then|  Chip.java:0612:<init>|  Btree.java:2431:<init>|  Btree.java:2430:code|  Chip.java:0532:<init>|  Btree.java:2427:<init>|  Btree.java:2426:findAndInsert|  Btree.java:2478:Else|  Chip.java:0622:<init>|  Btree.java:2476:<init>|  Btree.java:2475:code|  Chip.java:0532:<init>|  Btree.java:2471:<init>|  Btree.java:2470:put|  Btree.java:7182:code|  Chip.java:0532:<init>|  Btree.java:7166:<init>|  Btree.java:7165:test_put_random|  Btree.java:7275:oldTests|  Btree.java:7280:newTests|  Btree.java:7286:main|");
             $fclose(f);
           end
         end
@@ -3149,7 +3149,7 @@ module Btree;                                                                   
           begin
             integer f;
             f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:0614:<init>|  Chip.java:0613:<init>|  Btree.java:2429:<init>|  Btree.java:2428:code|  Chip.java:0532:<init>|  Btree.java:2425:<init>|  Btree.java:2424:findAndInsert|  Btree.java:2476:Else|  Chip.java:0622:<init>|  Btree.java:2474:<init>|  Btree.java:2473:code|  Chip.java:0532:<init>|  Btree.java:2469:<init>|  Btree.java:2468:put|  Btree.java:7180:code|  Chip.java:0532:<init>|  Btree.java:7164:<init>|  Btree.java:7163:test_put_random|  Btree.java:7273:oldTests|  Btree.java:7278:newTests|  Btree.java:7284:main|");
+            $fdisplay(f, "Location: Chip.java:0614:<init>|  Chip.java:0613:<init>|  Btree.java:2431:<init>|  Btree.java:2430:code|  Chip.java:0532:<init>|  Btree.java:2427:<init>|  Btree.java:2426:findAndInsert|  Btree.java:2478:Else|  Chip.java:0622:<init>|  Btree.java:2476:<init>|  Btree.java:2475:code|  Chip.java:0532:<init>|  Btree.java:2471:<init>|  Btree.java:2470:put|  Btree.java:7182:code|  Chip.java:0532:<init>|  Btree.java:7166:<init>|  Btree.java:7165:test_put_random|  Btree.java:7275:oldTests|  Btree.java:7280:newTests|  Btree.java:7286:main|");
             $fclose(f);
           end
         end
@@ -3159,7 +3159,7 @@ module Btree;                                                                   
           begin
             integer f;
             f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:0514:<init>|  Chip.java:0817:<init>|  Chip.java:0817:Lt|  Btree.java:2434:Else|  Chip.java:0622:<init>|  Btree.java:2429:<init>|  Btree.java:2428:code|  Chip.java:0532:<init>|  Btree.java:2425:<init>|  Btree.java:2424:findAndInsert|  Btree.java:2476:Else|  Chip.java:0622:<init>|  Btree.java:2474:<init>|  Btree.java:2473:code|  Chip.java:0532:<init>|  Btree.java:2469:<init>|  Btree.java:2468:put|  Btree.java:7180:code|  Chip.java:0532:<init>|  Btree.java:7164:<init>|  Btree.java:7163:test_put_random|  Btree.java:7273:oldTests|  Btree.java:7278:newTests|  Btree.java:7284:main|");
+            $fdisplay(f, "Location: Chip.java:0514:<init>|  Chip.java:0817:<init>|  Chip.java:0817:Lt|  Btree.java:2436:Else|  Chip.java:0622:<init>|  Btree.java:2431:<init>|  Btree.java:2430:code|  Chip.java:0532:<init>|  Btree.java:2427:<init>|  Btree.java:2426:findAndInsert|  Btree.java:2478:Else|  Chip.java:0622:<init>|  Btree.java:2476:<init>|  Btree.java:2475:code|  Chip.java:0532:<init>|  Btree.java:2471:<init>|  Btree.java:2470:put|  Btree.java:7182:code|  Chip.java:0532:<init>|  Btree.java:7166:<init>|  Btree.java:7165:test_put_random|  Btree.java:7275:oldTests|  Btree.java:7280:newTests|  Btree.java:7286:main|");
             $fclose(f);
           end
         end
@@ -3173,7 +3173,7 @@ module Btree;                                                                   
           begin
             integer f;
             f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:0605:<init>|  Chip.java:0604:<init>|  Btree.java:2437:<init>|  Btree.java:2436:Else|  Chip.java:0622:<init>|  Btree.java:2429:<init>|  Btree.java:2428:code|  Chip.java:0532:<init>|  Btree.java:2425:<init>|  Btree.java:2424:findAndInsert|  Btree.java:2476:Else|  Chip.java:0622:<init>|  Btree.java:2474:<init>|  Btree.java:2473:code|  Chip.java:0532:<init>|  Btree.java:2469:<init>|  Btree.java:2468:put|  Btree.java:7180:code|  Chip.java:0532:<init>|  Btree.java:7164:<init>|  Btree.java:7163:test_put_random|  Btree.java:7273:oldTests|  Btree.java:7278:newTests|  Btree.java:7284:main|");
+            $fdisplay(f, "Location: Chip.java:0605:<init>|  Chip.java:0604:<init>|  Btree.java:2439:<init>|  Btree.java:2438:Else|  Chip.java:0622:<init>|  Btree.java:2431:<init>|  Btree.java:2430:code|  Chip.java:0532:<init>|  Btree.java:2427:<init>|  Btree.java:2426:findAndInsert|  Btree.java:2478:Else|  Chip.java:0622:<init>|  Btree.java:2476:<init>|  Btree.java:2475:code|  Chip.java:0532:<init>|  Btree.java:2471:<init>|  Btree.java:2470:put|  Btree.java:7182:code|  Chip.java:0532:<init>|  Btree.java:7166:<init>|  Btree.java:7165:test_put_random|  Btree.java:7275:oldTests|  Btree.java:7280:newTests|  Btree.java:7286:main|");
             $fclose(f);
           end
         end
@@ -3190,7 +3190,7 @@ module Btree;                                                                   
           begin
             integer f;
             f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:0514:<init>|  Btree.java:1162:<init>|  Btree.java:1161:search_le_parallel|  Btree.java:2438:Then|  Chip.java:0612:<init>|  Btree.java:2437:<init>|  Btree.java:2436:Else|  Chip.java:0622:<init>|  Btree.java:2429:<init>|  Btree.java:2428:code|  Chip.java:0532:<init>|  Btree.java:2425:<init>|  Btree.java:2424:findAndInsert|  Btree.java:2476:Else|  Chip.java:0622:<init>|  Btree.java:2474:<init>|  Btree.java:2473:code|  Chip.java:0532:<init>|  Btree.java:2469:<init>|  Btree.java:2468:put|  Btree.java:7180:code|  Chip.java:0532:<init>|  Btree.java:7164:<init>|  Btree.java:7163:test_put_random|  Btree.java:7273:oldTests|  Btree.java:7278:newTests|  Btree.java:7284:main|");
+            $fdisplay(f, "Location: Chip.java:0514:<init>|  Btree.java:1162:<init>|  Btree.java:1161:search_le_parallel|  Btree.java:2440:Then|  Chip.java:0612:<init>|  Btree.java:2439:<init>|  Btree.java:2438:Else|  Chip.java:0622:<init>|  Btree.java:2431:<init>|  Btree.java:2430:code|  Chip.java:0532:<init>|  Btree.java:2427:<init>|  Btree.java:2426:findAndInsert|  Btree.java:2478:Else|  Chip.java:0622:<init>|  Btree.java:2476:<init>|  Btree.java:2475:code|  Chip.java:0532:<init>|  Btree.java:2471:<init>|  Btree.java:2470:put|  Btree.java:7182:code|  Chip.java:0532:<init>|  Btree.java:7166:<init>|  Btree.java:7165:test_put_random|  Btree.java:7275:oldTests|  Btree.java:7280:newTests|  Btree.java:7286:main|");
             $fclose(f);
           end
         end
@@ -3207,7 +3207,7 @@ module Btree;                                                                   
           begin
             integer f;
             f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:0514:<init>|  Btree.java:1198:<init>|  Btree.java:1197:search_le_parallel|  Btree.java:2438:Then|  Chip.java:0612:<init>|  Btree.java:2437:<init>|  Btree.java:2436:Else|  Chip.java:0622:<init>|  Btree.java:2429:<init>|  Btree.java:2428:code|  Chip.java:0532:<init>|  Btree.java:2425:<init>|  Btree.java:2424:findAndInsert|  Btree.java:2476:Else|  Chip.java:0622:<init>|  Btree.java:2474:<init>|  Btree.java:2473:code|  Chip.java:0532:<init>|  Btree.java:2469:<init>|  Btree.java:2468:put|  Btree.java:7180:code|  Chip.java:0532:<init>|  Btree.java:7164:<init>|  Btree.java:7163:test_put_random|  Btree.java:7273:oldTests|  Btree.java:7278:newTests|  Btree.java:7284:main|");
+            $fdisplay(f, "Location: Chip.java:0514:<init>|  Btree.java:1198:<init>|  Btree.java:1197:search_le_parallel|  Btree.java:2440:Then|  Chip.java:0612:<init>|  Btree.java:2439:<init>|  Btree.java:2438:Else|  Chip.java:0622:<init>|  Btree.java:2431:<init>|  Btree.java:2430:code|  Chip.java:0532:<init>|  Btree.java:2427:<init>|  Btree.java:2426:findAndInsert|  Btree.java:2478:Else|  Chip.java:0622:<init>|  Btree.java:2476:<init>|  Btree.java:2475:code|  Chip.java:0532:<init>|  Btree.java:2471:<init>|  Btree.java:2470:put|  Btree.java:7182:code|  Chip.java:0532:<init>|  Btree.java:7166:<init>|  Btree.java:7165:test_put_random|  Btree.java:7275:oldTests|  Btree.java:7280:newTests|  Btree.java:7286:main|");
             $fclose(f);
           end
         end
@@ -3220,7 +3220,7 @@ module Btree;                                                                   
           begin
             integer f;
             f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:0514:<init>|  Btree.java:1198:<init>|  Btree.java:1197:search_le_parallel|  Btree.java:2438:Then|  Chip.java:0612:<init>|  Btree.java:2437:<init>|  Btree.java:2436:Else|  Chip.java:0622:<init>|  Btree.java:2429:<init>|  Btree.java:2428:code|  Chip.java:0532:<init>|  Btree.java:2425:<init>|  Btree.java:2424:findAndInsert|  Btree.java:2476:Else|  Chip.java:0622:<init>|  Btree.java:2474:<init>|  Btree.java:2473:code|  Chip.java:0532:<init>|  Btree.java:2469:<init>|  Btree.java:2468:put|  Btree.java:7180:code|  Chip.java:0532:<init>|  Btree.java:7164:<init>|  Btree.java:7163:test_put_random|  Btree.java:7273:oldTests|  Btree.java:7278:newTests|  Btree.java:7284:main|");
+            $fdisplay(f, "Location: Chip.java:0514:<init>|  Btree.java:1198:<init>|  Btree.java:1197:search_le_parallel|  Btree.java:2440:Then|  Chip.java:0612:<init>|  Btree.java:2439:<init>|  Btree.java:2438:Else|  Chip.java:0622:<init>|  Btree.java:2431:<init>|  Btree.java:2430:code|  Chip.java:0532:<init>|  Btree.java:2427:<init>|  Btree.java:2426:findAndInsert|  Btree.java:2478:Else|  Chip.java:0622:<init>|  Btree.java:2476:<init>|  Btree.java:2475:code|  Chip.java:0532:<init>|  Btree.java:2471:<init>|  Btree.java:2470:put|  Btree.java:7182:code|  Chip.java:0532:<init>|  Btree.java:7166:<init>|  Btree.java:7165:test_put_random|  Btree.java:7275:oldTests|  Btree.java:7280:newTests|  Btree.java:7286:main|");
             $fclose(f);
           end
         end
@@ -3275,7 +3275,7 @@ module Btree;                                                                   
           begin
             integer f;
             f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:0514:<init>|  Btree.java:1220:<init>|  Btree.java:1219:search_le_parallel|  Btree.java:2438:Then|  Chip.java:0612:<init>|  Btree.java:2437:<init>|  Btree.java:2436:Else|  Chip.java:0622:<init>|  Btree.java:2429:<init>|  Btree.java:2428:code|  Chip.java:0532:<init>|  Btree.java:2425:<init>|  Btree.java:2424:findAndInsert|  Btree.java:2476:Else|  Chip.java:0622:<init>|  Btree.java:2474:<init>|  Btree.java:2473:code|  Chip.java:0532:<init>|  Btree.java:2469:<init>|  Btree.java:2468:put|  Btree.java:7180:code|  Chip.java:0532:<init>|  Btree.java:7164:<init>|  Btree.java:7163:test_put_random|  Btree.java:7273:oldTests|  Btree.java:7278:newTests|  Btree.java:7284:main|");
+            $fdisplay(f, "Location: Chip.java:0514:<init>|  Btree.java:1220:<init>|  Btree.java:1219:search_le_parallel|  Btree.java:2440:Then|  Chip.java:0612:<init>|  Btree.java:2439:<init>|  Btree.java:2438:Else|  Chip.java:0622:<init>|  Btree.java:2431:<init>|  Btree.java:2430:code|  Chip.java:0532:<init>|  Btree.java:2427:<init>|  Btree.java:2426:findAndInsert|  Btree.java:2478:Else|  Chip.java:0622:<init>|  Btree.java:2476:<init>|  Btree.java:2475:code|  Chip.java:0532:<init>|  Btree.java:2471:<init>|  Btree.java:2470:put|  Btree.java:7182:code|  Chip.java:0532:<init>|  Btree.java:7166:<init>|  Btree.java:7165:test_put_random|  Btree.java:7275:oldTests|  Btree.java:7280:newTests|  Btree.java:7286:main|");
             $fclose(f);
           end
         end
@@ -3315,7 +3315,7 @@ module Btree;                                                                   
           begin
             integer f;
             f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:0514:<init>|  Btree.java:0921:<init>|  Btree.java:0920:InsertElementAt|  Btree.java:2439:Then|  Chip.java:0612:<init>|  Btree.java:2437:<init>|  Btree.java:2436:Else|  Chip.java:0622:<init>|  Btree.java:2429:<init>|  Btree.java:2428:code|  Chip.java:0532:<init>|  Btree.java:2425:<init>|  Btree.java:2424:findAndInsert|  Btree.java:2476:Else|  Chip.java:0622:<init>|  Btree.java:2474:<init>|  Btree.java:2473:code|  Chip.java:0532:<init>|  Btree.java:2469:<init>|  Btree.java:2468:put|  Btree.java:7180:code|  Chip.java:0532:<init>|  Btree.java:7164:<init>|  Btree.java:7163:test_put_random|  Btree.java:7273:oldTests|  Btree.java:7278:newTests|  Btree.java:7284:main|");
+            $fdisplay(f, "Location: Chip.java:0514:<init>|  Btree.java:0921:<init>|  Btree.java:0920:InsertElementAt|  Btree.java:2441:Then|  Chip.java:0612:<init>|  Btree.java:2439:<init>|  Btree.java:2438:Else|  Chip.java:0622:<init>|  Btree.java:2431:<init>|  Btree.java:2430:code|  Chip.java:0532:<init>|  Btree.java:2427:<init>|  Btree.java:2426:findAndInsert|  Btree.java:2478:Else|  Chip.java:0622:<init>|  Btree.java:2476:<init>|  Btree.java:2475:code|  Chip.java:0532:<init>|  Btree.java:2471:<init>|  Btree.java:2470:put|  Btree.java:7182:code|  Chip.java:0532:<init>|  Btree.java:7166:<init>|  Btree.java:7165:test_put_random|  Btree.java:7275:oldTests|  Btree.java:7280:newTests|  Btree.java:7286:main|");
             $fclose(f);
           end
         end
@@ -3325,7 +3325,7 @@ module Btree;                                                                   
           begin
             integer f;
             f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:0514:<init>|  Chip.java:0828:<init>|  Chip.java:0827:One|  Btree.java:2440:Then|  Chip.java:0612:<init>|  Btree.java:2437:<init>|  Btree.java:2436:Else|  Chip.java:0622:<init>|  Btree.java:2429:<init>|  Btree.java:2428:code|  Chip.java:0532:<init>|  Btree.java:2425:<init>|  Btree.java:2424:findAndInsert|  Btree.java:2476:Else|  Chip.java:0622:<init>|  Btree.java:2474:<init>|  Btree.java:2473:code|  Chip.java:0532:<init>|  Btree.java:2469:<init>|  Btree.java:2468:put|  Btree.java:7180:code|  Chip.java:0532:<init>|  Btree.java:7164:<init>|  Btree.java:7163:test_put_random|  Btree.java:7273:oldTests|  Btree.java:7278:newTests|  Btree.java:7284:main|");
+            $fdisplay(f, "Location: Chip.java:0514:<init>|  Chip.java:0828:<init>|  Chip.java:0827:One|  Btree.java:2442:Then|  Chip.java:0612:<init>|  Btree.java:2439:<init>|  Btree.java:2438:Else|  Chip.java:0622:<init>|  Btree.java:2431:<init>|  Btree.java:2430:code|  Chip.java:0532:<init>|  Btree.java:2427:<init>|  Btree.java:2426:findAndInsert|  Btree.java:2478:Else|  Chip.java:0622:<init>|  Btree.java:2476:<init>|  Btree.java:2475:code|  Chip.java:0532:<init>|  Btree.java:2471:<init>|  Btree.java:2470:put|  Btree.java:7182:code|  Chip.java:0532:<init>|  Btree.java:7166:<init>|  Btree.java:7165:test_put_random|  Btree.java:7275:oldTests|  Btree.java:7280:newTests|  Btree.java:7286:main|");
             $fclose(f);
           end
         end
@@ -3334,7 +3334,7 @@ module Btree;                                                                   
           begin
             integer f;
             f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:0594:<init>|  Chip.java:0593:COntinue|  Btree.java:2441:Then|  Chip.java:0612:<init>|  Btree.java:2437:<init>|  Btree.java:2436:Else|  Chip.java:0622:<init>|  Btree.java:2429:<init>|  Btree.java:2428:code|  Chip.java:0532:<init>|  Btree.java:2425:<init>|  Btree.java:2424:findAndInsert|  Btree.java:2476:Else|  Chip.java:0622:<init>|  Btree.java:2474:<init>|  Btree.java:2473:code|  Chip.java:0532:<init>|  Btree.java:2469:<init>|  Btree.java:2468:put|  Btree.java:7180:code|  Chip.java:0532:<init>|  Btree.java:7164:<init>|  Btree.java:7163:test_put_random|  Btree.java:7273:oldTests|  Btree.java:7278:newTests|  Btree.java:7284:main|");
+            $fdisplay(f, "Location: Chip.java:0594:<init>|  Chip.java:0593:COntinue|  Btree.java:2443:Then|  Chip.java:0612:<init>|  Btree.java:2439:<init>|  Btree.java:2438:Else|  Chip.java:0622:<init>|  Btree.java:2431:<init>|  Btree.java:2430:code|  Chip.java:0532:<init>|  Btree.java:2427:<init>|  Btree.java:2426:findAndInsert|  Btree.java:2478:Else|  Chip.java:0622:<init>|  Btree.java:2476:<init>|  Btree.java:2475:code|  Chip.java:0532:<init>|  Btree.java:2471:<init>|  Btree.java:2470:put|  Btree.java:7182:code|  Chip.java:0532:<init>|  Btree.java:7166:<init>|  Btree.java:7165:test_put_random|  Btree.java:7275:oldTests|  Btree.java:7280:newTests|  Btree.java:7286:main|");
             $fclose(f);
           end
         end
@@ -3343,7 +3343,7 @@ module Btree;                                                                   
           begin
             integer f;
             f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:0614:<init>|  Chip.java:0613:<init>|  Btree.java:2437:<init>|  Btree.java:2436:Else|  Chip.java:0622:<init>|  Btree.java:2429:<init>|  Btree.java:2428:code|  Chip.java:0532:<init>|  Btree.java:2425:<init>|  Btree.java:2424:findAndInsert|  Btree.java:2476:Else|  Chip.java:0622:<init>|  Btree.java:2474:<init>|  Btree.java:2473:code|  Chip.java:0532:<init>|  Btree.java:2469:<init>|  Btree.java:2468:put|  Btree.java:7180:code|  Chip.java:0532:<init>|  Btree.java:7164:<init>|  Btree.java:7163:test_put_random|  Btree.java:7273:oldTests|  Btree.java:7278:newTests|  Btree.java:7284:main|");
+            $fdisplay(f, "Location: Chip.java:0614:<init>|  Chip.java:0613:<init>|  Btree.java:2439:<init>|  Btree.java:2438:Else|  Chip.java:0622:<init>|  Btree.java:2431:<init>|  Btree.java:2430:code|  Chip.java:0532:<init>|  Btree.java:2427:<init>|  Btree.java:2426:findAndInsert|  Btree.java:2478:Else|  Chip.java:0622:<init>|  Btree.java:2476:<init>|  Btree.java:2475:code|  Chip.java:0532:<init>|  Btree.java:2471:<init>|  Btree.java:2470:put|  Btree.java:7182:code|  Chip.java:0532:<init>|  Btree.java:7166:<init>|  Btree.java:7165:test_put_random|  Btree.java:7275:oldTests|  Btree.java:7280:newTests|  Btree.java:7286:main|");
             $fclose(f);
           end
         end
@@ -3352,7 +3352,7 @@ module Btree;                                                                   
           begin
             integer f;
             f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:0573:<init>|  Chip.java:0572:GOto|  Btree.java:2444:Else|  Chip.java:0622:<init>|  Btree.java:2437:<init>|  Btree.java:2436:Else|  Chip.java:0622:<init>|  Btree.java:2429:<init>|  Btree.java:2428:code|  Chip.java:0532:<init>|  Btree.java:2425:<init>|  Btree.java:2424:findAndInsert|  Btree.java:2476:Else|  Chip.java:0622:<init>|  Btree.java:2474:<init>|  Btree.java:2473:code|  Chip.java:0532:<init>|  Btree.java:2469:<init>|  Btree.java:2468:put|  Btree.java:7180:code|  Chip.java:0532:<init>|  Btree.java:7164:<init>|  Btree.java:7163:test_put_random|  Btree.java:7273:oldTests|  Btree.java:7278:newTests|  Btree.java:7284:main|");
+            $fdisplay(f, "Location: Chip.java:0573:<init>|  Chip.java:0572:GOto|  Btree.java:2446:Else|  Chip.java:0622:<init>|  Btree.java:2439:<init>|  Btree.java:2438:Else|  Chip.java:0622:<init>|  Btree.java:2431:<init>|  Btree.java:2430:code|  Chip.java:0532:<init>|  Btree.java:2427:<init>|  Btree.java:2426:findAndInsert|  Btree.java:2478:Else|  Chip.java:0622:<init>|  Btree.java:2476:<init>|  Btree.java:2475:code|  Chip.java:0532:<init>|  Btree.java:2471:<init>|  Btree.java:2470:put|  Btree.java:7182:code|  Chip.java:0532:<init>|  Btree.java:7166:<init>|  Btree.java:7165:test_put_random|  Btree.java:7275:oldTests|  Btree.java:7280:newTests|  Btree.java:7286:main|");
             $fclose(f);
           end
         end
@@ -3379,7 +3379,7 @@ module Btree;                                                                   
           begin
             integer f;
             f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:0514:<init>|  Btree.java:0330:<init>|  Btree.java:0329:stuckPut|  Btree.java:0353:stuckPut|  Btree.java:2449:code|  Chip.java:0532:<init>|  Btree.java:2425:<init>|  Btree.java:2424:findAndInsert|  Btree.java:2476:Else|  Chip.java:0622:<init>|  Btree.java:2474:<init>|  Btree.java:2473:code|  Chip.java:0532:<init>|  Btree.java:2469:<init>|  Btree.java:2468:put|  Btree.java:7180:code|  Chip.java:0532:<init>|  Btree.java:7164:<init>|  Btree.java:7163:test_put_random|  Btree.java:7273:oldTests|  Btree.java:7278:newTests|  Btree.java:7284:main|");
+            $fdisplay(f, "Location: Chip.java:0514:<init>|  Btree.java:0330:<init>|  Btree.java:0329:stuckPut|  Btree.java:0353:stuckPut|  Btree.java:2451:code|  Chip.java:0532:<init>|  Btree.java:2427:<init>|  Btree.java:2426:findAndInsert|  Btree.java:2478:Else|  Chip.java:0622:<init>|  Btree.java:2476:<init>|  Btree.java:2475:code|  Chip.java:0532:<init>|  Btree.java:2471:<init>|  Btree.java:2470:put|  Btree.java:7182:code|  Chip.java:0532:<init>|  Btree.java:7166:<init>|  Btree.java:7165:test_put_random|  Btree.java:7275:oldTests|  Btree.java:7280:newTests|  Btree.java:7286:main|");
             $fclose(f);
           end
         end
@@ -3390,7 +3390,7 @@ module Btree;                                                                   
           begin
             integer f;
             f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:1422:<init>|  Chip.java:1421:waitResultOfTransaction|  Btree.java:0344:stuckPut|  Btree.java:0353:stuckPut|  Btree.java:2449:code|  Chip.java:0532:<init>|  Btree.java:2425:<init>|  Btree.java:2424:findAndInsert|  Btree.java:2476:Else|  Chip.java:0622:<init>|  Btree.java:2474:<init>|  Btree.java:2473:code|  Chip.java:0532:<init>|  Btree.java:2469:<init>|  Btree.java:2468:put|  Btree.java:7180:code|  Chip.java:0532:<init>|  Btree.java:7164:<init>|  Btree.java:7163:test_put_random|  Btree.java:7273:oldTests|  Btree.java:7278:newTests|  Btree.java:7284:main|");
+            $fdisplay(f, "Location: Chip.java:1422:<init>|  Chip.java:1421:waitResultOfTransaction|  Btree.java:0344:stuckPut|  Btree.java:0353:stuckPut|  Btree.java:2451:code|  Chip.java:0532:<init>|  Btree.java:2427:<init>|  Btree.java:2426:findAndInsert|  Btree.java:2478:Else|  Chip.java:0622:<init>|  Btree.java:2476:<init>|  Btree.java:2475:code|  Chip.java:0532:<init>|  Btree.java:2471:<init>|  Btree.java:2470:put|  Btree.java:7182:code|  Chip.java:0532:<init>|  Btree.java:7166:<init>|  Btree.java:7165:test_put_random|  Btree.java:7275:oldTests|  Btree.java:7280:newTests|  Btree.java:7286:main|");
             $fclose(f);
           end
         end
@@ -3401,7 +3401,7 @@ module Btree;                                                                   
           begin
             integer f;
             f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:1422:<init>|  Chip.java:1421:waitResultOfTransaction|  Btree.java:0347:stuckPut|  Btree.java:0353:stuckPut|  Btree.java:2449:code|  Chip.java:0532:<init>|  Btree.java:2425:<init>|  Btree.java:2424:findAndInsert|  Btree.java:2476:Else|  Chip.java:0622:<init>|  Btree.java:2474:<init>|  Btree.java:2473:code|  Chip.java:0532:<init>|  Btree.java:2469:<init>|  Btree.java:2468:put|  Btree.java:7180:code|  Chip.java:0532:<init>|  Btree.java:7164:<init>|  Btree.java:7163:test_put_random|  Btree.java:7273:oldTests|  Btree.java:7278:newTests|  Btree.java:7284:main|");
+            $fdisplay(f, "Location: Chip.java:1422:<init>|  Chip.java:1421:waitResultOfTransaction|  Btree.java:0347:stuckPut|  Btree.java:0353:stuckPut|  Btree.java:2451:code|  Chip.java:0532:<init>|  Btree.java:2427:<init>|  Btree.java:2426:findAndInsert|  Btree.java:2478:Else|  Chip.java:0622:<init>|  Btree.java:2476:<init>|  Btree.java:2475:code|  Chip.java:0532:<init>|  Btree.java:2471:<init>|  Btree.java:2470:put|  Btree.java:7182:code|  Chip.java:0532:<init>|  Btree.java:7166:<init>|  Btree.java:7165:test_put_random|  Btree.java:7275:oldTests|  Btree.java:7280:newTests|  Btree.java:7286:main|");
             $fclose(f);
           end
         end
@@ -3412,7 +3412,7 @@ module Btree;                                                                   
           begin
             integer f;
             f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:1422:<init>|  Chip.java:1421:waitResultOfTransaction|  Btree.java:0348:stuckPut|  Btree.java:0353:stuckPut|  Btree.java:2449:code|  Chip.java:0532:<init>|  Btree.java:2425:<init>|  Btree.java:2424:findAndInsert|  Btree.java:2476:Else|  Chip.java:0622:<init>|  Btree.java:2474:<init>|  Btree.java:2473:code|  Chip.java:0532:<init>|  Btree.java:2469:<init>|  Btree.java:2468:put|  Btree.java:7180:code|  Chip.java:0532:<init>|  Btree.java:7164:<init>|  Btree.java:7163:test_put_random|  Btree.java:7273:oldTests|  Btree.java:7278:newTests|  Btree.java:7284:main|");
+            $fdisplay(f, "Location: Chip.java:1422:<init>|  Chip.java:1421:waitResultOfTransaction|  Btree.java:0348:stuckPut|  Btree.java:0353:stuckPut|  Btree.java:2451:code|  Chip.java:0532:<init>|  Btree.java:2427:<init>|  Btree.java:2426:findAndInsert|  Btree.java:2478:Else|  Chip.java:0622:<init>|  Btree.java:2476:<init>|  Btree.java:2475:code|  Chip.java:0532:<init>|  Btree.java:2471:<init>|  Btree.java:2470:put|  Btree.java:7182:code|  Chip.java:0532:<init>|  Btree.java:7166:<init>|  Btree.java:7165:test_put_random|  Btree.java:7275:oldTests|  Btree.java:7280:newTests|  Btree.java:7286:main|");
             $fclose(f);
           end
         end
@@ -3421,7 +3421,7 @@ module Btree;                                                                   
           begin
             integer f;
             f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:0573:<init>|  Chip.java:0572:GOto|  Btree.java:2477:Else|  Chip.java:0622:<init>|  Btree.java:2474:<init>|  Btree.java:2473:code|  Chip.java:0532:<init>|  Btree.java:2469:<init>|  Btree.java:2468:put|  Btree.java:7180:code|  Chip.java:0532:<init>|  Btree.java:7164:<init>|  Btree.java:7163:test_put_random|  Btree.java:7273:oldTests|  Btree.java:7278:newTests|  Btree.java:7284:main|");
+            $fdisplay(f, "Location: Chip.java:0573:<init>|  Chip.java:0572:GOto|  Btree.java:2479:Else|  Chip.java:0622:<init>|  Btree.java:2476:<init>|  Btree.java:2475:code|  Chip.java:0532:<init>|  Btree.java:2471:<init>|  Btree.java:2470:put|  Btree.java:7182:code|  Chip.java:0532:<init>|  Btree.java:7166:<init>|  Btree.java:7165:test_put_random|  Btree.java:7275:oldTests|  Btree.java:7280:newTests|  Btree.java:7286:main|");
             $fclose(f);
           end
         end
@@ -3431,7 +3431,7 @@ module Btree;                                                                   
           begin
             integer f;
             f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:0514:<init>|  Chip.java:0821:<init>|  Chip.java:0820:Zero|  Btree.java:0283:stuckGetRoot|  Btree.java:2481:code|  Chip.java:0532:<init>|  Btree.java:2469:<init>|  Btree.java:2468:put|  Btree.java:7180:code|  Chip.java:0532:<init>|  Btree.java:7164:<init>|  Btree.java:7163:test_put_random|  Btree.java:7273:oldTests|  Btree.java:7278:newTests|  Btree.java:7284:main|");
+            $fdisplay(f, "Location: Chip.java:0514:<init>|  Chip.java:0821:<init>|  Chip.java:0820:Zero|  Btree.java:0283:stuckGetRoot|  Btree.java:2483:code|  Chip.java:0532:<init>|  Btree.java:2471:<init>|  Btree.java:2470:put|  Btree.java:7182:code|  Chip.java:0532:<init>|  Btree.java:7166:<init>|  Btree.java:7165:test_put_random|  Btree.java:7275:oldTests|  Btree.java:7280:newTests|  Btree.java:7286:main|");
             $fclose(f);
           end
         end
@@ -3452,7 +3452,7 @@ module Btree;                                                                   
           begin
             integer f;
             f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:0514:<init>|  Btree.java:0289:<init>|  Btree.java:0288:stuckGet|  Btree.java:0284:stuckGetRoot|  Btree.java:2481:code|  Chip.java:0532:<init>|  Btree.java:2469:<init>|  Btree.java:2468:put|  Btree.java:7180:code|  Chip.java:0532:<init>|  Btree.java:7164:<init>|  Btree.java:7163:test_put_random|  Btree.java:7273:oldTests|  Btree.java:7278:newTests|  Btree.java:7284:main|");
+            $fdisplay(f, "Location: Chip.java:0514:<init>|  Btree.java:0289:<init>|  Btree.java:0288:stuckGet|  Btree.java:0284:stuckGetRoot|  Btree.java:2483:code|  Chip.java:0532:<init>|  Btree.java:2471:<init>|  Btree.java:2470:put|  Btree.java:7182:code|  Chip.java:0532:<init>|  Btree.java:7166:<init>|  Btree.java:7165:test_put_random|  Btree.java:7275:oldTests|  Btree.java:7280:newTests|  Btree.java:7286:main|");
             $fclose(f);
           end
         end
@@ -3463,7 +3463,7 @@ module Btree;                                                                   
           begin
             integer f;
             f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:1359:<init>|  Chip.java:1358:waitResultOfTransaction|  Btree.java:0302:stuckGet|  Btree.java:0284:stuckGetRoot|  Btree.java:2481:code|  Chip.java:0532:<init>|  Btree.java:2469:<init>|  Btree.java:2468:put|  Btree.java:7180:code|  Chip.java:0532:<init>|  Btree.java:7164:<init>|  Btree.java:7163:test_put_random|  Btree.java:7273:oldTests|  Btree.java:7278:newTests|  Btree.java:7284:main|");
+            $fdisplay(f, "Location: Chip.java:1359:<init>|  Chip.java:1358:waitResultOfTransaction|  Btree.java:0302:stuckGet|  Btree.java:0284:stuckGetRoot|  Btree.java:2483:code|  Chip.java:0532:<init>|  Btree.java:2471:<init>|  Btree.java:2470:put|  Btree.java:7182:code|  Chip.java:0532:<init>|  Btree.java:7166:<init>|  Btree.java:7165:test_put_random|  Btree.java:7275:oldTests|  Btree.java:7280:newTests|  Btree.java:7286:main|");
             $fclose(f);
           end
         end
@@ -3474,7 +3474,7 @@ module Btree;                                                                   
           begin
             integer f;
             f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:1359:<init>|  Chip.java:1358:waitResultOfTransaction|  Btree.java:0303:stuckGet|  Btree.java:0284:stuckGetRoot|  Btree.java:2481:code|  Chip.java:0532:<init>|  Btree.java:2469:<init>|  Btree.java:2468:put|  Btree.java:7180:code|  Chip.java:0532:<init>|  Btree.java:7164:<init>|  Btree.java:7163:test_put_random|  Btree.java:7273:oldTests|  Btree.java:7278:newTests|  Btree.java:7284:main|");
+            $fdisplay(f, "Location: Chip.java:1359:<init>|  Chip.java:1358:waitResultOfTransaction|  Btree.java:0303:stuckGet|  Btree.java:0284:stuckGetRoot|  Btree.java:2483:code|  Chip.java:0532:<init>|  Btree.java:2471:<init>|  Btree.java:2470:put|  Btree.java:7182:code|  Chip.java:0532:<init>|  Btree.java:7166:<init>|  Btree.java:7165:test_put_random|  Btree.java:7275:oldTests|  Btree.java:7280:newTests|  Btree.java:7286:main|");
             $fclose(f);
           end
         end
@@ -3485,7 +3485,7 @@ module Btree;                                                                   
           begin
             integer f;
             f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:1359:<init>|  Chip.java:1358:waitResultOfTransaction|  Btree.java:0305:stuckGet|  Btree.java:0284:stuckGetRoot|  Btree.java:2481:code|  Chip.java:0532:<init>|  Btree.java:2469:<init>|  Btree.java:2468:put|  Btree.java:7180:code|  Chip.java:0532:<init>|  Btree.java:7164:<init>|  Btree.java:7163:test_put_random|  Btree.java:7273:oldTests|  Btree.java:7278:newTests|  Btree.java:7284:main|");
+            $fdisplay(f, "Location: Chip.java:1359:<init>|  Chip.java:1358:waitResultOfTransaction|  Btree.java:0305:stuckGet|  Btree.java:0284:stuckGetRoot|  Btree.java:2483:code|  Chip.java:0532:<init>|  Btree.java:2471:<init>|  Btree.java:2470:put|  Btree.java:7182:code|  Chip.java:0532:<init>|  Btree.java:7166:<init>|  Btree.java:7165:test_put_random|  Btree.java:7275:oldTests|  Btree.java:7280:newTests|  Btree.java:7286:main|");
             $fclose(f);
           end
         end
@@ -3496,7 +3496,7 @@ module Btree;                                                                   
           begin
             integer f;
             f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:1359:<init>|  Chip.java:1358:waitResultOfTransaction|  Btree.java:0306:stuckGet|  Btree.java:0284:stuckGetRoot|  Btree.java:2481:code|  Chip.java:0532:<init>|  Btree.java:2469:<init>|  Btree.java:2468:put|  Btree.java:7180:code|  Chip.java:0532:<init>|  Btree.java:7164:<init>|  Btree.java:7163:test_put_random|  Btree.java:7273:oldTests|  Btree.java:7278:newTests|  Btree.java:7284:main|");
+            $fdisplay(f, "Location: Chip.java:1359:<init>|  Chip.java:1358:waitResultOfTransaction|  Btree.java:0306:stuckGet|  Btree.java:0284:stuckGetRoot|  Btree.java:2483:code|  Chip.java:0532:<init>|  Btree.java:2471:<init>|  Btree.java:2470:put|  Btree.java:7182:code|  Chip.java:0532:<init>|  Btree.java:7166:<init>|  Btree.java:7165:test_put_random|  Btree.java:7275:oldTests|  Btree.java:7280:newTests|  Btree.java:7286:main|");
             $fclose(f);
           end
         end
@@ -3515,7 +3515,7 @@ module Btree;                                                                   
           begin
             integer f;
             f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:0514:<init>|  Btree.java:0309:<init>|  Btree.java:0308:stuckGet|  Btree.java:0284:stuckGetRoot|  Btree.java:2481:code|  Chip.java:0532:<init>|  Btree.java:2469:<init>|  Btree.java:2468:put|  Btree.java:7180:code|  Chip.java:0532:<init>|  Btree.java:7164:<init>|  Btree.java:7163:test_put_random|  Btree.java:7273:oldTests|  Btree.java:7278:newTests|  Btree.java:7284:main|");
+            $fdisplay(f, "Location: Chip.java:0514:<init>|  Btree.java:0309:<init>|  Btree.java:0308:stuckGet|  Btree.java:0284:stuckGetRoot|  Btree.java:2483:code|  Chip.java:0532:<init>|  Btree.java:2471:<init>|  Btree.java:2470:put|  Btree.java:7182:code|  Chip.java:0532:<init>|  Btree.java:7166:<init>|  Btree.java:7165:test_put_random|  Btree.java:7275:oldTests|  Btree.java:7280:newTests|  Btree.java:7286:main|");
             $fclose(f);
           end
         end
@@ -3525,7 +3525,7 @@ module Btree;                                                                   
           begin
             integer f;
             f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:0514:<init>|  Chip.java:0813:<init>|  Chip.java:0813:Ge|  Btree.java:2483:code|  Chip.java:0532:<init>|  Btree.java:2469:<init>|  Btree.java:2468:put|  Btree.java:7180:code|  Chip.java:0532:<init>|  Btree.java:7164:<init>|  Btree.java:7163:test_put_random|  Btree.java:7273:oldTests|  Btree.java:7278:newTests|  Btree.java:7284:main|");
+            $fdisplay(f, "Location: Chip.java:0514:<init>|  Chip.java:0813:<init>|  Chip.java:0813:Ge|  Btree.java:2485:code|  Chip.java:0532:<init>|  Btree.java:2471:<init>|  Btree.java:2470:put|  Btree.java:7182:code|  Chip.java:0532:<init>|  Btree.java:7166:<init>|  Btree.java:7165:test_put_random|  Btree.java:7275:oldTests|  Btree.java:7280:newTests|  Btree.java:7286:main|");
             $fclose(f);
           end
         end
@@ -3539,7 +3539,7 @@ module Btree;                                                                   
           begin
             integer f;
             f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:0605:<init>|  Chip.java:0604:<init>|  Btree.java:2486:<init>|  Btree.java:2485:code|  Chip.java:0532:<init>|  Btree.java:2469:<init>|  Btree.java:2468:put|  Btree.java:7180:code|  Chip.java:0532:<init>|  Btree.java:7164:<init>|  Btree.java:7163:test_put_random|  Btree.java:7273:oldTests|  Btree.java:7278:newTests|  Btree.java:7284:main|");
+            $fdisplay(f, "Location: Chip.java:0605:<init>|  Chip.java:0604:<init>|  Btree.java:2488:<init>|  Btree.java:2487:code|  Chip.java:0532:<init>|  Btree.java:2471:<init>|  Btree.java:2470:put|  Btree.java:7182:code|  Chip.java:0532:<init>|  Btree.java:7166:<init>|  Btree.java:7165:test_put_random|  Btree.java:7275:oldTests|  Btree.java:7280:newTests|  Btree.java:7286:main|");
             $fclose(f);
           end
         end
@@ -3549,7 +3549,7 @@ module Btree;                                                                   
           begin
             integer f;
             f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:0514:<init>|  Chip.java:0821:<init>|  Chip.java:0820:Zero|  Btree.java:0283:stuckGetRoot|  Btree.java:1710:splitRootBranch|  Btree.java:2487:Then|  Chip.java:0612:<init>|  Btree.java:2486:<init>|  Btree.java:2485:code|  Chip.java:0532:<init>|  Btree.java:2469:<init>|  Btree.java:2468:put|  Btree.java:7180:code|  Chip.java:0532:<init>|  Btree.java:7164:<init>|  Btree.java:7163:test_put_random|  Btree.java:7273:oldTests|  Btree.java:7278:newTests|  Btree.java:7284:main|");
+            $fdisplay(f, "Location: Chip.java:0514:<init>|  Chip.java:0821:<init>|  Chip.java:0820:Zero|  Btree.java:0283:stuckGetRoot|  Btree.java:1710:splitRootBranch|  Btree.java:2489:Then|  Chip.java:0612:<init>|  Btree.java:2488:<init>|  Btree.java:2487:code|  Chip.java:0532:<init>|  Btree.java:2471:<init>|  Btree.java:2470:put|  Btree.java:7182:code|  Chip.java:0532:<init>|  Btree.java:7166:<init>|  Btree.java:7165:test_put_random|  Btree.java:7275:oldTests|  Btree.java:7280:newTests|  Btree.java:7286:main|");
             $fclose(f);
           end
         end
@@ -3570,7 +3570,7 @@ module Btree;                                                                   
           begin
             integer f;
             f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:0514:<init>|  Btree.java:0289:<init>|  Btree.java:0288:stuckGet|  Btree.java:0284:stuckGetRoot|  Btree.java:1710:splitRootBranch|  Btree.java:2487:Then|  Chip.java:0612:<init>|  Btree.java:2486:<init>|  Btree.java:2485:code|  Chip.java:0532:<init>|  Btree.java:2469:<init>|  Btree.java:2468:put|  Btree.java:7180:code|  Chip.java:0532:<init>|  Btree.java:7164:<init>|  Btree.java:7163:test_put_random|  Btree.java:7273:oldTests|  Btree.java:7278:newTests|  Btree.java:7284:main|");
+            $fdisplay(f, "Location: Chip.java:0514:<init>|  Btree.java:0289:<init>|  Btree.java:0288:stuckGet|  Btree.java:0284:stuckGetRoot|  Btree.java:1710:splitRootBranch|  Btree.java:2489:Then|  Chip.java:0612:<init>|  Btree.java:2488:<init>|  Btree.java:2487:code|  Chip.java:0532:<init>|  Btree.java:2471:<init>|  Btree.java:2470:put|  Btree.java:7182:code|  Chip.java:0532:<init>|  Btree.java:7166:<init>|  Btree.java:7165:test_put_random|  Btree.java:7275:oldTests|  Btree.java:7280:newTests|  Btree.java:7286:main|");
             $fclose(f);
           end
         end
@@ -3581,7 +3581,7 @@ module Btree;                                                                   
           begin
             integer f;
             f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:1359:<init>|  Chip.java:1358:waitResultOfTransaction|  Btree.java:0302:stuckGet|  Btree.java:0284:stuckGetRoot|  Btree.java:1710:splitRootBranch|  Btree.java:2487:Then|  Chip.java:0612:<init>|  Btree.java:2486:<init>|  Btree.java:2485:code|  Chip.java:0532:<init>|  Btree.java:2469:<init>|  Btree.java:2468:put|  Btree.java:7180:code|  Chip.java:0532:<init>|  Btree.java:7164:<init>|  Btree.java:7163:test_put_random|  Btree.java:7273:oldTests|  Btree.java:7278:newTests|  Btree.java:7284:main|");
+            $fdisplay(f, "Location: Chip.java:1359:<init>|  Chip.java:1358:waitResultOfTransaction|  Btree.java:0302:stuckGet|  Btree.java:0284:stuckGetRoot|  Btree.java:1710:splitRootBranch|  Btree.java:2489:Then|  Chip.java:0612:<init>|  Btree.java:2488:<init>|  Btree.java:2487:code|  Chip.java:0532:<init>|  Btree.java:2471:<init>|  Btree.java:2470:put|  Btree.java:7182:code|  Chip.java:0532:<init>|  Btree.java:7166:<init>|  Btree.java:7165:test_put_random|  Btree.java:7275:oldTests|  Btree.java:7280:newTests|  Btree.java:7286:main|");
             $fclose(f);
           end
         end
@@ -3592,7 +3592,7 @@ module Btree;                                                                   
           begin
             integer f;
             f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:1359:<init>|  Chip.java:1358:waitResultOfTransaction|  Btree.java:0303:stuckGet|  Btree.java:0284:stuckGetRoot|  Btree.java:1710:splitRootBranch|  Btree.java:2487:Then|  Chip.java:0612:<init>|  Btree.java:2486:<init>|  Btree.java:2485:code|  Chip.java:0532:<init>|  Btree.java:2469:<init>|  Btree.java:2468:put|  Btree.java:7180:code|  Chip.java:0532:<init>|  Btree.java:7164:<init>|  Btree.java:7163:test_put_random|  Btree.java:7273:oldTests|  Btree.java:7278:newTests|  Btree.java:7284:main|");
+            $fdisplay(f, "Location: Chip.java:1359:<init>|  Chip.java:1358:waitResultOfTransaction|  Btree.java:0303:stuckGet|  Btree.java:0284:stuckGetRoot|  Btree.java:1710:splitRootBranch|  Btree.java:2489:Then|  Chip.java:0612:<init>|  Btree.java:2488:<init>|  Btree.java:2487:code|  Chip.java:0532:<init>|  Btree.java:2471:<init>|  Btree.java:2470:put|  Btree.java:7182:code|  Chip.java:0532:<init>|  Btree.java:7166:<init>|  Btree.java:7165:test_put_random|  Btree.java:7275:oldTests|  Btree.java:7280:newTests|  Btree.java:7286:main|");
             $fclose(f);
           end
         end
@@ -3603,7 +3603,7 @@ module Btree;                                                                   
           begin
             integer f;
             f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:1359:<init>|  Chip.java:1358:waitResultOfTransaction|  Btree.java:0305:stuckGet|  Btree.java:0284:stuckGetRoot|  Btree.java:1710:splitRootBranch|  Btree.java:2487:Then|  Chip.java:0612:<init>|  Btree.java:2486:<init>|  Btree.java:2485:code|  Chip.java:0532:<init>|  Btree.java:2469:<init>|  Btree.java:2468:put|  Btree.java:7180:code|  Chip.java:0532:<init>|  Btree.java:7164:<init>|  Btree.java:7163:test_put_random|  Btree.java:7273:oldTests|  Btree.java:7278:newTests|  Btree.java:7284:main|");
+            $fdisplay(f, "Location: Chip.java:1359:<init>|  Chip.java:1358:waitResultOfTransaction|  Btree.java:0305:stuckGet|  Btree.java:0284:stuckGetRoot|  Btree.java:1710:splitRootBranch|  Btree.java:2489:Then|  Chip.java:0612:<init>|  Btree.java:2488:<init>|  Btree.java:2487:code|  Chip.java:0532:<init>|  Btree.java:2471:<init>|  Btree.java:2470:put|  Btree.java:7182:code|  Chip.java:0532:<init>|  Btree.java:7166:<init>|  Btree.java:7165:test_put_random|  Btree.java:7275:oldTests|  Btree.java:7280:newTests|  Btree.java:7286:main|");
             $fclose(f);
           end
         end
@@ -3614,7 +3614,7 @@ module Btree;                                                                   
           begin
             integer f;
             f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:1359:<init>|  Chip.java:1358:waitResultOfTransaction|  Btree.java:0306:stuckGet|  Btree.java:0284:stuckGetRoot|  Btree.java:1710:splitRootBranch|  Btree.java:2487:Then|  Chip.java:0612:<init>|  Btree.java:2486:<init>|  Btree.java:2485:code|  Chip.java:0532:<init>|  Btree.java:2469:<init>|  Btree.java:2468:put|  Btree.java:7180:code|  Chip.java:0532:<init>|  Btree.java:7164:<init>|  Btree.java:7163:test_put_random|  Btree.java:7273:oldTests|  Btree.java:7278:newTests|  Btree.java:7284:main|");
+            $fdisplay(f, "Location: Chip.java:1359:<init>|  Chip.java:1358:waitResultOfTransaction|  Btree.java:0306:stuckGet|  Btree.java:0284:stuckGetRoot|  Btree.java:1710:splitRootBranch|  Btree.java:2489:Then|  Chip.java:0612:<init>|  Btree.java:2488:<init>|  Btree.java:2487:code|  Chip.java:0532:<init>|  Btree.java:2471:<init>|  Btree.java:2470:put|  Btree.java:7182:code|  Chip.java:0532:<init>|  Btree.java:7166:<init>|  Btree.java:7165:test_put_random|  Btree.java:7275:oldTests|  Btree.java:7280:newTests|  Btree.java:7286:main|");
             $fclose(f);
           end
         end
@@ -3633,7 +3633,7 @@ module Btree;                                                                   
           begin
             integer f;
             f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:0514:<init>|  Btree.java:0309:<init>|  Btree.java:0308:stuckGet|  Btree.java:0284:stuckGetRoot|  Btree.java:1710:splitRootBranch|  Btree.java:2487:Then|  Chip.java:0612:<init>|  Btree.java:2486:<init>|  Btree.java:2485:code|  Chip.java:0532:<init>|  Btree.java:2469:<init>|  Btree.java:2468:put|  Btree.java:7180:code|  Chip.java:0532:<init>|  Btree.java:7164:<init>|  Btree.java:7163:test_put_random|  Btree.java:7273:oldTests|  Btree.java:7278:newTests|  Btree.java:7284:main|");
+            $fdisplay(f, "Location: Chip.java:0514:<init>|  Btree.java:0309:<init>|  Btree.java:0308:stuckGet|  Btree.java:0284:stuckGetRoot|  Btree.java:1710:splitRootBranch|  Btree.java:2489:Then|  Chip.java:0612:<init>|  Btree.java:2488:<init>|  Btree.java:2487:code|  Chip.java:0532:<init>|  Btree.java:2471:<init>|  Btree.java:2470:put|  Btree.java:7182:code|  Chip.java:0532:<init>|  Btree.java:7166:<init>|  Btree.java:7165:test_put_random|  Btree.java:7275:oldTests|  Btree.java:7280:newTests|  Btree.java:7286:main|");
             $fclose(f);
           end
         end
@@ -3643,7 +3643,7 @@ module Btree;                                                                   
           begin
             integer f;
             f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:0514:<init>|  Btree.java:1713:<init>|  Btree.java:1712:splitRootBranch|  Btree.java:2487:Then|  Chip.java:0612:<init>|  Btree.java:2486:<init>|  Btree.java:2485:code|  Chip.java:0532:<init>|  Btree.java:2469:<init>|  Btree.java:2468:put|  Btree.java:7180:code|  Chip.java:0532:<init>|  Btree.java:7164:<init>|  Btree.java:7163:test_put_random|  Btree.java:7273:oldTests|  Btree.java:7278:newTests|  Btree.java:7284:main|");
+            $fdisplay(f, "Location: Chip.java:0514:<init>|  Btree.java:1713:<init>|  Btree.java:1712:splitRootBranch|  Btree.java:2489:Then|  Chip.java:0612:<init>|  Btree.java:2488:<init>|  Btree.java:2487:code|  Chip.java:0532:<init>|  Btree.java:2471:<init>|  Btree.java:2470:put|  Btree.java:7182:code|  Chip.java:0532:<init>|  Btree.java:7166:<init>|  Btree.java:7165:test_put_random|  Btree.java:7275:oldTests|  Btree.java:7280:newTests|  Btree.java:7286:main|");
             $fclose(f);
           end
         end
@@ -3676,7 +3676,7 @@ module Btree;                                                                   
           begin
             integer f;
             f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:0514:<init>|  Btree.java:1303:<init>|  Btree.java:1302:splitIntoThree|  Btree.java:1718:splitRootBranch|  Btree.java:2487:Then|  Chip.java:0612:<init>|  Btree.java:2486:<init>|  Btree.java:2485:code|  Chip.java:0532:<init>|  Btree.java:2469:<init>|  Btree.java:2468:put|  Btree.java:7180:code|  Chip.java:0532:<init>|  Btree.java:7164:<init>|  Btree.java:7163:test_put_random|  Btree.java:7273:oldTests|  Btree.java:7278:newTests|  Btree.java:7284:main|");
+            $fdisplay(f, "Location: Chip.java:0514:<init>|  Btree.java:1303:<init>|  Btree.java:1302:splitIntoThree|  Btree.java:1718:splitRootBranch|  Btree.java:2489:Then|  Chip.java:0612:<init>|  Btree.java:2488:<init>|  Btree.java:2487:code|  Chip.java:0532:<init>|  Btree.java:2471:<init>|  Btree.java:2470:put|  Btree.java:7182:code|  Chip.java:0532:<init>|  Btree.java:7166:<init>|  Btree.java:7165:test_put_random|  Btree.java:7275:oldTests|  Btree.java:7280:newTests|  Btree.java:7286:main|");
             $fclose(f);
           end
         end
@@ -3686,7 +3686,7 @@ module Btree;                                                                   
           begin
             integer f;
             f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:0514:<init>|  Chip.java:0821:<init>|  Chip.java:0820:Zero|  Btree.java:0078:allocate|  Btree.java:0154:allocateBranch|  Btree.java:1719:splitRootBranch|  Btree.java:2487:Then|  Chip.java:0612:<init>|  Btree.java:2486:<init>|  Btree.java:2485:code|  Chip.java:0532:<init>|  Btree.java:2469:<init>|  Btree.java:2468:put|  Btree.java:7180:code|  Chip.java:0532:<init>|  Btree.java:7164:<init>|  Btree.java:7163:test_put_random|  Btree.java:7273:oldTests|  Btree.java:7278:newTests|  Btree.java:7284:main|");
+            $fdisplay(f, "Location: Chip.java:0514:<init>|  Chip.java:0821:<init>|  Chip.java:0820:Zero|  Btree.java:0078:allocate|  Btree.java:0154:allocateBranch|  Btree.java:1719:splitRootBranch|  Btree.java:2489:Then|  Chip.java:0612:<init>|  Btree.java:2488:<init>|  Btree.java:2487:code|  Chip.java:0532:<init>|  Btree.java:2471:<init>|  Btree.java:2470:put|  Btree.java:7182:code|  Chip.java:0532:<init>|  Btree.java:7166:<init>|  Btree.java:7165:test_put_random|  Btree.java:7275:oldTests|  Btree.java:7280:newTests|  Btree.java:7286:main|");
             $fclose(f);
           end
         end
@@ -3698,7 +3698,7 @@ module Btree;                                                                   
           begin
             integer f;
             f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:0514:<init>|  Chip.java:1352:<init>|  Chip.java:1351:ExecuteTransaction|  Btree.java:0079:allocate|  Btree.java:0154:allocateBranch|  Btree.java:1719:splitRootBranch|  Btree.java:2487:Then|  Chip.java:0612:<init>|  Btree.java:2486:<init>|  Btree.java:2485:code|  Chip.java:0532:<init>|  Btree.java:2469:<init>|  Btree.java:2468:put|  Btree.java:7180:code|  Chip.java:0532:<init>|  Btree.java:7164:<init>|  Btree.java:7163:test_put_random|  Btree.java:7273:oldTests|  Btree.java:7278:newTests|  Btree.java:7284:main|");
+            $fdisplay(f, "Location: Chip.java:0514:<init>|  Chip.java:1352:<init>|  Chip.java:1351:ExecuteTransaction|  Btree.java:0079:allocate|  Btree.java:0154:allocateBranch|  Btree.java:1719:splitRootBranch|  Btree.java:2489:Then|  Chip.java:0612:<init>|  Btree.java:2488:<init>|  Btree.java:2487:code|  Chip.java:0532:<init>|  Btree.java:2471:<init>|  Btree.java:2470:put|  Btree.java:7182:code|  Chip.java:0532:<init>|  Btree.java:7166:<init>|  Btree.java:7165:test_put_random|  Btree.java:7275:oldTests|  Btree.java:7280:newTests|  Btree.java:7286:main|");
             $fclose(f);
           end
         end
@@ -3709,7 +3709,7 @@ module Btree;                                                                   
           begin
             integer f;
             f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:1359:<init>|  Chip.java:1358:waitResultOfTransaction|  Btree.java:0080:allocate|  Btree.java:0154:allocateBranch|  Btree.java:1719:splitRootBranch|  Btree.java:2487:Then|  Chip.java:0612:<init>|  Btree.java:2486:<init>|  Btree.java:2485:code|  Chip.java:0532:<init>|  Btree.java:2469:<init>|  Btree.java:2468:put|  Btree.java:7180:code|  Chip.java:0532:<init>|  Btree.java:7164:<init>|  Btree.java:7163:test_put_random|  Btree.java:7273:oldTests|  Btree.java:7278:newTests|  Btree.java:7284:main|");
+            $fdisplay(f, "Location: Chip.java:1359:<init>|  Chip.java:1358:waitResultOfTransaction|  Btree.java:0080:allocate|  Btree.java:0154:allocateBranch|  Btree.java:1719:splitRootBranch|  Btree.java:2489:Then|  Chip.java:0612:<init>|  Btree.java:2488:<init>|  Btree.java:2487:code|  Chip.java:0532:<init>|  Btree.java:2471:<init>|  Btree.java:2470:put|  Btree.java:7182:code|  Chip.java:0532:<init>|  Btree.java:7166:<init>|  Btree.java:7165:test_put_random|  Btree.java:7275:oldTests|  Btree.java:7280:newTests|  Btree.java:7286:main|");
             $fclose(f);
           end
         end
@@ -3719,7 +3719,7 @@ module Btree;                                                                   
           begin
             integer f;
             f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:0514:<init>|  Chip.java:0699:<init>|  Chip.java:0698:Copy|  Btree.java:0081:allocate|  Btree.java:0154:allocateBranch|  Btree.java:1719:splitRootBranch|  Btree.java:2487:Then|  Chip.java:0612:<init>|  Btree.java:2486:<init>|  Btree.java:2485:code|  Chip.java:0532:<init>|  Btree.java:2469:<init>|  Btree.java:2468:put|  Btree.java:7180:code|  Chip.java:0532:<init>|  Btree.java:7164:<init>|  Btree.java:7163:test_put_random|  Btree.java:7273:oldTests|  Btree.java:7278:newTests|  Btree.java:7284:main|");
+            $fdisplay(f, "Location: Chip.java:0514:<init>|  Chip.java:0699:<init>|  Chip.java:0698:Copy|  Btree.java:0081:allocate|  Btree.java:0154:allocateBranch|  Btree.java:1719:splitRootBranch|  Btree.java:2489:Then|  Chip.java:0612:<init>|  Btree.java:2488:<init>|  Btree.java:2487:code|  Chip.java:0532:<init>|  Btree.java:2471:<init>|  Btree.java:2470:put|  Btree.java:7182:code|  Chip.java:0532:<init>|  Btree.java:7166:<init>|  Btree.java:7165:test_put_random|  Btree.java:7275:oldTests|  Btree.java:7280:newTests|  Btree.java:7286:main|");
             $fclose(f);
           end
         end
@@ -3734,7 +3734,7 @@ module Btree;                                                                   
           begin
             integer f;
             f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:0514:<init>|  Btree.java:0084:<init>|  Btree.java:0083:allocate|  Btree.java:0154:allocateBranch|  Btree.java:1719:splitRootBranch|  Btree.java:2487:Then|  Chip.java:0612:<init>|  Btree.java:2486:<init>|  Btree.java:2485:code|  Chip.java:0532:<init>|  Btree.java:2469:<init>|  Btree.java:2468:put|  Btree.java:7180:code|  Chip.java:0532:<init>|  Btree.java:7164:<init>|  Btree.java:7163:test_put_random|  Btree.java:7273:oldTests|  Btree.java:7278:newTests|  Btree.java:7284:main|");
+            $fdisplay(f, "Location: Chip.java:0514:<init>|  Btree.java:0084:<init>|  Btree.java:0083:allocate|  Btree.java:0154:allocateBranch|  Btree.java:1719:splitRootBranch|  Btree.java:2489:Then|  Chip.java:0612:<init>|  Btree.java:2488:<init>|  Btree.java:2487:code|  Chip.java:0532:<init>|  Btree.java:2471:<init>|  Btree.java:2470:put|  Btree.java:7182:code|  Chip.java:0532:<init>|  Btree.java:7166:<init>|  Btree.java:7165:test_put_random|  Btree.java:7275:oldTests|  Btree.java:7280:newTests|  Btree.java:7286:main|");
             $fclose(f);
           end
         end
@@ -3754,7 +3754,7 @@ module Btree;                                                                   
           begin
             integer f;
             f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:0514:<init>|  Btree.java:0099:<init>|  Btree.java:0098:allocate|  Btree.java:0154:allocateBranch|  Btree.java:1719:splitRootBranch|  Btree.java:2487:Then|  Chip.java:0612:<init>|  Btree.java:2486:<init>|  Btree.java:2485:code|  Chip.java:0532:<init>|  Btree.java:2469:<init>|  Btree.java:2468:put|  Btree.java:7180:code|  Chip.java:0532:<init>|  Btree.java:7164:<init>|  Btree.java:7163:test_put_random|  Btree.java:7273:oldTests|  Btree.java:7278:newTests|  Btree.java:7284:main|");
+            $fdisplay(f, "Location: Chip.java:0514:<init>|  Btree.java:0099:<init>|  Btree.java:0098:allocate|  Btree.java:0154:allocateBranch|  Btree.java:1719:splitRootBranch|  Btree.java:2489:Then|  Chip.java:0612:<init>|  Btree.java:2488:<init>|  Btree.java:2487:code|  Chip.java:0532:<init>|  Btree.java:2471:<init>|  Btree.java:2470:put|  Btree.java:7182:code|  Chip.java:0532:<init>|  Btree.java:7166:<init>|  Btree.java:7165:test_put_random|  Btree.java:7275:oldTests|  Btree.java:7280:newTests|  Btree.java:7286:main|");
             $fclose(f);
           end
         end
@@ -3765,7 +3765,7 @@ module Btree;                                                                   
           begin
             integer f;
             f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:1359:<init>|  Chip.java:1358:waitResultOfTransaction|  Btree.java:0111:allocate|  Btree.java:0154:allocateBranch|  Btree.java:1719:splitRootBranch|  Btree.java:2487:Then|  Chip.java:0612:<init>|  Btree.java:2486:<init>|  Btree.java:2485:code|  Chip.java:0532:<init>|  Btree.java:2469:<init>|  Btree.java:2468:put|  Btree.java:7180:code|  Chip.java:0532:<init>|  Btree.java:7164:<init>|  Btree.java:7163:test_put_random|  Btree.java:7273:oldTests|  Btree.java:7278:newTests|  Btree.java:7284:main|");
+            $fdisplay(f, "Location: Chip.java:1359:<init>|  Chip.java:1358:waitResultOfTransaction|  Btree.java:0111:allocate|  Btree.java:0154:allocateBranch|  Btree.java:1719:splitRootBranch|  Btree.java:2489:Then|  Chip.java:0612:<init>|  Btree.java:2488:<init>|  Btree.java:2487:code|  Chip.java:0532:<init>|  Btree.java:2471:<init>|  Btree.java:2470:put|  Btree.java:7182:code|  Chip.java:0532:<init>|  Btree.java:7166:<init>|  Btree.java:7165:test_put_random|  Btree.java:7275:oldTests|  Btree.java:7280:newTests|  Btree.java:7286:main|");
             $fclose(f);
           end
         end
@@ -3775,7 +3775,7 @@ module Btree;                                                                   
           begin
             integer f;
             f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:0514:<init>|  Chip.java:0699:<init>|  Chip.java:0698:Copy|  Btree.java:0112:allocate|  Btree.java:0154:allocateBranch|  Btree.java:1719:splitRootBranch|  Btree.java:2487:Then|  Chip.java:0612:<init>|  Btree.java:2486:<init>|  Btree.java:2485:code|  Chip.java:0532:<init>|  Btree.java:2469:<init>|  Btree.java:2468:put|  Btree.java:7180:code|  Chip.java:0532:<init>|  Btree.java:7164:<init>|  Btree.java:7163:test_put_random|  Btree.java:7273:oldTests|  Btree.java:7278:newTests|  Btree.java:7284:main|");
+            $fdisplay(f, "Location: Chip.java:0514:<init>|  Chip.java:0699:<init>|  Chip.java:0698:Copy|  Btree.java:0112:allocate|  Btree.java:0154:allocateBranch|  Btree.java:1719:splitRootBranch|  Btree.java:2489:Then|  Chip.java:0612:<init>|  Btree.java:2488:<init>|  Btree.java:2487:code|  Chip.java:0532:<init>|  Btree.java:2471:<init>|  Btree.java:2470:put|  Btree.java:7182:code|  Chip.java:0532:<init>|  Btree.java:7166:<init>|  Btree.java:7165:test_put_random|  Btree.java:7275:oldTests|  Btree.java:7280:newTests|  Btree.java:7286:main|");
             $fclose(f);
           end
         end
@@ -3788,7 +3788,7 @@ module Btree;                                                                   
           begin
             integer f;
             f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:0514:<init>|  Chip.java:1415:<init>|  Chip.java:1414:ExecuteTransaction|  Btree.java:0113:allocate|  Btree.java:0154:allocateBranch|  Btree.java:1719:splitRootBranch|  Btree.java:2487:Then|  Chip.java:0612:<init>|  Btree.java:2486:<init>|  Btree.java:2485:code|  Chip.java:0532:<init>|  Btree.java:2469:<init>|  Btree.java:2468:put|  Btree.java:7180:code|  Chip.java:0532:<init>|  Btree.java:7164:<init>|  Btree.java:7163:test_put_random|  Btree.java:7273:oldTests|  Btree.java:7278:newTests|  Btree.java:7284:main|");
+            $fdisplay(f, "Location: Chip.java:0514:<init>|  Chip.java:1415:<init>|  Chip.java:1414:ExecuteTransaction|  Btree.java:0113:allocate|  Btree.java:0154:allocateBranch|  Btree.java:1719:splitRootBranch|  Btree.java:2489:Then|  Chip.java:0612:<init>|  Btree.java:2488:<init>|  Btree.java:2487:code|  Chip.java:0532:<init>|  Btree.java:2471:<init>|  Btree.java:2470:put|  Btree.java:7182:code|  Chip.java:0532:<init>|  Btree.java:7166:<init>|  Btree.java:7165:test_put_random|  Btree.java:7275:oldTests|  Btree.java:7280:newTests|  Btree.java:7286:main|");
             $fclose(f);
           end
         end
@@ -3799,7 +3799,7 @@ module Btree;                                                                   
           begin
             integer f;
             f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:1422:<init>|  Chip.java:1421:waitResultOfTransaction|  Btree.java:0114:allocate|  Btree.java:0154:allocateBranch|  Btree.java:1719:splitRootBranch|  Btree.java:2487:Then|  Chip.java:0612:<init>|  Btree.java:2486:<init>|  Btree.java:2485:code|  Chip.java:0532:<init>|  Btree.java:2469:<init>|  Btree.java:2468:put|  Btree.java:7180:code|  Chip.java:0532:<init>|  Btree.java:7164:<init>|  Btree.java:7163:test_put_random|  Btree.java:7273:oldTests|  Btree.java:7278:newTests|  Btree.java:7284:main|");
+            $fdisplay(f, "Location: Chip.java:1422:<init>|  Chip.java:1421:waitResultOfTransaction|  Btree.java:0114:allocate|  Btree.java:0154:allocateBranch|  Btree.java:1719:splitRootBranch|  Btree.java:2489:Then|  Chip.java:0612:<init>|  Btree.java:2488:<init>|  Btree.java:2487:code|  Chip.java:0532:<init>|  Btree.java:2471:<init>|  Btree.java:2470:put|  Btree.java:7182:code|  Chip.java:0532:<init>|  Btree.java:7166:<init>|  Btree.java:7165:test_put_random|  Btree.java:7275:oldTests|  Btree.java:7280:newTests|  Btree.java:7286:main|");
             $fclose(f);
           end
         end
@@ -3810,7 +3810,7 @@ module Btree;                                                                   
           begin
             integer f;
             f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:1422:<init>|  Chip.java:1421:waitResultOfTransaction|  Btree.java:0115:allocate|  Btree.java:0154:allocateBranch|  Btree.java:1719:splitRootBranch|  Btree.java:2487:Then|  Chip.java:0612:<init>|  Btree.java:2486:<init>|  Btree.java:2485:code|  Chip.java:0532:<init>|  Btree.java:2469:<init>|  Btree.java:2468:put|  Btree.java:7180:code|  Chip.java:0532:<init>|  Btree.java:7164:<init>|  Btree.java:7163:test_put_random|  Btree.java:7273:oldTests|  Btree.java:7278:newTests|  Btree.java:7284:main|");
+            $fdisplay(f, "Location: Chip.java:1422:<init>|  Chip.java:1421:waitResultOfTransaction|  Btree.java:0115:allocate|  Btree.java:0154:allocateBranch|  Btree.java:1719:splitRootBranch|  Btree.java:2489:Then|  Chip.java:0612:<init>|  Btree.java:2488:<init>|  Btree.java:2487:code|  Chip.java:0532:<init>|  Btree.java:2471:<init>|  Btree.java:2470:put|  Btree.java:7182:code|  Chip.java:0532:<init>|  Btree.java:7166:<init>|  Btree.java:7165:test_put_random|  Btree.java:7275:oldTests|  Btree.java:7280:newTests|  Btree.java:7286:main|");
             $fclose(f);
           end
         end
@@ -3821,7 +3821,7 @@ module Btree;                                                                   
           begin
             integer f;
             f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:1422:<init>|  Chip.java:1421:waitResultOfTransaction|  Btree.java:0116:allocate|  Btree.java:0154:allocateBranch|  Btree.java:1719:splitRootBranch|  Btree.java:2487:Then|  Chip.java:0612:<init>|  Btree.java:2486:<init>|  Btree.java:2485:code|  Chip.java:0532:<init>|  Btree.java:2469:<init>|  Btree.java:2468:put|  Btree.java:7180:code|  Chip.java:0532:<init>|  Btree.java:7164:<init>|  Btree.java:7163:test_put_random|  Btree.java:7273:oldTests|  Btree.java:7278:newTests|  Btree.java:7284:main|");
+            $fdisplay(f, "Location: Chip.java:1422:<init>|  Chip.java:1421:waitResultOfTransaction|  Btree.java:0116:allocate|  Btree.java:0154:allocateBranch|  Btree.java:1719:splitRootBranch|  Btree.java:2489:Then|  Chip.java:0612:<init>|  Btree.java:2488:<init>|  Btree.java:2487:code|  Chip.java:0532:<init>|  Btree.java:2471:<init>|  Btree.java:2470:put|  Btree.java:7182:code|  Chip.java:0532:<init>|  Btree.java:7166:<init>|  Btree.java:7165:test_put_random|  Btree.java:7275:oldTests|  Btree.java:7280:newTests|  Btree.java:7286:main|");
             $fclose(f);
           end
         end
@@ -3848,7 +3848,7 @@ module Btree;                                                                   
           begin
             integer f;
             f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:0514:<init>|  Btree.java:0330:<init>|  Btree.java:0329:stuckPut|  Btree.java:0352:stuckPut|  Btree.java:1719:splitRootBranch|  Btree.java:2487:Then|  Chip.java:0612:<init>|  Btree.java:2486:<init>|  Btree.java:2485:code|  Chip.java:0532:<init>|  Btree.java:2469:<init>|  Btree.java:2468:put|  Btree.java:7180:code|  Chip.java:0532:<init>|  Btree.java:7164:<init>|  Btree.java:7163:test_put_random|  Btree.java:7273:oldTests|  Btree.java:7278:newTests|  Btree.java:7284:main|");
+            $fdisplay(f, "Location: Chip.java:0514:<init>|  Btree.java:0330:<init>|  Btree.java:0329:stuckPut|  Btree.java:0352:stuckPut|  Btree.java:1719:splitRootBranch|  Btree.java:2489:Then|  Chip.java:0612:<init>|  Btree.java:2488:<init>|  Btree.java:2487:code|  Chip.java:0532:<init>|  Btree.java:2471:<init>|  Btree.java:2470:put|  Btree.java:7182:code|  Chip.java:0532:<init>|  Btree.java:7166:<init>|  Btree.java:7165:test_put_random|  Btree.java:7275:oldTests|  Btree.java:7280:newTests|  Btree.java:7286:main|");
             $fclose(f);
           end
         end
@@ -3859,7 +3859,7 @@ module Btree;                                                                   
           begin
             integer f;
             f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:1422:<init>|  Chip.java:1421:waitResultOfTransaction|  Btree.java:0344:stuckPut|  Btree.java:0352:stuckPut|  Btree.java:1719:splitRootBranch|  Btree.java:2487:Then|  Chip.java:0612:<init>|  Btree.java:2486:<init>|  Btree.java:2485:code|  Chip.java:0532:<init>|  Btree.java:2469:<init>|  Btree.java:2468:put|  Btree.java:7180:code|  Chip.java:0532:<init>|  Btree.java:7164:<init>|  Btree.java:7163:test_put_random|  Btree.java:7273:oldTests|  Btree.java:7278:newTests|  Btree.java:7284:main|");
+            $fdisplay(f, "Location: Chip.java:1422:<init>|  Chip.java:1421:waitResultOfTransaction|  Btree.java:0344:stuckPut|  Btree.java:0352:stuckPut|  Btree.java:1719:splitRootBranch|  Btree.java:2489:Then|  Chip.java:0612:<init>|  Btree.java:2488:<init>|  Btree.java:2487:code|  Chip.java:0532:<init>|  Btree.java:2471:<init>|  Btree.java:2470:put|  Btree.java:7182:code|  Chip.java:0532:<init>|  Btree.java:7166:<init>|  Btree.java:7165:test_put_random|  Btree.java:7275:oldTests|  Btree.java:7280:newTests|  Btree.java:7286:main|");
             $fclose(f);
           end
         end
@@ -3870,7 +3870,7 @@ module Btree;                                                                   
           begin
             integer f;
             f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:1422:<init>|  Chip.java:1421:waitResultOfTransaction|  Btree.java:0347:stuckPut|  Btree.java:0352:stuckPut|  Btree.java:1719:splitRootBranch|  Btree.java:2487:Then|  Chip.java:0612:<init>|  Btree.java:2486:<init>|  Btree.java:2485:code|  Chip.java:0532:<init>|  Btree.java:2469:<init>|  Btree.java:2468:put|  Btree.java:7180:code|  Chip.java:0532:<init>|  Btree.java:7164:<init>|  Btree.java:7163:test_put_random|  Btree.java:7273:oldTests|  Btree.java:7278:newTests|  Btree.java:7284:main|");
+            $fdisplay(f, "Location: Chip.java:1422:<init>|  Chip.java:1421:waitResultOfTransaction|  Btree.java:0347:stuckPut|  Btree.java:0352:stuckPut|  Btree.java:1719:splitRootBranch|  Btree.java:2489:Then|  Chip.java:0612:<init>|  Btree.java:2488:<init>|  Btree.java:2487:code|  Chip.java:0532:<init>|  Btree.java:2471:<init>|  Btree.java:2470:put|  Btree.java:7182:code|  Chip.java:0532:<init>|  Btree.java:7166:<init>|  Btree.java:7165:test_put_random|  Btree.java:7275:oldTests|  Btree.java:7280:newTests|  Btree.java:7286:main|");
             $fclose(f);
           end
         end
@@ -3881,7 +3881,7 @@ module Btree;                                                                   
           begin
             integer f;
             f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:1422:<init>|  Chip.java:1421:waitResultOfTransaction|  Btree.java:0348:stuckPut|  Btree.java:0352:stuckPut|  Btree.java:1719:splitRootBranch|  Btree.java:2487:Then|  Chip.java:0612:<init>|  Btree.java:2486:<init>|  Btree.java:2485:code|  Chip.java:0532:<init>|  Btree.java:2469:<init>|  Btree.java:2468:put|  Btree.java:7180:code|  Chip.java:0532:<init>|  Btree.java:7164:<init>|  Btree.java:7163:test_put_random|  Btree.java:7273:oldTests|  Btree.java:7278:newTests|  Btree.java:7284:main|");
+            $fdisplay(f, "Location: Chip.java:1422:<init>|  Chip.java:1421:waitResultOfTransaction|  Btree.java:0348:stuckPut|  Btree.java:0352:stuckPut|  Btree.java:1719:splitRootBranch|  Btree.java:2489:Then|  Chip.java:0612:<init>|  Btree.java:2488:<init>|  Btree.java:2487:code|  Chip.java:0532:<init>|  Btree.java:2471:<init>|  Btree.java:2470:put|  Btree.java:7182:code|  Chip.java:0532:<init>|  Btree.java:7166:<init>|  Btree.java:7165:test_put_random|  Btree.java:7275:oldTests|  Btree.java:7280:newTests|  Btree.java:7286:main|");
             $fclose(f);
           end
         end
@@ -3891,7 +3891,7 @@ module Btree;                                                                   
           begin
             integer f;
             f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:0514:<init>|  Chip.java:0821:<init>|  Chip.java:0820:Zero|  Btree.java:0078:allocate|  Btree.java:0154:allocateBranch|  Btree.java:1720:splitRootBranch|  Btree.java:2487:Then|  Chip.java:0612:<init>|  Btree.java:2486:<init>|  Btree.java:2485:code|  Chip.java:0532:<init>|  Btree.java:2469:<init>|  Btree.java:2468:put|  Btree.java:7180:code|  Chip.java:0532:<init>|  Btree.java:7164:<init>|  Btree.java:7163:test_put_random|  Btree.java:7273:oldTests|  Btree.java:7278:newTests|  Btree.java:7284:main|");
+            $fdisplay(f, "Location: Chip.java:0514:<init>|  Chip.java:0821:<init>|  Chip.java:0820:Zero|  Btree.java:0078:allocate|  Btree.java:0154:allocateBranch|  Btree.java:1720:splitRootBranch|  Btree.java:2489:Then|  Chip.java:0612:<init>|  Btree.java:2488:<init>|  Btree.java:2487:code|  Chip.java:0532:<init>|  Btree.java:2471:<init>|  Btree.java:2470:put|  Btree.java:7182:code|  Chip.java:0532:<init>|  Btree.java:7166:<init>|  Btree.java:7165:test_put_random|  Btree.java:7275:oldTests|  Btree.java:7280:newTests|  Btree.java:7286:main|");
             $fclose(f);
           end
         end
@@ -3903,7 +3903,7 @@ module Btree;                                                                   
           begin
             integer f;
             f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:0514:<init>|  Chip.java:1352:<init>|  Chip.java:1351:ExecuteTransaction|  Btree.java:0079:allocate|  Btree.java:0154:allocateBranch|  Btree.java:1720:splitRootBranch|  Btree.java:2487:Then|  Chip.java:0612:<init>|  Btree.java:2486:<init>|  Btree.java:2485:code|  Chip.java:0532:<init>|  Btree.java:2469:<init>|  Btree.java:2468:put|  Btree.java:7180:code|  Chip.java:0532:<init>|  Btree.java:7164:<init>|  Btree.java:7163:test_put_random|  Btree.java:7273:oldTests|  Btree.java:7278:newTests|  Btree.java:7284:main|");
+            $fdisplay(f, "Location: Chip.java:0514:<init>|  Chip.java:1352:<init>|  Chip.java:1351:ExecuteTransaction|  Btree.java:0079:allocate|  Btree.java:0154:allocateBranch|  Btree.java:1720:splitRootBranch|  Btree.java:2489:Then|  Chip.java:0612:<init>|  Btree.java:2488:<init>|  Btree.java:2487:code|  Chip.java:0532:<init>|  Btree.java:2471:<init>|  Btree.java:2470:put|  Btree.java:7182:code|  Chip.java:0532:<init>|  Btree.java:7166:<init>|  Btree.java:7165:test_put_random|  Btree.java:7275:oldTests|  Btree.java:7280:newTests|  Btree.java:7286:main|");
             $fclose(f);
           end
         end
@@ -3914,7 +3914,7 @@ module Btree;                                                                   
           begin
             integer f;
             f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:1359:<init>|  Chip.java:1358:waitResultOfTransaction|  Btree.java:0080:allocate|  Btree.java:0154:allocateBranch|  Btree.java:1720:splitRootBranch|  Btree.java:2487:Then|  Chip.java:0612:<init>|  Btree.java:2486:<init>|  Btree.java:2485:code|  Chip.java:0532:<init>|  Btree.java:2469:<init>|  Btree.java:2468:put|  Btree.java:7180:code|  Chip.java:0532:<init>|  Btree.java:7164:<init>|  Btree.java:7163:test_put_random|  Btree.java:7273:oldTests|  Btree.java:7278:newTests|  Btree.java:7284:main|");
+            $fdisplay(f, "Location: Chip.java:1359:<init>|  Chip.java:1358:waitResultOfTransaction|  Btree.java:0080:allocate|  Btree.java:0154:allocateBranch|  Btree.java:1720:splitRootBranch|  Btree.java:2489:Then|  Chip.java:0612:<init>|  Btree.java:2488:<init>|  Btree.java:2487:code|  Chip.java:0532:<init>|  Btree.java:2471:<init>|  Btree.java:2470:put|  Btree.java:7182:code|  Chip.java:0532:<init>|  Btree.java:7166:<init>|  Btree.java:7165:test_put_random|  Btree.java:7275:oldTests|  Btree.java:7280:newTests|  Btree.java:7286:main|");
             $fclose(f);
           end
         end
@@ -3924,7 +3924,7 @@ module Btree;                                                                   
           begin
             integer f;
             f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:0514:<init>|  Chip.java:0699:<init>|  Chip.java:0698:Copy|  Btree.java:0081:allocate|  Btree.java:0154:allocateBranch|  Btree.java:1720:splitRootBranch|  Btree.java:2487:Then|  Chip.java:0612:<init>|  Btree.java:2486:<init>|  Btree.java:2485:code|  Chip.java:0532:<init>|  Btree.java:2469:<init>|  Btree.java:2468:put|  Btree.java:7180:code|  Chip.java:0532:<init>|  Btree.java:7164:<init>|  Btree.java:7163:test_put_random|  Btree.java:7273:oldTests|  Btree.java:7278:newTests|  Btree.java:7284:main|");
+            $fdisplay(f, "Location: Chip.java:0514:<init>|  Chip.java:0699:<init>|  Chip.java:0698:Copy|  Btree.java:0081:allocate|  Btree.java:0154:allocateBranch|  Btree.java:1720:splitRootBranch|  Btree.java:2489:Then|  Chip.java:0612:<init>|  Btree.java:2488:<init>|  Btree.java:2487:code|  Chip.java:0532:<init>|  Btree.java:2471:<init>|  Btree.java:2470:put|  Btree.java:7182:code|  Chip.java:0532:<init>|  Btree.java:7166:<init>|  Btree.java:7165:test_put_random|  Btree.java:7275:oldTests|  Btree.java:7280:newTests|  Btree.java:7286:main|");
             $fclose(f);
           end
         end
@@ -3939,7 +3939,7 @@ module Btree;                                                                   
           begin
             integer f;
             f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:0514:<init>|  Btree.java:0084:<init>|  Btree.java:0083:allocate|  Btree.java:0154:allocateBranch|  Btree.java:1720:splitRootBranch|  Btree.java:2487:Then|  Chip.java:0612:<init>|  Btree.java:2486:<init>|  Btree.java:2485:code|  Chip.java:0532:<init>|  Btree.java:2469:<init>|  Btree.java:2468:put|  Btree.java:7180:code|  Chip.java:0532:<init>|  Btree.java:7164:<init>|  Btree.java:7163:test_put_random|  Btree.java:7273:oldTests|  Btree.java:7278:newTests|  Btree.java:7284:main|");
+            $fdisplay(f, "Location: Chip.java:0514:<init>|  Btree.java:0084:<init>|  Btree.java:0083:allocate|  Btree.java:0154:allocateBranch|  Btree.java:1720:splitRootBranch|  Btree.java:2489:Then|  Chip.java:0612:<init>|  Btree.java:2488:<init>|  Btree.java:2487:code|  Chip.java:0532:<init>|  Btree.java:2471:<init>|  Btree.java:2470:put|  Btree.java:7182:code|  Chip.java:0532:<init>|  Btree.java:7166:<init>|  Btree.java:7165:test_put_random|  Btree.java:7275:oldTests|  Btree.java:7280:newTests|  Btree.java:7286:main|");
             $fclose(f);
           end
         end
@@ -3959,7 +3959,7 @@ module Btree;                                                                   
           begin
             integer f;
             f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:0514:<init>|  Btree.java:0099:<init>|  Btree.java:0098:allocate|  Btree.java:0154:allocateBranch|  Btree.java:1720:splitRootBranch|  Btree.java:2487:Then|  Chip.java:0612:<init>|  Btree.java:2486:<init>|  Btree.java:2485:code|  Chip.java:0532:<init>|  Btree.java:2469:<init>|  Btree.java:2468:put|  Btree.java:7180:code|  Chip.java:0532:<init>|  Btree.java:7164:<init>|  Btree.java:7163:test_put_random|  Btree.java:7273:oldTests|  Btree.java:7278:newTests|  Btree.java:7284:main|");
+            $fdisplay(f, "Location: Chip.java:0514:<init>|  Btree.java:0099:<init>|  Btree.java:0098:allocate|  Btree.java:0154:allocateBranch|  Btree.java:1720:splitRootBranch|  Btree.java:2489:Then|  Chip.java:0612:<init>|  Btree.java:2488:<init>|  Btree.java:2487:code|  Chip.java:0532:<init>|  Btree.java:2471:<init>|  Btree.java:2470:put|  Btree.java:7182:code|  Chip.java:0532:<init>|  Btree.java:7166:<init>|  Btree.java:7165:test_put_random|  Btree.java:7275:oldTests|  Btree.java:7280:newTests|  Btree.java:7286:main|");
             $fclose(f);
           end
         end
@@ -3970,7 +3970,7 @@ module Btree;                                                                   
           begin
             integer f;
             f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:1359:<init>|  Chip.java:1358:waitResultOfTransaction|  Btree.java:0111:allocate|  Btree.java:0154:allocateBranch|  Btree.java:1720:splitRootBranch|  Btree.java:2487:Then|  Chip.java:0612:<init>|  Btree.java:2486:<init>|  Btree.java:2485:code|  Chip.java:0532:<init>|  Btree.java:2469:<init>|  Btree.java:2468:put|  Btree.java:7180:code|  Chip.java:0532:<init>|  Btree.java:7164:<init>|  Btree.java:7163:test_put_random|  Btree.java:7273:oldTests|  Btree.java:7278:newTests|  Btree.java:7284:main|");
+            $fdisplay(f, "Location: Chip.java:1359:<init>|  Chip.java:1358:waitResultOfTransaction|  Btree.java:0111:allocate|  Btree.java:0154:allocateBranch|  Btree.java:1720:splitRootBranch|  Btree.java:2489:Then|  Chip.java:0612:<init>|  Btree.java:2488:<init>|  Btree.java:2487:code|  Chip.java:0532:<init>|  Btree.java:2471:<init>|  Btree.java:2470:put|  Btree.java:7182:code|  Chip.java:0532:<init>|  Btree.java:7166:<init>|  Btree.java:7165:test_put_random|  Btree.java:7275:oldTests|  Btree.java:7280:newTests|  Btree.java:7286:main|");
             $fclose(f);
           end
         end
@@ -3980,7 +3980,7 @@ module Btree;                                                                   
           begin
             integer f;
             f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:0514:<init>|  Chip.java:0699:<init>|  Chip.java:0698:Copy|  Btree.java:0112:allocate|  Btree.java:0154:allocateBranch|  Btree.java:1720:splitRootBranch|  Btree.java:2487:Then|  Chip.java:0612:<init>|  Btree.java:2486:<init>|  Btree.java:2485:code|  Chip.java:0532:<init>|  Btree.java:2469:<init>|  Btree.java:2468:put|  Btree.java:7180:code|  Chip.java:0532:<init>|  Btree.java:7164:<init>|  Btree.java:7163:test_put_random|  Btree.java:7273:oldTests|  Btree.java:7278:newTests|  Btree.java:7284:main|");
+            $fdisplay(f, "Location: Chip.java:0514:<init>|  Chip.java:0699:<init>|  Chip.java:0698:Copy|  Btree.java:0112:allocate|  Btree.java:0154:allocateBranch|  Btree.java:1720:splitRootBranch|  Btree.java:2489:Then|  Chip.java:0612:<init>|  Btree.java:2488:<init>|  Btree.java:2487:code|  Chip.java:0532:<init>|  Btree.java:2471:<init>|  Btree.java:2470:put|  Btree.java:7182:code|  Chip.java:0532:<init>|  Btree.java:7166:<init>|  Btree.java:7165:test_put_random|  Btree.java:7275:oldTests|  Btree.java:7280:newTests|  Btree.java:7286:main|");
             $fclose(f);
           end
         end
@@ -3993,7 +3993,7 @@ module Btree;                                                                   
           begin
             integer f;
             f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:0514:<init>|  Chip.java:1415:<init>|  Chip.java:1414:ExecuteTransaction|  Btree.java:0113:allocate|  Btree.java:0154:allocateBranch|  Btree.java:1720:splitRootBranch|  Btree.java:2487:Then|  Chip.java:0612:<init>|  Btree.java:2486:<init>|  Btree.java:2485:code|  Chip.java:0532:<init>|  Btree.java:2469:<init>|  Btree.java:2468:put|  Btree.java:7180:code|  Chip.java:0532:<init>|  Btree.java:7164:<init>|  Btree.java:7163:test_put_random|  Btree.java:7273:oldTests|  Btree.java:7278:newTests|  Btree.java:7284:main|");
+            $fdisplay(f, "Location: Chip.java:0514:<init>|  Chip.java:1415:<init>|  Chip.java:1414:ExecuteTransaction|  Btree.java:0113:allocate|  Btree.java:0154:allocateBranch|  Btree.java:1720:splitRootBranch|  Btree.java:2489:Then|  Chip.java:0612:<init>|  Btree.java:2488:<init>|  Btree.java:2487:code|  Chip.java:0532:<init>|  Btree.java:2471:<init>|  Btree.java:2470:put|  Btree.java:7182:code|  Chip.java:0532:<init>|  Btree.java:7166:<init>|  Btree.java:7165:test_put_random|  Btree.java:7275:oldTests|  Btree.java:7280:newTests|  Btree.java:7286:main|");
             $fclose(f);
           end
         end
@@ -4004,7 +4004,7 @@ module Btree;                                                                   
           begin
             integer f;
             f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:1422:<init>|  Chip.java:1421:waitResultOfTransaction|  Btree.java:0114:allocate|  Btree.java:0154:allocateBranch|  Btree.java:1720:splitRootBranch|  Btree.java:2487:Then|  Chip.java:0612:<init>|  Btree.java:2486:<init>|  Btree.java:2485:code|  Chip.java:0532:<init>|  Btree.java:2469:<init>|  Btree.java:2468:put|  Btree.java:7180:code|  Chip.java:0532:<init>|  Btree.java:7164:<init>|  Btree.java:7163:test_put_random|  Btree.java:7273:oldTests|  Btree.java:7278:newTests|  Btree.java:7284:main|");
+            $fdisplay(f, "Location: Chip.java:1422:<init>|  Chip.java:1421:waitResultOfTransaction|  Btree.java:0114:allocate|  Btree.java:0154:allocateBranch|  Btree.java:1720:splitRootBranch|  Btree.java:2489:Then|  Chip.java:0612:<init>|  Btree.java:2488:<init>|  Btree.java:2487:code|  Chip.java:0532:<init>|  Btree.java:2471:<init>|  Btree.java:2470:put|  Btree.java:7182:code|  Chip.java:0532:<init>|  Btree.java:7166:<init>|  Btree.java:7165:test_put_random|  Btree.java:7275:oldTests|  Btree.java:7280:newTests|  Btree.java:7286:main|");
             $fclose(f);
           end
         end
@@ -4015,7 +4015,7 @@ module Btree;                                                                   
           begin
             integer f;
             f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:1422:<init>|  Chip.java:1421:waitResultOfTransaction|  Btree.java:0115:allocate|  Btree.java:0154:allocateBranch|  Btree.java:1720:splitRootBranch|  Btree.java:2487:Then|  Chip.java:0612:<init>|  Btree.java:2486:<init>|  Btree.java:2485:code|  Chip.java:0532:<init>|  Btree.java:2469:<init>|  Btree.java:2468:put|  Btree.java:7180:code|  Chip.java:0532:<init>|  Btree.java:7164:<init>|  Btree.java:7163:test_put_random|  Btree.java:7273:oldTests|  Btree.java:7278:newTests|  Btree.java:7284:main|");
+            $fdisplay(f, "Location: Chip.java:1422:<init>|  Chip.java:1421:waitResultOfTransaction|  Btree.java:0115:allocate|  Btree.java:0154:allocateBranch|  Btree.java:1720:splitRootBranch|  Btree.java:2489:Then|  Chip.java:0612:<init>|  Btree.java:2488:<init>|  Btree.java:2487:code|  Chip.java:0532:<init>|  Btree.java:2471:<init>|  Btree.java:2470:put|  Btree.java:7182:code|  Chip.java:0532:<init>|  Btree.java:7166:<init>|  Btree.java:7165:test_put_random|  Btree.java:7275:oldTests|  Btree.java:7280:newTests|  Btree.java:7286:main|");
             $fclose(f);
           end
         end
@@ -4026,7 +4026,7 @@ module Btree;                                                                   
           begin
             integer f;
             f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:1422:<init>|  Chip.java:1421:waitResultOfTransaction|  Btree.java:0116:allocate|  Btree.java:0154:allocateBranch|  Btree.java:1720:splitRootBranch|  Btree.java:2487:Then|  Chip.java:0612:<init>|  Btree.java:2486:<init>|  Btree.java:2485:code|  Chip.java:0532:<init>|  Btree.java:2469:<init>|  Btree.java:2468:put|  Btree.java:7180:code|  Chip.java:0532:<init>|  Btree.java:7164:<init>|  Btree.java:7163:test_put_random|  Btree.java:7273:oldTests|  Btree.java:7278:newTests|  Btree.java:7284:main|");
+            $fdisplay(f, "Location: Chip.java:1422:<init>|  Chip.java:1421:waitResultOfTransaction|  Btree.java:0116:allocate|  Btree.java:0154:allocateBranch|  Btree.java:1720:splitRootBranch|  Btree.java:2489:Then|  Chip.java:0612:<init>|  Btree.java:2488:<init>|  Btree.java:2487:code|  Chip.java:0532:<init>|  Btree.java:2471:<init>|  Btree.java:2470:put|  Btree.java:7182:code|  Chip.java:0532:<init>|  Btree.java:7166:<init>|  Btree.java:7165:test_put_random|  Btree.java:7275:oldTests|  Btree.java:7280:newTests|  Btree.java:7286:main|");
             $fclose(f);
           end
         end
@@ -4053,7 +4053,7 @@ module Btree;                                                                   
           begin
             integer f;
             f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:0514:<init>|  Btree.java:0330:<init>|  Btree.java:0329:stuckPut|  Btree.java:0352:stuckPut|  Btree.java:1720:splitRootBranch|  Btree.java:2487:Then|  Chip.java:0612:<init>|  Btree.java:2486:<init>|  Btree.java:2485:code|  Chip.java:0532:<init>|  Btree.java:2469:<init>|  Btree.java:2468:put|  Btree.java:7180:code|  Chip.java:0532:<init>|  Btree.java:7164:<init>|  Btree.java:7163:test_put_random|  Btree.java:7273:oldTests|  Btree.java:7278:newTests|  Btree.java:7284:main|");
+            $fdisplay(f, "Location: Chip.java:0514:<init>|  Btree.java:0330:<init>|  Btree.java:0329:stuckPut|  Btree.java:0352:stuckPut|  Btree.java:1720:splitRootBranch|  Btree.java:2489:Then|  Chip.java:0612:<init>|  Btree.java:2488:<init>|  Btree.java:2487:code|  Chip.java:0532:<init>|  Btree.java:2471:<init>|  Btree.java:2470:put|  Btree.java:7182:code|  Chip.java:0532:<init>|  Btree.java:7166:<init>|  Btree.java:7165:test_put_random|  Btree.java:7275:oldTests|  Btree.java:7280:newTests|  Btree.java:7286:main|");
             $fclose(f);
           end
         end
@@ -4064,7 +4064,7 @@ module Btree;                                                                   
           begin
             integer f;
             f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:1422:<init>|  Chip.java:1421:waitResultOfTransaction|  Btree.java:0344:stuckPut|  Btree.java:0352:stuckPut|  Btree.java:1720:splitRootBranch|  Btree.java:2487:Then|  Chip.java:0612:<init>|  Btree.java:2486:<init>|  Btree.java:2485:code|  Chip.java:0532:<init>|  Btree.java:2469:<init>|  Btree.java:2468:put|  Btree.java:7180:code|  Chip.java:0532:<init>|  Btree.java:7164:<init>|  Btree.java:7163:test_put_random|  Btree.java:7273:oldTests|  Btree.java:7278:newTests|  Btree.java:7284:main|");
+            $fdisplay(f, "Location: Chip.java:1422:<init>|  Chip.java:1421:waitResultOfTransaction|  Btree.java:0344:stuckPut|  Btree.java:0352:stuckPut|  Btree.java:1720:splitRootBranch|  Btree.java:2489:Then|  Chip.java:0612:<init>|  Btree.java:2488:<init>|  Btree.java:2487:code|  Chip.java:0532:<init>|  Btree.java:2471:<init>|  Btree.java:2470:put|  Btree.java:7182:code|  Chip.java:0532:<init>|  Btree.java:7166:<init>|  Btree.java:7165:test_put_random|  Btree.java:7275:oldTests|  Btree.java:7280:newTests|  Btree.java:7286:main|");
             $fclose(f);
           end
         end
@@ -4075,7 +4075,7 @@ module Btree;                                                                   
           begin
             integer f;
             f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:1422:<init>|  Chip.java:1421:waitResultOfTransaction|  Btree.java:0347:stuckPut|  Btree.java:0352:stuckPut|  Btree.java:1720:splitRootBranch|  Btree.java:2487:Then|  Chip.java:0612:<init>|  Btree.java:2486:<init>|  Btree.java:2485:code|  Chip.java:0532:<init>|  Btree.java:2469:<init>|  Btree.java:2468:put|  Btree.java:7180:code|  Chip.java:0532:<init>|  Btree.java:7164:<init>|  Btree.java:7163:test_put_random|  Btree.java:7273:oldTests|  Btree.java:7278:newTests|  Btree.java:7284:main|");
+            $fdisplay(f, "Location: Chip.java:1422:<init>|  Chip.java:1421:waitResultOfTransaction|  Btree.java:0347:stuckPut|  Btree.java:0352:stuckPut|  Btree.java:1720:splitRootBranch|  Btree.java:2489:Then|  Chip.java:0612:<init>|  Btree.java:2488:<init>|  Btree.java:2487:code|  Chip.java:0532:<init>|  Btree.java:2471:<init>|  Btree.java:2470:put|  Btree.java:7182:code|  Chip.java:0532:<init>|  Btree.java:7166:<init>|  Btree.java:7165:test_put_random|  Btree.java:7275:oldTests|  Btree.java:7280:newTests|  Btree.java:7286:main|");
             $fclose(f);
           end
         end
@@ -4086,7 +4086,7 @@ module Btree;                                                                   
           begin
             integer f;
             f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:1422:<init>|  Chip.java:1421:waitResultOfTransaction|  Btree.java:0348:stuckPut|  Btree.java:0352:stuckPut|  Btree.java:1720:splitRootBranch|  Btree.java:2487:Then|  Chip.java:0612:<init>|  Btree.java:2486:<init>|  Btree.java:2485:code|  Chip.java:0532:<init>|  Btree.java:2469:<init>|  Btree.java:2468:put|  Btree.java:7180:code|  Chip.java:0532:<init>|  Btree.java:7164:<init>|  Btree.java:7163:test_put_random|  Btree.java:7273:oldTests|  Btree.java:7278:newTests|  Btree.java:7284:main|");
+            $fdisplay(f, "Location: Chip.java:1422:<init>|  Chip.java:1421:waitResultOfTransaction|  Btree.java:0348:stuckPut|  Btree.java:0352:stuckPut|  Btree.java:1720:splitRootBranch|  Btree.java:2489:Then|  Chip.java:0612:<init>|  Btree.java:2488:<init>|  Btree.java:2487:code|  Chip.java:0532:<init>|  Btree.java:2471:<init>|  Btree.java:2470:put|  Btree.java:7182:code|  Chip.java:0532:<init>|  Btree.java:7166:<init>|  Btree.java:7165:test_put_random|  Btree.java:7275:oldTests|  Btree.java:7280:newTests|  Btree.java:7286:main|");
             $fclose(f);
           end
         end
@@ -4096,7 +4096,7 @@ module Btree;                                                                   
           begin
             integer f;
             f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:0514:<init>|  Chip.java:0699:<init>|  Chip.java:0698:Copy|  Btree.java:1722:splitRootBranch|  Btree.java:2487:Then|  Chip.java:0612:<init>|  Btree.java:2486:<init>|  Btree.java:2485:code|  Chip.java:0532:<init>|  Btree.java:2469:<init>|  Btree.java:2468:put|  Btree.java:7180:code|  Chip.java:0532:<init>|  Btree.java:7164:<init>|  Btree.java:7163:test_put_random|  Btree.java:7273:oldTests|  Btree.java:7278:newTests|  Btree.java:7284:main|");
+            $fdisplay(f, "Location: Chip.java:0514:<init>|  Chip.java:0699:<init>|  Chip.java:0698:Copy|  Btree.java:1722:splitRootBranch|  Btree.java:2489:Then|  Chip.java:0612:<init>|  Btree.java:2488:<init>|  Btree.java:2487:code|  Chip.java:0532:<init>|  Btree.java:2471:<init>|  Btree.java:2470:put|  Btree.java:7182:code|  Chip.java:0532:<init>|  Btree.java:7166:<init>|  Btree.java:7165:test_put_random|  Btree.java:7275:oldTests|  Btree.java:7280:newTests|  Btree.java:7286:main|");
             $fclose(f);
           end
         end
@@ -4106,7 +4106,7 @@ module Btree;                                                                   
           begin
             integer f;
             f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:0514:<init>|  Btree.java:0564:<init>|  Btree.java:0563:Clear|  Btree.java:1723:splitRootBranch|  Btree.java:2487:Then|  Chip.java:0612:<init>|  Btree.java:2486:<init>|  Btree.java:2485:code|  Chip.java:0532:<init>|  Btree.java:2469:<init>|  Btree.java:2468:put|  Btree.java:7180:code|  Chip.java:0532:<init>|  Btree.java:7164:<init>|  Btree.java:7163:test_put_random|  Btree.java:7273:oldTests|  Btree.java:7278:newTests|  Btree.java:7284:main|");
+            $fdisplay(f, "Location: Chip.java:0514:<init>|  Btree.java:0564:<init>|  Btree.java:0563:Clear|  Btree.java:1723:splitRootBranch|  Btree.java:2489:Then|  Chip.java:0612:<init>|  Btree.java:2488:<init>|  Btree.java:2487:code|  Chip.java:0532:<init>|  Btree.java:2471:<init>|  Btree.java:2470:put|  Btree.java:7182:code|  Chip.java:0532:<init>|  Btree.java:7166:<init>|  Btree.java:7165:test_put_random|  Btree.java:7275:oldTests|  Btree.java:7280:newTests|  Btree.java:7286:main|");
             $fclose(f);
           end
         end
@@ -4134,7 +4134,7 @@ module Btree;                                                                   
           begin
             integer f;
             f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:0514:<init>|  Btree.java:0593:<init>|  Btree.java:0592:Push|  Btree.java:1724:splitRootBranch|  Btree.java:2487:Then|  Chip.java:0612:<init>|  Btree.java:2486:<init>|  Btree.java:2485:code|  Chip.java:0532:<init>|  Btree.java:2469:<init>|  Btree.java:2468:put|  Btree.java:7180:code|  Chip.java:0532:<init>|  Btree.java:7164:<init>|  Btree.java:7163:test_put_random|  Btree.java:7273:oldTests|  Btree.java:7278:newTests|  Btree.java:7284:main|");
+            $fdisplay(f, "Location: Chip.java:0514:<init>|  Btree.java:0593:<init>|  Btree.java:0592:Push|  Btree.java:1724:splitRootBranch|  Btree.java:2489:Then|  Chip.java:0612:<init>|  Btree.java:2488:<init>|  Btree.java:2487:code|  Chip.java:0532:<init>|  Btree.java:2471:<init>|  Btree.java:2470:put|  Btree.java:7182:code|  Chip.java:0532:<init>|  Btree.java:7166:<init>|  Btree.java:7165:test_put_random|  Btree.java:7275:oldTests|  Btree.java:7280:newTests|  Btree.java:7286:main|");
             $fclose(f);
           end
         end
@@ -4161,7 +4161,7 @@ module Btree;                                                                   
           begin
             integer f;
             f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:0514:<init>|  Btree.java:0701:<init>|  Btree.java:0700:SetPastLastElement|  Btree.java:1725:splitRootBranch|  Btree.java:2487:Then|  Chip.java:0612:<init>|  Btree.java:2486:<init>|  Btree.java:2485:code|  Chip.java:0532:<init>|  Btree.java:2469:<init>|  Btree.java:2468:put|  Btree.java:7180:code|  Chip.java:0532:<init>|  Btree.java:7164:<init>|  Btree.java:7163:test_put_random|  Btree.java:7273:oldTests|  Btree.java:7278:newTests|  Btree.java:7284:main|");
+            $fdisplay(f, "Location: Chip.java:0514:<init>|  Btree.java:0701:<init>|  Btree.java:0700:SetPastLastElement|  Btree.java:1725:splitRootBranch|  Btree.java:2489:Then|  Chip.java:0612:<init>|  Btree.java:2488:<init>|  Btree.java:2487:code|  Chip.java:0532:<init>|  Btree.java:2471:<init>|  Btree.java:2470:put|  Btree.java:7182:code|  Chip.java:0532:<init>|  Btree.java:7166:<init>|  Btree.java:7165:test_put_random|  Btree.java:7275:oldTests|  Btree.java:7280:newTests|  Btree.java:7286:main|");
             $fclose(f);
           end
         end
@@ -4188,7 +4188,7 @@ module Btree;                                                                   
           begin
             integer f;
             f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:0514:<init>|  Btree.java:0330:<init>|  Btree.java:0329:stuckPut|  Btree.java:0351:stuckPut|  Btree.java:1726:splitRootBranch|  Btree.java:2487:Then|  Chip.java:0612:<init>|  Btree.java:2486:<init>|  Btree.java:2485:code|  Chip.java:0532:<init>|  Btree.java:2469:<init>|  Btree.java:2468:put|  Btree.java:7180:code|  Chip.java:0532:<init>|  Btree.java:7164:<init>|  Btree.java:7163:test_put_random|  Btree.java:7273:oldTests|  Btree.java:7278:newTests|  Btree.java:7284:main|");
+            $fdisplay(f, "Location: Chip.java:0514:<init>|  Btree.java:0330:<init>|  Btree.java:0329:stuckPut|  Btree.java:0351:stuckPut|  Btree.java:1726:splitRootBranch|  Btree.java:2489:Then|  Chip.java:0612:<init>|  Btree.java:2488:<init>|  Btree.java:2487:code|  Chip.java:0532:<init>|  Btree.java:2471:<init>|  Btree.java:2470:put|  Btree.java:7182:code|  Chip.java:0532:<init>|  Btree.java:7166:<init>|  Btree.java:7165:test_put_random|  Btree.java:7275:oldTests|  Btree.java:7280:newTests|  Btree.java:7286:main|");
             $fclose(f);
           end
         end
@@ -4199,7 +4199,7 @@ module Btree;                                                                   
           begin
             integer f;
             f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:1422:<init>|  Chip.java:1421:waitResultOfTransaction|  Btree.java:0344:stuckPut|  Btree.java:0351:stuckPut|  Btree.java:1726:splitRootBranch|  Btree.java:2487:Then|  Chip.java:0612:<init>|  Btree.java:2486:<init>|  Btree.java:2485:code|  Chip.java:0532:<init>|  Btree.java:2469:<init>|  Btree.java:2468:put|  Btree.java:7180:code|  Chip.java:0532:<init>|  Btree.java:7164:<init>|  Btree.java:7163:test_put_random|  Btree.java:7273:oldTests|  Btree.java:7278:newTests|  Btree.java:7284:main|");
+            $fdisplay(f, "Location: Chip.java:1422:<init>|  Chip.java:1421:waitResultOfTransaction|  Btree.java:0344:stuckPut|  Btree.java:0351:stuckPut|  Btree.java:1726:splitRootBranch|  Btree.java:2489:Then|  Chip.java:0612:<init>|  Btree.java:2488:<init>|  Btree.java:2487:code|  Chip.java:0532:<init>|  Btree.java:2471:<init>|  Btree.java:2470:put|  Btree.java:7182:code|  Chip.java:0532:<init>|  Btree.java:7166:<init>|  Btree.java:7165:test_put_random|  Btree.java:7275:oldTests|  Btree.java:7280:newTests|  Btree.java:7286:main|");
             $fclose(f);
           end
         end
@@ -4210,7 +4210,7 @@ module Btree;                                                                   
           begin
             integer f;
             f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:1422:<init>|  Chip.java:1421:waitResultOfTransaction|  Btree.java:0347:stuckPut|  Btree.java:0351:stuckPut|  Btree.java:1726:splitRootBranch|  Btree.java:2487:Then|  Chip.java:0612:<init>|  Btree.java:2486:<init>|  Btree.java:2485:code|  Chip.java:0532:<init>|  Btree.java:2469:<init>|  Btree.java:2468:put|  Btree.java:7180:code|  Chip.java:0532:<init>|  Btree.java:7164:<init>|  Btree.java:7163:test_put_random|  Btree.java:7273:oldTests|  Btree.java:7278:newTests|  Btree.java:7284:main|");
+            $fdisplay(f, "Location: Chip.java:1422:<init>|  Chip.java:1421:waitResultOfTransaction|  Btree.java:0347:stuckPut|  Btree.java:0351:stuckPut|  Btree.java:1726:splitRootBranch|  Btree.java:2489:Then|  Chip.java:0612:<init>|  Btree.java:2488:<init>|  Btree.java:2487:code|  Chip.java:0532:<init>|  Btree.java:2471:<init>|  Btree.java:2470:put|  Btree.java:7182:code|  Chip.java:0532:<init>|  Btree.java:7166:<init>|  Btree.java:7165:test_put_random|  Btree.java:7275:oldTests|  Btree.java:7280:newTests|  Btree.java:7286:main|");
             $fclose(f);
           end
         end
@@ -4221,7 +4221,7 @@ module Btree;                                                                   
           begin
             integer f;
             f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:1422:<init>|  Chip.java:1421:waitResultOfTransaction|  Btree.java:0348:stuckPut|  Btree.java:0351:stuckPut|  Btree.java:1726:splitRootBranch|  Btree.java:2487:Then|  Chip.java:0612:<init>|  Btree.java:2486:<init>|  Btree.java:2485:code|  Chip.java:0532:<init>|  Btree.java:2469:<init>|  Btree.java:2468:put|  Btree.java:7180:code|  Chip.java:0532:<init>|  Btree.java:7164:<init>|  Btree.java:7163:test_put_random|  Btree.java:7273:oldTests|  Btree.java:7278:newTests|  Btree.java:7284:main|");
+            $fdisplay(f, "Location: Chip.java:1422:<init>|  Chip.java:1421:waitResultOfTransaction|  Btree.java:0348:stuckPut|  Btree.java:0351:stuckPut|  Btree.java:1726:splitRootBranch|  Btree.java:2489:Then|  Chip.java:0612:<init>|  Btree.java:2488:<init>|  Btree.java:2487:code|  Chip.java:0532:<init>|  Btree.java:2471:<init>|  Btree.java:2470:put|  Btree.java:7182:code|  Chip.java:0532:<init>|  Btree.java:7166:<init>|  Btree.java:7165:test_put_random|  Btree.java:7275:oldTests|  Btree.java:7280:newTests|  Btree.java:7286:main|");
             $fclose(f);
           end
         end
@@ -4230,7 +4230,7 @@ module Btree;                                                                   
           begin
             integer f;
             f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:0573:<init>|  Chip.java:0572:GOto|  Btree.java:2488:Then|  Chip.java:0612:<init>|  Btree.java:2486:<init>|  Btree.java:2485:code|  Chip.java:0532:<init>|  Btree.java:2469:<init>|  Btree.java:2468:put|  Btree.java:7180:code|  Chip.java:0532:<init>|  Btree.java:7164:<init>|  Btree.java:7163:test_put_random|  Btree.java:7273:oldTests|  Btree.java:7278:newTests|  Btree.java:7284:main|");
+            $fdisplay(f, "Location: Chip.java:0573:<init>|  Chip.java:0572:GOto|  Btree.java:2490:Then|  Chip.java:0612:<init>|  Btree.java:2488:<init>|  Btree.java:2487:code|  Chip.java:0532:<init>|  Btree.java:2471:<init>|  Btree.java:2470:put|  Btree.java:7182:code|  Chip.java:0532:<init>|  Btree.java:7166:<init>|  Btree.java:7165:test_put_random|  Btree.java:7275:oldTests|  Btree.java:7280:newTests|  Btree.java:7286:main|");
             $fclose(f);
           end
         end
@@ -4239,7 +4239,7 @@ module Btree;                                                                   
           begin
             integer f;
             f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:0614:<init>|  Chip.java:0613:<init>|  Btree.java:2486:<init>|  Btree.java:2485:code|  Chip.java:0532:<init>|  Btree.java:2469:<init>|  Btree.java:2468:put|  Btree.java:7180:code|  Chip.java:0532:<init>|  Btree.java:7164:<init>|  Btree.java:7163:test_put_random|  Btree.java:7273:oldTests|  Btree.java:7278:newTests|  Btree.java:7284:main|");
+            $fdisplay(f, "Location: Chip.java:0614:<init>|  Chip.java:0613:<init>|  Btree.java:2488:<init>|  Btree.java:2487:code|  Chip.java:0532:<init>|  Btree.java:2471:<init>|  Btree.java:2470:put|  Btree.java:7182:code|  Chip.java:0532:<init>|  Btree.java:7166:<init>|  Btree.java:7165:test_put_random|  Btree.java:7275:oldTests|  Btree.java:7280:newTests|  Btree.java:7286:main|");
             $fclose(f);
           end
         end
@@ -4249,7 +4249,7 @@ module Btree;                                                                   
           begin
             integer f;
             f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:0514:<init>|  Chip.java:0821:<init>|  Chip.java:0820:Zero|  Btree.java:2492:code|  Chip.java:0532:<init>|  Btree.java:2469:<init>|  Btree.java:2468:put|  Btree.java:7180:code|  Chip.java:0532:<init>|  Btree.java:7164:<init>|  Btree.java:7163:test_put_random|  Btree.java:7273:oldTests|  Btree.java:7278:newTests|  Btree.java:7284:main|");
+            $fdisplay(f, "Location: Chip.java:0514:<init>|  Chip.java:0821:<init>|  Chip.java:0820:Zero|  Btree.java:2494:code|  Chip.java:0532:<init>|  Btree.java:2471:<init>|  Btree.java:2470:put|  Btree.java:7182:code|  Chip.java:0532:<init>|  Btree.java:7166:<init>|  Btree.java:7165:test_put_random|  Btree.java:7275:oldTests|  Btree.java:7280:newTests|  Btree.java:7286:main|");
             $fclose(f);
           end
         end
@@ -4259,7 +4259,7 @@ module Btree;                                                                   
           begin
             integer f;
             f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:0514:<init>|  Chip.java:0699:<init>|  Chip.java:0698:Copy|  Btree.java:0278:stuckGet|  Btree.java:2497:code|  Chip.java:0532:<init>|  Btree.java:2495:<init>|  Btree.java:2494:code|  Chip.java:0532:<init>|  Btree.java:2469:<init>|  Btree.java:2468:put|  Btree.java:7180:code|  Chip.java:0532:<init>|  Btree.java:7164:<init>|  Btree.java:7163:test_put_random|  Btree.java:7273:oldTests|  Btree.java:7278:newTests|  Btree.java:7284:main|");
+            $fdisplay(f, "Location: Chip.java:0514:<init>|  Chip.java:0699:<init>|  Chip.java:0698:Copy|  Btree.java:0278:stuckGet|  Btree.java:2499:code|  Chip.java:0532:<init>|  Btree.java:2497:<init>|  Btree.java:2496:code|  Chip.java:0532:<init>|  Btree.java:2471:<init>|  Btree.java:2470:put|  Btree.java:7182:code|  Chip.java:0532:<init>|  Btree.java:7166:<init>|  Btree.java:7165:test_put_random|  Btree.java:7275:oldTests|  Btree.java:7280:newTests|  Btree.java:7286:main|");
             $fclose(f);
           end
         end
@@ -4280,7 +4280,7 @@ module Btree;                                                                   
           begin
             integer f;
             f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:0514:<init>|  Btree.java:0289:<init>|  Btree.java:0288:stuckGet|  Btree.java:0279:stuckGet|  Btree.java:2497:code|  Chip.java:0532:<init>|  Btree.java:2495:<init>|  Btree.java:2494:code|  Chip.java:0532:<init>|  Btree.java:2469:<init>|  Btree.java:2468:put|  Btree.java:7180:code|  Chip.java:0532:<init>|  Btree.java:7164:<init>|  Btree.java:7163:test_put_random|  Btree.java:7273:oldTests|  Btree.java:7278:newTests|  Btree.java:7284:main|");
+            $fdisplay(f, "Location: Chip.java:0514:<init>|  Btree.java:0289:<init>|  Btree.java:0288:stuckGet|  Btree.java:0279:stuckGet|  Btree.java:2499:code|  Chip.java:0532:<init>|  Btree.java:2497:<init>|  Btree.java:2496:code|  Chip.java:0532:<init>|  Btree.java:2471:<init>|  Btree.java:2470:put|  Btree.java:7182:code|  Chip.java:0532:<init>|  Btree.java:7166:<init>|  Btree.java:7165:test_put_random|  Btree.java:7275:oldTests|  Btree.java:7280:newTests|  Btree.java:7286:main|");
             $fclose(f);
           end
         end
@@ -4291,7 +4291,7 @@ module Btree;                                                                   
           begin
             integer f;
             f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:1359:<init>|  Chip.java:1358:waitResultOfTransaction|  Btree.java:0302:stuckGet|  Btree.java:0279:stuckGet|  Btree.java:2497:code|  Chip.java:0532:<init>|  Btree.java:2495:<init>|  Btree.java:2494:code|  Chip.java:0532:<init>|  Btree.java:2469:<init>|  Btree.java:2468:put|  Btree.java:7180:code|  Chip.java:0532:<init>|  Btree.java:7164:<init>|  Btree.java:7163:test_put_random|  Btree.java:7273:oldTests|  Btree.java:7278:newTests|  Btree.java:7284:main|");
+            $fdisplay(f, "Location: Chip.java:1359:<init>|  Chip.java:1358:waitResultOfTransaction|  Btree.java:0302:stuckGet|  Btree.java:0279:stuckGet|  Btree.java:2499:code|  Chip.java:0532:<init>|  Btree.java:2497:<init>|  Btree.java:2496:code|  Chip.java:0532:<init>|  Btree.java:2471:<init>|  Btree.java:2470:put|  Btree.java:7182:code|  Chip.java:0532:<init>|  Btree.java:7166:<init>|  Btree.java:7165:test_put_random|  Btree.java:7275:oldTests|  Btree.java:7280:newTests|  Btree.java:7286:main|");
             $fclose(f);
           end
         end
@@ -4302,7 +4302,7 @@ module Btree;                                                                   
           begin
             integer f;
             f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:1359:<init>|  Chip.java:1358:waitResultOfTransaction|  Btree.java:0303:stuckGet|  Btree.java:0279:stuckGet|  Btree.java:2497:code|  Chip.java:0532:<init>|  Btree.java:2495:<init>|  Btree.java:2494:code|  Chip.java:0532:<init>|  Btree.java:2469:<init>|  Btree.java:2468:put|  Btree.java:7180:code|  Chip.java:0532:<init>|  Btree.java:7164:<init>|  Btree.java:7163:test_put_random|  Btree.java:7273:oldTests|  Btree.java:7278:newTests|  Btree.java:7284:main|");
+            $fdisplay(f, "Location: Chip.java:1359:<init>|  Chip.java:1358:waitResultOfTransaction|  Btree.java:0303:stuckGet|  Btree.java:0279:stuckGet|  Btree.java:2499:code|  Chip.java:0532:<init>|  Btree.java:2497:<init>|  Btree.java:2496:code|  Chip.java:0532:<init>|  Btree.java:2471:<init>|  Btree.java:2470:put|  Btree.java:7182:code|  Chip.java:0532:<init>|  Btree.java:7166:<init>|  Btree.java:7165:test_put_random|  Btree.java:7275:oldTests|  Btree.java:7280:newTests|  Btree.java:7286:main|");
             $fclose(f);
           end
         end
@@ -4313,7 +4313,7 @@ module Btree;                                                                   
           begin
             integer f;
             f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:1359:<init>|  Chip.java:1358:waitResultOfTransaction|  Btree.java:0305:stuckGet|  Btree.java:0279:stuckGet|  Btree.java:2497:code|  Chip.java:0532:<init>|  Btree.java:2495:<init>|  Btree.java:2494:code|  Chip.java:0532:<init>|  Btree.java:2469:<init>|  Btree.java:2468:put|  Btree.java:7180:code|  Chip.java:0532:<init>|  Btree.java:7164:<init>|  Btree.java:7163:test_put_random|  Btree.java:7273:oldTests|  Btree.java:7278:newTests|  Btree.java:7284:main|");
+            $fdisplay(f, "Location: Chip.java:1359:<init>|  Chip.java:1358:waitResultOfTransaction|  Btree.java:0305:stuckGet|  Btree.java:0279:stuckGet|  Btree.java:2499:code|  Chip.java:0532:<init>|  Btree.java:2497:<init>|  Btree.java:2496:code|  Chip.java:0532:<init>|  Btree.java:2471:<init>|  Btree.java:2470:put|  Btree.java:7182:code|  Chip.java:0532:<init>|  Btree.java:7166:<init>|  Btree.java:7165:test_put_random|  Btree.java:7275:oldTests|  Btree.java:7280:newTests|  Btree.java:7286:main|");
             $fclose(f);
           end
         end
@@ -4324,7 +4324,7 @@ module Btree;                                                                   
           begin
             integer f;
             f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:1359:<init>|  Chip.java:1358:waitResultOfTransaction|  Btree.java:0306:stuckGet|  Btree.java:0279:stuckGet|  Btree.java:2497:code|  Chip.java:0532:<init>|  Btree.java:2495:<init>|  Btree.java:2494:code|  Chip.java:0532:<init>|  Btree.java:2469:<init>|  Btree.java:2468:put|  Btree.java:7180:code|  Chip.java:0532:<init>|  Btree.java:7164:<init>|  Btree.java:7163:test_put_random|  Btree.java:7273:oldTests|  Btree.java:7278:newTests|  Btree.java:7284:main|");
+            $fdisplay(f, "Location: Chip.java:1359:<init>|  Chip.java:1358:waitResultOfTransaction|  Btree.java:0306:stuckGet|  Btree.java:0279:stuckGet|  Btree.java:2499:code|  Chip.java:0532:<init>|  Btree.java:2497:<init>|  Btree.java:2496:code|  Chip.java:0532:<init>|  Btree.java:2471:<init>|  Btree.java:2470:put|  Btree.java:7182:code|  Chip.java:0532:<init>|  Btree.java:7166:<init>|  Btree.java:7165:test_put_random|  Btree.java:7275:oldTests|  Btree.java:7280:newTests|  Btree.java:7286:main|");
             $fclose(f);
           end
         end
@@ -4343,7 +4343,7 @@ module Btree;                                                                   
           begin
             integer f;
             f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:0514:<init>|  Btree.java:0309:<init>|  Btree.java:0308:stuckGet|  Btree.java:0279:stuckGet|  Btree.java:2497:code|  Chip.java:0532:<init>|  Btree.java:2495:<init>|  Btree.java:2494:code|  Chip.java:0532:<init>|  Btree.java:2469:<init>|  Btree.java:2468:put|  Btree.java:7180:code|  Chip.java:0532:<init>|  Btree.java:7164:<init>|  Btree.java:7163:test_put_random|  Btree.java:7273:oldTests|  Btree.java:7278:newTests|  Btree.java:7284:main|");
+            $fdisplay(f, "Location: Chip.java:0514:<init>|  Btree.java:0309:<init>|  Btree.java:0308:stuckGet|  Btree.java:0279:stuckGet|  Btree.java:2499:code|  Chip.java:0532:<init>|  Btree.java:2497:<init>|  Btree.java:2496:code|  Chip.java:0532:<init>|  Btree.java:2471:<init>|  Btree.java:2470:put|  Btree.java:7182:code|  Chip.java:0532:<init>|  Btree.java:7166:<init>|  Btree.java:7165:test_put_random|  Btree.java:7275:oldTests|  Btree.java:7280:newTests|  Btree.java:7286:main|");
             $fclose(f);
           end
         end
@@ -4360,7 +4360,7 @@ module Btree;                                                                   
           begin
             integer f;
             f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:0514:<init>|  Btree.java:1162:<init>|  Btree.java:1161:search_le_parallel|  Btree.java:2498:code|  Chip.java:0532:<init>|  Btree.java:2495:<init>|  Btree.java:2494:code|  Chip.java:0532:<init>|  Btree.java:2469:<init>|  Btree.java:2468:put|  Btree.java:7180:code|  Chip.java:0532:<init>|  Btree.java:7164:<init>|  Btree.java:7163:test_put_random|  Btree.java:7273:oldTests|  Btree.java:7278:newTests|  Btree.java:7284:main|");
+            $fdisplay(f, "Location: Chip.java:0514:<init>|  Btree.java:1162:<init>|  Btree.java:1161:search_le_parallel|  Btree.java:2500:code|  Chip.java:0532:<init>|  Btree.java:2497:<init>|  Btree.java:2496:code|  Chip.java:0532:<init>|  Btree.java:2471:<init>|  Btree.java:2470:put|  Btree.java:7182:code|  Chip.java:0532:<init>|  Btree.java:7166:<init>|  Btree.java:7165:test_put_random|  Btree.java:7275:oldTests|  Btree.java:7280:newTests|  Btree.java:7286:main|");
             $fclose(f);
           end
         end
@@ -4377,7 +4377,7 @@ module Btree;                                                                   
           begin
             integer f;
             f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:0514:<init>|  Btree.java:1198:<init>|  Btree.java:1197:search_le_parallel|  Btree.java:2498:code|  Chip.java:0532:<init>|  Btree.java:2495:<init>|  Btree.java:2494:code|  Chip.java:0532:<init>|  Btree.java:2469:<init>|  Btree.java:2468:put|  Btree.java:7180:code|  Chip.java:0532:<init>|  Btree.java:7164:<init>|  Btree.java:7163:test_put_random|  Btree.java:7273:oldTests|  Btree.java:7278:newTests|  Btree.java:7284:main|");
+            $fdisplay(f, "Location: Chip.java:0514:<init>|  Btree.java:1198:<init>|  Btree.java:1197:search_le_parallel|  Btree.java:2500:code|  Chip.java:0532:<init>|  Btree.java:2497:<init>|  Btree.java:2496:code|  Chip.java:0532:<init>|  Btree.java:2471:<init>|  Btree.java:2470:put|  Btree.java:7182:code|  Chip.java:0532:<init>|  Btree.java:7166:<init>|  Btree.java:7165:test_put_random|  Btree.java:7275:oldTests|  Btree.java:7280:newTests|  Btree.java:7286:main|");
             $fclose(f);
           end
         end
@@ -4390,7 +4390,7 @@ module Btree;                                                                   
           begin
             integer f;
             f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:0514:<init>|  Btree.java:1198:<init>|  Btree.java:1197:search_le_parallel|  Btree.java:2498:code|  Chip.java:0532:<init>|  Btree.java:2495:<init>|  Btree.java:2494:code|  Chip.java:0532:<init>|  Btree.java:2469:<init>|  Btree.java:2468:put|  Btree.java:7180:code|  Chip.java:0532:<init>|  Btree.java:7164:<init>|  Btree.java:7163:test_put_random|  Btree.java:7273:oldTests|  Btree.java:7278:newTests|  Btree.java:7284:main|");
+            $fdisplay(f, "Location: Chip.java:0514:<init>|  Btree.java:1198:<init>|  Btree.java:1197:search_le_parallel|  Btree.java:2500:code|  Chip.java:0532:<init>|  Btree.java:2497:<init>|  Btree.java:2496:code|  Chip.java:0532:<init>|  Btree.java:2471:<init>|  Btree.java:2470:put|  Btree.java:7182:code|  Chip.java:0532:<init>|  Btree.java:7166:<init>|  Btree.java:7165:test_put_random|  Btree.java:7275:oldTests|  Btree.java:7280:newTests|  Btree.java:7286:main|");
             $fclose(f);
           end
         end
@@ -4445,7 +4445,7 @@ module Btree;                                                                   
           begin
             integer f;
             f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:0514:<init>|  Btree.java:1220:<init>|  Btree.java:1219:search_le_parallel|  Btree.java:2498:code|  Chip.java:0532:<init>|  Btree.java:2495:<init>|  Btree.java:2494:code|  Chip.java:0532:<init>|  Btree.java:2469:<init>|  Btree.java:2468:put|  Btree.java:7180:code|  Chip.java:0532:<init>|  Btree.java:7164:<init>|  Btree.java:7163:test_put_random|  Btree.java:7273:oldTests|  Btree.java:7278:newTests|  Btree.java:7284:main|");
+            $fdisplay(f, "Location: Chip.java:0514:<init>|  Btree.java:1220:<init>|  Btree.java:1219:search_le_parallel|  Btree.java:2500:code|  Chip.java:0532:<init>|  Btree.java:2497:<init>|  Btree.java:2496:code|  Chip.java:0532:<init>|  Btree.java:2471:<init>|  Btree.java:2470:put|  Btree.java:7182:code|  Chip.java:0532:<init>|  Btree.java:7166:<init>|  Btree.java:7165:test_put_random|  Btree.java:7275:oldTests|  Btree.java:7280:newTests|  Btree.java:7286:main|");
             $fclose(f);
           end
         end
@@ -4457,7 +4457,7 @@ module Btree;                                                                   
           begin
             integer f;
             f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:0514:<init>|  Btree.java:2500:<init>|  Btree.java:2499:code|  Chip.java:0532:<init>|  Btree.java:2495:<init>|  Btree.java:2494:code|  Chip.java:0532:<init>|  Btree.java:2469:<init>|  Btree.java:2468:put|  Btree.java:7180:code|  Chip.java:0532:<init>|  Btree.java:7164:<init>|  Btree.java:7163:test_put_random|  Btree.java:7273:oldTests|  Btree.java:7278:newTests|  Btree.java:7284:main|");
+            $fdisplay(f, "Location: Chip.java:0514:<init>|  Btree.java:2502:<init>|  Btree.java:2501:code|  Chip.java:0532:<init>|  Btree.java:2497:<init>|  Btree.java:2496:code|  Chip.java:0532:<init>|  Btree.java:2471:<init>|  Btree.java:2470:put|  Btree.java:7182:code|  Chip.java:0532:<init>|  Btree.java:7166:<init>|  Btree.java:7165:test_put_random|  Btree.java:7275:oldTests|  Btree.java:7280:newTests|  Btree.java:7286:main|");
             $fclose(f);
           end
         end
@@ -4467,7 +4467,7 @@ module Btree;                                                                   
           begin
             integer f;
             f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:0514:<init>|  Chip.java:0699:<init>|  Chip.java:0698:Copy|  Btree.java:0278:stuckGet|  Btree.java:2508:code|  Chip.java:0532:<init>|  Btree.java:2495:<init>|  Btree.java:2494:code|  Chip.java:0532:<init>|  Btree.java:2469:<init>|  Btree.java:2468:put|  Btree.java:7180:code|  Chip.java:0532:<init>|  Btree.java:7164:<init>|  Btree.java:7163:test_put_random|  Btree.java:7273:oldTests|  Btree.java:7278:newTests|  Btree.java:7284:main|");
+            $fdisplay(f, "Location: Chip.java:0514:<init>|  Chip.java:0699:<init>|  Chip.java:0698:Copy|  Btree.java:0278:stuckGet|  Btree.java:2510:code|  Chip.java:0532:<init>|  Btree.java:2497:<init>|  Btree.java:2496:code|  Chip.java:0532:<init>|  Btree.java:2471:<init>|  Btree.java:2470:put|  Btree.java:7182:code|  Chip.java:0532:<init>|  Btree.java:7166:<init>|  Btree.java:7165:test_put_random|  Btree.java:7275:oldTests|  Btree.java:7280:newTests|  Btree.java:7286:main|");
             $fclose(f);
           end
         end
@@ -4488,7 +4488,7 @@ module Btree;                                                                   
           begin
             integer f;
             f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:0514:<init>|  Btree.java:0289:<init>|  Btree.java:0288:stuckGet|  Btree.java:0279:stuckGet|  Btree.java:2508:code|  Chip.java:0532:<init>|  Btree.java:2495:<init>|  Btree.java:2494:code|  Chip.java:0532:<init>|  Btree.java:2469:<init>|  Btree.java:2468:put|  Btree.java:7180:code|  Chip.java:0532:<init>|  Btree.java:7164:<init>|  Btree.java:7163:test_put_random|  Btree.java:7273:oldTests|  Btree.java:7278:newTests|  Btree.java:7284:main|");
+            $fdisplay(f, "Location: Chip.java:0514:<init>|  Btree.java:0289:<init>|  Btree.java:0288:stuckGet|  Btree.java:0279:stuckGet|  Btree.java:2510:code|  Chip.java:0532:<init>|  Btree.java:2497:<init>|  Btree.java:2496:code|  Chip.java:0532:<init>|  Btree.java:2471:<init>|  Btree.java:2470:put|  Btree.java:7182:code|  Chip.java:0532:<init>|  Btree.java:7166:<init>|  Btree.java:7165:test_put_random|  Btree.java:7275:oldTests|  Btree.java:7280:newTests|  Btree.java:7286:main|");
             $fclose(f);
           end
         end
@@ -4499,7 +4499,7 @@ module Btree;                                                                   
           begin
             integer f;
             f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:1359:<init>|  Chip.java:1358:waitResultOfTransaction|  Btree.java:0302:stuckGet|  Btree.java:0279:stuckGet|  Btree.java:2508:code|  Chip.java:0532:<init>|  Btree.java:2495:<init>|  Btree.java:2494:code|  Chip.java:0532:<init>|  Btree.java:2469:<init>|  Btree.java:2468:put|  Btree.java:7180:code|  Chip.java:0532:<init>|  Btree.java:7164:<init>|  Btree.java:7163:test_put_random|  Btree.java:7273:oldTests|  Btree.java:7278:newTests|  Btree.java:7284:main|");
+            $fdisplay(f, "Location: Chip.java:1359:<init>|  Chip.java:1358:waitResultOfTransaction|  Btree.java:0302:stuckGet|  Btree.java:0279:stuckGet|  Btree.java:2510:code|  Chip.java:0532:<init>|  Btree.java:2497:<init>|  Btree.java:2496:code|  Chip.java:0532:<init>|  Btree.java:2471:<init>|  Btree.java:2470:put|  Btree.java:7182:code|  Chip.java:0532:<init>|  Btree.java:7166:<init>|  Btree.java:7165:test_put_random|  Btree.java:7275:oldTests|  Btree.java:7280:newTests|  Btree.java:7286:main|");
             $fclose(f);
           end
         end
@@ -4510,7 +4510,7 @@ module Btree;                                                                   
           begin
             integer f;
             f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:1359:<init>|  Chip.java:1358:waitResultOfTransaction|  Btree.java:0303:stuckGet|  Btree.java:0279:stuckGet|  Btree.java:2508:code|  Chip.java:0532:<init>|  Btree.java:2495:<init>|  Btree.java:2494:code|  Chip.java:0532:<init>|  Btree.java:2469:<init>|  Btree.java:2468:put|  Btree.java:7180:code|  Chip.java:0532:<init>|  Btree.java:7164:<init>|  Btree.java:7163:test_put_random|  Btree.java:7273:oldTests|  Btree.java:7278:newTests|  Btree.java:7284:main|");
+            $fdisplay(f, "Location: Chip.java:1359:<init>|  Chip.java:1358:waitResultOfTransaction|  Btree.java:0303:stuckGet|  Btree.java:0279:stuckGet|  Btree.java:2510:code|  Chip.java:0532:<init>|  Btree.java:2497:<init>|  Btree.java:2496:code|  Chip.java:0532:<init>|  Btree.java:2471:<init>|  Btree.java:2470:put|  Btree.java:7182:code|  Chip.java:0532:<init>|  Btree.java:7166:<init>|  Btree.java:7165:test_put_random|  Btree.java:7275:oldTests|  Btree.java:7280:newTests|  Btree.java:7286:main|");
             $fclose(f);
           end
         end
@@ -4521,7 +4521,7 @@ module Btree;                                                                   
           begin
             integer f;
             f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:1359:<init>|  Chip.java:1358:waitResultOfTransaction|  Btree.java:0305:stuckGet|  Btree.java:0279:stuckGet|  Btree.java:2508:code|  Chip.java:0532:<init>|  Btree.java:2495:<init>|  Btree.java:2494:code|  Chip.java:0532:<init>|  Btree.java:2469:<init>|  Btree.java:2468:put|  Btree.java:7180:code|  Chip.java:0532:<init>|  Btree.java:7164:<init>|  Btree.java:7163:test_put_random|  Btree.java:7273:oldTests|  Btree.java:7278:newTests|  Btree.java:7284:main|");
+            $fdisplay(f, "Location: Chip.java:1359:<init>|  Chip.java:1358:waitResultOfTransaction|  Btree.java:0305:stuckGet|  Btree.java:0279:stuckGet|  Btree.java:2510:code|  Chip.java:0532:<init>|  Btree.java:2497:<init>|  Btree.java:2496:code|  Chip.java:0532:<init>|  Btree.java:2471:<init>|  Btree.java:2470:put|  Btree.java:7182:code|  Chip.java:0532:<init>|  Btree.java:7166:<init>|  Btree.java:7165:test_put_random|  Btree.java:7275:oldTests|  Btree.java:7280:newTests|  Btree.java:7286:main|");
             $fclose(f);
           end
         end
@@ -4532,7 +4532,7 @@ module Btree;                                                                   
           begin
             integer f;
             f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:1359:<init>|  Chip.java:1358:waitResultOfTransaction|  Btree.java:0306:stuckGet|  Btree.java:0279:stuckGet|  Btree.java:2508:code|  Chip.java:0532:<init>|  Btree.java:2495:<init>|  Btree.java:2494:code|  Chip.java:0532:<init>|  Btree.java:2469:<init>|  Btree.java:2468:put|  Btree.java:7180:code|  Chip.java:0532:<init>|  Btree.java:7164:<init>|  Btree.java:7163:test_put_random|  Btree.java:7273:oldTests|  Btree.java:7278:newTests|  Btree.java:7284:main|");
+            $fdisplay(f, "Location: Chip.java:1359:<init>|  Chip.java:1358:waitResultOfTransaction|  Btree.java:0306:stuckGet|  Btree.java:0279:stuckGet|  Btree.java:2510:code|  Chip.java:0532:<init>|  Btree.java:2497:<init>|  Btree.java:2496:code|  Chip.java:0532:<init>|  Btree.java:2471:<init>|  Btree.java:2470:put|  Btree.java:7182:code|  Chip.java:0532:<init>|  Btree.java:7166:<init>|  Btree.java:7165:test_put_random|  Btree.java:7275:oldTests|  Btree.java:7280:newTests|  Btree.java:7286:main|");
             $fclose(f);
           end
         end
@@ -4551,7 +4551,7 @@ module Btree;                                                                   
           begin
             integer f;
             f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:0514:<init>|  Btree.java:0309:<init>|  Btree.java:0308:stuckGet|  Btree.java:0279:stuckGet|  Btree.java:2508:code|  Chip.java:0532:<init>|  Btree.java:2495:<init>|  Btree.java:2494:code|  Chip.java:0532:<init>|  Btree.java:2469:<init>|  Btree.java:2468:put|  Btree.java:7180:code|  Chip.java:0532:<init>|  Btree.java:7164:<init>|  Btree.java:7163:test_put_random|  Btree.java:7273:oldTests|  Btree.java:7278:newTests|  Btree.java:7284:main|");
+            $fdisplay(f, "Location: Chip.java:0514:<init>|  Btree.java:0309:<init>|  Btree.java:0308:stuckGet|  Btree.java:0279:stuckGet|  Btree.java:2510:code|  Chip.java:0532:<init>|  Btree.java:2497:<init>|  Btree.java:2496:code|  Chip.java:0532:<init>|  Btree.java:2471:<init>|  Btree.java:2470:put|  Btree.java:7182:code|  Chip.java:0532:<init>|  Btree.java:7166:<init>|  Btree.java:7165:test_put_random|  Btree.java:7275:oldTests|  Btree.java:7280:newTests|  Btree.java:7286:main|");
             $fclose(f);
           end
         end
@@ -4565,7 +4565,7 @@ module Btree;                                                                   
           begin
             integer f;
             f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Btree.java:1531:<init>|  Btree.java:1530:code|  Chip.java:0532:<init>|  Btree.java:1528:<init>|  Btree.java:1527:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2511:<init>|  Btree.java:2510:code|  Chip.java:0532:<init>|  Btree.java:2495:<init>|  Btree.java:2494:code|  Chip.java:0532:<init>|  Btree.java:2469:<init>|  Btree.java:2468:put|  Btree.java:7180:code|  Chip.java:0532:<init>|  Btree.java:7164:<init>|  Btree.java:7163:test_put_random|  Btree.java:7273:oldTests|  Btree.java:7278:newTests|  Btree.java:7284:main|");
+            $fdisplay(f, "Location: Btree.java:1531:<init>|  Btree.java:1530:code|  Chip.java:0532:<init>|  Btree.java:1528:<init>|  Btree.java:1527:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2513:<init>|  Btree.java:2512:code|  Chip.java:0532:<init>|  Btree.java:2497:<init>|  Btree.java:2496:code|  Chip.java:0532:<init>|  Btree.java:2471:<init>|  Btree.java:2470:put|  Btree.java:7182:code|  Chip.java:0532:<init>|  Btree.java:7166:<init>|  Btree.java:7165:test_put_random|  Btree.java:7275:oldTests|  Btree.java:7280:newTests|  Btree.java:7286:main|");
             $fclose(f);
           end
         end
@@ -4575,7 +4575,7 @@ module Btree;                                                                   
           begin
             integer f;
             f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:0514:<init>|  Chip.java:0813:<init>|  Chip.java:0813:Ge|  Btree.java:2512:Leaf|  Btree.java:1546:code|  Chip.java:0532:<init>|  Btree.java:1528:<init>|  Btree.java:1527:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2511:<init>|  Btree.java:2510:code|  Chip.java:0532:<init>|  Btree.java:2495:<init>|  Btree.java:2494:code|  Chip.java:0532:<init>|  Btree.java:2469:<init>|  Btree.java:2468:put|  Btree.java:7180:code|  Chip.java:0532:<init>|  Btree.java:7164:<init>|  Btree.java:7163:test_put_random|  Btree.java:7273:oldTests|  Btree.java:7278:newTests|  Btree.java:7284:main|");
+            $fdisplay(f, "Location: Chip.java:0514:<init>|  Chip.java:0813:<init>|  Chip.java:0813:Ge|  Btree.java:2514:Leaf|  Btree.java:1546:code|  Chip.java:0532:<init>|  Btree.java:1528:<init>|  Btree.java:1527:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2513:<init>|  Btree.java:2512:code|  Chip.java:0532:<init>|  Btree.java:2497:<init>|  Btree.java:2496:code|  Chip.java:0532:<init>|  Btree.java:2471:<init>|  Btree.java:2470:put|  Btree.java:7182:code|  Chip.java:0532:<init>|  Btree.java:7166:<init>|  Btree.java:7165:test_put_random|  Btree.java:7275:oldTests|  Btree.java:7280:newTests|  Btree.java:7286:main|");
             $fclose(f);
           end
         end
@@ -4589,7 +4589,7 @@ module Btree;                                                                   
           begin
             integer f;
             f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:0605:<init>|  Chip.java:0604:<init>|  Btree.java:2515:<init>|  Btree.java:2514:Leaf|  Btree.java:1546:code|  Chip.java:0532:<init>|  Btree.java:1528:<init>|  Btree.java:1527:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2511:<init>|  Btree.java:2510:code|  Chip.java:0532:<init>|  Btree.java:2495:<init>|  Btree.java:2494:code|  Chip.java:0532:<init>|  Btree.java:2469:<init>|  Btree.java:2468:put|  Btree.java:7180:code|  Chip.java:0532:<init>|  Btree.java:7164:<init>|  Btree.java:7163:test_put_random|  Btree.java:7273:oldTests|  Btree.java:7278:newTests|  Btree.java:7284:main|");
+            $fdisplay(f, "Location: Chip.java:0605:<init>|  Chip.java:0604:<init>|  Btree.java:2517:<init>|  Btree.java:2516:Leaf|  Btree.java:1546:code|  Chip.java:0532:<init>|  Btree.java:1528:<init>|  Btree.java:1527:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2513:<init>|  Btree.java:2512:code|  Chip.java:0532:<init>|  Btree.java:2497:<init>|  Btree.java:2496:code|  Chip.java:0532:<init>|  Btree.java:2471:<init>|  Btree.java:2470:put|  Btree.java:7182:code|  Chip.java:0532:<init>|  Btree.java:7166:<init>|  Btree.java:7165:test_put_random|  Btree.java:7275:oldTests|  Btree.java:7280:newTests|  Btree.java:7286:main|");
             $fclose(f);
           end
         end
@@ -4603,7 +4603,7 @@ module Btree;                                                                   
           begin
             integer f;
             f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:0605:<init>|  Chip.java:0604:<init>|  Btree.java:2517:<init>|  Btree.java:2516:Then|  Chip.java:0612:<init>|  Btree.java:2515:<init>|  Btree.java:2514:Leaf|  Btree.java:1546:code|  Chip.java:0532:<init>|  Btree.java:1528:<init>|  Btree.java:1527:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2511:<init>|  Btree.java:2510:code|  Chip.java:0532:<init>|  Btree.java:2495:<init>|  Btree.java:2494:code|  Chip.java:0532:<init>|  Btree.java:2469:<init>|  Btree.java:2468:put|  Btree.java:7180:code|  Chip.java:0532:<init>|  Btree.java:7164:<init>|  Btree.java:7163:test_put_random|  Btree.java:7273:oldTests|  Btree.java:7278:newTests|  Btree.java:7284:main|");
+            $fdisplay(f, "Location: Chip.java:0605:<init>|  Chip.java:0604:<init>|  Btree.java:2519:<init>|  Btree.java:2518:Then|  Chip.java:0612:<init>|  Btree.java:2517:<init>|  Btree.java:2516:Leaf|  Btree.java:1546:code|  Chip.java:0532:<init>|  Btree.java:1528:<init>|  Btree.java:1527:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2513:<init>|  Btree.java:2512:code|  Chip.java:0532:<init>|  Btree.java:2497:<init>|  Btree.java:2496:code|  Chip.java:0532:<init>|  Btree.java:2471:<init>|  Btree.java:2470:put|  Btree.java:7182:code|  Chip.java:0532:<init>|  Btree.java:7166:<init>|  Btree.java:7165:test_put_random|  Btree.java:7275:oldTests|  Btree.java:7280:newTests|  Btree.java:7286:main|");
             $fclose(f);
           end
         end
@@ -4613,7 +4613,7 @@ module Btree;                                                                   
           begin
             integer f;
             f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:0514:<init>|  Chip.java:0699:<init>|  Chip.java:0698:Copy|  Btree.java:0278:stuckGet|  Btree.java:1742:splitLeafNotTop|  Btree.java:2518:Then|  Chip.java:0612:<init>|  Btree.java:2517:<init>|  Btree.java:2516:Then|  Chip.java:0612:<init>|  Btree.java:2515:<init>|  Btree.java:2514:Leaf|  Btree.java:1546:code|  Chip.java:0532:<init>|  Btree.java:1528:<init>|  Btree.java:1527:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2511:<init>|  Btree.java:2510:code|  Chip.java:0532:<init>|  Btree.java:2495:<init>|  Btree.java:2494:code|  Chip.java:0532:<init>|  Btree.java:2469:<init>|  Btree.java:2468:put|  Btree.java:7180:code|  Chip.java:0532:<init>|  Btree.java:7164:<init>|  Btree.java:7163:test_put_random|  Btree.java:7273:oldTests|  Btree.java:7278:newTests|  Btree.java:7284:main|");
+            $fdisplay(f, "Location: Chip.java:0514:<init>|  Chip.java:0699:<init>|  Chip.java:0698:Copy|  Btree.java:0278:stuckGet|  Btree.java:1742:splitLeafNotTop|  Btree.java:2520:Then|  Chip.java:0612:<init>|  Btree.java:2519:<init>|  Btree.java:2518:Then|  Chip.java:0612:<init>|  Btree.java:2517:<init>|  Btree.java:2516:Leaf|  Btree.java:1546:code|  Chip.java:0532:<init>|  Btree.java:1528:<init>|  Btree.java:1527:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2513:<init>|  Btree.java:2512:code|  Chip.java:0532:<init>|  Btree.java:2497:<init>|  Btree.java:2496:code|  Chip.java:0532:<init>|  Btree.java:2471:<init>|  Btree.java:2470:put|  Btree.java:7182:code|  Chip.java:0532:<init>|  Btree.java:7166:<init>|  Btree.java:7165:test_put_random|  Btree.java:7275:oldTests|  Btree.java:7280:newTests|  Btree.java:7286:main|");
             $fclose(f);
           end
         end
@@ -4634,7 +4634,7 @@ module Btree;                                                                   
           begin
             integer f;
             f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:0514:<init>|  Btree.java:0289:<init>|  Btree.java:0288:stuckGet|  Btree.java:0279:stuckGet|  Btree.java:1742:splitLeafNotTop|  Btree.java:2518:Then|  Chip.java:0612:<init>|  Btree.java:2517:<init>|  Btree.java:2516:Then|  Chip.java:0612:<init>|  Btree.java:2515:<init>|  Btree.java:2514:Leaf|  Btree.java:1546:code|  Chip.java:0532:<init>|  Btree.java:1528:<init>|  Btree.java:1527:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2511:<init>|  Btree.java:2510:code|  Chip.java:0532:<init>|  Btree.java:2495:<init>|  Btree.java:2494:code|  Chip.java:0532:<init>|  Btree.java:2469:<init>|  Btree.java:2468:put|  Btree.java:7180:code|  Chip.java:0532:<init>|  Btree.java:7164:<init>|  Btree.java:7163:test_put_random|  Btree.java:7273:oldTests|  Btree.java:7278:newTests|  Btree.java:7284:main|");
+            $fdisplay(f, "Location: Chip.java:0514:<init>|  Btree.java:0289:<init>|  Btree.java:0288:stuckGet|  Btree.java:0279:stuckGet|  Btree.java:1742:splitLeafNotTop|  Btree.java:2520:Then|  Chip.java:0612:<init>|  Btree.java:2519:<init>|  Btree.java:2518:Then|  Chip.java:0612:<init>|  Btree.java:2517:<init>|  Btree.java:2516:Leaf|  Btree.java:1546:code|  Chip.java:0532:<init>|  Btree.java:1528:<init>|  Btree.java:1527:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2513:<init>|  Btree.java:2512:code|  Chip.java:0532:<init>|  Btree.java:2497:<init>|  Btree.java:2496:code|  Chip.java:0532:<init>|  Btree.java:2471:<init>|  Btree.java:2470:put|  Btree.java:7182:code|  Chip.java:0532:<init>|  Btree.java:7166:<init>|  Btree.java:7165:test_put_random|  Btree.java:7275:oldTests|  Btree.java:7280:newTests|  Btree.java:7286:main|");
             $fclose(f);
           end
         end
@@ -4645,7 +4645,7 @@ module Btree;                                                                   
           begin
             integer f;
             f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:1359:<init>|  Chip.java:1358:waitResultOfTransaction|  Btree.java:0302:stuckGet|  Btree.java:0279:stuckGet|  Btree.java:1742:splitLeafNotTop|  Btree.java:2518:Then|  Chip.java:0612:<init>|  Btree.java:2517:<init>|  Btree.java:2516:Then|  Chip.java:0612:<init>|  Btree.java:2515:<init>|  Btree.java:2514:Leaf|  Btree.java:1546:code|  Chip.java:0532:<init>|  Btree.java:1528:<init>|  Btree.java:1527:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2511:<init>|  Btree.java:2510:code|  Chip.java:0532:<init>|  Btree.java:2495:<init>|  Btree.java:2494:code|  Chip.java:0532:<init>|  Btree.java:2469:<init>|  Btree.java:2468:put|  Btree.java:7180:code|  Chip.java:0532:<init>|  Btree.java:7164:<init>|  Btree.java:7163:test_put_random|  Btree.java:7273:oldTests|  Btree.java:7278:newTests|  Btree.java:7284:main|");
+            $fdisplay(f, "Location: Chip.java:1359:<init>|  Chip.java:1358:waitResultOfTransaction|  Btree.java:0302:stuckGet|  Btree.java:0279:stuckGet|  Btree.java:1742:splitLeafNotTop|  Btree.java:2520:Then|  Chip.java:0612:<init>|  Btree.java:2519:<init>|  Btree.java:2518:Then|  Chip.java:0612:<init>|  Btree.java:2517:<init>|  Btree.java:2516:Leaf|  Btree.java:1546:code|  Chip.java:0532:<init>|  Btree.java:1528:<init>|  Btree.java:1527:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2513:<init>|  Btree.java:2512:code|  Chip.java:0532:<init>|  Btree.java:2497:<init>|  Btree.java:2496:code|  Chip.java:0532:<init>|  Btree.java:2471:<init>|  Btree.java:2470:put|  Btree.java:7182:code|  Chip.java:0532:<init>|  Btree.java:7166:<init>|  Btree.java:7165:test_put_random|  Btree.java:7275:oldTests|  Btree.java:7280:newTests|  Btree.java:7286:main|");
             $fclose(f);
           end
         end
@@ -4656,7 +4656,7 @@ module Btree;                                                                   
           begin
             integer f;
             f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:1359:<init>|  Chip.java:1358:waitResultOfTransaction|  Btree.java:0303:stuckGet|  Btree.java:0279:stuckGet|  Btree.java:1742:splitLeafNotTop|  Btree.java:2518:Then|  Chip.java:0612:<init>|  Btree.java:2517:<init>|  Btree.java:2516:Then|  Chip.java:0612:<init>|  Btree.java:2515:<init>|  Btree.java:2514:Leaf|  Btree.java:1546:code|  Chip.java:0532:<init>|  Btree.java:1528:<init>|  Btree.java:1527:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2511:<init>|  Btree.java:2510:code|  Chip.java:0532:<init>|  Btree.java:2495:<init>|  Btree.java:2494:code|  Chip.java:0532:<init>|  Btree.java:2469:<init>|  Btree.java:2468:put|  Btree.java:7180:code|  Chip.java:0532:<init>|  Btree.java:7164:<init>|  Btree.java:7163:test_put_random|  Btree.java:7273:oldTests|  Btree.java:7278:newTests|  Btree.java:7284:main|");
+            $fdisplay(f, "Location: Chip.java:1359:<init>|  Chip.java:1358:waitResultOfTransaction|  Btree.java:0303:stuckGet|  Btree.java:0279:stuckGet|  Btree.java:1742:splitLeafNotTop|  Btree.java:2520:Then|  Chip.java:0612:<init>|  Btree.java:2519:<init>|  Btree.java:2518:Then|  Chip.java:0612:<init>|  Btree.java:2517:<init>|  Btree.java:2516:Leaf|  Btree.java:1546:code|  Chip.java:0532:<init>|  Btree.java:1528:<init>|  Btree.java:1527:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2513:<init>|  Btree.java:2512:code|  Chip.java:0532:<init>|  Btree.java:2497:<init>|  Btree.java:2496:code|  Chip.java:0532:<init>|  Btree.java:2471:<init>|  Btree.java:2470:put|  Btree.java:7182:code|  Chip.java:0532:<init>|  Btree.java:7166:<init>|  Btree.java:7165:test_put_random|  Btree.java:7275:oldTests|  Btree.java:7280:newTests|  Btree.java:7286:main|");
             $fclose(f);
           end
         end
@@ -4667,7 +4667,7 @@ module Btree;                                                                   
           begin
             integer f;
             f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:1359:<init>|  Chip.java:1358:waitResultOfTransaction|  Btree.java:0305:stuckGet|  Btree.java:0279:stuckGet|  Btree.java:1742:splitLeafNotTop|  Btree.java:2518:Then|  Chip.java:0612:<init>|  Btree.java:2517:<init>|  Btree.java:2516:Then|  Chip.java:0612:<init>|  Btree.java:2515:<init>|  Btree.java:2514:Leaf|  Btree.java:1546:code|  Chip.java:0532:<init>|  Btree.java:1528:<init>|  Btree.java:1527:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2511:<init>|  Btree.java:2510:code|  Chip.java:0532:<init>|  Btree.java:2495:<init>|  Btree.java:2494:code|  Chip.java:0532:<init>|  Btree.java:2469:<init>|  Btree.java:2468:put|  Btree.java:7180:code|  Chip.java:0532:<init>|  Btree.java:7164:<init>|  Btree.java:7163:test_put_random|  Btree.java:7273:oldTests|  Btree.java:7278:newTests|  Btree.java:7284:main|");
+            $fdisplay(f, "Location: Chip.java:1359:<init>|  Chip.java:1358:waitResultOfTransaction|  Btree.java:0305:stuckGet|  Btree.java:0279:stuckGet|  Btree.java:1742:splitLeafNotTop|  Btree.java:2520:Then|  Chip.java:0612:<init>|  Btree.java:2519:<init>|  Btree.java:2518:Then|  Chip.java:0612:<init>|  Btree.java:2517:<init>|  Btree.java:2516:Leaf|  Btree.java:1546:code|  Chip.java:0532:<init>|  Btree.java:1528:<init>|  Btree.java:1527:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2513:<init>|  Btree.java:2512:code|  Chip.java:0532:<init>|  Btree.java:2497:<init>|  Btree.java:2496:code|  Chip.java:0532:<init>|  Btree.java:2471:<init>|  Btree.java:2470:put|  Btree.java:7182:code|  Chip.java:0532:<init>|  Btree.java:7166:<init>|  Btree.java:7165:test_put_random|  Btree.java:7275:oldTests|  Btree.java:7280:newTests|  Btree.java:7286:main|");
             $fclose(f);
           end
         end
@@ -4678,7 +4678,7 @@ module Btree;                                                                   
           begin
             integer f;
             f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:1359:<init>|  Chip.java:1358:waitResultOfTransaction|  Btree.java:0306:stuckGet|  Btree.java:0279:stuckGet|  Btree.java:1742:splitLeafNotTop|  Btree.java:2518:Then|  Chip.java:0612:<init>|  Btree.java:2517:<init>|  Btree.java:2516:Then|  Chip.java:0612:<init>|  Btree.java:2515:<init>|  Btree.java:2514:Leaf|  Btree.java:1546:code|  Chip.java:0532:<init>|  Btree.java:1528:<init>|  Btree.java:1527:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2511:<init>|  Btree.java:2510:code|  Chip.java:0532:<init>|  Btree.java:2495:<init>|  Btree.java:2494:code|  Chip.java:0532:<init>|  Btree.java:2469:<init>|  Btree.java:2468:put|  Btree.java:7180:code|  Chip.java:0532:<init>|  Btree.java:7164:<init>|  Btree.java:7163:test_put_random|  Btree.java:7273:oldTests|  Btree.java:7278:newTests|  Btree.java:7284:main|");
+            $fdisplay(f, "Location: Chip.java:1359:<init>|  Chip.java:1358:waitResultOfTransaction|  Btree.java:0306:stuckGet|  Btree.java:0279:stuckGet|  Btree.java:1742:splitLeafNotTop|  Btree.java:2520:Then|  Chip.java:0612:<init>|  Btree.java:2519:<init>|  Btree.java:2518:Then|  Chip.java:0612:<init>|  Btree.java:2517:<init>|  Btree.java:2516:Leaf|  Btree.java:1546:code|  Chip.java:0532:<init>|  Btree.java:1528:<init>|  Btree.java:1527:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2513:<init>|  Btree.java:2512:code|  Chip.java:0532:<init>|  Btree.java:2497:<init>|  Btree.java:2496:code|  Chip.java:0532:<init>|  Btree.java:2471:<init>|  Btree.java:2470:put|  Btree.java:7182:code|  Chip.java:0532:<init>|  Btree.java:7166:<init>|  Btree.java:7165:test_put_random|  Btree.java:7275:oldTests|  Btree.java:7280:newTests|  Btree.java:7286:main|");
             $fclose(f);
           end
         end
@@ -4697,7 +4697,7 @@ module Btree;                                                                   
           begin
             integer f;
             f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:0514:<init>|  Btree.java:0309:<init>|  Btree.java:0308:stuckGet|  Btree.java:0279:stuckGet|  Btree.java:1742:splitLeafNotTop|  Btree.java:2518:Then|  Chip.java:0612:<init>|  Btree.java:2517:<init>|  Btree.java:2516:Then|  Chip.java:0612:<init>|  Btree.java:2515:<init>|  Btree.java:2514:Leaf|  Btree.java:1546:code|  Chip.java:0532:<init>|  Btree.java:1528:<init>|  Btree.java:1527:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2511:<init>|  Btree.java:2510:code|  Chip.java:0532:<init>|  Btree.java:2495:<init>|  Btree.java:2494:code|  Chip.java:0532:<init>|  Btree.java:2469:<init>|  Btree.java:2468:put|  Btree.java:7180:code|  Chip.java:0532:<init>|  Btree.java:7164:<init>|  Btree.java:7163:test_put_random|  Btree.java:7273:oldTests|  Btree.java:7278:newTests|  Btree.java:7284:main|");
+            $fdisplay(f, "Location: Chip.java:0514:<init>|  Btree.java:0309:<init>|  Btree.java:0308:stuckGet|  Btree.java:0279:stuckGet|  Btree.java:1742:splitLeafNotTop|  Btree.java:2520:Then|  Chip.java:0612:<init>|  Btree.java:2519:<init>|  Btree.java:2518:Then|  Chip.java:0612:<init>|  Btree.java:2517:<init>|  Btree.java:2516:Leaf|  Btree.java:1546:code|  Chip.java:0532:<init>|  Btree.java:1528:<init>|  Btree.java:1527:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2513:<init>|  Btree.java:2512:code|  Chip.java:0532:<init>|  Btree.java:2497:<init>|  Btree.java:2496:code|  Chip.java:0532:<init>|  Btree.java:2471:<init>|  Btree.java:2470:put|  Btree.java:7182:code|  Chip.java:0532:<init>|  Btree.java:7166:<init>|  Btree.java:7165:test_put_random|  Btree.java:7275:oldTests|  Btree.java:7280:newTests|  Btree.java:7286:main|");
             $fclose(f);
           end
         end
@@ -4724,7 +4724,7 @@ module Btree;                                                                   
           begin
             integer f;
             f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:0514:<init>|  Btree.java:1745:<init>|  Btree.java:1744:splitLeafNotTop|  Btree.java:2518:Then|  Chip.java:0612:<init>|  Btree.java:2517:<init>|  Btree.java:2516:Then|  Chip.java:0612:<init>|  Btree.java:2515:<init>|  Btree.java:2514:Leaf|  Btree.java:1546:code|  Chip.java:0532:<init>|  Btree.java:1528:<init>|  Btree.java:1527:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2511:<init>|  Btree.java:2510:code|  Chip.java:0532:<init>|  Btree.java:2495:<init>|  Btree.java:2494:code|  Chip.java:0532:<init>|  Btree.java:2469:<init>|  Btree.java:2468:put|  Btree.java:7180:code|  Chip.java:0532:<init>|  Btree.java:7164:<init>|  Btree.java:7163:test_put_random|  Btree.java:7273:oldTests|  Btree.java:7278:newTests|  Btree.java:7284:main|");
+            $fdisplay(f, "Location: Chip.java:0514:<init>|  Btree.java:1745:<init>|  Btree.java:1744:splitLeafNotTop|  Btree.java:2520:Then|  Chip.java:0612:<init>|  Btree.java:2519:<init>|  Btree.java:2518:Then|  Chip.java:0612:<init>|  Btree.java:2517:<init>|  Btree.java:2516:Leaf|  Btree.java:1546:code|  Chip.java:0532:<init>|  Btree.java:1528:<init>|  Btree.java:1527:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2513:<init>|  Btree.java:2512:code|  Chip.java:0532:<init>|  Btree.java:2497:<init>|  Btree.java:2496:code|  Chip.java:0532:<init>|  Btree.java:2471:<init>|  Btree.java:2470:put|  Btree.java:7182:code|  Chip.java:0532:<init>|  Btree.java:7166:<init>|  Btree.java:7165:test_put_random|  Btree.java:7275:oldTests|  Btree.java:7280:newTests|  Btree.java:7286:main|");
             $fclose(f);
           end
         end
@@ -4734,7 +4734,7 @@ module Btree;                                                                   
           begin
             integer f;
             f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:0514:<init>|  Chip.java:0699:<init>|  Chip.java:0698:Copy|  Btree.java:0278:stuckGet|  Btree.java:1758:splitLeafNotTop|  Btree.java:2518:Then|  Chip.java:0612:<init>|  Btree.java:2517:<init>|  Btree.java:2516:Then|  Chip.java:0612:<init>|  Btree.java:2515:<init>|  Btree.java:2514:Leaf|  Btree.java:1546:code|  Chip.java:0532:<init>|  Btree.java:1528:<init>|  Btree.java:1527:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2511:<init>|  Btree.java:2510:code|  Chip.java:0532:<init>|  Btree.java:2495:<init>|  Btree.java:2494:code|  Chip.java:0532:<init>|  Btree.java:2469:<init>|  Btree.java:2468:put|  Btree.java:7180:code|  Chip.java:0532:<init>|  Btree.java:7164:<init>|  Btree.java:7163:test_put_random|  Btree.java:7273:oldTests|  Btree.java:7278:newTests|  Btree.java:7284:main|");
+            $fdisplay(f, "Location: Chip.java:0514:<init>|  Chip.java:0699:<init>|  Chip.java:0698:Copy|  Btree.java:0278:stuckGet|  Btree.java:1758:splitLeafNotTop|  Btree.java:2520:Then|  Chip.java:0612:<init>|  Btree.java:2519:<init>|  Btree.java:2518:Then|  Chip.java:0612:<init>|  Btree.java:2517:<init>|  Btree.java:2516:Leaf|  Btree.java:1546:code|  Chip.java:0532:<init>|  Btree.java:1528:<init>|  Btree.java:1527:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2513:<init>|  Btree.java:2512:code|  Chip.java:0532:<init>|  Btree.java:2497:<init>|  Btree.java:2496:code|  Chip.java:0532:<init>|  Btree.java:2471:<init>|  Btree.java:2470:put|  Btree.java:7182:code|  Chip.java:0532:<init>|  Btree.java:7166:<init>|  Btree.java:7165:test_put_random|  Btree.java:7275:oldTests|  Btree.java:7280:newTests|  Btree.java:7286:main|");
             $fclose(f);
           end
         end
@@ -4755,7 +4755,7 @@ module Btree;                                                                   
           begin
             integer f;
             f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:0514:<init>|  Btree.java:0289:<init>|  Btree.java:0288:stuckGet|  Btree.java:0279:stuckGet|  Btree.java:1758:splitLeafNotTop|  Btree.java:2518:Then|  Chip.java:0612:<init>|  Btree.java:2517:<init>|  Btree.java:2516:Then|  Chip.java:0612:<init>|  Btree.java:2515:<init>|  Btree.java:2514:Leaf|  Btree.java:1546:code|  Chip.java:0532:<init>|  Btree.java:1528:<init>|  Btree.java:1527:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2511:<init>|  Btree.java:2510:code|  Chip.java:0532:<init>|  Btree.java:2495:<init>|  Btree.java:2494:code|  Chip.java:0532:<init>|  Btree.java:2469:<init>|  Btree.java:2468:put|  Btree.java:7180:code|  Chip.java:0532:<init>|  Btree.java:7164:<init>|  Btree.java:7163:test_put_random|  Btree.java:7273:oldTests|  Btree.java:7278:newTests|  Btree.java:7284:main|");
+            $fdisplay(f, "Location: Chip.java:0514:<init>|  Btree.java:0289:<init>|  Btree.java:0288:stuckGet|  Btree.java:0279:stuckGet|  Btree.java:1758:splitLeafNotTop|  Btree.java:2520:Then|  Chip.java:0612:<init>|  Btree.java:2519:<init>|  Btree.java:2518:Then|  Chip.java:0612:<init>|  Btree.java:2517:<init>|  Btree.java:2516:Leaf|  Btree.java:1546:code|  Chip.java:0532:<init>|  Btree.java:1528:<init>|  Btree.java:1527:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2513:<init>|  Btree.java:2512:code|  Chip.java:0532:<init>|  Btree.java:2497:<init>|  Btree.java:2496:code|  Chip.java:0532:<init>|  Btree.java:2471:<init>|  Btree.java:2470:put|  Btree.java:7182:code|  Chip.java:0532:<init>|  Btree.java:7166:<init>|  Btree.java:7165:test_put_random|  Btree.java:7275:oldTests|  Btree.java:7280:newTests|  Btree.java:7286:main|");
             $fclose(f);
           end
         end
@@ -4766,7 +4766,7 @@ module Btree;                                                                   
           begin
             integer f;
             f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:1359:<init>|  Chip.java:1358:waitResultOfTransaction|  Btree.java:0302:stuckGet|  Btree.java:0279:stuckGet|  Btree.java:1758:splitLeafNotTop|  Btree.java:2518:Then|  Chip.java:0612:<init>|  Btree.java:2517:<init>|  Btree.java:2516:Then|  Chip.java:0612:<init>|  Btree.java:2515:<init>|  Btree.java:2514:Leaf|  Btree.java:1546:code|  Chip.java:0532:<init>|  Btree.java:1528:<init>|  Btree.java:1527:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2511:<init>|  Btree.java:2510:code|  Chip.java:0532:<init>|  Btree.java:2495:<init>|  Btree.java:2494:code|  Chip.java:0532:<init>|  Btree.java:2469:<init>|  Btree.java:2468:put|  Btree.java:7180:code|  Chip.java:0532:<init>|  Btree.java:7164:<init>|  Btree.java:7163:test_put_random|  Btree.java:7273:oldTests|  Btree.java:7278:newTests|  Btree.java:7284:main|");
+            $fdisplay(f, "Location: Chip.java:1359:<init>|  Chip.java:1358:waitResultOfTransaction|  Btree.java:0302:stuckGet|  Btree.java:0279:stuckGet|  Btree.java:1758:splitLeafNotTop|  Btree.java:2520:Then|  Chip.java:0612:<init>|  Btree.java:2519:<init>|  Btree.java:2518:Then|  Chip.java:0612:<init>|  Btree.java:2517:<init>|  Btree.java:2516:Leaf|  Btree.java:1546:code|  Chip.java:0532:<init>|  Btree.java:1528:<init>|  Btree.java:1527:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2513:<init>|  Btree.java:2512:code|  Chip.java:0532:<init>|  Btree.java:2497:<init>|  Btree.java:2496:code|  Chip.java:0532:<init>|  Btree.java:2471:<init>|  Btree.java:2470:put|  Btree.java:7182:code|  Chip.java:0532:<init>|  Btree.java:7166:<init>|  Btree.java:7165:test_put_random|  Btree.java:7275:oldTests|  Btree.java:7280:newTests|  Btree.java:7286:main|");
             $fclose(f);
           end
         end
@@ -4777,7 +4777,7 @@ module Btree;                                                                   
           begin
             integer f;
             f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:1359:<init>|  Chip.java:1358:waitResultOfTransaction|  Btree.java:0303:stuckGet|  Btree.java:0279:stuckGet|  Btree.java:1758:splitLeafNotTop|  Btree.java:2518:Then|  Chip.java:0612:<init>|  Btree.java:2517:<init>|  Btree.java:2516:Then|  Chip.java:0612:<init>|  Btree.java:2515:<init>|  Btree.java:2514:Leaf|  Btree.java:1546:code|  Chip.java:0532:<init>|  Btree.java:1528:<init>|  Btree.java:1527:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2511:<init>|  Btree.java:2510:code|  Chip.java:0532:<init>|  Btree.java:2495:<init>|  Btree.java:2494:code|  Chip.java:0532:<init>|  Btree.java:2469:<init>|  Btree.java:2468:put|  Btree.java:7180:code|  Chip.java:0532:<init>|  Btree.java:7164:<init>|  Btree.java:7163:test_put_random|  Btree.java:7273:oldTests|  Btree.java:7278:newTests|  Btree.java:7284:main|");
+            $fdisplay(f, "Location: Chip.java:1359:<init>|  Chip.java:1358:waitResultOfTransaction|  Btree.java:0303:stuckGet|  Btree.java:0279:stuckGet|  Btree.java:1758:splitLeafNotTop|  Btree.java:2520:Then|  Chip.java:0612:<init>|  Btree.java:2519:<init>|  Btree.java:2518:Then|  Chip.java:0612:<init>|  Btree.java:2517:<init>|  Btree.java:2516:Leaf|  Btree.java:1546:code|  Chip.java:0532:<init>|  Btree.java:1528:<init>|  Btree.java:1527:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2513:<init>|  Btree.java:2512:code|  Chip.java:0532:<init>|  Btree.java:2497:<init>|  Btree.java:2496:code|  Chip.java:0532:<init>|  Btree.java:2471:<init>|  Btree.java:2470:put|  Btree.java:7182:code|  Chip.java:0532:<init>|  Btree.java:7166:<init>|  Btree.java:7165:test_put_random|  Btree.java:7275:oldTests|  Btree.java:7280:newTests|  Btree.java:7286:main|");
             $fclose(f);
           end
         end
@@ -4788,7 +4788,7 @@ module Btree;                                                                   
           begin
             integer f;
             f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:1359:<init>|  Chip.java:1358:waitResultOfTransaction|  Btree.java:0305:stuckGet|  Btree.java:0279:stuckGet|  Btree.java:1758:splitLeafNotTop|  Btree.java:2518:Then|  Chip.java:0612:<init>|  Btree.java:2517:<init>|  Btree.java:2516:Then|  Chip.java:0612:<init>|  Btree.java:2515:<init>|  Btree.java:2514:Leaf|  Btree.java:1546:code|  Chip.java:0532:<init>|  Btree.java:1528:<init>|  Btree.java:1527:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2511:<init>|  Btree.java:2510:code|  Chip.java:0532:<init>|  Btree.java:2495:<init>|  Btree.java:2494:code|  Chip.java:0532:<init>|  Btree.java:2469:<init>|  Btree.java:2468:put|  Btree.java:7180:code|  Chip.java:0532:<init>|  Btree.java:7164:<init>|  Btree.java:7163:test_put_random|  Btree.java:7273:oldTests|  Btree.java:7278:newTests|  Btree.java:7284:main|");
+            $fdisplay(f, "Location: Chip.java:1359:<init>|  Chip.java:1358:waitResultOfTransaction|  Btree.java:0305:stuckGet|  Btree.java:0279:stuckGet|  Btree.java:1758:splitLeafNotTop|  Btree.java:2520:Then|  Chip.java:0612:<init>|  Btree.java:2519:<init>|  Btree.java:2518:Then|  Chip.java:0612:<init>|  Btree.java:2517:<init>|  Btree.java:2516:Leaf|  Btree.java:1546:code|  Chip.java:0532:<init>|  Btree.java:1528:<init>|  Btree.java:1527:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2513:<init>|  Btree.java:2512:code|  Chip.java:0532:<init>|  Btree.java:2497:<init>|  Btree.java:2496:code|  Chip.java:0532:<init>|  Btree.java:2471:<init>|  Btree.java:2470:put|  Btree.java:7182:code|  Chip.java:0532:<init>|  Btree.java:7166:<init>|  Btree.java:7165:test_put_random|  Btree.java:7275:oldTests|  Btree.java:7280:newTests|  Btree.java:7286:main|");
             $fclose(f);
           end
         end
@@ -4799,7 +4799,7 @@ module Btree;                                                                   
           begin
             integer f;
             f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:1359:<init>|  Chip.java:1358:waitResultOfTransaction|  Btree.java:0306:stuckGet|  Btree.java:0279:stuckGet|  Btree.java:1758:splitLeafNotTop|  Btree.java:2518:Then|  Chip.java:0612:<init>|  Btree.java:2517:<init>|  Btree.java:2516:Then|  Chip.java:0612:<init>|  Btree.java:2515:<init>|  Btree.java:2514:Leaf|  Btree.java:1546:code|  Chip.java:0532:<init>|  Btree.java:1528:<init>|  Btree.java:1527:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2511:<init>|  Btree.java:2510:code|  Chip.java:0532:<init>|  Btree.java:2495:<init>|  Btree.java:2494:code|  Chip.java:0532:<init>|  Btree.java:2469:<init>|  Btree.java:2468:put|  Btree.java:7180:code|  Chip.java:0532:<init>|  Btree.java:7164:<init>|  Btree.java:7163:test_put_random|  Btree.java:7273:oldTests|  Btree.java:7278:newTests|  Btree.java:7284:main|");
+            $fdisplay(f, "Location: Chip.java:1359:<init>|  Chip.java:1358:waitResultOfTransaction|  Btree.java:0306:stuckGet|  Btree.java:0279:stuckGet|  Btree.java:1758:splitLeafNotTop|  Btree.java:2520:Then|  Chip.java:0612:<init>|  Btree.java:2519:<init>|  Btree.java:2518:Then|  Chip.java:0612:<init>|  Btree.java:2517:<init>|  Btree.java:2516:Leaf|  Btree.java:1546:code|  Chip.java:0532:<init>|  Btree.java:1528:<init>|  Btree.java:1527:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2513:<init>|  Btree.java:2512:code|  Chip.java:0532:<init>|  Btree.java:2497:<init>|  Btree.java:2496:code|  Chip.java:0532:<init>|  Btree.java:2471:<init>|  Btree.java:2470:put|  Btree.java:7182:code|  Chip.java:0532:<init>|  Btree.java:7166:<init>|  Btree.java:7165:test_put_random|  Btree.java:7275:oldTests|  Btree.java:7280:newTests|  Btree.java:7286:main|");
             $fclose(f);
           end
         end
@@ -4818,7 +4818,7 @@ module Btree;                                                                   
           begin
             integer f;
             f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:0514:<init>|  Btree.java:0309:<init>|  Btree.java:0308:stuckGet|  Btree.java:0279:stuckGet|  Btree.java:1758:splitLeafNotTop|  Btree.java:2518:Then|  Chip.java:0612:<init>|  Btree.java:2517:<init>|  Btree.java:2516:Then|  Chip.java:0612:<init>|  Btree.java:2515:<init>|  Btree.java:2514:Leaf|  Btree.java:1546:code|  Chip.java:0532:<init>|  Btree.java:1528:<init>|  Btree.java:1527:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2511:<init>|  Btree.java:2510:code|  Chip.java:0532:<init>|  Btree.java:2495:<init>|  Btree.java:2494:code|  Chip.java:0532:<init>|  Btree.java:2469:<init>|  Btree.java:2468:put|  Btree.java:7180:code|  Chip.java:0532:<init>|  Btree.java:7164:<init>|  Btree.java:7163:test_put_random|  Btree.java:7273:oldTests|  Btree.java:7278:newTests|  Btree.java:7284:main|");
+            $fdisplay(f, "Location: Chip.java:0514:<init>|  Btree.java:0309:<init>|  Btree.java:0308:stuckGet|  Btree.java:0279:stuckGet|  Btree.java:1758:splitLeafNotTop|  Btree.java:2520:Then|  Chip.java:0612:<init>|  Btree.java:2519:<init>|  Btree.java:2518:Then|  Chip.java:0612:<init>|  Btree.java:2517:<init>|  Btree.java:2516:Leaf|  Btree.java:1546:code|  Chip.java:0532:<init>|  Btree.java:1528:<init>|  Btree.java:1527:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2513:<init>|  Btree.java:2512:code|  Chip.java:0532:<init>|  Btree.java:2497:<init>|  Btree.java:2496:code|  Chip.java:0532:<init>|  Btree.java:2471:<init>|  Btree.java:2470:put|  Btree.java:7182:code|  Chip.java:0532:<init>|  Btree.java:7166:<init>|  Btree.java:7165:test_put_random|  Btree.java:7275:oldTests|  Btree.java:7280:newTests|  Btree.java:7286:main|");
             $fclose(f);
           end
         end
@@ -4828,7 +4828,7 @@ module Btree;                                                                   
           begin
             integer f;
             f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:0514:<init>|  Btree.java:1761:<init>|  Btree.java:1760:splitLeafNotTop|  Btree.java:2518:Then|  Chip.java:0612:<init>|  Btree.java:2517:<init>|  Btree.java:2516:Then|  Chip.java:0612:<init>|  Btree.java:2515:<init>|  Btree.java:2514:Leaf|  Btree.java:1546:code|  Chip.java:0532:<init>|  Btree.java:1528:<init>|  Btree.java:1527:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2511:<init>|  Btree.java:2510:code|  Chip.java:0532:<init>|  Btree.java:2495:<init>|  Btree.java:2494:code|  Chip.java:0532:<init>|  Btree.java:2469:<init>|  Btree.java:2468:put|  Btree.java:7180:code|  Chip.java:0532:<init>|  Btree.java:7164:<init>|  Btree.java:7163:test_put_random|  Btree.java:7273:oldTests|  Btree.java:7278:newTests|  Btree.java:7284:main|");
+            $fdisplay(f, "Location: Chip.java:0514:<init>|  Btree.java:1761:<init>|  Btree.java:1760:splitLeafNotTop|  Btree.java:2520:Then|  Chip.java:0612:<init>|  Btree.java:2519:<init>|  Btree.java:2518:Then|  Chip.java:0612:<init>|  Btree.java:2517:<init>|  Btree.java:2516:Leaf|  Btree.java:1546:code|  Chip.java:0532:<init>|  Btree.java:1528:<init>|  Btree.java:1527:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2513:<init>|  Btree.java:2512:code|  Chip.java:0532:<init>|  Btree.java:2497:<init>|  Btree.java:2496:code|  Chip.java:0532:<init>|  Btree.java:2471:<init>|  Btree.java:2470:put|  Btree.java:7182:code|  Chip.java:0532:<init>|  Btree.java:7166:<init>|  Btree.java:7165:test_put_random|  Btree.java:7275:oldTests|  Btree.java:7280:newTests|  Btree.java:7286:main|");
             $fclose(f);
           end
         end
@@ -4847,7 +4847,7 @@ module Btree;                                                                   
           begin
             integer f;
             f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:0514:<init>|  Btree.java:1349:<init>|  Btree.java:1348:splitLow|  Btree.java:1769:splitLeafNotTop|  Btree.java:2518:Then|  Chip.java:0612:<init>|  Btree.java:2517:<init>|  Btree.java:2516:Then|  Chip.java:0612:<init>|  Btree.java:2515:<init>|  Btree.java:2514:Leaf|  Btree.java:1546:code|  Chip.java:0532:<init>|  Btree.java:1528:<init>|  Btree.java:1527:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2511:<init>|  Btree.java:2510:code|  Chip.java:0532:<init>|  Btree.java:2495:<init>|  Btree.java:2494:code|  Chip.java:0532:<init>|  Btree.java:2469:<init>|  Btree.java:2468:put|  Btree.java:7180:code|  Chip.java:0532:<init>|  Btree.java:7164:<init>|  Btree.java:7163:test_put_random|  Btree.java:7273:oldTests|  Btree.java:7278:newTests|  Btree.java:7284:main|");
+            $fdisplay(f, "Location: Chip.java:0514:<init>|  Btree.java:1349:<init>|  Btree.java:1348:splitLow|  Btree.java:1769:splitLeafNotTop|  Btree.java:2520:Then|  Chip.java:0612:<init>|  Btree.java:2519:<init>|  Btree.java:2518:Then|  Chip.java:0612:<init>|  Btree.java:2517:<init>|  Btree.java:2516:Leaf|  Btree.java:1546:code|  Chip.java:0532:<init>|  Btree.java:1528:<init>|  Btree.java:1527:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2513:<init>|  Btree.java:2512:code|  Chip.java:0532:<init>|  Btree.java:2497:<init>|  Btree.java:2496:code|  Chip.java:0532:<init>|  Btree.java:2471:<init>|  Btree.java:2470:put|  Btree.java:7182:code|  Chip.java:0532:<init>|  Btree.java:7166:<init>|  Btree.java:7165:test_put_random|  Btree.java:7275:oldTests|  Btree.java:7280:newTests|  Btree.java:7286:main|");
             $fclose(f);
           end
         end
@@ -4857,7 +4857,7 @@ module Btree;                                                                   
           begin
             integer f;
             f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:0514:<init>|  Chip.java:0821:<init>|  Chip.java:0820:Zero|  Btree.java:0078:allocate|  Btree.java:0153:allocateLeaf|  Btree.java:1770:splitLeafNotTop|  Btree.java:2518:Then|  Chip.java:0612:<init>|  Btree.java:2517:<init>|  Btree.java:2516:Then|  Chip.java:0612:<init>|  Btree.java:2515:<init>|  Btree.java:2514:Leaf|  Btree.java:1546:code|  Chip.java:0532:<init>|  Btree.java:1528:<init>|  Btree.java:1527:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2511:<init>|  Btree.java:2510:code|  Chip.java:0532:<init>|  Btree.java:2495:<init>|  Btree.java:2494:code|  Chip.java:0532:<init>|  Btree.java:2469:<init>|  Btree.java:2468:put|  Btree.java:7180:code|  Chip.java:0532:<init>|  Btree.java:7164:<init>|  Btree.java:7163:test_put_random|  Btree.java:7273:oldTests|  Btree.java:7278:newTests|  Btree.java:7284:main|");
+            $fdisplay(f, "Location: Chip.java:0514:<init>|  Chip.java:0821:<init>|  Chip.java:0820:Zero|  Btree.java:0078:allocate|  Btree.java:0153:allocateLeaf|  Btree.java:1770:splitLeafNotTop|  Btree.java:2520:Then|  Chip.java:0612:<init>|  Btree.java:2519:<init>|  Btree.java:2518:Then|  Chip.java:0612:<init>|  Btree.java:2517:<init>|  Btree.java:2516:Leaf|  Btree.java:1546:code|  Chip.java:0532:<init>|  Btree.java:1528:<init>|  Btree.java:1527:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2513:<init>|  Btree.java:2512:code|  Chip.java:0532:<init>|  Btree.java:2497:<init>|  Btree.java:2496:code|  Chip.java:0532:<init>|  Btree.java:2471:<init>|  Btree.java:2470:put|  Btree.java:7182:code|  Chip.java:0532:<init>|  Btree.java:7166:<init>|  Btree.java:7165:test_put_random|  Btree.java:7275:oldTests|  Btree.java:7280:newTests|  Btree.java:7286:main|");
             $fclose(f);
           end
         end
@@ -4869,7 +4869,7 @@ module Btree;                                                                   
           begin
             integer f;
             f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:0514:<init>|  Chip.java:1352:<init>|  Chip.java:1351:ExecuteTransaction|  Btree.java:0079:allocate|  Btree.java:0153:allocateLeaf|  Btree.java:1770:splitLeafNotTop|  Btree.java:2518:Then|  Chip.java:0612:<init>|  Btree.java:2517:<init>|  Btree.java:2516:Then|  Chip.java:0612:<init>|  Btree.java:2515:<init>|  Btree.java:2514:Leaf|  Btree.java:1546:code|  Chip.java:0532:<init>|  Btree.java:1528:<init>|  Btree.java:1527:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2511:<init>|  Btree.java:2510:code|  Chip.java:0532:<init>|  Btree.java:2495:<init>|  Btree.java:2494:code|  Chip.java:0532:<init>|  Btree.java:2469:<init>|  Btree.java:2468:put|  Btree.java:7180:code|  Chip.java:0532:<init>|  Btree.java:7164:<init>|  Btree.java:7163:test_put_random|  Btree.java:7273:oldTests|  Btree.java:7278:newTests|  Btree.java:7284:main|");
+            $fdisplay(f, "Location: Chip.java:0514:<init>|  Chip.java:1352:<init>|  Chip.java:1351:ExecuteTransaction|  Btree.java:0079:allocate|  Btree.java:0153:allocateLeaf|  Btree.java:1770:splitLeafNotTop|  Btree.java:2520:Then|  Chip.java:0612:<init>|  Btree.java:2519:<init>|  Btree.java:2518:Then|  Chip.java:0612:<init>|  Btree.java:2517:<init>|  Btree.java:2516:Leaf|  Btree.java:1546:code|  Chip.java:0532:<init>|  Btree.java:1528:<init>|  Btree.java:1527:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2513:<init>|  Btree.java:2512:code|  Chip.java:0532:<init>|  Btree.java:2497:<init>|  Btree.java:2496:code|  Chip.java:0532:<init>|  Btree.java:2471:<init>|  Btree.java:2470:put|  Btree.java:7182:code|  Chip.java:0532:<init>|  Btree.java:7166:<init>|  Btree.java:7165:test_put_random|  Btree.java:7275:oldTests|  Btree.java:7280:newTests|  Btree.java:7286:main|");
             $fclose(f);
           end
         end
@@ -4880,7 +4880,7 @@ module Btree;                                                                   
           begin
             integer f;
             f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:1359:<init>|  Chip.java:1358:waitResultOfTransaction|  Btree.java:0080:allocate|  Btree.java:0153:allocateLeaf|  Btree.java:1770:splitLeafNotTop|  Btree.java:2518:Then|  Chip.java:0612:<init>|  Btree.java:2517:<init>|  Btree.java:2516:Then|  Chip.java:0612:<init>|  Btree.java:2515:<init>|  Btree.java:2514:Leaf|  Btree.java:1546:code|  Chip.java:0532:<init>|  Btree.java:1528:<init>|  Btree.java:1527:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2511:<init>|  Btree.java:2510:code|  Chip.java:0532:<init>|  Btree.java:2495:<init>|  Btree.java:2494:code|  Chip.java:0532:<init>|  Btree.java:2469:<init>|  Btree.java:2468:put|  Btree.java:7180:code|  Chip.java:0532:<init>|  Btree.java:7164:<init>|  Btree.java:7163:test_put_random|  Btree.java:7273:oldTests|  Btree.java:7278:newTests|  Btree.java:7284:main|");
+            $fdisplay(f, "Location: Chip.java:1359:<init>|  Chip.java:1358:waitResultOfTransaction|  Btree.java:0080:allocate|  Btree.java:0153:allocateLeaf|  Btree.java:1770:splitLeafNotTop|  Btree.java:2520:Then|  Chip.java:0612:<init>|  Btree.java:2519:<init>|  Btree.java:2518:Then|  Chip.java:0612:<init>|  Btree.java:2517:<init>|  Btree.java:2516:Leaf|  Btree.java:1546:code|  Chip.java:0532:<init>|  Btree.java:1528:<init>|  Btree.java:1527:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2513:<init>|  Btree.java:2512:code|  Chip.java:0532:<init>|  Btree.java:2497:<init>|  Btree.java:2496:code|  Chip.java:0532:<init>|  Btree.java:2471:<init>|  Btree.java:2470:put|  Btree.java:7182:code|  Chip.java:0532:<init>|  Btree.java:7166:<init>|  Btree.java:7165:test_put_random|  Btree.java:7275:oldTests|  Btree.java:7280:newTests|  Btree.java:7286:main|");
             $fclose(f);
           end
         end
@@ -4890,7 +4890,7 @@ module Btree;                                                                   
           begin
             integer f;
             f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:0514:<init>|  Chip.java:0699:<init>|  Chip.java:0698:Copy|  Btree.java:0081:allocate|  Btree.java:0153:allocateLeaf|  Btree.java:1770:splitLeafNotTop|  Btree.java:2518:Then|  Chip.java:0612:<init>|  Btree.java:2517:<init>|  Btree.java:2516:Then|  Chip.java:0612:<init>|  Btree.java:2515:<init>|  Btree.java:2514:Leaf|  Btree.java:1546:code|  Chip.java:0532:<init>|  Btree.java:1528:<init>|  Btree.java:1527:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2511:<init>|  Btree.java:2510:code|  Chip.java:0532:<init>|  Btree.java:2495:<init>|  Btree.java:2494:code|  Chip.java:0532:<init>|  Btree.java:2469:<init>|  Btree.java:2468:put|  Btree.java:7180:code|  Chip.java:0532:<init>|  Btree.java:7164:<init>|  Btree.java:7163:test_put_random|  Btree.java:7273:oldTests|  Btree.java:7278:newTests|  Btree.java:7284:main|");
+            $fdisplay(f, "Location: Chip.java:0514:<init>|  Chip.java:0699:<init>|  Chip.java:0698:Copy|  Btree.java:0081:allocate|  Btree.java:0153:allocateLeaf|  Btree.java:1770:splitLeafNotTop|  Btree.java:2520:Then|  Chip.java:0612:<init>|  Btree.java:2519:<init>|  Btree.java:2518:Then|  Chip.java:0612:<init>|  Btree.java:2517:<init>|  Btree.java:2516:Leaf|  Btree.java:1546:code|  Chip.java:0532:<init>|  Btree.java:1528:<init>|  Btree.java:1527:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2513:<init>|  Btree.java:2512:code|  Chip.java:0532:<init>|  Btree.java:2497:<init>|  Btree.java:2496:code|  Chip.java:0532:<init>|  Btree.java:2471:<init>|  Btree.java:2470:put|  Btree.java:7182:code|  Chip.java:0532:<init>|  Btree.java:7166:<init>|  Btree.java:7165:test_put_random|  Btree.java:7275:oldTests|  Btree.java:7280:newTests|  Btree.java:7286:main|");
             $fclose(f);
           end
         end
@@ -4905,7 +4905,7 @@ module Btree;                                                                   
           begin
             integer f;
             f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:0514:<init>|  Btree.java:0084:<init>|  Btree.java:0083:allocate|  Btree.java:0153:allocateLeaf|  Btree.java:1770:splitLeafNotTop|  Btree.java:2518:Then|  Chip.java:0612:<init>|  Btree.java:2517:<init>|  Btree.java:2516:Then|  Chip.java:0612:<init>|  Btree.java:2515:<init>|  Btree.java:2514:Leaf|  Btree.java:1546:code|  Chip.java:0532:<init>|  Btree.java:1528:<init>|  Btree.java:1527:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2511:<init>|  Btree.java:2510:code|  Chip.java:0532:<init>|  Btree.java:2495:<init>|  Btree.java:2494:code|  Chip.java:0532:<init>|  Btree.java:2469:<init>|  Btree.java:2468:put|  Btree.java:7180:code|  Chip.java:0532:<init>|  Btree.java:7164:<init>|  Btree.java:7163:test_put_random|  Btree.java:7273:oldTests|  Btree.java:7278:newTests|  Btree.java:7284:main|");
+            $fdisplay(f, "Location: Chip.java:0514:<init>|  Btree.java:0084:<init>|  Btree.java:0083:allocate|  Btree.java:0153:allocateLeaf|  Btree.java:1770:splitLeafNotTop|  Btree.java:2520:Then|  Chip.java:0612:<init>|  Btree.java:2519:<init>|  Btree.java:2518:Then|  Chip.java:0612:<init>|  Btree.java:2517:<init>|  Btree.java:2516:Leaf|  Btree.java:1546:code|  Chip.java:0532:<init>|  Btree.java:1528:<init>|  Btree.java:1527:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2513:<init>|  Btree.java:2512:code|  Chip.java:0532:<init>|  Btree.java:2497:<init>|  Btree.java:2496:code|  Chip.java:0532:<init>|  Btree.java:2471:<init>|  Btree.java:2470:put|  Btree.java:7182:code|  Chip.java:0532:<init>|  Btree.java:7166:<init>|  Btree.java:7165:test_put_random|  Btree.java:7275:oldTests|  Btree.java:7280:newTests|  Btree.java:7286:main|");
             $fclose(f);
           end
         end
@@ -4925,7 +4925,7 @@ module Btree;                                                                   
           begin
             integer f;
             f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:0514:<init>|  Btree.java:0099:<init>|  Btree.java:0098:allocate|  Btree.java:0153:allocateLeaf|  Btree.java:1770:splitLeafNotTop|  Btree.java:2518:Then|  Chip.java:0612:<init>|  Btree.java:2517:<init>|  Btree.java:2516:Then|  Chip.java:0612:<init>|  Btree.java:2515:<init>|  Btree.java:2514:Leaf|  Btree.java:1546:code|  Chip.java:0532:<init>|  Btree.java:1528:<init>|  Btree.java:1527:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2511:<init>|  Btree.java:2510:code|  Chip.java:0532:<init>|  Btree.java:2495:<init>|  Btree.java:2494:code|  Chip.java:0532:<init>|  Btree.java:2469:<init>|  Btree.java:2468:put|  Btree.java:7180:code|  Chip.java:0532:<init>|  Btree.java:7164:<init>|  Btree.java:7163:test_put_random|  Btree.java:7273:oldTests|  Btree.java:7278:newTests|  Btree.java:7284:main|");
+            $fdisplay(f, "Location: Chip.java:0514:<init>|  Btree.java:0099:<init>|  Btree.java:0098:allocate|  Btree.java:0153:allocateLeaf|  Btree.java:1770:splitLeafNotTop|  Btree.java:2520:Then|  Chip.java:0612:<init>|  Btree.java:2519:<init>|  Btree.java:2518:Then|  Chip.java:0612:<init>|  Btree.java:2517:<init>|  Btree.java:2516:Leaf|  Btree.java:1546:code|  Chip.java:0532:<init>|  Btree.java:1528:<init>|  Btree.java:1527:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2513:<init>|  Btree.java:2512:code|  Chip.java:0532:<init>|  Btree.java:2497:<init>|  Btree.java:2496:code|  Chip.java:0532:<init>|  Btree.java:2471:<init>|  Btree.java:2470:put|  Btree.java:7182:code|  Chip.java:0532:<init>|  Btree.java:7166:<init>|  Btree.java:7165:test_put_random|  Btree.java:7275:oldTests|  Btree.java:7280:newTests|  Btree.java:7286:main|");
             $fclose(f);
           end
         end
@@ -4936,7 +4936,7 @@ module Btree;                                                                   
           begin
             integer f;
             f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:1359:<init>|  Chip.java:1358:waitResultOfTransaction|  Btree.java:0111:allocate|  Btree.java:0153:allocateLeaf|  Btree.java:1770:splitLeafNotTop|  Btree.java:2518:Then|  Chip.java:0612:<init>|  Btree.java:2517:<init>|  Btree.java:2516:Then|  Chip.java:0612:<init>|  Btree.java:2515:<init>|  Btree.java:2514:Leaf|  Btree.java:1546:code|  Chip.java:0532:<init>|  Btree.java:1528:<init>|  Btree.java:1527:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2511:<init>|  Btree.java:2510:code|  Chip.java:0532:<init>|  Btree.java:2495:<init>|  Btree.java:2494:code|  Chip.java:0532:<init>|  Btree.java:2469:<init>|  Btree.java:2468:put|  Btree.java:7180:code|  Chip.java:0532:<init>|  Btree.java:7164:<init>|  Btree.java:7163:test_put_random|  Btree.java:7273:oldTests|  Btree.java:7278:newTests|  Btree.java:7284:main|");
+            $fdisplay(f, "Location: Chip.java:1359:<init>|  Chip.java:1358:waitResultOfTransaction|  Btree.java:0111:allocate|  Btree.java:0153:allocateLeaf|  Btree.java:1770:splitLeafNotTop|  Btree.java:2520:Then|  Chip.java:0612:<init>|  Btree.java:2519:<init>|  Btree.java:2518:Then|  Chip.java:0612:<init>|  Btree.java:2517:<init>|  Btree.java:2516:Leaf|  Btree.java:1546:code|  Chip.java:0532:<init>|  Btree.java:1528:<init>|  Btree.java:1527:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2513:<init>|  Btree.java:2512:code|  Chip.java:0532:<init>|  Btree.java:2497:<init>|  Btree.java:2496:code|  Chip.java:0532:<init>|  Btree.java:2471:<init>|  Btree.java:2470:put|  Btree.java:7182:code|  Chip.java:0532:<init>|  Btree.java:7166:<init>|  Btree.java:7165:test_put_random|  Btree.java:7275:oldTests|  Btree.java:7280:newTests|  Btree.java:7286:main|");
             $fclose(f);
           end
         end
@@ -4946,7 +4946,7 @@ module Btree;                                                                   
           begin
             integer f;
             f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:0514:<init>|  Chip.java:0699:<init>|  Chip.java:0698:Copy|  Btree.java:0112:allocate|  Btree.java:0153:allocateLeaf|  Btree.java:1770:splitLeafNotTop|  Btree.java:2518:Then|  Chip.java:0612:<init>|  Btree.java:2517:<init>|  Btree.java:2516:Then|  Chip.java:0612:<init>|  Btree.java:2515:<init>|  Btree.java:2514:Leaf|  Btree.java:1546:code|  Chip.java:0532:<init>|  Btree.java:1528:<init>|  Btree.java:1527:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2511:<init>|  Btree.java:2510:code|  Chip.java:0532:<init>|  Btree.java:2495:<init>|  Btree.java:2494:code|  Chip.java:0532:<init>|  Btree.java:2469:<init>|  Btree.java:2468:put|  Btree.java:7180:code|  Chip.java:0532:<init>|  Btree.java:7164:<init>|  Btree.java:7163:test_put_random|  Btree.java:7273:oldTests|  Btree.java:7278:newTests|  Btree.java:7284:main|");
+            $fdisplay(f, "Location: Chip.java:0514:<init>|  Chip.java:0699:<init>|  Chip.java:0698:Copy|  Btree.java:0112:allocate|  Btree.java:0153:allocateLeaf|  Btree.java:1770:splitLeafNotTop|  Btree.java:2520:Then|  Chip.java:0612:<init>|  Btree.java:2519:<init>|  Btree.java:2518:Then|  Chip.java:0612:<init>|  Btree.java:2517:<init>|  Btree.java:2516:Leaf|  Btree.java:1546:code|  Chip.java:0532:<init>|  Btree.java:1528:<init>|  Btree.java:1527:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2513:<init>|  Btree.java:2512:code|  Chip.java:0532:<init>|  Btree.java:2497:<init>|  Btree.java:2496:code|  Chip.java:0532:<init>|  Btree.java:2471:<init>|  Btree.java:2470:put|  Btree.java:7182:code|  Chip.java:0532:<init>|  Btree.java:7166:<init>|  Btree.java:7165:test_put_random|  Btree.java:7275:oldTests|  Btree.java:7280:newTests|  Btree.java:7286:main|");
             $fclose(f);
           end
         end
@@ -4959,7 +4959,7 @@ module Btree;                                                                   
           begin
             integer f;
             f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:0514:<init>|  Chip.java:1415:<init>|  Chip.java:1414:ExecuteTransaction|  Btree.java:0113:allocate|  Btree.java:0153:allocateLeaf|  Btree.java:1770:splitLeafNotTop|  Btree.java:2518:Then|  Chip.java:0612:<init>|  Btree.java:2517:<init>|  Btree.java:2516:Then|  Chip.java:0612:<init>|  Btree.java:2515:<init>|  Btree.java:2514:Leaf|  Btree.java:1546:code|  Chip.java:0532:<init>|  Btree.java:1528:<init>|  Btree.java:1527:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2511:<init>|  Btree.java:2510:code|  Chip.java:0532:<init>|  Btree.java:2495:<init>|  Btree.java:2494:code|  Chip.java:0532:<init>|  Btree.java:2469:<init>|  Btree.java:2468:put|  Btree.java:7180:code|  Chip.java:0532:<init>|  Btree.java:7164:<init>|  Btree.java:7163:test_put_random|  Btree.java:7273:oldTests|  Btree.java:7278:newTests|  Btree.java:7284:main|");
+            $fdisplay(f, "Location: Chip.java:0514:<init>|  Chip.java:1415:<init>|  Chip.java:1414:ExecuteTransaction|  Btree.java:0113:allocate|  Btree.java:0153:allocateLeaf|  Btree.java:1770:splitLeafNotTop|  Btree.java:2520:Then|  Chip.java:0612:<init>|  Btree.java:2519:<init>|  Btree.java:2518:Then|  Chip.java:0612:<init>|  Btree.java:2517:<init>|  Btree.java:2516:Leaf|  Btree.java:1546:code|  Chip.java:0532:<init>|  Btree.java:1528:<init>|  Btree.java:1527:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2513:<init>|  Btree.java:2512:code|  Chip.java:0532:<init>|  Btree.java:2497:<init>|  Btree.java:2496:code|  Chip.java:0532:<init>|  Btree.java:2471:<init>|  Btree.java:2470:put|  Btree.java:7182:code|  Chip.java:0532:<init>|  Btree.java:7166:<init>|  Btree.java:7165:test_put_random|  Btree.java:7275:oldTests|  Btree.java:7280:newTests|  Btree.java:7286:main|");
             $fclose(f);
           end
         end
@@ -4970,7 +4970,7 @@ module Btree;                                                                   
           begin
             integer f;
             f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:1422:<init>|  Chip.java:1421:waitResultOfTransaction|  Btree.java:0114:allocate|  Btree.java:0153:allocateLeaf|  Btree.java:1770:splitLeafNotTop|  Btree.java:2518:Then|  Chip.java:0612:<init>|  Btree.java:2517:<init>|  Btree.java:2516:Then|  Chip.java:0612:<init>|  Btree.java:2515:<init>|  Btree.java:2514:Leaf|  Btree.java:1546:code|  Chip.java:0532:<init>|  Btree.java:1528:<init>|  Btree.java:1527:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2511:<init>|  Btree.java:2510:code|  Chip.java:0532:<init>|  Btree.java:2495:<init>|  Btree.java:2494:code|  Chip.java:0532:<init>|  Btree.java:2469:<init>|  Btree.java:2468:put|  Btree.java:7180:code|  Chip.java:0532:<init>|  Btree.java:7164:<init>|  Btree.java:7163:test_put_random|  Btree.java:7273:oldTests|  Btree.java:7278:newTests|  Btree.java:7284:main|");
+            $fdisplay(f, "Location: Chip.java:1422:<init>|  Chip.java:1421:waitResultOfTransaction|  Btree.java:0114:allocate|  Btree.java:0153:allocateLeaf|  Btree.java:1770:splitLeafNotTop|  Btree.java:2520:Then|  Chip.java:0612:<init>|  Btree.java:2519:<init>|  Btree.java:2518:Then|  Chip.java:0612:<init>|  Btree.java:2517:<init>|  Btree.java:2516:Leaf|  Btree.java:1546:code|  Chip.java:0532:<init>|  Btree.java:1528:<init>|  Btree.java:1527:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2513:<init>|  Btree.java:2512:code|  Chip.java:0532:<init>|  Btree.java:2497:<init>|  Btree.java:2496:code|  Chip.java:0532:<init>|  Btree.java:2471:<init>|  Btree.java:2470:put|  Btree.java:7182:code|  Chip.java:0532:<init>|  Btree.java:7166:<init>|  Btree.java:7165:test_put_random|  Btree.java:7275:oldTests|  Btree.java:7280:newTests|  Btree.java:7286:main|");
             $fclose(f);
           end
         end
@@ -4981,7 +4981,7 @@ module Btree;                                                                   
           begin
             integer f;
             f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:1422:<init>|  Chip.java:1421:waitResultOfTransaction|  Btree.java:0115:allocate|  Btree.java:0153:allocateLeaf|  Btree.java:1770:splitLeafNotTop|  Btree.java:2518:Then|  Chip.java:0612:<init>|  Btree.java:2517:<init>|  Btree.java:2516:Then|  Chip.java:0612:<init>|  Btree.java:2515:<init>|  Btree.java:2514:Leaf|  Btree.java:1546:code|  Chip.java:0532:<init>|  Btree.java:1528:<init>|  Btree.java:1527:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2511:<init>|  Btree.java:2510:code|  Chip.java:0532:<init>|  Btree.java:2495:<init>|  Btree.java:2494:code|  Chip.java:0532:<init>|  Btree.java:2469:<init>|  Btree.java:2468:put|  Btree.java:7180:code|  Chip.java:0532:<init>|  Btree.java:7164:<init>|  Btree.java:7163:test_put_random|  Btree.java:7273:oldTests|  Btree.java:7278:newTests|  Btree.java:7284:main|");
+            $fdisplay(f, "Location: Chip.java:1422:<init>|  Chip.java:1421:waitResultOfTransaction|  Btree.java:0115:allocate|  Btree.java:0153:allocateLeaf|  Btree.java:1770:splitLeafNotTop|  Btree.java:2520:Then|  Chip.java:0612:<init>|  Btree.java:2519:<init>|  Btree.java:2518:Then|  Chip.java:0612:<init>|  Btree.java:2517:<init>|  Btree.java:2516:Leaf|  Btree.java:1546:code|  Chip.java:0532:<init>|  Btree.java:1528:<init>|  Btree.java:1527:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2513:<init>|  Btree.java:2512:code|  Chip.java:0532:<init>|  Btree.java:2497:<init>|  Btree.java:2496:code|  Chip.java:0532:<init>|  Btree.java:2471:<init>|  Btree.java:2470:put|  Btree.java:7182:code|  Chip.java:0532:<init>|  Btree.java:7166:<init>|  Btree.java:7165:test_put_random|  Btree.java:7275:oldTests|  Btree.java:7280:newTests|  Btree.java:7286:main|");
             $fclose(f);
           end
         end
@@ -4992,7 +4992,7 @@ module Btree;                                                                   
           begin
             integer f;
             f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:1422:<init>|  Chip.java:1421:waitResultOfTransaction|  Btree.java:0116:allocate|  Btree.java:0153:allocateLeaf|  Btree.java:1770:splitLeafNotTop|  Btree.java:2518:Then|  Chip.java:0612:<init>|  Btree.java:2517:<init>|  Btree.java:2516:Then|  Chip.java:0612:<init>|  Btree.java:2515:<init>|  Btree.java:2514:Leaf|  Btree.java:1546:code|  Chip.java:0532:<init>|  Btree.java:1528:<init>|  Btree.java:1527:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2511:<init>|  Btree.java:2510:code|  Chip.java:0532:<init>|  Btree.java:2495:<init>|  Btree.java:2494:code|  Chip.java:0532:<init>|  Btree.java:2469:<init>|  Btree.java:2468:put|  Btree.java:7180:code|  Chip.java:0532:<init>|  Btree.java:7164:<init>|  Btree.java:7163:test_put_random|  Btree.java:7273:oldTests|  Btree.java:7278:newTests|  Btree.java:7284:main|");
+            $fdisplay(f, "Location: Chip.java:1422:<init>|  Chip.java:1421:waitResultOfTransaction|  Btree.java:0116:allocate|  Btree.java:0153:allocateLeaf|  Btree.java:1770:splitLeafNotTop|  Btree.java:2520:Then|  Chip.java:0612:<init>|  Btree.java:2519:<init>|  Btree.java:2518:Then|  Chip.java:0612:<init>|  Btree.java:2517:<init>|  Btree.java:2516:Leaf|  Btree.java:1546:code|  Chip.java:0532:<init>|  Btree.java:1528:<init>|  Btree.java:1527:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2513:<init>|  Btree.java:2512:code|  Chip.java:0532:<init>|  Btree.java:2497:<init>|  Btree.java:2496:code|  Chip.java:0532:<init>|  Btree.java:2471:<init>|  Btree.java:2470:put|  Btree.java:7182:code|  Chip.java:0532:<init>|  Btree.java:7166:<init>|  Btree.java:7165:test_put_random|  Btree.java:7275:oldTests|  Btree.java:7280:newTests|  Btree.java:7286:main|");
             $fclose(f);
           end
         end
@@ -5019,7 +5019,7 @@ module Btree;                                                                   
           begin
             integer f;
             f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:0514:<init>|  Btree.java:0330:<init>|  Btree.java:0329:stuckPut|  Btree.java:0352:stuckPut|  Btree.java:1770:splitLeafNotTop|  Btree.java:2518:Then|  Chip.java:0612:<init>|  Btree.java:2517:<init>|  Btree.java:2516:Then|  Chip.java:0612:<init>|  Btree.java:2515:<init>|  Btree.java:2514:Leaf|  Btree.java:1546:code|  Chip.java:0532:<init>|  Btree.java:1528:<init>|  Btree.java:1527:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2511:<init>|  Btree.java:2510:code|  Chip.java:0532:<init>|  Btree.java:2495:<init>|  Btree.java:2494:code|  Chip.java:0532:<init>|  Btree.java:2469:<init>|  Btree.java:2468:put|  Btree.java:7180:code|  Chip.java:0532:<init>|  Btree.java:7164:<init>|  Btree.java:7163:test_put_random|  Btree.java:7273:oldTests|  Btree.java:7278:newTests|  Btree.java:7284:main|");
+            $fdisplay(f, "Location: Chip.java:0514:<init>|  Btree.java:0330:<init>|  Btree.java:0329:stuckPut|  Btree.java:0352:stuckPut|  Btree.java:1770:splitLeafNotTop|  Btree.java:2520:Then|  Chip.java:0612:<init>|  Btree.java:2519:<init>|  Btree.java:2518:Then|  Chip.java:0612:<init>|  Btree.java:2517:<init>|  Btree.java:2516:Leaf|  Btree.java:1546:code|  Chip.java:0532:<init>|  Btree.java:1528:<init>|  Btree.java:1527:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2513:<init>|  Btree.java:2512:code|  Chip.java:0532:<init>|  Btree.java:2497:<init>|  Btree.java:2496:code|  Chip.java:0532:<init>|  Btree.java:2471:<init>|  Btree.java:2470:put|  Btree.java:7182:code|  Chip.java:0532:<init>|  Btree.java:7166:<init>|  Btree.java:7165:test_put_random|  Btree.java:7275:oldTests|  Btree.java:7280:newTests|  Btree.java:7286:main|");
             $fclose(f);
           end
         end
@@ -5030,7 +5030,7 @@ module Btree;                                                                   
           begin
             integer f;
             f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:1422:<init>|  Chip.java:1421:waitResultOfTransaction|  Btree.java:0344:stuckPut|  Btree.java:0352:stuckPut|  Btree.java:1770:splitLeafNotTop|  Btree.java:2518:Then|  Chip.java:0612:<init>|  Btree.java:2517:<init>|  Btree.java:2516:Then|  Chip.java:0612:<init>|  Btree.java:2515:<init>|  Btree.java:2514:Leaf|  Btree.java:1546:code|  Chip.java:0532:<init>|  Btree.java:1528:<init>|  Btree.java:1527:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2511:<init>|  Btree.java:2510:code|  Chip.java:0532:<init>|  Btree.java:2495:<init>|  Btree.java:2494:code|  Chip.java:0532:<init>|  Btree.java:2469:<init>|  Btree.java:2468:put|  Btree.java:7180:code|  Chip.java:0532:<init>|  Btree.java:7164:<init>|  Btree.java:7163:test_put_random|  Btree.java:7273:oldTests|  Btree.java:7278:newTests|  Btree.java:7284:main|");
+            $fdisplay(f, "Location: Chip.java:1422:<init>|  Chip.java:1421:waitResultOfTransaction|  Btree.java:0344:stuckPut|  Btree.java:0352:stuckPut|  Btree.java:1770:splitLeafNotTop|  Btree.java:2520:Then|  Chip.java:0612:<init>|  Btree.java:2519:<init>|  Btree.java:2518:Then|  Chip.java:0612:<init>|  Btree.java:2517:<init>|  Btree.java:2516:Leaf|  Btree.java:1546:code|  Chip.java:0532:<init>|  Btree.java:1528:<init>|  Btree.java:1527:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2513:<init>|  Btree.java:2512:code|  Chip.java:0532:<init>|  Btree.java:2497:<init>|  Btree.java:2496:code|  Chip.java:0532:<init>|  Btree.java:2471:<init>|  Btree.java:2470:put|  Btree.java:7182:code|  Chip.java:0532:<init>|  Btree.java:7166:<init>|  Btree.java:7165:test_put_random|  Btree.java:7275:oldTests|  Btree.java:7280:newTests|  Btree.java:7286:main|");
             $fclose(f);
           end
         end
@@ -5041,7 +5041,7 @@ module Btree;                                                                   
           begin
             integer f;
             f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:1422:<init>|  Chip.java:1421:waitResultOfTransaction|  Btree.java:0347:stuckPut|  Btree.java:0352:stuckPut|  Btree.java:1770:splitLeafNotTop|  Btree.java:2518:Then|  Chip.java:0612:<init>|  Btree.java:2517:<init>|  Btree.java:2516:Then|  Chip.java:0612:<init>|  Btree.java:2515:<init>|  Btree.java:2514:Leaf|  Btree.java:1546:code|  Chip.java:0532:<init>|  Btree.java:1528:<init>|  Btree.java:1527:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2511:<init>|  Btree.java:2510:code|  Chip.java:0532:<init>|  Btree.java:2495:<init>|  Btree.java:2494:code|  Chip.java:0532:<init>|  Btree.java:2469:<init>|  Btree.java:2468:put|  Btree.java:7180:code|  Chip.java:0532:<init>|  Btree.java:7164:<init>|  Btree.java:7163:test_put_random|  Btree.java:7273:oldTests|  Btree.java:7278:newTests|  Btree.java:7284:main|");
+            $fdisplay(f, "Location: Chip.java:1422:<init>|  Chip.java:1421:waitResultOfTransaction|  Btree.java:0347:stuckPut|  Btree.java:0352:stuckPut|  Btree.java:1770:splitLeafNotTop|  Btree.java:2520:Then|  Chip.java:0612:<init>|  Btree.java:2519:<init>|  Btree.java:2518:Then|  Chip.java:0612:<init>|  Btree.java:2517:<init>|  Btree.java:2516:Leaf|  Btree.java:1546:code|  Chip.java:0532:<init>|  Btree.java:1528:<init>|  Btree.java:1527:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2513:<init>|  Btree.java:2512:code|  Chip.java:0532:<init>|  Btree.java:2497:<init>|  Btree.java:2496:code|  Chip.java:0532:<init>|  Btree.java:2471:<init>|  Btree.java:2470:put|  Btree.java:7182:code|  Chip.java:0532:<init>|  Btree.java:7166:<init>|  Btree.java:7165:test_put_random|  Btree.java:7275:oldTests|  Btree.java:7280:newTests|  Btree.java:7286:main|");
             $fclose(f);
           end
         end
@@ -5052,7 +5052,7 @@ module Btree;                                                                   
           begin
             integer f;
             f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:1422:<init>|  Chip.java:1421:waitResultOfTransaction|  Btree.java:0348:stuckPut|  Btree.java:0352:stuckPut|  Btree.java:1770:splitLeafNotTop|  Btree.java:2518:Then|  Chip.java:0612:<init>|  Btree.java:2517:<init>|  Btree.java:2516:Then|  Chip.java:0612:<init>|  Btree.java:2515:<init>|  Btree.java:2514:Leaf|  Btree.java:1546:code|  Chip.java:0532:<init>|  Btree.java:1528:<init>|  Btree.java:1527:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2511:<init>|  Btree.java:2510:code|  Chip.java:0532:<init>|  Btree.java:2495:<init>|  Btree.java:2494:code|  Chip.java:0532:<init>|  Btree.java:2469:<init>|  Btree.java:2468:put|  Btree.java:7180:code|  Chip.java:0532:<init>|  Btree.java:7164:<init>|  Btree.java:7163:test_put_random|  Btree.java:7273:oldTests|  Btree.java:7278:newTests|  Btree.java:7284:main|");
+            $fdisplay(f, "Location: Chip.java:1422:<init>|  Chip.java:1421:waitResultOfTransaction|  Btree.java:0348:stuckPut|  Btree.java:0352:stuckPut|  Btree.java:1770:splitLeafNotTop|  Btree.java:2520:Then|  Chip.java:0612:<init>|  Btree.java:2519:<init>|  Btree.java:2518:Then|  Chip.java:0612:<init>|  Btree.java:2517:<init>|  Btree.java:2516:Leaf|  Btree.java:1546:code|  Chip.java:0532:<init>|  Btree.java:1528:<init>|  Btree.java:1527:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2513:<init>|  Btree.java:2512:code|  Chip.java:0532:<init>|  Btree.java:2497:<init>|  Btree.java:2496:code|  Chip.java:0532:<init>|  Btree.java:2471:<init>|  Btree.java:2470:put|  Btree.java:7182:code|  Chip.java:0532:<init>|  Btree.java:7166:<init>|  Btree.java:7165:test_put_random|  Btree.java:7275:oldTests|  Btree.java:7280:newTests|  Btree.java:7286:main|");
             $fclose(f);
           end
         end
@@ -5079,7 +5079,7 @@ module Btree;                                                                   
           begin
             integer f;
             f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:0514:<init>|  Btree.java:0330:<init>|  Btree.java:0329:stuckPut|  Btree.java:0352:stuckPut|  Btree.java:1771:splitLeafNotTop|  Btree.java:2518:Then|  Chip.java:0612:<init>|  Btree.java:2517:<init>|  Btree.java:2516:Then|  Chip.java:0612:<init>|  Btree.java:2515:<init>|  Btree.java:2514:Leaf|  Btree.java:1546:code|  Chip.java:0532:<init>|  Btree.java:1528:<init>|  Btree.java:1527:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2511:<init>|  Btree.java:2510:code|  Chip.java:0532:<init>|  Btree.java:2495:<init>|  Btree.java:2494:code|  Chip.java:0532:<init>|  Btree.java:2469:<init>|  Btree.java:2468:put|  Btree.java:7180:code|  Chip.java:0532:<init>|  Btree.java:7164:<init>|  Btree.java:7163:test_put_random|  Btree.java:7273:oldTests|  Btree.java:7278:newTests|  Btree.java:7284:main|");
+            $fdisplay(f, "Location: Chip.java:0514:<init>|  Btree.java:0330:<init>|  Btree.java:0329:stuckPut|  Btree.java:0352:stuckPut|  Btree.java:1771:splitLeafNotTop|  Btree.java:2520:Then|  Chip.java:0612:<init>|  Btree.java:2519:<init>|  Btree.java:2518:Then|  Chip.java:0612:<init>|  Btree.java:2517:<init>|  Btree.java:2516:Leaf|  Btree.java:1546:code|  Chip.java:0532:<init>|  Btree.java:1528:<init>|  Btree.java:1527:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2513:<init>|  Btree.java:2512:code|  Chip.java:0532:<init>|  Btree.java:2497:<init>|  Btree.java:2496:code|  Chip.java:0532:<init>|  Btree.java:2471:<init>|  Btree.java:2470:put|  Btree.java:7182:code|  Chip.java:0532:<init>|  Btree.java:7166:<init>|  Btree.java:7165:test_put_random|  Btree.java:7275:oldTests|  Btree.java:7280:newTests|  Btree.java:7286:main|");
             $fclose(f);
           end
         end
@@ -5090,7 +5090,7 @@ module Btree;                                                                   
           begin
             integer f;
             f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:1422:<init>|  Chip.java:1421:waitResultOfTransaction|  Btree.java:0344:stuckPut|  Btree.java:0352:stuckPut|  Btree.java:1771:splitLeafNotTop|  Btree.java:2518:Then|  Chip.java:0612:<init>|  Btree.java:2517:<init>|  Btree.java:2516:Then|  Chip.java:0612:<init>|  Btree.java:2515:<init>|  Btree.java:2514:Leaf|  Btree.java:1546:code|  Chip.java:0532:<init>|  Btree.java:1528:<init>|  Btree.java:1527:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2511:<init>|  Btree.java:2510:code|  Chip.java:0532:<init>|  Btree.java:2495:<init>|  Btree.java:2494:code|  Chip.java:0532:<init>|  Btree.java:2469:<init>|  Btree.java:2468:put|  Btree.java:7180:code|  Chip.java:0532:<init>|  Btree.java:7164:<init>|  Btree.java:7163:test_put_random|  Btree.java:7273:oldTests|  Btree.java:7278:newTests|  Btree.java:7284:main|");
+            $fdisplay(f, "Location: Chip.java:1422:<init>|  Chip.java:1421:waitResultOfTransaction|  Btree.java:0344:stuckPut|  Btree.java:0352:stuckPut|  Btree.java:1771:splitLeafNotTop|  Btree.java:2520:Then|  Chip.java:0612:<init>|  Btree.java:2519:<init>|  Btree.java:2518:Then|  Chip.java:0612:<init>|  Btree.java:2517:<init>|  Btree.java:2516:Leaf|  Btree.java:1546:code|  Chip.java:0532:<init>|  Btree.java:1528:<init>|  Btree.java:1527:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2513:<init>|  Btree.java:2512:code|  Chip.java:0532:<init>|  Btree.java:2497:<init>|  Btree.java:2496:code|  Chip.java:0532:<init>|  Btree.java:2471:<init>|  Btree.java:2470:put|  Btree.java:7182:code|  Chip.java:0532:<init>|  Btree.java:7166:<init>|  Btree.java:7165:test_put_random|  Btree.java:7275:oldTests|  Btree.java:7280:newTests|  Btree.java:7286:main|");
             $fclose(f);
           end
         end
@@ -5101,7 +5101,7 @@ module Btree;                                                                   
           begin
             integer f;
             f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:1422:<init>|  Chip.java:1421:waitResultOfTransaction|  Btree.java:0347:stuckPut|  Btree.java:0352:stuckPut|  Btree.java:1771:splitLeafNotTop|  Btree.java:2518:Then|  Chip.java:0612:<init>|  Btree.java:2517:<init>|  Btree.java:2516:Then|  Chip.java:0612:<init>|  Btree.java:2515:<init>|  Btree.java:2514:Leaf|  Btree.java:1546:code|  Chip.java:0532:<init>|  Btree.java:1528:<init>|  Btree.java:1527:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2511:<init>|  Btree.java:2510:code|  Chip.java:0532:<init>|  Btree.java:2495:<init>|  Btree.java:2494:code|  Chip.java:0532:<init>|  Btree.java:2469:<init>|  Btree.java:2468:put|  Btree.java:7180:code|  Chip.java:0532:<init>|  Btree.java:7164:<init>|  Btree.java:7163:test_put_random|  Btree.java:7273:oldTests|  Btree.java:7278:newTests|  Btree.java:7284:main|");
+            $fdisplay(f, "Location: Chip.java:1422:<init>|  Chip.java:1421:waitResultOfTransaction|  Btree.java:0347:stuckPut|  Btree.java:0352:stuckPut|  Btree.java:1771:splitLeafNotTop|  Btree.java:2520:Then|  Chip.java:0612:<init>|  Btree.java:2519:<init>|  Btree.java:2518:Then|  Chip.java:0612:<init>|  Btree.java:2517:<init>|  Btree.java:2516:Leaf|  Btree.java:1546:code|  Chip.java:0532:<init>|  Btree.java:1528:<init>|  Btree.java:1527:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2513:<init>|  Btree.java:2512:code|  Chip.java:0532:<init>|  Btree.java:2497:<init>|  Btree.java:2496:code|  Chip.java:0532:<init>|  Btree.java:2471:<init>|  Btree.java:2470:put|  Btree.java:7182:code|  Chip.java:0532:<init>|  Btree.java:7166:<init>|  Btree.java:7165:test_put_random|  Btree.java:7275:oldTests|  Btree.java:7280:newTests|  Btree.java:7286:main|");
             $fclose(f);
           end
         end
@@ -5112,7 +5112,7 @@ module Btree;                                                                   
           begin
             integer f;
             f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:1422:<init>|  Chip.java:1421:waitResultOfTransaction|  Btree.java:0348:stuckPut|  Btree.java:0352:stuckPut|  Btree.java:1771:splitLeafNotTop|  Btree.java:2518:Then|  Chip.java:0612:<init>|  Btree.java:2517:<init>|  Btree.java:2516:Then|  Chip.java:0612:<init>|  Btree.java:2515:<init>|  Btree.java:2514:Leaf|  Btree.java:1546:code|  Chip.java:0532:<init>|  Btree.java:1528:<init>|  Btree.java:1527:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2511:<init>|  Btree.java:2510:code|  Chip.java:0532:<init>|  Btree.java:2495:<init>|  Btree.java:2494:code|  Chip.java:0532:<init>|  Btree.java:2469:<init>|  Btree.java:2468:put|  Btree.java:7180:code|  Chip.java:0532:<init>|  Btree.java:7164:<init>|  Btree.java:7163:test_put_random|  Btree.java:7273:oldTests|  Btree.java:7278:newTests|  Btree.java:7284:main|");
+            $fdisplay(f, "Location: Chip.java:1422:<init>|  Chip.java:1421:waitResultOfTransaction|  Btree.java:0348:stuckPut|  Btree.java:0352:stuckPut|  Btree.java:1771:splitLeafNotTop|  Btree.java:2520:Then|  Chip.java:0612:<init>|  Btree.java:2519:<init>|  Btree.java:2518:Then|  Chip.java:0612:<init>|  Btree.java:2517:<init>|  Btree.java:2516:Leaf|  Btree.java:1546:code|  Chip.java:0532:<init>|  Btree.java:1528:<init>|  Btree.java:1527:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2513:<init>|  Btree.java:2512:code|  Chip.java:0532:<init>|  Btree.java:2497:<init>|  Btree.java:2496:code|  Chip.java:0532:<init>|  Btree.java:2471:<init>|  Btree.java:2470:put|  Btree.java:7182:code|  Chip.java:0532:<init>|  Btree.java:7166:<init>|  Btree.java:7165:test_put_random|  Btree.java:7275:oldTests|  Btree.java:7280:newTests|  Btree.java:7286:main|");
             $fclose(f);
           end
         end
@@ -5135,7 +5135,7 @@ module Btree;                                                                   
           begin
             integer f;
             f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:0514:<init>|  Btree.java:0751:<init>|  Btree.java:0750:LastElement|  Btree.java:1773:splitLeafNotTop|  Btree.java:2518:Then|  Chip.java:0612:<init>|  Btree.java:2517:<init>|  Btree.java:2516:Then|  Chip.java:0612:<init>|  Btree.java:2515:<init>|  Btree.java:2514:Leaf|  Btree.java:1546:code|  Chip.java:0532:<init>|  Btree.java:1528:<init>|  Btree.java:1527:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2511:<init>|  Btree.java:2510:code|  Chip.java:0532:<init>|  Btree.java:2495:<init>|  Btree.java:2494:code|  Chip.java:0532:<init>|  Btree.java:2469:<init>|  Btree.java:2468:put|  Btree.java:7180:code|  Chip.java:0532:<init>|  Btree.java:7164:<init>|  Btree.java:7163:test_put_random|  Btree.java:7273:oldTests|  Btree.java:7278:newTests|  Btree.java:7284:main|");
+            $fdisplay(f, "Location: Chip.java:0514:<init>|  Btree.java:0751:<init>|  Btree.java:0750:LastElement|  Btree.java:1773:splitLeafNotTop|  Btree.java:2520:Then|  Chip.java:0612:<init>|  Btree.java:2519:<init>|  Btree.java:2518:Then|  Chip.java:0612:<init>|  Btree.java:2517:<init>|  Btree.java:2516:Leaf|  Btree.java:1546:code|  Chip.java:0532:<init>|  Btree.java:1528:<init>|  Btree.java:1527:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2513:<init>|  Btree.java:2512:code|  Chip.java:0532:<init>|  Btree.java:2497:<init>|  Btree.java:2496:code|  Chip.java:0532:<init>|  Btree.java:2471:<init>|  Btree.java:2470:put|  Btree.java:7182:code|  Chip.java:0532:<init>|  Btree.java:7166:<init>|  Btree.java:7165:test_put_random|  Btree.java:7275:oldTests|  Btree.java:7280:newTests|  Btree.java:7286:main|");
             $fclose(f);
           end
         end
@@ -5146,7 +5146,7 @@ module Btree;                                                                   
           begin
             integer f;
             f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:0514:<init>|  Btree.java:0724:<init>|  Btree.java:0723:FirstElement|  Btree.java:1774:splitLeafNotTop|  Btree.java:2518:Then|  Chip.java:0612:<init>|  Btree.java:2517:<init>|  Btree.java:2516:Then|  Chip.java:0612:<init>|  Btree.java:2515:<init>|  Btree.java:2514:Leaf|  Btree.java:1546:code|  Chip.java:0532:<init>|  Btree.java:1528:<init>|  Btree.java:1527:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2511:<init>|  Btree.java:2510:code|  Chip.java:0532:<init>|  Btree.java:2495:<init>|  Btree.java:2494:code|  Chip.java:0532:<init>|  Btree.java:2469:<init>|  Btree.java:2468:put|  Btree.java:7180:code|  Chip.java:0532:<init>|  Btree.java:7164:<init>|  Btree.java:7163:test_put_random|  Btree.java:7273:oldTests|  Btree.java:7278:newTests|  Btree.java:7284:main|");
+            $fdisplay(f, "Location: Chip.java:0514:<init>|  Btree.java:0724:<init>|  Btree.java:0723:FirstElement|  Btree.java:1774:splitLeafNotTop|  Btree.java:2520:Then|  Chip.java:0612:<init>|  Btree.java:2519:<init>|  Btree.java:2518:Then|  Chip.java:0612:<init>|  Btree.java:2517:<init>|  Btree.java:2516:Leaf|  Btree.java:1546:code|  Chip.java:0532:<init>|  Btree.java:1528:<init>|  Btree.java:1527:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2513:<init>|  Btree.java:2512:code|  Chip.java:0532:<init>|  Btree.java:2497:<init>|  Btree.java:2496:code|  Chip.java:0532:<init>|  Btree.java:2471:<init>|  Btree.java:2470:put|  Btree.java:7182:code|  Chip.java:0532:<init>|  Btree.java:7166:<init>|  Btree.java:7165:test_put_random|  Btree.java:7275:oldTests|  Btree.java:7280:newTests|  Btree.java:7286:main|");
             $fclose(f);
           end
         end
@@ -5156,7 +5156,7 @@ module Btree;                                                                   
           begin
             integer f;
             f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:0514:<init>|  Chip.java:0863:<init>|  Chip.java:0862:Average|  Btree.java:1775:splitLeafNotTop|  Btree.java:2518:Then|  Chip.java:0612:<init>|  Btree.java:2517:<init>|  Btree.java:2516:Then|  Chip.java:0612:<init>|  Btree.java:2515:<init>|  Btree.java:2514:Leaf|  Btree.java:1546:code|  Chip.java:0532:<init>|  Btree.java:1528:<init>|  Btree.java:1527:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2511:<init>|  Btree.java:2510:code|  Chip.java:0532:<init>|  Btree.java:2495:<init>|  Btree.java:2494:code|  Chip.java:0532:<init>|  Btree.java:2469:<init>|  Btree.java:2468:put|  Btree.java:7180:code|  Chip.java:0532:<init>|  Btree.java:7164:<init>|  Btree.java:7163:test_put_random|  Btree.java:7273:oldTests|  Btree.java:7278:newTests|  Btree.java:7284:main|");
+            $fdisplay(f, "Location: Chip.java:0514:<init>|  Chip.java:0863:<init>|  Chip.java:0862:Average|  Btree.java:1775:splitLeafNotTop|  Btree.java:2520:Then|  Chip.java:0612:<init>|  Btree.java:2519:<init>|  Btree.java:2518:Then|  Chip.java:0612:<init>|  Btree.java:2517:<init>|  Btree.java:2516:Leaf|  Btree.java:1546:code|  Chip.java:0532:<init>|  Btree.java:1528:<init>|  Btree.java:1527:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2513:<init>|  Btree.java:2512:code|  Chip.java:0532:<init>|  Btree.java:2497:<init>|  Btree.java:2496:code|  Chip.java:0532:<init>|  Btree.java:2471:<init>|  Btree.java:2470:put|  Btree.java:7182:code|  Chip.java:0532:<init>|  Btree.java:7166:<init>|  Btree.java:7165:test_put_random|  Btree.java:7275:oldTests|  Btree.java:7280:newTests|  Btree.java:7286:main|");
             $fclose(f);
           end
         end
@@ -5196,7 +5196,7 @@ module Btree;                                                                   
           begin
             integer f;
             f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:0514:<init>|  Btree.java:0921:<init>|  Btree.java:0920:InsertElementAt|  Btree.java:1776:splitLeafNotTop|  Btree.java:2518:Then|  Chip.java:0612:<init>|  Btree.java:2517:<init>|  Btree.java:2516:Then|  Chip.java:0612:<init>|  Btree.java:2515:<init>|  Btree.java:2514:Leaf|  Btree.java:1546:code|  Chip.java:0532:<init>|  Btree.java:1528:<init>|  Btree.java:1527:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2511:<init>|  Btree.java:2510:code|  Chip.java:0532:<init>|  Btree.java:2495:<init>|  Btree.java:2494:code|  Chip.java:0532:<init>|  Btree.java:2469:<init>|  Btree.java:2468:put|  Btree.java:7180:code|  Chip.java:0532:<init>|  Btree.java:7164:<init>|  Btree.java:7163:test_put_random|  Btree.java:7273:oldTests|  Btree.java:7278:newTests|  Btree.java:7284:main|");
+            $fdisplay(f, "Location: Chip.java:0514:<init>|  Btree.java:0921:<init>|  Btree.java:0920:InsertElementAt|  Btree.java:1776:splitLeafNotTop|  Btree.java:2520:Then|  Chip.java:0612:<init>|  Btree.java:2519:<init>|  Btree.java:2518:Then|  Chip.java:0612:<init>|  Btree.java:2517:<init>|  Btree.java:2516:Leaf|  Btree.java:1546:code|  Chip.java:0532:<init>|  Btree.java:1528:<init>|  Btree.java:1527:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2513:<init>|  Btree.java:2512:code|  Chip.java:0532:<init>|  Btree.java:2497:<init>|  Btree.java:2496:code|  Chip.java:0532:<init>|  Btree.java:2471:<init>|  Btree.java:2470:put|  Btree.java:7182:code|  Chip.java:0532:<init>|  Btree.java:7166:<init>|  Btree.java:7165:test_put_random|  Btree.java:7275:oldTests|  Btree.java:7280:newTests|  Btree.java:7286:main|");
             $fclose(f);
           end
         end
@@ -5223,7 +5223,7 @@ module Btree;                                                                   
           begin
             integer f;
             f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:0514:<init>|  Btree.java:0330:<init>|  Btree.java:0329:stuckPut|  Btree.java:0351:stuckPut|  Btree.java:1777:splitLeafNotTop|  Btree.java:2518:Then|  Chip.java:0612:<init>|  Btree.java:2517:<init>|  Btree.java:2516:Then|  Chip.java:0612:<init>|  Btree.java:2515:<init>|  Btree.java:2514:Leaf|  Btree.java:1546:code|  Chip.java:0532:<init>|  Btree.java:1528:<init>|  Btree.java:1527:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2511:<init>|  Btree.java:2510:code|  Chip.java:0532:<init>|  Btree.java:2495:<init>|  Btree.java:2494:code|  Chip.java:0532:<init>|  Btree.java:2469:<init>|  Btree.java:2468:put|  Btree.java:7180:code|  Chip.java:0532:<init>|  Btree.java:7164:<init>|  Btree.java:7163:test_put_random|  Btree.java:7273:oldTests|  Btree.java:7278:newTests|  Btree.java:7284:main|");
+            $fdisplay(f, "Location: Chip.java:0514:<init>|  Btree.java:0330:<init>|  Btree.java:0329:stuckPut|  Btree.java:0351:stuckPut|  Btree.java:1777:splitLeafNotTop|  Btree.java:2520:Then|  Chip.java:0612:<init>|  Btree.java:2519:<init>|  Btree.java:2518:Then|  Chip.java:0612:<init>|  Btree.java:2517:<init>|  Btree.java:2516:Leaf|  Btree.java:1546:code|  Chip.java:0532:<init>|  Btree.java:1528:<init>|  Btree.java:1527:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2513:<init>|  Btree.java:2512:code|  Chip.java:0532:<init>|  Btree.java:2497:<init>|  Btree.java:2496:code|  Chip.java:0532:<init>|  Btree.java:2471:<init>|  Btree.java:2470:put|  Btree.java:7182:code|  Chip.java:0532:<init>|  Btree.java:7166:<init>|  Btree.java:7165:test_put_random|  Btree.java:7275:oldTests|  Btree.java:7280:newTests|  Btree.java:7286:main|");
             $fclose(f);
           end
         end
@@ -5234,7 +5234,7 @@ module Btree;                                                                   
           begin
             integer f;
             f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:1422:<init>|  Chip.java:1421:waitResultOfTransaction|  Btree.java:0344:stuckPut|  Btree.java:0351:stuckPut|  Btree.java:1777:splitLeafNotTop|  Btree.java:2518:Then|  Chip.java:0612:<init>|  Btree.java:2517:<init>|  Btree.java:2516:Then|  Chip.java:0612:<init>|  Btree.java:2515:<init>|  Btree.java:2514:Leaf|  Btree.java:1546:code|  Chip.java:0532:<init>|  Btree.java:1528:<init>|  Btree.java:1527:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2511:<init>|  Btree.java:2510:code|  Chip.java:0532:<init>|  Btree.java:2495:<init>|  Btree.java:2494:code|  Chip.java:0532:<init>|  Btree.java:2469:<init>|  Btree.java:2468:put|  Btree.java:7180:code|  Chip.java:0532:<init>|  Btree.java:7164:<init>|  Btree.java:7163:test_put_random|  Btree.java:7273:oldTests|  Btree.java:7278:newTests|  Btree.java:7284:main|");
+            $fdisplay(f, "Location: Chip.java:1422:<init>|  Chip.java:1421:waitResultOfTransaction|  Btree.java:0344:stuckPut|  Btree.java:0351:stuckPut|  Btree.java:1777:splitLeafNotTop|  Btree.java:2520:Then|  Chip.java:0612:<init>|  Btree.java:2519:<init>|  Btree.java:2518:Then|  Chip.java:0612:<init>|  Btree.java:2517:<init>|  Btree.java:2516:Leaf|  Btree.java:1546:code|  Chip.java:0532:<init>|  Btree.java:1528:<init>|  Btree.java:1527:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2513:<init>|  Btree.java:2512:code|  Chip.java:0532:<init>|  Btree.java:2497:<init>|  Btree.java:2496:code|  Chip.java:0532:<init>|  Btree.java:2471:<init>|  Btree.java:2470:put|  Btree.java:7182:code|  Chip.java:0532:<init>|  Btree.java:7166:<init>|  Btree.java:7165:test_put_random|  Btree.java:7275:oldTests|  Btree.java:7280:newTests|  Btree.java:7286:main|");
             $fclose(f);
           end
         end
@@ -5245,7 +5245,7 @@ module Btree;                                                                   
           begin
             integer f;
             f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:1422:<init>|  Chip.java:1421:waitResultOfTransaction|  Btree.java:0347:stuckPut|  Btree.java:0351:stuckPut|  Btree.java:1777:splitLeafNotTop|  Btree.java:2518:Then|  Chip.java:0612:<init>|  Btree.java:2517:<init>|  Btree.java:2516:Then|  Chip.java:0612:<init>|  Btree.java:2515:<init>|  Btree.java:2514:Leaf|  Btree.java:1546:code|  Chip.java:0532:<init>|  Btree.java:1528:<init>|  Btree.java:1527:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2511:<init>|  Btree.java:2510:code|  Chip.java:0532:<init>|  Btree.java:2495:<init>|  Btree.java:2494:code|  Chip.java:0532:<init>|  Btree.java:2469:<init>|  Btree.java:2468:put|  Btree.java:7180:code|  Chip.java:0532:<init>|  Btree.java:7164:<init>|  Btree.java:7163:test_put_random|  Btree.java:7273:oldTests|  Btree.java:7278:newTests|  Btree.java:7284:main|");
+            $fdisplay(f, "Location: Chip.java:1422:<init>|  Chip.java:1421:waitResultOfTransaction|  Btree.java:0347:stuckPut|  Btree.java:0351:stuckPut|  Btree.java:1777:splitLeafNotTop|  Btree.java:2520:Then|  Chip.java:0612:<init>|  Btree.java:2519:<init>|  Btree.java:2518:Then|  Chip.java:0612:<init>|  Btree.java:2517:<init>|  Btree.java:2516:Leaf|  Btree.java:1546:code|  Chip.java:0532:<init>|  Btree.java:1528:<init>|  Btree.java:1527:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2513:<init>|  Btree.java:2512:code|  Chip.java:0532:<init>|  Btree.java:2497:<init>|  Btree.java:2496:code|  Chip.java:0532:<init>|  Btree.java:2471:<init>|  Btree.java:2470:put|  Btree.java:7182:code|  Chip.java:0532:<init>|  Btree.java:7166:<init>|  Btree.java:7165:test_put_random|  Btree.java:7275:oldTests|  Btree.java:7280:newTests|  Btree.java:7286:main|");
             $fclose(f);
           end
         end
@@ -5256,7 +5256,7 @@ module Btree;                                                                   
           begin
             integer f;
             f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:1422:<init>|  Chip.java:1421:waitResultOfTransaction|  Btree.java:0348:stuckPut|  Btree.java:0351:stuckPut|  Btree.java:1777:splitLeafNotTop|  Btree.java:2518:Then|  Chip.java:0612:<init>|  Btree.java:2517:<init>|  Btree.java:2516:Then|  Chip.java:0612:<init>|  Btree.java:2515:<init>|  Btree.java:2514:Leaf|  Btree.java:1546:code|  Chip.java:0532:<init>|  Btree.java:1528:<init>|  Btree.java:1527:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2511:<init>|  Btree.java:2510:code|  Chip.java:0532:<init>|  Btree.java:2495:<init>|  Btree.java:2494:code|  Chip.java:0532:<init>|  Btree.java:2469:<init>|  Btree.java:2468:put|  Btree.java:7180:code|  Chip.java:0532:<init>|  Btree.java:7164:<init>|  Btree.java:7163:test_put_random|  Btree.java:7273:oldTests|  Btree.java:7278:newTests|  Btree.java:7284:main|");
+            $fdisplay(f, "Location: Chip.java:1422:<init>|  Chip.java:1421:waitResultOfTransaction|  Btree.java:0348:stuckPut|  Btree.java:0351:stuckPut|  Btree.java:1777:splitLeafNotTop|  Btree.java:2520:Then|  Chip.java:0612:<init>|  Btree.java:2519:<init>|  Btree.java:2518:Then|  Chip.java:0612:<init>|  Btree.java:2517:<init>|  Btree.java:2516:Leaf|  Btree.java:1546:code|  Chip.java:0532:<init>|  Btree.java:1528:<init>|  Btree.java:1527:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2513:<init>|  Btree.java:2512:code|  Chip.java:0532:<init>|  Btree.java:2497:<init>|  Btree.java:2496:code|  Chip.java:0532:<init>|  Btree.java:2471:<init>|  Btree.java:2470:put|  Btree.java:7182:code|  Chip.java:0532:<init>|  Btree.java:7166:<init>|  Btree.java:7165:test_put_random|  Btree.java:7275:oldTests|  Btree.java:7280:newTests|  Btree.java:7286:main|");
             $fclose(f);
           end
         end
@@ -5265,7 +5265,7 @@ module Btree;                                                                   
           begin
             integer f;
             f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:0614:<init>|  Chip.java:0613:<init>|  Btree.java:2517:<init>|  Btree.java:2516:Then|  Chip.java:0612:<init>|  Btree.java:2515:<init>|  Btree.java:2514:Leaf|  Btree.java:1546:code|  Chip.java:0532:<init>|  Btree.java:1528:<init>|  Btree.java:1527:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2511:<init>|  Btree.java:2510:code|  Chip.java:0532:<init>|  Btree.java:2495:<init>|  Btree.java:2494:code|  Chip.java:0532:<init>|  Btree.java:2469:<init>|  Btree.java:2468:put|  Btree.java:7180:code|  Chip.java:0532:<init>|  Btree.java:7164:<init>|  Btree.java:7163:test_put_random|  Btree.java:7273:oldTests|  Btree.java:7278:newTests|  Btree.java:7284:main|");
+            $fdisplay(f, "Location: Chip.java:0614:<init>|  Chip.java:0613:<init>|  Btree.java:2519:<init>|  Btree.java:2518:Then|  Chip.java:0612:<init>|  Btree.java:2517:<init>|  Btree.java:2516:Leaf|  Btree.java:1546:code|  Chip.java:0532:<init>|  Btree.java:1528:<init>|  Btree.java:1527:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2513:<init>|  Btree.java:2512:code|  Chip.java:0532:<init>|  Btree.java:2497:<init>|  Btree.java:2496:code|  Chip.java:0532:<init>|  Btree.java:2471:<init>|  Btree.java:2470:put|  Btree.java:7182:code|  Chip.java:0532:<init>|  Btree.java:7166:<init>|  Btree.java:7165:test_put_random|  Btree.java:7275:oldTests|  Btree.java:7280:newTests|  Btree.java:7286:main|");
             $fclose(f);
           end
         end
@@ -5275,7 +5275,7 @@ module Btree;                                                                   
           begin
             integer f;
             f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:0514:<init>|  Chip.java:0699:<init>|  Chip.java:0698:Copy|  Btree.java:0278:stuckGet|  Btree.java:1789:splitLeafAtTop|  Btree.java:2521:Else|  Chip.java:0622:<init>|  Btree.java:2517:<init>|  Btree.java:2516:Then|  Chip.java:0612:<init>|  Btree.java:2515:<init>|  Btree.java:2514:Leaf|  Btree.java:1546:code|  Chip.java:0532:<init>|  Btree.java:1528:<init>|  Btree.java:1527:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2511:<init>|  Btree.java:2510:code|  Chip.java:0532:<init>|  Btree.java:2495:<init>|  Btree.java:2494:code|  Chip.java:0532:<init>|  Btree.java:2469:<init>|  Btree.java:2468:put|  Btree.java:7180:code|  Chip.java:0532:<init>|  Btree.java:7164:<init>|  Btree.java:7163:test_put_random|  Btree.java:7273:oldTests|  Btree.java:7278:newTests|  Btree.java:7284:main|");
+            $fdisplay(f, "Location: Chip.java:0514:<init>|  Chip.java:0699:<init>|  Chip.java:0698:Copy|  Btree.java:0278:stuckGet|  Btree.java:1789:splitLeafAtTop|  Btree.java:2523:Else|  Chip.java:0622:<init>|  Btree.java:2519:<init>|  Btree.java:2518:Then|  Chip.java:0612:<init>|  Btree.java:2517:<init>|  Btree.java:2516:Leaf|  Btree.java:1546:code|  Chip.java:0532:<init>|  Btree.java:1528:<init>|  Btree.java:1527:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2513:<init>|  Btree.java:2512:code|  Chip.java:0532:<init>|  Btree.java:2497:<init>|  Btree.java:2496:code|  Chip.java:0532:<init>|  Btree.java:2471:<init>|  Btree.java:2470:put|  Btree.java:7182:code|  Chip.java:0532:<init>|  Btree.java:7166:<init>|  Btree.java:7165:test_put_random|  Btree.java:7275:oldTests|  Btree.java:7280:newTests|  Btree.java:7286:main|");
             $fclose(f);
           end
         end
@@ -5296,7 +5296,7 @@ module Btree;                                                                   
           begin
             integer f;
             f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:0514:<init>|  Btree.java:0289:<init>|  Btree.java:0288:stuckGet|  Btree.java:0279:stuckGet|  Btree.java:1789:splitLeafAtTop|  Btree.java:2521:Else|  Chip.java:0622:<init>|  Btree.java:2517:<init>|  Btree.java:2516:Then|  Chip.java:0612:<init>|  Btree.java:2515:<init>|  Btree.java:2514:Leaf|  Btree.java:1546:code|  Chip.java:0532:<init>|  Btree.java:1528:<init>|  Btree.java:1527:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2511:<init>|  Btree.java:2510:code|  Chip.java:0532:<init>|  Btree.java:2495:<init>|  Btree.java:2494:code|  Chip.java:0532:<init>|  Btree.java:2469:<init>|  Btree.java:2468:put|  Btree.java:7180:code|  Chip.java:0532:<init>|  Btree.java:7164:<init>|  Btree.java:7163:test_put_random|  Btree.java:7273:oldTests|  Btree.java:7278:newTests|  Btree.java:7284:main|");
+            $fdisplay(f, "Location: Chip.java:0514:<init>|  Btree.java:0289:<init>|  Btree.java:0288:stuckGet|  Btree.java:0279:stuckGet|  Btree.java:1789:splitLeafAtTop|  Btree.java:2523:Else|  Chip.java:0622:<init>|  Btree.java:2519:<init>|  Btree.java:2518:Then|  Chip.java:0612:<init>|  Btree.java:2517:<init>|  Btree.java:2516:Leaf|  Btree.java:1546:code|  Chip.java:0532:<init>|  Btree.java:1528:<init>|  Btree.java:1527:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2513:<init>|  Btree.java:2512:code|  Chip.java:0532:<init>|  Btree.java:2497:<init>|  Btree.java:2496:code|  Chip.java:0532:<init>|  Btree.java:2471:<init>|  Btree.java:2470:put|  Btree.java:7182:code|  Chip.java:0532:<init>|  Btree.java:7166:<init>|  Btree.java:7165:test_put_random|  Btree.java:7275:oldTests|  Btree.java:7280:newTests|  Btree.java:7286:main|");
             $fclose(f);
           end
         end
@@ -5307,7 +5307,7 @@ module Btree;                                                                   
           begin
             integer f;
             f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:1359:<init>|  Chip.java:1358:waitResultOfTransaction|  Btree.java:0302:stuckGet|  Btree.java:0279:stuckGet|  Btree.java:1789:splitLeafAtTop|  Btree.java:2521:Else|  Chip.java:0622:<init>|  Btree.java:2517:<init>|  Btree.java:2516:Then|  Chip.java:0612:<init>|  Btree.java:2515:<init>|  Btree.java:2514:Leaf|  Btree.java:1546:code|  Chip.java:0532:<init>|  Btree.java:1528:<init>|  Btree.java:1527:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2511:<init>|  Btree.java:2510:code|  Chip.java:0532:<init>|  Btree.java:2495:<init>|  Btree.java:2494:code|  Chip.java:0532:<init>|  Btree.java:2469:<init>|  Btree.java:2468:put|  Btree.java:7180:code|  Chip.java:0532:<init>|  Btree.java:7164:<init>|  Btree.java:7163:test_put_random|  Btree.java:7273:oldTests|  Btree.java:7278:newTests|  Btree.java:7284:main|");
+            $fdisplay(f, "Location: Chip.java:1359:<init>|  Chip.java:1358:waitResultOfTransaction|  Btree.java:0302:stuckGet|  Btree.java:0279:stuckGet|  Btree.java:1789:splitLeafAtTop|  Btree.java:2523:Else|  Chip.java:0622:<init>|  Btree.java:2519:<init>|  Btree.java:2518:Then|  Chip.java:0612:<init>|  Btree.java:2517:<init>|  Btree.java:2516:Leaf|  Btree.java:1546:code|  Chip.java:0532:<init>|  Btree.java:1528:<init>|  Btree.java:1527:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2513:<init>|  Btree.java:2512:code|  Chip.java:0532:<init>|  Btree.java:2497:<init>|  Btree.java:2496:code|  Chip.java:0532:<init>|  Btree.java:2471:<init>|  Btree.java:2470:put|  Btree.java:7182:code|  Chip.java:0532:<init>|  Btree.java:7166:<init>|  Btree.java:7165:test_put_random|  Btree.java:7275:oldTests|  Btree.java:7280:newTests|  Btree.java:7286:main|");
             $fclose(f);
           end
         end
@@ -5318,7 +5318,7 @@ module Btree;                                                                   
           begin
             integer f;
             f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:1359:<init>|  Chip.java:1358:waitResultOfTransaction|  Btree.java:0303:stuckGet|  Btree.java:0279:stuckGet|  Btree.java:1789:splitLeafAtTop|  Btree.java:2521:Else|  Chip.java:0622:<init>|  Btree.java:2517:<init>|  Btree.java:2516:Then|  Chip.java:0612:<init>|  Btree.java:2515:<init>|  Btree.java:2514:Leaf|  Btree.java:1546:code|  Chip.java:0532:<init>|  Btree.java:1528:<init>|  Btree.java:1527:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2511:<init>|  Btree.java:2510:code|  Chip.java:0532:<init>|  Btree.java:2495:<init>|  Btree.java:2494:code|  Chip.java:0532:<init>|  Btree.java:2469:<init>|  Btree.java:2468:put|  Btree.java:7180:code|  Chip.java:0532:<init>|  Btree.java:7164:<init>|  Btree.java:7163:test_put_random|  Btree.java:7273:oldTests|  Btree.java:7278:newTests|  Btree.java:7284:main|");
+            $fdisplay(f, "Location: Chip.java:1359:<init>|  Chip.java:1358:waitResultOfTransaction|  Btree.java:0303:stuckGet|  Btree.java:0279:stuckGet|  Btree.java:1789:splitLeafAtTop|  Btree.java:2523:Else|  Chip.java:0622:<init>|  Btree.java:2519:<init>|  Btree.java:2518:Then|  Chip.java:0612:<init>|  Btree.java:2517:<init>|  Btree.java:2516:Leaf|  Btree.java:1546:code|  Chip.java:0532:<init>|  Btree.java:1528:<init>|  Btree.java:1527:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2513:<init>|  Btree.java:2512:code|  Chip.java:0532:<init>|  Btree.java:2497:<init>|  Btree.java:2496:code|  Chip.java:0532:<init>|  Btree.java:2471:<init>|  Btree.java:2470:put|  Btree.java:7182:code|  Chip.java:0532:<init>|  Btree.java:7166:<init>|  Btree.java:7165:test_put_random|  Btree.java:7275:oldTests|  Btree.java:7280:newTests|  Btree.java:7286:main|");
             $fclose(f);
           end
         end
@@ -5329,7 +5329,7 @@ module Btree;                                                                   
           begin
             integer f;
             f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:1359:<init>|  Chip.java:1358:waitResultOfTransaction|  Btree.java:0305:stuckGet|  Btree.java:0279:stuckGet|  Btree.java:1789:splitLeafAtTop|  Btree.java:2521:Else|  Chip.java:0622:<init>|  Btree.java:2517:<init>|  Btree.java:2516:Then|  Chip.java:0612:<init>|  Btree.java:2515:<init>|  Btree.java:2514:Leaf|  Btree.java:1546:code|  Chip.java:0532:<init>|  Btree.java:1528:<init>|  Btree.java:1527:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2511:<init>|  Btree.java:2510:code|  Chip.java:0532:<init>|  Btree.java:2495:<init>|  Btree.java:2494:code|  Chip.java:0532:<init>|  Btree.java:2469:<init>|  Btree.java:2468:put|  Btree.java:7180:code|  Chip.java:0532:<init>|  Btree.java:7164:<init>|  Btree.java:7163:test_put_random|  Btree.java:7273:oldTests|  Btree.java:7278:newTests|  Btree.java:7284:main|");
+            $fdisplay(f, "Location: Chip.java:1359:<init>|  Chip.java:1358:waitResultOfTransaction|  Btree.java:0305:stuckGet|  Btree.java:0279:stuckGet|  Btree.java:1789:splitLeafAtTop|  Btree.java:2523:Else|  Chip.java:0622:<init>|  Btree.java:2519:<init>|  Btree.java:2518:Then|  Chip.java:0612:<init>|  Btree.java:2517:<init>|  Btree.java:2516:Leaf|  Btree.java:1546:code|  Chip.java:0532:<init>|  Btree.java:1528:<init>|  Btree.java:1527:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2513:<init>|  Btree.java:2512:code|  Chip.java:0532:<init>|  Btree.java:2497:<init>|  Btree.java:2496:code|  Chip.java:0532:<init>|  Btree.java:2471:<init>|  Btree.java:2470:put|  Btree.java:7182:code|  Chip.java:0532:<init>|  Btree.java:7166:<init>|  Btree.java:7165:test_put_random|  Btree.java:7275:oldTests|  Btree.java:7280:newTests|  Btree.java:7286:main|");
             $fclose(f);
           end
         end
@@ -5340,7 +5340,7 @@ module Btree;                                                                   
           begin
             integer f;
             f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:1359:<init>|  Chip.java:1358:waitResultOfTransaction|  Btree.java:0306:stuckGet|  Btree.java:0279:stuckGet|  Btree.java:1789:splitLeafAtTop|  Btree.java:2521:Else|  Chip.java:0622:<init>|  Btree.java:2517:<init>|  Btree.java:2516:Then|  Chip.java:0612:<init>|  Btree.java:2515:<init>|  Btree.java:2514:Leaf|  Btree.java:1546:code|  Chip.java:0532:<init>|  Btree.java:1528:<init>|  Btree.java:1527:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2511:<init>|  Btree.java:2510:code|  Chip.java:0532:<init>|  Btree.java:2495:<init>|  Btree.java:2494:code|  Chip.java:0532:<init>|  Btree.java:2469:<init>|  Btree.java:2468:put|  Btree.java:7180:code|  Chip.java:0532:<init>|  Btree.java:7164:<init>|  Btree.java:7163:test_put_random|  Btree.java:7273:oldTests|  Btree.java:7278:newTests|  Btree.java:7284:main|");
+            $fdisplay(f, "Location: Chip.java:1359:<init>|  Chip.java:1358:waitResultOfTransaction|  Btree.java:0306:stuckGet|  Btree.java:0279:stuckGet|  Btree.java:1789:splitLeafAtTop|  Btree.java:2523:Else|  Chip.java:0622:<init>|  Btree.java:2519:<init>|  Btree.java:2518:Then|  Chip.java:0612:<init>|  Btree.java:2517:<init>|  Btree.java:2516:Leaf|  Btree.java:1546:code|  Chip.java:0532:<init>|  Btree.java:1528:<init>|  Btree.java:1527:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2513:<init>|  Btree.java:2512:code|  Chip.java:0532:<init>|  Btree.java:2497:<init>|  Btree.java:2496:code|  Chip.java:0532:<init>|  Btree.java:2471:<init>|  Btree.java:2470:put|  Btree.java:7182:code|  Chip.java:0532:<init>|  Btree.java:7166:<init>|  Btree.java:7165:test_put_random|  Btree.java:7275:oldTests|  Btree.java:7280:newTests|  Btree.java:7286:main|");
             $fclose(f);
           end
         end
@@ -5359,7 +5359,7 @@ module Btree;                                                                   
           begin
             integer f;
             f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:0514:<init>|  Btree.java:0309:<init>|  Btree.java:0308:stuckGet|  Btree.java:0279:stuckGet|  Btree.java:1789:splitLeafAtTop|  Btree.java:2521:Else|  Chip.java:0622:<init>|  Btree.java:2517:<init>|  Btree.java:2516:Then|  Chip.java:0612:<init>|  Btree.java:2515:<init>|  Btree.java:2514:Leaf|  Btree.java:1546:code|  Chip.java:0532:<init>|  Btree.java:1528:<init>|  Btree.java:1527:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2511:<init>|  Btree.java:2510:code|  Chip.java:0532:<init>|  Btree.java:2495:<init>|  Btree.java:2494:code|  Chip.java:0532:<init>|  Btree.java:2469:<init>|  Btree.java:2468:put|  Btree.java:7180:code|  Chip.java:0532:<init>|  Btree.java:7164:<init>|  Btree.java:7163:test_put_random|  Btree.java:7273:oldTests|  Btree.java:7278:newTests|  Btree.java:7284:main|");
+            $fdisplay(f, "Location: Chip.java:0514:<init>|  Btree.java:0309:<init>|  Btree.java:0308:stuckGet|  Btree.java:0279:stuckGet|  Btree.java:1789:splitLeafAtTop|  Btree.java:2523:Else|  Chip.java:0622:<init>|  Btree.java:2519:<init>|  Btree.java:2518:Then|  Chip.java:0612:<init>|  Btree.java:2517:<init>|  Btree.java:2516:Leaf|  Btree.java:1546:code|  Chip.java:0532:<init>|  Btree.java:1528:<init>|  Btree.java:1527:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2513:<init>|  Btree.java:2512:code|  Chip.java:0532:<init>|  Btree.java:2497:<init>|  Btree.java:2496:code|  Chip.java:0532:<init>|  Btree.java:2471:<init>|  Btree.java:2470:put|  Btree.java:7182:code|  Chip.java:0532:<init>|  Btree.java:7166:<init>|  Btree.java:7165:test_put_random|  Btree.java:7275:oldTests|  Btree.java:7280:newTests|  Btree.java:7286:main|");
             $fclose(f);
           end
         end
@@ -5386,7 +5386,7 @@ module Btree;                                                                   
           begin
             integer f;
             f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:0514:<init>|  Btree.java:0778:<init>|  Btree.java:0777:PastLastElement|  Btree.java:1790:splitLeafAtTop|  Btree.java:2521:Else|  Chip.java:0622:<init>|  Btree.java:2517:<init>|  Btree.java:2516:Then|  Chip.java:0612:<init>|  Btree.java:2515:<init>|  Btree.java:2514:Leaf|  Btree.java:1546:code|  Chip.java:0532:<init>|  Btree.java:1528:<init>|  Btree.java:1527:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2511:<init>|  Btree.java:2510:code|  Chip.java:0532:<init>|  Btree.java:2495:<init>|  Btree.java:2494:code|  Chip.java:0532:<init>|  Btree.java:2469:<init>|  Btree.java:2468:put|  Btree.java:7180:code|  Chip.java:0532:<init>|  Btree.java:7164:<init>|  Btree.java:7163:test_put_random|  Btree.java:7273:oldTests|  Btree.java:7278:newTests|  Btree.java:7284:main|");
+            $fdisplay(f, "Location: Chip.java:0514:<init>|  Btree.java:0778:<init>|  Btree.java:0777:PastLastElement|  Btree.java:1790:splitLeafAtTop|  Btree.java:2523:Else|  Chip.java:0622:<init>|  Btree.java:2519:<init>|  Btree.java:2518:Then|  Chip.java:0612:<init>|  Btree.java:2517:<init>|  Btree.java:2516:Leaf|  Btree.java:1546:code|  Chip.java:0532:<init>|  Btree.java:1528:<init>|  Btree.java:1527:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2513:<init>|  Btree.java:2512:code|  Chip.java:0532:<init>|  Btree.java:2497:<init>|  Btree.java:2496:code|  Chip.java:0532:<init>|  Btree.java:2471:<init>|  Btree.java:2470:put|  Btree.java:7182:code|  Chip.java:0532:<init>|  Btree.java:7166:<init>|  Btree.java:7165:test_put_random|  Btree.java:7275:oldTests|  Btree.java:7280:newTests|  Btree.java:7286:main|");
             $fclose(f);
           end
         end
@@ -5396,7 +5396,7 @@ module Btree;                                                                   
           begin
             integer f;
             f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:0514:<init>|  Chip.java:0699:<init>|  Chip.java:0698:Copy|  Btree.java:1791:splitLeafAtTop|  Btree.java:2521:Else|  Chip.java:0622:<init>|  Btree.java:2517:<init>|  Btree.java:2516:Then|  Chip.java:0612:<init>|  Btree.java:2515:<init>|  Btree.java:2514:Leaf|  Btree.java:1546:code|  Chip.java:0532:<init>|  Btree.java:1528:<init>|  Btree.java:1527:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2511:<init>|  Btree.java:2510:code|  Chip.java:0532:<init>|  Btree.java:2495:<init>|  Btree.java:2494:code|  Chip.java:0532:<init>|  Btree.java:2469:<init>|  Btree.java:2468:put|  Btree.java:7180:code|  Chip.java:0532:<init>|  Btree.java:7164:<init>|  Btree.java:7163:test_put_random|  Btree.java:7273:oldTests|  Btree.java:7278:newTests|  Btree.java:7284:main|");
+            $fdisplay(f, "Location: Chip.java:0514:<init>|  Chip.java:0699:<init>|  Chip.java:0698:Copy|  Btree.java:1791:splitLeafAtTop|  Btree.java:2523:Else|  Chip.java:0622:<init>|  Btree.java:2519:<init>|  Btree.java:2518:Then|  Chip.java:0612:<init>|  Btree.java:2517:<init>|  Btree.java:2516:Leaf|  Btree.java:1546:code|  Chip.java:0532:<init>|  Btree.java:1528:<init>|  Btree.java:1527:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2513:<init>|  Btree.java:2512:code|  Chip.java:0532:<init>|  Btree.java:2497:<init>|  Btree.java:2496:code|  Chip.java:0532:<init>|  Btree.java:2471:<init>|  Btree.java:2470:put|  Btree.java:7182:code|  Chip.java:0532:<init>|  Btree.java:7166:<init>|  Btree.java:7165:test_put_random|  Btree.java:7275:oldTests|  Btree.java:7280:newTests|  Btree.java:7286:main|");
             $fclose(f);
           end
         end
@@ -5406,7 +5406,7 @@ module Btree;                                                                   
           begin
             integer f;
             f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:0514:<init>|  Chip.java:0699:<init>|  Chip.java:0698:Copy|  Btree.java:0278:stuckGet|  Btree.java:1792:splitLeafAtTop|  Btree.java:2521:Else|  Chip.java:0622:<init>|  Btree.java:2517:<init>|  Btree.java:2516:Then|  Chip.java:0612:<init>|  Btree.java:2515:<init>|  Btree.java:2514:Leaf|  Btree.java:1546:code|  Chip.java:0532:<init>|  Btree.java:1528:<init>|  Btree.java:1527:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2511:<init>|  Btree.java:2510:code|  Chip.java:0532:<init>|  Btree.java:2495:<init>|  Btree.java:2494:code|  Chip.java:0532:<init>|  Btree.java:2469:<init>|  Btree.java:2468:put|  Btree.java:7180:code|  Chip.java:0532:<init>|  Btree.java:7164:<init>|  Btree.java:7163:test_put_random|  Btree.java:7273:oldTests|  Btree.java:7278:newTests|  Btree.java:7284:main|");
+            $fdisplay(f, "Location: Chip.java:0514:<init>|  Chip.java:0699:<init>|  Chip.java:0698:Copy|  Btree.java:0278:stuckGet|  Btree.java:1792:splitLeafAtTop|  Btree.java:2523:Else|  Chip.java:0622:<init>|  Btree.java:2519:<init>|  Btree.java:2518:Then|  Chip.java:0612:<init>|  Btree.java:2517:<init>|  Btree.java:2516:Leaf|  Btree.java:1546:code|  Chip.java:0532:<init>|  Btree.java:1528:<init>|  Btree.java:1527:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2513:<init>|  Btree.java:2512:code|  Chip.java:0532:<init>|  Btree.java:2497:<init>|  Btree.java:2496:code|  Chip.java:0532:<init>|  Btree.java:2471:<init>|  Btree.java:2470:put|  Btree.java:7182:code|  Chip.java:0532:<init>|  Btree.java:7166:<init>|  Btree.java:7165:test_put_random|  Btree.java:7275:oldTests|  Btree.java:7280:newTests|  Btree.java:7286:main|");
             $fclose(f);
           end
         end
@@ -5427,7 +5427,7 @@ module Btree;                                                                   
           begin
             integer f;
             f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:0514:<init>|  Btree.java:0289:<init>|  Btree.java:0288:stuckGet|  Btree.java:0279:stuckGet|  Btree.java:1792:splitLeafAtTop|  Btree.java:2521:Else|  Chip.java:0622:<init>|  Btree.java:2517:<init>|  Btree.java:2516:Then|  Chip.java:0612:<init>|  Btree.java:2515:<init>|  Btree.java:2514:Leaf|  Btree.java:1546:code|  Chip.java:0532:<init>|  Btree.java:1528:<init>|  Btree.java:1527:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2511:<init>|  Btree.java:2510:code|  Chip.java:0532:<init>|  Btree.java:2495:<init>|  Btree.java:2494:code|  Chip.java:0532:<init>|  Btree.java:2469:<init>|  Btree.java:2468:put|  Btree.java:7180:code|  Chip.java:0532:<init>|  Btree.java:7164:<init>|  Btree.java:7163:test_put_random|  Btree.java:7273:oldTests|  Btree.java:7278:newTests|  Btree.java:7284:main|");
+            $fdisplay(f, "Location: Chip.java:0514:<init>|  Btree.java:0289:<init>|  Btree.java:0288:stuckGet|  Btree.java:0279:stuckGet|  Btree.java:1792:splitLeafAtTop|  Btree.java:2523:Else|  Chip.java:0622:<init>|  Btree.java:2519:<init>|  Btree.java:2518:Then|  Chip.java:0612:<init>|  Btree.java:2517:<init>|  Btree.java:2516:Leaf|  Btree.java:1546:code|  Chip.java:0532:<init>|  Btree.java:1528:<init>|  Btree.java:1527:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2513:<init>|  Btree.java:2512:code|  Chip.java:0532:<init>|  Btree.java:2497:<init>|  Btree.java:2496:code|  Chip.java:0532:<init>|  Btree.java:2471:<init>|  Btree.java:2470:put|  Btree.java:7182:code|  Chip.java:0532:<init>|  Btree.java:7166:<init>|  Btree.java:7165:test_put_random|  Btree.java:7275:oldTests|  Btree.java:7280:newTests|  Btree.java:7286:main|");
             $fclose(f);
           end
         end
@@ -5438,7 +5438,7 @@ module Btree;                                                                   
           begin
             integer f;
             f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:1359:<init>|  Chip.java:1358:waitResultOfTransaction|  Btree.java:0302:stuckGet|  Btree.java:0279:stuckGet|  Btree.java:1792:splitLeafAtTop|  Btree.java:2521:Else|  Chip.java:0622:<init>|  Btree.java:2517:<init>|  Btree.java:2516:Then|  Chip.java:0612:<init>|  Btree.java:2515:<init>|  Btree.java:2514:Leaf|  Btree.java:1546:code|  Chip.java:0532:<init>|  Btree.java:1528:<init>|  Btree.java:1527:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2511:<init>|  Btree.java:2510:code|  Chip.java:0532:<init>|  Btree.java:2495:<init>|  Btree.java:2494:code|  Chip.java:0532:<init>|  Btree.java:2469:<init>|  Btree.java:2468:put|  Btree.java:7180:code|  Chip.java:0532:<init>|  Btree.java:7164:<init>|  Btree.java:7163:test_put_random|  Btree.java:7273:oldTests|  Btree.java:7278:newTests|  Btree.java:7284:main|");
+            $fdisplay(f, "Location: Chip.java:1359:<init>|  Chip.java:1358:waitResultOfTransaction|  Btree.java:0302:stuckGet|  Btree.java:0279:stuckGet|  Btree.java:1792:splitLeafAtTop|  Btree.java:2523:Else|  Chip.java:0622:<init>|  Btree.java:2519:<init>|  Btree.java:2518:Then|  Chip.java:0612:<init>|  Btree.java:2517:<init>|  Btree.java:2516:Leaf|  Btree.java:1546:code|  Chip.java:0532:<init>|  Btree.java:1528:<init>|  Btree.java:1527:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2513:<init>|  Btree.java:2512:code|  Chip.java:0532:<init>|  Btree.java:2497:<init>|  Btree.java:2496:code|  Chip.java:0532:<init>|  Btree.java:2471:<init>|  Btree.java:2470:put|  Btree.java:7182:code|  Chip.java:0532:<init>|  Btree.java:7166:<init>|  Btree.java:7165:test_put_random|  Btree.java:7275:oldTests|  Btree.java:7280:newTests|  Btree.java:7286:main|");
             $fclose(f);
           end
         end
@@ -5449,7 +5449,7 @@ module Btree;                                                                   
           begin
             integer f;
             f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:1359:<init>|  Chip.java:1358:waitResultOfTransaction|  Btree.java:0303:stuckGet|  Btree.java:0279:stuckGet|  Btree.java:1792:splitLeafAtTop|  Btree.java:2521:Else|  Chip.java:0622:<init>|  Btree.java:2517:<init>|  Btree.java:2516:Then|  Chip.java:0612:<init>|  Btree.java:2515:<init>|  Btree.java:2514:Leaf|  Btree.java:1546:code|  Chip.java:0532:<init>|  Btree.java:1528:<init>|  Btree.java:1527:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2511:<init>|  Btree.java:2510:code|  Chip.java:0532:<init>|  Btree.java:2495:<init>|  Btree.java:2494:code|  Chip.java:0532:<init>|  Btree.java:2469:<init>|  Btree.java:2468:put|  Btree.java:7180:code|  Chip.java:0532:<init>|  Btree.java:7164:<init>|  Btree.java:7163:test_put_random|  Btree.java:7273:oldTests|  Btree.java:7278:newTests|  Btree.java:7284:main|");
+            $fdisplay(f, "Location: Chip.java:1359:<init>|  Chip.java:1358:waitResultOfTransaction|  Btree.java:0303:stuckGet|  Btree.java:0279:stuckGet|  Btree.java:1792:splitLeafAtTop|  Btree.java:2523:Else|  Chip.java:0622:<init>|  Btree.java:2519:<init>|  Btree.java:2518:Then|  Chip.java:0612:<init>|  Btree.java:2517:<init>|  Btree.java:2516:Leaf|  Btree.java:1546:code|  Chip.java:0532:<init>|  Btree.java:1528:<init>|  Btree.java:1527:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2513:<init>|  Btree.java:2512:code|  Chip.java:0532:<init>|  Btree.java:2497:<init>|  Btree.java:2496:code|  Chip.java:0532:<init>|  Btree.java:2471:<init>|  Btree.java:2470:put|  Btree.java:7182:code|  Chip.java:0532:<init>|  Btree.java:7166:<init>|  Btree.java:7165:test_put_random|  Btree.java:7275:oldTests|  Btree.java:7280:newTests|  Btree.java:7286:main|");
             $fclose(f);
           end
         end
@@ -5460,7 +5460,7 @@ module Btree;                                                                   
           begin
             integer f;
             f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:1359:<init>|  Chip.java:1358:waitResultOfTransaction|  Btree.java:0305:stuckGet|  Btree.java:0279:stuckGet|  Btree.java:1792:splitLeafAtTop|  Btree.java:2521:Else|  Chip.java:0622:<init>|  Btree.java:2517:<init>|  Btree.java:2516:Then|  Chip.java:0612:<init>|  Btree.java:2515:<init>|  Btree.java:2514:Leaf|  Btree.java:1546:code|  Chip.java:0532:<init>|  Btree.java:1528:<init>|  Btree.java:1527:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2511:<init>|  Btree.java:2510:code|  Chip.java:0532:<init>|  Btree.java:2495:<init>|  Btree.java:2494:code|  Chip.java:0532:<init>|  Btree.java:2469:<init>|  Btree.java:2468:put|  Btree.java:7180:code|  Chip.java:0532:<init>|  Btree.java:7164:<init>|  Btree.java:7163:test_put_random|  Btree.java:7273:oldTests|  Btree.java:7278:newTests|  Btree.java:7284:main|");
+            $fdisplay(f, "Location: Chip.java:1359:<init>|  Chip.java:1358:waitResultOfTransaction|  Btree.java:0305:stuckGet|  Btree.java:0279:stuckGet|  Btree.java:1792:splitLeafAtTop|  Btree.java:2523:Else|  Chip.java:0622:<init>|  Btree.java:2519:<init>|  Btree.java:2518:Then|  Chip.java:0612:<init>|  Btree.java:2517:<init>|  Btree.java:2516:Leaf|  Btree.java:1546:code|  Chip.java:0532:<init>|  Btree.java:1528:<init>|  Btree.java:1527:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2513:<init>|  Btree.java:2512:code|  Chip.java:0532:<init>|  Btree.java:2497:<init>|  Btree.java:2496:code|  Chip.java:0532:<init>|  Btree.java:2471:<init>|  Btree.java:2470:put|  Btree.java:7182:code|  Chip.java:0532:<init>|  Btree.java:7166:<init>|  Btree.java:7165:test_put_random|  Btree.java:7275:oldTests|  Btree.java:7280:newTests|  Btree.java:7286:main|");
             $fclose(f);
           end
         end
@@ -5471,7 +5471,7 @@ module Btree;                                                                   
           begin
             integer f;
             f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:1359:<init>|  Chip.java:1358:waitResultOfTransaction|  Btree.java:0306:stuckGet|  Btree.java:0279:stuckGet|  Btree.java:1792:splitLeafAtTop|  Btree.java:2521:Else|  Chip.java:0622:<init>|  Btree.java:2517:<init>|  Btree.java:2516:Then|  Chip.java:0612:<init>|  Btree.java:2515:<init>|  Btree.java:2514:Leaf|  Btree.java:1546:code|  Chip.java:0532:<init>|  Btree.java:1528:<init>|  Btree.java:1527:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2511:<init>|  Btree.java:2510:code|  Chip.java:0532:<init>|  Btree.java:2495:<init>|  Btree.java:2494:code|  Chip.java:0532:<init>|  Btree.java:2469:<init>|  Btree.java:2468:put|  Btree.java:7180:code|  Chip.java:0532:<init>|  Btree.java:7164:<init>|  Btree.java:7163:test_put_random|  Btree.java:7273:oldTests|  Btree.java:7278:newTests|  Btree.java:7284:main|");
+            $fdisplay(f, "Location: Chip.java:1359:<init>|  Chip.java:1358:waitResultOfTransaction|  Btree.java:0306:stuckGet|  Btree.java:0279:stuckGet|  Btree.java:1792:splitLeafAtTop|  Btree.java:2523:Else|  Chip.java:0622:<init>|  Btree.java:2519:<init>|  Btree.java:2518:Then|  Chip.java:0612:<init>|  Btree.java:2517:<init>|  Btree.java:2516:Leaf|  Btree.java:1546:code|  Chip.java:0532:<init>|  Btree.java:1528:<init>|  Btree.java:1527:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2513:<init>|  Btree.java:2512:code|  Chip.java:0532:<init>|  Btree.java:2497:<init>|  Btree.java:2496:code|  Chip.java:0532:<init>|  Btree.java:2471:<init>|  Btree.java:2470:put|  Btree.java:7182:code|  Chip.java:0532:<init>|  Btree.java:7166:<init>|  Btree.java:7165:test_put_random|  Btree.java:7275:oldTests|  Btree.java:7280:newTests|  Btree.java:7286:main|");
             $fclose(f);
           end
         end
@@ -5490,7 +5490,7 @@ module Btree;                                                                   
           begin
             integer f;
             f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:0514:<init>|  Btree.java:0309:<init>|  Btree.java:0308:stuckGet|  Btree.java:0279:stuckGet|  Btree.java:1792:splitLeafAtTop|  Btree.java:2521:Else|  Chip.java:0622:<init>|  Btree.java:2517:<init>|  Btree.java:2516:Then|  Chip.java:0612:<init>|  Btree.java:2515:<init>|  Btree.java:2514:Leaf|  Btree.java:1546:code|  Chip.java:0532:<init>|  Btree.java:1528:<init>|  Btree.java:1527:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2511:<init>|  Btree.java:2510:code|  Chip.java:0532:<init>|  Btree.java:2495:<init>|  Btree.java:2494:code|  Chip.java:0532:<init>|  Btree.java:2469:<init>|  Btree.java:2468:put|  Btree.java:7180:code|  Chip.java:0532:<init>|  Btree.java:7164:<init>|  Btree.java:7163:test_put_random|  Btree.java:7273:oldTests|  Btree.java:7278:newTests|  Btree.java:7284:main|");
+            $fdisplay(f, "Location: Chip.java:0514:<init>|  Btree.java:0309:<init>|  Btree.java:0308:stuckGet|  Btree.java:0279:stuckGet|  Btree.java:1792:splitLeafAtTop|  Btree.java:2523:Else|  Chip.java:0622:<init>|  Btree.java:2519:<init>|  Btree.java:2518:Then|  Chip.java:0612:<init>|  Btree.java:2517:<init>|  Btree.java:2516:Leaf|  Btree.java:1546:code|  Chip.java:0532:<init>|  Btree.java:1528:<init>|  Btree.java:1527:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2513:<init>|  Btree.java:2512:code|  Chip.java:0532:<init>|  Btree.java:2497:<init>|  Btree.java:2496:code|  Chip.java:0532:<init>|  Btree.java:2471:<init>|  Btree.java:2470:put|  Btree.java:7182:code|  Chip.java:0532:<init>|  Btree.java:7166:<init>|  Btree.java:7165:test_put_random|  Btree.java:7275:oldTests|  Btree.java:7280:newTests|  Btree.java:7286:main|");
             $fclose(f);
           end
         end
@@ -5500,7 +5500,7 @@ module Btree;                                                                   
           begin
             integer f;
             f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:0514:<init>|  Btree.java:1795:<init>|  Btree.java:1794:splitLeafAtTop|  Btree.java:2521:Else|  Chip.java:0622:<init>|  Btree.java:2517:<init>|  Btree.java:2516:Then|  Chip.java:0612:<init>|  Btree.java:2515:<init>|  Btree.java:2514:Leaf|  Btree.java:1546:code|  Chip.java:0532:<init>|  Btree.java:1528:<init>|  Btree.java:1527:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2511:<init>|  Btree.java:2510:code|  Chip.java:0532:<init>|  Btree.java:2495:<init>|  Btree.java:2494:code|  Chip.java:0532:<init>|  Btree.java:2469:<init>|  Btree.java:2468:put|  Btree.java:7180:code|  Chip.java:0532:<init>|  Btree.java:7164:<init>|  Btree.java:7163:test_put_random|  Btree.java:7273:oldTests|  Btree.java:7278:newTests|  Btree.java:7284:main|");
+            $fdisplay(f, "Location: Chip.java:0514:<init>|  Btree.java:1795:<init>|  Btree.java:1794:splitLeafAtTop|  Btree.java:2523:Else|  Chip.java:0622:<init>|  Btree.java:2519:<init>|  Btree.java:2518:Then|  Chip.java:0612:<init>|  Btree.java:2517:<init>|  Btree.java:2516:Leaf|  Btree.java:1546:code|  Chip.java:0532:<init>|  Btree.java:1528:<init>|  Btree.java:1527:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2513:<init>|  Btree.java:2512:code|  Chip.java:0532:<init>|  Btree.java:2497:<init>|  Btree.java:2496:code|  Chip.java:0532:<init>|  Btree.java:2471:<init>|  Btree.java:2470:put|  Btree.java:7182:code|  Chip.java:0532:<init>|  Btree.java:7166:<init>|  Btree.java:7165:test_put_random|  Btree.java:7275:oldTests|  Btree.java:7280:newTests|  Btree.java:7286:main|");
             $fclose(f);
           end
         end
@@ -5519,7 +5519,7 @@ module Btree;                                                                   
           begin
             integer f;
             f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:0514:<init>|  Btree.java:1349:<init>|  Btree.java:1348:splitLow|  Btree.java:1804:splitLeafAtTop|  Btree.java:2521:Else|  Chip.java:0622:<init>|  Btree.java:2517:<init>|  Btree.java:2516:Then|  Chip.java:0612:<init>|  Btree.java:2515:<init>|  Btree.java:2514:Leaf|  Btree.java:1546:code|  Chip.java:0532:<init>|  Btree.java:1528:<init>|  Btree.java:1527:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2511:<init>|  Btree.java:2510:code|  Chip.java:0532:<init>|  Btree.java:2495:<init>|  Btree.java:2494:code|  Chip.java:0532:<init>|  Btree.java:2469:<init>|  Btree.java:2468:put|  Btree.java:7180:code|  Chip.java:0532:<init>|  Btree.java:7164:<init>|  Btree.java:7163:test_put_random|  Btree.java:7273:oldTests|  Btree.java:7278:newTests|  Btree.java:7284:main|");
+            $fdisplay(f, "Location: Chip.java:0514:<init>|  Btree.java:1349:<init>|  Btree.java:1348:splitLow|  Btree.java:1804:splitLeafAtTop|  Btree.java:2523:Else|  Chip.java:0622:<init>|  Btree.java:2519:<init>|  Btree.java:2518:Then|  Chip.java:0612:<init>|  Btree.java:2517:<init>|  Btree.java:2516:Leaf|  Btree.java:1546:code|  Chip.java:0532:<init>|  Btree.java:1528:<init>|  Btree.java:1527:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2513:<init>|  Btree.java:2512:code|  Chip.java:0532:<init>|  Btree.java:2497:<init>|  Btree.java:2496:code|  Chip.java:0532:<init>|  Btree.java:2471:<init>|  Btree.java:2470:put|  Btree.java:7182:code|  Chip.java:0532:<init>|  Btree.java:7166:<init>|  Btree.java:7165:test_put_random|  Btree.java:7275:oldTests|  Btree.java:7280:newTests|  Btree.java:7286:main|");
             $fclose(f);
           end
         end
@@ -5529,7 +5529,7 @@ module Btree;                                                                   
           begin
             integer f;
             f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:0514:<init>|  Chip.java:0821:<init>|  Chip.java:0820:Zero|  Btree.java:0078:allocate|  Btree.java:0153:allocateLeaf|  Btree.java:1805:splitLeafAtTop|  Btree.java:2521:Else|  Chip.java:0622:<init>|  Btree.java:2517:<init>|  Btree.java:2516:Then|  Chip.java:0612:<init>|  Btree.java:2515:<init>|  Btree.java:2514:Leaf|  Btree.java:1546:code|  Chip.java:0532:<init>|  Btree.java:1528:<init>|  Btree.java:1527:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2511:<init>|  Btree.java:2510:code|  Chip.java:0532:<init>|  Btree.java:2495:<init>|  Btree.java:2494:code|  Chip.java:0532:<init>|  Btree.java:2469:<init>|  Btree.java:2468:put|  Btree.java:7180:code|  Chip.java:0532:<init>|  Btree.java:7164:<init>|  Btree.java:7163:test_put_random|  Btree.java:7273:oldTests|  Btree.java:7278:newTests|  Btree.java:7284:main|");
+            $fdisplay(f, "Location: Chip.java:0514:<init>|  Chip.java:0821:<init>|  Chip.java:0820:Zero|  Btree.java:0078:allocate|  Btree.java:0153:allocateLeaf|  Btree.java:1805:splitLeafAtTop|  Btree.java:2523:Else|  Chip.java:0622:<init>|  Btree.java:2519:<init>|  Btree.java:2518:Then|  Chip.java:0612:<init>|  Btree.java:2517:<init>|  Btree.java:2516:Leaf|  Btree.java:1546:code|  Chip.java:0532:<init>|  Btree.java:1528:<init>|  Btree.java:1527:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2513:<init>|  Btree.java:2512:code|  Chip.java:0532:<init>|  Btree.java:2497:<init>|  Btree.java:2496:code|  Chip.java:0532:<init>|  Btree.java:2471:<init>|  Btree.java:2470:put|  Btree.java:7182:code|  Chip.java:0532:<init>|  Btree.java:7166:<init>|  Btree.java:7165:test_put_random|  Btree.java:7275:oldTests|  Btree.java:7280:newTests|  Btree.java:7286:main|");
             $fclose(f);
           end
         end
@@ -5541,7 +5541,7 @@ module Btree;                                                                   
           begin
             integer f;
             f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:0514:<init>|  Chip.java:1352:<init>|  Chip.java:1351:ExecuteTransaction|  Btree.java:0079:allocate|  Btree.java:0153:allocateLeaf|  Btree.java:1805:splitLeafAtTop|  Btree.java:2521:Else|  Chip.java:0622:<init>|  Btree.java:2517:<init>|  Btree.java:2516:Then|  Chip.java:0612:<init>|  Btree.java:2515:<init>|  Btree.java:2514:Leaf|  Btree.java:1546:code|  Chip.java:0532:<init>|  Btree.java:1528:<init>|  Btree.java:1527:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2511:<init>|  Btree.java:2510:code|  Chip.java:0532:<init>|  Btree.java:2495:<init>|  Btree.java:2494:code|  Chip.java:0532:<init>|  Btree.java:2469:<init>|  Btree.java:2468:put|  Btree.java:7180:code|  Chip.java:0532:<init>|  Btree.java:7164:<init>|  Btree.java:7163:test_put_random|  Btree.java:7273:oldTests|  Btree.java:7278:newTests|  Btree.java:7284:main|");
+            $fdisplay(f, "Location: Chip.java:0514:<init>|  Chip.java:1352:<init>|  Chip.java:1351:ExecuteTransaction|  Btree.java:0079:allocate|  Btree.java:0153:allocateLeaf|  Btree.java:1805:splitLeafAtTop|  Btree.java:2523:Else|  Chip.java:0622:<init>|  Btree.java:2519:<init>|  Btree.java:2518:Then|  Chip.java:0612:<init>|  Btree.java:2517:<init>|  Btree.java:2516:Leaf|  Btree.java:1546:code|  Chip.java:0532:<init>|  Btree.java:1528:<init>|  Btree.java:1527:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2513:<init>|  Btree.java:2512:code|  Chip.java:0532:<init>|  Btree.java:2497:<init>|  Btree.java:2496:code|  Chip.java:0532:<init>|  Btree.java:2471:<init>|  Btree.java:2470:put|  Btree.java:7182:code|  Chip.java:0532:<init>|  Btree.java:7166:<init>|  Btree.java:7165:test_put_random|  Btree.java:7275:oldTests|  Btree.java:7280:newTests|  Btree.java:7286:main|");
             $fclose(f);
           end
         end
@@ -5552,7 +5552,7 @@ module Btree;                                                                   
           begin
             integer f;
             f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:1359:<init>|  Chip.java:1358:waitResultOfTransaction|  Btree.java:0080:allocate|  Btree.java:0153:allocateLeaf|  Btree.java:1805:splitLeafAtTop|  Btree.java:2521:Else|  Chip.java:0622:<init>|  Btree.java:2517:<init>|  Btree.java:2516:Then|  Chip.java:0612:<init>|  Btree.java:2515:<init>|  Btree.java:2514:Leaf|  Btree.java:1546:code|  Chip.java:0532:<init>|  Btree.java:1528:<init>|  Btree.java:1527:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2511:<init>|  Btree.java:2510:code|  Chip.java:0532:<init>|  Btree.java:2495:<init>|  Btree.java:2494:code|  Chip.java:0532:<init>|  Btree.java:2469:<init>|  Btree.java:2468:put|  Btree.java:7180:code|  Chip.java:0532:<init>|  Btree.java:7164:<init>|  Btree.java:7163:test_put_random|  Btree.java:7273:oldTests|  Btree.java:7278:newTests|  Btree.java:7284:main|");
+            $fdisplay(f, "Location: Chip.java:1359:<init>|  Chip.java:1358:waitResultOfTransaction|  Btree.java:0080:allocate|  Btree.java:0153:allocateLeaf|  Btree.java:1805:splitLeafAtTop|  Btree.java:2523:Else|  Chip.java:0622:<init>|  Btree.java:2519:<init>|  Btree.java:2518:Then|  Chip.java:0612:<init>|  Btree.java:2517:<init>|  Btree.java:2516:Leaf|  Btree.java:1546:code|  Chip.java:0532:<init>|  Btree.java:1528:<init>|  Btree.java:1527:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2513:<init>|  Btree.java:2512:code|  Chip.java:0532:<init>|  Btree.java:2497:<init>|  Btree.java:2496:code|  Chip.java:0532:<init>|  Btree.java:2471:<init>|  Btree.java:2470:put|  Btree.java:7182:code|  Chip.java:0532:<init>|  Btree.java:7166:<init>|  Btree.java:7165:test_put_random|  Btree.java:7275:oldTests|  Btree.java:7280:newTests|  Btree.java:7286:main|");
             $fclose(f);
           end
         end
@@ -5562,7 +5562,7 @@ module Btree;                                                                   
           begin
             integer f;
             f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:0514:<init>|  Chip.java:0699:<init>|  Chip.java:0698:Copy|  Btree.java:0081:allocate|  Btree.java:0153:allocateLeaf|  Btree.java:1805:splitLeafAtTop|  Btree.java:2521:Else|  Chip.java:0622:<init>|  Btree.java:2517:<init>|  Btree.java:2516:Then|  Chip.java:0612:<init>|  Btree.java:2515:<init>|  Btree.java:2514:Leaf|  Btree.java:1546:code|  Chip.java:0532:<init>|  Btree.java:1528:<init>|  Btree.java:1527:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2511:<init>|  Btree.java:2510:code|  Chip.java:0532:<init>|  Btree.java:2495:<init>|  Btree.java:2494:code|  Chip.java:0532:<init>|  Btree.java:2469:<init>|  Btree.java:2468:put|  Btree.java:7180:code|  Chip.java:0532:<init>|  Btree.java:7164:<init>|  Btree.java:7163:test_put_random|  Btree.java:7273:oldTests|  Btree.java:7278:newTests|  Btree.java:7284:main|");
+            $fdisplay(f, "Location: Chip.java:0514:<init>|  Chip.java:0699:<init>|  Chip.java:0698:Copy|  Btree.java:0081:allocate|  Btree.java:0153:allocateLeaf|  Btree.java:1805:splitLeafAtTop|  Btree.java:2523:Else|  Chip.java:0622:<init>|  Btree.java:2519:<init>|  Btree.java:2518:Then|  Chip.java:0612:<init>|  Btree.java:2517:<init>|  Btree.java:2516:Leaf|  Btree.java:1546:code|  Chip.java:0532:<init>|  Btree.java:1528:<init>|  Btree.java:1527:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2513:<init>|  Btree.java:2512:code|  Chip.java:0532:<init>|  Btree.java:2497:<init>|  Btree.java:2496:code|  Chip.java:0532:<init>|  Btree.java:2471:<init>|  Btree.java:2470:put|  Btree.java:7182:code|  Chip.java:0532:<init>|  Btree.java:7166:<init>|  Btree.java:7165:test_put_random|  Btree.java:7275:oldTests|  Btree.java:7280:newTests|  Btree.java:7286:main|");
             $fclose(f);
           end
         end
@@ -5577,7 +5577,7 @@ module Btree;                                                                   
           begin
             integer f;
             f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:0514:<init>|  Btree.java:0084:<init>|  Btree.java:0083:allocate|  Btree.java:0153:allocateLeaf|  Btree.java:1805:splitLeafAtTop|  Btree.java:2521:Else|  Chip.java:0622:<init>|  Btree.java:2517:<init>|  Btree.java:2516:Then|  Chip.java:0612:<init>|  Btree.java:2515:<init>|  Btree.java:2514:Leaf|  Btree.java:1546:code|  Chip.java:0532:<init>|  Btree.java:1528:<init>|  Btree.java:1527:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2511:<init>|  Btree.java:2510:code|  Chip.java:0532:<init>|  Btree.java:2495:<init>|  Btree.java:2494:code|  Chip.java:0532:<init>|  Btree.java:2469:<init>|  Btree.java:2468:put|  Btree.java:7180:code|  Chip.java:0532:<init>|  Btree.java:7164:<init>|  Btree.java:7163:test_put_random|  Btree.java:7273:oldTests|  Btree.java:7278:newTests|  Btree.java:7284:main|");
+            $fdisplay(f, "Location: Chip.java:0514:<init>|  Btree.java:0084:<init>|  Btree.java:0083:allocate|  Btree.java:0153:allocateLeaf|  Btree.java:1805:splitLeafAtTop|  Btree.java:2523:Else|  Chip.java:0622:<init>|  Btree.java:2519:<init>|  Btree.java:2518:Then|  Chip.java:0612:<init>|  Btree.java:2517:<init>|  Btree.java:2516:Leaf|  Btree.java:1546:code|  Chip.java:0532:<init>|  Btree.java:1528:<init>|  Btree.java:1527:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2513:<init>|  Btree.java:2512:code|  Chip.java:0532:<init>|  Btree.java:2497:<init>|  Btree.java:2496:code|  Chip.java:0532:<init>|  Btree.java:2471:<init>|  Btree.java:2470:put|  Btree.java:7182:code|  Chip.java:0532:<init>|  Btree.java:7166:<init>|  Btree.java:7165:test_put_random|  Btree.java:7275:oldTests|  Btree.java:7280:newTests|  Btree.java:7286:main|");
             $fclose(f);
           end
         end
@@ -5597,7 +5597,7 @@ module Btree;                                                                   
           begin
             integer f;
             f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:0514:<init>|  Btree.java:0099:<init>|  Btree.java:0098:allocate|  Btree.java:0153:allocateLeaf|  Btree.java:1805:splitLeafAtTop|  Btree.java:2521:Else|  Chip.java:0622:<init>|  Btree.java:2517:<init>|  Btree.java:2516:Then|  Chip.java:0612:<init>|  Btree.java:2515:<init>|  Btree.java:2514:Leaf|  Btree.java:1546:code|  Chip.java:0532:<init>|  Btree.java:1528:<init>|  Btree.java:1527:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2511:<init>|  Btree.java:2510:code|  Chip.java:0532:<init>|  Btree.java:2495:<init>|  Btree.java:2494:code|  Chip.java:0532:<init>|  Btree.java:2469:<init>|  Btree.java:2468:put|  Btree.java:7180:code|  Chip.java:0532:<init>|  Btree.java:7164:<init>|  Btree.java:7163:test_put_random|  Btree.java:7273:oldTests|  Btree.java:7278:newTests|  Btree.java:7284:main|");
+            $fdisplay(f, "Location: Chip.java:0514:<init>|  Btree.java:0099:<init>|  Btree.java:0098:allocate|  Btree.java:0153:allocateLeaf|  Btree.java:1805:splitLeafAtTop|  Btree.java:2523:Else|  Chip.java:0622:<init>|  Btree.java:2519:<init>|  Btree.java:2518:Then|  Chip.java:0612:<init>|  Btree.java:2517:<init>|  Btree.java:2516:Leaf|  Btree.java:1546:code|  Chip.java:0532:<init>|  Btree.java:1528:<init>|  Btree.java:1527:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2513:<init>|  Btree.java:2512:code|  Chip.java:0532:<init>|  Btree.java:2497:<init>|  Btree.java:2496:code|  Chip.java:0532:<init>|  Btree.java:2471:<init>|  Btree.java:2470:put|  Btree.java:7182:code|  Chip.java:0532:<init>|  Btree.java:7166:<init>|  Btree.java:7165:test_put_random|  Btree.java:7275:oldTests|  Btree.java:7280:newTests|  Btree.java:7286:main|");
             $fclose(f);
           end
         end
@@ -5608,7 +5608,7 @@ module Btree;                                                                   
           begin
             integer f;
             f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:1359:<init>|  Chip.java:1358:waitResultOfTransaction|  Btree.java:0111:allocate|  Btree.java:0153:allocateLeaf|  Btree.java:1805:splitLeafAtTop|  Btree.java:2521:Else|  Chip.java:0622:<init>|  Btree.java:2517:<init>|  Btree.java:2516:Then|  Chip.java:0612:<init>|  Btree.java:2515:<init>|  Btree.java:2514:Leaf|  Btree.java:1546:code|  Chip.java:0532:<init>|  Btree.java:1528:<init>|  Btree.java:1527:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2511:<init>|  Btree.java:2510:code|  Chip.java:0532:<init>|  Btree.java:2495:<init>|  Btree.java:2494:code|  Chip.java:0532:<init>|  Btree.java:2469:<init>|  Btree.java:2468:put|  Btree.java:7180:code|  Chip.java:0532:<init>|  Btree.java:7164:<init>|  Btree.java:7163:test_put_random|  Btree.java:7273:oldTests|  Btree.java:7278:newTests|  Btree.java:7284:main|");
+            $fdisplay(f, "Location: Chip.java:1359:<init>|  Chip.java:1358:waitResultOfTransaction|  Btree.java:0111:allocate|  Btree.java:0153:allocateLeaf|  Btree.java:1805:splitLeafAtTop|  Btree.java:2523:Else|  Chip.java:0622:<init>|  Btree.java:2519:<init>|  Btree.java:2518:Then|  Chip.java:0612:<init>|  Btree.java:2517:<init>|  Btree.java:2516:Leaf|  Btree.java:1546:code|  Chip.java:0532:<init>|  Btree.java:1528:<init>|  Btree.java:1527:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2513:<init>|  Btree.java:2512:code|  Chip.java:0532:<init>|  Btree.java:2497:<init>|  Btree.java:2496:code|  Chip.java:0532:<init>|  Btree.java:2471:<init>|  Btree.java:2470:put|  Btree.java:7182:code|  Chip.java:0532:<init>|  Btree.java:7166:<init>|  Btree.java:7165:test_put_random|  Btree.java:7275:oldTests|  Btree.java:7280:newTests|  Btree.java:7286:main|");
             $fclose(f);
           end
         end
@@ -5618,7 +5618,7 @@ module Btree;                                                                   
           begin
             integer f;
             f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:0514:<init>|  Chip.java:0699:<init>|  Chip.java:0698:Copy|  Btree.java:0112:allocate|  Btree.java:0153:allocateLeaf|  Btree.java:1805:splitLeafAtTop|  Btree.java:2521:Else|  Chip.java:0622:<init>|  Btree.java:2517:<init>|  Btree.java:2516:Then|  Chip.java:0612:<init>|  Btree.java:2515:<init>|  Btree.java:2514:Leaf|  Btree.java:1546:code|  Chip.java:0532:<init>|  Btree.java:1528:<init>|  Btree.java:1527:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2511:<init>|  Btree.java:2510:code|  Chip.java:0532:<init>|  Btree.java:2495:<init>|  Btree.java:2494:code|  Chip.java:0532:<init>|  Btree.java:2469:<init>|  Btree.java:2468:put|  Btree.java:7180:code|  Chip.java:0532:<init>|  Btree.java:7164:<init>|  Btree.java:7163:test_put_random|  Btree.java:7273:oldTests|  Btree.java:7278:newTests|  Btree.java:7284:main|");
+            $fdisplay(f, "Location: Chip.java:0514:<init>|  Chip.java:0699:<init>|  Chip.java:0698:Copy|  Btree.java:0112:allocate|  Btree.java:0153:allocateLeaf|  Btree.java:1805:splitLeafAtTop|  Btree.java:2523:Else|  Chip.java:0622:<init>|  Btree.java:2519:<init>|  Btree.java:2518:Then|  Chip.java:0612:<init>|  Btree.java:2517:<init>|  Btree.java:2516:Leaf|  Btree.java:1546:code|  Chip.java:0532:<init>|  Btree.java:1528:<init>|  Btree.java:1527:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2513:<init>|  Btree.java:2512:code|  Chip.java:0532:<init>|  Btree.java:2497:<init>|  Btree.java:2496:code|  Chip.java:0532:<init>|  Btree.java:2471:<init>|  Btree.java:2470:put|  Btree.java:7182:code|  Chip.java:0532:<init>|  Btree.java:7166:<init>|  Btree.java:7165:test_put_random|  Btree.java:7275:oldTests|  Btree.java:7280:newTests|  Btree.java:7286:main|");
             $fclose(f);
           end
         end
@@ -5631,7 +5631,7 @@ module Btree;                                                                   
           begin
             integer f;
             f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:0514:<init>|  Chip.java:1415:<init>|  Chip.java:1414:ExecuteTransaction|  Btree.java:0113:allocate|  Btree.java:0153:allocateLeaf|  Btree.java:1805:splitLeafAtTop|  Btree.java:2521:Else|  Chip.java:0622:<init>|  Btree.java:2517:<init>|  Btree.java:2516:Then|  Chip.java:0612:<init>|  Btree.java:2515:<init>|  Btree.java:2514:Leaf|  Btree.java:1546:code|  Chip.java:0532:<init>|  Btree.java:1528:<init>|  Btree.java:1527:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2511:<init>|  Btree.java:2510:code|  Chip.java:0532:<init>|  Btree.java:2495:<init>|  Btree.java:2494:code|  Chip.java:0532:<init>|  Btree.java:2469:<init>|  Btree.java:2468:put|  Btree.java:7180:code|  Chip.java:0532:<init>|  Btree.java:7164:<init>|  Btree.java:7163:test_put_random|  Btree.java:7273:oldTests|  Btree.java:7278:newTests|  Btree.java:7284:main|");
+            $fdisplay(f, "Location: Chip.java:0514:<init>|  Chip.java:1415:<init>|  Chip.java:1414:ExecuteTransaction|  Btree.java:0113:allocate|  Btree.java:0153:allocateLeaf|  Btree.java:1805:splitLeafAtTop|  Btree.java:2523:Else|  Chip.java:0622:<init>|  Btree.java:2519:<init>|  Btree.java:2518:Then|  Chip.java:0612:<init>|  Btree.java:2517:<init>|  Btree.java:2516:Leaf|  Btree.java:1546:code|  Chip.java:0532:<init>|  Btree.java:1528:<init>|  Btree.java:1527:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2513:<init>|  Btree.java:2512:code|  Chip.java:0532:<init>|  Btree.java:2497:<init>|  Btree.java:2496:code|  Chip.java:0532:<init>|  Btree.java:2471:<init>|  Btree.java:2470:put|  Btree.java:7182:code|  Chip.java:0532:<init>|  Btree.java:7166:<init>|  Btree.java:7165:test_put_random|  Btree.java:7275:oldTests|  Btree.java:7280:newTests|  Btree.java:7286:main|");
             $fclose(f);
           end
         end
@@ -5642,7 +5642,7 @@ module Btree;                                                                   
           begin
             integer f;
             f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:1422:<init>|  Chip.java:1421:waitResultOfTransaction|  Btree.java:0114:allocate|  Btree.java:0153:allocateLeaf|  Btree.java:1805:splitLeafAtTop|  Btree.java:2521:Else|  Chip.java:0622:<init>|  Btree.java:2517:<init>|  Btree.java:2516:Then|  Chip.java:0612:<init>|  Btree.java:2515:<init>|  Btree.java:2514:Leaf|  Btree.java:1546:code|  Chip.java:0532:<init>|  Btree.java:1528:<init>|  Btree.java:1527:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2511:<init>|  Btree.java:2510:code|  Chip.java:0532:<init>|  Btree.java:2495:<init>|  Btree.java:2494:code|  Chip.java:0532:<init>|  Btree.java:2469:<init>|  Btree.java:2468:put|  Btree.java:7180:code|  Chip.java:0532:<init>|  Btree.java:7164:<init>|  Btree.java:7163:test_put_random|  Btree.java:7273:oldTests|  Btree.java:7278:newTests|  Btree.java:7284:main|");
+            $fdisplay(f, "Location: Chip.java:1422:<init>|  Chip.java:1421:waitResultOfTransaction|  Btree.java:0114:allocate|  Btree.java:0153:allocateLeaf|  Btree.java:1805:splitLeafAtTop|  Btree.java:2523:Else|  Chip.java:0622:<init>|  Btree.java:2519:<init>|  Btree.java:2518:Then|  Chip.java:0612:<init>|  Btree.java:2517:<init>|  Btree.java:2516:Leaf|  Btree.java:1546:code|  Chip.java:0532:<init>|  Btree.java:1528:<init>|  Btree.java:1527:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2513:<init>|  Btree.java:2512:code|  Chip.java:0532:<init>|  Btree.java:2497:<init>|  Btree.java:2496:code|  Chip.java:0532:<init>|  Btree.java:2471:<init>|  Btree.java:2470:put|  Btree.java:7182:code|  Chip.java:0532:<init>|  Btree.java:7166:<init>|  Btree.java:7165:test_put_random|  Btree.java:7275:oldTests|  Btree.java:7280:newTests|  Btree.java:7286:main|");
             $fclose(f);
           end
         end
@@ -5653,7 +5653,7 @@ module Btree;                                                                   
           begin
             integer f;
             f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:1422:<init>|  Chip.java:1421:waitResultOfTransaction|  Btree.java:0115:allocate|  Btree.java:0153:allocateLeaf|  Btree.java:1805:splitLeafAtTop|  Btree.java:2521:Else|  Chip.java:0622:<init>|  Btree.java:2517:<init>|  Btree.java:2516:Then|  Chip.java:0612:<init>|  Btree.java:2515:<init>|  Btree.java:2514:Leaf|  Btree.java:1546:code|  Chip.java:0532:<init>|  Btree.java:1528:<init>|  Btree.java:1527:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2511:<init>|  Btree.java:2510:code|  Chip.java:0532:<init>|  Btree.java:2495:<init>|  Btree.java:2494:code|  Chip.java:0532:<init>|  Btree.java:2469:<init>|  Btree.java:2468:put|  Btree.java:7180:code|  Chip.java:0532:<init>|  Btree.java:7164:<init>|  Btree.java:7163:test_put_random|  Btree.java:7273:oldTests|  Btree.java:7278:newTests|  Btree.java:7284:main|");
+            $fdisplay(f, "Location: Chip.java:1422:<init>|  Chip.java:1421:waitResultOfTransaction|  Btree.java:0115:allocate|  Btree.java:0153:allocateLeaf|  Btree.java:1805:splitLeafAtTop|  Btree.java:2523:Else|  Chip.java:0622:<init>|  Btree.java:2519:<init>|  Btree.java:2518:Then|  Chip.java:0612:<init>|  Btree.java:2517:<init>|  Btree.java:2516:Leaf|  Btree.java:1546:code|  Chip.java:0532:<init>|  Btree.java:1528:<init>|  Btree.java:1527:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2513:<init>|  Btree.java:2512:code|  Chip.java:0532:<init>|  Btree.java:2497:<init>|  Btree.java:2496:code|  Chip.java:0532:<init>|  Btree.java:2471:<init>|  Btree.java:2470:put|  Btree.java:7182:code|  Chip.java:0532:<init>|  Btree.java:7166:<init>|  Btree.java:7165:test_put_random|  Btree.java:7275:oldTests|  Btree.java:7280:newTests|  Btree.java:7286:main|");
             $fclose(f);
           end
         end
@@ -5664,7 +5664,7 @@ module Btree;                                                                   
           begin
             integer f;
             f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:1422:<init>|  Chip.java:1421:waitResultOfTransaction|  Btree.java:0116:allocate|  Btree.java:0153:allocateLeaf|  Btree.java:1805:splitLeafAtTop|  Btree.java:2521:Else|  Chip.java:0622:<init>|  Btree.java:2517:<init>|  Btree.java:2516:Then|  Chip.java:0612:<init>|  Btree.java:2515:<init>|  Btree.java:2514:Leaf|  Btree.java:1546:code|  Chip.java:0532:<init>|  Btree.java:1528:<init>|  Btree.java:1527:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2511:<init>|  Btree.java:2510:code|  Chip.java:0532:<init>|  Btree.java:2495:<init>|  Btree.java:2494:code|  Chip.java:0532:<init>|  Btree.java:2469:<init>|  Btree.java:2468:put|  Btree.java:7180:code|  Chip.java:0532:<init>|  Btree.java:7164:<init>|  Btree.java:7163:test_put_random|  Btree.java:7273:oldTests|  Btree.java:7278:newTests|  Btree.java:7284:main|");
+            $fdisplay(f, "Location: Chip.java:1422:<init>|  Chip.java:1421:waitResultOfTransaction|  Btree.java:0116:allocate|  Btree.java:0153:allocateLeaf|  Btree.java:1805:splitLeafAtTop|  Btree.java:2523:Else|  Chip.java:0622:<init>|  Btree.java:2519:<init>|  Btree.java:2518:Then|  Chip.java:0612:<init>|  Btree.java:2517:<init>|  Btree.java:2516:Leaf|  Btree.java:1546:code|  Chip.java:0532:<init>|  Btree.java:1528:<init>|  Btree.java:1527:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2513:<init>|  Btree.java:2512:code|  Chip.java:0532:<init>|  Btree.java:2497:<init>|  Btree.java:2496:code|  Chip.java:0532:<init>|  Btree.java:2471:<init>|  Btree.java:2470:put|  Btree.java:7182:code|  Chip.java:0532:<init>|  Btree.java:7166:<init>|  Btree.java:7165:test_put_random|  Btree.java:7275:oldTests|  Btree.java:7280:newTests|  Btree.java:7286:main|");
             $fclose(f);
           end
         end
@@ -5691,7 +5691,7 @@ module Btree;                                                                   
           begin
             integer f;
             f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:0514:<init>|  Btree.java:0330:<init>|  Btree.java:0329:stuckPut|  Btree.java:0352:stuckPut|  Btree.java:1805:splitLeafAtTop|  Btree.java:2521:Else|  Chip.java:0622:<init>|  Btree.java:2517:<init>|  Btree.java:2516:Then|  Chip.java:0612:<init>|  Btree.java:2515:<init>|  Btree.java:2514:Leaf|  Btree.java:1546:code|  Chip.java:0532:<init>|  Btree.java:1528:<init>|  Btree.java:1527:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2511:<init>|  Btree.java:2510:code|  Chip.java:0532:<init>|  Btree.java:2495:<init>|  Btree.java:2494:code|  Chip.java:0532:<init>|  Btree.java:2469:<init>|  Btree.java:2468:put|  Btree.java:7180:code|  Chip.java:0532:<init>|  Btree.java:7164:<init>|  Btree.java:7163:test_put_random|  Btree.java:7273:oldTests|  Btree.java:7278:newTests|  Btree.java:7284:main|");
+            $fdisplay(f, "Location: Chip.java:0514:<init>|  Btree.java:0330:<init>|  Btree.java:0329:stuckPut|  Btree.java:0352:stuckPut|  Btree.java:1805:splitLeafAtTop|  Btree.java:2523:Else|  Chip.java:0622:<init>|  Btree.java:2519:<init>|  Btree.java:2518:Then|  Chip.java:0612:<init>|  Btree.java:2517:<init>|  Btree.java:2516:Leaf|  Btree.java:1546:code|  Chip.java:0532:<init>|  Btree.java:1528:<init>|  Btree.java:1527:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2513:<init>|  Btree.java:2512:code|  Chip.java:0532:<init>|  Btree.java:2497:<init>|  Btree.java:2496:code|  Chip.java:0532:<init>|  Btree.java:2471:<init>|  Btree.java:2470:put|  Btree.java:7182:code|  Chip.java:0532:<init>|  Btree.java:7166:<init>|  Btree.java:7165:test_put_random|  Btree.java:7275:oldTests|  Btree.java:7280:newTests|  Btree.java:7286:main|");
             $fclose(f);
           end
         end
@@ -5702,7 +5702,7 @@ module Btree;                                                                   
           begin
             integer f;
             f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:1422:<init>|  Chip.java:1421:waitResultOfTransaction|  Btree.java:0344:stuckPut|  Btree.java:0352:stuckPut|  Btree.java:1805:splitLeafAtTop|  Btree.java:2521:Else|  Chip.java:0622:<init>|  Btree.java:2517:<init>|  Btree.java:2516:Then|  Chip.java:0612:<init>|  Btree.java:2515:<init>|  Btree.java:2514:Leaf|  Btree.java:1546:code|  Chip.java:0532:<init>|  Btree.java:1528:<init>|  Btree.java:1527:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2511:<init>|  Btree.java:2510:code|  Chip.java:0532:<init>|  Btree.java:2495:<init>|  Btree.java:2494:code|  Chip.java:0532:<init>|  Btree.java:2469:<init>|  Btree.java:2468:put|  Btree.java:7180:code|  Chip.java:0532:<init>|  Btree.java:7164:<init>|  Btree.java:7163:test_put_random|  Btree.java:7273:oldTests|  Btree.java:7278:newTests|  Btree.java:7284:main|");
+            $fdisplay(f, "Location: Chip.java:1422:<init>|  Chip.java:1421:waitResultOfTransaction|  Btree.java:0344:stuckPut|  Btree.java:0352:stuckPut|  Btree.java:1805:splitLeafAtTop|  Btree.java:2523:Else|  Chip.java:0622:<init>|  Btree.java:2519:<init>|  Btree.java:2518:Then|  Chip.java:0612:<init>|  Btree.java:2517:<init>|  Btree.java:2516:Leaf|  Btree.java:1546:code|  Chip.java:0532:<init>|  Btree.java:1528:<init>|  Btree.java:1527:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2513:<init>|  Btree.java:2512:code|  Chip.java:0532:<init>|  Btree.java:2497:<init>|  Btree.java:2496:code|  Chip.java:0532:<init>|  Btree.java:2471:<init>|  Btree.java:2470:put|  Btree.java:7182:code|  Chip.java:0532:<init>|  Btree.java:7166:<init>|  Btree.java:7165:test_put_random|  Btree.java:7275:oldTests|  Btree.java:7280:newTests|  Btree.java:7286:main|");
             $fclose(f);
           end
         end
@@ -5713,7 +5713,7 @@ module Btree;                                                                   
           begin
             integer f;
             f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:1422:<init>|  Chip.java:1421:waitResultOfTransaction|  Btree.java:0347:stuckPut|  Btree.java:0352:stuckPut|  Btree.java:1805:splitLeafAtTop|  Btree.java:2521:Else|  Chip.java:0622:<init>|  Btree.java:2517:<init>|  Btree.java:2516:Then|  Chip.java:0612:<init>|  Btree.java:2515:<init>|  Btree.java:2514:Leaf|  Btree.java:1546:code|  Chip.java:0532:<init>|  Btree.java:1528:<init>|  Btree.java:1527:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2511:<init>|  Btree.java:2510:code|  Chip.java:0532:<init>|  Btree.java:2495:<init>|  Btree.java:2494:code|  Chip.java:0532:<init>|  Btree.java:2469:<init>|  Btree.java:2468:put|  Btree.java:7180:code|  Chip.java:0532:<init>|  Btree.java:7164:<init>|  Btree.java:7163:test_put_random|  Btree.java:7273:oldTests|  Btree.java:7278:newTests|  Btree.java:7284:main|");
+            $fdisplay(f, "Location: Chip.java:1422:<init>|  Chip.java:1421:waitResultOfTransaction|  Btree.java:0347:stuckPut|  Btree.java:0352:stuckPut|  Btree.java:1805:splitLeafAtTop|  Btree.java:2523:Else|  Chip.java:0622:<init>|  Btree.java:2519:<init>|  Btree.java:2518:Then|  Chip.java:0612:<init>|  Btree.java:2517:<init>|  Btree.java:2516:Leaf|  Btree.java:1546:code|  Chip.java:0532:<init>|  Btree.java:1528:<init>|  Btree.java:1527:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2513:<init>|  Btree.java:2512:code|  Chip.java:0532:<init>|  Btree.java:2497:<init>|  Btree.java:2496:code|  Chip.java:0532:<init>|  Btree.java:2471:<init>|  Btree.java:2470:put|  Btree.java:7182:code|  Chip.java:0532:<init>|  Btree.java:7166:<init>|  Btree.java:7165:test_put_random|  Btree.java:7275:oldTests|  Btree.java:7280:newTests|  Btree.java:7286:main|");
             $fclose(f);
           end
         end
@@ -5724,7 +5724,7 @@ module Btree;                                                                   
           begin
             integer f;
             f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:1422:<init>|  Chip.java:1421:waitResultOfTransaction|  Btree.java:0348:stuckPut|  Btree.java:0352:stuckPut|  Btree.java:1805:splitLeafAtTop|  Btree.java:2521:Else|  Chip.java:0622:<init>|  Btree.java:2517:<init>|  Btree.java:2516:Then|  Chip.java:0612:<init>|  Btree.java:2515:<init>|  Btree.java:2514:Leaf|  Btree.java:1546:code|  Chip.java:0532:<init>|  Btree.java:1528:<init>|  Btree.java:1527:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2511:<init>|  Btree.java:2510:code|  Chip.java:0532:<init>|  Btree.java:2495:<init>|  Btree.java:2494:code|  Chip.java:0532:<init>|  Btree.java:2469:<init>|  Btree.java:2468:put|  Btree.java:7180:code|  Chip.java:0532:<init>|  Btree.java:7164:<init>|  Btree.java:7163:test_put_random|  Btree.java:7273:oldTests|  Btree.java:7278:newTests|  Btree.java:7284:main|");
+            $fdisplay(f, "Location: Chip.java:1422:<init>|  Chip.java:1421:waitResultOfTransaction|  Btree.java:0348:stuckPut|  Btree.java:0352:stuckPut|  Btree.java:1805:splitLeafAtTop|  Btree.java:2523:Else|  Chip.java:0622:<init>|  Btree.java:2519:<init>|  Btree.java:2518:Then|  Chip.java:0612:<init>|  Btree.java:2517:<init>|  Btree.java:2516:Leaf|  Btree.java:1546:code|  Chip.java:0532:<init>|  Btree.java:1528:<init>|  Btree.java:1527:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2513:<init>|  Btree.java:2512:code|  Chip.java:0532:<init>|  Btree.java:2497:<init>|  Btree.java:2496:code|  Chip.java:0532:<init>|  Btree.java:2471:<init>|  Btree.java:2470:put|  Btree.java:7182:code|  Chip.java:0532:<init>|  Btree.java:7166:<init>|  Btree.java:7165:test_put_random|  Btree.java:7275:oldTests|  Btree.java:7280:newTests|  Btree.java:7286:main|");
             $fclose(f);
           end
         end
@@ -5751,7 +5751,7 @@ module Btree;                                                                   
           begin
             integer f;
             f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:0514:<init>|  Btree.java:0330:<init>|  Btree.java:0329:stuckPut|  Btree.java:0352:stuckPut|  Btree.java:1805:splitLeafAtTop|  Btree.java:2521:Else|  Chip.java:0622:<init>|  Btree.java:2517:<init>|  Btree.java:2516:Then|  Chip.java:0612:<init>|  Btree.java:2515:<init>|  Btree.java:2514:Leaf|  Btree.java:1546:code|  Chip.java:0532:<init>|  Btree.java:1528:<init>|  Btree.java:1527:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2511:<init>|  Btree.java:2510:code|  Chip.java:0532:<init>|  Btree.java:2495:<init>|  Btree.java:2494:code|  Chip.java:0532:<init>|  Btree.java:2469:<init>|  Btree.java:2468:put|  Btree.java:7180:code|  Chip.java:0532:<init>|  Btree.java:7164:<init>|  Btree.java:7163:test_put_random|  Btree.java:7273:oldTests|  Btree.java:7278:newTests|  Btree.java:7284:main|");
+            $fdisplay(f, "Location: Chip.java:0514:<init>|  Btree.java:0330:<init>|  Btree.java:0329:stuckPut|  Btree.java:0352:stuckPut|  Btree.java:1805:splitLeafAtTop|  Btree.java:2523:Else|  Chip.java:0622:<init>|  Btree.java:2519:<init>|  Btree.java:2518:Then|  Chip.java:0612:<init>|  Btree.java:2517:<init>|  Btree.java:2516:Leaf|  Btree.java:1546:code|  Chip.java:0532:<init>|  Btree.java:1528:<init>|  Btree.java:1527:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2513:<init>|  Btree.java:2512:code|  Chip.java:0532:<init>|  Btree.java:2497:<init>|  Btree.java:2496:code|  Chip.java:0532:<init>|  Btree.java:2471:<init>|  Btree.java:2470:put|  Btree.java:7182:code|  Chip.java:0532:<init>|  Btree.java:7166:<init>|  Btree.java:7165:test_put_random|  Btree.java:7275:oldTests|  Btree.java:7280:newTests|  Btree.java:7286:main|");
             $fclose(f);
           end
         end
@@ -5762,7 +5762,7 @@ module Btree;                                                                   
           begin
             integer f;
             f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:1422:<init>|  Chip.java:1421:waitResultOfTransaction|  Btree.java:0344:stuckPut|  Btree.java:0352:stuckPut|  Btree.java:1805:splitLeafAtTop|  Btree.java:2521:Else|  Chip.java:0622:<init>|  Btree.java:2517:<init>|  Btree.java:2516:Then|  Chip.java:0612:<init>|  Btree.java:2515:<init>|  Btree.java:2514:Leaf|  Btree.java:1546:code|  Chip.java:0532:<init>|  Btree.java:1528:<init>|  Btree.java:1527:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2511:<init>|  Btree.java:2510:code|  Chip.java:0532:<init>|  Btree.java:2495:<init>|  Btree.java:2494:code|  Chip.java:0532:<init>|  Btree.java:2469:<init>|  Btree.java:2468:put|  Btree.java:7180:code|  Chip.java:0532:<init>|  Btree.java:7164:<init>|  Btree.java:7163:test_put_random|  Btree.java:7273:oldTests|  Btree.java:7278:newTests|  Btree.java:7284:main|");
+            $fdisplay(f, "Location: Chip.java:1422:<init>|  Chip.java:1421:waitResultOfTransaction|  Btree.java:0344:stuckPut|  Btree.java:0352:stuckPut|  Btree.java:1805:splitLeafAtTop|  Btree.java:2523:Else|  Chip.java:0622:<init>|  Btree.java:2519:<init>|  Btree.java:2518:Then|  Chip.java:0612:<init>|  Btree.java:2517:<init>|  Btree.java:2516:Leaf|  Btree.java:1546:code|  Chip.java:0532:<init>|  Btree.java:1528:<init>|  Btree.java:1527:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2513:<init>|  Btree.java:2512:code|  Chip.java:0532:<init>|  Btree.java:2497:<init>|  Btree.java:2496:code|  Chip.java:0532:<init>|  Btree.java:2471:<init>|  Btree.java:2470:put|  Btree.java:7182:code|  Chip.java:0532:<init>|  Btree.java:7166:<init>|  Btree.java:7165:test_put_random|  Btree.java:7275:oldTests|  Btree.java:7280:newTests|  Btree.java:7286:main|");
             $fclose(f);
           end
         end
@@ -5773,7 +5773,7 @@ module Btree;                                                                   
           begin
             integer f;
             f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:1422:<init>|  Chip.java:1421:waitResultOfTransaction|  Btree.java:0347:stuckPut|  Btree.java:0352:stuckPut|  Btree.java:1805:splitLeafAtTop|  Btree.java:2521:Else|  Chip.java:0622:<init>|  Btree.java:2517:<init>|  Btree.java:2516:Then|  Chip.java:0612:<init>|  Btree.java:2515:<init>|  Btree.java:2514:Leaf|  Btree.java:1546:code|  Chip.java:0532:<init>|  Btree.java:1528:<init>|  Btree.java:1527:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2511:<init>|  Btree.java:2510:code|  Chip.java:0532:<init>|  Btree.java:2495:<init>|  Btree.java:2494:code|  Chip.java:0532:<init>|  Btree.java:2469:<init>|  Btree.java:2468:put|  Btree.java:7180:code|  Chip.java:0532:<init>|  Btree.java:7164:<init>|  Btree.java:7163:test_put_random|  Btree.java:7273:oldTests|  Btree.java:7278:newTests|  Btree.java:7284:main|");
+            $fdisplay(f, "Location: Chip.java:1422:<init>|  Chip.java:1421:waitResultOfTransaction|  Btree.java:0347:stuckPut|  Btree.java:0352:stuckPut|  Btree.java:1805:splitLeafAtTop|  Btree.java:2523:Else|  Chip.java:0622:<init>|  Btree.java:2519:<init>|  Btree.java:2518:Then|  Chip.java:0612:<init>|  Btree.java:2517:<init>|  Btree.java:2516:Leaf|  Btree.java:1546:code|  Chip.java:0532:<init>|  Btree.java:1528:<init>|  Btree.java:1527:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2513:<init>|  Btree.java:2512:code|  Chip.java:0532:<init>|  Btree.java:2497:<init>|  Btree.java:2496:code|  Chip.java:0532:<init>|  Btree.java:2471:<init>|  Btree.java:2470:put|  Btree.java:7182:code|  Chip.java:0532:<init>|  Btree.java:7166:<init>|  Btree.java:7165:test_put_random|  Btree.java:7275:oldTests|  Btree.java:7280:newTests|  Btree.java:7286:main|");
             $fclose(f);
           end
         end
@@ -5784,7 +5784,7 @@ module Btree;                                                                   
           begin
             integer f;
             f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:1422:<init>|  Chip.java:1421:waitResultOfTransaction|  Btree.java:0348:stuckPut|  Btree.java:0352:stuckPut|  Btree.java:1805:splitLeafAtTop|  Btree.java:2521:Else|  Chip.java:0622:<init>|  Btree.java:2517:<init>|  Btree.java:2516:Then|  Chip.java:0612:<init>|  Btree.java:2515:<init>|  Btree.java:2514:Leaf|  Btree.java:1546:code|  Chip.java:0532:<init>|  Btree.java:1528:<init>|  Btree.java:1527:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2511:<init>|  Btree.java:2510:code|  Chip.java:0532:<init>|  Btree.java:2495:<init>|  Btree.java:2494:code|  Chip.java:0532:<init>|  Btree.java:2469:<init>|  Btree.java:2468:put|  Btree.java:7180:code|  Chip.java:0532:<init>|  Btree.java:7164:<init>|  Btree.java:7163:test_put_random|  Btree.java:7273:oldTests|  Btree.java:7278:newTests|  Btree.java:7284:main|");
+            $fdisplay(f, "Location: Chip.java:1422:<init>|  Chip.java:1421:waitResultOfTransaction|  Btree.java:0348:stuckPut|  Btree.java:0352:stuckPut|  Btree.java:1805:splitLeafAtTop|  Btree.java:2523:Else|  Chip.java:0622:<init>|  Btree.java:2519:<init>|  Btree.java:2518:Then|  Chip.java:0612:<init>|  Btree.java:2517:<init>|  Btree.java:2516:Leaf|  Btree.java:1546:code|  Chip.java:0532:<init>|  Btree.java:1528:<init>|  Btree.java:1527:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2513:<init>|  Btree.java:2512:code|  Chip.java:0532:<init>|  Btree.java:2497:<init>|  Btree.java:2496:code|  Chip.java:0532:<init>|  Btree.java:2471:<init>|  Btree.java:2470:put|  Btree.java:7182:code|  Chip.java:0532:<init>|  Btree.java:7166:<init>|  Btree.java:7165:test_put_random|  Btree.java:7275:oldTests|  Btree.java:7280:newTests|  Btree.java:7286:main|");
             $fclose(f);
           end
         end
@@ -5807,7 +5807,7 @@ module Btree;                                                                   
           begin
             integer f;
             f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:0514:<init>|  Btree.java:0751:<init>|  Btree.java:0750:LastElement|  Btree.java:1807:splitLeafAtTop|  Btree.java:2521:Else|  Chip.java:0622:<init>|  Btree.java:2517:<init>|  Btree.java:2516:Then|  Chip.java:0612:<init>|  Btree.java:2515:<init>|  Btree.java:2514:Leaf|  Btree.java:1546:code|  Chip.java:0532:<init>|  Btree.java:1528:<init>|  Btree.java:1527:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2511:<init>|  Btree.java:2510:code|  Chip.java:0532:<init>|  Btree.java:2495:<init>|  Btree.java:2494:code|  Chip.java:0532:<init>|  Btree.java:2469:<init>|  Btree.java:2468:put|  Btree.java:7180:code|  Chip.java:0532:<init>|  Btree.java:7164:<init>|  Btree.java:7163:test_put_random|  Btree.java:7273:oldTests|  Btree.java:7278:newTests|  Btree.java:7284:main|");
+            $fdisplay(f, "Location: Chip.java:0514:<init>|  Btree.java:0751:<init>|  Btree.java:0750:LastElement|  Btree.java:1807:splitLeafAtTop|  Btree.java:2523:Else|  Chip.java:0622:<init>|  Btree.java:2519:<init>|  Btree.java:2518:Then|  Chip.java:0612:<init>|  Btree.java:2517:<init>|  Btree.java:2516:Leaf|  Btree.java:1546:code|  Chip.java:0532:<init>|  Btree.java:1528:<init>|  Btree.java:1527:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2513:<init>|  Btree.java:2512:code|  Chip.java:0532:<init>|  Btree.java:2497:<init>|  Btree.java:2496:code|  Chip.java:0532:<init>|  Btree.java:2471:<init>|  Btree.java:2470:put|  Btree.java:7182:code|  Chip.java:0532:<init>|  Btree.java:7166:<init>|  Btree.java:7165:test_put_random|  Btree.java:7275:oldTests|  Btree.java:7280:newTests|  Btree.java:7286:main|");
             $fclose(f);
           end
         end
@@ -5818,7 +5818,7 @@ module Btree;                                                                   
           begin
             integer f;
             f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:0514:<init>|  Btree.java:0724:<init>|  Btree.java:0723:FirstElement|  Btree.java:1808:splitLeafAtTop|  Btree.java:2521:Else|  Chip.java:0622:<init>|  Btree.java:2517:<init>|  Btree.java:2516:Then|  Chip.java:0612:<init>|  Btree.java:2515:<init>|  Btree.java:2514:Leaf|  Btree.java:1546:code|  Chip.java:0532:<init>|  Btree.java:1528:<init>|  Btree.java:1527:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2511:<init>|  Btree.java:2510:code|  Chip.java:0532:<init>|  Btree.java:2495:<init>|  Btree.java:2494:code|  Chip.java:0532:<init>|  Btree.java:2469:<init>|  Btree.java:2468:put|  Btree.java:7180:code|  Chip.java:0532:<init>|  Btree.java:7164:<init>|  Btree.java:7163:test_put_random|  Btree.java:7273:oldTests|  Btree.java:7278:newTests|  Btree.java:7284:main|");
+            $fdisplay(f, "Location: Chip.java:0514:<init>|  Btree.java:0724:<init>|  Btree.java:0723:FirstElement|  Btree.java:1808:splitLeafAtTop|  Btree.java:2523:Else|  Chip.java:0622:<init>|  Btree.java:2519:<init>|  Btree.java:2518:Then|  Chip.java:0612:<init>|  Btree.java:2517:<init>|  Btree.java:2516:Leaf|  Btree.java:1546:code|  Chip.java:0532:<init>|  Btree.java:1528:<init>|  Btree.java:1527:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2513:<init>|  Btree.java:2512:code|  Chip.java:0532:<init>|  Btree.java:2497:<init>|  Btree.java:2496:code|  Chip.java:0532:<init>|  Btree.java:2471:<init>|  Btree.java:2470:put|  Btree.java:7182:code|  Chip.java:0532:<init>|  Btree.java:7166:<init>|  Btree.java:7165:test_put_random|  Btree.java:7275:oldTests|  Btree.java:7280:newTests|  Btree.java:7286:main|");
             $fclose(f);
           end
         end
@@ -5828,7 +5828,7 @@ module Btree;                                                                   
           begin
             integer f;
             f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:0514:<init>|  Chip.java:0863:<init>|  Chip.java:0862:Average|  Btree.java:1809:splitLeafAtTop|  Btree.java:2521:Else|  Chip.java:0622:<init>|  Btree.java:2517:<init>|  Btree.java:2516:Then|  Chip.java:0612:<init>|  Btree.java:2515:<init>|  Btree.java:2514:Leaf|  Btree.java:1546:code|  Chip.java:0532:<init>|  Btree.java:1528:<init>|  Btree.java:1527:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2511:<init>|  Btree.java:2510:code|  Chip.java:0532:<init>|  Btree.java:2495:<init>|  Btree.java:2494:code|  Chip.java:0532:<init>|  Btree.java:2469:<init>|  Btree.java:2468:put|  Btree.java:7180:code|  Chip.java:0532:<init>|  Btree.java:7164:<init>|  Btree.java:7163:test_put_random|  Btree.java:7273:oldTests|  Btree.java:7278:newTests|  Btree.java:7284:main|");
+            $fdisplay(f, "Location: Chip.java:0514:<init>|  Chip.java:0863:<init>|  Chip.java:0862:Average|  Btree.java:1809:splitLeafAtTop|  Btree.java:2523:Else|  Chip.java:0622:<init>|  Btree.java:2519:<init>|  Btree.java:2518:Then|  Chip.java:0612:<init>|  Btree.java:2517:<init>|  Btree.java:2516:Leaf|  Btree.java:1546:code|  Chip.java:0532:<init>|  Btree.java:1528:<init>|  Btree.java:1527:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2513:<init>|  Btree.java:2512:code|  Chip.java:0532:<init>|  Btree.java:2497:<init>|  Btree.java:2496:code|  Chip.java:0532:<init>|  Btree.java:2471:<init>|  Btree.java:2470:put|  Btree.java:7182:code|  Chip.java:0532:<init>|  Btree.java:7166:<init>|  Btree.java:7165:test_put_random|  Btree.java:7275:oldTests|  Btree.java:7280:newTests|  Btree.java:7286:main|");
             $fclose(f);
           end
         end
@@ -5856,7 +5856,7 @@ module Btree;                                                                   
           begin
             integer f;
             f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:0514:<init>|  Btree.java:0593:<init>|  Btree.java:0592:Push|  Btree.java:1810:splitLeafAtTop|  Btree.java:2521:Else|  Chip.java:0622:<init>|  Btree.java:2517:<init>|  Btree.java:2516:Then|  Chip.java:0612:<init>|  Btree.java:2515:<init>|  Btree.java:2514:Leaf|  Btree.java:1546:code|  Chip.java:0532:<init>|  Btree.java:1528:<init>|  Btree.java:1527:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2511:<init>|  Btree.java:2510:code|  Chip.java:0532:<init>|  Btree.java:2495:<init>|  Btree.java:2494:code|  Chip.java:0532:<init>|  Btree.java:2469:<init>|  Btree.java:2468:put|  Btree.java:7180:code|  Chip.java:0532:<init>|  Btree.java:7164:<init>|  Btree.java:7163:test_put_random|  Btree.java:7273:oldTests|  Btree.java:7278:newTests|  Btree.java:7284:main|");
+            $fdisplay(f, "Location: Chip.java:0514:<init>|  Btree.java:0593:<init>|  Btree.java:0592:Push|  Btree.java:1810:splitLeafAtTop|  Btree.java:2523:Else|  Chip.java:0622:<init>|  Btree.java:2519:<init>|  Btree.java:2518:Then|  Chip.java:0612:<init>|  Btree.java:2517:<init>|  Btree.java:2516:Leaf|  Btree.java:1546:code|  Chip.java:0532:<init>|  Btree.java:1528:<init>|  Btree.java:1527:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2513:<init>|  Btree.java:2512:code|  Chip.java:0532:<init>|  Btree.java:2497:<init>|  Btree.java:2496:code|  Chip.java:0532:<init>|  Btree.java:2471:<init>|  Btree.java:2470:put|  Btree.java:7182:code|  Chip.java:0532:<init>|  Btree.java:7166:<init>|  Btree.java:7165:test_put_random|  Btree.java:7275:oldTests|  Btree.java:7280:newTests|  Btree.java:7286:main|");
             $fclose(f);
           end
         end
@@ -5883,7 +5883,7 @@ module Btree;                                                                   
           begin
             integer f;
             f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:0514:<init>|  Btree.java:0701:<init>|  Btree.java:0700:SetPastLastElement|  Btree.java:1811:splitLeafAtTop|  Btree.java:2521:Else|  Chip.java:0622:<init>|  Btree.java:2517:<init>|  Btree.java:2516:Then|  Chip.java:0612:<init>|  Btree.java:2515:<init>|  Btree.java:2514:Leaf|  Btree.java:1546:code|  Chip.java:0532:<init>|  Btree.java:1528:<init>|  Btree.java:1527:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2511:<init>|  Btree.java:2510:code|  Chip.java:0532:<init>|  Btree.java:2495:<init>|  Btree.java:2494:code|  Chip.java:0532:<init>|  Btree.java:2469:<init>|  Btree.java:2468:put|  Btree.java:7180:code|  Chip.java:0532:<init>|  Btree.java:7164:<init>|  Btree.java:7163:test_put_random|  Btree.java:7273:oldTests|  Btree.java:7278:newTests|  Btree.java:7284:main|");
+            $fdisplay(f, "Location: Chip.java:0514:<init>|  Btree.java:0701:<init>|  Btree.java:0700:SetPastLastElement|  Btree.java:1811:splitLeafAtTop|  Btree.java:2523:Else|  Chip.java:0622:<init>|  Btree.java:2519:<init>|  Btree.java:2518:Then|  Chip.java:0612:<init>|  Btree.java:2517:<init>|  Btree.java:2516:Leaf|  Btree.java:1546:code|  Chip.java:0532:<init>|  Btree.java:1528:<init>|  Btree.java:1527:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2513:<init>|  Btree.java:2512:code|  Chip.java:0532:<init>|  Btree.java:2497:<init>|  Btree.java:2496:code|  Chip.java:0532:<init>|  Btree.java:2471:<init>|  Btree.java:2470:put|  Btree.java:7182:code|  Chip.java:0532:<init>|  Btree.java:7166:<init>|  Btree.java:7165:test_put_random|  Btree.java:7275:oldTests|  Btree.java:7280:newTests|  Btree.java:7286:main|");
             $fclose(f);
           end
         end
@@ -5910,7 +5910,7 @@ module Btree;                                                                   
           begin
             integer f;
             f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:0514:<init>|  Btree.java:0330:<init>|  Btree.java:0329:stuckPut|  Btree.java:0351:stuckPut|  Btree.java:1812:splitLeafAtTop|  Btree.java:2521:Else|  Chip.java:0622:<init>|  Btree.java:2517:<init>|  Btree.java:2516:Then|  Chip.java:0612:<init>|  Btree.java:2515:<init>|  Btree.java:2514:Leaf|  Btree.java:1546:code|  Chip.java:0532:<init>|  Btree.java:1528:<init>|  Btree.java:1527:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2511:<init>|  Btree.java:2510:code|  Chip.java:0532:<init>|  Btree.java:2495:<init>|  Btree.java:2494:code|  Chip.java:0532:<init>|  Btree.java:2469:<init>|  Btree.java:2468:put|  Btree.java:7180:code|  Chip.java:0532:<init>|  Btree.java:7164:<init>|  Btree.java:7163:test_put_random|  Btree.java:7273:oldTests|  Btree.java:7278:newTests|  Btree.java:7284:main|");
+            $fdisplay(f, "Location: Chip.java:0514:<init>|  Btree.java:0330:<init>|  Btree.java:0329:stuckPut|  Btree.java:0351:stuckPut|  Btree.java:1812:splitLeafAtTop|  Btree.java:2523:Else|  Chip.java:0622:<init>|  Btree.java:2519:<init>|  Btree.java:2518:Then|  Chip.java:0612:<init>|  Btree.java:2517:<init>|  Btree.java:2516:Leaf|  Btree.java:1546:code|  Chip.java:0532:<init>|  Btree.java:1528:<init>|  Btree.java:1527:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2513:<init>|  Btree.java:2512:code|  Chip.java:0532:<init>|  Btree.java:2497:<init>|  Btree.java:2496:code|  Chip.java:0532:<init>|  Btree.java:2471:<init>|  Btree.java:2470:put|  Btree.java:7182:code|  Chip.java:0532:<init>|  Btree.java:7166:<init>|  Btree.java:7165:test_put_random|  Btree.java:7275:oldTests|  Btree.java:7280:newTests|  Btree.java:7286:main|");
             $fclose(f);
           end
         end
@@ -5921,7 +5921,7 @@ module Btree;                                                                   
           begin
             integer f;
             f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:1422:<init>|  Chip.java:1421:waitResultOfTransaction|  Btree.java:0344:stuckPut|  Btree.java:0351:stuckPut|  Btree.java:1812:splitLeafAtTop|  Btree.java:2521:Else|  Chip.java:0622:<init>|  Btree.java:2517:<init>|  Btree.java:2516:Then|  Chip.java:0612:<init>|  Btree.java:2515:<init>|  Btree.java:2514:Leaf|  Btree.java:1546:code|  Chip.java:0532:<init>|  Btree.java:1528:<init>|  Btree.java:1527:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2511:<init>|  Btree.java:2510:code|  Chip.java:0532:<init>|  Btree.java:2495:<init>|  Btree.java:2494:code|  Chip.java:0532:<init>|  Btree.java:2469:<init>|  Btree.java:2468:put|  Btree.java:7180:code|  Chip.java:0532:<init>|  Btree.java:7164:<init>|  Btree.java:7163:test_put_random|  Btree.java:7273:oldTests|  Btree.java:7278:newTests|  Btree.java:7284:main|");
+            $fdisplay(f, "Location: Chip.java:1422:<init>|  Chip.java:1421:waitResultOfTransaction|  Btree.java:0344:stuckPut|  Btree.java:0351:stuckPut|  Btree.java:1812:splitLeafAtTop|  Btree.java:2523:Else|  Chip.java:0622:<init>|  Btree.java:2519:<init>|  Btree.java:2518:Then|  Chip.java:0612:<init>|  Btree.java:2517:<init>|  Btree.java:2516:Leaf|  Btree.java:1546:code|  Chip.java:0532:<init>|  Btree.java:1528:<init>|  Btree.java:1527:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2513:<init>|  Btree.java:2512:code|  Chip.java:0532:<init>|  Btree.java:2497:<init>|  Btree.java:2496:code|  Chip.java:0532:<init>|  Btree.java:2471:<init>|  Btree.java:2470:put|  Btree.java:7182:code|  Chip.java:0532:<init>|  Btree.java:7166:<init>|  Btree.java:7165:test_put_random|  Btree.java:7275:oldTests|  Btree.java:7280:newTests|  Btree.java:7286:main|");
             $fclose(f);
           end
         end
@@ -5932,7 +5932,7 @@ module Btree;                                                                   
           begin
             integer f;
             f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:1422:<init>|  Chip.java:1421:waitResultOfTransaction|  Btree.java:0347:stuckPut|  Btree.java:0351:stuckPut|  Btree.java:1812:splitLeafAtTop|  Btree.java:2521:Else|  Chip.java:0622:<init>|  Btree.java:2517:<init>|  Btree.java:2516:Then|  Chip.java:0612:<init>|  Btree.java:2515:<init>|  Btree.java:2514:Leaf|  Btree.java:1546:code|  Chip.java:0532:<init>|  Btree.java:1528:<init>|  Btree.java:1527:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2511:<init>|  Btree.java:2510:code|  Chip.java:0532:<init>|  Btree.java:2495:<init>|  Btree.java:2494:code|  Chip.java:0532:<init>|  Btree.java:2469:<init>|  Btree.java:2468:put|  Btree.java:7180:code|  Chip.java:0532:<init>|  Btree.java:7164:<init>|  Btree.java:7163:test_put_random|  Btree.java:7273:oldTests|  Btree.java:7278:newTests|  Btree.java:7284:main|");
+            $fdisplay(f, "Location: Chip.java:1422:<init>|  Chip.java:1421:waitResultOfTransaction|  Btree.java:0347:stuckPut|  Btree.java:0351:stuckPut|  Btree.java:1812:splitLeafAtTop|  Btree.java:2523:Else|  Chip.java:0622:<init>|  Btree.java:2519:<init>|  Btree.java:2518:Then|  Chip.java:0612:<init>|  Btree.java:2517:<init>|  Btree.java:2516:Leaf|  Btree.java:1546:code|  Chip.java:0532:<init>|  Btree.java:1528:<init>|  Btree.java:1527:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2513:<init>|  Btree.java:2512:code|  Chip.java:0532:<init>|  Btree.java:2497:<init>|  Btree.java:2496:code|  Chip.java:0532:<init>|  Btree.java:2471:<init>|  Btree.java:2470:put|  Btree.java:7182:code|  Chip.java:0532:<init>|  Btree.java:7166:<init>|  Btree.java:7165:test_put_random|  Btree.java:7275:oldTests|  Btree.java:7280:newTests|  Btree.java:7286:main|");
             $fclose(f);
           end
         end
@@ -5943,7 +5943,7 @@ module Btree;                                                                   
           begin
             integer f;
             f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:1422:<init>|  Chip.java:1421:waitResultOfTransaction|  Btree.java:0348:stuckPut|  Btree.java:0351:stuckPut|  Btree.java:1812:splitLeafAtTop|  Btree.java:2521:Else|  Chip.java:0622:<init>|  Btree.java:2517:<init>|  Btree.java:2516:Then|  Chip.java:0612:<init>|  Btree.java:2515:<init>|  Btree.java:2514:Leaf|  Btree.java:1546:code|  Chip.java:0532:<init>|  Btree.java:1528:<init>|  Btree.java:1527:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2511:<init>|  Btree.java:2510:code|  Chip.java:0532:<init>|  Btree.java:2495:<init>|  Btree.java:2494:code|  Chip.java:0532:<init>|  Btree.java:2469:<init>|  Btree.java:2468:put|  Btree.java:7180:code|  Chip.java:0532:<init>|  Btree.java:7164:<init>|  Btree.java:7163:test_put_random|  Btree.java:7273:oldTests|  Btree.java:7278:newTests|  Btree.java:7284:main|");
+            $fdisplay(f, "Location: Chip.java:1422:<init>|  Chip.java:1421:waitResultOfTransaction|  Btree.java:0348:stuckPut|  Btree.java:0351:stuckPut|  Btree.java:1812:splitLeafAtTop|  Btree.java:2523:Else|  Chip.java:0622:<init>|  Btree.java:2519:<init>|  Btree.java:2518:Then|  Chip.java:0612:<init>|  Btree.java:2517:<init>|  Btree.java:2516:Leaf|  Btree.java:1546:code|  Chip.java:0532:<init>|  Btree.java:1528:<init>|  Btree.java:1527:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2513:<init>|  Btree.java:2512:code|  Chip.java:0532:<init>|  Btree.java:2497:<init>|  Btree.java:2496:code|  Chip.java:0532:<init>|  Btree.java:2471:<init>|  Btree.java:2470:put|  Btree.java:7182:code|  Chip.java:0532:<init>|  Btree.java:7166:<init>|  Btree.java:7165:test_put_random|  Btree.java:7275:oldTests|  Btree.java:7280:newTests|  Btree.java:7286:main|");
             $fclose(f);
           end
         end
@@ -5952,7 +5952,7 @@ module Btree;                                                                   
           begin
             integer f;
             f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:0614:<init>|  Chip.java:0613:<init>|  Btree.java:2515:<init>|  Btree.java:2514:Leaf|  Btree.java:1546:code|  Chip.java:0532:<init>|  Btree.java:1528:<init>|  Btree.java:1527:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2511:<init>|  Btree.java:2510:code|  Chip.java:0532:<init>|  Btree.java:2495:<init>|  Btree.java:2494:code|  Chip.java:0532:<init>|  Btree.java:2469:<init>|  Btree.java:2468:put|  Btree.java:7180:code|  Chip.java:0532:<init>|  Btree.java:7164:<init>|  Btree.java:7163:test_put_random|  Btree.java:7273:oldTests|  Btree.java:7278:newTests|  Btree.java:7284:main|");
+            $fdisplay(f, "Location: Chip.java:0614:<init>|  Chip.java:0613:<init>|  Btree.java:2517:<init>|  Btree.java:2516:Leaf|  Btree.java:1546:code|  Chip.java:0532:<init>|  Btree.java:1528:<init>|  Btree.java:1527:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2513:<init>|  Btree.java:2512:code|  Chip.java:0532:<init>|  Btree.java:2497:<init>|  Btree.java:2496:code|  Chip.java:0532:<init>|  Btree.java:2471:<init>|  Btree.java:2470:put|  Btree.java:7182:code|  Chip.java:0532:<init>|  Btree.java:7166:<init>|  Btree.java:7165:test_put_random|  Btree.java:7275:oldTests|  Btree.java:7280:newTests|  Btree.java:7286:main|");
             $fclose(f);
           end
         end
@@ -5962,7 +5962,7 @@ module Btree;                                                                   
           begin
             integer f;
             f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:0514:<init>|  Chip.java:0821:<init>|  Chip.java:0820:Zero|  Btree.java:2387:findSearch|  Btree.java:2426:code|  Chip.java:0532:<init>|  Btree.java:2425:<init>|  Btree.java:2424:findAndInsert|  Btree.java:2526:Leaf|  Btree.java:1546:code|  Chip.java:0532:<init>|  Btree.java:1528:<init>|  Btree.java:1527:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2511:<init>|  Btree.java:2510:code|  Chip.java:0532:<init>|  Btree.java:2495:<init>|  Btree.java:2494:code|  Chip.java:0532:<init>|  Btree.java:2469:<init>|  Btree.java:2468:put|  Btree.java:7180:code|  Chip.java:0532:<init>|  Btree.java:7164:<init>|  Btree.java:7163:test_put_random|  Btree.java:7273:oldTests|  Btree.java:7278:newTests|  Btree.java:7284:main|");
+            $fdisplay(f, "Location: Chip.java:0514:<init>|  Chip.java:0821:<init>|  Chip.java:0820:Zero|  Btree.java:2389:findSearch|  Btree.java:2428:code|  Chip.java:0532:<init>|  Btree.java:2427:<init>|  Btree.java:2426:findAndInsert|  Btree.java:2528:Leaf|  Btree.java:1546:code|  Chip.java:0532:<init>|  Btree.java:1528:<init>|  Btree.java:1527:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2513:<init>|  Btree.java:2512:code|  Chip.java:0532:<init>|  Btree.java:2497:<init>|  Btree.java:2496:code|  Chip.java:0532:<init>|  Btree.java:2471:<init>|  Btree.java:2470:put|  Btree.java:7182:code|  Chip.java:0532:<init>|  Btree.java:7166:<init>|  Btree.java:7165:test_put_random|  Btree.java:7275:oldTests|  Btree.java:7280:newTests|  Btree.java:7286:main|");
             $fclose(f);
           end
         end
@@ -5972,7 +5972,7 @@ module Btree;                                                                   
           begin
             integer f;
             f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:0514:<init>|  Chip.java:0699:<init>|  Chip.java:0698:Copy|  Btree.java:0278:stuckGet|  Btree.java:2391:code|  Chip.java:0532:<init>|  Btree.java:2390:<init>|  Btree.java:2389:findSearch|  Btree.java:2426:code|  Chip.java:0532:<init>|  Btree.java:2425:<init>|  Btree.java:2424:findAndInsert|  Btree.java:2526:Leaf|  Btree.java:1546:code|  Chip.java:0532:<init>|  Btree.java:1528:<init>|  Btree.java:1527:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2511:<init>|  Btree.java:2510:code|  Chip.java:0532:<init>|  Btree.java:2495:<init>|  Btree.java:2494:code|  Chip.java:0532:<init>|  Btree.java:2469:<init>|  Btree.java:2468:put|  Btree.java:7180:code|  Chip.java:0532:<init>|  Btree.java:7164:<init>|  Btree.java:7163:test_put_random|  Btree.java:7273:oldTests|  Btree.java:7278:newTests|  Btree.java:7284:main|");
+            $fdisplay(f, "Location: Chip.java:0514:<init>|  Chip.java:0699:<init>|  Chip.java:0698:Copy|  Btree.java:0278:stuckGet|  Btree.java:2393:code|  Chip.java:0532:<init>|  Btree.java:2392:<init>|  Btree.java:2391:findSearch|  Btree.java:2428:code|  Chip.java:0532:<init>|  Btree.java:2427:<init>|  Btree.java:2426:findAndInsert|  Btree.java:2528:Leaf|  Btree.java:1546:code|  Chip.java:0532:<init>|  Btree.java:1528:<init>|  Btree.java:1527:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2513:<init>|  Btree.java:2512:code|  Chip.java:0532:<init>|  Btree.java:2497:<init>|  Btree.java:2496:code|  Chip.java:0532:<init>|  Btree.java:2471:<init>|  Btree.java:2470:put|  Btree.java:7182:code|  Chip.java:0532:<init>|  Btree.java:7166:<init>|  Btree.java:7165:test_put_random|  Btree.java:7275:oldTests|  Btree.java:7280:newTests|  Btree.java:7286:main|");
             $fclose(f);
           end
         end
@@ -5993,7 +5993,7 @@ module Btree;                                                                   
           begin
             integer f;
             f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:0514:<init>|  Btree.java:0289:<init>|  Btree.java:0288:stuckGet|  Btree.java:0279:stuckGet|  Btree.java:2391:code|  Chip.java:0532:<init>|  Btree.java:2390:<init>|  Btree.java:2389:findSearch|  Btree.java:2426:code|  Chip.java:0532:<init>|  Btree.java:2425:<init>|  Btree.java:2424:findAndInsert|  Btree.java:2526:Leaf|  Btree.java:1546:code|  Chip.java:0532:<init>|  Btree.java:1528:<init>|  Btree.java:1527:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2511:<init>|  Btree.java:2510:code|  Chip.java:0532:<init>|  Btree.java:2495:<init>|  Btree.java:2494:code|  Chip.java:0532:<init>|  Btree.java:2469:<init>|  Btree.java:2468:put|  Btree.java:7180:code|  Chip.java:0532:<init>|  Btree.java:7164:<init>|  Btree.java:7163:test_put_random|  Btree.java:7273:oldTests|  Btree.java:7278:newTests|  Btree.java:7284:main|");
+            $fdisplay(f, "Location: Chip.java:0514:<init>|  Btree.java:0289:<init>|  Btree.java:0288:stuckGet|  Btree.java:0279:stuckGet|  Btree.java:2393:code|  Chip.java:0532:<init>|  Btree.java:2392:<init>|  Btree.java:2391:findSearch|  Btree.java:2428:code|  Chip.java:0532:<init>|  Btree.java:2427:<init>|  Btree.java:2426:findAndInsert|  Btree.java:2528:Leaf|  Btree.java:1546:code|  Chip.java:0532:<init>|  Btree.java:1528:<init>|  Btree.java:1527:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2513:<init>|  Btree.java:2512:code|  Chip.java:0532:<init>|  Btree.java:2497:<init>|  Btree.java:2496:code|  Chip.java:0532:<init>|  Btree.java:2471:<init>|  Btree.java:2470:put|  Btree.java:7182:code|  Chip.java:0532:<init>|  Btree.java:7166:<init>|  Btree.java:7165:test_put_random|  Btree.java:7275:oldTests|  Btree.java:7280:newTests|  Btree.java:7286:main|");
             $fclose(f);
           end
         end
@@ -6004,7 +6004,7 @@ module Btree;                                                                   
           begin
             integer f;
             f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:1359:<init>|  Chip.java:1358:waitResultOfTransaction|  Btree.java:0302:stuckGet|  Btree.java:0279:stuckGet|  Btree.java:2391:code|  Chip.java:0532:<init>|  Btree.java:2390:<init>|  Btree.java:2389:findSearch|  Btree.java:2426:code|  Chip.java:0532:<init>|  Btree.java:2425:<init>|  Btree.java:2424:findAndInsert|  Btree.java:2526:Leaf|  Btree.java:1546:code|  Chip.java:0532:<init>|  Btree.java:1528:<init>|  Btree.java:1527:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2511:<init>|  Btree.java:2510:code|  Chip.java:0532:<init>|  Btree.java:2495:<init>|  Btree.java:2494:code|  Chip.java:0532:<init>|  Btree.java:2469:<init>|  Btree.java:2468:put|  Btree.java:7180:code|  Chip.java:0532:<init>|  Btree.java:7164:<init>|  Btree.java:7163:test_put_random|  Btree.java:7273:oldTests|  Btree.java:7278:newTests|  Btree.java:7284:main|");
+            $fdisplay(f, "Location: Chip.java:1359:<init>|  Chip.java:1358:waitResultOfTransaction|  Btree.java:0302:stuckGet|  Btree.java:0279:stuckGet|  Btree.java:2393:code|  Chip.java:0532:<init>|  Btree.java:2392:<init>|  Btree.java:2391:findSearch|  Btree.java:2428:code|  Chip.java:0532:<init>|  Btree.java:2427:<init>|  Btree.java:2426:findAndInsert|  Btree.java:2528:Leaf|  Btree.java:1546:code|  Chip.java:0532:<init>|  Btree.java:1528:<init>|  Btree.java:1527:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2513:<init>|  Btree.java:2512:code|  Chip.java:0532:<init>|  Btree.java:2497:<init>|  Btree.java:2496:code|  Chip.java:0532:<init>|  Btree.java:2471:<init>|  Btree.java:2470:put|  Btree.java:7182:code|  Chip.java:0532:<init>|  Btree.java:7166:<init>|  Btree.java:7165:test_put_random|  Btree.java:7275:oldTests|  Btree.java:7280:newTests|  Btree.java:7286:main|");
             $fclose(f);
           end
         end
@@ -6015,7 +6015,7 @@ module Btree;                                                                   
           begin
             integer f;
             f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:1359:<init>|  Chip.java:1358:waitResultOfTransaction|  Btree.java:0303:stuckGet|  Btree.java:0279:stuckGet|  Btree.java:2391:code|  Chip.java:0532:<init>|  Btree.java:2390:<init>|  Btree.java:2389:findSearch|  Btree.java:2426:code|  Chip.java:0532:<init>|  Btree.java:2425:<init>|  Btree.java:2424:findAndInsert|  Btree.java:2526:Leaf|  Btree.java:1546:code|  Chip.java:0532:<init>|  Btree.java:1528:<init>|  Btree.java:1527:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2511:<init>|  Btree.java:2510:code|  Chip.java:0532:<init>|  Btree.java:2495:<init>|  Btree.java:2494:code|  Chip.java:0532:<init>|  Btree.java:2469:<init>|  Btree.java:2468:put|  Btree.java:7180:code|  Chip.java:0532:<init>|  Btree.java:7164:<init>|  Btree.java:7163:test_put_random|  Btree.java:7273:oldTests|  Btree.java:7278:newTests|  Btree.java:7284:main|");
+            $fdisplay(f, "Location: Chip.java:1359:<init>|  Chip.java:1358:waitResultOfTransaction|  Btree.java:0303:stuckGet|  Btree.java:0279:stuckGet|  Btree.java:2393:code|  Chip.java:0532:<init>|  Btree.java:2392:<init>|  Btree.java:2391:findSearch|  Btree.java:2428:code|  Chip.java:0532:<init>|  Btree.java:2427:<init>|  Btree.java:2426:findAndInsert|  Btree.java:2528:Leaf|  Btree.java:1546:code|  Chip.java:0532:<init>|  Btree.java:1528:<init>|  Btree.java:1527:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2513:<init>|  Btree.java:2512:code|  Chip.java:0532:<init>|  Btree.java:2497:<init>|  Btree.java:2496:code|  Chip.java:0532:<init>|  Btree.java:2471:<init>|  Btree.java:2470:put|  Btree.java:7182:code|  Chip.java:0532:<init>|  Btree.java:7166:<init>|  Btree.java:7165:test_put_random|  Btree.java:7275:oldTests|  Btree.java:7280:newTests|  Btree.java:7286:main|");
             $fclose(f);
           end
         end
@@ -6026,7 +6026,7 @@ module Btree;                                                                   
           begin
             integer f;
             f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:1359:<init>|  Chip.java:1358:waitResultOfTransaction|  Btree.java:0305:stuckGet|  Btree.java:0279:stuckGet|  Btree.java:2391:code|  Chip.java:0532:<init>|  Btree.java:2390:<init>|  Btree.java:2389:findSearch|  Btree.java:2426:code|  Chip.java:0532:<init>|  Btree.java:2425:<init>|  Btree.java:2424:findAndInsert|  Btree.java:2526:Leaf|  Btree.java:1546:code|  Chip.java:0532:<init>|  Btree.java:1528:<init>|  Btree.java:1527:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2511:<init>|  Btree.java:2510:code|  Chip.java:0532:<init>|  Btree.java:2495:<init>|  Btree.java:2494:code|  Chip.java:0532:<init>|  Btree.java:2469:<init>|  Btree.java:2468:put|  Btree.java:7180:code|  Chip.java:0532:<init>|  Btree.java:7164:<init>|  Btree.java:7163:test_put_random|  Btree.java:7273:oldTests|  Btree.java:7278:newTests|  Btree.java:7284:main|");
+            $fdisplay(f, "Location: Chip.java:1359:<init>|  Chip.java:1358:waitResultOfTransaction|  Btree.java:0305:stuckGet|  Btree.java:0279:stuckGet|  Btree.java:2393:code|  Chip.java:0532:<init>|  Btree.java:2392:<init>|  Btree.java:2391:findSearch|  Btree.java:2428:code|  Chip.java:0532:<init>|  Btree.java:2427:<init>|  Btree.java:2426:findAndInsert|  Btree.java:2528:Leaf|  Btree.java:1546:code|  Chip.java:0532:<init>|  Btree.java:1528:<init>|  Btree.java:1527:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2513:<init>|  Btree.java:2512:code|  Chip.java:0532:<init>|  Btree.java:2497:<init>|  Btree.java:2496:code|  Chip.java:0532:<init>|  Btree.java:2471:<init>|  Btree.java:2470:put|  Btree.java:7182:code|  Chip.java:0532:<init>|  Btree.java:7166:<init>|  Btree.java:7165:test_put_random|  Btree.java:7275:oldTests|  Btree.java:7280:newTests|  Btree.java:7286:main|");
             $fclose(f);
           end
         end
@@ -6037,7 +6037,7 @@ module Btree;                                                                   
           begin
             integer f;
             f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:1359:<init>|  Chip.java:1358:waitResultOfTransaction|  Btree.java:0306:stuckGet|  Btree.java:0279:stuckGet|  Btree.java:2391:code|  Chip.java:0532:<init>|  Btree.java:2390:<init>|  Btree.java:2389:findSearch|  Btree.java:2426:code|  Chip.java:0532:<init>|  Btree.java:2425:<init>|  Btree.java:2424:findAndInsert|  Btree.java:2526:Leaf|  Btree.java:1546:code|  Chip.java:0532:<init>|  Btree.java:1528:<init>|  Btree.java:1527:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2511:<init>|  Btree.java:2510:code|  Chip.java:0532:<init>|  Btree.java:2495:<init>|  Btree.java:2494:code|  Chip.java:0532:<init>|  Btree.java:2469:<init>|  Btree.java:2468:put|  Btree.java:7180:code|  Chip.java:0532:<init>|  Btree.java:7164:<init>|  Btree.java:7163:test_put_random|  Btree.java:7273:oldTests|  Btree.java:7278:newTests|  Btree.java:7284:main|");
+            $fdisplay(f, "Location: Chip.java:1359:<init>|  Chip.java:1358:waitResultOfTransaction|  Btree.java:0306:stuckGet|  Btree.java:0279:stuckGet|  Btree.java:2393:code|  Chip.java:0532:<init>|  Btree.java:2392:<init>|  Btree.java:2391:findSearch|  Btree.java:2428:code|  Chip.java:0532:<init>|  Btree.java:2427:<init>|  Btree.java:2426:findAndInsert|  Btree.java:2528:Leaf|  Btree.java:1546:code|  Chip.java:0532:<init>|  Btree.java:1528:<init>|  Btree.java:1527:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2513:<init>|  Btree.java:2512:code|  Chip.java:0532:<init>|  Btree.java:2497:<init>|  Btree.java:2496:code|  Chip.java:0532:<init>|  Btree.java:2471:<init>|  Btree.java:2470:put|  Btree.java:7182:code|  Chip.java:0532:<init>|  Btree.java:7166:<init>|  Btree.java:7165:test_put_random|  Btree.java:7275:oldTests|  Btree.java:7280:newTests|  Btree.java:7286:main|");
             $fclose(f);
           end
         end
@@ -6056,7 +6056,7 @@ module Btree;                                                                   
           begin
             integer f;
             f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:0514:<init>|  Btree.java:0309:<init>|  Btree.java:0308:stuckGet|  Btree.java:0279:stuckGet|  Btree.java:2391:code|  Chip.java:0532:<init>|  Btree.java:2390:<init>|  Btree.java:2389:findSearch|  Btree.java:2426:code|  Chip.java:0532:<init>|  Btree.java:2425:<init>|  Btree.java:2424:findAndInsert|  Btree.java:2526:Leaf|  Btree.java:1546:code|  Chip.java:0532:<init>|  Btree.java:1528:<init>|  Btree.java:1527:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2511:<init>|  Btree.java:2510:code|  Chip.java:0532:<init>|  Btree.java:2495:<init>|  Btree.java:2494:code|  Chip.java:0532:<init>|  Btree.java:2469:<init>|  Btree.java:2468:put|  Btree.java:7180:code|  Chip.java:0532:<init>|  Btree.java:7164:<init>|  Btree.java:7163:test_put_random|  Btree.java:7273:oldTests|  Btree.java:7278:newTests|  Btree.java:7284:main|");
+            $fdisplay(f, "Location: Chip.java:0514:<init>|  Btree.java:0309:<init>|  Btree.java:0308:stuckGet|  Btree.java:0279:stuckGet|  Btree.java:2393:code|  Chip.java:0532:<init>|  Btree.java:2392:<init>|  Btree.java:2391:findSearch|  Btree.java:2428:code|  Chip.java:0532:<init>|  Btree.java:2427:<init>|  Btree.java:2426:findAndInsert|  Btree.java:2528:Leaf|  Btree.java:1546:code|  Chip.java:0532:<init>|  Btree.java:1528:<init>|  Btree.java:1527:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2513:<init>|  Btree.java:2512:code|  Chip.java:0532:<init>|  Btree.java:2497:<init>|  Btree.java:2496:code|  Chip.java:0532:<init>|  Btree.java:2471:<init>|  Btree.java:2470:put|  Btree.java:7182:code|  Chip.java:0532:<init>|  Btree.java:7166:<init>|  Btree.java:7165:test_put_random|  Btree.java:7275:oldTests|  Btree.java:7280:newTests|  Btree.java:7286:main|");
             $fclose(f);
           end
         end
@@ -6070,7 +6070,7 @@ module Btree;                                                                   
           begin
             integer f;
             f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Btree.java:1531:<init>|  Btree.java:1530:code|  Chip.java:0532:<init>|  Btree.java:1528:<init>|  Btree.java:1527:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2393:<init>|  Btree.java:2392:code|  Chip.java:0532:<init>|  Btree.java:2390:<init>|  Btree.java:2389:findSearch|  Btree.java:2426:code|  Chip.java:0532:<init>|  Btree.java:2425:<init>|  Btree.java:2424:findAndInsert|  Btree.java:2526:Leaf|  Btree.java:1546:code|  Chip.java:0532:<init>|  Btree.java:1528:<init>|  Btree.java:1527:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2511:<init>|  Btree.java:2510:code|  Chip.java:0532:<init>|  Btree.java:2495:<init>|  Btree.java:2494:code|  Chip.java:0532:<init>|  Btree.java:2469:<init>|  Btree.java:2468:put|  Btree.java:7180:code|  Chip.java:0532:<init>|  Btree.java:7164:<init>|  Btree.java:7163:test_put_random|  Btree.java:7273:oldTests|  Btree.java:7278:newTests|  Btree.java:7284:main|");
+            $fdisplay(f, "Location: Btree.java:1531:<init>|  Btree.java:1530:code|  Chip.java:0532:<init>|  Btree.java:1528:<init>|  Btree.java:1527:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2395:<init>|  Btree.java:2394:code|  Chip.java:0532:<init>|  Btree.java:2392:<init>|  Btree.java:2391:findSearch|  Btree.java:2428:code|  Chip.java:0532:<init>|  Btree.java:2427:<init>|  Btree.java:2426:findAndInsert|  Btree.java:2528:Leaf|  Btree.java:1546:code|  Chip.java:0532:<init>|  Btree.java:1528:<init>|  Btree.java:1527:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2513:<init>|  Btree.java:2512:code|  Chip.java:0532:<init>|  Btree.java:2497:<init>|  Btree.java:2496:code|  Chip.java:0532:<init>|  Btree.java:2471:<init>|  Btree.java:2470:put|  Btree.java:7182:code|  Chip.java:0532:<init>|  Btree.java:7166:<init>|  Btree.java:7165:test_put_random|  Btree.java:7275:oldTests|  Btree.java:7280:newTests|  Btree.java:7286:main|");
             $fclose(f);
           end
         end
@@ -6087,7 +6087,7 @@ module Btree;                                                                   
           begin
             integer f;
             f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:0514:<init>|  Btree.java:1024:<init>|  Btree.java:1023:search_eq_parallel|  Btree.java:2394:Leaf|  Btree.java:1546:code|  Chip.java:0532:<init>|  Btree.java:1528:<init>|  Btree.java:1527:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2393:<init>|  Btree.java:2392:code|  Chip.java:0532:<init>|  Btree.java:2390:<init>|  Btree.java:2389:findSearch|  Btree.java:2426:code|  Chip.java:0532:<init>|  Btree.java:2425:<init>|  Btree.java:2424:findAndInsert|  Btree.java:2526:Leaf|  Btree.java:1546:code|  Chip.java:0532:<init>|  Btree.java:1528:<init>|  Btree.java:1527:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2511:<init>|  Btree.java:2510:code|  Chip.java:0532:<init>|  Btree.java:2495:<init>|  Btree.java:2494:code|  Chip.java:0532:<init>|  Btree.java:2469:<init>|  Btree.java:2468:put|  Btree.java:7180:code|  Chip.java:0532:<init>|  Btree.java:7164:<init>|  Btree.java:7163:test_put_random|  Btree.java:7273:oldTests|  Btree.java:7278:newTests|  Btree.java:7284:main|");
+            $fdisplay(f, "Location: Chip.java:0514:<init>|  Btree.java:1024:<init>|  Btree.java:1023:search_eq_parallel|  Btree.java:2396:Leaf|  Btree.java:1546:code|  Chip.java:0532:<init>|  Btree.java:1528:<init>|  Btree.java:1527:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2395:<init>|  Btree.java:2394:code|  Chip.java:0532:<init>|  Btree.java:2392:<init>|  Btree.java:2391:findSearch|  Btree.java:2428:code|  Chip.java:0532:<init>|  Btree.java:2427:<init>|  Btree.java:2426:findAndInsert|  Btree.java:2528:Leaf|  Btree.java:1546:code|  Chip.java:0532:<init>|  Btree.java:1528:<init>|  Btree.java:1527:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2513:<init>|  Btree.java:2512:code|  Chip.java:0532:<init>|  Btree.java:2497:<init>|  Btree.java:2496:code|  Chip.java:0532:<init>|  Btree.java:2471:<init>|  Btree.java:2470:put|  Btree.java:7182:code|  Chip.java:0532:<init>|  Btree.java:7166:<init>|  Btree.java:7165:test_put_random|  Btree.java:7275:oldTests|  Btree.java:7280:newTests|  Btree.java:7286:main|");
             $fclose(f);
           end
         end
@@ -6104,7 +6104,7 @@ module Btree;                                                                   
           begin
             integer f;
             f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:0514:<init>|  Btree.java:1045:<init>|  Btree.java:1044:search_eq_parallel|  Btree.java:2394:Leaf|  Btree.java:1546:code|  Chip.java:0532:<init>|  Btree.java:1528:<init>|  Btree.java:1527:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2393:<init>|  Btree.java:2392:code|  Chip.java:0532:<init>|  Btree.java:2390:<init>|  Btree.java:2389:findSearch|  Btree.java:2426:code|  Chip.java:0532:<init>|  Btree.java:2425:<init>|  Btree.java:2424:findAndInsert|  Btree.java:2526:Leaf|  Btree.java:1546:code|  Chip.java:0532:<init>|  Btree.java:1528:<init>|  Btree.java:1527:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2511:<init>|  Btree.java:2510:code|  Chip.java:0532:<init>|  Btree.java:2495:<init>|  Btree.java:2494:code|  Chip.java:0532:<init>|  Btree.java:2469:<init>|  Btree.java:2468:put|  Btree.java:7180:code|  Chip.java:0532:<init>|  Btree.java:7164:<init>|  Btree.java:7163:test_put_random|  Btree.java:7273:oldTests|  Btree.java:7278:newTests|  Btree.java:7284:main|");
+            $fdisplay(f, "Location: Chip.java:0514:<init>|  Btree.java:1045:<init>|  Btree.java:1044:search_eq_parallel|  Btree.java:2396:Leaf|  Btree.java:1546:code|  Chip.java:0532:<init>|  Btree.java:1528:<init>|  Btree.java:1527:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2395:<init>|  Btree.java:2394:code|  Chip.java:0532:<init>|  Btree.java:2392:<init>|  Btree.java:2391:findSearch|  Btree.java:2428:code|  Chip.java:0532:<init>|  Btree.java:2427:<init>|  Btree.java:2426:findAndInsert|  Btree.java:2528:Leaf|  Btree.java:1546:code|  Chip.java:0532:<init>|  Btree.java:1528:<init>|  Btree.java:1527:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2513:<init>|  Btree.java:2512:code|  Chip.java:0532:<init>|  Btree.java:2497:<init>|  Btree.java:2496:code|  Chip.java:0532:<init>|  Btree.java:2471:<init>|  Btree.java:2470:put|  Btree.java:7182:code|  Chip.java:0532:<init>|  Btree.java:7166:<init>|  Btree.java:7165:test_put_random|  Btree.java:7275:oldTests|  Btree.java:7280:newTests|  Btree.java:7286:main|");
             $fclose(f);
           end
         end
@@ -6117,7 +6117,7 @@ module Btree;                                                                   
           begin
             integer f;
             f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:0514:<init>|  Btree.java:1045:<init>|  Btree.java:1044:search_eq_parallel|  Btree.java:2394:Leaf|  Btree.java:1546:code|  Chip.java:0532:<init>|  Btree.java:1528:<init>|  Btree.java:1527:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2393:<init>|  Btree.java:2392:code|  Chip.java:0532:<init>|  Btree.java:2390:<init>|  Btree.java:2389:findSearch|  Btree.java:2426:code|  Chip.java:0532:<init>|  Btree.java:2425:<init>|  Btree.java:2424:findAndInsert|  Btree.java:2526:Leaf|  Btree.java:1546:code|  Chip.java:0532:<init>|  Btree.java:1528:<init>|  Btree.java:1527:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2511:<init>|  Btree.java:2510:code|  Chip.java:0532:<init>|  Btree.java:2495:<init>|  Btree.java:2494:code|  Chip.java:0532:<init>|  Btree.java:2469:<init>|  Btree.java:2468:put|  Btree.java:7180:code|  Chip.java:0532:<init>|  Btree.java:7164:<init>|  Btree.java:7163:test_put_random|  Btree.java:7273:oldTests|  Btree.java:7278:newTests|  Btree.java:7284:main|");
+            $fdisplay(f, "Location: Chip.java:0514:<init>|  Btree.java:1045:<init>|  Btree.java:1044:search_eq_parallel|  Btree.java:2396:Leaf|  Btree.java:1546:code|  Chip.java:0532:<init>|  Btree.java:1528:<init>|  Btree.java:1527:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2395:<init>|  Btree.java:2394:code|  Chip.java:0532:<init>|  Btree.java:2392:<init>|  Btree.java:2391:findSearch|  Btree.java:2428:code|  Chip.java:0532:<init>|  Btree.java:2427:<init>|  Btree.java:2426:findAndInsert|  Btree.java:2528:Leaf|  Btree.java:1546:code|  Chip.java:0532:<init>|  Btree.java:1528:<init>|  Btree.java:1527:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2513:<init>|  Btree.java:2512:code|  Chip.java:0532:<init>|  Btree.java:2497:<init>|  Btree.java:2496:code|  Chip.java:0532:<init>|  Btree.java:2471:<init>|  Btree.java:2470:put|  Btree.java:7182:code|  Chip.java:0532:<init>|  Btree.java:7166:<init>|  Btree.java:7165:test_put_random|  Btree.java:7275:oldTests|  Btree.java:7280:newTests|  Btree.java:7286:main|");
             $fclose(f);
           end
         end
@@ -6154,7 +6154,7 @@ module Btree;                                                                   
           begin
             integer f;
             f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:0514:<init>|  Btree.java:1067:<init>|  Btree.java:1066:search_eq_parallel|  Btree.java:2394:Leaf|  Btree.java:1546:code|  Chip.java:0532:<init>|  Btree.java:1528:<init>|  Btree.java:1527:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2393:<init>|  Btree.java:2392:code|  Chip.java:0532:<init>|  Btree.java:2390:<init>|  Btree.java:2389:findSearch|  Btree.java:2426:code|  Chip.java:0532:<init>|  Btree.java:2425:<init>|  Btree.java:2424:findAndInsert|  Btree.java:2526:Leaf|  Btree.java:1546:code|  Chip.java:0532:<init>|  Btree.java:1528:<init>|  Btree.java:1527:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2511:<init>|  Btree.java:2510:code|  Chip.java:0532:<init>|  Btree.java:2495:<init>|  Btree.java:2494:code|  Chip.java:0532:<init>|  Btree.java:2469:<init>|  Btree.java:2468:put|  Btree.java:7180:code|  Chip.java:0532:<init>|  Btree.java:7164:<init>|  Btree.java:7163:test_put_random|  Btree.java:7273:oldTests|  Btree.java:7278:newTests|  Btree.java:7284:main|");
+            $fdisplay(f, "Location: Chip.java:0514:<init>|  Btree.java:1067:<init>|  Btree.java:1066:search_eq_parallel|  Btree.java:2396:Leaf|  Btree.java:1546:code|  Chip.java:0532:<init>|  Btree.java:1528:<init>|  Btree.java:1527:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2395:<init>|  Btree.java:2394:code|  Chip.java:0532:<init>|  Btree.java:2392:<init>|  Btree.java:2391:findSearch|  Btree.java:2428:code|  Chip.java:0532:<init>|  Btree.java:2427:<init>|  Btree.java:2426:findAndInsert|  Btree.java:2528:Leaf|  Btree.java:1546:code|  Chip.java:0532:<init>|  Btree.java:1528:<init>|  Btree.java:1527:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2513:<init>|  Btree.java:2512:code|  Chip.java:0532:<init>|  Btree.java:2497:<init>|  Btree.java:2496:code|  Chip.java:0532:<init>|  Btree.java:2471:<init>|  Btree.java:2470:put|  Btree.java:7182:code|  Chip.java:0532:<init>|  Btree.java:7166:<init>|  Btree.java:7165:test_put_random|  Btree.java:7275:oldTests|  Btree.java:7280:newTests|  Btree.java:7286:main|");
             $fclose(f);
           end
         end
@@ -6163,7 +6163,7 @@ module Btree;                                                                   
           begin
             integer f;
             f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:0573:<init>|  Chip.java:0572:GOto|  Btree.java:2395:Leaf|  Btree.java:1546:code|  Chip.java:0532:<init>|  Btree.java:1528:<init>|  Btree.java:1527:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2393:<init>|  Btree.java:2392:code|  Chip.java:0532:<init>|  Btree.java:2390:<init>|  Btree.java:2389:findSearch|  Btree.java:2426:code|  Chip.java:0532:<init>|  Btree.java:2425:<init>|  Btree.java:2424:findAndInsert|  Btree.java:2526:Leaf|  Btree.java:1546:code|  Chip.java:0532:<init>|  Btree.java:1528:<init>|  Btree.java:1527:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2511:<init>|  Btree.java:2510:code|  Chip.java:0532:<init>|  Btree.java:2495:<init>|  Btree.java:2494:code|  Chip.java:0532:<init>|  Btree.java:2469:<init>|  Btree.java:2468:put|  Btree.java:7180:code|  Chip.java:0532:<init>|  Btree.java:7164:<init>|  Btree.java:7163:test_put_random|  Btree.java:7273:oldTests|  Btree.java:7278:newTests|  Btree.java:7284:main|");
+            $fdisplay(f, "Location: Chip.java:0573:<init>|  Chip.java:0572:GOto|  Btree.java:2397:Leaf|  Btree.java:1546:code|  Chip.java:0532:<init>|  Btree.java:1528:<init>|  Btree.java:1527:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2395:<init>|  Btree.java:2394:code|  Chip.java:0532:<init>|  Btree.java:2392:<init>|  Btree.java:2391:findSearch|  Btree.java:2428:code|  Chip.java:0532:<init>|  Btree.java:2427:<init>|  Btree.java:2426:findAndInsert|  Btree.java:2528:Leaf|  Btree.java:1546:code|  Chip.java:0532:<init>|  Btree.java:1528:<init>|  Btree.java:1527:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2513:<init>|  Btree.java:2512:code|  Chip.java:0532:<init>|  Btree.java:2497:<init>|  Btree.java:2496:code|  Chip.java:0532:<init>|  Btree.java:2471:<init>|  Btree.java:2470:put|  Btree.java:7182:code|  Chip.java:0532:<init>|  Btree.java:7166:<init>|  Btree.java:7165:test_put_random|  Btree.java:7275:oldTests|  Btree.java:7280:newTests|  Btree.java:7286:main|");
             $fclose(f);
           end
         end
@@ -6172,7 +6172,7 @@ module Btree;                                                                   
           begin
             integer f;
             f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:0573:<init>|  Chip.java:0572:GOto|  Btree.java:1547:code|  Chip.java:0532:<init>|  Btree.java:1528:<init>|  Btree.java:1527:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2393:<init>|  Btree.java:2392:code|  Chip.java:0532:<init>|  Btree.java:2390:<init>|  Btree.java:2389:findSearch|  Btree.java:2426:code|  Chip.java:0532:<init>|  Btree.java:2425:<init>|  Btree.java:2424:findAndInsert|  Btree.java:2526:Leaf|  Btree.java:1546:code|  Chip.java:0532:<init>|  Btree.java:1528:<init>|  Btree.java:1527:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2511:<init>|  Btree.java:2510:code|  Chip.java:0532:<init>|  Btree.java:2495:<init>|  Btree.java:2494:code|  Chip.java:0532:<init>|  Btree.java:2469:<init>|  Btree.java:2468:put|  Btree.java:7180:code|  Chip.java:0532:<init>|  Btree.java:7164:<init>|  Btree.java:7163:test_put_random|  Btree.java:7273:oldTests|  Btree.java:7278:newTests|  Btree.java:7284:main|");
+            $fdisplay(f, "Location: Chip.java:0573:<init>|  Chip.java:0572:GOto|  Btree.java:1547:code|  Chip.java:0532:<init>|  Btree.java:1528:<init>|  Btree.java:1527:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2395:<init>|  Btree.java:2394:code|  Chip.java:0532:<init>|  Btree.java:2392:<init>|  Btree.java:2391:findSearch|  Btree.java:2428:code|  Chip.java:0532:<init>|  Btree.java:2427:<init>|  Btree.java:2426:findAndInsert|  Btree.java:2528:Leaf|  Btree.java:1546:code|  Chip.java:0532:<init>|  Btree.java:1528:<init>|  Btree.java:1527:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2513:<init>|  Btree.java:2512:code|  Chip.java:0532:<init>|  Btree.java:2497:<init>|  Btree.java:2496:code|  Chip.java:0532:<init>|  Btree.java:2471:<init>|  Btree.java:2470:put|  Btree.java:7182:code|  Chip.java:0532:<init>|  Btree.java:7166:<init>|  Btree.java:7165:test_put_random|  Btree.java:7275:oldTests|  Btree.java:7280:newTests|  Btree.java:7286:main|");
             $fclose(f);
           end
         end
@@ -6189,7 +6189,7 @@ module Btree;                                                                   
           begin
             integer f;
             f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:0514:<init>|  Btree.java:1162:<init>|  Btree.java:1161:search_le_parallel|  Btree.java:2398:Branch|  Btree.java:1550:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2393:<init>|  Btree.java:2392:code|  Chip.java:0532:<init>|  Btree.java:2390:<init>|  Btree.java:2389:findSearch|  Btree.java:2426:code|  Chip.java:0532:<init>|  Btree.java:2425:<init>|  Btree.java:2424:findAndInsert|  Btree.java:2526:Leaf|  Btree.java:1546:code|  Chip.java:0532:<init>|  Btree.java:1528:<init>|  Btree.java:1527:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2511:<init>|  Btree.java:2510:code|  Chip.java:0532:<init>|  Btree.java:2495:<init>|  Btree.java:2494:code|  Chip.java:0532:<init>|  Btree.java:2469:<init>|  Btree.java:2468:put|  Btree.java:7180:code|  Chip.java:0532:<init>|  Btree.java:7164:<init>|  Btree.java:7163:test_put_random|  Btree.java:7273:oldTests|  Btree.java:7278:newTests|  Btree.java:7284:main|");
+            $fdisplay(f, "Location: Chip.java:0514:<init>|  Btree.java:1162:<init>|  Btree.java:1161:search_le_parallel|  Btree.java:2400:Branch|  Btree.java:1550:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2395:<init>|  Btree.java:2394:code|  Chip.java:0532:<init>|  Btree.java:2392:<init>|  Btree.java:2391:findSearch|  Btree.java:2428:code|  Chip.java:0532:<init>|  Btree.java:2427:<init>|  Btree.java:2426:findAndInsert|  Btree.java:2528:Leaf|  Btree.java:1546:code|  Chip.java:0532:<init>|  Btree.java:1528:<init>|  Btree.java:1527:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2513:<init>|  Btree.java:2512:code|  Chip.java:0532:<init>|  Btree.java:2497:<init>|  Btree.java:2496:code|  Chip.java:0532:<init>|  Btree.java:2471:<init>|  Btree.java:2470:put|  Btree.java:7182:code|  Chip.java:0532:<init>|  Btree.java:7166:<init>|  Btree.java:7165:test_put_random|  Btree.java:7275:oldTests|  Btree.java:7280:newTests|  Btree.java:7286:main|");
             $fclose(f);
           end
         end
@@ -6206,7 +6206,7 @@ module Btree;                                                                   
           begin
             integer f;
             f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:0514:<init>|  Btree.java:1198:<init>|  Btree.java:1197:search_le_parallel|  Btree.java:2398:Branch|  Btree.java:1550:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2393:<init>|  Btree.java:2392:code|  Chip.java:0532:<init>|  Btree.java:2390:<init>|  Btree.java:2389:findSearch|  Btree.java:2426:code|  Chip.java:0532:<init>|  Btree.java:2425:<init>|  Btree.java:2424:findAndInsert|  Btree.java:2526:Leaf|  Btree.java:1546:code|  Chip.java:0532:<init>|  Btree.java:1528:<init>|  Btree.java:1527:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2511:<init>|  Btree.java:2510:code|  Chip.java:0532:<init>|  Btree.java:2495:<init>|  Btree.java:2494:code|  Chip.java:0532:<init>|  Btree.java:2469:<init>|  Btree.java:2468:put|  Btree.java:7180:code|  Chip.java:0532:<init>|  Btree.java:7164:<init>|  Btree.java:7163:test_put_random|  Btree.java:7273:oldTests|  Btree.java:7278:newTests|  Btree.java:7284:main|");
+            $fdisplay(f, "Location: Chip.java:0514:<init>|  Btree.java:1198:<init>|  Btree.java:1197:search_le_parallel|  Btree.java:2400:Branch|  Btree.java:1550:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2395:<init>|  Btree.java:2394:code|  Chip.java:0532:<init>|  Btree.java:2392:<init>|  Btree.java:2391:findSearch|  Btree.java:2428:code|  Chip.java:0532:<init>|  Btree.java:2427:<init>|  Btree.java:2426:findAndInsert|  Btree.java:2528:Leaf|  Btree.java:1546:code|  Chip.java:0532:<init>|  Btree.java:1528:<init>|  Btree.java:1527:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2513:<init>|  Btree.java:2512:code|  Chip.java:0532:<init>|  Btree.java:2497:<init>|  Btree.java:2496:code|  Chip.java:0532:<init>|  Btree.java:2471:<init>|  Btree.java:2470:put|  Btree.java:7182:code|  Chip.java:0532:<init>|  Btree.java:7166:<init>|  Btree.java:7165:test_put_random|  Btree.java:7275:oldTests|  Btree.java:7280:newTests|  Btree.java:7286:main|");
             $fclose(f);
           end
         end
@@ -6219,7 +6219,7 @@ module Btree;                                                                   
           begin
             integer f;
             f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:0514:<init>|  Btree.java:1198:<init>|  Btree.java:1197:search_le_parallel|  Btree.java:2398:Branch|  Btree.java:1550:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2393:<init>|  Btree.java:2392:code|  Chip.java:0532:<init>|  Btree.java:2390:<init>|  Btree.java:2389:findSearch|  Btree.java:2426:code|  Chip.java:0532:<init>|  Btree.java:2425:<init>|  Btree.java:2424:findAndInsert|  Btree.java:2526:Leaf|  Btree.java:1546:code|  Chip.java:0532:<init>|  Btree.java:1528:<init>|  Btree.java:1527:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2511:<init>|  Btree.java:2510:code|  Chip.java:0532:<init>|  Btree.java:2495:<init>|  Btree.java:2494:code|  Chip.java:0532:<init>|  Btree.java:2469:<init>|  Btree.java:2468:put|  Btree.java:7180:code|  Chip.java:0532:<init>|  Btree.java:7164:<init>|  Btree.java:7163:test_put_random|  Btree.java:7273:oldTests|  Btree.java:7278:newTests|  Btree.java:7284:main|");
+            $fdisplay(f, "Location: Chip.java:0514:<init>|  Btree.java:1198:<init>|  Btree.java:1197:search_le_parallel|  Btree.java:2400:Branch|  Btree.java:1550:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2395:<init>|  Btree.java:2394:code|  Chip.java:0532:<init>|  Btree.java:2392:<init>|  Btree.java:2391:findSearch|  Btree.java:2428:code|  Chip.java:0532:<init>|  Btree.java:2427:<init>|  Btree.java:2426:findAndInsert|  Btree.java:2528:Leaf|  Btree.java:1546:code|  Chip.java:0532:<init>|  Btree.java:1528:<init>|  Btree.java:1527:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2513:<init>|  Btree.java:2512:code|  Chip.java:0532:<init>|  Btree.java:2497:<init>|  Btree.java:2496:code|  Chip.java:0532:<init>|  Btree.java:2471:<init>|  Btree.java:2470:put|  Btree.java:7182:code|  Chip.java:0532:<init>|  Btree.java:7166:<init>|  Btree.java:7165:test_put_random|  Btree.java:7275:oldTests|  Btree.java:7280:newTests|  Btree.java:7286:main|");
             $fclose(f);
           end
         end
@@ -6274,7 +6274,7 @@ module Btree;                                                                   
           begin
             integer f;
             f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:0514:<init>|  Btree.java:1220:<init>|  Btree.java:1219:search_le_parallel|  Btree.java:2398:Branch|  Btree.java:1550:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2393:<init>|  Btree.java:2392:code|  Chip.java:0532:<init>|  Btree.java:2390:<init>|  Btree.java:2389:findSearch|  Btree.java:2426:code|  Chip.java:0532:<init>|  Btree.java:2425:<init>|  Btree.java:2424:findAndInsert|  Btree.java:2526:Leaf|  Btree.java:1546:code|  Chip.java:0532:<init>|  Btree.java:1528:<init>|  Btree.java:1527:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2511:<init>|  Btree.java:2510:code|  Chip.java:0532:<init>|  Btree.java:2495:<init>|  Btree.java:2494:code|  Chip.java:0532:<init>|  Btree.java:2469:<init>|  Btree.java:2468:put|  Btree.java:7180:code|  Chip.java:0532:<init>|  Btree.java:7164:<init>|  Btree.java:7163:test_put_random|  Btree.java:7273:oldTests|  Btree.java:7278:newTests|  Btree.java:7284:main|");
+            $fdisplay(f, "Location: Chip.java:0514:<init>|  Btree.java:1220:<init>|  Btree.java:1219:search_le_parallel|  Btree.java:2400:Branch|  Btree.java:1550:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2395:<init>|  Btree.java:2394:code|  Chip.java:0532:<init>|  Btree.java:2392:<init>|  Btree.java:2391:findSearch|  Btree.java:2428:code|  Chip.java:0532:<init>|  Btree.java:2427:<init>|  Btree.java:2426:findAndInsert|  Btree.java:2528:Leaf|  Btree.java:1546:code|  Chip.java:0532:<init>|  Btree.java:1528:<init>|  Btree.java:1527:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2513:<init>|  Btree.java:2512:code|  Chip.java:0532:<init>|  Btree.java:2497:<init>|  Btree.java:2496:code|  Chip.java:0532:<init>|  Btree.java:2471:<init>|  Btree.java:2470:put|  Btree.java:7182:code|  Chip.java:0532:<init>|  Btree.java:7166:<init>|  Btree.java:7165:test_put_random|  Btree.java:7275:oldTests|  Btree.java:7280:newTests|  Btree.java:7286:main|");
             $fclose(f);
           end
         end
@@ -6284,7 +6284,7 @@ module Btree;                                                                   
           begin
             integer f;
             f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:0514:<init>|  Chip.java:0699:<init>|  Chip.java:0698:Copy|  Btree.java:2399:Branch|  Btree.java:1550:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2393:<init>|  Btree.java:2392:code|  Chip.java:0532:<init>|  Btree.java:2390:<init>|  Btree.java:2389:findSearch|  Btree.java:2426:code|  Chip.java:0532:<init>|  Btree.java:2425:<init>|  Btree.java:2424:findAndInsert|  Btree.java:2526:Leaf|  Btree.java:1546:code|  Chip.java:0532:<init>|  Btree.java:1528:<init>|  Btree.java:1527:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2511:<init>|  Btree.java:2510:code|  Chip.java:0532:<init>|  Btree.java:2495:<init>|  Btree.java:2494:code|  Chip.java:0532:<init>|  Btree.java:2469:<init>|  Btree.java:2468:put|  Btree.java:7180:code|  Chip.java:0532:<init>|  Btree.java:7164:<init>|  Btree.java:7163:test_put_random|  Btree.java:7273:oldTests|  Btree.java:7278:newTests|  Btree.java:7284:main|");
+            $fdisplay(f, "Location: Chip.java:0514:<init>|  Chip.java:0699:<init>|  Chip.java:0698:Copy|  Btree.java:2401:Branch|  Btree.java:1550:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2395:<init>|  Btree.java:2394:code|  Chip.java:0532:<init>|  Btree.java:2392:<init>|  Btree.java:2391:findSearch|  Btree.java:2428:code|  Chip.java:0532:<init>|  Btree.java:2427:<init>|  Btree.java:2426:findAndInsert|  Btree.java:2528:Leaf|  Btree.java:1546:code|  Chip.java:0532:<init>|  Btree.java:1528:<init>|  Btree.java:1527:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2513:<init>|  Btree.java:2512:code|  Chip.java:0532:<init>|  Btree.java:2497:<init>|  Btree.java:2496:code|  Chip.java:0532:<init>|  Btree.java:2471:<init>|  Btree.java:2470:put|  Btree.java:7182:code|  Chip.java:0532:<init>|  Btree.java:7166:<init>|  Btree.java:7165:test_put_random|  Btree.java:7275:oldTests|  Btree.java:7280:newTests|  Btree.java:7286:main|");
             $fclose(f);
           end
         end
@@ -6293,7 +6293,7 @@ module Btree;                                                                   
           begin
             integer f;
             f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:0573:<init>|  Chip.java:0572:GOto|  Btree.java:2400:Branch|  Btree.java:1550:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2393:<init>|  Btree.java:2392:code|  Chip.java:0532:<init>|  Btree.java:2390:<init>|  Btree.java:2389:findSearch|  Btree.java:2426:code|  Chip.java:0532:<init>|  Btree.java:2425:<init>|  Btree.java:2424:findAndInsert|  Btree.java:2526:Leaf|  Btree.java:1546:code|  Chip.java:0532:<init>|  Btree.java:1528:<init>|  Btree.java:1527:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2511:<init>|  Btree.java:2510:code|  Chip.java:0532:<init>|  Btree.java:2495:<init>|  Btree.java:2494:code|  Chip.java:0532:<init>|  Btree.java:2469:<init>|  Btree.java:2468:put|  Btree.java:7180:code|  Chip.java:0532:<init>|  Btree.java:7164:<init>|  Btree.java:7163:test_put_random|  Btree.java:7273:oldTests|  Btree.java:7278:newTests|  Btree.java:7284:main|");
+            $fdisplay(f, "Location: Chip.java:0573:<init>|  Chip.java:0572:GOto|  Btree.java:2402:Branch|  Btree.java:1550:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2395:<init>|  Btree.java:2394:code|  Chip.java:0532:<init>|  Btree.java:2392:<init>|  Btree.java:2391:findSearch|  Btree.java:2428:code|  Chip.java:0532:<init>|  Btree.java:2427:<init>|  Btree.java:2426:findAndInsert|  Btree.java:2528:Leaf|  Btree.java:1546:code|  Chip.java:0532:<init>|  Btree.java:1528:<init>|  Btree.java:1527:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2513:<init>|  Btree.java:2512:code|  Chip.java:0532:<init>|  Btree.java:2497:<init>|  Btree.java:2496:code|  Chip.java:0532:<init>|  Btree.java:2471:<init>|  Btree.java:2470:put|  Btree.java:7182:code|  Chip.java:0532:<init>|  Btree.java:7166:<init>|  Btree.java:7165:test_put_random|  Btree.java:7275:oldTests|  Btree.java:7280:newTests|  Btree.java:7286:main|");
             $fclose(f);
           end
         end
@@ -6307,7 +6307,7 @@ module Btree;                                                                   
           begin
             integer f;
             f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:0605:<init>|  Chip.java:0604:<init>|  Btree.java:2429:<init>|  Btree.java:2428:code|  Chip.java:0532:<init>|  Btree.java:2425:<init>|  Btree.java:2424:findAndInsert|  Btree.java:2526:Leaf|  Btree.java:1546:code|  Chip.java:0532:<init>|  Btree.java:1528:<init>|  Btree.java:1527:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2511:<init>|  Btree.java:2510:code|  Chip.java:0532:<init>|  Btree.java:2495:<init>|  Btree.java:2494:code|  Chip.java:0532:<init>|  Btree.java:2469:<init>|  Btree.java:2468:put|  Btree.java:7180:code|  Chip.java:0532:<init>|  Btree.java:7164:<init>|  Btree.java:7163:test_put_random|  Btree.java:7273:oldTests|  Btree.java:7278:newTests|  Btree.java:7284:main|");
+            $fdisplay(f, "Location: Chip.java:0605:<init>|  Chip.java:0604:<init>|  Btree.java:2431:<init>|  Btree.java:2430:code|  Chip.java:0532:<init>|  Btree.java:2427:<init>|  Btree.java:2426:findAndInsert|  Btree.java:2528:Leaf|  Btree.java:1546:code|  Chip.java:0532:<init>|  Btree.java:1528:<init>|  Btree.java:1527:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2513:<init>|  Btree.java:2512:code|  Chip.java:0532:<init>|  Btree.java:2497:<init>|  Btree.java:2496:code|  Chip.java:0532:<init>|  Btree.java:2471:<init>|  Btree.java:2470:put|  Btree.java:7182:code|  Chip.java:0532:<init>|  Btree.java:7166:<init>|  Btree.java:7165:test_put_random|  Btree.java:7275:oldTests|  Btree.java:7280:newTests|  Btree.java:7286:main|");
             $fclose(f);
           end
         end
@@ -6337,7 +6337,7 @@ module Btree;                                                                   
           begin
             integer f;
             f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:0514:<init>|  Btree.java:0846:<init>|  Btree.java:0845:SetElementAt|  Btree.java:2430:Then|  Chip.java:0612:<init>|  Btree.java:2429:<init>|  Btree.java:2428:code|  Chip.java:0532:<init>|  Btree.java:2425:<init>|  Btree.java:2424:findAndInsert|  Btree.java:2526:Leaf|  Btree.java:1546:code|  Chip.java:0532:<init>|  Btree.java:1528:<init>|  Btree.java:1527:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2511:<init>|  Btree.java:2510:code|  Chip.java:0532:<init>|  Btree.java:2495:<init>|  Btree.java:2494:code|  Chip.java:0532:<init>|  Btree.java:2469:<init>|  Btree.java:2468:put|  Btree.java:7180:code|  Chip.java:0532:<init>|  Btree.java:7164:<init>|  Btree.java:7163:test_put_random|  Btree.java:7273:oldTests|  Btree.java:7278:newTests|  Btree.java:7284:main|");
+            $fdisplay(f, "Location: Chip.java:0514:<init>|  Btree.java:0846:<init>|  Btree.java:0845:SetElementAt|  Btree.java:2432:Then|  Chip.java:0612:<init>|  Btree.java:2431:<init>|  Btree.java:2430:code|  Chip.java:0532:<init>|  Btree.java:2427:<init>|  Btree.java:2426:findAndInsert|  Btree.java:2528:Leaf|  Btree.java:1546:code|  Chip.java:0532:<init>|  Btree.java:1528:<init>|  Btree.java:1527:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2513:<init>|  Btree.java:2512:code|  Chip.java:0532:<init>|  Btree.java:2497:<init>|  Btree.java:2496:code|  Chip.java:0532:<init>|  Btree.java:2471:<init>|  Btree.java:2470:put|  Btree.java:7182:code|  Chip.java:0532:<init>|  Btree.java:7166:<init>|  Btree.java:7165:test_put_random|  Btree.java:7275:oldTests|  Btree.java:7280:newTests|  Btree.java:7286:main|");
             $fclose(f);
           end
         end
@@ -6346,7 +6346,7 @@ module Btree;                                                                   
           begin
             integer f;
             f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:0614:<init>|  Chip.java:0613:<init>|  Btree.java:2429:<init>|  Btree.java:2428:code|  Chip.java:0532:<init>|  Btree.java:2425:<init>|  Btree.java:2424:findAndInsert|  Btree.java:2526:Leaf|  Btree.java:1546:code|  Chip.java:0532:<init>|  Btree.java:1528:<init>|  Btree.java:1527:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2511:<init>|  Btree.java:2510:code|  Chip.java:0532:<init>|  Btree.java:2495:<init>|  Btree.java:2494:code|  Chip.java:0532:<init>|  Btree.java:2469:<init>|  Btree.java:2468:put|  Btree.java:7180:code|  Chip.java:0532:<init>|  Btree.java:7164:<init>|  Btree.java:7163:test_put_random|  Btree.java:7273:oldTests|  Btree.java:7278:newTests|  Btree.java:7284:main|");
+            $fdisplay(f, "Location: Chip.java:0614:<init>|  Chip.java:0613:<init>|  Btree.java:2431:<init>|  Btree.java:2430:code|  Chip.java:0532:<init>|  Btree.java:2427:<init>|  Btree.java:2426:findAndInsert|  Btree.java:2528:Leaf|  Btree.java:1546:code|  Chip.java:0532:<init>|  Btree.java:1528:<init>|  Btree.java:1527:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2513:<init>|  Btree.java:2512:code|  Chip.java:0532:<init>|  Btree.java:2497:<init>|  Btree.java:2496:code|  Chip.java:0532:<init>|  Btree.java:2471:<init>|  Btree.java:2470:put|  Btree.java:7182:code|  Chip.java:0532:<init>|  Btree.java:7166:<init>|  Btree.java:7165:test_put_random|  Btree.java:7275:oldTests|  Btree.java:7280:newTests|  Btree.java:7286:main|");
             $fclose(f);
           end
         end
@@ -6356,7 +6356,7 @@ module Btree;                                                                   
           begin
             integer f;
             f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:0514:<init>|  Chip.java:0817:<init>|  Chip.java:0817:Lt|  Btree.java:2434:Else|  Chip.java:0622:<init>|  Btree.java:2429:<init>|  Btree.java:2428:code|  Chip.java:0532:<init>|  Btree.java:2425:<init>|  Btree.java:2424:findAndInsert|  Btree.java:2526:Leaf|  Btree.java:1546:code|  Chip.java:0532:<init>|  Btree.java:1528:<init>|  Btree.java:1527:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2511:<init>|  Btree.java:2510:code|  Chip.java:0532:<init>|  Btree.java:2495:<init>|  Btree.java:2494:code|  Chip.java:0532:<init>|  Btree.java:2469:<init>|  Btree.java:2468:put|  Btree.java:7180:code|  Chip.java:0532:<init>|  Btree.java:7164:<init>|  Btree.java:7163:test_put_random|  Btree.java:7273:oldTests|  Btree.java:7278:newTests|  Btree.java:7284:main|");
+            $fdisplay(f, "Location: Chip.java:0514:<init>|  Chip.java:0817:<init>|  Chip.java:0817:Lt|  Btree.java:2436:Else|  Chip.java:0622:<init>|  Btree.java:2431:<init>|  Btree.java:2430:code|  Chip.java:0532:<init>|  Btree.java:2427:<init>|  Btree.java:2426:findAndInsert|  Btree.java:2528:Leaf|  Btree.java:1546:code|  Chip.java:0532:<init>|  Btree.java:1528:<init>|  Btree.java:1527:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2513:<init>|  Btree.java:2512:code|  Chip.java:0532:<init>|  Btree.java:2497:<init>|  Btree.java:2496:code|  Chip.java:0532:<init>|  Btree.java:2471:<init>|  Btree.java:2470:put|  Btree.java:7182:code|  Chip.java:0532:<init>|  Btree.java:7166:<init>|  Btree.java:7165:test_put_random|  Btree.java:7275:oldTests|  Btree.java:7280:newTests|  Btree.java:7286:main|");
             $fclose(f);
           end
         end
@@ -6370,7 +6370,7 @@ module Btree;                                                                   
           begin
             integer f;
             f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:0605:<init>|  Chip.java:0604:<init>|  Btree.java:2437:<init>|  Btree.java:2436:Else|  Chip.java:0622:<init>|  Btree.java:2429:<init>|  Btree.java:2428:code|  Chip.java:0532:<init>|  Btree.java:2425:<init>|  Btree.java:2424:findAndInsert|  Btree.java:2526:Leaf|  Btree.java:1546:code|  Chip.java:0532:<init>|  Btree.java:1528:<init>|  Btree.java:1527:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2511:<init>|  Btree.java:2510:code|  Chip.java:0532:<init>|  Btree.java:2495:<init>|  Btree.java:2494:code|  Chip.java:0532:<init>|  Btree.java:2469:<init>|  Btree.java:2468:put|  Btree.java:7180:code|  Chip.java:0532:<init>|  Btree.java:7164:<init>|  Btree.java:7163:test_put_random|  Btree.java:7273:oldTests|  Btree.java:7278:newTests|  Btree.java:7284:main|");
+            $fdisplay(f, "Location: Chip.java:0605:<init>|  Chip.java:0604:<init>|  Btree.java:2439:<init>|  Btree.java:2438:Else|  Chip.java:0622:<init>|  Btree.java:2431:<init>|  Btree.java:2430:code|  Chip.java:0532:<init>|  Btree.java:2427:<init>|  Btree.java:2426:findAndInsert|  Btree.java:2528:Leaf|  Btree.java:1546:code|  Chip.java:0532:<init>|  Btree.java:1528:<init>|  Btree.java:1527:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2513:<init>|  Btree.java:2512:code|  Chip.java:0532:<init>|  Btree.java:2497:<init>|  Btree.java:2496:code|  Chip.java:0532:<init>|  Btree.java:2471:<init>|  Btree.java:2470:put|  Btree.java:7182:code|  Chip.java:0532:<init>|  Btree.java:7166:<init>|  Btree.java:7165:test_put_random|  Btree.java:7275:oldTests|  Btree.java:7280:newTests|  Btree.java:7286:main|");
             $fclose(f);
           end
         end
@@ -6387,7 +6387,7 @@ module Btree;                                                                   
           begin
             integer f;
             f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:0514:<init>|  Btree.java:1162:<init>|  Btree.java:1161:search_le_parallel|  Btree.java:2438:Then|  Chip.java:0612:<init>|  Btree.java:2437:<init>|  Btree.java:2436:Else|  Chip.java:0622:<init>|  Btree.java:2429:<init>|  Btree.java:2428:code|  Chip.java:0532:<init>|  Btree.java:2425:<init>|  Btree.java:2424:findAndInsert|  Btree.java:2526:Leaf|  Btree.java:1546:code|  Chip.java:0532:<init>|  Btree.java:1528:<init>|  Btree.java:1527:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2511:<init>|  Btree.java:2510:code|  Chip.java:0532:<init>|  Btree.java:2495:<init>|  Btree.java:2494:code|  Chip.java:0532:<init>|  Btree.java:2469:<init>|  Btree.java:2468:put|  Btree.java:7180:code|  Chip.java:0532:<init>|  Btree.java:7164:<init>|  Btree.java:7163:test_put_random|  Btree.java:7273:oldTests|  Btree.java:7278:newTests|  Btree.java:7284:main|");
+            $fdisplay(f, "Location: Chip.java:0514:<init>|  Btree.java:1162:<init>|  Btree.java:1161:search_le_parallel|  Btree.java:2440:Then|  Chip.java:0612:<init>|  Btree.java:2439:<init>|  Btree.java:2438:Else|  Chip.java:0622:<init>|  Btree.java:2431:<init>|  Btree.java:2430:code|  Chip.java:0532:<init>|  Btree.java:2427:<init>|  Btree.java:2426:findAndInsert|  Btree.java:2528:Leaf|  Btree.java:1546:code|  Chip.java:0532:<init>|  Btree.java:1528:<init>|  Btree.java:1527:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2513:<init>|  Btree.java:2512:code|  Chip.java:0532:<init>|  Btree.java:2497:<init>|  Btree.java:2496:code|  Chip.java:0532:<init>|  Btree.java:2471:<init>|  Btree.java:2470:put|  Btree.java:7182:code|  Chip.java:0532:<init>|  Btree.java:7166:<init>|  Btree.java:7165:test_put_random|  Btree.java:7275:oldTests|  Btree.java:7280:newTests|  Btree.java:7286:main|");
             $fclose(f);
           end
         end
@@ -6404,7 +6404,7 @@ module Btree;                                                                   
           begin
             integer f;
             f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:0514:<init>|  Btree.java:1198:<init>|  Btree.java:1197:search_le_parallel|  Btree.java:2438:Then|  Chip.java:0612:<init>|  Btree.java:2437:<init>|  Btree.java:2436:Else|  Chip.java:0622:<init>|  Btree.java:2429:<init>|  Btree.java:2428:code|  Chip.java:0532:<init>|  Btree.java:2425:<init>|  Btree.java:2424:findAndInsert|  Btree.java:2526:Leaf|  Btree.java:1546:code|  Chip.java:0532:<init>|  Btree.java:1528:<init>|  Btree.java:1527:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2511:<init>|  Btree.java:2510:code|  Chip.java:0532:<init>|  Btree.java:2495:<init>|  Btree.java:2494:code|  Chip.java:0532:<init>|  Btree.java:2469:<init>|  Btree.java:2468:put|  Btree.java:7180:code|  Chip.java:0532:<init>|  Btree.java:7164:<init>|  Btree.java:7163:test_put_random|  Btree.java:7273:oldTests|  Btree.java:7278:newTests|  Btree.java:7284:main|");
+            $fdisplay(f, "Location: Chip.java:0514:<init>|  Btree.java:1198:<init>|  Btree.java:1197:search_le_parallel|  Btree.java:2440:Then|  Chip.java:0612:<init>|  Btree.java:2439:<init>|  Btree.java:2438:Else|  Chip.java:0622:<init>|  Btree.java:2431:<init>|  Btree.java:2430:code|  Chip.java:0532:<init>|  Btree.java:2427:<init>|  Btree.java:2426:findAndInsert|  Btree.java:2528:Leaf|  Btree.java:1546:code|  Chip.java:0532:<init>|  Btree.java:1528:<init>|  Btree.java:1527:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2513:<init>|  Btree.java:2512:code|  Chip.java:0532:<init>|  Btree.java:2497:<init>|  Btree.java:2496:code|  Chip.java:0532:<init>|  Btree.java:2471:<init>|  Btree.java:2470:put|  Btree.java:7182:code|  Chip.java:0532:<init>|  Btree.java:7166:<init>|  Btree.java:7165:test_put_random|  Btree.java:7275:oldTests|  Btree.java:7280:newTests|  Btree.java:7286:main|");
             $fclose(f);
           end
         end
@@ -6417,7 +6417,7 @@ module Btree;                                                                   
           begin
             integer f;
             f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:0514:<init>|  Btree.java:1198:<init>|  Btree.java:1197:search_le_parallel|  Btree.java:2438:Then|  Chip.java:0612:<init>|  Btree.java:2437:<init>|  Btree.java:2436:Else|  Chip.java:0622:<init>|  Btree.java:2429:<init>|  Btree.java:2428:code|  Chip.java:0532:<init>|  Btree.java:2425:<init>|  Btree.java:2424:findAndInsert|  Btree.java:2526:Leaf|  Btree.java:1546:code|  Chip.java:0532:<init>|  Btree.java:1528:<init>|  Btree.java:1527:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2511:<init>|  Btree.java:2510:code|  Chip.java:0532:<init>|  Btree.java:2495:<init>|  Btree.java:2494:code|  Chip.java:0532:<init>|  Btree.java:2469:<init>|  Btree.java:2468:put|  Btree.java:7180:code|  Chip.java:0532:<init>|  Btree.java:7164:<init>|  Btree.java:7163:test_put_random|  Btree.java:7273:oldTests|  Btree.java:7278:newTests|  Btree.java:7284:main|");
+            $fdisplay(f, "Location: Chip.java:0514:<init>|  Btree.java:1198:<init>|  Btree.java:1197:search_le_parallel|  Btree.java:2440:Then|  Chip.java:0612:<init>|  Btree.java:2439:<init>|  Btree.java:2438:Else|  Chip.java:0622:<init>|  Btree.java:2431:<init>|  Btree.java:2430:code|  Chip.java:0532:<init>|  Btree.java:2427:<init>|  Btree.java:2426:findAndInsert|  Btree.java:2528:Leaf|  Btree.java:1546:code|  Chip.java:0532:<init>|  Btree.java:1528:<init>|  Btree.java:1527:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2513:<init>|  Btree.java:2512:code|  Chip.java:0532:<init>|  Btree.java:2497:<init>|  Btree.java:2496:code|  Chip.java:0532:<init>|  Btree.java:2471:<init>|  Btree.java:2470:put|  Btree.java:7182:code|  Chip.java:0532:<init>|  Btree.java:7166:<init>|  Btree.java:7165:test_put_random|  Btree.java:7275:oldTests|  Btree.java:7280:newTests|  Btree.java:7286:main|");
             $fclose(f);
           end
         end
@@ -6472,7 +6472,7 @@ module Btree;                                                                   
           begin
             integer f;
             f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:0514:<init>|  Btree.java:1220:<init>|  Btree.java:1219:search_le_parallel|  Btree.java:2438:Then|  Chip.java:0612:<init>|  Btree.java:2437:<init>|  Btree.java:2436:Else|  Chip.java:0622:<init>|  Btree.java:2429:<init>|  Btree.java:2428:code|  Chip.java:0532:<init>|  Btree.java:2425:<init>|  Btree.java:2424:findAndInsert|  Btree.java:2526:Leaf|  Btree.java:1546:code|  Chip.java:0532:<init>|  Btree.java:1528:<init>|  Btree.java:1527:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2511:<init>|  Btree.java:2510:code|  Chip.java:0532:<init>|  Btree.java:2495:<init>|  Btree.java:2494:code|  Chip.java:0532:<init>|  Btree.java:2469:<init>|  Btree.java:2468:put|  Btree.java:7180:code|  Chip.java:0532:<init>|  Btree.java:7164:<init>|  Btree.java:7163:test_put_random|  Btree.java:7273:oldTests|  Btree.java:7278:newTests|  Btree.java:7284:main|");
+            $fdisplay(f, "Location: Chip.java:0514:<init>|  Btree.java:1220:<init>|  Btree.java:1219:search_le_parallel|  Btree.java:2440:Then|  Chip.java:0612:<init>|  Btree.java:2439:<init>|  Btree.java:2438:Else|  Chip.java:0622:<init>|  Btree.java:2431:<init>|  Btree.java:2430:code|  Chip.java:0532:<init>|  Btree.java:2427:<init>|  Btree.java:2426:findAndInsert|  Btree.java:2528:Leaf|  Btree.java:1546:code|  Chip.java:0532:<init>|  Btree.java:1528:<init>|  Btree.java:1527:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2513:<init>|  Btree.java:2512:code|  Chip.java:0532:<init>|  Btree.java:2497:<init>|  Btree.java:2496:code|  Chip.java:0532:<init>|  Btree.java:2471:<init>|  Btree.java:2470:put|  Btree.java:7182:code|  Chip.java:0532:<init>|  Btree.java:7166:<init>|  Btree.java:7165:test_put_random|  Btree.java:7275:oldTests|  Btree.java:7280:newTests|  Btree.java:7286:main|");
             $fclose(f);
           end
         end
@@ -6512,7 +6512,7 @@ module Btree;                                                                   
           begin
             integer f;
             f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:0514:<init>|  Btree.java:0921:<init>|  Btree.java:0920:InsertElementAt|  Btree.java:2439:Then|  Chip.java:0612:<init>|  Btree.java:2437:<init>|  Btree.java:2436:Else|  Chip.java:0622:<init>|  Btree.java:2429:<init>|  Btree.java:2428:code|  Chip.java:0532:<init>|  Btree.java:2425:<init>|  Btree.java:2424:findAndInsert|  Btree.java:2526:Leaf|  Btree.java:1546:code|  Chip.java:0532:<init>|  Btree.java:1528:<init>|  Btree.java:1527:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2511:<init>|  Btree.java:2510:code|  Chip.java:0532:<init>|  Btree.java:2495:<init>|  Btree.java:2494:code|  Chip.java:0532:<init>|  Btree.java:2469:<init>|  Btree.java:2468:put|  Btree.java:7180:code|  Chip.java:0532:<init>|  Btree.java:7164:<init>|  Btree.java:7163:test_put_random|  Btree.java:7273:oldTests|  Btree.java:7278:newTests|  Btree.java:7284:main|");
+            $fdisplay(f, "Location: Chip.java:0514:<init>|  Btree.java:0921:<init>|  Btree.java:0920:InsertElementAt|  Btree.java:2441:Then|  Chip.java:0612:<init>|  Btree.java:2439:<init>|  Btree.java:2438:Else|  Chip.java:0622:<init>|  Btree.java:2431:<init>|  Btree.java:2430:code|  Chip.java:0532:<init>|  Btree.java:2427:<init>|  Btree.java:2426:findAndInsert|  Btree.java:2528:Leaf|  Btree.java:1546:code|  Chip.java:0532:<init>|  Btree.java:1528:<init>|  Btree.java:1527:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2513:<init>|  Btree.java:2512:code|  Chip.java:0532:<init>|  Btree.java:2497:<init>|  Btree.java:2496:code|  Chip.java:0532:<init>|  Btree.java:2471:<init>|  Btree.java:2470:put|  Btree.java:7182:code|  Chip.java:0532:<init>|  Btree.java:7166:<init>|  Btree.java:7165:test_put_random|  Btree.java:7275:oldTests|  Btree.java:7280:newTests|  Btree.java:7286:main|");
             $fclose(f);
           end
         end
@@ -6522,7 +6522,7 @@ module Btree;                                                                   
           begin
             integer f;
             f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:0514:<init>|  Chip.java:0828:<init>|  Chip.java:0827:One|  Btree.java:2440:Then|  Chip.java:0612:<init>|  Btree.java:2437:<init>|  Btree.java:2436:Else|  Chip.java:0622:<init>|  Btree.java:2429:<init>|  Btree.java:2428:code|  Chip.java:0532:<init>|  Btree.java:2425:<init>|  Btree.java:2424:findAndInsert|  Btree.java:2526:Leaf|  Btree.java:1546:code|  Chip.java:0532:<init>|  Btree.java:1528:<init>|  Btree.java:1527:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2511:<init>|  Btree.java:2510:code|  Chip.java:0532:<init>|  Btree.java:2495:<init>|  Btree.java:2494:code|  Chip.java:0532:<init>|  Btree.java:2469:<init>|  Btree.java:2468:put|  Btree.java:7180:code|  Chip.java:0532:<init>|  Btree.java:7164:<init>|  Btree.java:7163:test_put_random|  Btree.java:7273:oldTests|  Btree.java:7278:newTests|  Btree.java:7284:main|");
+            $fdisplay(f, "Location: Chip.java:0514:<init>|  Chip.java:0828:<init>|  Chip.java:0827:One|  Btree.java:2442:Then|  Chip.java:0612:<init>|  Btree.java:2439:<init>|  Btree.java:2438:Else|  Chip.java:0622:<init>|  Btree.java:2431:<init>|  Btree.java:2430:code|  Chip.java:0532:<init>|  Btree.java:2427:<init>|  Btree.java:2426:findAndInsert|  Btree.java:2528:Leaf|  Btree.java:1546:code|  Chip.java:0532:<init>|  Btree.java:1528:<init>|  Btree.java:1527:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2513:<init>|  Btree.java:2512:code|  Chip.java:0532:<init>|  Btree.java:2497:<init>|  Btree.java:2496:code|  Chip.java:0532:<init>|  Btree.java:2471:<init>|  Btree.java:2470:put|  Btree.java:7182:code|  Chip.java:0532:<init>|  Btree.java:7166:<init>|  Btree.java:7165:test_put_random|  Btree.java:7275:oldTests|  Btree.java:7280:newTests|  Btree.java:7286:main|");
             $fclose(f);
           end
         end
@@ -6531,7 +6531,7 @@ module Btree;                                                                   
           begin
             integer f;
             f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:0594:<init>|  Chip.java:0593:COntinue|  Btree.java:2441:Then|  Chip.java:0612:<init>|  Btree.java:2437:<init>|  Btree.java:2436:Else|  Chip.java:0622:<init>|  Btree.java:2429:<init>|  Btree.java:2428:code|  Chip.java:0532:<init>|  Btree.java:2425:<init>|  Btree.java:2424:findAndInsert|  Btree.java:2526:Leaf|  Btree.java:1546:code|  Chip.java:0532:<init>|  Btree.java:1528:<init>|  Btree.java:1527:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2511:<init>|  Btree.java:2510:code|  Chip.java:0532:<init>|  Btree.java:2495:<init>|  Btree.java:2494:code|  Chip.java:0532:<init>|  Btree.java:2469:<init>|  Btree.java:2468:put|  Btree.java:7180:code|  Chip.java:0532:<init>|  Btree.java:7164:<init>|  Btree.java:7163:test_put_random|  Btree.java:7273:oldTests|  Btree.java:7278:newTests|  Btree.java:7284:main|");
+            $fdisplay(f, "Location: Chip.java:0594:<init>|  Chip.java:0593:COntinue|  Btree.java:2443:Then|  Chip.java:0612:<init>|  Btree.java:2439:<init>|  Btree.java:2438:Else|  Chip.java:0622:<init>|  Btree.java:2431:<init>|  Btree.java:2430:code|  Chip.java:0532:<init>|  Btree.java:2427:<init>|  Btree.java:2426:findAndInsert|  Btree.java:2528:Leaf|  Btree.java:1546:code|  Chip.java:0532:<init>|  Btree.java:1528:<init>|  Btree.java:1527:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2513:<init>|  Btree.java:2512:code|  Chip.java:0532:<init>|  Btree.java:2497:<init>|  Btree.java:2496:code|  Chip.java:0532:<init>|  Btree.java:2471:<init>|  Btree.java:2470:put|  Btree.java:7182:code|  Chip.java:0532:<init>|  Btree.java:7166:<init>|  Btree.java:7165:test_put_random|  Btree.java:7275:oldTests|  Btree.java:7280:newTests|  Btree.java:7286:main|");
             $fclose(f);
           end
         end
@@ -6540,7 +6540,7 @@ module Btree;                                                                   
           begin
             integer f;
             f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:0614:<init>|  Chip.java:0613:<init>|  Btree.java:2437:<init>|  Btree.java:2436:Else|  Chip.java:0622:<init>|  Btree.java:2429:<init>|  Btree.java:2428:code|  Chip.java:0532:<init>|  Btree.java:2425:<init>|  Btree.java:2424:findAndInsert|  Btree.java:2526:Leaf|  Btree.java:1546:code|  Chip.java:0532:<init>|  Btree.java:1528:<init>|  Btree.java:1527:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2511:<init>|  Btree.java:2510:code|  Chip.java:0532:<init>|  Btree.java:2495:<init>|  Btree.java:2494:code|  Chip.java:0532:<init>|  Btree.java:2469:<init>|  Btree.java:2468:put|  Btree.java:7180:code|  Chip.java:0532:<init>|  Btree.java:7164:<init>|  Btree.java:7163:test_put_random|  Btree.java:7273:oldTests|  Btree.java:7278:newTests|  Btree.java:7284:main|");
+            $fdisplay(f, "Location: Chip.java:0614:<init>|  Chip.java:0613:<init>|  Btree.java:2439:<init>|  Btree.java:2438:Else|  Chip.java:0622:<init>|  Btree.java:2431:<init>|  Btree.java:2430:code|  Chip.java:0532:<init>|  Btree.java:2427:<init>|  Btree.java:2426:findAndInsert|  Btree.java:2528:Leaf|  Btree.java:1546:code|  Chip.java:0532:<init>|  Btree.java:1528:<init>|  Btree.java:1527:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2513:<init>|  Btree.java:2512:code|  Chip.java:0532:<init>|  Btree.java:2497:<init>|  Btree.java:2496:code|  Chip.java:0532:<init>|  Btree.java:2471:<init>|  Btree.java:2470:put|  Btree.java:7182:code|  Chip.java:0532:<init>|  Btree.java:7166:<init>|  Btree.java:7165:test_put_random|  Btree.java:7275:oldTests|  Btree.java:7280:newTests|  Btree.java:7286:main|");
             $fclose(f);
           end
         end
@@ -6549,7 +6549,7 @@ module Btree;                                                                   
           begin
             integer f;
             f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:0573:<init>|  Chip.java:0572:GOto|  Btree.java:2444:Else|  Chip.java:0622:<init>|  Btree.java:2437:<init>|  Btree.java:2436:Else|  Chip.java:0622:<init>|  Btree.java:2429:<init>|  Btree.java:2428:code|  Chip.java:0532:<init>|  Btree.java:2425:<init>|  Btree.java:2424:findAndInsert|  Btree.java:2526:Leaf|  Btree.java:1546:code|  Chip.java:0532:<init>|  Btree.java:1528:<init>|  Btree.java:1527:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2511:<init>|  Btree.java:2510:code|  Chip.java:0532:<init>|  Btree.java:2495:<init>|  Btree.java:2494:code|  Chip.java:0532:<init>|  Btree.java:2469:<init>|  Btree.java:2468:put|  Btree.java:7180:code|  Chip.java:0532:<init>|  Btree.java:7164:<init>|  Btree.java:7163:test_put_random|  Btree.java:7273:oldTests|  Btree.java:7278:newTests|  Btree.java:7284:main|");
+            $fdisplay(f, "Location: Chip.java:0573:<init>|  Chip.java:0572:GOto|  Btree.java:2446:Else|  Chip.java:0622:<init>|  Btree.java:2439:<init>|  Btree.java:2438:Else|  Chip.java:0622:<init>|  Btree.java:2431:<init>|  Btree.java:2430:code|  Chip.java:0532:<init>|  Btree.java:2427:<init>|  Btree.java:2426:findAndInsert|  Btree.java:2528:Leaf|  Btree.java:1546:code|  Chip.java:0532:<init>|  Btree.java:1528:<init>|  Btree.java:1527:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2513:<init>|  Btree.java:2512:code|  Chip.java:0532:<init>|  Btree.java:2497:<init>|  Btree.java:2496:code|  Chip.java:0532:<init>|  Btree.java:2471:<init>|  Btree.java:2470:put|  Btree.java:7182:code|  Chip.java:0532:<init>|  Btree.java:7166:<init>|  Btree.java:7165:test_put_random|  Btree.java:7275:oldTests|  Btree.java:7280:newTests|  Btree.java:7286:main|");
             $fclose(f);
           end
         end
@@ -6576,7 +6576,7 @@ module Btree;                                                                   
           begin
             integer f;
             f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:0514:<init>|  Btree.java:0330:<init>|  Btree.java:0329:stuckPut|  Btree.java:0353:stuckPut|  Btree.java:2449:code|  Chip.java:0532:<init>|  Btree.java:2425:<init>|  Btree.java:2424:findAndInsert|  Btree.java:2526:Leaf|  Btree.java:1546:code|  Chip.java:0532:<init>|  Btree.java:1528:<init>|  Btree.java:1527:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2511:<init>|  Btree.java:2510:code|  Chip.java:0532:<init>|  Btree.java:2495:<init>|  Btree.java:2494:code|  Chip.java:0532:<init>|  Btree.java:2469:<init>|  Btree.java:2468:put|  Btree.java:7180:code|  Chip.java:0532:<init>|  Btree.java:7164:<init>|  Btree.java:7163:test_put_random|  Btree.java:7273:oldTests|  Btree.java:7278:newTests|  Btree.java:7284:main|");
+            $fdisplay(f, "Location: Chip.java:0514:<init>|  Btree.java:0330:<init>|  Btree.java:0329:stuckPut|  Btree.java:0353:stuckPut|  Btree.java:2451:code|  Chip.java:0532:<init>|  Btree.java:2427:<init>|  Btree.java:2426:findAndInsert|  Btree.java:2528:Leaf|  Btree.java:1546:code|  Chip.java:0532:<init>|  Btree.java:1528:<init>|  Btree.java:1527:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2513:<init>|  Btree.java:2512:code|  Chip.java:0532:<init>|  Btree.java:2497:<init>|  Btree.java:2496:code|  Chip.java:0532:<init>|  Btree.java:2471:<init>|  Btree.java:2470:put|  Btree.java:7182:code|  Chip.java:0532:<init>|  Btree.java:7166:<init>|  Btree.java:7165:test_put_random|  Btree.java:7275:oldTests|  Btree.java:7280:newTests|  Btree.java:7286:main|");
             $fclose(f);
           end
         end
@@ -6587,7 +6587,7 @@ module Btree;                                                                   
           begin
             integer f;
             f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:1422:<init>|  Chip.java:1421:waitResultOfTransaction|  Btree.java:0344:stuckPut|  Btree.java:0353:stuckPut|  Btree.java:2449:code|  Chip.java:0532:<init>|  Btree.java:2425:<init>|  Btree.java:2424:findAndInsert|  Btree.java:2526:Leaf|  Btree.java:1546:code|  Chip.java:0532:<init>|  Btree.java:1528:<init>|  Btree.java:1527:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2511:<init>|  Btree.java:2510:code|  Chip.java:0532:<init>|  Btree.java:2495:<init>|  Btree.java:2494:code|  Chip.java:0532:<init>|  Btree.java:2469:<init>|  Btree.java:2468:put|  Btree.java:7180:code|  Chip.java:0532:<init>|  Btree.java:7164:<init>|  Btree.java:7163:test_put_random|  Btree.java:7273:oldTests|  Btree.java:7278:newTests|  Btree.java:7284:main|");
+            $fdisplay(f, "Location: Chip.java:1422:<init>|  Chip.java:1421:waitResultOfTransaction|  Btree.java:0344:stuckPut|  Btree.java:0353:stuckPut|  Btree.java:2451:code|  Chip.java:0532:<init>|  Btree.java:2427:<init>|  Btree.java:2426:findAndInsert|  Btree.java:2528:Leaf|  Btree.java:1546:code|  Chip.java:0532:<init>|  Btree.java:1528:<init>|  Btree.java:1527:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2513:<init>|  Btree.java:2512:code|  Chip.java:0532:<init>|  Btree.java:2497:<init>|  Btree.java:2496:code|  Chip.java:0532:<init>|  Btree.java:2471:<init>|  Btree.java:2470:put|  Btree.java:7182:code|  Chip.java:0532:<init>|  Btree.java:7166:<init>|  Btree.java:7165:test_put_random|  Btree.java:7275:oldTests|  Btree.java:7280:newTests|  Btree.java:7286:main|");
             $fclose(f);
           end
         end
@@ -6598,7 +6598,7 @@ module Btree;                                                                   
           begin
             integer f;
             f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:1422:<init>|  Chip.java:1421:waitResultOfTransaction|  Btree.java:0347:stuckPut|  Btree.java:0353:stuckPut|  Btree.java:2449:code|  Chip.java:0532:<init>|  Btree.java:2425:<init>|  Btree.java:2424:findAndInsert|  Btree.java:2526:Leaf|  Btree.java:1546:code|  Chip.java:0532:<init>|  Btree.java:1528:<init>|  Btree.java:1527:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2511:<init>|  Btree.java:2510:code|  Chip.java:0532:<init>|  Btree.java:2495:<init>|  Btree.java:2494:code|  Chip.java:0532:<init>|  Btree.java:2469:<init>|  Btree.java:2468:put|  Btree.java:7180:code|  Chip.java:0532:<init>|  Btree.java:7164:<init>|  Btree.java:7163:test_put_random|  Btree.java:7273:oldTests|  Btree.java:7278:newTests|  Btree.java:7284:main|");
+            $fdisplay(f, "Location: Chip.java:1422:<init>|  Chip.java:1421:waitResultOfTransaction|  Btree.java:0347:stuckPut|  Btree.java:0353:stuckPut|  Btree.java:2451:code|  Chip.java:0532:<init>|  Btree.java:2427:<init>|  Btree.java:2426:findAndInsert|  Btree.java:2528:Leaf|  Btree.java:1546:code|  Chip.java:0532:<init>|  Btree.java:1528:<init>|  Btree.java:1527:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2513:<init>|  Btree.java:2512:code|  Chip.java:0532:<init>|  Btree.java:2497:<init>|  Btree.java:2496:code|  Chip.java:0532:<init>|  Btree.java:2471:<init>|  Btree.java:2470:put|  Btree.java:7182:code|  Chip.java:0532:<init>|  Btree.java:7166:<init>|  Btree.java:7165:test_put_random|  Btree.java:7275:oldTests|  Btree.java:7280:newTests|  Btree.java:7286:main|");
             $fclose(f);
           end
         end
@@ -6609,7 +6609,7 @@ module Btree;                                                                   
           begin
             integer f;
             f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:1422:<init>|  Chip.java:1421:waitResultOfTransaction|  Btree.java:0348:stuckPut|  Btree.java:0353:stuckPut|  Btree.java:2449:code|  Chip.java:0532:<init>|  Btree.java:2425:<init>|  Btree.java:2424:findAndInsert|  Btree.java:2526:Leaf|  Btree.java:1546:code|  Chip.java:0532:<init>|  Btree.java:1528:<init>|  Btree.java:1527:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2511:<init>|  Btree.java:2510:code|  Chip.java:0532:<init>|  Btree.java:2495:<init>|  Btree.java:2494:code|  Chip.java:0532:<init>|  Btree.java:2469:<init>|  Btree.java:2468:put|  Btree.java:7180:code|  Chip.java:0532:<init>|  Btree.java:7164:<init>|  Btree.java:7163:test_put_random|  Btree.java:7273:oldTests|  Btree.java:7278:newTests|  Btree.java:7284:main|");
+            $fdisplay(f, "Location: Chip.java:1422:<init>|  Chip.java:1421:waitResultOfTransaction|  Btree.java:0348:stuckPut|  Btree.java:0353:stuckPut|  Btree.java:2451:code|  Chip.java:0532:<init>|  Btree.java:2427:<init>|  Btree.java:2426:findAndInsert|  Btree.java:2528:Leaf|  Btree.java:1546:code|  Chip.java:0532:<init>|  Btree.java:1528:<init>|  Btree.java:1527:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2513:<init>|  Btree.java:2512:code|  Chip.java:0532:<init>|  Btree.java:2497:<init>|  Btree.java:2496:code|  Chip.java:0532:<init>|  Btree.java:2471:<init>|  Btree.java:2470:put|  Btree.java:7182:code|  Chip.java:0532:<init>|  Btree.java:7166:<init>|  Btree.java:7165:test_put_random|  Btree.java:7275:oldTests|  Btree.java:7280:newTests|  Btree.java:7286:main|");
             $fclose(f);
           end
         end
@@ -6618,7 +6618,7 @@ module Btree;                                                                   
           begin
             integer f;
             f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:0573:<init>|  Chip.java:0572:GOto|  Btree.java:2527:Leaf|  Btree.java:1546:code|  Chip.java:0532:<init>|  Btree.java:1528:<init>|  Btree.java:1527:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2511:<init>|  Btree.java:2510:code|  Chip.java:0532:<init>|  Btree.java:2495:<init>|  Btree.java:2494:code|  Chip.java:0532:<init>|  Btree.java:2469:<init>|  Btree.java:2468:put|  Btree.java:7180:code|  Chip.java:0532:<init>|  Btree.java:7164:<init>|  Btree.java:7163:test_put_random|  Btree.java:7273:oldTests|  Btree.java:7278:newTests|  Btree.java:7284:main|");
+            $fdisplay(f, "Location: Chip.java:0573:<init>|  Chip.java:0572:GOto|  Btree.java:2529:Leaf|  Btree.java:1546:code|  Chip.java:0532:<init>|  Btree.java:1528:<init>|  Btree.java:1527:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2513:<init>|  Btree.java:2512:code|  Chip.java:0532:<init>|  Btree.java:2497:<init>|  Btree.java:2496:code|  Chip.java:0532:<init>|  Btree.java:2471:<init>|  Btree.java:2470:put|  Btree.java:7182:code|  Chip.java:0532:<init>|  Btree.java:7166:<init>|  Btree.java:7165:test_put_random|  Btree.java:7275:oldTests|  Btree.java:7280:newTests|  Btree.java:7286:main|");
             $fclose(f);
           end
         end
@@ -6627,7 +6627,7 @@ module Btree;                                                                   
           begin
             integer f;
             f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:0573:<init>|  Chip.java:0572:GOto|  Btree.java:1547:code|  Chip.java:0532:<init>|  Btree.java:1528:<init>|  Btree.java:1527:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2511:<init>|  Btree.java:2510:code|  Chip.java:0532:<init>|  Btree.java:2495:<init>|  Btree.java:2494:code|  Chip.java:0532:<init>|  Btree.java:2469:<init>|  Btree.java:2468:put|  Btree.java:7180:code|  Chip.java:0532:<init>|  Btree.java:7164:<init>|  Btree.java:7163:test_put_random|  Btree.java:7273:oldTests|  Btree.java:7278:newTests|  Btree.java:7284:main|");
+            $fdisplay(f, "Location: Chip.java:0573:<init>|  Chip.java:0572:GOto|  Btree.java:1547:code|  Chip.java:0532:<init>|  Btree.java:1528:<init>|  Btree.java:1527:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2513:<init>|  Btree.java:2512:code|  Chip.java:0532:<init>|  Btree.java:2497:<init>|  Btree.java:2496:code|  Chip.java:0532:<init>|  Btree.java:2471:<init>|  Btree.java:2470:put|  Btree.java:7182:code|  Chip.java:0532:<init>|  Btree.java:7166:<init>|  Btree.java:7165:test_put_random|  Btree.java:7275:oldTests|  Btree.java:7280:newTests|  Btree.java:7286:main|");
             $fclose(f);
           end
         end
@@ -6637,7 +6637,7 @@ module Btree;                                                                   
           begin
             integer f;
             f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:0514:<init>|  Chip.java:0813:<init>|  Chip.java:0813:Ge|  Btree.java:2531:Branch|  Btree.java:1550:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2511:<init>|  Btree.java:2510:code|  Chip.java:0532:<init>|  Btree.java:2495:<init>|  Btree.java:2494:code|  Chip.java:0532:<init>|  Btree.java:2469:<init>|  Btree.java:2468:put|  Btree.java:7180:code|  Chip.java:0532:<init>|  Btree.java:7164:<init>|  Btree.java:7163:test_put_random|  Btree.java:7273:oldTests|  Btree.java:7278:newTests|  Btree.java:7284:main|");
+            $fdisplay(f, "Location: Chip.java:0514:<init>|  Chip.java:0813:<init>|  Chip.java:0813:Ge|  Btree.java:2533:Branch|  Btree.java:1550:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2513:<init>|  Btree.java:2512:code|  Chip.java:0532:<init>|  Btree.java:2497:<init>|  Btree.java:2496:code|  Chip.java:0532:<init>|  Btree.java:2471:<init>|  Btree.java:2470:put|  Btree.java:7182:code|  Chip.java:0532:<init>|  Btree.java:7166:<init>|  Btree.java:7165:test_put_random|  Btree.java:7275:oldTests|  Btree.java:7280:newTests|  Btree.java:7286:main|");
             $fclose(f);
           end
         end
@@ -6651,7 +6651,7 @@ module Btree;                                                                   
           begin
             integer f;
             f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:0605:<init>|  Chip.java:0604:<init>|  Btree.java:2534:<init>|  Btree.java:2533:Branch|  Btree.java:1550:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2511:<init>|  Btree.java:2510:code|  Chip.java:0532:<init>|  Btree.java:2495:<init>|  Btree.java:2494:code|  Chip.java:0532:<init>|  Btree.java:2469:<init>|  Btree.java:2468:put|  Btree.java:7180:code|  Chip.java:0532:<init>|  Btree.java:7164:<init>|  Btree.java:7163:test_put_random|  Btree.java:7273:oldTests|  Btree.java:7278:newTests|  Btree.java:7284:main|");
+            $fdisplay(f, "Location: Chip.java:0605:<init>|  Chip.java:0604:<init>|  Btree.java:2536:<init>|  Btree.java:2535:Branch|  Btree.java:1550:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2513:<init>|  Btree.java:2512:code|  Chip.java:0532:<init>|  Btree.java:2497:<init>|  Btree.java:2496:code|  Chip.java:0532:<init>|  Btree.java:2471:<init>|  Btree.java:2470:put|  Btree.java:7182:code|  Chip.java:0532:<init>|  Btree.java:7166:<init>|  Btree.java:7165:test_put_random|  Btree.java:7275:oldTests|  Btree.java:7280:newTests|  Btree.java:7286:main|");
             $fclose(f);
           end
         end
@@ -6665,7 +6665,7 @@ module Btree;                                                                   
           begin
             integer f;
             f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:0605:<init>|  Chip.java:0604:<init>|  Btree.java:2536:<init>|  Btree.java:2535:Then|  Chip.java:0612:<init>|  Btree.java:2534:<init>|  Btree.java:2533:Branch|  Btree.java:1550:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2511:<init>|  Btree.java:2510:code|  Chip.java:0532:<init>|  Btree.java:2495:<init>|  Btree.java:2494:code|  Chip.java:0532:<init>|  Btree.java:2469:<init>|  Btree.java:2468:put|  Btree.java:7180:code|  Chip.java:0532:<init>|  Btree.java:7164:<init>|  Btree.java:7163:test_put_random|  Btree.java:7273:oldTests|  Btree.java:7278:newTests|  Btree.java:7284:main|");
+            $fdisplay(f, "Location: Chip.java:0605:<init>|  Chip.java:0604:<init>|  Btree.java:2538:<init>|  Btree.java:2537:Then|  Chip.java:0612:<init>|  Btree.java:2536:<init>|  Btree.java:2535:Branch|  Btree.java:1550:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2513:<init>|  Btree.java:2512:code|  Chip.java:0532:<init>|  Btree.java:2497:<init>|  Btree.java:2496:code|  Chip.java:0532:<init>|  Btree.java:2471:<init>|  Btree.java:2470:put|  Btree.java:7182:code|  Chip.java:0532:<init>|  Btree.java:7166:<init>|  Btree.java:7165:test_put_random|  Btree.java:7275:oldTests|  Btree.java:7280:newTests|  Btree.java:7286:main|");
             $fclose(f);
           end
         end
@@ -6675,7 +6675,7 @@ module Btree;                                                                   
           begin
             integer f;
             f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:0514:<init>|  Chip.java:0699:<init>|  Chip.java:0698:Copy|  Btree.java:0278:stuckGet|  Btree.java:1828:splitBranchNotTop|  Btree.java:2537:Then|  Chip.java:0612:<init>|  Btree.java:2536:<init>|  Btree.java:2535:Then|  Chip.java:0612:<init>|  Btree.java:2534:<init>|  Btree.java:2533:Branch|  Btree.java:1550:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2511:<init>|  Btree.java:2510:code|  Chip.java:0532:<init>|  Btree.java:2495:<init>|  Btree.java:2494:code|  Chip.java:0532:<init>|  Btree.java:2469:<init>|  Btree.java:2468:put|  Btree.java:7180:code|  Chip.java:0532:<init>|  Btree.java:7164:<init>|  Btree.java:7163:test_put_random|  Btree.java:7273:oldTests|  Btree.java:7278:newTests|  Btree.java:7284:main|");
+            $fdisplay(f, "Location: Chip.java:0514:<init>|  Chip.java:0699:<init>|  Chip.java:0698:Copy|  Btree.java:0278:stuckGet|  Btree.java:1828:splitBranchNotTop|  Btree.java:2539:Then|  Chip.java:0612:<init>|  Btree.java:2538:<init>|  Btree.java:2537:Then|  Chip.java:0612:<init>|  Btree.java:2536:<init>|  Btree.java:2535:Branch|  Btree.java:1550:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2513:<init>|  Btree.java:2512:code|  Chip.java:0532:<init>|  Btree.java:2497:<init>|  Btree.java:2496:code|  Chip.java:0532:<init>|  Btree.java:2471:<init>|  Btree.java:2470:put|  Btree.java:7182:code|  Chip.java:0532:<init>|  Btree.java:7166:<init>|  Btree.java:7165:test_put_random|  Btree.java:7275:oldTests|  Btree.java:7280:newTests|  Btree.java:7286:main|");
             $fclose(f);
           end
         end
@@ -6696,7 +6696,7 @@ module Btree;                                                                   
           begin
             integer f;
             f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:0514:<init>|  Btree.java:0289:<init>|  Btree.java:0288:stuckGet|  Btree.java:0279:stuckGet|  Btree.java:1828:splitBranchNotTop|  Btree.java:2537:Then|  Chip.java:0612:<init>|  Btree.java:2536:<init>|  Btree.java:2535:Then|  Chip.java:0612:<init>|  Btree.java:2534:<init>|  Btree.java:2533:Branch|  Btree.java:1550:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2511:<init>|  Btree.java:2510:code|  Chip.java:0532:<init>|  Btree.java:2495:<init>|  Btree.java:2494:code|  Chip.java:0532:<init>|  Btree.java:2469:<init>|  Btree.java:2468:put|  Btree.java:7180:code|  Chip.java:0532:<init>|  Btree.java:7164:<init>|  Btree.java:7163:test_put_random|  Btree.java:7273:oldTests|  Btree.java:7278:newTests|  Btree.java:7284:main|");
+            $fdisplay(f, "Location: Chip.java:0514:<init>|  Btree.java:0289:<init>|  Btree.java:0288:stuckGet|  Btree.java:0279:stuckGet|  Btree.java:1828:splitBranchNotTop|  Btree.java:2539:Then|  Chip.java:0612:<init>|  Btree.java:2538:<init>|  Btree.java:2537:Then|  Chip.java:0612:<init>|  Btree.java:2536:<init>|  Btree.java:2535:Branch|  Btree.java:1550:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2513:<init>|  Btree.java:2512:code|  Chip.java:0532:<init>|  Btree.java:2497:<init>|  Btree.java:2496:code|  Chip.java:0532:<init>|  Btree.java:2471:<init>|  Btree.java:2470:put|  Btree.java:7182:code|  Chip.java:0532:<init>|  Btree.java:7166:<init>|  Btree.java:7165:test_put_random|  Btree.java:7275:oldTests|  Btree.java:7280:newTests|  Btree.java:7286:main|");
             $fclose(f);
           end
         end
@@ -6707,7 +6707,7 @@ module Btree;                                                                   
           begin
             integer f;
             f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:1359:<init>|  Chip.java:1358:waitResultOfTransaction|  Btree.java:0302:stuckGet|  Btree.java:0279:stuckGet|  Btree.java:1828:splitBranchNotTop|  Btree.java:2537:Then|  Chip.java:0612:<init>|  Btree.java:2536:<init>|  Btree.java:2535:Then|  Chip.java:0612:<init>|  Btree.java:2534:<init>|  Btree.java:2533:Branch|  Btree.java:1550:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2511:<init>|  Btree.java:2510:code|  Chip.java:0532:<init>|  Btree.java:2495:<init>|  Btree.java:2494:code|  Chip.java:0532:<init>|  Btree.java:2469:<init>|  Btree.java:2468:put|  Btree.java:7180:code|  Chip.java:0532:<init>|  Btree.java:7164:<init>|  Btree.java:7163:test_put_random|  Btree.java:7273:oldTests|  Btree.java:7278:newTests|  Btree.java:7284:main|");
+            $fdisplay(f, "Location: Chip.java:1359:<init>|  Chip.java:1358:waitResultOfTransaction|  Btree.java:0302:stuckGet|  Btree.java:0279:stuckGet|  Btree.java:1828:splitBranchNotTop|  Btree.java:2539:Then|  Chip.java:0612:<init>|  Btree.java:2538:<init>|  Btree.java:2537:Then|  Chip.java:0612:<init>|  Btree.java:2536:<init>|  Btree.java:2535:Branch|  Btree.java:1550:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2513:<init>|  Btree.java:2512:code|  Chip.java:0532:<init>|  Btree.java:2497:<init>|  Btree.java:2496:code|  Chip.java:0532:<init>|  Btree.java:2471:<init>|  Btree.java:2470:put|  Btree.java:7182:code|  Chip.java:0532:<init>|  Btree.java:7166:<init>|  Btree.java:7165:test_put_random|  Btree.java:7275:oldTests|  Btree.java:7280:newTests|  Btree.java:7286:main|");
             $fclose(f);
           end
         end
@@ -6718,7 +6718,7 @@ module Btree;                                                                   
           begin
             integer f;
             f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:1359:<init>|  Chip.java:1358:waitResultOfTransaction|  Btree.java:0303:stuckGet|  Btree.java:0279:stuckGet|  Btree.java:1828:splitBranchNotTop|  Btree.java:2537:Then|  Chip.java:0612:<init>|  Btree.java:2536:<init>|  Btree.java:2535:Then|  Chip.java:0612:<init>|  Btree.java:2534:<init>|  Btree.java:2533:Branch|  Btree.java:1550:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2511:<init>|  Btree.java:2510:code|  Chip.java:0532:<init>|  Btree.java:2495:<init>|  Btree.java:2494:code|  Chip.java:0532:<init>|  Btree.java:2469:<init>|  Btree.java:2468:put|  Btree.java:7180:code|  Chip.java:0532:<init>|  Btree.java:7164:<init>|  Btree.java:7163:test_put_random|  Btree.java:7273:oldTests|  Btree.java:7278:newTests|  Btree.java:7284:main|");
+            $fdisplay(f, "Location: Chip.java:1359:<init>|  Chip.java:1358:waitResultOfTransaction|  Btree.java:0303:stuckGet|  Btree.java:0279:stuckGet|  Btree.java:1828:splitBranchNotTop|  Btree.java:2539:Then|  Chip.java:0612:<init>|  Btree.java:2538:<init>|  Btree.java:2537:Then|  Chip.java:0612:<init>|  Btree.java:2536:<init>|  Btree.java:2535:Branch|  Btree.java:1550:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2513:<init>|  Btree.java:2512:code|  Chip.java:0532:<init>|  Btree.java:2497:<init>|  Btree.java:2496:code|  Chip.java:0532:<init>|  Btree.java:2471:<init>|  Btree.java:2470:put|  Btree.java:7182:code|  Chip.java:0532:<init>|  Btree.java:7166:<init>|  Btree.java:7165:test_put_random|  Btree.java:7275:oldTests|  Btree.java:7280:newTests|  Btree.java:7286:main|");
             $fclose(f);
           end
         end
@@ -6729,7 +6729,7 @@ module Btree;                                                                   
           begin
             integer f;
             f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:1359:<init>|  Chip.java:1358:waitResultOfTransaction|  Btree.java:0305:stuckGet|  Btree.java:0279:stuckGet|  Btree.java:1828:splitBranchNotTop|  Btree.java:2537:Then|  Chip.java:0612:<init>|  Btree.java:2536:<init>|  Btree.java:2535:Then|  Chip.java:0612:<init>|  Btree.java:2534:<init>|  Btree.java:2533:Branch|  Btree.java:1550:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2511:<init>|  Btree.java:2510:code|  Chip.java:0532:<init>|  Btree.java:2495:<init>|  Btree.java:2494:code|  Chip.java:0532:<init>|  Btree.java:2469:<init>|  Btree.java:2468:put|  Btree.java:7180:code|  Chip.java:0532:<init>|  Btree.java:7164:<init>|  Btree.java:7163:test_put_random|  Btree.java:7273:oldTests|  Btree.java:7278:newTests|  Btree.java:7284:main|");
+            $fdisplay(f, "Location: Chip.java:1359:<init>|  Chip.java:1358:waitResultOfTransaction|  Btree.java:0305:stuckGet|  Btree.java:0279:stuckGet|  Btree.java:1828:splitBranchNotTop|  Btree.java:2539:Then|  Chip.java:0612:<init>|  Btree.java:2538:<init>|  Btree.java:2537:Then|  Chip.java:0612:<init>|  Btree.java:2536:<init>|  Btree.java:2535:Branch|  Btree.java:1550:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2513:<init>|  Btree.java:2512:code|  Chip.java:0532:<init>|  Btree.java:2497:<init>|  Btree.java:2496:code|  Chip.java:0532:<init>|  Btree.java:2471:<init>|  Btree.java:2470:put|  Btree.java:7182:code|  Chip.java:0532:<init>|  Btree.java:7166:<init>|  Btree.java:7165:test_put_random|  Btree.java:7275:oldTests|  Btree.java:7280:newTests|  Btree.java:7286:main|");
             $fclose(f);
           end
         end
@@ -6740,7 +6740,7 @@ module Btree;                                                                   
           begin
             integer f;
             f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:1359:<init>|  Chip.java:1358:waitResultOfTransaction|  Btree.java:0306:stuckGet|  Btree.java:0279:stuckGet|  Btree.java:1828:splitBranchNotTop|  Btree.java:2537:Then|  Chip.java:0612:<init>|  Btree.java:2536:<init>|  Btree.java:2535:Then|  Chip.java:0612:<init>|  Btree.java:2534:<init>|  Btree.java:2533:Branch|  Btree.java:1550:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2511:<init>|  Btree.java:2510:code|  Chip.java:0532:<init>|  Btree.java:2495:<init>|  Btree.java:2494:code|  Chip.java:0532:<init>|  Btree.java:2469:<init>|  Btree.java:2468:put|  Btree.java:7180:code|  Chip.java:0532:<init>|  Btree.java:7164:<init>|  Btree.java:7163:test_put_random|  Btree.java:7273:oldTests|  Btree.java:7278:newTests|  Btree.java:7284:main|");
+            $fdisplay(f, "Location: Chip.java:1359:<init>|  Chip.java:1358:waitResultOfTransaction|  Btree.java:0306:stuckGet|  Btree.java:0279:stuckGet|  Btree.java:1828:splitBranchNotTop|  Btree.java:2539:Then|  Chip.java:0612:<init>|  Btree.java:2538:<init>|  Btree.java:2537:Then|  Chip.java:0612:<init>|  Btree.java:2536:<init>|  Btree.java:2535:Branch|  Btree.java:1550:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2513:<init>|  Btree.java:2512:code|  Chip.java:0532:<init>|  Btree.java:2497:<init>|  Btree.java:2496:code|  Chip.java:0532:<init>|  Btree.java:2471:<init>|  Btree.java:2470:put|  Btree.java:7182:code|  Chip.java:0532:<init>|  Btree.java:7166:<init>|  Btree.java:7165:test_put_random|  Btree.java:7275:oldTests|  Btree.java:7280:newTests|  Btree.java:7286:main|");
             $fclose(f);
           end
         end
@@ -6759,7 +6759,7 @@ module Btree;                                                                   
           begin
             integer f;
             f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:0514:<init>|  Btree.java:0309:<init>|  Btree.java:0308:stuckGet|  Btree.java:0279:stuckGet|  Btree.java:1828:splitBranchNotTop|  Btree.java:2537:Then|  Chip.java:0612:<init>|  Btree.java:2536:<init>|  Btree.java:2535:Then|  Chip.java:0612:<init>|  Btree.java:2534:<init>|  Btree.java:2533:Branch|  Btree.java:1550:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2511:<init>|  Btree.java:2510:code|  Chip.java:0532:<init>|  Btree.java:2495:<init>|  Btree.java:2494:code|  Chip.java:0532:<init>|  Btree.java:2469:<init>|  Btree.java:2468:put|  Btree.java:7180:code|  Chip.java:0532:<init>|  Btree.java:7164:<init>|  Btree.java:7163:test_put_random|  Btree.java:7273:oldTests|  Btree.java:7278:newTests|  Btree.java:7284:main|");
+            $fdisplay(f, "Location: Chip.java:0514:<init>|  Btree.java:0309:<init>|  Btree.java:0308:stuckGet|  Btree.java:0279:stuckGet|  Btree.java:1828:splitBranchNotTop|  Btree.java:2539:Then|  Chip.java:0612:<init>|  Btree.java:2538:<init>|  Btree.java:2537:Then|  Chip.java:0612:<init>|  Btree.java:2536:<init>|  Btree.java:2535:Branch|  Btree.java:1550:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2513:<init>|  Btree.java:2512:code|  Chip.java:0532:<init>|  Btree.java:2497:<init>|  Btree.java:2496:code|  Chip.java:0532:<init>|  Btree.java:2471:<init>|  Btree.java:2470:put|  Btree.java:7182:code|  Chip.java:0532:<init>|  Btree.java:7166:<init>|  Btree.java:7165:test_put_random|  Btree.java:7275:oldTests|  Btree.java:7280:newTests|  Btree.java:7286:main|");
             $fclose(f);
           end
         end
@@ -6786,7 +6786,7 @@ module Btree;                                                                   
           begin
             integer f;
             f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:0514:<init>|  Btree.java:1830:<init>|  Btree.java:1829:splitBranchNotTop|  Btree.java:2537:Then|  Chip.java:0612:<init>|  Btree.java:2536:<init>|  Btree.java:2535:Then|  Chip.java:0612:<init>|  Btree.java:2534:<init>|  Btree.java:2533:Branch|  Btree.java:1550:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2511:<init>|  Btree.java:2510:code|  Chip.java:0532:<init>|  Btree.java:2495:<init>|  Btree.java:2494:code|  Chip.java:0532:<init>|  Btree.java:2469:<init>|  Btree.java:2468:put|  Btree.java:7180:code|  Chip.java:0532:<init>|  Btree.java:7164:<init>|  Btree.java:7163:test_put_random|  Btree.java:7273:oldTests|  Btree.java:7278:newTests|  Btree.java:7284:main|");
+            $fdisplay(f, "Location: Chip.java:0514:<init>|  Btree.java:1830:<init>|  Btree.java:1829:splitBranchNotTop|  Btree.java:2539:Then|  Chip.java:0612:<init>|  Btree.java:2538:<init>|  Btree.java:2537:Then|  Chip.java:0612:<init>|  Btree.java:2536:<init>|  Btree.java:2535:Branch|  Btree.java:1550:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2513:<init>|  Btree.java:2512:code|  Chip.java:0532:<init>|  Btree.java:2497:<init>|  Btree.java:2496:code|  Chip.java:0532:<init>|  Btree.java:2471:<init>|  Btree.java:2470:put|  Btree.java:7182:code|  Chip.java:0532:<init>|  Btree.java:7166:<init>|  Btree.java:7165:test_put_random|  Btree.java:7275:oldTests|  Btree.java:7280:newTests|  Btree.java:7286:main|");
             $fclose(f);
           end
         end
@@ -6796,7 +6796,7 @@ module Btree;                                                                   
           begin
             integer f;
             f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:0514:<init>|  Chip.java:0699:<init>|  Chip.java:0698:Copy|  Btree.java:0278:stuckGet|  Btree.java:1843:splitBranchNotTop|  Btree.java:2537:Then|  Chip.java:0612:<init>|  Btree.java:2536:<init>|  Btree.java:2535:Then|  Chip.java:0612:<init>|  Btree.java:2534:<init>|  Btree.java:2533:Branch|  Btree.java:1550:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2511:<init>|  Btree.java:2510:code|  Chip.java:0532:<init>|  Btree.java:2495:<init>|  Btree.java:2494:code|  Chip.java:0532:<init>|  Btree.java:2469:<init>|  Btree.java:2468:put|  Btree.java:7180:code|  Chip.java:0532:<init>|  Btree.java:7164:<init>|  Btree.java:7163:test_put_random|  Btree.java:7273:oldTests|  Btree.java:7278:newTests|  Btree.java:7284:main|");
+            $fdisplay(f, "Location: Chip.java:0514:<init>|  Chip.java:0699:<init>|  Chip.java:0698:Copy|  Btree.java:0278:stuckGet|  Btree.java:1843:splitBranchNotTop|  Btree.java:2539:Then|  Chip.java:0612:<init>|  Btree.java:2538:<init>|  Btree.java:2537:Then|  Chip.java:0612:<init>|  Btree.java:2536:<init>|  Btree.java:2535:Branch|  Btree.java:1550:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2513:<init>|  Btree.java:2512:code|  Chip.java:0532:<init>|  Btree.java:2497:<init>|  Btree.java:2496:code|  Chip.java:0532:<init>|  Btree.java:2471:<init>|  Btree.java:2470:put|  Btree.java:7182:code|  Chip.java:0532:<init>|  Btree.java:7166:<init>|  Btree.java:7165:test_put_random|  Btree.java:7275:oldTests|  Btree.java:7280:newTests|  Btree.java:7286:main|");
             $fclose(f);
           end
         end
@@ -6817,7 +6817,7 @@ module Btree;                                                                   
           begin
             integer f;
             f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:0514:<init>|  Btree.java:0289:<init>|  Btree.java:0288:stuckGet|  Btree.java:0279:stuckGet|  Btree.java:1843:splitBranchNotTop|  Btree.java:2537:Then|  Chip.java:0612:<init>|  Btree.java:2536:<init>|  Btree.java:2535:Then|  Chip.java:0612:<init>|  Btree.java:2534:<init>|  Btree.java:2533:Branch|  Btree.java:1550:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2511:<init>|  Btree.java:2510:code|  Chip.java:0532:<init>|  Btree.java:2495:<init>|  Btree.java:2494:code|  Chip.java:0532:<init>|  Btree.java:2469:<init>|  Btree.java:2468:put|  Btree.java:7180:code|  Chip.java:0532:<init>|  Btree.java:7164:<init>|  Btree.java:7163:test_put_random|  Btree.java:7273:oldTests|  Btree.java:7278:newTests|  Btree.java:7284:main|");
+            $fdisplay(f, "Location: Chip.java:0514:<init>|  Btree.java:0289:<init>|  Btree.java:0288:stuckGet|  Btree.java:0279:stuckGet|  Btree.java:1843:splitBranchNotTop|  Btree.java:2539:Then|  Chip.java:0612:<init>|  Btree.java:2538:<init>|  Btree.java:2537:Then|  Chip.java:0612:<init>|  Btree.java:2536:<init>|  Btree.java:2535:Branch|  Btree.java:1550:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2513:<init>|  Btree.java:2512:code|  Chip.java:0532:<init>|  Btree.java:2497:<init>|  Btree.java:2496:code|  Chip.java:0532:<init>|  Btree.java:2471:<init>|  Btree.java:2470:put|  Btree.java:7182:code|  Chip.java:0532:<init>|  Btree.java:7166:<init>|  Btree.java:7165:test_put_random|  Btree.java:7275:oldTests|  Btree.java:7280:newTests|  Btree.java:7286:main|");
             $fclose(f);
           end
         end
@@ -6828,7 +6828,7 @@ module Btree;                                                                   
           begin
             integer f;
             f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:1359:<init>|  Chip.java:1358:waitResultOfTransaction|  Btree.java:0302:stuckGet|  Btree.java:0279:stuckGet|  Btree.java:1843:splitBranchNotTop|  Btree.java:2537:Then|  Chip.java:0612:<init>|  Btree.java:2536:<init>|  Btree.java:2535:Then|  Chip.java:0612:<init>|  Btree.java:2534:<init>|  Btree.java:2533:Branch|  Btree.java:1550:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2511:<init>|  Btree.java:2510:code|  Chip.java:0532:<init>|  Btree.java:2495:<init>|  Btree.java:2494:code|  Chip.java:0532:<init>|  Btree.java:2469:<init>|  Btree.java:2468:put|  Btree.java:7180:code|  Chip.java:0532:<init>|  Btree.java:7164:<init>|  Btree.java:7163:test_put_random|  Btree.java:7273:oldTests|  Btree.java:7278:newTests|  Btree.java:7284:main|");
+            $fdisplay(f, "Location: Chip.java:1359:<init>|  Chip.java:1358:waitResultOfTransaction|  Btree.java:0302:stuckGet|  Btree.java:0279:stuckGet|  Btree.java:1843:splitBranchNotTop|  Btree.java:2539:Then|  Chip.java:0612:<init>|  Btree.java:2538:<init>|  Btree.java:2537:Then|  Chip.java:0612:<init>|  Btree.java:2536:<init>|  Btree.java:2535:Branch|  Btree.java:1550:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2513:<init>|  Btree.java:2512:code|  Chip.java:0532:<init>|  Btree.java:2497:<init>|  Btree.java:2496:code|  Chip.java:0532:<init>|  Btree.java:2471:<init>|  Btree.java:2470:put|  Btree.java:7182:code|  Chip.java:0532:<init>|  Btree.java:7166:<init>|  Btree.java:7165:test_put_random|  Btree.java:7275:oldTests|  Btree.java:7280:newTests|  Btree.java:7286:main|");
             $fclose(f);
           end
         end
@@ -6839,7 +6839,7 @@ module Btree;                                                                   
           begin
             integer f;
             f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:1359:<init>|  Chip.java:1358:waitResultOfTransaction|  Btree.java:0303:stuckGet|  Btree.java:0279:stuckGet|  Btree.java:1843:splitBranchNotTop|  Btree.java:2537:Then|  Chip.java:0612:<init>|  Btree.java:2536:<init>|  Btree.java:2535:Then|  Chip.java:0612:<init>|  Btree.java:2534:<init>|  Btree.java:2533:Branch|  Btree.java:1550:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2511:<init>|  Btree.java:2510:code|  Chip.java:0532:<init>|  Btree.java:2495:<init>|  Btree.java:2494:code|  Chip.java:0532:<init>|  Btree.java:2469:<init>|  Btree.java:2468:put|  Btree.java:7180:code|  Chip.java:0532:<init>|  Btree.java:7164:<init>|  Btree.java:7163:test_put_random|  Btree.java:7273:oldTests|  Btree.java:7278:newTests|  Btree.java:7284:main|");
+            $fdisplay(f, "Location: Chip.java:1359:<init>|  Chip.java:1358:waitResultOfTransaction|  Btree.java:0303:stuckGet|  Btree.java:0279:stuckGet|  Btree.java:1843:splitBranchNotTop|  Btree.java:2539:Then|  Chip.java:0612:<init>|  Btree.java:2538:<init>|  Btree.java:2537:Then|  Chip.java:0612:<init>|  Btree.java:2536:<init>|  Btree.java:2535:Branch|  Btree.java:1550:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2513:<init>|  Btree.java:2512:code|  Chip.java:0532:<init>|  Btree.java:2497:<init>|  Btree.java:2496:code|  Chip.java:0532:<init>|  Btree.java:2471:<init>|  Btree.java:2470:put|  Btree.java:7182:code|  Chip.java:0532:<init>|  Btree.java:7166:<init>|  Btree.java:7165:test_put_random|  Btree.java:7275:oldTests|  Btree.java:7280:newTests|  Btree.java:7286:main|");
             $fclose(f);
           end
         end
@@ -6850,7 +6850,7 @@ module Btree;                                                                   
           begin
             integer f;
             f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:1359:<init>|  Chip.java:1358:waitResultOfTransaction|  Btree.java:0305:stuckGet|  Btree.java:0279:stuckGet|  Btree.java:1843:splitBranchNotTop|  Btree.java:2537:Then|  Chip.java:0612:<init>|  Btree.java:2536:<init>|  Btree.java:2535:Then|  Chip.java:0612:<init>|  Btree.java:2534:<init>|  Btree.java:2533:Branch|  Btree.java:1550:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2511:<init>|  Btree.java:2510:code|  Chip.java:0532:<init>|  Btree.java:2495:<init>|  Btree.java:2494:code|  Chip.java:0532:<init>|  Btree.java:2469:<init>|  Btree.java:2468:put|  Btree.java:7180:code|  Chip.java:0532:<init>|  Btree.java:7164:<init>|  Btree.java:7163:test_put_random|  Btree.java:7273:oldTests|  Btree.java:7278:newTests|  Btree.java:7284:main|");
+            $fdisplay(f, "Location: Chip.java:1359:<init>|  Chip.java:1358:waitResultOfTransaction|  Btree.java:0305:stuckGet|  Btree.java:0279:stuckGet|  Btree.java:1843:splitBranchNotTop|  Btree.java:2539:Then|  Chip.java:0612:<init>|  Btree.java:2538:<init>|  Btree.java:2537:Then|  Chip.java:0612:<init>|  Btree.java:2536:<init>|  Btree.java:2535:Branch|  Btree.java:1550:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2513:<init>|  Btree.java:2512:code|  Chip.java:0532:<init>|  Btree.java:2497:<init>|  Btree.java:2496:code|  Chip.java:0532:<init>|  Btree.java:2471:<init>|  Btree.java:2470:put|  Btree.java:7182:code|  Chip.java:0532:<init>|  Btree.java:7166:<init>|  Btree.java:7165:test_put_random|  Btree.java:7275:oldTests|  Btree.java:7280:newTests|  Btree.java:7286:main|");
             $fclose(f);
           end
         end
@@ -6861,7 +6861,7 @@ module Btree;                                                                   
           begin
             integer f;
             f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:1359:<init>|  Chip.java:1358:waitResultOfTransaction|  Btree.java:0306:stuckGet|  Btree.java:0279:stuckGet|  Btree.java:1843:splitBranchNotTop|  Btree.java:2537:Then|  Chip.java:0612:<init>|  Btree.java:2536:<init>|  Btree.java:2535:Then|  Chip.java:0612:<init>|  Btree.java:2534:<init>|  Btree.java:2533:Branch|  Btree.java:1550:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2511:<init>|  Btree.java:2510:code|  Chip.java:0532:<init>|  Btree.java:2495:<init>|  Btree.java:2494:code|  Chip.java:0532:<init>|  Btree.java:2469:<init>|  Btree.java:2468:put|  Btree.java:7180:code|  Chip.java:0532:<init>|  Btree.java:7164:<init>|  Btree.java:7163:test_put_random|  Btree.java:7273:oldTests|  Btree.java:7278:newTests|  Btree.java:7284:main|");
+            $fdisplay(f, "Location: Chip.java:1359:<init>|  Chip.java:1358:waitResultOfTransaction|  Btree.java:0306:stuckGet|  Btree.java:0279:stuckGet|  Btree.java:1843:splitBranchNotTop|  Btree.java:2539:Then|  Chip.java:0612:<init>|  Btree.java:2538:<init>|  Btree.java:2537:Then|  Chip.java:0612:<init>|  Btree.java:2536:<init>|  Btree.java:2535:Branch|  Btree.java:1550:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2513:<init>|  Btree.java:2512:code|  Chip.java:0532:<init>|  Btree.java:2497:<init>|  Btree.java:2496:code|  Chip.java:0532:<init>|  Btree.java:2471:<init>|  Btree.java:2470:put|  Btree.java:7182:code|  Chip.java:0532:<init>|  Btree.java:7166:<init>|  Btree.java:7165:test_put_random|  Btree.java:7275:oldTests|  Btree.java:7280:newTests|  Btree.java:7286:main|");
             $fclose(f);
           end
         end
@@ -6880,7 +6880,7 @@ module Btree;                                                                   
           begin
             integer f;
             f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:0514:<init>|  Btree.java:0309:<init>|  Btree.java:0308:stuckGet|  Btree.java:0279:stuckGet|  Btree.java:1843:splitBranchNotTop|  Btree.java:2537:Then|  Chip.java:0612:<init>|  Btree.java:2536:<init>|  Btree.java:2535:Then|  Chip.java:0612:<init>|  Btree.java:2534:<init>|  Btree.java:2533:Branch|  Btree.java:1550:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2511:<init>|  Btree.java:2510:code|  Chip.java:0532:<init>|  Btree.java:2495:<init>|  Btree.java:2494:code|  Chip.java:0532:<init>|  Btree.java:2469:<init>|  Btree.java:2468:put|  Btree.java:7180:code|  Chip.java:0532:<init>|  Btree.java:7164:<init>|  Btree.java:7163:test_put_random|  Btree.java:7273:oldTests|  Btree.java:7278:newTests|  Btree.java:7284:main|");
+            $fdisplay(f, "Location: Chip.java:0514:<init>|  Btree.java:0309:<init>|  Btree.java:0308:stuckGet|  Btree.java:0279:stuckGet|  Btree.java:1843:splitBranchNotTop|  Btree.java:2539:Then|  Chip.java:0612:<init>|  Btree.java:2538:<init>|  Btree.java:2537:Then|  Chip.java:0612:<init>|  Btree.java:2536:<init>|  Btree.java:2535:Branch|  Btree.java:1550:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2513:<init>|  Btree.java:2512:code|  Chip.java:0532:<init>|  Btree.java:2497:<init>|  Btree.java:2496:code|  Chip.java:0532:<init>|  Btree.java:2471:<init>|  Btree.java:2470:put|  Btree.java:7182:code|  Chip.java:0532:<init>|  Btree.java:7166:<init>|  Btree.java:7165:test_put_random|  Btree.java:7275:oldTests|  Btree.java:7280:newTests|  Btree.java:7286:main|");
             $fclose(f);
           end
         end
@@ -6890,7 +6890,7 @@ module Btree;                                                                   
           begin
             integer f;
             f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:0514:<init>|  Btree.java:1846:<init>|  Btree.java:1845:splitBranchNotTop|  Btree.java:2537:Then|  Chip.java:0612:<init>|  Btree.java:2536:<init>|  Btree.java:2535:Then|  Chip.java:0612:<init>|  Btree.java:2534:<init>|  Btree.java:2533:Branch|  Btree.java:1550:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2511:<init>|  Btree.java:2510:code|  Chip.java:0532:<init>|  Btree.java:2495:<init>|  Btree.java:2494:code|  Chip.java:0532:<init>|  Btree.java:2469:<init>|  Btree.java:2468:put|  Btree.java:7180:code|  Chip.java:0532:<init>|  Btree.java:7164:<init>|  Btree.java:7163:test_put_random|  Btree.java:7273:oldTests|  Btree.java:7278:newTests|  Btree.java:7284:main|");
+            $fdisplay(f, "Location: Chip.java:0514:<init>|  Btree.java:1846:<init>|  Btree.java:1845:splitBranchNotTop|  Btree.java:2539:Then|  Chip.java:0612:<init>|  Btree.java:2538:<init>|  Btree.java:2537:Then|  Chip.java:0612:<init>|  Btree.java:2536:<init>|  Btree.java:2535:Branch|  Btree.java:1550:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2513:<init>|  Btree.java:2512:code|  Chip.java:0532:<init>|  Btree.java:2497:<init>|  Btree.java:2496:code|  Chip.java:0532:<init>|  Btree.java:2471:<init>|  Btree.java:2470:put|  Btree.java:7182:code|  Chip.java:0532:<init>|  Btree.java:7166:<init>|  Btree.java:7165:test_put_random|  Btree.java:7275:oldTests|  Btree.java:7280:newTests|  Btree.java:7286:main|");
             $fclose(f);
           end
         end
@@ -6909,7 +6909,7 @@ module Btree;                                                                   
           begin
             integer f;
             f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:0514:<init>|  Btree.java:1390:<init>|  Btree.java:1389:splitLowButOne|  Btree.java:1855:splitBranchNotTop|  Btree.java:2537:Then|  Chip.java:0612:<init>|  Btree.java:2536:<init>|  Btree.java:2535:Then|  Chip.java:0612:<init>|  Btree.java:2534:<init>|  Btree.java:2533:Branch|  Btree.java:1550:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2511:<init>|  Btree.java:2510:code|  Chip.java:0532:<init>|  Btree.java:2495:<init>|  Btree.java:2494:code|  Chip.java:0532:<init>|  Btree.java:2469:<init>|  Btree.java:2468:put|  Btree.java:7180:code|  Chip.java:0532:<init>|  Btree.java:7164:<init>|  Btree.java:7163:test_put_random|  Btree.java:7273:oldTests|  Btree.java:7278:newTests|  Btree.java:7284:main|");
+            $fdisplay(f, "Location: Chip.java:0514:<init>|  Btree.java:1390:<init>|  Btree.java:1389:splitLowButOne|  Btree.java:1855:splitBranchNotTop|  Btree.java:2539:Then|  Chip.java:0612:<init>|  Btree.java:2538:<init>|  Btree.java:2537:Then|  Chip.java:0612:<init>|  Btree.java:2536:<init>|  Btree.java:2535:Branch|  Btree.java:1550:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2513:<init>|  Btree.java:2512:code|  Chip.java:0532:<init>|  Btree.java:2497:<init>|  Btree.java:2496:code|  Chip.java:0532:<init>|  Btree.java:2471:<init>|  Btree.java:2470:put|  Btree.java:7182:code|  Chip.java:0532:<init>|  Btree.java:7166:<init>|  Btree.java:7165:test_put_random|  Btree.java:7275:oldTests|  Btree.java:7280:newTests|  Btree.java:7286:main|");
             $fclose(f);
           end
         end
@@ -6919,7 +6919,7 @@ module Btree;                                                                   
           begin
             integer f;
             f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:0514:<init>|  Chip.java:0821:<init>|  Chip.java:0820:Zero|  Btree.java:0078:allocate|  Btree.java:0154:allocateBranch|  Btree.java:1856:splitBranchNotTop|  Btree.java:2537:Then|  Chip.java:0612:<init>|  Btree.java:2536:<init>|  Btree.java:2535:Then|  Chip.java:0612:<init>|  Btree.java:2534:<init>|  Btree.java:2533:Branch|  Btree.java:1550:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2511:<init>|  Btree.java:2510:code|  Chip.java:0532:<init>|  Btree.java:2495:<init>|  Btree.java:2494:code|  Chip.java:0532:<init>|  Btree.java:2469:<init>|  Btree.java:2468:put|  Btree.java:7180:code|  Chip.java:0532:<init>|  Btree.java:7164:<init>|  Btree.java:7163:test_put_random|  Btree.java:7273:oldTests|  Btree.java:7278:newTests|  Btree.java:7284:main|");
+            $fdisplay(f, "Location: Chip.java:0514:<init>|  Chip.java:0821:<init>|  Chip.java:0820:Zero|  Btree.java:0078:allocate|  Btree.java:0154:allocateBranch|  Btree.java:1856:splitBranchNotTop|  Btree.java:2539:Then|  Chip.java:0612:<init>|  Btree.java:2538:<init>|  Btree.java:2537:Then|  Chip.java:0612:<init>|  Btree.java:2536:<init>|  Btree.java:2535:Branch|  Btree.java:1550:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2513:<init>|  Btree.java:2512:code|  Chip.java:0532:<init>|  Btree.java:2497:<init>|  Btree.java:2496:code|  Chip.java:0532:<init>|  Btree.java:2471:<init>|  Btree.java:2470:put|  Btree.java:7182:code|  Chip.java:0532:<init>|  Btree.java:7166:<init>|  Btree.java:7165:test_put_random|  Btree.java:7275:oldTests|  Btree.java:7280:newTests|  Btree.java:7286:main|");
             $fclose(f);
           end
         end
@@ -6931,7 +6931,7 @@ module Btree;                                                                   
           begin
             integer f;
             f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:0514:<init>|  Chip.java:1352:<init>|  Chip.java:1351:ExecuteTransaction|  Btree.java:0079:allocate|  Btree.java:0154:allocateBranch|  Btree.java:1856:splitBranchNotTop|  Btree.java:2537:Then|  Chip.java:0612:<init>|  Btree.java:2536:<init>|  Btree.java:2535:Then|  Chip.java:0612:<init>|  Btree.java:2534:<init>|  Btree.java:2533:Branch|  Btree.java:1550:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2511:<init>|  Btree.java:2510:code|  Chip.java:0532:<init>|  Btree.java:2495:<init>|  Btree.java:2494:code|  Chip.java:0532:<init>|  Btree.java:2469:<init>|  Btree.java:2468:put|  Btree.java:7180:code|  Chip.java:0532:<init>|  Btree.java:7164:<init>|  Btree.java:7163:test_put_random|  Btree.java:7273:oldTests|  Btree.java:7278:newTests|  Btree.java:7284:main|");
+            $fdisplay(f, "Location: Chip.java:0514:<init>|  Chip.java:1352:<init>|  Chip.java:1351:ExecuteTransaction|  Btree.java:0079:allocate|  Btree.java:0154:allocateBranch|  Btree.java:1856:splitBranchNotTop|  Btree.java:2539:Then|  Chip.java:0612:<init>|  Btree.java:2538:<init>|  Btree.java:2537:Then|  Chip.java:0612:<init>|  Btree.java:2536:<init>|  Btree.java:2535:Branch|  Btree.java:1550:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2513:<init>|  Btree.java:2512:code|  Chip.java:0532:<init>|  Btree.java:2497:<init>|  Btree.java:2496:code|  Chip.java:0532:<init>|  Btree.java:2471:<init>|  Btree.java:2470:put|  Btree.java:7182:code|  Chip.java:0532:<init>|  Btree.java:7166:<init>|  Btree.java:7165:test_put_random|  Btree.java:7275:oldTests|  Btree.java:7280:newTests|  Btree.java:7286:main|");
             $fclose(f);
           end
         end
@@ -6942,7 +6942,7 @@ module Btree;                                                                   
           begin
             integer f;
             f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:1359:<init>|  Chip.java:1358:waitResultOfTransaction|  Btree.java:0080:allocate|  Btree.java:0154:allocateBranch|  Btree.java:1856:splitBranchNotTop|  Btree.java:2537:Then|  Chip.java:0612:<init>|  Btree.java:2536:<init>|  Btree.java:2535:Then|  Chip.java:0612:<init>|  Btree.java:2534:<init>|  Btree.java:2533:Branch|  Btree.java:1550:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2511:<init>|  Btree.java:2510:code|  Chip.java:0532:<init>|  Btree.java:2495:<init>|  Btree.java:2494:code|  Chip.java:0532:<init>|  Btree.java:2469:<init>|  Btree.java:2468:put|  Btree.java:7180:code|  Chip.java:0532:<init>|  Btree.java:7164:<init>|  Btree.java:7163:test_put_random|  Btree.java:7273:oldTests|  Btree.java:7278:newTests|  Btree.java:7284:main|");
+            $fdisplay(f, "Location: Chip.java:1359:<init>|  Chip.java:1358:waitResultOfTransaction|  Btree.java:0080:allocate|  Btree.java:0154:allocateBranch|  Btree.java:1856:splitBranchNotTop|  Btree.java:2539:Then|  Chip.java:0612:<init>|  Btree.java:2538:<init>|  Btree.java:2537:Then|  Chip.java:0612:<init>|  Btree.java:2536:<init>|  Btree.java:2535:Branch|  Btree.java:1550:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2513:<init>|  Btree.java:2512:code|  Chip.java:0532:<init>|  Btree.java:2497:<init>|  Btree.java:2496:code|  Chip.java:0532:<init>|  Btree.java:2471:<init>|  Btree.java:2470:put|  Btree.java:7182:code|  Chip.java:0532:<init>|  Btree.java:7166:<init>|  Btree.java:7165:test_put_random|  Btree.java:7275:oldTests|  Btree.java:7280:newTests|  Btree.java:7286:main|");
             $fclose(f);
           end
         end
@@ -6952,7 +6952,7 @@ module Btree;                                                                   
           begin
             integer f;
             f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:0514:<init>|  Chip.java:0699:<init>|  Chip.java:0698:Copy|  Btree.java:0081:allocate|  Btree.java:0154:allocateBranch|  Btree.java:1856:splitBranchNotTop|  Btree.java:2537:Then|  Chip.java:0612:<init>|  Btree.java:2536:<init>|  Btree.java:2535:Then|  Chip.java:0612:<init>|  Btree.java:2534:<init>|  Btree.java:2533:Branch|  Btree.java:1550:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2511:<init>|  Btree.java:2510:code|  Chip.java:0532:<init>|  Btree.java:2495:<init>|  Btree.java:2494:code|  Chip.java:0532:<init>|  Btree.java:2469:<init>|  Btree.java:2468:put|  Btree.java:7180:code|  Chip.java:0532:<init>|  Btree.java:7164:<init>|  Btree.java:7163:test_put_random|  Btree.java:7273:oldTests|  Btree.java:7278:newTests|  Btree.java:7284:main|");
+            $fdisplay(f, "Location: Chip.java:0514:<init>|  Chip.java:0699:<init>|  Chip.java:0698:Copy|  Btree.java:0081:allocate|  Btree.java:0154:allocateBranch|  Btree.java:1856:splitBranchNotTop|  Btree.java:2539:Then|  Chip.java:0612:<init>|  Btree.java:2538:<init>|  Btree.java:2537:Then|  Chip.java:0612:<init>|  Btree.java:2536:<init>|  Btree.java:2535:Branch|  Btree.java:1550:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2513:<init>|  Btree.java:2512:code|  Chip.java:0532:<init>|  Btree.java:2497:<init>|  Btree.java:2496:code|  Chip.java:0532:<init>|  Btree.java:2471:<init>|  Btree.java:2470:put|  Btree.java:7182:code|  Chip.java:0532:<init>|  Btree.java:7166:<init>|  Btree.java:7165:test_put_random|  Btree.java:7275:oldTests|  Btree.java:7280:newTests|  Btree.java:7286:main|");
             $fclose(f);
           end
         end
@@ -6967,7 +6967,7 @@ module Btree;                                                                   
           begin
             integer f;
             f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:0514:<init>|  Btree.java:0084:<init>|  Btree.java:0083:allocate|  Btree.java:0154:allocateBranch|  Btree.java:1856:splitBranchNotTop|  Btree.java:2537:Then|  Chip.java:0612:<init>|  Btree.java:2536:<init>|  Btree.java:2535:Then|  Chip.java:0612:<init>|  Btree.java:2534:<init>|  Btree.java:2533:Branch|  Btree.java:1550:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2511:<init>|  Btree.java:2510:code|  Chip.java:0532:<init>|  Btree.java:2495:<init>|  Btree.java:2494:code|  Chip.java:0532:<init>|  Btree.java:2469:<init>|  Btree.java:2468:put|  Btree.java:7180:code|  Chip.java:0532:<init>|  Btree.java:7164:<init>|  Btree.java:7163:test_put_random|  Btree.java:7273:oldTests|  Btree.java:7278:newTests|  Btree.java:7284:main|");
+            $fdisplay(f, "Location: Chip.java:0514:<init>|  Btree.java:0084:<init>|  Btree.java:0083:allocate|  Btree.java:0154:allocateBranch|  Btree.java:1856:splitBranchNotTop|  Btree.java:2539:Then|  Chip.java:0612:<init>|  Btree.java:2538:<init>|  Btree.java:2537:Then|  Chip.java:0612:<init>|  Btree.java:2536:<init>|  Btree.java:2535:Branch|  Btree.java:1550:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2513:<init>|  Btree.java:2512:code|  Chip.java:0532:<init>|  Btree.java:2497:<init>|  Btree.java:2496:code|  Chip.java:0532:<init>|  Btree.java:2471:<init>|  Btree.java:2470:put|  Btree.java:7182:code|  Chip.java:0532:<init>|  Btree.java:7166:<init>|  Btree.java:7165:test_put_random|  Btree.java:7275:oldTests|  Btree.java:7280:newTests|  Btree.java:7286:main|");
             $fclose(f);
           end
         end
@@ -6987,7 +6987,7 @@ module Btree;                                                                   
           begin
             integer f;
             f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:0514:<init>|  Btree.java:0099:<init>|  Btree.java:0098:allocate|  Btree.java:0154:allocateBranch|  Btree.java:1856:splitBranchNotTop|  Btree.java:2537:Then|  Chip.java:0612:<init>|  Btree.java:2536:<init>|  Btree.java:2535:Then|  Chip.java:0612:<init>|  Btree.java:2534:<init>|  Btree.java:2533:Branch|  Btree.java:1550:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2511:<init>|  Btree.java:2510:code|  Chip.java:0532:<init>|  Btree.java:2495:<init>|  Btree.java:2494:code|  Chip.java:0532:<init>|  Btree.java:2469:<init>|  Btree.java:2468:put|  Btree.java:7180:code|  Chip.java:0532:<init>|  Btree.java:7164:<init>|  Btree.java:7163:test_put_random|  Btree.java:7273:oldTests|  Btree.java:7278:newTests|  Btree.java:7284:main|");
+            $fdisplay(f, "Location: Chip.java:0514:<init>|  Btree.java:0099:<init>|  Btree.java:0098:allocate|  Btree.java:0154:allocateBranch|  Btree.java:1856:splitBranchNotTop|  Btree.java:2539:Then|  Chip.java:0612:<init>|  Btree.java:2538:<init>|  Btree.java:2537:Then|  Chip.java:0612:<init>|  Btree.java:2536:<init>|  Btree.java:2535:Branch|  Btree.java:1550:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2513:<init>|  Btree.java:2512:code|  Chip.java:0532:<init>|  Btree.java:2497:<init>|  Btree.java:2496:code|  Chip.java:0532:<init>|  Btree.java:2471:<init>|  Btree.java:2470:put|  Btree.java:7182:code|  Chip.java:0532:<init>|  Btree.java:7166:<init>|  Btree.java:7165:test_put_random|  Btree.java:7275:oldTests|  Btree.java:7280:newTests|  Btree.java:7286:main|");
             $fclose(f);
           end
         end
@@ -6998,7 +6998,7 @@ module Btree;                                                                   
           begin
             integer f;
             f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:1359:<init>|  Chip.java:1358:waitResultOfTransaction|  Btree.java:0111:allocate|  Btree.java:0154:allocateBranch|  Btree.java:1856:splitBranchNotTop|  Btree.java:2537:Then|  Chip.java:0612:<init>|  Btree.java:2536:<init>|  Btree.java:2535:Then|  Chip.java:0612:<init>|  Btree.java:2534:<init>|  Btree.java:2533:Branch|  Btree.java:1550:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2511:<init>|  Btree.java:2510:code|  Chip.java:0532:<init>|  Btree.java:2495:<init>|  Btree.java:2494:code|  Chip.java:0532:<init>|  Btree.java:2469:<init>|  Btree.java:2468:put|  Btree.java:7180:code|  Chip.java:0532:<init>|  Btree.java:7164:<init>|  Btree.java:7163:test_put_random|  Btree.java:7273:oldTests|  Btree.java:7278:newTests|  Btree.java:7284:main|");
+            $fdisplay(f, "Location: Chip.java:1359:<init>|  Chip.java:1358:waitResultOfTransaction|  Btree.java:0111:allocate|  Btree.java:0154:allocateBranch|  Btree.java:1856:splitBranchNotTop|  Btree.java:2539:Then|  Chip.java:0612:<init>|  Btree.java:2538:<init>|  Btree.java:2537:Then|  Chip.java:0612:<init>|  Btree.java:2536:<init>|  Btree.java:2535:Branch|  Btree.java:1550:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2513:<init>|  Btree.java:2512:code|  Chip.java:0532:<init>|  Btree.java:2497:<init>|  Btree.java:2496:code|  Chip.java:0532:<init>|  Btree.java:2471:<init>|  Btree.java:2470:put|  Btree.java:7182:code|  Chip.java:0532:<init>|  Btree.java:7166:<init>|  Btree.java:7165:test_put_random|  Btree.java:7275:oldTests|  Btree.java:7280:newTests|  Btree.java:7286:main|");
             $fclose(f);
           end
         end
@@ -7008,7 +7008,7 @@ module Btree;                                                                   
           begin
             integer f;
             f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:0514:<init>|  Chip.java:0699:<init>|  Chip.java:0698:Copy|  Btree.java:0112:allocate|  Btree.java:0154:allocateBranch|  Btree.java:1856:splitBranchNotTop|  Btree.java:2537:Then|  Chip.java:0612:<init>|  Btree.java:2536:<init>|  Btree.java:2535:Then|  Chip.java:0612:<init>|  Btree.java:2534:<init>|  Btree.java:2533:Branch|  Btree.java:1550:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2511:<init>|  Btree.java:2510:code|  Chip.java:0532:<init>|  Btree.java:2495:<init>|  Btree.java:2494:code|  Chip.java:0532:<init>|  Btree.java:2469:<init>|  Btree.java:2468:put|  Btree.java:7180:code|  Chip.java:0532:<init>|  Btree.java:7164:<init>|  Btree.java:7163:test_put_random|  Btree.java:7273:oldTests|  Btree.java:7278:newTests|  Btree.java:7284:main|");
+            $fdisplay(f, "Location: Chip.java:0514:<init>|  Chip.java:0699:<init>|  Chip.java:0698:Copy|  Btree.java:0112:allocate|  Btree.java:0154:allocateBranch|  Btree.java:1856:splitBranchNotTop|  Btree.java:2539:Then|  Chip.java:0612:<init>|  Btree.java:2538:<init>|  Btree.java:2537:Then|  Chip.java:0612:<init>|  Btree.java:2536:<init>|  Btree.java:2535:Branch|  Btree.java:1550:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2513:<init>|  Btree.java:2512:code|  Chip.java:0532:<init>|  Btree.java:2497:<init>|  Btree.java:2496:code|  Chip.java:0532:<init>|  Btree.java:2471:<init>|  Btree.java:2470:put|  Btree.java:7182:code|  Chip.java:0532:<init>|  Btree.java:7166:<init>|  Btree.java:7165:test_put_random|  Btree.java:7275:oldTests|  Btree.java:7280:newTests|  Btree.java:7286:main|");
             $fclose(f);
           end
         end
@@ -7021,7 +7021,7 @@ module Btree;                                                                   
           begin
             integer f;
             f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:0514:<init>|  Chip.java:1415:<init>|  Chip.java:1414:ExecuteTransaction|  Btree.java:0113:allocate|  Btree.java:0154:allocateBranch|  Btree.java:1856:splitBranchNotTop|  Btree.java:2537:Then|  Chip.java:0612:<init>|  Btree.java:2536:<init>|  Btree.java:2535:Then|  Chip.java:0612:<init>|  Btree.java:2534:<init>|  Btree.java:2533:Branch|  Btree.java:1550:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2511:<init>|  Btree.java:2510:code|  Chip.java:0532:<init>|  Btree.java:2495:<init>|  Btree.java:2494:code|  Chip.java:0532:<init>|  Btree.java:2469:<init>|  Btree.java:2468:put|  Btree.java:7180:code|  Chip.java:0532:<init>|  Btree.java:7164:<init>|  Btree.java:7163:test_put_random|  Btree.java:7273:oldTests|  Btree.java:7278:newTests|  Btree.java:7284:main|");
+            $fdisplay(f, "Location: Chip.java:0514:<init>|  Chip.java:1415:<init>|  Chip.java:1414:ExecuteTransaction|  Btree.java:0113:allocate|  Btree.java:0154:allocateBranch|  Btree.java:1856:splitBranchNotTop|  Btree.java:2539:Then|  Chip.java:0612:<init>|  Btree.java:2538:<init>|  Btree.java:2537:Then|  Chip.java:0612:<init>|  Btree.java:2536:<init>|  Btree.java:2535:Branch|  Btree.java:1550:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2513:<init>|  Btree.java:2512:code|  Chip.java:0532:<init>|  Btree.java:2497:<init>|  Btree.java:2496:code|  Chip.java:0532:<init>|  Btree.java:2471:<init>|  Btree.java:2470:put|  Btree.java:7182:code|  Chip.java:0532:<init>|  Btree.java:7166:<init>|  Btree.java:7165:test_put_random|  Btree.java:7275:oldTests|  Btree.java:7280:newTests|  Btree.java:7286:main|");
             $fclose(f);
           end
         end
@@ -7032,7 +7032,7 @@ module Btree;                                                                   
           begin
             integer f;
             f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:1422:<init>|  Chip.java:1421:waitResultOfTransaction|  Btree.java:0114:allocate|  Btree.java:0154:allocateBranch|  Btree.java:1856:splitBranchNotTop|  Btree.java:2537:Then|  Chip.java:0612:<init>|  Btree.java:2536:<init>|  Btree.java:2535:Then|  Chip.java:0612:<init>|  Btree.java:2534:<init>|  Btree.java:2533:Branch|  Btree.java:1550:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2511:<init>|  Btree.java:2510:code|  Chip.java:0532:<init>|  Btree.java:2495:<init>|  Btree.java:2494:code|  Chip.java:0532:<init>|  Btree.java:2469:<init>|  Btree.java:2468:put|  Btree.java:7180:code|  Chip.java:0532:<init>|  Btree.java:7164:<init>|  Btree.java:7163:test_put_random|  Btree.java:7273:oldTests|  Btree.java:7278:newTests|  Btree.java:7284:main|");
+            $fdisplay(f, "Location: Chip.java:1422:<init>|  Chip.java:1421:waitResultOfTransaction|  Btree.java:0114:allocate|  Btree.java:0154:allocateBranch|  Btree.java:1856:splitBranchNotTop|  Btree.java:2539:Then|  Chip.java:0612:<init>|  Btree.java:2538:<init>|  Btree.java:2537:Then|  Chip.java:0612:<init>|  Btree.java:2536:<init>|  Btree.java:2535:Branch|  Btree.java:1550:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2513:<init>|  Btree.java:2512:code|  Chip.java:0532:<init>|  Btree.java:2497:<init>|  Btree.java:2496:code|  Chip.java:0532:<init>|  Btree.java:2471:<init>|  Btree.java:2470:put|  Btree.java:7182:code|  Chip.java:0532:<init>|  Btree.java:7166:<init>|  Btree.java:7165:test_put_random|  Btree.java:7275:oldTests|  Btree.java:7280:newTests|  Btree.java:7286:main|");
             $fclose(f);
           end
         end
@@ -7043,7 +7043,7 @@ module Btree;                                                                   
           begin
             integer f;
             f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:1422:<init>|  Chip.java:1421:waitResultOfTransaction|  Btree.java:0115:allocate|  Btree.java:0154:allocateBranch|  Btree.java:1856:splitBranchNotTop|  Btree.java:2537:Then|  Chip.java:0612:<init>|  Btree.java:2536:<init>|  Btree.java:2535:Then|  Chip.java:0612:<init>|  Btree.java:2534:<init>|  Btree.java:2533:Branch|  Btree.java:1550:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2511:<init>|  Btree.java:2510:code|  Chip.java:0532:<init>|  Btree.java:2495:<init>|  Btree.java:2494:code|  Chip.java:0532:<init>|  Btree.java:2469:<init>|  Btree.java:2468:put|  Btree.java:7180:code|  Chip.java:0532:<init>|  Btree.java:7164:<init>|  Btree.java:7163:test_put_random|  Btree.java:7273:oldTests|  Btree.java:7278:newTests|  Btree.java:7284:main|");
+            $fdisplay(f, "Location: Chip.java:1422:<init>|  Chip.java:1421:waitResultOfTransaction|  Btree.java:0115:allocate|  Btree.java:0154:allocateBranch|  Btree.java:1856:splitBranchNotTop|  Btree.java:2539:Then|  Chip.java:0612:<init>|  Btree.java:2538:<init>|  Btree.java:2537:Then|  Chip.java:0612:<init>|  Btree.java:2536:<init>|  Btree.java:2535:Branch|  Btree.java:1550:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2513:<init>|  Btree.java:2512:code|  Chip.java:0532:<init>|  Btree.java:2497:<init>|  Btree.java:2496:code|  Chip.java:0532:<init>|  Btree.java:2471:<init>|  Btree.java:2470:put|  Btree.java:7182:code|  Chip.java:0532:<init>|  Btree.java:7166:<init>|  Btree.java:7165:test_put_random|  Btree.java:7275:oldTests|  Btree.java:7280:newTests|  Btree.java:7286:main|");
             $fclose(f);
           end
         end
@@ -7054,7 +7054,7 @@ module Btree;                                                                   
           begin
             integer f;
             f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:1422:<init>|  Chip.java:1421:waitResultOfTransaction|  Btree.java:0116:allocate|  Btree.java:0154:allocateBranch|  Btree.java:1856:splitBranchNotTop|  Btree.java:2537:Then|  Chip.java:0612:<init>|  Btree.java:2536:<init>|  Btree.java:2535:Then|  Chip.java:0612:<init>|  Btree.java:2534:<init>|  Btree.java:2533:Branch|  Btree.java:1550:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2511:<init>|  Btree.java:2510:code|  Chip.java:0532:<init>|  Btree.java:2495:<init>|  Btree.java:2494:code|  Chip.java:0532:<init>|  Btree.java:2469:<init>|  Btree.java:2468:put|  Btree.java:7180:code|  Chip.java:0532:<init>|  Btree.java:7164:<init>|  Btree.java:7163:test_put_random|  Btree.java:7273:oldTests|  Btree.java:7278:newTests|  Btree.java:7284:main|");
+            $fdisplay(f, "Location: Chip.java:1422:<init>|  Chip.java:1421:waitResultOfTransaction|  Btree.java:0116:allocate|  Btree.java:0154:allocateBranch|  Btree.java:1856:splitBranchNotTop|  Btree.java:2539:Then|  Chip.java:0612:<init>|  Btree.java:2538:<init>|  Btree.java:2537:Then|  Chip.java:0612:<init>|  Btree.java:2536:<init>|  Btree.java:2535:Branch|  Btree.java:1550:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2513:<init>|  Btree.java:2512:code|  Chip.java:0532:<init>|  Btree.java:2497:<init>|  Btree.java:2496:code|  Chip.java:0532:<init>|  Btree.java:2471:<init>|  Btree.java:2470:put|  Btree.java:7182:code|  Chip.java:0532:<init>|  Btree.java:7166:<init>|  Btree.java:7165:test_put_random|  Btree.java:7275:oldTests|  Btree.java:7280:newTests|  Btree.java:7286:main|");
             $fclose(f);
           end
         end
@@ -7081,7 +7081,7 @@ module Btree;                                                                   
           begin
             integer f;
             f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:0514:<init>|  Btree.java:0330:<init>|  Btree.java:0329:stuckPut|  Btree.java:0352:stuckPut|  Btree.java:1856:splitBranchNotTop|  Btree.java:2537:Then|  Chip.java:0612:<init>|  Btree.java:2536:<init>|  Btree.java:2535:Then|  Chip.java:0612:<init>|  Btree.java:2534:<init>|  Btree.java:2533:Branch|  Btree.java:1550:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2511:<init>|  Btree.java:2510:code|  Chip.java:0532:<init>|  Btree.java:2495:<init>|  Btree.java:2494:code|  Chip.java:0532:<init>|  Btree.java:2469:<init>|  Btree.java:2468:put|  Btree.java:7180:code|  Chip.java:0532:<init>|  Btree.java:7164:<init>|  Btree.java:7163:test_put_random|  Btree.java:7273:oldTests|  Btree.java:7278:newTests|  Btree.java:7284:main|");
+            $fdisplay(f, "Location: Chip.java:0514:<init>|  Btree.java:0330:<init>|  Btree.java:0329:stuckPut|  Btree.java:0352:stuckPut|  Btree.java:1856:splitBranchNotTop|  Btree.java:2539:Then|  Chip.java:0612:<init>|  Btree.java:2538:<init>|  Btree.java:2537:Then|  Chip.java:0612:<init>|  Btree.java:2536:<init>|  Btree.java:2535:Branch|  Btree.java:1550:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2513:<init>|  Btree.java:2512:code|  Chip.java:0532:<init>|  Btree.java:2497:<init>|  Btree.java:2496:code|  Chip.java:0532:<init>|  Btree.java:2471:<init>|  Btree.java:2470:put|  Btree.java:7182:code|  Chip.java:0532:<init>|  Btree.java:7166:<init>|  Btree.java:7165:test_put_random|  Btree.java:7275:oldTests|  Btree.java:7280:newTests|  Btree.java:7286:main|");
             $fclose(f);
           end
         end
@@ -7092,7 +7092,7 @@ module Btree;                                                                   
           begin
             integer f;
             f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:1422:<init>|  Chip.java:1421:waitResultOfTransaction|  Btree.java:0344:stuckPut|  Btree.java:0352:stuckPut|  Btree.java:1856:splitBranchNotTop|  Btree.java:2537:Then|  Chip.java:0612:<init>|  Btree.java:2536:<init>|  Btree.java:2535:Then|  Chip.java:0612:<init>|  Btree.java:2534:<init>|  Btree.java:2533:Branch|  Btree.java:1550:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2511:<init>|  Btree.java:2510:code|  Chip.java:0532:<init>|  Btree.java:2495:<init>|  Btree.java:2494:code|  Chip.java:0532:<init>|  Btree.java:2469:<init>|  Btree.java:2468:put|  Btree.java:7180:code|  Chip.java:0532:<init>|  Btree.java:7164:<init>|  Btree.java:7163:test_put_random|  Btree.java:7273:oldTests|  Btree.java:7278:newTests|  Btree.java:7284:main|");
+            $fdisplay(f, "Location: Chip.java:1422:<init>|  Chip.java:1421:waitResultOfTransaction|  Btree.java:0344:stuckPut|  Btree.java:0352:stuckPut|  Btree.java:1856:splitBranchNotTop|  Btree.java:2539:Then|  Chip.java:0612:<init>|  Btree.java:2538:<init>|  Btree.java:2537:Then|  Chip.java:0612:<init>|  Btree.java:2536:<init>|  Btree.java:2535:Branch|  Btree.java:1550:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2513:<init>|  Btree.java:2512:code|  Chip.java:0532:<init>|  Btree.java:2497:<init>|  Btree.java:2496:code|  Chip.java:0532:<init>|  Btree.java:2471:<init>|  Btree.java:2470:put|  Btree.java:7182:code|  Chip.java:0532:<init>|  Btree.java:7166:<init>|  Btree.java:7165:test_put_random|  Btree.java:7275:oldTests|  Btree.java:7280:newTests|  Btree.java:7286:main|");
             $fclose(f);
           end
         end
@@ -7103,7 +7103,7 @@ module Btree;                                                                   
           begin
             integer f;
             f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:1422:<init>|  Chip.java:1421:waitResultOfTransaction|  Btree.java:0347:stuckPut|  Btree.java:0352:stuckPut|  Btree.java:1856:splitBranchNotTop|  Btree.java:2537:Then|  Chip.java:0612:<init>|  Btree.java:2536:<init>|  Btree.java:2535:Then|  Chip.java:0612:<init>|  Btree.java:2534:<init>|  Btree.java:2533:Branch|  Btree.java:1550:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2511:<init>|  Btree.java:2510:code|  Chip.java:0532:<init>|  Btree.java:2495:<init>|  Btree.java:2494:code|  Chip.java:0532:<init>|  Btree.java:2469:<init>|  Btree.java:2468:put|  Btree.java:7180:code|  Chip.java:0532:<init>|  Btree.java:7164:<init>|  Btree.java:7163:test_put_random|  Btree.java:7273:oldTests|  Btree.java:7278:newTests|  Btree.java:7284:main|");
+            $fdisplay(f, "Location: Chip.java:1422:<init>|  Chip.java:1421:waitResultOfTransaction|  Btree.java:0347:stuckPut|  Btree.java:0352:stuckPut|  Btree.java:1856:splitBranchNotTop|  Btree.java:2539:Then|  Chip.java:0612:<init>|  Btree.java:2538:<init>|  Btree.java:2537:Then|  Chip.java:0612:<init>|  Btree.java:2536:<init>|  Btree.java:2535:Branch|  Btree.java:1550:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2513:<init>|  Btree.java:2512:code|  Chip.java:0532:<init>|  Btree.java:2497:<init>|  Btree.java:2496:code|  Chip.java:0532:<init>|  Btree.java:2471:<init>|  Btree.java:2470:put|  Btree.java:7182:code|  Chip.java:0532:<init>|  Btree.java:7166:<init>|  Btree.java:7165:test_put_random|  Btree.java:7275:oldTests|  Btree.java:7280:newTests|  Btree.java:7286:main|");
             $fclose(f);
           end
         end
@@ -7114,7 +7114,7 @@ module Btree;                                                                   
           begin
             integer f;
             f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:1422:<init>|  Chip.java:1421:waitResultOfTransaction|  Btree.java:0348:stuckPut|  Btree.java:0352:stuckPut|  Btree.java:1856:splitBranchNotTop|  Btree.java:2537:Then|  Chip.java:0612:<init>|  Btree.java:2536:<init>|  Btree.java:2535:Then|  Chip.java:0612:<init>|  Btree.java:2534:<init>|  Btree.java:2533:Branch|  Btree.java:1550:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2511:<init>|  Btree.java:2510:code|  Chip.java:0532:<init>|  Btree.java:2495:<init>|  Btree.java:2494:code|  Chip.java:0532:<init>|  Btree.java:2469:<init>|  Btree.java:2468:put|  Btree.java:7180:code|  Chip.java:0532:<init>|  Btree.java:7164:<init>|  Btree.java:7163:test_put_random|  Btree.java:7273:oldTests|  Btree.java:7278:newTests|  Btree.java:7284:main|");
+            $fdisplay(f, "Location: Chip.java:1422:<init>|  Chip.java:1421:waitResultOfTransaction|  Btree.java:0348:stuckPut|  Btree.java:0352:stuckPut|  Btree.java:1856:splitBranchNotTop|  Btree.java:2539:Then|  Chip.java:0612:<init>|  Btree.java:2538:<init>|  Btree.java:2537:Then|  Chip.java:0612:<init>|  Btree.java:2536:<init>|  Btree.java:2535:Branch|  Btree.java:1550:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2513:<init>|  Btree.java:2512:code|  Chip.java:0532:<init>|  Btree.java:2497:<init>|  Btree.java:2496:code|  Chip.java:0532:<init>|  Btree.java:2471:<init>|  Btree.java:2470:put|  Btree.java:7182:code|  Chip.java:0532:<init>|  Btree.java:7166:<init>|  Btree.java:7165:test_put_random|  Btree.java:7275:oldTests|  Btree.java:7280:newTests|  Btree.java:7286:main|");
             $fclose(f);
           end
         end
@@ -7141,7 +7141,7 @@ module Btree;                                                                   
           begin
             integer f;
             f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:0514:<init>|  Btree.java:0330:<init>|  Btree.java:0329:stuckPut|  Btree.java:0352:stuckPut|  Btree.java:1857:splitBranchNotTop|  Btree.java:2537:Then|  Chip.java:0612:<init>|  Btree.java:2536:<init>|  Btree.java:2535:Then|  Chip.java:0612:<init>|  Btree.java:2534:<init>|  Btree.java:2533:Branch|  Btree.java:1550:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2511:<init>|  Btree.java:2510:code|  Chip.java:0532:<init>|  Btree.java:2495:<init>|  Btree.java:2494:code|  Chip.java:0532:<init>|  Btree.java:2469:<init>|  Btree.java:2468:put|  Btree.java:7180:code|  Chip.java:0532:<init>|  Btree.java:7164:<init>|  Btree.java:7163:test_put_random|  Btree.java:7273:oldTests|  Btree.java:7278:newTests|  Btree.java:7284:main|");
+            $fdisplay(f, "Location: Chip.java:0514:<init>|  Btree.java:0330:<init>|  Btree.java:0329:stuckPut|  Btree.java:0352:stuckPut|  Btree.java:1857:splitBranchNotTop|  Btree.java:2539:Then|  Chip.java:0612:<init>|  Btree.java:2538:<init>|  Btree.java:2537:Then|  Chip.java:0612:<init>|  Btree.java:2536:<init>|  Btree.java:2535:Branch|  Btree.java:1550:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2513:<init>|  Btree.java:2512:code|  Chip.java:0532:<init>|  Btree.java:2497:<init>|  Btree.java:2496:code|  Chip.java:0532:<init>|  Btree.java:2471:<init>|  Btree.java:2470:put|  Btree.java:7182:code|  Chip.java:0532:<init>|  Btree.java:7166:<init>|  Btree.java:7165:test_put_random|  Btree.java:7275:oldTests|  Btree.java:7280:newTests|  Btree.java:7286:main|");
             $fclose(f);
           end
         end
@@ -7152,7 +7152,7 @@ module Btree;                                                                   
           begin
             integer f;
             f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:1422:<init>|  Chip.java:1421:waitResultOfTransaction|  Btree.java:0344:stuckPut|  Btree.java:0352:stuckPut|  Btree.java:1857:splitBranchNotTop|  Btree.java:2537:Then|  Chip.java:0612:<init>|  Btree.java:2536:<init>|  Btree.java:2535:Then|  Chip.java:0612:<init>|  Btree.java:2534:<init>|  Btree.java:2533:Branch|  Btree.java:1550:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2511:<init>|  Btree.java:2510:code|  Chip.java:0532:<init>|  Btree.java:2495:<init>|  Btree.java:2494:code|  Chip.java:0532:<init>|  Btree.java:2469:<init>|  Btree.java:2468:put|  Btree.java:7180:code|  Chip.java:0532:<init>|  Btree.java:7164:<init>|  Btree.java:7163:test_put_random|  Btree.java:7273:oldTests|  Btree.java:7278:newTests|  Btree.java:7284:main|");
+            $fdisplay(f, "Location: Chip.java:1422:<init>|  Chip.java:1421:waitResultOfTransaction|  Btree.java:0344:stuckPut|  Btree.java:0352:stuckPut|  Btree.java:1857:splitBranchNotTop|  Btree.java:2539:Then|  Chip.java:0612:<init>|  Btree.java:2538:<init>|  Btree.java:2537:Then|  Chip.java:0612:<init>|  Btree.java:2536:<init>|  Btree.java:2535:Branch|  Btree.java:1550:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2513:<init>|  Btree.java:2512:code|  Chip.java:0532:<init>|  Btree.java:2497:<init>|  Btree.java:2496:code|  Chip.java:0532:<init>|  Btree.java:2471:<init>|  Btree.java:2470:put|  Btree.java:7182:code|  Chip.java:0532:<init>|  Btree.java:7166:<init>|  Btree.java:7165:test_put_random|  Btree.java:7275:oldTests|  Btree.java:7280:newTests|  Btree.java:7286:main|");
             $fclose(f);
           end
         end
@@ -7163,7 +7163,7 @@ module Btree;                                                                   
           begin
             integer f;
             f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:1422:<init>|  Chip.java:1421:waitResultOfTransaction|  Btree.java:0347:stuckPut|  Btree.java:0352:stuckPut|  Btree.java:1857:splitBranchNotTop|  Btree.java:2537:Then|  Chip.java:0612:<init>|  Btree.java:2536:<init>|  Btree.java:2535:Then|  Chip.java:0612:<init>|  Btree.java:2534:<init>|  Btree.java:2533:Branch|  Btree.java:1550:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2511:<init>|  Btree.java:2510:code|  Chip.java:0532:<init>|  Btree.java:2495:<init>|  Btree.java:2494:code|  Chip.java:0532:<init>|  Btree.java:2469:<init>|  Btree.java:2468:put|  Btree.java:7180:code|  Chip.java:0532:<init>|  Btree.java:7164:<init>|  Btree.java:7163:test_put_random|  Btree.java:7273:oldTests|  Btree.java:7278:newTests|  Btree.java:7284:main|");
+            $fdisplay(f, "Location: Chip.java:1422:<init>|  Chip.java:1421:waitResultOfTransaction|  Btree.java:0347:stuckPut|  Btree.java:0352:stuckPut|  Btree.java:1857:splitBranchNotTop|  Btree.java:2539:Then|  Chip.java:0612:<init>|  Btree.java:2538:<init>|  Btree.java:2537:Then|  Chip.java:0612:<init>|  Btree.java:2536:<init>|  Btree.java:2535:Branch|  Btree.java:1550:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2513:<init>|  Btree.java:2512:code|  Chip.java:0532:<init>|  Btree.java:2497:<init>|  Btree.java:2496:code|  Chip.java:0532:<init>|  Btree.java:2471:<init>|  Btree.java:2470:put|  Btree.java:7182:code|  Chip.java:0532:<init>|  Btree.java:7166:<init>|  Btree.java:7165:test_put_random|  Btree.java:7275:oldTests|  Btree.java:7280:newTests|  Btree.java:7286:main|");
             $fclose(f);
           end
         end
@@ -7174,7 +7174,7 @@ module Btree;                                                                   
           begin
             integer f;
             f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:1422:<init>|  Chip.java:1421:waitResultOfTransaction|  Btree.java:0348:stuckPut|  Btree.java:0352:stuckPut|  Btree.java:1857:splitBranchNotTop|  Btree.java:2537:Then|  Chip.java:0612:<init>|  Btree.java:2536:<init>|  Btree.java:2535:Then|  Chip.java:0612:<init>|  Btree.java:2534:<init>|  Btree.java:2533:Branch|  Btree.java:1550:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2511:<init>|  Btree.java:2510:code|  Chip.java:0532:<init>|  Btree.java:2495:<init>|  Btree.java:2494:code|  Chip.java:0532:<init>|  Btree.java:2469:<init>|  Btree.java:2468:put|  Btree.java:7180:code|  Chip.java:0532:<init>|  Btree.java:7164:<init>|  Btree.java:7163:test_put_random|  Btree.java:7273:oldTests|  Btree.java:7278:newTests|  Btree.java:7284:main|");
+            $fdisplay(f, "Location: Chip.java:1422:<init>|  Chip.java:1421:waitResultOfTransaction|  Btree.java:0348:stuckPut|  Btree.java:0352:stuckPut|  Btree.java:1857:splitBranchNotTop|  Btree.java:2539:Then|  Chip.java:0612:<init>|  Btree.java:2538:<init>|  Btree.java:2537:Then|  Chip.java:0612:<init>|  Btree.java:2536:<init>|  Btree.java:2535:Branch|  Btree.java:1550:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2513:<init>|  Btree.java:2512:code|  Chip.java:0532:<init>|  Btree.java:2497:<init>|  Btree.java:2496:code|  Chip.java:0532:<init>|  Btree.java:2471:<init>|  Btree.java:2470:put|  Btree.java:7182:code|  Chip.java:0532:<init>|  Btree.java:7166:<init>|  Btree.java:7165:test_put_random|  Btree.java:7275:oldTests|  Btree.java:7280:newTests|  Btree.java:7286:main|");
             $fclose(f);
           end
         end
@@ -7214,7 +7214,7 @@ module Btree;                                                                   
           begin
             integer f;
             f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:0514:<init>|  Btree.java:0921:<init>|  Btree.java:0920:InsertElementAt|  Btree.java:1859:splitBranchNotTop|  Btree.java:2537:Then|  Chip.java:0612:<init>|  Btree.java:2536:<init>|  Btree.java:2535:Then|  Chip.java:0612:<init>|  Btree.java:2534:<init>|  Btree.java:2533:Branch|  Btree.java:1550:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2511:<init>|  Btree.java:2510:code|  Chip.java:0532:<init>|  Btree.java:2495:<init>|  Btree.java:2494:code|  Chip.java:0532:<init>|  Btree.java:2469:<init>|  Btree.java:2468:put|  Btree.java:7180:code|  Chip.java:0532:<init>|  Btree.java:7164:<init>|  Btree.java:7163:test_put_random|  Btree.java:7273:oldTests|  Btree.java:7278:newTests|  Btree.java:7284:main|");
+            $fdisplay(f, "Location: Chip.java:0514:<init>|  Btree.java:0921:<init>|  Btree.java:0920:InsertElementAt|  Btree.java:1859:splitBranchNotTop|  Btree.java:2539:Then|  Chip.java:0612:<init>|  Btree.java:2538:<init>|  Btree.java:2537:Then|  Chip.java:0612:<init>|  Btree.java:2536:<init>|  Btree.java:2535:Branch|  Btree.java:1550:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2513:<init>|  Btree.java:2512:code|  Chip.java:0532:<init>|  Btree.java:2497:<init>|  Btree.java:2496:code|  Chip.java:0532:<init>|  Btree.java:2471:<init>|  Btree.java:2470:put|  Btree.java:7182:code|  Chip.java:0532:<init>|  Btree.java:7166:<init>|  Btree.java:7165:test_put_random|  Btree.java:7275:oldTests|  Btree.java:7280:newTests|  Btree.java:7286:main|");
             $fclose(f);
           end
         end
@@ -7241,7 +7241,7 @@ module Btree;                                                                   
           begin
             integer f;
             f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:0514:<init>|  Btree.java:0330:<init>|  Btree.java:0329:stuckPut|  Btree.java:0351:stuckPut|  Btree.java:1860:splitBranchNotTop|  Btree.java:2537:Then|  Chip.java:0612:<init>|  Btree.java:2536:<init>|  Btree.java:2535:Then|  Chip.java:0612:<init>|  Btree.java:2534:<init>|  Btree.java:2533:Branch|  Btree.java:1550:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2511:<init>|  Btree.java:2510:code|  Chip.java:0532:<init>|  Btree.java:2495:<init>|  Btree.java:2494:code|  Chip.java:0532:<init>|  Btree.java:2469:<init>|  Btree.java:2468:put|  Btree.java:7180:code|  Chip.java:0532:<init>|  Btree.java:7164:<init>|  Btree.java:7163:test_put_random|  Btree.java:7273:oldTests|  Btree.java:7278:newTests|  Btree.java:7284:main|");
+            $fdisplay(f, "Location: Chip.java:0514:<init>|  Btree.java:0330:<init>|  Btree.java:0329:stuckPut|  Btree.java:0351:stuckPut|  Btree.java:1860:splitBranchNotTop|  Btree.java:2539:Then|  Chip.java:0612:<init>|  Btree.java:2538:<init>|  Btree.java:2537:Then|  Chip.java:0612:<init>|  Btree.java:2536:<init>|  Btree.java:2535:Branch|  Btree.java:1550:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2513:<init>|  Btree.java:2512:code|  Chip.java:0532:<init>|  Btree.java:2497:<init>|  Btree.java:2496:code|  Chip.java:0532:<init>|  Btree.java:2471:<init>|  Btree.java:2470:put|  Btree.java:7182:code|  Chip.java:0532:<init>|  Btree.java:7166:<init>|  Btree.java:7165:test_put_random|  Btree.java:7275:oldTests|  Btree.java:7280:newTests|  Btree.java:7286:main|");
             $fclose(f);
           end
         end
@@ -7252,7 +7252,7 @@ module Btree;                                                                   
           begin
             integer f;
             f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:1422:<init>|  Chip.java:1421:waitResultOfTransaction|  Btree.java:0344:stuckPut|  Btree.java:0351:stuckPut|  Btree.java:1860:splitBranchNotTop|  Btree.java:2537:Then|  Chip.java:0612:<init>|  Btree.java:2536:<init>|  Btree.java:2535:Then|  Chip.java:0612:<init>|  Btree.java:2534:<init>|  Btree.java:2533:Branch|  Btree.java:1550:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2511:<init>|  Btree.java:2510:code|  Chip.java:0532:<init>|  Btree.java:2495:<init>|  Btree.java:2494:code|  Chip.java:0532:<init>|  Btree.java:2469:<init>|  Btree.java:2468:put|  Btree.java:7180:code|  Chip.java:0532:<init>|  Btree.java:7164:<init>|  Btree.java:7163:test_put_random|  Btree.java:7273:oldTests|  Btree.java:7278:newTests|  Btree.java:7284:main|");
+            $fdisplay(f, "Location: Chip.java:1422:<init>|  Chip.java:1421:waitResultOfTransaction|  Btree.java:0344:stuckPut|  Btree.java:0351:stuckPut|  Btree.java:1860:splitBranchNotTop|  Btree.java:2539:Then|  Chip.java:0612:<init>|  Btree.java:2538:<init>|  Btree.java:2537:Then|  Chip.java:0612:<init>|  Btree.java:2536:<init>|  Btree.java:2535:Branch|  Btree.java:1550:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2513:<init>|  Btree.java:2512:code|  Chip.java:0532:<init>|  Btree.java:2497:<init>|  Btree.java:2496:code|  Chip.java:0532:<init>|  Btree.java:2471:<init>|  Btree.java:2470:put|  Btree.java:7182:code|  Chip.java:0532:<init>|  Btree.java:7166:<init>|  Btree.java:7165:test_put_random|  Btree.java:7275:oldTests|  Btree.java:7280:newTests|  Btree.java:7286:main|");
             $fclose(f);
           end
         end
@@ -7263,7 +7263,7 @@ module Btree;                                                                   
           begin
             integer f;
             f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:1422:<init>|  Chip.java:1421:waitResultOfTransaction|  Btree.java:0347:stuckPut|  Btree.java:0351:stuckPut|  Btree.java:1860:splitBranchNotTop|  Btree.java:2537:Then|  Chip.java:0612:<init>|  Btree.java:2536:<init>|  Btree.java:2535:Then|  Chip.java:0612:<init>|  Btree.java:2534:<init>|  Btree.java:2533:Branch|  Btree.java:1550:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2511:<init>|  Btree.java:2510:code|  Chip.java:0532:<init>|  Btree.java:2495:<init>|  Btree.java:2494:code|  Chip.java:0532:<init>|  Btree.java:2469:<init>|  Btree.java:2468:put|  Btree.java:7180:code|  Chip.java:0532:<init>|  Btree.java:7164:<init>|  Btree.java:7163:test_put_random|  Btree.java:7273:oldTests|  Btree.java:7278:newTests|  Btree.java:7284:main|");
+            $fdisplay(f, "Location: Chip.java:1422:<init>|  Chip.java:1421:waitResultOfTransaction|  Btree.java:0347:stuckPut|  Btree.java:0351:stuckPut|  Btree.java:1860:splitBranchNotTop|  Btree.java:2539:Then|  Chip.java:0612:<init>|  Btree.java:2538:<init>|  Btree.java:2537:Then|  Chip.java:0612:<init>|  Btree.java:2536:<init>|  Btree.java:2535:Branch|  Btree.java:1550:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2513:<init>|  Btree.java:2512:code|  Chip.java:0532:<init>|  Btree.java:2497:<init>|  Btree.java:2496:code|  Chip.java:0532:<init>|  Btree.java:2471:<init>|  Btree.java:2470:put|  Btree.java:7182:code|  Chip.java:0532:<init>|  Btree.java:7166:<init>|  Btree.java:7165:test_put_random|  Btree.java:7275:oldTests|  Btree.java:7280:newTests|  Btree.java:7286:main|");
             $fclose(f);
           end
         end
@@ -7274,7 +7274,7 @@ module Btree;                                                                   
           begin
             integer f;
             f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:1422:<init>|  Chip.java:1421:waitResultOfTransaction|  Btree.java:0348:stuckPut|  Btree.java:0351:stuckPut|  Btree.java:1860:splitBranchNotTop|  Btree.java:2537:Then|  Chip.java:0612:<init>|  Btree.java:2536:<init>|  Btree.java:2535:Then|  Chip.java:0612:<init>|  Btree.java:2534:<init>|  Btree.java:2533:Branch|  Btree.java:1550:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2511:<init>|  Btree.java:2510:code|  Chip.java:0532:<init>|  Btree.java:2495:<init>|  Btree.java:2494:code|  Chip.java:0532:<init>|  Btree.java:2469:<init>|  Btree.java:2468:put|  Btree.java:7180:code|  Chip.java:0532:<init>|  Btree.java:7164:<init>|  Btree.java:7163:test_put_random|  Btree.java:7273:oldTests|  Btree.java:7278:newTests|  Btree.java:7284:main|");
+            $fdisplay(f, "Location: Chip.java:1422:<init>|  Chip.java:1421:waitResultOfTransaction|  Btree.java:0348:stuckPut|  Btree.java:0351:stuckPut|  Btree.java:1860:splitBranchNotTop|  Btree.java:2539:Then|  Chip.java:0612:<init>|  Btree.java:2538:<init>|  Btree.java:2537:Then|  Chip.java:0612:<init>|  Btree.java:2536:<init>|  Btree.java:2535:Branch|  Btree.java:1550:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2513:<init>|  Btree.java:2512:code|  Chip.java:0532:<init>|  Btree.java:2497:<init>|  Btree.java:2496:code|  Chip.java:0532:<init>|  Btree.java:2471:<init>|  Btree.java:2470:put|  Btree.java:7182:code|  Chip.java:0532:<init>|  Btree.java:7166:<init>|  Btree.java:7165:test_put_random|  Btree.java:7275:oldTests|  Btree.java:7280:newTests|  Btree.java:7286:main|");
             $fclose(f);
           end
         end
@@ -7283,7 +7283,7 @@ module Btree;                                                                   
           begin
             integer f;
             f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:0614:<init>|  Chip.java:0613:<init>|  Btree.java:2536:<init>|  Btree.java:2535:Then|  Chip.java:0612:<init>|  Btree.java:2534:<init>|  Btree.java:2533:Branch|  Btree.java:1550:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2511:<init>|  Btree.java:2510:code|  Chip.java:0532:<init>|  Btree.java:2495:<init>|  Btree.java:2494:code|  Chip.java:0532:<init>|  Btree.java:2469:<init>|  Btree.java:2468:put|  Btree.java:7180:code|  Chip.java:0532:<init>|  Btree.java:7164:<init>|  Btree.java:7163:test_put_random|  Btree.java:7273:oldTests|  Btree.java:7278:newTests|  Btree.java:7284:main|");
+            $fdisplay(f, "Location: Chip.java:0614:<init>|  Chip.java:0613:<init>|  Btree.java:2538:<init>|  Btree.java:2537:Then|  Chip.java:0612:<init>|  Btree.java:2536:<init>|  Btree.java:2535:Branch|  Btree.java:1550:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2513:<init>|  Btree.java:2512:code|  Chip.java:0532:<init>|  Btree.java:2497:<init>|  Btree.java:2496:code|  Chip.java:0532:<init>|  Btree.java:2471:<init>|  Btree.java:2470:put|  Btree.java:7182:code|  Chip.java:0532:<init>|  Btree.java:7166:<init>|  Btree.java:7165:test_put_random|  Btree.java:7275:oldTests|  Btree.java:7280:newTests|  Btree.java:7286:main|");
             $fclose(f);
           end
         end
@@ -7293,7 +7293,7 @@ module Btree;                                                                   
           begin
             integer f;
             f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:0514:<init>|  Chip.java:0699:<init>|  Chip.java:0698:Copy|  Btree.java:0278:stuckGet|  Btree.java:1875:splitBranchAtTop|  Btree.java:2540:Else|  Chip.java:0622:<init>|  Btree.java:2536:<init>|  Btree.java:2535:Then|  Chip.java:0612:<init>|  Btree.java:2534:<init>|  Btree.java:2533:Branch|  Btree.java:1550:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2511:<init>|  Btree.java:2510:code|  Chip.java:0532:<init>|  Btree.java:2495:<init>|  Btree.java:2494:code|  Chip.java:0532:<init>|  Btree.java:2469:<init>|  Btree.java:2468:put|  Btree.java:7180:code|  Chip.java:0532:<init>|  Btree.java:7164:<init>|  Btree.java:7163:test_put_random|  Btree.java:7273:oldTests|  Btree.java:7278:newTests|  Btree.java:7284:main|");
+            $fdisplay(f, "Location: Chip.java:0514:<init>|  Chip.java:0699:<init>|  Chip.java:0698:Copy|  Btree.java:0278:stuckGet|  Btree.java:1875:splitBranchAtTop|  Btree.java:2542:Else|  Chip.java:0622:<init>|  Btree.java:2538:<init>|  Btree.java:2537:Then|  Chip.java:0612:<init>|  Btree.java:2536:<init>|  Btree.java:2535:Branch|  Btree.java:1550:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2513:<init>|  Btree.java:2512:code|  Chip.java:0532:<init>|  Btree.java:2497:<init>|  Btree.java:2496:code|  Chip.java:0532:<init>|  Btree.java:2471:<init>|  Btree.java:2470:put|  Btree.java:7182:code|  Chip.java:0532:<init>|  Btree.java:7166:<init>|  Btree.java:7165:test_put_random|  Btree.java:7275:oldTests|  Btree.java:7280:newTests|  Btree.java:7286:main|");
             $fclose(f);
           end
         end
@@ -7314,7 +7314,7 @@ module Btree;                                                                   
           begin
             integer f;
             f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:0514:<init>|  Btree.java:0289:<init>|  Btree.java:0288:stuckGet|  Btree.java:0279:stuckGet|  Btree.java:1875:splitBranchAtTop|  Btree.java:2540:Else|  Chip.java:0622:<init>|  Btree.java:2536:<init>|  Btree.java:2535:Then|  Chip.java:0612:<init>|  Btree.java:2534:<init>|  Btree.java:2533:Branch|  Btree.java:1550:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2511:<init>|  Btree.java:2510:code|  Chip.java:0532:<init>|  Btree.java:2495:<init>|  Btree.java:2494:code|  Chip.java:0532:<init>|  Btree.java:2469:<init>|  Btree.java:2468:put|  Btree.java:7180:code|  Chip.java:0532:<init>|  Btree.java:7164:<init>|  Btree.java:7163:test_put_random|  Btree.java:7273:oldTests|  Btree.java:7278:newTests|  Btree.java:7284:main|");
+            $fdisplay(f, "Location: Chip.java:0514:<init>|  Btree.java:0289:<init>|  Btree.java:0288:stuckGet|  Btree.java:0279:stuckGet|  Btree.java:1875:splitBranchAtTop|  Btree.java:2542:Else|  Chip.java:0622:<init>|  Btree.java:2538:<init>|  Btree.java:2537:Then|  Chip.java:0612:<init>|  Btree.java:2536:<init>|  Btree.java:2535:Branch|  Btree.java:1550:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2513:<init>|  Btree.java:2512:code|  Chip.java:0532:<init>|  Btree.java:2497:<init>|  Btree.java:2496:code|  Chip.java:0532:<init>|  Btree.java:2471:<init>|  Btree.java:2470:put|  Btree.java:7182:code|  Chip.java:0532:<init>|  Btree.java:7166:<init>|  Btree.java:7165:test_put_random|  Btree.java:7275:oldTests|  Btree.java:7280:newTests|  Btree.java:7286:main|");
             $fclose(f);
           end
         end
@@ -7325,7 +7325,7 @@ module Btree;                                                                   
           begin
             integer f;
             f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:1359:<init>|  Chip.java:1358:waitResultOfTransaction|  Btree.java:0302:stuckGet|  Btree.java:0279:stuckGet|  Btree.java:1875:splitBranchAtTop|  Btree.java:2540:Else|  Chip.java:0622:<init>|  Btree.java:2536:<init>|  Btree.java:2535:Then|  Chip.java:0612:<init>|  Btree.java:2534:<init>|  Btree.java:2533:Branch|  Btree.java:1550:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2511:<init>|  Btree.java:2510:code|  Chip.java:0532:<init>|  Btree.java:2495:<init>|  Btree.java:2494:code|  Chip.java:0532:<init>|  Btree.java:2469:<init>|  Btree.java:2468:put|  Btree.java:7180:code|  Chip.java:0532:<init>|  Btree.java:7164:<init>|  Btree.java:7163:test_put_random|  Btree.java:7273:oldTests|  Btree.java:7278:newTests|  Btree.java:7284:main|");
+            $fdisplay(f, "Location: Chip.java:1359:<init>|  Chip.java:1358:waitResultOfTransaction|  Btree.java:0302:stuckGet|  Btree.java:0279:stuckGet|  Btree.java:1875:splitBranchAtTop|  Btree.java:2542:Else|  Chip.java:0622:<init>|  Btree.java:2538:<init>|  Btree.java:2537:Then|  Chip.java:0612:<init>|  Btree.java:2536:<init>|  Btree.java:2535:Branch|  Btree.java:1550:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2513:<init>|  Btree.java:2512:code|  Chip.java:0532:<init>|  Btree.java:2497:<init>|  Btree.java:2496:code|  Chip.java:0532:<init>|  Btree.java:2471:<init>|  Btree.java:2470:put|  Btree.java:7182:code|  Chip.java:0532:<init>|  Btree.java:7166:<init>|  Btree.java:7165:test_put_random|  Btree.java:7275:oldTests|  Btree.java:7280:newTests|  Btree.java:7286:main|");
             $fclose(f);
           end
         end
@@ -7336,7 +7336,7 @@ module Btree;                                                                   
           begin
             integer f;
             f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:1359:<init>|  Chip.java:1358:waitResultOfTransaction|  Btree.java:0303:stuckGet|  Btree.java:0279:stuckGet|  Btree.java:1875:splitBranchAtTop|  Btree.java:2540:Else|  Chip.java:0622:<init>|  Btree.java:2536:<init>|  Btree.java:2535:Then|  Chip.java:0612:<init>|  Btree.java:2534:<init>|  Btree.java:2533:Branch|  Btree.java:1550:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2511:<init>|  Btree.java:2510:code|  Chip.java:0532:<init>|  Btree.java:2495:<init>|  Btree.java:2494:code|  Chip.java:0532:<init>|  Btree.java:2469:<init>|  Btree.java:2468:put|  Btree.java:7180:code|  Chip.java:0532:<init>|  Btree.java:7164:<init>|  Btree.java:7163:test_put_random|  Btree.java:7273:oldTests|  Btree.java:7278:newTests|  Btree.java:7284:main|");
+            $fdisplay(f, "Location: Chip.java:1359:<init>|  Chip.java:1358:waitResultOfTransaction|  Btree.java:0303:stuckGet|  Btree.java:0279:stuckGet|  Btree.java:1875:splitBranchAtTop|  Btree.java:2542:Else|  Chip.java:0622:<init>|  Btree.java:2538:<init>|  Btree.java:2537:Then|  Chip.java:0612:<init>|  Btree.java:2536:<init>|  Btree.java:2535:Branch|  Btree.java:1550:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2513:<init>|  Btree.java:2512:code|  Chip.java:0532:<init>|  Btree.java:2497:<init>|  Btree.java:2496:code|  Chip.java:0532:<init>|  Btree.java:2471:<init>|  Btree.java:2470:put|  Btree.java:7182:code|  Chip.java:0532:<init>|  Btree.java:7166:<init>|  Btree.java:7165:test_put_random|  Btree.java:7275:oldTests|  Btree.java:7280:newTests|  Btree.java:7286:main|");
             $fclose(f);
           end
         end
@@ -7347,7 +7347,7 @@ module Btree;                                                                   
           begin
             integer f;
             f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:1359:<init>|  Chip.java:1358:waitResultOfTransaction|  Btree.java:0305:stuckGet|  Btree.java:0279:stuckGet|  Btree.java:1875:splitBranchAtTop|  Btree.java:2540:Else|  Chip.java:0622:<init>|  Btree.java:2536:<init>|  Btree.java:2535:Then|  Chip.java:0612:<init>|  Btree.java:2534:<init>|  Btree.java:2533:Branch|  Btree.java:1550:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2511:<init>|  Btree.java:2510:code|  Chip.java:0532:<init>|  Btree.java:2495:<init>|  Btree.java:2494:code|  Chip.java:0532:<init>|  Btree.java:2469:<init>|  Btree.java:2468:put|  Btree.java:7180:code|  Chip.java:0532:<init>|  Btree.java:7164:<init>|  Btree.java:7163:test_put_random|  Btree.java:7273:oldTests|  Btree.java:7278:newTests|  Btree.java:7284:main|");
+            $fdisplay(f, "Location: Chip.java:1359:<init>|  Chip.java:1358:waitResultOfTransaction|  Btree.java:0305:stuckGet|  Btree.java:0279:stuckGet|  Btree.java:1875:splitBranchAtTop|  Btree.java:2542:Else|  Chip.java:0622:<init>|  Btree.java:2538:<init>|  Btree.java:2537:Then|  Chip.java:0612:<init>|  Btree.java:2536:<init>|  Btree.java:2535:Branch|  Btree.java:1550:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2513:<init>|  Btree.java:2512:code|  Chip.java:0532:<init>|  Btree.java:2497:<init>|  Btree.java:2496:code|  Chip.java:0532:<init>|  Btree.java:2471:<init>|  Btree.java:2470:put|  Btree.java:7182:code|  Chip.java:0532:<init>|  Btree.java:7166:<init>|  Btree.java:7165:test_put_random|  Btree.java:7275:oldTests|  Btree.java:7280:newTests|  Btree.java:7286:main|");
             $fclose(f);
           end
         end
@@ -7358,7 +7358,7 @@ module Btree;                                                                   
           begin
             integer f;
             f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:1359:<init>|  Chip.java:1358:waitResultOfTransaction|  Btree.java:0306:stuckGet|  Btree.java:0279:stuckGet|  Btree.java:1875:splitBranchAtTop|  Btree.java:2540:Else|  Chip.java:0622:<init>|  Btree.java:2536:<init>|  Btree.java:2535:Then|  Chip.java:0612:<init>|  Btree.java:2534:<init>|  Btree.java:2533:Branch|  Btree.java:1550:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2511:<init>|  Btree.java:2510:code|  Chip.java:0532:<init>|  Btree.java:2495:<init>|  Btree.java:2494:code|  Chip.java:0532:<init>|  Btree.java:2469:<init>|  Btree.java:2468:put|  Btree.java:7180:code|  Chip.java:0532:<init>|  Btree.java:7164:<init>|  Btree.java:7163:test_put_random|  Btree.java:7273:oldTests|  Btree.java:7278:newTests|  Btree.java:7284:main|");
+            $fdisplay(f, "Location: Chip.java:1359:<init>|  Chip.java:1358:waitResultOfTransaction|  Btree.java:0306:stuckGet|  Btree.java:0279:stuckGet|  Btree.java:1875:splitBranchAtTop|  Btree.java:2542:Else|  Chip.java:0622:<init>|  Btree.java:2538:<init>|  Btree.java:2537:Then|  Chip.java:0612:<init>|  Btree.java:2536:<init>|  Btree.java:2535:Branch|  Btree.java:1550:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2513:<init>|  Btree.java:2512:code|  Chip.java:0532:<init>|  Btree.java:2497:<init>|  Btree.java:2496:code|  Chip.java:0532:<init>|  Btree.java:2471:<init>|  Btree.java:2470:put|  Btree.java:7182:code|  Chip.java:0532:<init>|  Btree.java:7166:<init>|  Btree.java:7165:test_put_random|  Btree.java:7275:oldTests|  Btree.java:7280:newTests|  Btree.java:7286:main|");
             $fclose(f);
           end
         end
@@ -7377,7 +7377,7 @@ module Btree;                                                                   
           begin
             integer f;
             f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:0514:<init>|  Btree.java:0309:<init>|  Btree.java:0308:stuckGet|  Btree.java:0279:stuckGet|  Btree.java:1875:splitBranchAtTop|  Btree.java:2540:Else|  Chip.java:0622:<init>|  Btree.java:2536:<init>|  Btree.java:2535:Then|  Chip.java:0612:<init>|  Btree.java:2534:<init>|  Btree.java:2533:Branch|  Btree.java:1550:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2511:<init>|  Btree.java:2510:code|  Chip.java:0532:<init>|  Btree.java:2495:<init>|  Btree.java:2494:code|  Chip.java:0532:<init>|  Btree.java:2469:<init>|  Btree.java:2468:put|  Btree.java:7180:code|  Chip.java:0532:<init>|  Btree.java:7164:<init>|  Btree.java:7163:test_put_random|  Btree.java:7273:oldTests|  Btree.java:7278:newTests|  Btree.java:7284:main|");
+            $fdisplay(f, "Location: Chip.java:0514:<init>|  Btree.java:0309:<init>|  Btree.java:0308:stuckGet|  Btree.java:0279:stuckGet|  Btree.java:1875:splitBranchAtTop|  Btree.java:2542:Else|  Chip.java:0622:<init>|  Btree.java:2538:<init>|  Btree.java:2537:Then|  Chip.java:0612:<init>|  Btree.java:2536:<init>|  Btree.java:2535:Branch|  Btree.java:1550:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2513:<init>|  Btree.java:2512:code|  Chip.java:0532:<init>|  Btree.java:2497:<init>|  Btree.java:2496:code|  Chip.java:0532:<init>|  Btree.java:2471:<init>|  Btree.java:2470:put|  Btree.java:7182:code|  Chip.java:0532:<init>|  Btree.java:7166:<init>|  Btree.java:7165:test_put_random|  Btree.java:7275:oldTests|  Btree.java:7280:newTests|  Btree.java:7286:main|");
             $fclose(f);
           end
         end
@@ -7404,7 +7404,7 @@ module Btree;                                                                   
           begin
             integer f;
             f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:0514:<init>|  Btree.java:0778:<init>|  Btree.java:0777:PastLastElement|  Btree.java:1877:splitBranchAtTop|  Btree.java:2540:Else|  Chip.java:0622:<init>|  Btree.java:2536:<init>|  Btree.java:2535:Then|  Chip.java:0612:<init>|  Btree.java:2534:<init>|  Btree.java:2533:Branch|  Btree.java:1550:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2511:<init>|  Btree.java:2510:code|  Chip.java:0532:<init>|  Btree.java:2495:<init>|  Btree.java:2494:code|  Chip.java:0532:<init>|  Btree.java:2469:<init>|  Btree.java:2468:put|  Btree.java:7180:code|  Chip.java:0532:<init>|  Btree.java:7164:<init>|  Btree.java:7163:test_put_random|  Btree.java:7273:oldTests|  Btree.java:7278:newTests|  Btree.java:7284:main|");
+            $fdisplay(f, "Location: Chip.java:0514:<init>|  Btree.java:0778:<init>|  Btree.java:0777:PastLastElement|  Btree.java:1877:splitBranchAtTop|  Btree.java:2542:Else|  Chip.java:0622:<init>|  Btree.java:2538:<init>|  Btree.java:2537:Then|  Chip.java:0612:<init>|  Btree.java:2536:<init>|  Btree.java:2535:Branch|  Btree.java:1550:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2513:<init>|  Btree.java:2512:code|  Chip.java:0532:<init>|  Btree.java:2497:<init>|  Btree.java:2496:code|  Chip.java:0532:<init>|  Btree.java:2471:<init>|  Btree.java:2470:put|  Btree.java:7182:code|  Chip.java:0532:<init>|  Btree.java:7166:<init>|  Btree.java:7165:test_put_random|  Btree.java:7275:oldTests|  Btree.java:7280:newTests|  Btree.java:7286:main|");
             $fclose(f);
           end
         end
@@ -7414,7 +7414,7 @@ module Btree;                                                                   
           begin
             integer f;
             f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:0514:<init>|  Chip.java:0699:<init>|  Chip.java:0698:Copy|  Btree.java:1878:splitBranchAtTop|  Btree.java:2540:Else|  Chip.java:0622:<init>|  Btree.java:2536:<init>|  Btree.java:2535:Then|  Chip.java:0612:<init>|  Btree.java:2534:<init>|  Btree.java:2533:Branch|  Btree.java:1550:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2511:<init>|  Btree.java:2510:code|  Chip.java:0532:<init>|  Btree.java:2495:<init>|  Btree.java:2494:code|  Chip.java:0532:<init>|  Btree.java:2469:<init>|  Btree.java:2468:put|  Btree.java:7180:code|  Chip.java:0532:<init>|  Btree.java:7164:<init>|  Btree.java:7163:test_put_random|  Btree.java:7273:oldTests|  Btree.java:7278:newTests|  Btree.java:7284:main|");
+            $fdisplay(f, "Location: Chip.java:0514:<init>|  Chip.java:0699:<init>|  Chip.java:0698:Copy|  Btree.java:1878:splitBranchAtTop|  Btree.java:2542:Else|  Chip.java:0622:<init>|  Btree.java:2538:<init>|  Btree.java:2537:Then|  Chip.java:0612:<init>|  Btree.java:2536:<init>|  Btree.java:2535:Branch|  Btree.java:1550:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2513:<init>|  Btree.java:2512:code|  Chip.java:0532:<init>|  Btree.java:2497:<init>|  Btree.java:2496:code|  Chip.java:0532:<init>|  Btree.java:2471:<init>|  Btree.java:2470:put|  Btree.java:7182:code|  Chip.java:0532:<init>|  Btree.java:7166:<init>|  Btree.java:7165:test_put_random|  Btree.java:7275:oldTests|  Btree.java:7280:newTests|  Btree.java:7286:main|");
             $fclose(f);
           end
         end
@@ -7424,7 +7424,7 @@ module Btree;                                                                   
           begin
             integer f;
             f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:0514:<init>|  Chip.java:0699:<init>|  Chip.java:0698:Copy|  Btree.java:0278:stuckGet|  Btree.java:1879:splitBranchAtTop|  Btree.java:2540:Else|  Chip.java:0622:<init>|  Btree.java:2536:<init>|  Btree.java:2535:Then|  Chip.java:0612:<init>|  Btree.java:2534:<init>|  Btree.java:2533:Branch|  Btree.java:1550:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2511:<init>|  Btree.java:2510:code|  Chip.java:0532:<init>|  Btree.java:2495:<init>|  Btree.java:2494:code|  Chip.java:0532:<init>|  Btree.java:2469:<init>|  Btree.java:2468:put|  Btree.java:7180:code|  Chip.java:0532:<init>|  Btree.java:7164:<init>|  Btree.java:7163:test_put_random|  Btree.java:7273:oldTests|  Btree.java:7278:newTests|  Btree.java:7284:main|");
+            $fdisplay(f, "Location: Chip.java:0514:<init>|  Chip.java:0699:<init>|  Chip.java:0698:Copy|  Btree.java:0278:stuckGet|  Btree.java:1879:splitBranchAtTop|  Btree.java:2542:Else|  Chip.java:0622:<init>|  Btree.java:2538:<init>|  Btree.java:2537:Then|  Chip.java:0612:<init>|  Btree.java:2536:<init>|  Btree.java:2535:Branch|  Btree.java:1550:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2513:<init>|  Btree.java:2512:code|  Chip.java:0532:<init>|  Btree.java:2497:<init>|  Btree.java:2496:code|  Chip.java:0532:<init>|  Btree.java:2471:<init>|  Btree.java:2470:put|  Btree.java:7182:code|  Chip.java:0532:<init>|  Btree.java:7166:<init>|  Btree.java:7165:test_put_random|  Btree.java:7275:oldTests|  Btree.java:7280:newTests|  Btree.java:7286:main|");
             $fclose(f);
           end
         end
@@ -7445,7 +7445,7 @@ module Btree;                                                                   
           begin
             integer f;
             f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:0514:<init>|  Btree.java:0289:<init>|  Btree.java:0288:stuckGet|  Btree.java:0279:stuckGet|  Btree.java:1879:splitBranchAtTop|  Btree.java:2540:Else|  Chip.java:0622:<init>|  Btree.java:2536:<init>|  Btree.java:2535:Then|  Chip.java:0612:<init>|  Btree.java:2534:<init>|  Btree.java:2533:Branch|  Btree.java:1550:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2511:<init>|  Btree.java:2510:code|  Chip.java:0532:<init>|  Btree.java:2495:<init>|  Btree.java:2494:code|  Chip.java:0532:<init>|  Btree.java:2469:<init>|  Btree.java:2468:put|  Btree.java:7180:code|  Chip.java:0532:<init>|  Btree.java:7164:<init>|  Btree.java:7163:test_put_random|  Btree.java:7273:oldTests|  Btree.java:7278:newTests|  Btree.java:7284:main|");
+            $fdisplay(f, "Location: Chip.java:0514:<init>|  Btree.java:0289:<init>|  Btree.java:0288:stuckGet|  Btree.java:0279:stuckGet|  Btree.java:1879:splitBranchAtTop|  Btree.java:2542:Else|  Chip.java:0622:<init>|  Btree.java:2538:<init>|  Btree.java:2537:Then|  Chip.java:0612:<init>|  Btree.java:2536:<init>|  Btree.java:2535:Branch|  Btree.java:1550:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2513:<init>|  Btree.java:2512:code|  Chip.java:0532:<init>|  Btree.java:2497:<init>|  Btree.java:2496:code|  Chip.java:0532:<init>|  Btree.java:2471:<init>|  Btree.java:2470:put|  Btree.java:7182:code|  Chip.java:0532:<init>|  Btree.java:7166:<init>|  Btree.java:7165:test_put_random|  Btree.java:7275:oldTests|  Btree.java:7280:newTests|  Btree.java:7286:main|");
             $fclose(f);
           end
         end
@@ -7456,7 +7456,7 @@ module Btree;                                                                   
           begin
             integer f;
             f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:1359:<init>|  Chip.java:1358:waitResultOfTransaction|  Btree.java:0302:stuckGet|  Btree.java:0279:stuckGet|  Btree.java:1879:splitBranchAtTop|  Btree.java:2540:Else|  Chip.java:0622:<init>|  Btree.java:2536:<init>|  Btree.java:2535:Then|  Chip.java:0612:<init>|  Btree.java:2534:<init>|  Btree.java:2533:Branch|  Btree.java:1550:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2511:<init>|  Btree.java:2510:code|  Chip.java:0532:<init>|  Btree.java:2495:<init>|  Btree.java:2494:code|  Chip.java:0532:<init>|  Btree.java:2469:<init>|  Btree.java:2468:put|  Btree.java:7180:code|  Chip.java:0532:<init>|  Btree.java:7164:<init>|  Btree.java:7163:test_put_random|  Btree.java:7273:oldTests|  Btree.java:7278:newTests|  Btree.java:7284:main|");
+            $fdisplay(f, "Location: Chip.java:1359:<init>|  Chip.java:1358:waitResultOfTransaction|  Btree.java:0302:stuckGet|  Btree.java:0279:stuckGet|  Btree.java:1879:splitBranchAtTop|  Btree.java:2542:Else|  Chip.java:0622:<init>|  Btree.java:2538:<init>|  Btree.java:2537:Then|  Chip.java:0612:<init>|  Btree.java:2536:<init>|  Btree.java:2535:Branch|  Btree.java:1550:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2513:<init>|  Btree.java:2512:code|  Chip.java:0532:<init>|  Btree.java:2497:<init>|  Btree.java:2496:code|  Chip.java:0532:<init>|  Btree.java:2471:<init>|  Btree.java:2470:put|  Btree.java:7182:code|  Chip.java:0532:<init>|  Btree.java:7166:<init>|  Btree.java:7165:test_put_random|  Btree.java:7275:oldTests|  Btree.java:7280:newTests|  Btree.java:7286:main|");
             $fclose(f);
           end
         end
@@ -7467,7 +7467,7 @@ module Btree;                                                                   
           begin
             integer f;
             f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:1359:<init>|  Chip.java:1358:waitResultOfTransaction|  Btree.java:0303:stuckGet|  Btree.java:0279:stuckGet|  Btree.java:1879:splitBranchAtTop|  Btree.java:2540:Else|  Chip.java:0622:<init>|  Btree.java:2536:<init>|  Btree.java:2535:Then|  Chip.java:0612:<init>|  Btree.java:2534:<init>|  Btree.java:2533:Branch|  Btree.java:1550:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2511:<init>|  Btree.java:2510:code|  Chip.java:0532:<init>|  Btree.java:2495:<init>|  Btree.java:2494:code|  Chip.java:0532:<init>|  Btree.java:2469:<init>|  Btree.java:2468:put|  Btree.java:7180:code|  Chip.java:0532:<init>|  Btree.java:7164:<init>|  Btree.java:7163:test_put_random|  Btree.java:7273:oldTests|  Btree.java:7278:newTests|  Btree.java:7284:main|");
+            $fdisplay(f, "Location: Chip.java:1359:<init>|  Chip.java:1358:waitResultOfTransaction|  Btree.java:0303:stuckGet|  Btree.java:0279:stuckGet|  Btree.java:1879:splitBranchAtTop|  Btree.java:2542:Else|  Chip.java:0622:<init>|  Btree.java:2538:<init>|  Btree.java:2537:Then|  Chip.java:0612:<init>|  Btree.java:2536:<init>|  Btree.java:2535:Branch|  Btree.java:1550:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2513:<init>|  Btree.java:2512:code|  Chip.java:0532:<init>|  Btree.java:2497:<init>|  Btree.java:2496:code|  Chip.java:0532:<init>|  Btree.java:2471:<init>|  Btree.java:2470:put|  Btree.java:7182:code|  Chip.java:0532:<init>|  Btree.java:7166:<init>|  Btree.java:7165:test_put_random|  Btree.java:7275:oldTests|  Btree.java:7280:newTests|  Btree.java:7286:main|");
             $fclose(f);
           end
         end
@@ -7478,7 +7478,7 @@ module Btree;                                                                   
           begin
             integer f;
             f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:1359:<init>|  Chip.java:1358:waitResultOfTransaction|  Btree.java:0305:stuckGet|  Btree.java:0279:stuckGet|  Btree.java:1879:splitBranchAtTop|  Btree.java:2540:Else|  Chip.java:0622:<init>|  Btree.java:2536:<init>|  Btree.java:2535:Then|  Chip.java:0612:<init>|  Btree.java:2534:<init>|  Btree.java:2533:Branch|  Btree.java:1550:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2511:<init>|  Btree.java:2510:code|  Chip.java:0532:<init>|  Btree.java:2495:<init>|  Btree.java:2494:code|  Chip.java:0532:<init>|  Btree.java:2469:<init>|  Btree.java:2468:put|  Btree.java:7180:code|  Chip.java:0532:<init>|  Btree.java:7164:<init>|  Btree.java:7163:test_put_random|  Btree.java:7273:oldTests|  Btree.java:7278:newTests|  Btree.java:7284:main|");
+            $fdisplay(f, "Location: Chip.java:1359:<init>|  Chip.java:1358:waitResultOfTransaction|  Btree.java:0305:stuckGet|  Btree.java:0279:stuckGet|  Btree.java:1879:splitBranchAtTop|  Btree.java:2542:Else|  Chip.java:0622:<init>|  Btree.java:2538:<init>|  Btree.java:2537:Then|  Chip.java:0612:<init>|  Btree.java:2536:<init>|  Btree.java:2535:Branch|  Btree.java:1550:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2513:<init>|  Btree.java:2512:code|  Chip.java:0532:<init>|  Btree.java:2497:<init>|  Btree.java:2496:code|  Chip.java:0532:<init>|  Btree.java:2471:<init>|  Btree.java:2470:put|  Btree.java:7182:code|  Chip.java:0532:<init>|  Btree.java:7166:<init>|  Btree.java:7165:test_put_random|  Btree.java:7275:oldTests|  Btree.java:7280:newTests|  Btree.java:7286:main|");
             $fclose(f);
           end
         end
@@ -7489,7 +7489,7 @@ module Btree;                                                                   
           begin
             integer f;
             f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:1359:<init>|  Chip.java:1358:waitResultOfTransaction|  Btree.java:0306:stuckGet|  Btree.java:0279:stuckGet|  Btree.java:1879:splitBranchAtTop|  Btree.java:2540:Else|  Chip.java:0622:<init>|  Btree.java:2536:<init>|  Btree.java:2535:Then|  Chip.java:0612:<init>|  Btree.java:2534:<init>|  Btree.java:2533:Branch|  Btree.java:1550:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2511:<init>|  Btree.java:2510:code|  Chip.java:0532:<init>|  Btree.java:2495:<init>|  Btree.java:2494:code|  Chip.java:0532:<init>|  Btree.java:2469:<init>|  Btree.java:2468:put|  Btree.java:7180:code|  Chip.java:0532:<init>|  Btree.java:7164:<init>|  Btree.java:7163:test_put_random|  Btree.java:7273:oldTests|  Btree.java:7278:newTests|  Btree.java:7284:main|");
+            $fdisplay(f, "Location: Chip.java:1359:<init>|  Chip.java:1358:waitResultOfTransaction|  Btree.java:0306:stuckGet|  Btree.java:0279:stuckGet|  Btree.java:1879:splitBranchAtTop|  Btree.java:2542:Else|  Chip.java:0622:<init>|  Btree.java:2538:<init>|  Btree.java:2537:Then|  Chip.java:0612:<init>|  Btree.java:2536:<init>|  Btree.java:2535:Branch|  Btree.java:1550:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2513:<init>|  Btree.java:2512:code|  Chip.java:0532:<init>|  Btree.java:2497:<init>|  Btree.java:2496:code|  Chip.java:0532:<init>|  Btree.java:2471:<init>|  Btree.java:2470:put|  Btree.java:7182:code|  Chip.java:0532:<init>|  Btree.java:7166:<init>|  Btree.java:7165:test_put_random|  Btree.java:7275:oldTests|  Btree.java:7280:newTests|  Btree.java:7286:main|");
             $fclose(f);
           end
         end
@@ -7508,7 +7508,7 @@ module Btree;                                                                   
           begin
             integer f;
             f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:0514:<init>|  Btree.java:0309:<init>|  Btree.java:0308:stuckGet|  Btree.java:0279:stuckGet|  Btree.java:1879:splitBranchAtTop|  Btree.java:2540:Else|  Chip.java:0622:<init>|  Btree.java:2536:<init>|  Btree.java:2535:Then|  Chip.java:0612:<init>|  Btree.java:2534:<init>|  Btree.java:2533:Branch|  Btree.java:1550:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2511:<init>|  Btree.java:2510:code|  Chip.java:0532:<init>|  Btree.java:2495:<init>|  Btree.java:2494:code|  Chip.java:0532:<init>|  Btree.java:2469:<init>|  Btree.java:2468:put|  Btree.java:7180:code|  Chip.java:0532:<init>|  Btree.java:7164:<init>|  Btree.java:7163:test_put_random|  Btree.java:7273:oldTests|  Btree.java:7278:newTests|  Btree.java:7284:main|");
+            $fdisplay(f, "Location: Chip.java:0514:<init>|  Btree.java:0309:<init>|  Btree.java:0308:stuckGet|  Btree.java:0279:stuckGet|  Btree.java:1879:splitBranchAtTop|  Btree.java:2542:Else|  Chip.java:0622:<init>|  Btree.java:2538:<init>|  Btree.java:2537:Then|  Chip.java:0612:<init>|  Btree.java:2536:<init>|  Btree.java:2535:Branch|  Btree.java:1550:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2513:<init>|  Btree.java:2512:code|  Chip.java:0532:<init>|  Btree.java:2497:<init>|  Btree.java:2496:code|  Chip.java:0532:<init>|  Btree.java:2471:<init>|  Btree.java:2470:put|  Btree.java:7182:code|  Chip.java:0532:<init>|  Btree.java:7166:<init>|  Btree.java:7165:test_put_random|  Btree.java:7275:oldTests|  Btree.java:7280:newTests|  Btree.java:7286:main|");
             $fclose(f);
           end
         end
@@ -7518,7 +7518,7 @@ module Btree;                                                                   
           begin
             integer f;
             f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:0514:<init>|  Btree.java:1882:<init>|  Btree.java:1881:splitBranchAtTop|  Btree.java:2540:Else|  Chip.java:0622:<init>|  Btree.java:2536:<init>|  Btree.java:2535:Then|  Chip.java:0612:<init>|  Btree.java:2534:<init>|  Btree.java:2533:Branch|  Btree.java:1550:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2511:<init>|  Btree.java:2510:code|  Chip.java:0532:<init>|  Btree.java:2495:<init>|  Btree.java:2494:code|  Chip.java:0532:<init>|  Btree.java:2469:<init>|  Btree.java:2468:put|  Btree.java:7180:code|  Chip.java:0532:<init>|  Btree.java:7164:<init>|  Btree.java:7163:test_put_random|  Btree.java:7273:oldTests|  Btree.java:7278:newTests|  Btree.java:7284:main|");
+            $fdisplay(f, "Location: Chip.java:0514:<init>|  Btree.java:1882:<init>|  Btree.java:1881:splitBranchAtTop|  Btree.java:2542:Else|  Chip.java:0622:<init>|  Btree.java:2538:<init>|  Btree.java:2537:Then|  Chip.java:0612:<init>|  Btree.java:2536:<init>|  Btree.java:2535:Branch|  Btree.java:1550:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2513:<init>|  Btree.java:2512:code|  Chip.java:0532:<init>|  Btree.java:2497:<init>|  Btree.java:2496:code|  Chip.java:0532:<init>|  Btree.java:2471:<init>|  Btree.java:2470:put|  Btree.java:7182:code|  Chip.java:0532:<init>|  Btree.java:7166:<init>|  Btree.java:7165:test_put_random|  Btree.java:7275:oldTests|  Btree.java:7280:newTests|  Btree.java:7286:main|");
             $fclose(f);
           end
         end
@@ -7537,7 +7537,7 @@ module Btree;                                                                   
           begin
             integer f;
             f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:0514:<init>|  Btree.java:1390:<init>|  Btree.java:1389:splitLowButOne|  Btree.java:1891:splitBranchAtTop|  Btree.java:2540:Else|  Chip.java:0622:<init>|  Btree.java:2536:<init>|  Btree.java:2535:Then|  Chip.java:0612:<init>|  Btree.java:2534:<init>|  Btree.java:2533:Branch|  Btree.java:1550:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2511:<init>|  Btree.java:2510:code|  Chip.java:0532:<init>|  Btree.java:2495:<init>|  Btree.java:2494:code|  Chip.java:0532:<init>|  Btree.java:2469:<init>|  Btree.java:2468:put|  Btree.java:7180:code|  Chip.java:0532:<init>|  Btree.java:7164:<init>|  Btree.java:7163:test_put_random|  Btree.java:7273:oldTests|  Btree.java:7278:newTests|  Btree.java:7284:main|");
+            $fdisplay(f, "Location: Chip.java:0514:<init>|  Btree.java:1390:<init>|  Btree.java:1389:splitLowButOne|  Btree.java:1891:splitBranchAtTop|  Btree.java:2542:Else|  Chip.java:0622:<init>|  Btree.java:2538:<init>|  Btree.java:2537:Then|  Chip.java:0612:<init>|  Btree.java:2536:<init>|  Btree.java:2535:Branch|  Btree.java:1550:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2513:<init>|  Btree.java:2512:code|  Chip.java:0532:<init>|  Btree.java:2497:<init>|  Btree.java:2496:code|  Chip.java:0532:<init>|  Btree.java:2471:<init>|  Btree.java:2470:put|  Btree.java:7182:code|  Chip.java:0532:<init>|  Btree.java:7166:<init>|  Btree.java:7165:test_put_random|  Btree.java:7275:oldTests|  Btree.java:7280:newTests|  Btree.java:7286:main|");
             $fclose(f);
           end
         end
@@ -7547,7 +7547,7 @@ module Btree;                                                                   
           begin
             integer f;
             f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:0514:<init>|  Chip.java:0821:<init>|  Chip.java:0820:Zero|  Btree.java:0078:allocate|  Btree.java:0154:allocateBranch|  Btree.java:1892:splitBranchAtTop|  Btree.java:2540:Else|  Chip.java:0622:<init>|  Btree.java:2536:<init>|  Btree.java:2535:Then|  Chip.java:0612:<init>|  Btree.java:2534:<init>|  Btree.java:2533:Branch|  Btree.java:1550:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2511:<init>|  Btree.java:2510:code|  Chip.java:0532:<init>|  Btree.java:2495:<init>|  Btree.java:2494:code|  Chip.java:0532:<init>|  Btree.java:2469:<init>|  Btree.java:2468:put|  Btree.java:7180:code|  Chip.java:0532:<init>|  Btree.java:7164:<init>|  Btree.java:7163:test_put_random|  Btree.java:7273:oldTests|  Btree.java:7278:newTests|  Btree.java:7284:main|");
+            $fdisplay(f, "Location: Chip.java:0514:<init>|  Chip.java:0821:<init>|  Chip.java:0820:Zero|  Btree.java:0078:allocate|  Btree.java:0154:allocateBranch|  Btree.java:1892:splitBranchAtTop|  Btree.java:2542:Else|  Chip.java:0622:<init>|  Btree.java:2538:<init>|  Btree.java:2537:Then|  Chip.java:0612:<init>|  Btree.java:2536:<init>|  Btree.java:2535:Branch|  Btree.java:1550:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2513:<init>|  Btree.java:2512:code|  Chip.java:0532:<init>|  Btree.java:2497:<init>|  Btree.java:2496:code|  Chip.java:0532:<init>|  Btree.java:2471:<init>|  Btree.java:2470:put|  Btree.java:7182:code|  Chip.java:0532:<init>|  Btree.java:7166:<init>|  Btree.java:7165:test_put_random|  Btree.java:7275:oldTests|  Btree.java:7280:newTests|  Btree.java:7286:main|");
             $fclose(f);
           end
         end
@@ -7559,7 +7559,7 @@ module Btree;                                                                   
           begin
             integer f;
             f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:0514:<init>|  Chip.java:1352:<init>|  Chip.java:1351:ExecuteTransaction|  Btree.java:0079:allocate|  Btree.java:0154:allocateBranch|  Btree.java:1892:splitBranchAtTop|  Btree.java:2540:Else|  Chip.java:0622:<init>|  Btree.java:2536:<init>|  Btree.java:2535:Then|  Chip.java:0612:<init>|  Btree.java:2534:<init>|  Btree.java:2533:Branch|  Btree.java:1550:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2511:<init>|  Btree.java:2510:code|  Chip.java:0532:<init>|  Btree.java:2495:<init>|  Btree.java:2494:code|  Chip.java:0532:<init>|  Btree.java:2469:<init>|  Btree.java:2468:put|  Btree.java:7180:code|  Chip.java:0532:<init>|  Btree.java:7164:<init>|  Btree.java:7163:test_put_random|  Btree.java:7273:oldTests|  Btree.java:7278:newTests|  Btree.java:7284:main|");
+            $fdisplay(f, "Location: Chip.java:0514:<init>|  Chip.java:1352:<init>|  Chip.java:1351:ExecuteTransaction|  Btree.java:0079:allocate|  Btree.java:0154:allocateBranch|  Btree.java:1892:splitBranchAtTop|  Btree.java:2542:Else|  Chip.java:0622:<init>|  Btree.java:2538:<init>|  Btree.java:2537:Then|  Chip.java:0612:<init>|  Btree.java:2536:<init>|  Btree.java:2535:Branch|  Btree.java:1550:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2513:<init>|  Btree.java:2512:code|  Chip.java:0532:<init>|  Btree.java:2497:<init>|  Btree.java:2496:code|  Chip.java:0532:<init>|  Btree.java:2471:<init>|  Btree.java:2470:put|  Btree.java:7182:code|  Chip.java:0532:<init>|  Btree.java:7166:<init>|  Btree.java:7165:test_put_random|  Btree.java:7275:oldTests|  Btree.java:7280:newTests|  Btree.java:7286:main|");
             $fclose(f);
           end
         end
@@ -7570,7 +7570,7 @@ module Btree;                                                                   
           begin
             integer f;
             f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:1359:<init>|  Chip.java:1358:waitResultOfTransaction|  Btree.java:0080:allocate|  Btree.java:0154:allocateBranch|  Btree.java:1892:splitBranchAtTop|  Btree.java:2540:Else|  Chip.java:0622:<init>|  Btree.java:2536:<init>|  Btree.java:2535:Then|  Chip.java:0612:<init>|  Btree.java:2534:<init>|  Btree.java:2533:Branch|  Btree.java:1550:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2511:<init>|  Btree.java:2510:code|  Chip.java:0532:<init>|  Btree.java:2495:<init>|  Btree.java:2494:code|  Chip.java:0532:<init>|  Btree.java:2469:<init>|  Btree.java:2468:put|  Btree.java:7180:code|  Chip.java:0532:<init>|  Btree.java:7164:<init>|  Btree.java:7163:test_put_random|  Btree.java:7273:oldTests|  Btree.java:7278:newTests|  Btree.java:7284:main|");
+            $fdisplay(f, "Location: Chip.java:1359:<init>|  Chip.java:1358:waitResultOfTransaction|  Btree.java:0080:allocate|  Btree.java:0154:allocateBranch|  Btree.java:1892:splitBranchAtTop|  Btree.java:2542:Else|  Chip.java:0622:<init>|  Btree.java:2538:<init>|  Btree.java:2537:Then|  Chip.java:0612:<init>|  Btree.java:2536:<init>|  Btree.java:2535:Branch|  Btree.java:1550:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2513:<init>|  Btree.java:2512:code|  Chip.java:0532:<init>|  Btree.java:2497:<init>|  Btree.java:2496:code|  Chip.java:0532:<init>|  Btree.java:2471:<init>|  Btree.java:2470:put|  Btree.java:7182:code|  Chip.java:0532:<init>|  Btree.java:7166:<init>|  Btree.java:7165:test_put_random|  Btree.java:7275:oldTests|  Btree.java:7280:newTests|  Btree.java:7286:main|");
             $fclose(f);
           end
         end
@@ -7580,7 +7580,7 @@ module Btree;                                                                   
           begin
             integer f;
             f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:0514:<init>|  Chip.java:0699:<init>|  Chip.java:0698:Copy|  Btree.java:0081:allocate|  Btree.java:0154:allocateBranch|  Btree.java:1892:splitBranchAtTop|  Btree.java:2540:Else|  Chip.java:0622:<init>|  Btree.java:2536:<init>|  Btree.java:2535:Then|  Chip.java:0612:<init>|  Btree.java:2534:<init>|  Btree.java:2533:Branch|  Btree.java:1550:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2511:<init>|  Btree.java:2510:code|  Chip.java:0532:<init>|  Btree.java:2495:<init>|  Btree.java:2494:code|  Chip.java:0532:<init>|  Btree.java:2469:<init>|  Btree.java:2468:put|  Btree.java:7180:code|  Chip.java:0532:<init>|  Btree.java:7164:<init>|  Btree.java:7163:test_put_random|  Btree.java:7273:oldTests|  Btree.java:7278:newTests|  Btree.java:7284:main|");
+            $fdisplay(f, "Location: Chip.java:0514:<init>|  Chip.java:0699:<init>|  Chip.java:0698:Copy|  Btree.java:0081:allocate|  Btree.java:0154:allocateBranch|  Btree.java:1892:splitBranchAtTop|  Btree.java:2542:Else|  Chip.java:0622:<init>|  Btree.java:2538:<init>|  Btree.java:2537:Then|  Chip.java:0612:<init>|  Btree.java:2536:<init>|  Btree.java:2535:Branch|  Btree.java:1550:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2513:<init>|  Btree.java:2512:code|  Chip.java:0532:<init>|  Btree.java:2497:<init>|  Btree.java:2496:code|  Chip.java:0532:<init>|  Btree.java:2471:<init>|  Btree.java:2470:put|  Btree.java:7182:code|  Chip.java:0532:<init>|  Btree.java:7166:<init>|  Btree.java:7165:test_put_random|  Btree.java:7275:oldTests|  Btree.java:7280:newTests|  Btree.java:7286:main|");
             $fclose(f);
           end
         end
@@ -7595,7 +7595,7 @@ module Btree;                                                                   
           begin
             integer f;
             f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:0514:<init>|  Btree.java:0084:<init>|  Btree.java:0083:allocate|  Btree.java:0154:allocateBranch|  Btree.java:1892:splitBranchAtTop|  Btree.java:2540:Else|  Chip.java:0622:<init>|  Btree.java:2536:<init>|  Btree.java:2535:Then|  Chip.java:0612:<init>|  Btree.java:2534:<init>|  Btree.java:2533:Branch|  Btree.java:1550:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2511:<init>|  Btree.java:2510:code|  Chip.java:0532:<init>|  Btree.java:2495:<init>|  Btree.java:2494:code|  Chip.java:0532:<init>|  Btree.java:2469:<init>|  Btree.java:2468:put|  Btree.java:7180:code|  Chip.java:0532:<init>|  Btree.java:7164:<init>|  Btree.java:7163:test_put_random|  Btree.java:7273:oldTests|  Btree.java:7278:newTests|  Btree.java:7284:main|");
+            $fdisplay(f, "Location: Chip.java:0514:<init>|  Btree.java:0084:<init>|  Btree.java:0083:allocate|  Btree.java:0154:allocateBranch|  Btree.java:1892:splitBranchAtTop|  Btree.java:2542:Else|  Chip.java:0622:<init>|  Btree.java:2538:<init>|  Btree.java:2537:Then|  Chip.java:0612:<init>|  Btree.java:2536:<init>|  Btree.java:2535:Branch|  Btree.java:1550:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2513:<init>|  Btree.java:2512:code|  Chip.java:0532:<init>|  Btree.java:2497:<init>|  Btree.java:2496:code|  Chip.java:0532:<init>|  Btree.java:2471:<init>|  Btree.java:2470:put|  Btree.java:7182:code|  Chip.java:0532:<init>|  Btree.java:7166:<init>|  Btree.java:7165:test_put_random|  Btree.java:7275:oldTests|  Btree.java:7280:newTests|  Btree.java:7286:main|");
             $fclose(f);
           end
         end
@@ -7615,7 +7615,7 @@ module Btree;                                                                   
           begin
             integer f;
             f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:0514:<init>|  Btree.java:0099:<init>|  Btree.java:0098:allocate|  Btree.java:0154:allocateBranch|  Btree.java:1892:splitBranchAtTop|  Btree.java:2540:Else|  Chip.java:0622:<init>|  Btree.java:2536:<init>|  Btree.java:2535:Then|  Chip.java:0612:<init>|  Btree.java:2534:<init>|  Btree.java:2533:Branch|  Btree.java:1550:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2511:<init>|  Btree.java:2510:code|  Chip.java:0532:<init>|  Btree.java:2495:<init>|  Btree.java:2494:code|  Chip.java:0532:<init>|  Btree.java:2469:<init>|  Btree.java:2468:put|  Btree.java:7180:code|  Chip.java:0532:<init>|  Btree.java:7164:<init>|  Btree.java:7163:test_put_random|  Btree.java:7273:oldTests|  Btree.java:7278:newTests|  Btree.java:7284:main|");
+            $fdisplay(f, "Location: Chip.java:0514:<init>|  Btree.java:0099:<init>|  Btree.java:0098:allocate|  Btree.java:0154:allocateBranch|  Btree.java:1892:splitBranchAtTop|  Btree.java:2542:Else|  Chip.java:0622:<init>|  Btree.java:2538:<init>|  Btree.java:2537:Then|  Chip.java:0612:<init>|  Btree.java:2536:<init>|  Btree.java:2535:Branch|  Btree.java:1550:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2513:<init>|  Btree.java:2512:code|  Chip.java:0532:<init>|  Btree.java:2497:<init>|  Btree.java:2496:code|  Chip.java:0532:<init>|  Btree.java:2471:<init>|  Btree.java:2470:put|  Btree.java:7182:code|  Chip.java:0532:<init>|  Btree.java:7166:<init>|  Btree.java:7165:test_put_random|  Btree.java:7275:oldTests|  Btree.java:7280:newTests|  Btree.java:7286:main|");
             $fclose(f);
           end
         end
@@ -7626,7 +7626,7 @@ module Btree;                                                                   
           begin
             integer f;
             f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:1359:<init>|  Chip.java:1358:waitResultOfTransaction|  Btree.java:0111:allocate|  Btree.java:0154:allocateBranch|  Btree.java:1892:splitBranchAtTop|  Btree.java:2540:Else|  Chip.java:0622:<init>|  Btree.java:2536:<init>|  Btree.java:2535:Then|  Chip.java:0612:<init>|  Btree.java:2534:<init>|  Btree.java:2533:Branch|  Btree.java:1550:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2511:<init>|  Btree.java:2510:code|  Chip.java:0532:<init>|  Btree.java:2495:<init>|  Btree.java:2494:code|  Chip.java:0532:<init>|  Btree.java:2469:<init>|  Btree.java:2468:put|  Btree.java:7180:code|  Chip.java:0532:<init>|  Btree.java:7164:<init>|  Btree.java:7163:test_put_random|  Btree.java:7273:oldTests|  Btree.java:7278:newTests|  Btree.java:7284:main|");
+            $fdisplay(f, "Location: Chip.java:1359:<init>|  Chip.java:1358:waitResultOfTransaction|  Btree.java:0111:allocate|  Btree.java:0154:allocateBranch|  Btree.java:1892:splitBranchAtTop|  Btree.java:2542:Else|  Chip.java:0622:<init>|  Btree.java:2538:<init>|  Btree.java:2537:Then|  Chip.java:0612:<init>|  Btree.java:2536:<init>|  Btree.java:2535:Branch|  Btree.java:1550:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2513:<init>|  Btree.java:2512:code|  Chip.java:0532:<init>|  Btree.java:2497:<init>|  Btree.java:2496:code|  Chip.java:0532:<init>|  Btree.java:2471:<init>|  Btree.java:2470:put|  Btree.java:7182:code|  Chip.java:0532:<init>|  Btree.java:7166:<init>|  Btree.java:7165:test_put_random|  Btree.java:7275:oldTests|  Btree.java:7280:newTests|  Btree.java:7286:main|");
             $fclose(f);
           end
         end
@@ -7636,7 +7636,7 @@ module Btree;                                                                   
           begin
             integer f;
             f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:0514:<init>|  Chip.java:0699:<init>|  Chip.java:0698:Copy|  Btree.java:0112:allocate|  Btree.java:0154:allocateBranch|  Btree.java:1892:splitBranchAtTop|  Btree.java:2540:Else|  Chip.java:0622:<init>|  Btree.java:2536:<init>|  Btree.java:2535:Then|  Chip.java:0612:<init>|  Btree.java:2534:<init>|  Btree.java:2533:Branch|  Btree.java:1550:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2511:<init>|  Btree.java:2510:code|  Chip.java:0532:<init>|  Btree.java:2495:<init>|  Btree.java:2494:code|  Chip.java:0532:<init>|  Btree.java:2469:<init>|  Btree.java:2468:put|  Btree.java:7180:code|  Chip.java:0532:<init>|  Btree.java:7164:<init>|  Btree.java:7163:test_put_random|  Btree.java:7273:oldTests|  Btree.java:7278:newTests|  Btree.java:7284:main|");
+            $fdisplay(f, "Location: Chip.java:0514:<init>|  Chip.java:0699:<init>|  Chip.java:0698:Copy|  Btree.java:0112:allocate|  Btree.java:0154:allocateBranch|  Btree.java:1892:splitBranchAtTop|  Btree.java:2542:Else|  Chip.java:0622:<init>|  Btree.java:2538:<init>|  Btree.java:2537:Then|  Chip.java:0612:<init>|  Btree.java:2536:<init>|  Btree.java:2535:Branch|  Btree.java:1550:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2513:<init>|  Btree.java:2512:code|  Chip.java:0532:<init>|  Btree.java:2497:<init>|  Btree.java:2496:code|  Chip.java:0532:<init>|  Btree.java:2471:<init>|  Btree.java:2470:put|  Btree.java:7182:code|  Chip.java:0532:<init>|  Btree.java:7166:<init>|  Btree.java:7165:test_put_random|  Btree.java:7275:oldTests|  Btree.java:7280:newTests|  Btree.java:7286:main|");
             $fclose(f);
           end
         end
@@ -7649,7 +7649,7 @@ module Btree;                                                                   
           begin
             integer f;
             f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:0514:<init>|  Chip.java:1415:<init>|  Chip.java:1414:ExecuteTransaction|  Btree.java:0113:allocate|  Btree.java:0154:allocateBranch|  Btree.java:1892:splitBranchAtTop|  Btree.java:2540:Else|  Chip.java:0622:<init>|  Btree.java:2536:<init>|  Btree.java:2535:Then|  Chip.java:0612:<init>|  Btree.java:2534:<init>|  Btree.java:2533:Branch|  Btree.java:1550:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2511:<init>|  Btree.java:2510:code|  Chip.java:0532:<init>|  Btree.java:2495:<init>|  Btree.java:2494:code|  Chip.java:0532:<init>|  Btree.java:2469:<init>|  Btree.java:2468:put|  Btree.java:7180:code|  Chip.java:0532:<init>|  Btree.java:7164:<init>|  Btree.java:7163:test_put_random|  Btree.java:7273:oldTests|  Btree.java:7278:newTests|  Btree.java:7284:main|");
+            $fdisplay(f, "Location: Chip.java:0514:<init>|  Chip.java:1415:<init>|  Chip.java:1414:ExecuteTransaction|  Btree.java:0113:allocate|  Btree.java:0154:allocateBranch|  Btree.java:1892:splitBranchAtTop|  Btree.java:2542:Else|  Chip.java:0622:<init>|  Btree.java:2538:<init>|  Btree.java:2537:Then|  Chip.java:0612:<init>|  Btree.java:2536:<init>|  Btree.java:2535:Branch|  Btree.java:1550:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2513:<init>|  Btree.java:2512:code|  Chip.java:0532:<init>|  Btree.java:2497:<init>|  Btree.java:2496:code|  Chip.java:0532:<init>|  Btree.java:2471:<init>|  Btree.java:2470:put|  Btree.java:7182:code|  Chip.java:0532:<init>|  Btree.java:7166:<init>|  Btree.java:7165:test_put_random|  Btree.java:7275:oldTests|  Btree.java:7280:newTests|  Btree.java:7286:main|");
             $fclose(f);
           end
         end
@@ -7660,7 +7660,7 @@ module Btree;                                                                   
           begin
             integer f;
             f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:1422:<init>|  Chip.java:1421:waitResultOfTransaction|  Btree.java:0114:allocate|  Btree.java:0154:allocateBranch|  Btree.java:1892:splitBranchAtTop|  Btree.java:2540:Else|  Chip.java:0622:<init>|  Btree.java:2536:<init>|  Btree.java:2535:Then|  Chip.java:0612:<init>|  Btree.java:2534:<init>|  Btree.java:2533:Branch|  Btree.java:1550:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2511:<init>|  Btree.java:2510:code|  Chip.java:0532:<init>|  Btree.java:2495:<init>|  Btree.java:2494:code|  Chip.java:0532:<init>|  Btree.java:2469:<init>|  Btree.java:2468:put|  Btree.java:7180:code|  Chip.java:0532:<init>|  Btree.java:7164:<init>|  Btree.java:7163:test_put_random|  Btree.java:7273:oldTests|  Btree.java:7278:newTests|  Btree.java:7284:main|");
+            $fdisplay(f, "Location: Chip.java:1422:<init>|  Chip.java:1421:waitResultOfTransaction|  Btree.java:0114:allocate|  Btree.java:0154:allocateBranch|  Btree.java:1892:splitBranchAtTop|  Btree.java:2542:Else|  Chip.java:0622:<init>|  Btree.java:2538:<init>|  Btree.java:2537:Then|  Chip.java:0612:<init>|  Btree.java:2536:<init>|  Btree.java:2535:Branch|  Btree.java:1550:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2513:<init>|  Btree.java:2512:code|  Chip.java:0532:<init>|  Btree.java:2497:<init>|  Btree.java:2496:code|  Chip.java:0532:<init>|  Btree.java:2471:<init>|  Btree.java:2470:put|  Btree.java:7182:code|  Chip.java:0532:<init>|  Btree.java:7166:<init>|  Btree.java:7165:test_put_random|  Btree.java:7275:oldTests|  Btree.java:7280:newTests|  Btree.java:7286:main|");
             $fclose(f);
           end
         end
@@ -7671,7 +7671,7 @@ module Btree;                                                                   
           begin
             integer f;
             f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:1422:<init>|  Chip.java:1421:waitResultOfTransaction|  Btree.java:0115:allocate|  Btree.java:0154:allocateBranch|  Btree.java:1892:splitBranchAtTop|  Btree.java:2540:Else|  Chip.java:0622:<init>|  Btree.java:2536:<init>|  Btree.java:2535:Then|  Chip.java:0612:<init>|  Btree.java:2534:<init>|  Btree.java:2533:Branch|  Btree.java:1550:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2511:<init>|  Btree.java:2510:code|  Chip.java:0532:<init>|  Btree.java:2495:<init>|  Btree.java:2494:code|  Chip.java:0532:<init>|  Btree.java:2469:<init>|  Btree.java:2468:put|  Btree.java:7180:code|  Chip.java:0532:<init>|  Btree.java:7164:<init>|  Btree.java:7163:test_put_random|  Btree.java:7273:oldTests|  Btree.java:7278:newTests|  Btree.java:7284:main|");
+            $fdisplay(f, "Location: Chip.java:1422:<init>|  Chip.java:1421:waitResultOfTransaction|  Btree.java:0115:allocate|  Btree.java:0154:allocateBranch|  Btree.java:1892:splitBranchAtTop|  Btree.java:2542:Else|  Chip.java:0622:<init>|  Btree.java:2538:<init>|  Btree.java:2537:Then|  Chip.java:0612:<init>|  Btree.java:2536:<init>|  Btree.java:2535:Branch|  Btree.java:1550:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2513:<init>|  Btree.java:2512:code|  Chip.java:0532:<init>|  Btree.java:2497:<init>|  Btree.java:2496:code|  Chip.java:0532:<init>|  Btree.java:2471:<init>|  Btree.java:2470:put|  Btree.java:7182:code|  Chip.java:0532:<init>|  Btree.java:7166:<init>|  Btree.java:7165:test_put_random|  Btree.java:7275:oldTests|  Btree.java:7280:newTests|  Btree.java:7286:main|");
             $fclose(f);
           end
         end
@@ -7682,7 +7682,7 @@ module Btree;                                                                   
           begin
             integer f;
             f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:1422:<init>|  Chip.java:1421:waitResultOfTransaction|  Btree.java:0116:allocate|  Btree.java:0154:allocateBranch|  Btree.java:1892:splitBranchAtTop|  Btree.java:2540:Else|  Chip.java:0622:<init>|  Btree.java:2536:<init>|  Btree.java:2535:Then|  Chip.java:0612:<init>|  Btree.java:2534:<init>|  Btree.java:2533:Branch|  Btree.java:1550:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2511:<init>|  Btree.java:2510:code|  Chip.java:0532:<init>|  Btree.java:2495:<init>|  Btree.java:2494:code|  Chip.java:0532:<init>|  Btree.java:2469:<init>|  Btree.java:2468:put|  Btree.java:7180:code|  Chip.java:0532:<init>|  Btree.java:7164:<init>|  Btree.java:7163:test_put_random|  Btree.java:7273:oldTests|  Btree.java:7278:newTests|  Btree.java:7284:main|");
+            $fdisplay(f, "Location: Chip.java:1422:<init>|  Chip.java:1421:waitResultOfTransaction|  Btree.java:0116:allocate|  Btree.java:0154:allocateBranch|  Btree.java:1892:splitBranchAtTop|  Btree.java:2542:Else|  Chip.java:0622:<init>|  Btree.java:2538:<init>|  Btree.java:2537:Then|  Chip.java:0612:<init>|  Btree.java:2536:<init>|  Btree.java:2535:Branch|  Btree.java:1550:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2513:<init>|  Btree.java:2512:code|  Chip.java:0532:<init>|  Btree.java:2497:<init>|  Btree.java:2496:code|  Chip.java:0532:<init>|  Btree.java:2471:<init>|  Btree.java:2470:put|  Btree.java:7182:code|  Chip.java:0532:<init>|  Btree.java:7166:<init>|  Btree.java:7165:test_put_random|  Btree.java:7275:oldTests|  Btree.java:7280:newTests|  Btree.java:7286:main|");
             $fclose(f);
           end
         end
@@ -7709,7 +7709,7 @@ module Btree;                                                                   
           begin
             integer f;
             f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:0514:<init>|  Btree.java:0330:<init>|  Btree.java:0329:stuckPut|  Btree.java:0352:stuckPut|  Btree.java:1892:splitBranchAtTop|  Btree.java:2540:Else|  Chip.java:0622:<init>|  Btree.java:2536:<init>|  Btree.java:2535:Then|  Chip.java:0612:<init>|  Btree.java:2534:<init>|  Btree.java:2533:Branch|  Btree.java:1550:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2511:<init>|  Btree.java:2510:code|  Chip.java:0532:<init>|  Btree.java:2495:<init>|  Btree.java:2494:code|  Chip.java:0532:<init>|  Btree.java:2469:<init>|  Btree.java:2468:put|  Btree.java:7180:code|  Chip.java:0532:<init>|  Btree.java:7164:<init>|  Btree.java:7163:test_put_random|  Btree.java:7273:oldTests|  Btree.java:7278:newTests|  Btree.java:7284:main|");
+            $fdisplay(f, "Location: Chip.java:0514:<init>|  Btree.java:0330:<init>|  Btree.java:0329:stuckPut|  Btree.java:0352:stuckPut|  Btree.java:1892:splitBranchAtTop|  Btree.java:2542:Else|  Chip.java:0622:<init>|  Btree.java:2538:<init>|  Btree.java:2537:Then|  Chip.java:0612:<init>|  Btree.java:2536:<init>|  Btree.java:2535:Branch|  Btree.java:1550:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2513:<init>|  Btree.java:2512:code|  Chip.java:0532:<init>|  Btree.java:2497:<init>|  Btree.java:2496:code|  Chip.java:0532:<init>|  Btree.java:2471:<init>|  Btree.java:2470:put|  Btree.java:7182:code|  Chip.java:0532:<init>|  Btree.java:7166:<init>|  Btree.java:7165:test_put_random|  Btree.java:7275:oldTests|  Btree.java:7280:newTests|  Btree.java:7286:main|");
             $fclose(f);
           end
         end
@@ -7720,7 +7720,7 @@ module Btree;                                                                   
           begin
             integer f;
             f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:1422:<init>|  Chip.java:1421:waitResultOfTransaction|  Btree.java:0344:stuckPut|  Btree.java:0352:stuckPut|  Btree.java:1892:splitBranchAtTop|  Btree.java:2540:Else|  Chip.java:0622:<init>|  Btree.java:2536:<init>|  Btree.java:2535:Then|  Chip.java:0612:<init>|  Btree.java:2534:<init>|  Btree.java:2533:Branch|  Btree.java:1550:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2511:<init>|  Btree.java:2510:code|  Chip.java:0532:<init>|  Btree.java:2495:<init>|  Btree.java:2494:code|  Chip.java:0532:<init>|  Btree.java:2469:<init>|  Btree.java:2468:put|  Btree.java:7180:code|  Chip.java:0532:<init>|  Btree.java:7164:<init>|  Btree.java:7163:test_put_random|  Btree.java:7273:oldTests|  Btree.java:7278:newTests|  Btree.java:7284:main|");
+            $fdisplay(f, "Location: Chip.java:1422:<init>|  Chip.java:1421:waitResultOfTransaction|  Btree.java:0344:stuckPut|  Btree.java:0352:stuckPut|  Btree.java:1892:splitBranchAtTop|  Btree.java:2542:Else|  Chip.java:0622:<init>|  Btree.java:2538:<init>|  Btree.java:2537:Then|  Chip.java:0612:<init>|  Btree.java:2536:<init>|  Btree.java:2535:Branch|  Btree.java:1550:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2513:<init>|  Btree.java:2512:code|  Chip.java:0532:<init>|  Btree.java:2497:<init>|  Btree.java:2496:code|  Chip.java:0532:<init>|  Btree.java:2471:<init>|  Btree.java:2470:put|  Btree.java:7182:code|  Chip.java:0532:<init>|  Btree.java:7166:<init>|  Btree.java:7165:test_put_random|  Btree.java:7275:oldTests|  Btree.java:7280:newTests|  Btree.java:7286:main|");
             $fclose(f);
           end
         end
@@ -7731,7 +7731,7 @@ module Btree;                                                                   
           begin
             integer f;
             f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:1422:<init>|  Chip.java:1421:waitResultOfTransaction|  Btree.java:0347:stuckPut|  Btree.java:0352:stuckPut|  Btree.java:1892:splitBranchAtTop|  Btree.java:2540:Else|  Chip.java:0622:<init>|  Btree.java:2536:<init>|  Btree.java:2535:Then|  Chip.java:0612:<init>|  Btree.java:2534:<init>|  Btree.java:2533:Branch|  Btree.java:1550:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2511:<init>|  Btree.java:2510:code|  Chip.java:0532:<init>|  Btree.java:2495:<init>|  Btree.java:2494:code|  Chip.java:0532:<init>|  Btree.java:2469:<init>|  Btree.java:2468:put|  Btree.java:7180:code|  Chip.java:0532:<init>|  Btree.java:7164:<init>|  Btree.java:7163:test_put_random|  Btree.java:7273:oldTests|  Btree.java:7278:newTests|  Btree.java:7284:main|");
+            $fdisplay(f, "Location: Chip.java:1422:<init>|  Chip.java:1421:waitResultOfTransaction|  Btree.java:0347:stuckPut|  Btree.java:0352:stuckPut|  Btree.java:1892:splitBranchAtTop|  Btree.java:2542:Else|  Chip.java:0622:<init>|  Btree.java:2538:<init>|  Btree.java:2537:Then|  Chip.java:0612:<init>|  Btree.java:2536:<init>|  Btree.java:2535:Branch|  Btree.java:1550:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2513:<init>|  Btree.java:2512:code|  Chip.java:0532:<init>|  Btree.java:2497:<init>|  Btree.java:2496:code|  Chip.java:0532:<init>|  Btree.java:2471:<init>|  Btree.java:2470:put|  Btree.java:7182:code|  Chip.java:0532:<init>|  Btree.java:7166:<init>|  Btree.java:7165:test_put_random|  Btree.java:7275:oldTests|  Btree.java:7280:newTests|  Btree.java:7286:main|");
             $fclose(f);
           end
         end
@@ -7742,7 +7742,7 @@ module Btree;                                                                   
           begin
             integer f;
             f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:1422:<init>|  Chip.java:1421:waitResultOfTransaction|  Btree.java:0348:stuckPut|  Btree.java:0352:stuckPut|  Btree.java:1892:splitBranchAtTop|  Btree.java:2540:Else|  Chip.java:0622:<init>|  Btree.java:2536:<init>|  Btree.java:2535:Then|  Chip.java:0612:<init>|  Btree.java:2534:<init>|  Btree.java:2533:Branch|  Btree.java:1550:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2511:<init>|  Btree.java:2510:code|  Chip.java:0532:<init>|  Btree.java:2495:<init>|  Btree.java:2494:code|  Chip.java:0532:<init>|  Btree.java:2469:<init>|  Btree.java:2468:put|  Btree.java:7180:code|  Chip.java:0532:<init>|  Btree.java:7164:<init>|  Btree.java:7163:test_put_random|  Btree.java:7273:oldTests|  Btree.java:7278:newTests|  Btree.java:7284:main|");
+            $fdisplay(f, "Location: Chip.java:1422:<init>|  Chip.java:1421:waitResultOfTransaction|  Btree.java:0348:stuckPut|  Btree.java:0352:stuckPut|  Btree.java:1892:splitBranchAtTop|  Btree.java:2542:Else|  Chip.java:0622:<init>|  Btree.java:2538:<init>|  Btree.java:2537:Then|  Chip.java:0612:<init>|  Btree.java:2536:<init>|  Btree.java:2535:Branch|  Btree.java:1550:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2513:<init>|  Btree.java:2512:code|  Chip.java:0532:<init>|  Btree.java:2497:<init>|  Btree.java:2496:code|  Chip.java:0532:<init>|  Btree.java:2471:<init>|  Btree.java:2470:put|  Btree.java:7182:code|  Chip.java:0532:<init>|  Btree.java:7166:<init>|  Btree.java:7165:test_put_random|  Btree.java:7275:oldTests|  Btree.java:7280:newTests|  Btree.java:7286:main|");
             $fclose(f);
           end
         end
@@ -7769,7 +7769,7 @@ module Btree;                                                                   
           begin
             integer f;
             f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:0514:<init>|  Btree.java:0330:<init>|  Btree.java:0329:stuckPut|  Btree.java:0352:stuckPut|  Btree.java:1893:splitBranchAtTop|  Btree.java:2540:Else|  Chip.java:0622:<init>|  Btree.java:2536:<init>|  Btree.java:2535:Then|  Chip.java:0612:<init>|  Btree.java:2534:<init>|  Btree.java:2533:Branch|  Btree.java:1550:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2511:<init>|  Btree.java:2510:code|  Chip.java:0532:<init>|  Btree.java:2495:<init>|  Btree.java:2494:code|  Chip.java:0532:<init>|  Btree.java:2469:<init>|  Btree.java:2468:put|  Btree.java:7180:code|  Chip.java:0532:<init>|  Btree.java:7164:<init>|  Btree.java:7163:test_put_random|  Btree.java:7273:oldTests|  Btree.java:7278:newTests|  Btree.java:7284:main|");
+            $fdisplay(f, "Location: Chip.java:0514:<init>|  Btree.java:0330:<init>|  Btree.java:0329:stuckPut|  Btree.java:0352:stuckPut|  Btree.java:1893:splitBranchAtTop|  Btree.java:2542:Else|  Chip.java:0622:<init>|  Btree.java:2538:<init>|  Btree.java:2537:Then|  Chip.java:0612:<init>|  Btree.java:2536:<init>|  Btree.java:2535:Branch|  Btree.java:1550:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2513:<init>|  Btree.java:2512:code|  Chip.java:0532:<init>|  Btree.java:2497:<init>|  Btree.java:2496:code|  Chip.java:0532:<init>|  Btree.java:2471:<init>|  Btree.java:2470:put|  Btree.java:7182:code|  Chip.java:0532:<init>|  Btree.java:7166:<init>|  Btree.java:7165:test_put_random|  Btree.java:7275:oldTests|  Btree.java:7280:newTests|  Btree.java:7286:main|");
             $fclose(f);
           end
         end
@@ -7780,7 +7780,7 @@ module Btree;                                                                   
           begin
             integer f;
             f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:1422:<init>|  Chip.java:1421:waitResultOfTransaction|  Btree.java:0344:stuckPut|  Btree.java:0352:stuckPut|  Btree.java:1893:splitBranchAtTop|  Btree.java:2540:Else|  Chip.java:0622:<init>|  Btree.java:2536:<init>|  Btree.java:2535:Then|  Chip.java:0612:<init>|  Btree.java:2534:<init>|  Btree.java:2533:Branch|  Btree.java:1550:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2511:<init>|  Btree.java:2510:code|  Chip.java:0532:<init>|  Btree.java:2495:<init>|  Btree.java:2494:code|  Chip.java:0532:<init>|  Btree.java:2469:<init>|  Btree.java:2468:put|  Btree.java:7180:code|  Chip.java:0532:<init>|  Btree.java:7164:<init>|  Btree.java:7163:test_put_random|  Btree.java:7273:oldTests|  Btree.java:7278:newTests|  Btree.java:7284:main|");
+            $fdisplay(f, "Location: Chip.java:1422:<init>|  Chip.java:1421:waitResultOfTransaction|  Btree.java:0344:stuckPut|  Btree.java:0352:stuckPut|  Btree.java:1893:splitBranchAtTop|  Btree.java:2542:Else|  Chip.java:0622:<init>|  Btree.java:2538:<init>|  Btree.java:2537:Then|  Chip.java:0612:<init>|  Btree.java:2536:<init>|  Btree.java:2535:Branch|  Btree.java:1550:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2513:<init>|  Btree.java:2512:code|  Chip.java:0532:<init>|  Btree.java:2497:<init>|  Btree.java:2496:code|  Chip.java:0532:<init>|  Btree.java:2471:<init>|  Btree.java:2470:put|  Btree.java:7182:code|  Chip.java:0532:<init>|  Btree.java:7166:<init>|  Btree.java:7165:test_put_random|  Btree.java:7275:oldTests|  Btree.java:7280:newTests|  Btree.java:7286:main|");
             $fclose(f);
           end
         end
@@ -7791,7 +7791,7 @@ module Btree;                                                                   
           begin
             integer f;
             f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:1422:<init>|  Chip.java:1421:waitResultOfTransaction|  Btree.java:0347:stuckPut|  Btree.java:0352:stuckPut|  Btree.java:1893:splitBranchAtTop|  Btree.java:2540:Else|  Chip.java:0622:<init>|  Btree.java:2536:<init>|  Btree.java:2535:Then|  Chip.java:0612:<init>|  Btree.java:2534:<init>|  Btree.java:2533:Branch|  Btree.java:1550:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2511:<init>|  Btree.java:2510:code|  Chip.java:0532:<init>|  Btree.java:2495:<init>|  Btree.java:2494:code|  Chip.java:0532:<init>|  Btree.java:2469:<init>|  Btree.java:2468:put|  Btree.java:7180:code|  Chip.java:0532:<init>|  Btree.java:7164:<init>|  Btree.java:7163:test_put_random|  Btree.java:7273:oldTests|  Btree.java:7278:newTests|  Btree.java:7284:main|");
+            $fdisplay(f, "Location: Chip.java:1422:<init>|  Chip.java:1421:waitResultOfTransaction|  Btree.java:0347:stuckPut|  Btree.java:0352:stuckPut|  Btree.java:1893:splitBranchAtTop|  Btree.java:2542:Else|  Chip.java:0622:<init>|  Btree.java:2538:<init>|  Btree.java:2537:Then|  Chip.java:0612:<init>|  Btree.java:2536:<init>|  Btree.java:2535:Branch|  Btree.java:1550:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2513:<init>|  Btree.java:2512:code|  Chip.java:0532:<init>|  Btree.java:2497:<init>|  Btree.java:2496:code|  Chip.java:0532:<init>|  Btree.java:2471:<init>|  Btree.java:2470:put|  Btree.java:7182:code|  Chip.java:0532:<init>|  Btree.java:7166:<init>|  Btree.java:7165:test_put_random|  Btree.java:7275:oldTests|  Btree.java:7280:newTests|  Btree.java:7286:main|");
             $fclose(f);
           end
         end
@@ -7802,7 +7802,7 @@ module Btree;                                                                   
           begin
             integer f;
             f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:1422:<init>|  Chip.java:1421:waitResultOfTransaction|  Btree.java:0348:stuckPut|  Btree.java:0352:stuckPut|  Btree.java:1893:splitBranchAtTop|  Btree.java:2540:Else|  Chip.java:0622:<init>|  Btree.java:2536:<init>|  Btree.java:2535:Then|  Chip.java:0612:<init>|  Btree.java:2534:<init>|  Btree.java:2533:Branch|  Btree.java:1550:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2511:<init>|  Btree.java:2510:code|  Chip.java:0532:<init>|  Btree.java:2495:<init>|  Btree.java:2494:code|  Chip.java:0532:<init>|  Btree.java:2469:<init>|  Btree.java:2468:put|  Btree.java:7180:code|  Chip.java:0532:<init>|  Btree.java:7164:<init>|  Btree.java:7163:test_put_random|  Btree.java:7273:oldTests|  Btree.java:7278:newTests|  Btree.java:7284:main|");
+            $fdisplay(f, "Location: Chip.java:1422:<init>|  Chip.java:1421:waitResultOfTransaction|  Btree.java:0348:stuckPut|  Btree.java:0352:stuckPut|  Btree.java:1893:splitBranchAtTop|  Btree.java:2542:Else|  Chip.java:0622:<init>|  Btree.java:2538:<init>|  Btree.java:2537:Then|  Chip.java:0612:<init>|  Btree.java:2536:<init>|  Btree.java:2535:Branch|  Btree.java:1550:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2513:<init>|  Btree.java:2512:code|  Chip.java:0532:<init>|  Btree.java:2497:<init>|  Btree.java:2496:code|  Chip.java:0532:<init>|  Btree.java:2471:<init>|  Btree.java:2470:put|  Btree.java:7182:code|  Chip.java:0532:<init>|  Btree.java:7166:<init>|  Btree.java:7165:test_put_random|  Btree.java:7275:oldTests|  Btree.java:7280:newTests|  Btree.java:7286:main|");
             $fclose(f);
           end
         end
@@ -7830,7 +7830,7 @@ module Btree;                                                                   
           begin
             integer f;
             f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:0514:<init>|  Btree.java:0593:<init>|  Btree.java:0592:Push|  Btree.java:1895:splitBranchAtTop|  Btree.java:2540:Else|  Chip.java:0622:<init>|  Btree.java:2536:<init>|  Btree.java:2535:Then|  Chip.java:0612:<init>|  Btree.java:2534:<init>|  Btree.java:2533:Branch|  Btree.java:1550:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2511:<init>|  Btree.java:2510:code|  Chip.java:0532:<init>|  Btree.java:2495:<init>|  Btree.java:2494:code|  Chip.java:0532:<init>|  Btree.java:2469:<init>|  Btree.java:2468:put|  Btree.java:7180:code|  Chip.java:0532:<init>|  Btree.java:7164:<init>|  Btree.java:7163:test_put_random|  Btree.java:7273:oldTests|  Btree.java:7278:newTests|  Btree.java:7284:main|");
+            $fdisplay(f, "Location: Chip.java:0514:<init>|  Btree.java:0593:<init>|  Btree.java:0592:Push|  Btree.java:1895:splitBranchAtTop|  Btree.java:2542:Else|  Chip.java:0622:<init>|  Btree.java:2538:<init>|  Btree.java:2537:Then|  Chip.java:0612:<init>|  Btree.java:2536:<init>|  Btree.java:2535:Branch|  Btree.java:1550:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2513:<init>|  Btree.java:2512:code|  Chip.java:0532:<init>|  Btree.java:2497:<init>|  Btree.java:2496:code|  Chip.java:0532:<init>|  Btree.java:2471:<init>|  Btree.java:2470:put|  Btree.java:7182:code|  Chip.java:0532:<init>|  Btree.java:7166:<init>|  Btree.java:7165:test_put_random|  Btree.java:7275:oldTests|  Btree.java:7280:newTests|  Btree.java:7286:main|");
             $fclose(f);
           end
         end
@@ -7857,7 +7857,7 @@ module Btree;                                                                   
           begin
             integer f;
             f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:0514:<init>|  Btree.java:0701:<init>|  Btree.java:0700:SetPastLastElement|  Btree.java:1896:splitBranchAtTop|  Btree.java:2540:Else|  Chip.java:0622:<init>|  Btree.java:2536:<init>|  Btree.java:2535:Then|  Chip.java:0612:<init>|  Btree.java:2534:<init>|  Btree.java:2533:Branch|  Btree.java:1550:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2511:<init>|  Btree.java:2510:code|  Chip.java:0532:<init>|  Btree.java:2495:<init>|  Btree.java:2494:code|  Chip.java:0532:<init>|  Btree.java:2469:<init>|  Btree.java:2468:put|  Btree.java:7180:code|  Chip.java:0532:<init>|  Btree.java:7164:<init>|  Btree.java:7163:test_put_random|  Btree.java:7273:oldTests|  Btree.java:7278:newTests|  Btree.java:7284:main|");
+            $fdisplay(f, "Location: Chip.java:0514:<init>|  Btree.java:0701:<init>|  Btree.java:0700:SetPastLastElement|  Btree.java:1896:splitBranchAtTop|  Btree.java:2542:Else|  Chip.java:0622:<init>|  Btree.java:2538:<init>|  Btree.java:2537:Then|  Chip.java:0612:<init>|  Btree.java:2536:<init>|  Btree.java:2535:Branch|  Btree.java:1550:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2513:<init>|  Btree.java:2512:code|  Chip.java:0532:<init>|  Btree.java:2497:<init>|  Btree.java:2496:code|  Chip.java:0532:<init>|  Btree.java:2471:<init>|  Btree.java:2470:put|  Btree.java:7182:code|  Chip.java:0532:<init>|  Btree.java:7166:<init>|  Btree.java:7165:test_put_random|  Btree.java:7275:oldTests|  Btree.java:7280:newTests|  Btree.java:7286:main|");
             $fclose(f);
           end
         end
@@ -7884,7 +7884,7 @@ module Btree;                                                                   
           begin
             integer f;
             f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:0514:<init>|  Btree.java:0330:<init>|  Btree.java:0329:stuckPut|  Btree.java:0351:stuckPut|  Btree.java:1897:splitBranchAtTop|  Btree.java:2540:Else|  Chip.java:0622:<init>|  Btree.java:2536:<init>|  Btree.java:2535:Then|  Chip.java:0612:<init>|  Btree.java:2534:<init>|  Btree.java:2533:Branch|  Btree.java:1550:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2511:<init>|  Btree.java:2510:code|  Chip.java:0532:<init>|  Btree.java:2495:<init>|  Btree.java:2494:code|  Chip.java:0532:<init>|  Btree.java:2469:<init>|  Btree.java:2468:put|  Btree.java:7180:code|  Chip.java:0532:<init>|  Btree.java:7164:<init>|  Btree.java:7163:test_put_random|  Btree.java:7273:oldTests|  Btree.java:7278:newTests|  Btree.java:7284:main|");
+            $fdisplay(f, "Location: Chip.java:0514:<init>|  Btree.java:0330:<init>|  Btree.java:0329:stuckPut|  Btree.java:0351:stuckPut|  Btree.java:1897:splitBranchAtTop|  Btree.java:2542:Else|  Chip.java:0622:<init>|  Btree.java:2538:<init>|  Btree.java:2537:Then|  Chip.java:0612:<init>|  Btree.java:2536:<init>|  Btree.java:2535:Branch|  Btree.java:1550:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2513:<init>|  Btree.java:2512:code|  Chip.java:0532:<init>|  Btree.java:2497:<init>|  Btree.java:2496:code|  Chip.java:0532:<init>|  Btree.java:2471:<init>|  Btree.java:2470:put|  Btree.java:7182:code|  Chip.java:0532:<init>|  Btree.java:7166:<init>|  Btree.java:7165:test_put_random|  Btree.java:7275:oldTests|  Btree.java:7280:newTests|  Btree.java:7286:main|");
             $fclose(f);
           end
         end
@@ -7895,7 +7895,7 @@ module Btree;                                                                   
           begin
             integer f;
             f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:1422:<init>|  Chip.java:1421:waitResultOfTransaction|  Btree.java:0344:stuckPut|  Btree.java:0351:stuckPut|  Btree.java:1897:splitBranchAtTop|  Btree.java:2540:Else|  Chip.java:0622:<init>|  Btree.java:2536:<init>|  Btree.java:2535:Then|  Chip.java:0612:<init>|  Btree.java:2534:<init>|  Btree.java:2533:Branch|  Btree.java:1550:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2511:<init>|  Btree.java:2510:code|  Chip.java:0532:<init>|  Btree.java:2495:<init>|  Btree.java:2494:code|  Chip.java:0532:<init>|  Btree.java:2469:<init>|  Btree.java:2468:put|  Btree.java:7180:code|  Chip.java:0532:<init>|  Btree.java:7164:<init>|  Btree.java:7163:test_put_random|  Btree.java:7273:oldTests|  Btree.java:7278:newTests|  Btree.java:7284:main|");
+            $fdisplay(f, "Location: Chip.java:1422:<init>|  Chip.java:1421:waitResultOfTransaction|  Btree.java:0344:stuckPut|  Btree.java:0351:stuckPut|  Btree.java:1897:splitBranchAtTop|  Btree.java:2542:Else|  Chip.java:0622:<init>|  Btree.java:2538:<init>|  Btree.java:2537:Then|  Chip.java:0612:<init>|  Btree.java:2536:<init>|  Btree.java:2535:Branch|  Btree.java:1550:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2513:<init>|  Btree.java:2512:code|  Chip.java:0532:<init>|  Btree.java:2497:<init>|  Btree.java:2496:code|  Chip.java:0532:<init>|  Btree.java:2471:<init>|  Btree.java:2470:put|  Btree.java:7182:code|  Chip.java:0532:<init>|  Btree.java:7166:<init>|  Btree.java:7165:test_put_random|  Btree.java:7275:oldTests|  Btree.java:7280:newTests|  Btree.java:7286:main|");
             $fclose(f);
           end
         end
@@ -7906,7 +7906,7 @@ module Btree;                                                                   
           begin
             integer f;
             f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:1422:<init>|  Chip.java:1421:waitResultOfTransaction|  Btree.java:0347:stuckPut|  Btree.java:0351:stuckPut|  Btree.java:1897:splitBranchAtTop|  Btree.java:2540:Else|  Chip.java:0622:<init>|  Btree.java:2536:<init>|  Btree.java:2535:Then|  Chip.java:0612:<init>|  Btree.java:2534:<init>|  Btree.java:2533:Branch|  Btree.java:1550:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2511:<init>|  Btree.java:2510:code|  Chip.java:0532:<init>|  Btree.java:2495:<init>|  Btree.java:2494:code|  Chip.java:0532:<init>|  Btree.java:2469:<init>|  Btree.java:2468:put|  Btree.java:7180:code|  Chip.java:0532:<init>|  Btree.java:7164:<init>|  Btree.java:7163:test_put_random|  Btree.java:7273:oldTests|  Btree.java:7278:newTests|  Btree.java:7284:main|");
+            $fdisplay(f, "Location: Chip.java:1422:<init>|  Chip.java:1421:waitResultOfTransaction|  Btree.java:0347:stuckPut|  Btree.java:0351:stuckPut|  Btree.java:1897:splitBranchAtTop|  Btree.java:2542:Else|  Chip.java:0622:<init>|  Btree.java:2538:<init>|  Btree.java:2537:Then|  Chip.java:0612:<init>|  Btree.java:2536:<init>|  Btree.java:2535:Branch|  Btree.java:1550:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2513:<init>|  Btree.java:2512:code|  Chip.java:0532:<init>|  Btree.java:2497:<init>|  Btree.java:2496:code|  Chip.java:0532:<init>|  Btree.java:2471:<init>|  Btree.java:2470:put|  Btree.java:7182:code|  Chip.java:0532:<init>|  Btree.java:7166:<init>|  Btree.java:7165:test_put_random|  Btree.java:7275:oldTests|  Btree.java:7280:newTests|  Btree.java:7286:main|");
             $fclose(f);
           end
         end
@@ -7917,7 +7917,7 @@ module Btree;                                                                   
           begin
             integer f;
             f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:1422:<init>|  Chip.java:1421:waitResultOfTransaction|  Btree.java:0348:stuckPut|  Btree.java:0351:stuckPut|  Btree.java:1897:splitBranchAtTop|  Btree.java:2540:Else|  Chip.java:0622:<init>|  Btree.java:2536:<init>|  Btree.java:2535:Then|  Chip.java:0612:<init>|  Btree.java:2534:<init>|  Btree.java:2533:Branch|  Btree.java:1550:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2511:<init>|  Btree.java:2510:code|  Chip.java:0532:<init>|  Btree.java:2495:<init>|  Btree.java:2494:code|  Chip.java:0532:<init>|  Btree.java:2469:<init>|  Btree.java:2468:put|  Btree.java:7180:code|  Chip.java:0532:<init>|  Btree.java:7164:<init>|  Btree.java:7163:test_put_random|  Btree.java:7273:oldTests|  Btree.java:7278:newTests|  Btree.java:7284:main|");
+            $fdisplay(f, "Location: Chip.java:1422:<init>|  Chip.java:1421:waitResultOfTransaction|  Btree.java:0348:stuckPut|  Btree.java:0351:stuckPut|  Btree.java:1897:splitBranchAtTop|  Btree.java:2542:Else|  Chip.java:0622:<init>|  Btree.java:2538:<init>|  Btree.java:2537:Then|  Chip.java:0612:<init>|  Btree.java:2536:<init>|  Btree.java:2535:Branch|  Btree.java:1550:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2513:<init>|  Btree.java:2512:code|  Chip.java:0532:<init>|  Btree.java:2497:<init>|  Btree.java:2496:code|  Chip.java:0532:<init>|  Btree.java:2471:<init>|  Btree.java:2470:put|  Btree.java:7182:code|  Chip.java:0532:<init>|  Btree.java:7166:<init>|  Btree.java:7165:test_put_random|  Btree.java:7275:oldTests|  Btree.java:7280:newTests|  Btree.java:7286:main|");
             $fclose(f);
           end
         end
@@ -7926,7 +7926,7 @@ module Btree;                                                                   
           begin
             integer f;
             f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:0614:<init>|  Chip.java:0613:<init>|  Btree.java:2534:<init>|  Btree.java:2533:Branch|  Btree.java:1550:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2511:<init>|  Btree.java:2510:code|  Chip.java:0532:<init>|  Btree.java:2495:<init>|  Btree.java:2494:code|  Chip.java:0532:<init>|  Btree.java:2469:<init>|  Btree.java:2468:put|  Btree.java:7180:code|  Chip.java:0532:<init>|  Btree.java:7164:<init>|  Btree.java:7163:test_put_random|  Btree.java:7273:oldTests|  Btree.java:7278:newTests|  Btree.java:7284:main|");
+            $fdisplay(f, "Location: Chip.java:0614:<init>|  Chip.java:0613:<init>|  Btree.java:2536:<init>|  Btree.java:2535:Branch|  Btree.java:1550:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2513:<init>|  Btree.java:2512:code|  Chip.java:0532:<init>|  Btree.java:2497:<init>|  Btree.java:2496:code|  Chip.java:0532:<init>|  Btree.java:2471:<init>|  Btree.java:2470:put|  Btree.java:7182:code|  Chip.java:0532:<init>|  Btree.java:7166:<init>|  Btree.java:7165:test_put_random|  Btree.java:7275:oldTests|  Btree.java:7280:newTests|  Btree.java:7286:main|");
             $fclose(f);
           end
         end
@@ -7936,7 +7936,7 @@ module Btree;                                                                   
           begin
             integer f;
             f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:0514:<init>|  Chip.java:0699:<init>|  Chip.java:0698:Copy|  Btree.java:2545:Else|  Chip.java:0622:<init>|  Btree.java:2534:<init>|  Btree.java:2533:Branch|  Btree.java:1550:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2511:<init>|  Btree.java:2510:code|  Chip.java:0532:<init>|  Btree.java:2495:<init>|  Btree.java:2494:code|  Chip.java:0532:<init>|  Btree.java:2469:<init>|  Btree.java:2468:put|  Btree.java:7180:code|  Chip.java:0532:<init>|  Btree.java:7164:<init>|  Btree.java:7163:test_put_random|  Btree.java:7273:oldTests|  Btree.java:7278:newTests|  Btree.java:7284:main|");
+            $fdisplay(f, "Location: Chip.java:0514:<init>|  Chip.java:0699:<init>|  Chip.java:0698:Copy|  Btree.java:2547:Else|  Chip.java:0622:<init>|  Btree.java:2536:<init>|  Btree.java:2535:Branch|  Btree.java:1550:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2513:<init>|  Btree.java:2512:code|  Chip.java:0532:<init>|  Btree.java:2497:<init>|  Btree.java:2496:code|  Chip.java:0532:<init>|  Btree.java:2471:<init>|  Btree.java:2470:put|  Btree.java:7182:code|  Chip.java:0532:<init>|  Btree.java:7166:<init>|  Btree.java:7165:test_put_random|  Btree.java:7275:oldTests|  Btree.java:7280:newTests|  Btree.java:7286:main|");
             $fclose(f);
           end
         end
@@ -7945,7 +7945,7 @@ module Btree;                                                                   
           begin
             integer f;
             f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:0573:<init>|  Chip.java:0572:GOto|  Btree.java:2549:Branch|  Btree.java:1550:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2511:<init>|  Btree.java:2510:code|  Chip.java:0532:<init>|  Btree.java:2495:<init>|  Btree.java:2494:code|  Chip.java:0532:<init>|  Btree.java:2469:<init>|  Btree.java:2468:put|  Btree.java:7180:code|  Chip.java:0532:<init>|  Btree.java:7164:<init>|  Btree.java:7163:test_put_random|  Btree.java:7273:oldTests|  Btree.java:7278:newTests|  Btree.java:7284:main|");
+            $fdisplay(f, "Location: Chip.java:0573:<init>|  Chip.java:0572:GOto|  Btree.java:2551:Branch|  Btree.java:1550:code|  Chip.java:0532:<init>|  Btree.java:1525:<init>|  Btree.java:1524:<init>|  Btree.java:2513:<init>|  Btree.java:2512:code|  Chip.java:0532:<init>|  Btree.java:2497:<init>|  Btree.java:2496:code|  Chip.java:0532:<init>|  Btree.java:2471:<init>|  Btree.java:2470:put|  Btree.java:7182:code|  Chip.java:0532:<init>|  Btree.java:7166:<init>|  Btree.java:7165:test_put_random|  Btree.java:7275:oldTests|  Btree.java:7280:newTests|  Btree.java:7286:main|");
             $fclose(f);
           end
         end
@@ -7955,7 +7955,7 @@ module Btree;                                                                   
           begin
             integer f;
             f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:0514:<init>|  Chip.java:0812:<init>|  Chip.java:0812:Gt|  Btree.java:7181:code|  Chip.java:0532:<init>|  Btree.java:7164:<init>|  Btree.java:7163:test_put_random|  Btree.java:7273:oldTests|  Btree.java:7278:newTests|  Btree.java:7284:main|");
+            $fdisplay(f, "Location: Chip.java:0514:<init>|  Chip.java:0812:<init>|  Chip.java:0812:Gt|  Btree.java:7183:code|  Chip.java:0532:<init>|  Btree.java:7166:<init>|  Btree.java:7165:test_put_random|  Btree.java:7275:oldTests|  Btree.java:7280:newTests|  Btree.java:7286:main|");
             $fclose(f);
           end
         end
@@ -7969,7 +7969,7 @@ module Btree;                                                                   
           begin
             integer f;
             f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:0580:<init>|  Chip.java:0579:GONotZero|  Btree.java:7182:code|  Chip.java:0532:<init>|  Btree.java:7164:<init>|  Btree.java:7163:test_put_random|  Btree.java:7273:oldTests|  Btree.java:7278:newTests|  Btree.java:7284:main|");
+            $fdisplay(f, "Location: Chip.java:0580:<init>|  Chip.java:0579:GONotZero|  Btree.java:7184:code|  Chip.java:0532:<init>|  Btree.java:7166:<init>|  Btree.java:7165:test_put_random|  Btree.java:7275:oldTests|  Btree.java:7280:newTests|  Btree.java:7286:main|");
             $fclose(f);
           end
         end
