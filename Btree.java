@@ -1802,7 +1802,7 @@ chipStop = true;
     l.LastElement();                                                            // Last element of left child
     c.FirstElement();                                                           // First element of right child
     mk.Average(l.Key, c.Key);                                                   // Mid key is average of surrounding keys
-    p.InsertElementAt(StuckIndex, mk, il);                                  // Add reference to left child
+    p.InsertElementAt(StuckIndex, mk, il);                                      // Add reference to left child
     p.stuckPut();                                                               // Save the parent stuck back into the btree
    }
 
@@ -2449,7 +2449,7 @@ chipStop = true;
 
               P.new If (notFull)                                                // Leaf not full so we can insert into this leaf
                {void Then()                                                     // Position in leaf - we know it is not present and thatthere is room for the key, data pair in the leaf
-                 {search_le_parallel(Key);                                               // Find pinsert position in leaf
+                 {search_le_parallel(Key);                                      // Find insert position in leaf
                   InsertElementAt(StuckIndex, Key, Data);                       // Insert into leaf
                   Found.One();                                                  // Show success
                   P.COntinue();                                                 // Finished
@@ -7218,7 +7218,8 @@ Merge     : 0
 
   static void test_verilog_put()
    {sayCurrentTestName();
-    final Btree            b = new Btree(1024, 1024, 32, 32);
+// Keys per stuck->lines of code: 10-> 24,168 20->37,578 40->64,919
+    final Btree            b = new Btree(1024, 32, 32, 32);
     final Process          P = b.P; //b.new Process("verilogPut");
     final Process.Register k = P.register("k", b.bitsPerKey);   k.input();
     final Process.Register d = P.register("d", b.bitsPerData);  d.input();
@@ -7290,7 +7291,7 @@ Merge     : 0
 
   static void newTests()                                                        // Tests being worked on
    {//oldTests();
-    test_put_merge();
+    //test_put_merge();
     test_verilog_put();
    }
 
