@@ -1947,9 +1947,8 @@ chipStop = true;
 
   private Process.Register mergeLeavesIntoRoot()                                // Merge two leaves into the root
    {final Stuck p = ParentStuck;                                                // Parent stuck two of whose children might be merged
-    final Stuck l = new Stuck(P, "mergeLeavesIntoRootLeft");                    // Left split stuck
-    final Stuck r = new Stuck(P, "mergeLeavesIntoRootRight");                   // Right split stuck
-    final Process.Register ck = P.new Register("childKey",   bitsPerKey);       // Index in memory of the left stuck
+    final Stuck l = LeftMergeStuck;                                             // Left split stuck
+    final Stuck r = RightMergeStuck;                                            // Right split stuck    final Process.Register ck = P.new Register("childKey",   bitsPerKey);       // Index in memory of the left stuck
     final Process.Register cd = P.new Register("childData",  btreeAddressSize); // Index in memory of the left stuck
     final Process.Register il = P.new Register("indexLeft",  btreeAddressSize); // Index in memory of the left stuck
     final Process.Register ir = P.new Register("indexRight", btreeAddressSize); // Index in memory of the right stuck
@@ -1963,7 +1962,7 @@ chipStop = true;
        {success.Zero();                                                         // Assume failure
         p.stuckGetRoot();                                                       // Load root
 
-        test.Eq(p.size, 1);                                                 // Number of entries in root
+        test.Eq(p.size, 1);                                                     // Number of entries in root
         P.GOZero(end, test);                                                    // Wrong number of entries in root
 
         P.new Instruction()                                                     // Check that the root has one entry and thus two children
