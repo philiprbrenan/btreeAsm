@@ -2691,7 +2691,7 @@ chipStop = true;
            }
          };
 
-        P.new If (mergeBranchesIntoRoot()                                       // Try merging branches into root
+        P.new If (mergeBranchesIntoRoot())                                      // Try merging branches into root
          {void Then()
            {S.stuckGetRoot();                                                   // Reload root if the merge was successful
            }
