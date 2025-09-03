@@ -1670,9 +1670,9 @@ chipStop = true;
 //D2 Split                                                                      // Split nodes in half to increase the number of nodes in the tree
 
   private void splitRootLeaf()                                                  // Split a full root leaf
-   {final Stuck p = new Stuck(P, "splitRootLeafParent");                        // Parent stuck
-    final Stuck l = new Stuck(P, "splitRootLeafLeft");                          // Left split stuck
-    final Stuck r = new Stuck(P, "splitRootLeafRight");                         // Right split stuck
+   {final Stuck p = ParentStuck;                                                // Parent stuck
+    final Stuck l = LeftSplitStuck;                                             // Left split stuck
+    final Stuck r = RightSplitStuck;                                            // Right split stuck
     final Process.Register il = P.new Register("indexLeft",  btreeAddressSize); // Index in memory of the left stuck
     final Process.Register ir = P.new Register("indexRight", btreeAddressSize); // Index in memory of the right stuck
     final Process.Register mk = P.new Register("midKey",     bitsPerKey);       // Mid key
@@ -7286,8 +7286,8 @@ Merge     : 0
    }
 
   static void newTests()                                                        // Tests being worked on
-   {oldTests();
-    //test_verilog_put();
+   {//oldTests();
+    test_verilog_put();
    }
 
   public static void main(String[] args)                                        // Test if called as a program
