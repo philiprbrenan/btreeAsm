@@ -26,6 +26,8 @@ class Btree extends Chip                                                        
   final Stuck ParentStuck;                                                      // Parent stuck
   final Stuck LeftMergeStuck;                                                   // Left sibling in merge operation
   final Stuck RightMergeStuck;                                                  // Right sibling in merge operation
+  final Stuck LeftSplitStuck;                                                   // Left sibling in split operation
+  final Stuck RightSplitStuck;                                                  // Right sibling in split operation
 
   boolean suppressMerge = false;                                                // Suppress merges during put to allow merge steps to be tested individually.  If this is on the trees built for testing are already merged so there is nothing to test.
   static boolean debug  = false;                                                // Debug if enabled
@@ -49,9 +51,11 @@ class Btree extends Chip                                                        
     stuckKeys    = new Memory("stuckKeys"  , Size, bitsPerKey , MaxStuckSize);  // Keys fields
     stuckData    = new Memory("stuckData"  , Size, bitsPerData, MaxStuckSize);  // Data fields
 
-    ParentStuck  = new Stuck(P, "Parent");                                      // Parent stuck
+    ParentStuck     = new Stuck(P, "Parent");                                   // Parent stuck
     LeftMergeStuck  = new Stuck(P, "MergeLeft");                                // Left stuck sibling in merge operation
     RightMergeStuck = new Stuck(P, "MergeRight");                               // Right stuck sibling in merge operation
+    LeftSplitStuck  = new Stuck(P, "SplitLeft");                                // Left  stuck in a split operation
+    RightSplitStuck = new Stuck(P, "SplitRight");                               // Right stuck in a split operation
 
 chipStop = true;
     createFreeChain();                                                          // Create the free chain
@@ -1660,10 +1664,10 @@ chipStop = true;
 
 //D2 Split                                                                      // Split nodes in half to increase the number of nodes in the tree
 
-  private void splitRootLeaf(Process P)                                         // Split a full root leaf
-   {final Stuck p = new Stuck(P, "splitRootLeafParent");                        // Parent stuck
-    final Stuck l = new Stuck(P, "splitRootLeafLeft");                          // Left split stuck
-    final Stuck r = new Stuck(P, "splitRootLeafRight");                         // Right split stuck
+  private void splitRootLeaf()                                                  // Split a full root leaf
+   {final Stuck p = ParentStuck;                                                // Parent stuck
+    final Stuck l = LeftSplitStuck;                                             // Left split stuck
+    final Stuck r = RightSplitStuck;                                            // Right split stuck
     final Process.Register il = P.new Register("indexLeft",  btreeAddressSize); // Index in memory of the left stuck
     final Process.Register ir = P.new Register("indexRight", btreeAddressSize); // Index in memory of the right stuck
     final Process.Register mk = P.new Register("midKey",     bitsPerKey);       // Mid key
@@ -2473,7 +2477,7 @@ chipStop = true;
 
         P.new If(f.BtreeIndex)                                                  // Failed to insert because the root is a leaf which must be full else the operation would have succeeded
          {void Else()
-           {splitRootLeaf(P);                                                   // Split the leaf root to make room
+           {splitRootLeaf();                                                    // Split the leaf root to make room
             f.findAndInsert(Key, Data);                                         // Splitting a leaf root will make more space in the tree so this operation will now succeed
             P.GOto(oEnd);                                                       // Direct insertion succeeded so nothing more to do
            }
@@ -4695,7 +4699,7 @@ Chip: Btree            step: 53, maxSteps: 100, running: 0
         0  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24
         0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0
 """);
-    ok(i, "main_index1_75 = 1");
+    ok(i, "main_index1_113 = 1");
    }
 
   static void test_mergeLeavesIntoRoot()
@@ -4716,7 +4720,7 @@ Chip: Btree            step: 53, maxSteps: 100, running: 0
     k.RegisterSet(4); d.RegisterSet(5); f.findAndInsert(k, d);
     k.RegisterSet(3); d.RegisterSet(4); f.findAndInsert(k, d);
 
-    b.splitRootLeaf(P);
+    b.splitRootLeaf();
     b.chipRun();
     //stop(b.btreePrint());
     ok(b.btreePrint(), """
@@ -4757,7 +4761,7 @@ Chip: Btree            step: 53, maxSteps: 100, running: 0
     k.RegisterSet(40); d.RegisterSet(50); f.findAndInsert(k, d);
     k.RegisterSet(30); d.RegisterSet(40); f.findAndInsert(k, d);
 
-    b.splitRootLeaf(P);
+    b.splitRootLeaf();
 
     k.RegisterSet(50); d.RegisterSet(60); f.findAndInsert(k, d);
     k.RegisterSet(60); d.RegisterSet(70); f.findAndInsert(k, d);
@@ -4862,7 +4866,7 @@ Chip: Btree            step: 53, maxSteps: 100, running: 0
     k.RegisterSet(40); d.RegisterSet(50); f.findAndInsert(k, d);
     k.RegisterSet(30); d.RegisterSet(40); f.findAndInsert(k, d);
 
-    b.splitRootLeaf(P);
+    b.splitRootLeaf();
 
     k.RegisterSet(50); d.RegisterSet(60); f.findAndInsert(k, d);
     k.RegisterSet(60); d.RegisterSet(70); f.findAndInsert(k, d);
@@ -5090,7 +5094,7 @@ Merge     : 0
     k.RegisterSet(40); d.RegisterSet(50); f.findAndInsert(k, d);
     k.RegisterSet(30); d.RegisterSet(40); f.findAndInsert(k, d);
 
-    b.splitRootLeaf(P);
+    b.splitRootLeaf();
     k.RegisterSet(50); d.RegisterSet(60); f.findAndInsert(k, d);
     k.RegisterSet(60); d.RegisterSet(70); f.findAndInsert(k, d);
 
@@ -5168,7 +5172,7 @@ Merge     : 0
     k.RegisterSet(40); d.RegisterSet(50); s.Push(k, d);
     s.stuckPut();
 
-    b.splitRootLeaf(P);
+    b.splitRootLeaf();
     b.chipRun();
     //stop(b.chipPrintMemory());
     //stop(b.btreePrint());
@@ -7276,7 +7280,7 @@ Merge     : 0
    }
 
   static void newTests()                                                        // Tests being worked on
-   {//oldTests();
+   {oldTests();
     test_verilog_put();
    }
 
