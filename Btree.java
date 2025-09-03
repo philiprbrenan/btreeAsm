@@ -2143,9 +2143,9 @@ chipStop = true;
    }
 
   private Process.Register mergeBranchesIntoRoot(Process P)                     // Merge two branches into the root
-   {final Stuck   p = new Stuck(P, "mergeLeavesIntoRootParent");                // Parent stuck
+   {final Stuck   p = ParentStuck;                                              // Parent stuck
     final Stuck   l = new Stuck(P, "mergeLeavesIntoRootLeft");                  // Left split stuck
-    final Stuck   r = new Stuck(P, "mergeLeavesIntoRootRight");                 // Right split stuck
+    final Stuck   r = new Stuck(P, "mergeLeavesIntoRootRigtht");                // Right split stuck
     final Process.Register ck = P.new Register("childKey",   bitsPerKey);       // Index in memory of the left stuck
     final Process.Register ls = P.new Register("leftChild",  stuckAddressSize); // Index in memory of the left stuck
     final Process.Register rs = P.new Register("rightChild", stuckAddressSize); // Index in memory of the left stuck
