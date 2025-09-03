@@ -28,6 +28,8 @@ class Btree extends Chip                                                        
   final Stuck RightMergeStuck;                                                  // Right sibling in merge operation
   final Stuck LeftSplitStuck;                                                   // Left sibling in split operation
   final Stuck RightSplitStuck;                                                  // Right sibling in split operation
+  final Stuck LeftMergeBranchesIntoRoot;                                        // Left sibling in merge branches into root
+  final Stuck RightMergeBranchesIntoRoot;                                       // Right sibling in merge branches into root
 
   boolean suppressMerge = false;                                                // Suppress merges during put to allow merge steps to be tested individually.  If this is on the trees built for testing are already merged so there is nothing to test.
   static boolean debug  = false;                                                // Debug if enabled
@@ -56,6 +58,9 @@ class Btree extends Chip                                                        
     RightMergeStuck = new Stuck(P, "MergeRight");                               // Right stuck sibling in merge operation
     LeftSplitStuck  = new Stuck(P, "SplitLeft");                                // Left  stuck in a split operation
     RightSplitStuck = new Stuck(P, "SplitRight");                               // Right stuck in a split operation
+
+    LeftMergeBranchesIntoRoot  = new Stuck(P, "LeftMergeBranchesIntoRoot");     // Left sibling in merge branches into root
+    RightMergeBranchesIntoRoot = new Stuck(P, "RightMergeBranchesIntoRoot");    // Right sibling in merge branches into root
 
 chipStop = true;
     createFreeChain();                                                          // Create the free chain
@@ -2144,8 +2149,8 @@ chipStop = true;
 
   private Process.Register mergeBranchesIntoRoot(Process P)                     // Merge two branches into the root
    {final Stuck   p = ParentStuck;                                              // Parent stuck
-    final Stuck   l = new Stuck(P, "mergeLeavesIntoRootLeft");                  // Left split stuck
-    final Stuck   r = new Stuck(P, "mergeLeavesIntoRootRigtht");                // Right split stuck
+    final Stuck   l = LeftMergeBranchesIntoRoot;                                // Left split stuck
+    final Stuck   r = RightMergeBranchesIntoRoot;                               // Right split stuck
     final Process.Register ck = P.new Register("childKey",   bitsPerKey);       // Index in memory of the left stuck
     final Process.Register ls = P.new Register("leftChild",  stuckAddressSize); // Index in memory of the left stuck
     final Process.Register rs = P.new Register("rightChild", stuckAddressSize); // Index in memory of the left stuck
