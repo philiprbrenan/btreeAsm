@@ -22,6 +22,9 @@ class Btree extends Chip                                                        
   final Memory stuckSize;                                                       // Current size of stuck up to the maximum size
   final Memory stuckKeys;                                                       // Keys field
   final Memory stuckData;                                                       // Data field
+
+  final Stuck ParentStuck;                                                      // Parent stuck
+
   boolean suppressMerge = false;                                                // Suppress merges during put to allow merge steps to be tested individually.  If this is on the trees built for testing are already merged so there is nothing to test.
   static boolean debug  = false;                                                // Debug if enabled
 
@@ -43,6 +46,8 @@ class Btree extends Chip                                                        
     stuckSize    = new Memory("stuckSize"  , Size, stuckAddressSize);           // Current size of stuck up to the maximum size
     stuckKeys    = new Memory("stuckKeys"  , Size, bitsPerKey , MaxStuckSize);  // Keys fields
     stuckData    = new Memory("stuckData"  , Size, bitsPerData, MaxStuckSize);  // Data fields
+
+    ParentStuck  = new Stuck(P, "Parent");                                      // Parent stuck
 
 chipStop = true;
     createFreeChain();                                                          // Create the free chain
@@ -1932,10 +1937,8 @@ chipStop = true;
      };
    }
 
-  //final Stuck ParentStuck = new Stuck(P, "Parent");                             // Parent stuck
-
   private Process.Register mergeLeavesIntoRoot()                                // Merge two leaves into the root
-   {final Stuck p = new Stuck(P, "mergeLeavesIntoRootParent");                  // Parent stuck
+   {final Stuck p = ParentStuck;                                                // Parent stuck two of whose children might be merged
     final Stuck l = new Stuck(P, "mergeLeavesIntoRootLeft");                    // Left split stuck
     final Stuck r = new Stuck(P, "mergeLeavesIntoRootRight");                   // Right split stuck
     final Process.Register ck = P.new Register("childKey",   bitsPerKey);       // Index in memory of the left stuck
@@ -1994,9 +1997,7 @@ chipStop = true;
 
   private Process.Register mergeLeavesNotTop                                    // Merge the two consecutive leaves of a branch that is not the root. Neither of the leaves is the topmost leaf.
    (Stuck Stuck, Process.Register ParentIndex, Process.Register LeftLeaf)
-   {final Process P = ParentIndex.registerProcess();
-    //final Stuck   p = new Stuck(P, "mergeLeavesIntoRootParent");              // Parent stuck
-    final Stuck   p = Stuck;
+   {final Stuck   p = Stuck;
     final Stuck   l = new Stuck(P, "mergeLeavesIntoRootLeft");                  // Left split stuck
     final Stuck   r = new Stuck(P, "mergeLeavesIntoRootRight");                 // Right split stuck
     final Process.Register ck = P.new Register("childKey",   bitsPerKey);       // Index in memory of the left stuck
@@ -2061,9 +2062,7 @@ chipStop = true;
 
   private Process.Register mergeLeavesAtTop                                     // Merge the top most two leaves of a branch that is not the root
    (Stuck Stuck, Process.Register ParentIndex)
-   {final Process P = ParentIndex.registerProcess();
-    //final Stuck   p = new Stuck(P, "mergeLeavesIntoRootParent");              // Parent stuck
-    final Stuck   p = Stuck;                                                    // Parent stuck
+   {final Stuck   p = Stuck;                                                    // Parent stuck
     final Stuck   l = new Stuck(P, "mergeLeavesIntoRootLeft");                  // Left split stuck
     final Stuck   r = new Stuck(P, "mergeLeavesIntoRootRight");                 // Right split stuck
     final Process.Register ck = P.new Register("childKey",   bitsPerKey);       // Index in memory of the left stuck
@@ -2138,8 +2137,8 @@ chipStop = true;
     return success;
    }
 
-  private Process.Register mergeBranchesIntoRoot(Process P)                     // Merge two branches into the root
-   {final Stuck   p = new Stuck(P, "mergeLeavesIntoRootParent");                // Parent stuck
+  private Process.Register mergeBranchesIntoRoot()                              // Merge two branches into the root
+   {final Stuck   p = ParentStuck;                                              // Parent stuck
     final Stuck   l = new Stuck(P, "mergeLeavesIntoRootLeft");                  // Left split stuck
     final Stuck   r = new Stuck(P, "mergeLeavesIntoRootRight");                 // Right split stuck
     final Process.Register ck = P.new Register("childKey",   bitsPerKey);       // Index in memory of the left stuck
@@ -2215,9 +2214,7 @@ chipStop = true;
 
   private Process.Register mergeBranchesNotTop                                  // Merge the two consecutive child branches of a branch that is not the root. Neither of the child branches is the topmost leaf.
    (Stuck Stuck, Process.Register ParentIndex, Process.Register LeftBranch)
-   {final Process P = ParentIndex.registerProcess();
-    //final Stuck p = new Stuck(P, "mergeBranchesNotTopParent");                // Parent stuck
-    final Stuck   p = Stuck;                                                    // Parent stuck
+   {final Stuck   p = Stuck;                                                    // Parent stuck
     final Stuck   l = new Stuck(P, "mergeBranchesNotTopLeft");                  // Left split stuck
     final Stuck   r = new Stuck(P, "mergeBranchesNotTopRight");                 // Right split stuck
     final Process.Register ck = P.new Register("childKey",   bitsPerKey);       // Index in memory of the left stuck
@@ -2299,9 +2296,7 @@ chipStop = true;
 
   private Process.Register mergeBranchesAtTop                                   // Merge the top most two child branches of a branch that is not the root
    (Stuck Stuck, Process.Register ParentIndex)
-   {final Process P = ParentIndex.registerProcess();
-    //final Stuck   p = new Stuck(P, "mergeLeavesIntoRootParent");              // Parent stuck
-    final Stuck   p = Stuck;                                                    // Parent stuck
+   {final Stuck   p = Stuck;                                                    // Parent stuck
     final Stuck   l = new Stuck(P, "mergeLeavesIntoRootLeft");                  // Left split stuck
     final Stuck   r = new Stuck(P, "mergeLeavesIntoRootRight");                 // Right split stuck
     final Process.Register ck = P.new Register("childKey",   bitsPerKey);       // Index in memory of the left stuck
@@ -4696,7 +4691,7 @@ Chip: Btree            step: 53, maxSteps: 100, running: 0
         0  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24
         0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0
 """);
-    ok(i, "main_index1_0 = 1");
+    ok(i, "main_index1_37 = 1");
    }
 
   static void test_mergeLeavesIntoRoot()
@@ -7278,7 +7273,7 @@ Merge     : 0
 
   static void newTests()                                                        // Tests being worked on
    {oldTests();
-    //test_verilog_put();
+    test_verilog_put();
    }
 
   public static void main(String[] args)                                        // Test if called as a program
