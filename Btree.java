@@ -1754,7 +1754,6 @@ chipStop = true;
     final Process.Register ck = P.new Register("childKey",   bitsPerKey);       // Index in memory of the left stuck
     final Process.Register cd = P.new Register("childData",  btreeAddressSize); // Index in memory of the left stuck
     final Process.Register il = P.new Register("indexLeft",  btreeAddressSize); // Index in memory of the left stuck
-    final Process.Register ir = P.new Register("indexRight", btreeAddressSize); // Index in memory of the right stuck
     final Process.Register mk = P.new Register("midKey",     bitsPerKey);       // Mid key
 
     p.stuckGet(ParentIndex);                                                    // Load parent stuck from btree
