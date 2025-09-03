@@ -14,6 +14,8 @@ class Btree extends Chip                                                        
   final int bitsPerData;                                                        // The number of bits needed to define a data field
   final int btreeAddressSize;                                                   // The number of bits needed to address a field in memory holding btree
   final int stuckAddressSize;                                                   // The number of bits needed to address a field in a stuck
+  final Process P = new Process("main");                                        // The main process used to manipulate the btree
+
   final Memory stuckIsLeaf;                                                     // Whether the current stuck is acting as a leaf or a branch in the btree.
   final Memory stuckIsFree;                                                     // Whether the stuck is on the free chain
   final Memory freeNext;                                                        // Next stuck on the free chain. If this stuck is not on the free chain then this field is zero to show that this stuck in use. If the stuck is the root stuck which is never freed, then its next pointer points to the first free stuck on the free chain.
@@ -150,6 +152,12 @@ chipStop = true;
 
   private void allocateLeaf  (Process.Register ref) {allocate(ref, true);}      // Allocate a stuck, set a ref to the allocated node and mark it a leaf
   private void allocateBranch(Process.Register ref) {allocate(ref, false);}     // Allocate a stuck, set a ref to the allocated node and mark it a branch
+
+//D2 Registers and Stucks                                                       // Registers and stucks used by the btree
+
+  Process.Register register(String RegisterName, int RegisterBits)              // Create a register in the main process for the btree
+   {return P.new Register(RegisterName, RegisterBits);
+   }
 
 //D2 Save and Load                                                              // Save a btree to a string and reload it from a string
 
@@ -2774,7 +2782,7 @@ chipStop = true;
 
   static void test_copy()
    {final Btree   b = new Btree(1, 8, 8, 8);
-    final Process P = b.new Process("copy");
+    final Process P = b.P; //b.new Process("copy");
     final Stuck   s = b.new Stuck(P, "Source");
     final Stuck   t = b.new Stuck(P, "Target");
     P.processTrace = true;
@@ -2969,7 +2977,7 @@ Merge     : 0
 
   static void test_merge_two()
    {final Btree   b = new Btree(2, 8, 8, 8);
-    final Process P = b.new Process("copy");
+    final Process P = b.P; //b.new Process("copy");
     final Stuck   s = b.new Stuck(P, "Source");
     final Stuck   t = b.new Stuck(P, "Target");
     final Process.Register index = P.new Register("Index", b.btreeAddressSize);
@@ -3074,7 +3082,7 @@ Merge     : 1
 
   static void test_create1()
    {final Btree   b = new Btree(1, 4, 8, 8);
-    final Process P = b.new Process("test");
+    final Process P = b.P; //b.new Process("test");
     b.stuckIsLeaf.memorySet(1, 0);
     b.stuckSize  .memorySet(2, 0);
     b.stuckKeys  .memorySet(2, 0, 0); b.stuckData.memorySet(3, 0, 0);
@@ -3106,7 +3114,7 @@ Stuck: Stuck size: 2, leaf: 1, root
 
     //stop(b.chipPrintMemory());
     ok(b.chipPrintMemory(), """
-Chip: Btree            step: 8, maxSteps: 200, running: 0
+Chip: Btree            step: 9, maxSteps: 200, running: 0
   Processes:
     stuckIsLeaf
       Memory: size:  1, width:  1, block:  1
@@ -3138,7 +3146,7 @@ Chip: Btree            step: 8, maxSteps: 200, running: 0
 
     //stop(b.chipPrintMemory());
     ok(b.chipPrintMemory(), """
-Chip: Btree            step: 14, maxSteps: 200, running: 0
+Chip: Btree            step: 16, maxSteps: 200, running: 0
   Processes:
     stuckIsLeaf
       Memory: size:  1, width:  1, block:  1
@@ -3207,7 +3215,7 @@ Chip: Btree            step: 0, maxSteps: 10, running: 0
   static Btree test_push(int S, int F)
    {final int B = 8, K = 8, D = 8;
     final Btree   b = new Btree(B, F, K, D);
-    final Process P = b.new Process("Stuck");
+    final Process P = b.P; //b.new Process("Stuck");
     final String[]names = {"Stuck", "left", "right"};
 
     for (int j = 0; j < names.length; j++)
@@ -3237,7 +3245,7 @@ Chip: Btree            step: 0, maxSteps: 10, running: 0
   static void test_clear()
    {sayCurrentTestName();
     final Btree   b = test_push();
-    final Process P = b.processes.get("Stuck");
+    final Process P = b.P; //b.processes.get("Stuck");
     final Stuck   s = b.new Stuck(P, "root");
     P.processTrace = true;
     s.stuckGetRoot();
@@ -3273,7 +3281,7 @@ Stuck: root size: 0, leaf: 0, root
   static Btree test_pop()
    {sayCurrentTestName();
     final Btree   b = test_push();
-    final Process P = b.processes.get("Stuck");
+    final Process P = b.P; // b.processes.get("Stuck");
     final Stuck   s = b.new Stuck(P, "Stuck");
     final Process.Register k = s.Key;
     final Process.Register d = s.Data;
@@ -3317,7 +3325,7 @@ Merge     : 0
   static void test_pop_4()
    {sayCurrentTestName();
     final Btree   b = test_push(4, 4);
-    final Process P = b.processes.get("Stuck");
+    final Process P = b.P; // b.processes.get("Stuck");
     final Stuck   s = b.new Stuck(P, "Stuck");
     final Process.Register k = s.Key;
     final Process.Register d = s.Data;
@@ -3443,7 +3451,7 @@ Merge     : 0
   static void test_firstLastPast()
    {sayCurrentTestName();
     final Btree   b = test_push();
-    final Process P = b.processes.get("Stuck");
+    final Process P = b.P; // b.processes.get("Stuck");
     final Stuck   s = b.new Stuck(P, "stuck");
     final Process.Register k = s.Key;
     final Process.Register d = s.Data;
@@ -3563,7 +3571,7 @@ Merge     : 0
   static void test_elementAt()
    {sayCurrentTestName();
     final Btree   b = test_push();
-    final Process P = b.processes.get("Stuck");
+    final Process P = b.P; // b.processes.get("Stuck");
     final Stuck   s = b.new Stuck(P, "stuck");
     final Process.Register i = P.register("i", b.stuckAddressSize);
     final StringBuilder    S = new StringBuilder();
@@ -3660,7 +3668,7 @@ Merge     : 0
   static void test_setElementAt()
    {sayCurrentTestName();
     final Btree b = test_push();
-    final Process P = b.processes.get("Stuck");
+    final Process P = b.P; // b.processes.get("Stuck");
     final Stuck   s = b.new Stuck(P, "stuck");
     final Process.Register k = P.register("k", b.bitsPerKey);
     final Process.Register d = P.register("d", b.bitsPerData);
@@ -3709,7 +3717,7 @@ Stuck: stuck size: 5, leaf: 1, root
   static void test_setDataAt()
    {sayCurrentTestName();
     final Btree b = test_push();
-    final Process P = b.processes.get("Stuck");
+    final Process P = b.P; // b.processes.get("Stuck");
     final Stuck   s = b.new Stuck(P, "stuck");
     final Process.Register k = P.register("k", b.bitsPerKey);
     final Process.Register d = P.register("d", b.bitsPerData);
@@ -3755,7 +3763,7 @@ Stuck: stuck size: 4, leaf: 1, root
   static void test_setPastLastElement()
    {sayCurrentTestName();
     final Btree   b = test_push();
-    final Process P = b.processes.get("Stuck");
+    final Process P = b.P; // b.processes.get("Stuck");
     final Stuck   s = b.new Stuck(P, "stuck");
     final Process.Register k = P.register("k", b.bitsPerKey);
     final Process.Register d = P.register("d", b.bitsPerData);
@@ -3820,7 +3828,7 @@ Merge     : 0
   static void test_insertElementAt()
    {sayCurrentTestName();
     final Btree b = test_push();
-    final Process P = b.processes.get("Stuck");
+    final Process P = b.P; // b.processes.get("Stuck");
     final Stuck   s = b.new Stuck(P, "stuck");
     final Process.Register k = P.register("k", b.bitsPerKey);
     final Process.Register d = P.register("d", b.bitsPerData);
@@ -3866,7 +3874,7 @@ Stuck: stuck size: 5, leaf: 1, root
   static void test_removeElementAt()
    {sayCurrentTestName();
     final Btree b = test_push();
-    final Process P = b.processes.get("Stuck");
+    final Process P = b.P; // b.processes.get("Stuck");
     final Stuck   s = b.new Stuck(P, "stuck");
     final Process.Register k = s.Key;
     final Process.Register d = s.Data;
@@ -3901,7 +3909,7 @@ Stuck: stuck size: 3, leaf: 1, root
   static void test_search_eq()
    {sayCurrentTestName();
     final Btree b = test_push();
-    final Process P = b.processes.get("Stuck");
+    final Process P = b.P; // b.processes.get("Stuck");
     final Stuck   s = b.new Stuck(P, "stuck", true);
     final Process.Register k = s.Key;
     final Process.Register d = s.Data;
@@ -3941,7 +3949,7 @@ Stuck: stuck size: 3, leaf: 1, root
   static void test_search_eq_parallel()
    {sayCurrentTestName();
     final Btree b = test_push();
-    final Process P = b.processes.get("Stuck");
+    final Process P = b.P; // b.processes.get("Stuck");
     final Stuck   s = b.new Stuck(P, "stuck", true);
     final Process.Register k = s.Key;
     final Process.Register d = s.Data;
@@ -3981,7 +3989,7 @@ Stuck: stuck size: 3, leaf: 1, root
    {sayCurrentTestName();
     final int B = 8, S = 4, K = 8, D = 8;
     final Btree   b = new Btree(B, S+S, K, D);
-    final Process P = b.new Process("Stuck");
+    final Process P = b.P; //b.new Process("Stuck");
     final Stuck   s = b.new Stuck(P, "stuck", true);
     final Process.Register k = s.Key;
     final Process.Register l = P.register("l", K);
@@ -4070,7 +4078,7 @@ Merge     : 0
    {sayCurrentTestName();
     final int B = 8, S = 4, K = 8, D = 8;
     final Btree   b = new Btree(B, S+S, K, D);
-    final Process P = b.new Process("Stuck");
+    final Process P = b.P; //b.new Process("Stuck");
     final Stuck   s = b.new Stuck(P, "stuck");
     final Process.Register k = s.Key;
     final Process.Register l = P.register("l", K);
@@ -4157,7 +4165,7 @@ Merge     : 0
   static void test_splitIntoTwo()
    {sayCurrentTestName();
     final Btree            b = test_push(4, 4);
-    final Process          P = b.processes.get("Stuck");
+    final Process          P = b.P; //b.processes.get("Stuck");
     final Process.Register L = P.new Register("Left",  8);
     final Process.Register R = P.new Register("Right", 8);
     final Stuck            s = b.new Stuck(P, "stuck");
@@ -4207,7 +4215,7 @@ Stuck: right size: 2, leaf: 0, index: 2
   static void test_splitIntoThree()
    {sayCurrentTestName();
     final Btree            b = test_push(4,4);
-    final Process          P = b.processes.get("Stuck");
+    final Process          P = b.P; // b.processes.get("Stuck");
     final Process.Register L = P.new Register("Left",  8);
     final Process.Register R = P.new Register("Right", 8);
     final Stuck            s = b.new Stuck(P, "stuck");
@@ -4292,7 +4300,7 @@ Merge     : 0
   static void test_splitLow()
    {sayCurrentTestName();
     final Btree            b = test_push(4, 4);
-    final Process          P = b.processes.get("Stuck");
+    final Process          P = b.P; // b.processes.get("Stuck");
     final Stuck            s = b.new Stuck(P, "stuck");
     final Stuck            l = b.new Stuck(P, "left");
     final Stuck            r = b.new Stuck(P, "right");
@@ -4339,7 +4347,7 @@ Stuck: left size: 2, leaf: 0, index: 1
   static void test_splitLowButOne()
    {sayCurrentTestName();
     final Btree   b = test_push(4, 4);
-    final Process P = b.processes.get("Stuck");
+    final Process P = b.P; // b.processes.get("Stuck");
     final Stuck            s = b.new Stuck(P, "stuck");
     final Stuck            l = b.new Stuck(P, "left");
     final Stuck            r = b.new Stuck(P, "right");
@@ -4403,7 +4411,7 @@ Merge     : 0
    {sayCurrentTestName();
     final Btree   b = test_push();
     final Btree   B = test_push();
-    final Process P = b.processes.get("Stuck");
+    final Process P = b.P; // b.processes.get("Stuck");
     final Stuck   s = b.new Stuck(P, "stuck");
     final Stuck   S = b.new Stuck(P, "Stuck");
     final Process.Register O = P.new Register("One",  8);
@@ -4443,7 +4451,7 @@ Stuck: stuck size: 8, leaf: 1, root
   static void test_merge2()
    {sayCurrentTestName();
     final Btree   b = test_push();
-    final Process P = b.processes.get("Stuck");
+    final Process P = b.P; // b.processes.get("Stuck");
     final Stuck   s = b.new Stuck(P, "stuck");
     final Stuck   l = b.new Stuck(P, "left");
     final Stuck   r = b.new Stuck(P, "right");
@@ -4488,7 +4496,7 @@ Stuck: stuck size: 8, leaf: 1, root
   static void test_mergeButOne()
    {sayCurrentTestName();
     final Btree   b = test_push();
-    final Process P = b.processes.get("Stuck");
+    final Process P = b.P; // b.processes.get("Stuck");
     final Stuck   s = b.new Stuck(P, "stuck");
     final Stuck   S = b.new Stuck(P, "Stuck");
     final Process.Register k = P.register("k", b.bitsPerKey);
@@ -4533,7 +4541,7 @@ Merge     : 1
   static void test_mergeButOne2()
    {sayCurrentTestName();
     final Btree b = test_push();
-    final Process P = b.processes.get("Stuck");
+    final Process P = b.P; // b.processes.get("Stuck");
     final Stuck   s = b.new Stuck(P, "stuck");
     final Stuck   l = b.new Stuck(P, "left");
     final Stuck   r = b.new Stuck(P, "right");
@@ -4581,7 +4589,7 @@ Merge     : 1
   static void test_allocate()
    {sayCurrentTestName();
     final Btree            b = new Btree(4, 4, 8, 8);
-    final Process          p = b.process("alloc");
+    final Process          p = b.P; // b.process("alloc");
     final Process.Register i = b.btreeIndex(p, "index1");
     final Process.Register j = b.btreeIndex(p, "index2");
     p.processTrace = true;
@@ -4659,7 +4667,7 @@ Chip: Btree            step: 0, maxSteps: 10, running: 0
     b.chipRun();
     //stop(b.chipPrintMemory());
     ok(b.chipPrintMemory(), """
-Chip: Btree            step: 43, maxSteps: 100, running: 0
+Chip: Btree            step: 53, maxSteps: 100, running: 0
   Processes:
     stuckIsLeaf
       Memory: size:  4, width:  1, block:  1
@@ -4686,13 +4694,13 @@ Chip: Btree            step: 43, maxSteps: 100, running: 0
         0  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24
         0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0
 """);
-    ok(i, "alloc_index1_0 = 1");
+    ok(i, "main_index1_0 = 1");
    }
 
   static void test_mergeLeavesIntoRoot()
    {sayCurrentTestName();
     final Btree            b = new Btree(32, 4, 8, 8);
-    final Process          P = b.new Process("findAndInsert");
+    final Process          P = b.P; //b.new Process("findAndInsert");
     final Process.Register k = P.register("k", b.bitsPerKey);
     final Process.Register d = P.register("d", b.bitsPerData);
     final Process.Register i = P.register("i", b.btreeAddressSize);
@@ -4732,7 +4740,7 @@ Chip: Btree            step: 43, maxSteps: 100, running: 0
   static void test_mergeLeavesNotTop()
    {sayCurrentTestName();
     final Btree            b = new Btree(32, 4, 8, 8);
-    final Process          P = b.new Process("findAndInsert");
+    final Process          P = b.P; //b.new Process("findAndInsert");
     final Stuck            s = b.new Stuck(P, "findAndInsert");
     final Process.Register k = P.register("k", b.bitsPerKey);
     final Process.Register d = P.register("d", b.bitsPerData);
@@ -4775,7 +4783,7 @@ Chip: Btree            step: 43, maxSteps: 100, running: 0
    {sayCurrentTestName();
     final Btree            b = new Btree(32, 4, 8, 8);
     b.btreeLoad(test_put_save_9());
-    final Process          P = b.new Process("findAndInsert");
+    final Process          P = b.P; //b.new Process("findAndInsert");
     final Stuck            p = b.new Stuck(P, "findAndInsert");
     final Process.Register i = P.register("i", b.btreeAddressSize);
     P.processTrace = true;
@@ -4838,7 +4846,7 @@ Chip: Btree            step: 43, maxSteps: 100, running: 0
   static void test_mergeBranchesIntoRoot()
    {sayCurrentTestName();
     final Btree            b = new Btree(32, 4, 8, 8);
-    final Process          P = b.new Process("findAndInsert");
+    final Process          P = b.P; //b.new Process("findAndInsert");
     final Process.Register k = P.register("k", b.bitsPerKey);
     final Process.Register d = P.register("d", b.bitsPerData);
     final Process.Register i = P.register("i", b.btreeAddressSize);
@@ -4897,7 +4905,7 @@ Chip: Btree            step: 43, maxSteps: 100, running: 0
   static void test_mergeBranchesNotTop()
    {sayCurrentTestName();
     final Btree            b = test_put_reload();
-    final Process          P = b.new Process("findAndInsert");
+    final Process          P = b.P; //b.new Process("findAndInsert");
     final Stuck            s = b.new Stuck(P, "findAndInsert");
     final Process.Register i = P.register("i", b.btreeAddressSize);
     final Process.Register j = P.register("j", b.stuckAddressSize);
@@ -4944,7 +4952,7 @@ Chip: Btree            step: 43, maxSteps: 100, running: 0
   static void test_mergeBranchesAtTop()
    {sayCurrentTestName();
     final Btree            b = test_put_reload();
-    final Process          P = b.new Process("findAndInsert");
+    final Process          P = b.P; //b.new Process("findAndInsert");
     final Stuck            s = b.new Stuck(P, "stuck");
     final Process.Register i = P.register("i", b.btreeAddressSize);
     final Process.Register j = P.register("j", b.stuckAddressSize);
@@ -4990,7 +4998,7 @@ Chip: Btree            step: 43, maxSteps: 100, running: 0
 
   static Btree test_createTree()
    {final Btree b = new Btree(8, 4, 8, 8);
-    final Process P = b.new Process("Stuck");
+    final Process P = b.P; //b.new Process("Stuck");
     b.stuckIsLeaf .memorySet( 0, 0);
     b.stuckIsLeaf .memorySet( 1, 1);
     b.stuckIsLeaf .memorySet( 1, 2);
@@ -5035,7 +5043,7 @@ Chip: Btree            step: 43, maxSteps: 100, running: 0
   static void test_find()
    {sayCurrentTestName();
     final Btree            b = test_createTree();
-    final Process          P = b.processes.get("Stuck");
+    final Process          P = b.P; // b.processes.get("Stuck");
     final Process.Register k = P.register("k", b.bitsPerKey);
     P.processTrace = true;
     k.RegisterSet(3);
@@ -5065,7 +5073,7 @@ Merge     : 0
   static void test_findAndInsert()
    {sayCurrentTestName();
     final Btree            b = new Btree(32, 4, 8, 8);
-    final Process          P = b.new Process("findAndInsert");
+    final Process          P = b.P; //b.new Process("findAndInsert");
     final Process.Register k = P.register("k", b.bitsPerKey);
     final Process.Register d = P.register("d", b.bitsPerData);
     final Process.Register i = P.register("i", b.btreeAddressSize);
@@ -5142,7 +5150,7 @@ Merge     : 0
   static void test_splitRootLeaf()
    {sayCurrentTestName();
     final Btree            b = new Btree(4, 4, 8, 8);
-    final Process          P = b.new Process("splitRootLeaf");
+    final Process          P = b.P; //b.new Process("splitRootLeaf");
     final Stuck            s = b.new Stuck(P, "stuck");
     final Process.Register k = P.register("k", b.bitsPerKey);
     final Process.Register d = P.register("d", b.bitsPerData);
@@ -5171,7 +5179,7 @@ Merge     : 0
     final int   N = 32;
     b.btreeLoad(test_put_save_32());
 
-    final Process          P = b.new Process("delete");
+    final Process          P = b.P; //b.new Process("delete");
     final Stuck            s = b.new Stuck(P, "stuck");
     final Process.Register k = P.register("k", b.bitsPerKey);
     final Process.Register n = P.register("n", 1);
@@ -5429,7 +5437,7 @@ Merge     : 0
   static void test_delete_random()
    {sayCurrentTestName();
     final Btree            b = test_put_reload();
-    final Process          P = b.new Process("delete");
+    final Process          P = b.P; //b.new Process("delete");
     final Stuck            s = b.new Stuck(P, "stuck");
     final Process.Register i = P.register("i", b.btreeAddressSize);
     final Process.Register k = P.register("k", b.bitsPerKey);
@@ -5685,7 +5693,7 @@ Merge     : 0
   static void test_delete_descending()
    {sayCurrentTestName();
     final Btree            b = test_put_reload();
-    final Process          P = b.new Process("delete");
+    final Process          P = b.P; //b.new Process("delete");
     final Stuck            s = b.new Stuck(P, "stuck");
     final Process.Register i = P.register("i", b.btreeAddressSize);
     final Process.Register k = P.register("k", b.bitsPerKey);
@@ -5958,7 +5966,7 @@ Merge     : 0
   static void test_delete_random_descending()
    {sayCurrentTestName();
     final Btree            b = test_put_reload();
-    final Process          P = b.new Process("delete");
+    final Process          P = b.P; //b.new Process("delete");
     final Stuck            s = b.new Stuck(P, "stuck");
     final Process.Register i = P.register("i", b.btreeAddressSize);
     final Process.Register k = P.register("k", b.bitsPerKey);
@@ -6215,7 +6223,7 @@ Merge     : 0
   static void test_verilog_push()
    {sayCurrentTestName();
     final Btree   b = new Btree(4, 4, 8, 8);
-    final Process P = b.new Process("Stuck");
+    final Process P = b.P; //b.new Process("Stuck");
     final Stuck   s = b.new Stuck(P, "stuck");
     final Process.Register k = P.register("k", b.bitsPerKey);
     final Process.Register d = P.register("d", b.bitsPerData);
@@ -6238,7 +6246,7 @@ Merge     : 0
   static void test_verilog_pop()
    {sayCurrentTestName();
     final Btree   b = test_push();
-    final Process P = b.processes.get("Stuck");
+    final Process P = b.P; //b.processes.get("Stuck");
     final Stuck   s = b.new Stuck(P, "stuck");
     final Process.Register k = s.Key;
     final Process.Register d = s.Data;
@@ -6261,7 +6269,7 @@ Merge     : 0
   static void test_put_ascending()
    {sayCurrentTestName();
     final Btree            b = new Btree(32, 4, 8, 8);
-    final Process          P = b.new Process("put");
+    final Process          P = b.P; //b.new Process("put");
     final Process.Register k = P.register("k", b.bitsPerKey);
     final Process.Register d = P.register("d", b.bitsPerData);
     final Process.Register i = P.register("i", 8);
@@ -6303,7 +6311,7 @@ Merge     : 0
   static void test_put_merge()
    {sayCurrentTestName();
     final Btree            b = new Btree(32, 4, 8, 8);
-    final Process          P = b.new Process("put");
+    final Process          P = b.P; //b.new Process("put");
     final Process.Register k = P.register("k", b.bitsPerKey);
     final Process.Register d = P.register("d", b.bitsPerData);
     final Process.Register i = P.register("i", 8);
@@ -7099,7 +7107,7 @@ Merge     : 0
   static void test_put_descending()
    {sayCurrentTestName();
     final Btree            b = new Btree(32, 4, 8, 8);
-    final Process          P = b.new Process("put");
+    final Process          P = b.P; //b.new Process("put");
     final Process.Register k = P.register("k", b.bitsPerKey);
     final Process.Register d = P.register("d", b.bitsPerData);
     final Process.Register l = P.register("l", 1);
@@ -7141,7 +7149,7 @@ Merge     : 0
   static void test_put_random()
    {sayCurrentTestName();
     final Btree            b = new Btree(32, 4, 8, 8);
-    final Process          P = b.new Process("putReverse");
+    final Process          P = b.P; //b.new Process("putReverse");
     final Process.Register i = P.register("i", b.btreeAddressSize);
     final Process.Register k = P.register("k", b.bitsPerKey);
     final Process.Register d = P.register("d", b.bitsPerData);
@@ -7197,7 +7205,7 @@ Merge     : 0
   static void test_verilog_put()
    {sayCurrentTestName();
     final Btree            b = new Btree(1024, 1024, 32, 32);
-    final Process          P = b.new Process("verilogPut");
+    final Process          P = b.P; //b.new Process("verilogPut");
     final Process.Register k = P.register("k", b.bitsPerKey);   k.input();
     final Process.Register d = P.register("d", b.bitsPerData);  d.input();
 
@@ -7267,8 +7275,8 @@ Merge     : 0
    }
 
   static void newTests()                                                        // Tests being worked on
-   {//oldTests();
-    test_verilog_put();
+   {oldTests();
+    //test_verilog_put();
    }
 
   public static void main(String[] args)                                        // Test if called as a program
