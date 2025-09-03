@@ -32,6 +32,9 @@ class Btree extends Chip                                                        
   final Stuck RightMergeBranchesIntoRoot;                                       // Right sibling in merge branches into root
   final Process.Register mergeSum;                                              // Sum of the lengths of the two stucks to be merged
   final Process.Register mergeCan;                                              // Can merge two stucks
+  final Process.Register splitIl;                                               // Index in memory of the left stuck
+  final Process.Register splitIr;                                               // Index in memory of the right stuck
+  final Process.Register splitMk;                                               // Mid key when merging two stucks
 
   boolean suppressMerge = false;                                                // Suppress merges during put to allow merge steps to be tested individually.  If this is on the trees built for testing are already merged so there is nothing to test.
   static boolean debug  = false;                                                // Debug if enabled
@@ -67,6 +70,9 @@ class Btree extends Chip                                                        
     mergeSum = P.new Register("sum", 1+stuckAddressSize);                       // Sum of the lengths of the two stucks
     mergeCan = P.new Register("can", 1);                                        // Can merge
 
+    splitIl = P.new Register("indexLeft",  btreeAddressSize);                   // Index in memory of the left stuck
+    splitIr = P.new Register("indexRight", btreeAddressSize);                   // Index in memory of the right stuck
+    splitMk = P.new Register("midKey",     bitsPerKey);                         // Mid key
 
 chipStop = true;
     createFreeChain();                                                          // Create the free chain
@@ -1679,9 +1685,9 @@ chipStop = true;
    {final Stuck p = ParentStuck;                                                // Parent stuck
     final Stuck l = LeftSplitStuck;                                             // Left split stuck
     final Stuck r = RightSplitStuck;                                            // Right split stuck
-    final Process.Register il = P.new Register("indexLeft",  btreeAddressSize); // Index in memory of the left stuck
-    final Process.Register ir = P.new Register("indexRight", btreeAddressSize); // Index in memory of the right stuck
-    final Process.Register mk = P.new Register("midKey",     bitsPerKey);       // Mid key
+    final Process.Register il = splitIl;                                        // Index in memory of the left stuck
+    final Process.Register ir = splitIr;                                        // Index in memory of the right stuck
+    final Process.Register mk = splitMk;                                        // Mid key
 
     p.stuckGetRoot();                                                           // Load parent
 
@@ -1726,9 +1732,9 @@ chipStop = true;
    {final Stuck p = ParentStuck;                                                // Parent stuck
     final Stuck l = LeftSplitStuck;                                             // Left split stuck
     final Stuck r = RightSplitStuck;                                            // Right split stuck
-    final Process.Register il = P.new Register("indexLeft",  btreeAddressSize); // Index in memory of the left stuck
-    final Process.Register ir = P.new Register("indexRight", btreeAddressSize); // Index in memory of the right stuck
-    final Process.Register mk = P.new Register("midKey",     bitsPerKey);       // Mid key
+    final Process.Register il = splitIl;                                        // Index in memory of the left stuck
+    final Process.Register ir = splitIr;                                        // Index in memory of the right stuck
+    final Process.Register mk = splitMk;                                        // Mid key
     final int              midPoint = (maxStuckSize-1) / 2;                     // Mid point in parent
 
     p.stuckGetRoot();                                                           // Load branch root stuck from btree
@@ -1759,8 +1765,8 @@ chipStop = true;
     final Stuck c = new Stuck(P, "splitLeafNotTopChild"); //////////                     // Left split stuck
     final Process.Register ck = P.new Register("childKey",   bitsPerKey);       // Index in memory of the left stuck
     final Process.Register cd = P.new Register("childData",  btreeAddressSize); // Index in memory of the left stuck
-    final Process.Register il = P.new Register("indexLeft",  btreeAddressSize); // Index in memory of the left stuck
-    final Process.Register mk = P.new Register("midKey",     bitsPerKey);       // Mid key
+    final Process.Register il = splitIl;                                        // Index in memory of the left stuck
+    final Process.Register mk = splitMk;                                        // Mid key
 
     p.stuckGet(ParentIndex);                                                    // Load parent stuck from btree
 
@@ -1807,7 +1813,7 @@ chipStop = true;
     final Stuck c = new Stuck(P, "splitLeafAtTopChild");                        // Child at index which must be a full leaf
     final Process.Register ci  = P.register("childIndex" , btreeAddressSize);   // Btree index of child
     final Process.Register cl  = P.register("leftIndex" ,  btreeAddressSize);   // Btree index of left child of child
-    final Process.Register mk  = P.register("midKey",            bitsPerKey);   // Mid key
+    final Process.Register mk = splitMk;                                        // Mid key
 
     p.stuckGet(ParentIndex);                                                    // Load parent stuck from btree
     p.PastLastElement();                                                        // Get index of child
@@ -1887,8 +1893,8 @@ chipStop = true;
     final Stuck c = RightSplitStuck;                                            // Right split stuck
     final Process.Register ck = P.new Register("childKey",   bitsPerKey);       // Index in memory of the left stuck
     final Process.Register cd = P.new Register("childData",  btreeAddressSize); // Index in memory of the left stuck
-    final Process.Register il = P.new Register("indexLeft",  btreeAddressSize); // Index in memory of the left stuck
-    final Process.Register mk = P.new Register("midKey",     bitsPerKey);       // Mid key
+    final Process.Register il = splitIl;                                        // Index in memory of the left stuck
+    final Process.Register mk = splitMk;                                        // Mid key
 
     p.stuckGet(ParentIndex);                                                    // Load parent stuck from btree
 
