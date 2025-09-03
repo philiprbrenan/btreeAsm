@@ -51,7 +51,7 @@ class Btree extends Chip                                                        
     stuckKeys    = new Memory("stuckKeys"  , Size, bitsPerKey , MaxStuckSize);  // Keys fields
     stuckData    = new Memory("stuckData"  , Size, bitsPerData, MaxStuckSize);  // Data fields
 
-    ParentStuck     = new Stuck(P, "Parent");                                   // Parent stuck
+    ParentStuck  = new Stuck(P, "Parent");                                      // Parent stuck
     LeftMergeStuck  = new Stuck(P, "MergeLeft");                                // Left stuck sibling in merge operation
     RightMergeStuck = new Stuck(P, "MergeRight");                               // Right stuck sibling in merge operation
     LeftSplitStuck  = new Stuck(P, "SplitLeft");                                // Left  stuck in a split operation
@@ -1664,7 +1664,7 @@ chipStop = true;
 
 //D2 Split                                                                      // Split nodes in half to increase the number of nodes in the tree
 
-  private void splitRootLeaf()                                                  // Split a full root leaf
+  private void splitRootLeaf(Process P)                                         // Split a full root leaf
    {final Stuck p = new Stuck(P, "splitRootLeafParent");                        // Parent stuck
     final Stuck l = new Stuck(P, "splitRootLeafLeft");                          // Left split stuck
     final Stuck r = new Stuck(P, "splitRootLeafRight");                         // Right split stuck
@@ -1947,8 +1947,8 @@ chipStop = true;
 
   private Process.Register mergeLeavesIntoRoot()                                // Merge two leaves into the root
    {final Stuck p = ParentStuck;                                                // Parent stuck two of whose children might be merged
-    final Stuck l = LeftMergeStuck;                                             // Left split stuck
-    final Stuck r = RightMergeStuck;                                            // Right split stuck
+    final Stuck l = new Stuck(P, "mergeLeavesIntoRootLeft");                    // Left split stuck
+    final Stuck r = new Stuck(P, "mergeLeavesIntoRootRight");                   // Right split stuck
     final Process.Register ck = P.new Register("childKey",   bitsPerKey);       // Index in memory of the left stuck
     final Process.Register cd = P.new Register("childData",  btreeAddressSize); // Index in memory of the left stuck
     final Process.Register il = P.new Register("indexLeft",  btreeAddressSize); // Index in memory of the left stuck
@@ -2005,9 +2005,11 @@ chipStop = true;
 
   private Process.Register mergeLeavesNotTop                                    // Merge the two consecutive leaves of a branch that is not the root. Neither of the leaves is the topmost leaf.
    (Stuck Stuck, Process.Register ParentIndex, Process.Register LeftLeaf)
-   {final Stuck   p = Stuck;
-    final Stuck   l = LeftMergeStuck;                                           // Left split stuck
-    final Stuck   r = RightMergeStuck;                                          // Right split stuck
+   {final Process P = ParentIndex.registerProcess();
+    //final Stuck   p = new Stuck(P, "mergeLeavesIntoRootParent");              // Parent stuck
+    final Stuck   p = Stuck;
+    final Stuck   l = new Stuck(P, "mergeLeavesIntoRootLeft");                  // Left split stuck
+    final Stuck   r = new Stuck(P, "mergeLeavesIntoRootRight");                 // Right split stuck
     final Process.Register ck = P.new Register("childKey",   bitsPerKey);       // Index in memory of the left stuck
     final Process.Register cd = P.new Register("childData",  btreeAddressSize); // Index in memory of the left stuck
     final Process.Register il = P.new Register("indexLeft",  btreeAddressSize); // Index in memory of the left stuck
@@ -2070,9 +2072,11 @@ chipStop = true;
 
   private Process.Register mergeLeavesAtTop                                     // Merge the top most two leaves of a branch that is not the root
    (Stuck Stuck, Process.Register ParentIndex)
-   {final Stuck   p = Stuck;                                                    // Parent stuck
-    final Stuck   l = LeftMergeStuck;                                           // Left split stuck
-    final Stuck   r = RightMergeStuck;                                          // Right split stuck
+   {final Process P = ParentIndex.registerProcess();
+    //final Stuck   p = new Stuck(P, "mergeLeavesIntoRootParent");              // Parent stuck
+    final Stuck   p = Stuck;                                                    // Parent stuck
+    final Stuck   l = new Stuck(P, "mergeLeavesIntoRootLeft");                  // Left split stuck
+    final Stuck   r = new Stuck(P, "mergeLeavesIntoRootRight");                 // Right split stuck
     final Process.Register ck = P.new Register("childKey",   bitsPerKey);       // Index in memory of the left stuck
     final Process.Register sz = P.new Register("size",       stuckAddressSize); // Index in memory of the left stuck
     final Process.Register cd = P.new Register("childData",  btreeAddressSize); // Index in memory of the left stuck
@@ -2145,10 +2149,10 @@ chipStop = true;
     return success;
    }
 
-  private Process.Register mergeBranchesIntoRoot()                              // Merge two branches into the root
-   {final Stuck   p = ParentStuck;                                              // Parent stuck
-    final Stuck   l = LeftMergeStuck;                                           // Left split stuck
-    final Stuck   r = RightMergeStuck;                                          // Right split stuck
+  private Process.Register mergeBranchesIntoRoot(Process P)                     // Merge two branches into the root
+   {final Stuck   p = new Stuck(P, "mergeLeavesIntoRootParent");                // Parent stuck
+    final Stuck   l = new Stuck(P, "mergeLeavesIntoRootLeft");                  // Left split stuck
+    final Stuck   r = new Stuck(P, "mergeLeavesIntoRootRight");                 // Right split stuck
     final Process.Register ck = P.new Register("childKey",   bitsPerKey);       // Index in memory of the left stuck
     final Process.Register ls = P.new Register("leftChild",  stuckAddressSize); // Index in memory of the left stuck
     final Process.Register rs = P.new Register("rightChild", stuckAddressSize); // Index in memory of the left stuck
@@ -2222,9 +2226,11 @@ chipStop = true;
 
   private Process.Register mergeBranchesNotTop                                  // Merge the two consecutive child branches of a branch that is not the root. Neither of the child branches is the topmost leaf.
    (Stuck Stuck, Process.Register ParentIndex, Process.Register LeftBranch)
-   {final Stuck   p = Stuck;                                                    // Parent stuck
-    final Stuck   l = LeftMergeStuck;                                           // Left split stuck
-    final Stuck   r = RightMergeStuck;                                          // Right split stuck
+   {final Process P = ParentIndex.registerProcess();
+    //final Stuck p = new Stuck(P, "mergeBranchesNotTopParent");                // Parent stuck
+    final Stuck   p = Stuck;                                                    // Parent stuck
+    final Stuck   l = new Stuck(P, "mergeBranchesNotTopLeft");                  // Left split stuck
+    final Stuck   r = new Stuck(P, "mergeBranchesNotTopRight");                 // Right split stuck
     final Process.Register ck = P.new Register("childKey",   bitsPerKey);       // Index in memory of the left stuck
     final Process.Register ls = P.new Register("leftChild",  stuckAddressSize); // Index in memory of the left stuck
     final Process.Register rs = P.new Register("rightChild", stuckAddressSize); // Index in memory of the left stuck
@@ -2304,9 +2310,11 @@ chipStop = true;
 
   private Process.Register mergeBranchesAtTop                                   // Merge the top most two child branches of a branch that is not the root
    (Stuck Stuck, Process.Register ParentIndex)
-   {final Stuck   p = Stuck;                                                    // Parent stuck
-    final Stuck   l = LeftMergeStuck;                                           // Left split stuck
-    final Stuck   r = RightMergeStuck;                                          // Right split stuck
+   {final Process P = ParentIndex.registerProcess();
+    //final Stuck   p = new Stuck(P, "mergeLeavesIntoRootParent");              // Parent stuck
+    final Stuck   p = Stuck;                                                    // Parent stuck
+    final Stuck   l = new Stuck(P, "mergeLeavesIntoRootLeft");                  // Left split stuck
+    final Stuck   r = new Stuck(P, "mergeLeavesIntoRootRight");                 // Right split stuck
     final Process.Register ck = P.new Register("childKey",   bitsPerKey);       // Index in memory of the left stuck
     final Process.Register sz = P.new Register("size",       stuckAddressSize); // Index in memory of the left stuck
     final Process.Register cd = P.new Register("childData",  btreeAddressSize); // Index in memory of the left stuck
@@ -2477,7 +2485,7 @@ chipStop = true;
 
         P.new If(f.BtreeIndex)                                                  // Failed to insert because the root is a leaf which must be full else the operation would have succeeded
          {void Else()
-           {splitRootLeaf();                                                    // Split the leaf root to make room
+           {splitRootLeaf(P);                                                   // Split the leaf root to make room
             f.findAndInsert(Key, Data);                                         // Splitting a leaf root will make more space in the tree so this operation will now succeed
             P.GOto(oEnd);                                                       // Direct insertion succeeded so nothing more to do
            }
@@ -2588,7 +2596,7 @@ chipStop = true;
            }
          };
 
-        P.new If (mergeBranchesIntoRoot())                                      // Try merging branches into root
+        P.new If (mergeBranchesIntoRoot(P))                                     // Try merging branches into root
          {void Then()
            {S.stuckGetRoot();                                                   // Reload root if the merge was successful
            }
@@ -2699,7 +2707,7 @@ chipStop = true;
            }
          };
 
-        P.new If (mergeBranchesIntoRoot())                                      // Try merging branches into root
+        P.new If (mergeBranchesIntoRoot(P))                                     // Try merging branches into root
          {void Then()
            {S.stuckGetRoot();                                                   // Reload root if the merge was successful
            }
@@ -4720,7 +4728,7 @@ Chip: Btree            step: 53, maxSteps: 100, running: 0
     k.RegisterSet(4); d.RegisterSet(5); f.findAndInsert(k, d);
     k.RegisterSet(3); d.RegisterSet(4); f.findAndInsert(k, d);
 
-    b.splitRootLeaf();
+    b.splitRootLeaf(P);
     b.chipRun();
     //stop(b.btreePrint());
     ok(b.btreePrint(), """
@@ -4761,7 +4769,7 @@ Chip: Btree            step: 53, maxSteps: 100, running: 0
     k.RegisterSet(40); d.RegisterSet(50); f.findAndInsert(k, d);
     k.RegisterSet(30); d.RegisterSet(40); f.findAndInsert(k, d);
 
-    b.splitRootLeaf();
+    b.splitRootLeaf(P);
 
     k.RegisterSet(50); d.RegisterSet(60); f.findAndInsert(k, d);
     k.RegisterSet(60); d.RegisterSet(70); f.findAndInsert(k, d);
@@ -4866,7 +4874,7 @@ Chip: Btree            step: 53, maxSteps: 100, running: 0
     k.RegisterSet(40); d.RegisterSet(50); f.findAndInsert(k, d);
     k.RegisterSet(30); d.RegisterSet(40); f.findAndInsert(k, d);
 
-    b.splitRootLeaf();
+    b.splitRootLeaf(P);
 
     k.RegisterSet(50); d.RegisterSet(60); f.findAndInsert(k, d);
     k.RegisterSet(60); d.RegisterSet(70); f.findAndInsert(k, d);
@@ -4894,7 +4902,7 @@ Chip: Btree            step: 53, maxSteps: 100, running: 0
 """);
 
     P.processClear();
-    final Process.Register r = b.mergeBranchesIntoRoot();
+    final Process.Register r = b.mergeBranchesIntoRoot(P);
     b.chipRun();
     //stop(b.btreePrint());
     ok(b.btreePrint(), """
@@ -5094,7 +5102,7 @@ Merge     : 0
     k.RegisterSet(40); d.RegisterSet(50); f.findAndInsert(k, d);
     k.RegisterSet(30); d.RegisterSet(40); f.findAndInsert(k, d);
 
-    b.splitRootLeaf();
+    b.splitRootLeaf(P);
     k.RegisterSet(50); d.RegisterSet(60); f.findAndInsert(k, d);
     k.RegisterSet(60); d.RegisterSet(70); f.findAndInsert(k, d);
 
@@ -5172,7 +5180,7 @@ Merge     : 0
     k.RegisterSet(40); d.RegisterSet(50); s.Push(k, d);
     s.stuckPut();
 
-    b.splitRootLeaf();
+    b.splitRootLeaf(P);
     b.chipRun();
     //stop(b.chipPrintMemory());
     //stop(b.btreePrint());
@@ -6354,7 +6362,7 @@ Merge     : 0
      };
     b.chipRun();
     //stop(s);
-    ok(""+s, """
+    ok(s, """
 1=0 |
 1,2=0 |
 1,2,3=0 |
@@ -7282,7 +7290,7 @@ Merge     : 0
   static void newTests()                                                        // Tests being worked on
    {//oldTests();
     //test_verilog_put();
-    test_put_merge();
+    test_allocate();
    }
 
   public static void main(String[] args)                                        // Test if called as a program
