@@ -30,6 +30,8 @@ class Btree extends Chip                                                        
   final Stuck RightSplitStuck;                                                  // Right sibling in split operation
   final Stuck LeftMergeBranchesIntoRoot;                                        // Left sibling in merge branches into root
   final Stuck RightMergeBranchesIntoRoot;                                       // Right sibling in merge branches into root
+  final Process.Register mergeSum;                                              // Sum of the lengths of the two stucks to be merged
+  final Process.Register mergeCan;                                              // Can merge two stucks
 
   boolean suppressMerge = false;                                                // Suppress merges during put to allow merge steps to be tested individually.  If this is on the trees built for testing are already merged so there is nothing to test.
   static boolean debug  = false;                                                // Debug if enabled
@@ -61,6 +63,10 @@ class Btree extends Chip                                                        
 
     LeftMergeBranchesIntoRoot  = new Stuck(P, "LeftMergeBranchesIntoRoot");     // Left sibling in merge branches into root
     RightMergeBranchesIntoRoot = new Stuck(P, "RightMergeBranchesIntoRoot");    // Right sibling in merge branches into root
+
+    mergeSum = P.new Register("sum", 1+stuckAddressSize);                       // Sum of the lengths of the two stucks
+    mergeCan = P.new Register("can", 1);                                        // Can merge
+
 
 chipStop = true;
     createFreeChain();                                                          // Create the free chain
@@ -1451,8 +1457,8 @@ chipStop = true;
 //D3 Merge                                                                      // Merge stucks in various ways
 
     void merge(Stuck Source)                                                    // Concatenate the indicated stuck onto the end of the current one
-     {final Process.Register sum = P.new Register("sum", 1+stuckAddressSize);   // Sum of the lengths of the two stucks
-      final Process.Register can = P.new Register("can", 1);                    // Can merge
+     {final Process.Register sum = mergeSum;                                    // Sum of the lengths of the two stucks
+      final Process.Register can = mergeCan;                                    // Can merge
       sum.Sum(Source.size, size);
       can.Le (sum, maxStuckSize);
       P.new If(can)
@@ -1471,8 +1477,8 @@ chipStop = true;
      }
 
     void merge(Stuck Left, Stuck Right)                                         // Replace the current stuck with the concatenation of the two stucks indicated
-     {final Process.Register sum = P.new Register("sum", 1+stuckAddressSize);   // Sum of the lengths of the two stucks
-      final Process.Register can = P.new Register("can", 1);                    // Can merge
+     {final Process.Register sum = mergeSum;                                    // Sum of the lengths of the two stucks
+      final Process.Register can = mergeCan;                                    // Can merge
       sum.Sum(Left.size, Right.size);
       can.Le (sum, maxStuckSize);
       P.new If (can)
@@ -1489,8 +1495,8 @@ chipStop = true;
      }
 
     void mergeButOne(Process.Register Key, Stuck Source)                        // Concatenate the indicated stuck with a past last data element onto the end of the current stuck with a past last data element with the specified key inserted over the central past last data element separating the two.
-     {final Process.Register sum = P.new Register("sum", 1+stuckAddressSize);   // Sum of the lengths of the two stucks
-      final Process.Register can = P.new Register("can", 1);                    // Can merge
+     {final Process.Register sum = mergeSum;                                    // Sum of the lengths of the two stucks
+      final Process.Register can = mergeCan;                                    // Can merge
       sum.Sum(Source.size, size);
       sum.Inc();
       can.Lt (sum, maxStuckSize);
@@ -1512,8 +1518,8 @@ chipStop = true;
      }
 
     void mergeButOne(Stuck Left, Process.Register Key, Stuck Right)             // Concatenate the past last left and right stucks separated by the key over the past last data element of the left stuck into the target
-     {final Process.Register sum = P.new Register("sum", 1+stuckAddressSize);   // Sum of the lengths of the two stucks
-      final Process.Register can = P.new Register("can", 1);                    // Can merge
+     {final Process.Register sum = mergeSum;                                    // Sum of the lengths of the two stucks
+      final Process.Register can = mergeCan;                                    // Can merge
       sum.Sum(Left.size, Right.size);
       sum.Inc();
       can.Lt (sum, maxStuckSize);
@@ -1882,7 +1888,6 @@ chipStop = true;
     final Process.Register ck = P.new Register("childKey",   bitsPerKey);       // Index in memory of the left stuck
     final Process.Register cd = P.new Register("childData",  btreeAddressSize); // Index in memory of the left stuck
     final Process.Register il = P.new Register("indexLeft",  btreeAddressSize); // Index in memory of the left stuck
-    final Process.Register ir = P.new Register("indexRight", btreeAddressSize); // Index in memory of the right stuck
     final Process.Register mk = P.new Register("midKey",     bitsPerKey);       // Mid key
 
     p.stuckGet(ParentIndex);                                                    // Load parent stuck from btree
@@ -2007,12 +2012,9 @@ chipStop = true;
    {final Stuck   p = Stuck;
     final Stuck   l = LeftMergeStuck;                                           // Left split stuck
     final Stuck   r = RightMergeStuck;                                          // Right split stuckfinal Process.Register ck = P.new Register("childKey",   bitsPerKey);       // Index in memory of the left stuck
-    final Process.Register cd = P.new Register("childData",  btreeAddressSize); // Index in memory of the left stuck
     final Process.Register il = P.new Register("indexLeft",  btreeAddressSize); // Index in memory of the left stuck
     final Process.Register ir = P.new Register("indexRight", btreeAddressSize); // Index in memory of the right stuck
-    final Process.Register mk = P.new Register("midKey",     bitsPerKey);       // Mid key
     final Process.Register success = P.new Register("success", 1);              // Success of merge - the result of this operation
-    final Process.Register test    = P.new Register("test",    1);              // A generic test
 
     //P.new Instruction() {void action() {say("AAAA 22 mergeLeavesNotTop", ParentIndex, LeftLeaf);}};
 
@@ -7282,6 +7284,7 @@ Merge     : 0
 
   static void newTests()                                                        // Tests being worked on
    {//oldTests();
+    test_put_merge();
     test_verilog_put();
    }
 
