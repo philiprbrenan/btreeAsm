@@ -152,12 +152,12 @@ module Test;                                                                    
 
       $fwrite(o, "    Process: %1d - %-21s instructions: %1d, pc: %1d, rc: %1d\n", 0, "process", 9, process_pc, process_returnCode);
       $fwrite(o, "      Registers :\n");
-      $fwrite(o, "        %-32s = %1d\n",  "process_a_0", process_a_0);
-      $fwrite(o, "        %-26s[%4d] = %1d\n",  "process_b_1", 0, process_b_1[0]);
-      $fwrite(o, "        %-26s[%4d] = %1d\n",  "process_b_1", 1, process_b_1[1]);
-      $fwrite(o, "        %-26s[%4d] = %1d\n",  "process_b_1", 2, process_b_1[2]);
-      $fwrite(o, "        %-26s[%4d] = %1d\n",  "process_b_1", 3, process_b_1[3]);
-      $fwrite(o, "        %-32s = %1d\n",  "process_c_2", process_c_2);
+      $fwrite(o, "        %-50s = %1d\n",  "process_a_0", process_a_0);
+      $fwrite(o, "        %-44s[%4d] = %1d\n",  "process_b_1", 0, process_b_1[0]);
+      $fwrite(o, "        %-44s[%4d] = %1d\n",  "process_b_1", 1, process_b_1[1]);
+      $fwrite(o, "        %-44s[%4d] = %1d\n",  "process_b_1", 2, process_b_1[2]);
+      $fwrite(o, "        %-44s[%4d] = %1d\n",  "process_b_1", 3, process_b_1[3]);
+      $fwrite(o, "        %-50s = %1d\n",  "process_c_2", process_c_2);
       $fclose(o);
     end
   endtask
