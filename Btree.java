@@ -1110,10 +1110,10 @@ chipStop = true;
          {v.new If (compares[0].registerName())
            {void Then()
              {Found.one(v);
+              StuckIndex.copy(v, collapse[0]);
               v.new Case(maxStuckSize, collapse[0].registerName())
                {void Choice(int I)
-                 {StuckIndex.registerSet(v, I);
-                  Stuck.this.Key .copy(v, keys[I]);
+                 {Stuck.this.Key .copy(v, keys[I]);
                   Stuck.this.Data.copy(v, data[I]);
                  }
                };
@@ -1266,20 +1266,20 @@ chipStop = true;
          {v.new If (compares[0].registerName())
            {void Then()
              {Found.one(v);
+              StuckIndex.copy(v, collapse[0]);
               v.new Case(maxStuckSize, collapse[0].registerName())
                {void Choice(int I)
-                 {StuckIndex.registerSet(v, I);
-                  Stuck.this.FoundKey.copy(v, keys[I]);
+                 {Stuck.this.FoundKey.copy(v, keys[I]);
                   Stuck.this.Data    .copy(v, data[I]);
                  }
                };
              }
             void Else()
              {Found.zero(v);
+              StuckIndex.registerSet(v, size);
               v.new Case(maxStuckSize, size.registerName())
                {void Choice(int I)
-                 {StuckIndex.registerSet(v, I);
-                  Stuck.this.Data.copy(v, data[I]);
+                 {Stuck.this.Data.copy(v, data[I]);
                  }
                };
              }
@@ -5345,9 +5345,9 @@ Merge     : 0
            {v.new Case(random_32.length, i.registerName())
              {void Choice(int I)
                {k.registerSet(v, random_32[I]);
-                i.inc(v);
                }
              };
+            i.inc(v);
            }
          };
 
@@ -5601,9 +5601,9 @@ Merge     : 0
            {v.new Case(random_32.length, i.registerName())
              {void Choice(int I)
                {k.registerSet(v, N-I);
-                i.inc(v);
                }
              };
+            i.inc(v);
            }
          };
 
@@ -7056,9 +7056,9 @@ Merge     : 0
            {v.new Case(1, random_32.length+1, i.registerName())
              {void Choice(int I)
                {k.registerSet(v, random_32[I-1]);
-                i.dec(v);
                }
              };
+            i.dec(v);
            }
          };
 
@@ -7162,7 +7162,7 @@ Merge     : 0
   static void newTests()                                                        // Tests being worked on
    {oldTests();
     //test_put_merge();
-    //test_verilog_put();
+    test_verilog_put();
    }
 
   public static void main(String[] args)                                        // Test if called as a program
