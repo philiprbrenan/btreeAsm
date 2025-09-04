@@ -50,92 +50,128 @@ module Test;                                                                    
         0: begin
           process_a_0 <= 1;
           process_pc <= process_pc + 1;
-          begin
-            integer f;
-            f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:0572:<init>|  Chip.java:0764:<init>|  Chip.java:0763:RegisterSet|  Chip.java:2236:test_register_array|  Chip.java:2278:newTests|  Chip.java:2283:main|");
-            $fclose(f);
-          end
+          case (process_pc)
+            0: begin
+                                                                                                                              begin
+                                                                                                                                integer f;
+                                                                                                                                f = $fopen("verilog/trace_verilog.txt", "a");
+                                                                                                                                $fdisplay(f, "Location: Chip.java:0575:<init>|  Chip.java:0767:<init>|  Chip.java:0766:RegisterSet|  Chip.java:2265:test_register_array|  Chip.java:2307:newTests|  Chip.java:2312:main|");
+                                                                                                                                $fclose(f);
+                                                                                                                              end
+            end
+          endcase
         end
         1: begin
           process_b_1[0] <= process_a_0;
           process_pc <= process_pc + 1;
-          begin
-            integer f;
-            f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:0572:<init>|  Chip.java:0833:<init>|  Chip.java:0832:Copy|  Chip.java:2236:test_register_array|  Chip.java:2278:newTests|  Chip.java:2283:main|");
-            $fclose(f);
-          end
+          case (process_pc)
+            0: begin
+                                                                                                                              begin
+                                                                                                                                integer f;
+                                                                                                                                f = $fopen("verilog/trace_verilog.txt", "a");
+                                                                                                                                $fdisplay(f, "Location: Chip.java:0575:<init>|  Chip.java:0767:<init>|  Chip.java:0766:RegisterSet|  Chip.java:2265:test_register_array|  Chip.java:2307:newTests|  Chip.java:2312:main|");
+                                                                                                                                $fclose(f);
+                                                                                                                              end
+            end
+          endcase
         end
         2: begin
           process_a_0 <= 3;
           process_pc <= process_pc + 1;
-          begin
-            integer f;
-            f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:0572:<init>|  Chip.java:0764:<init>|  Chip.java:0763:RegisterSet|  Chip.java:2237:test_register_array|  Chip.java:2278:newTests|  Chip.java:2283:main|");
-            $fclose(f);
-          end
+          case (process_pc)
+            0: begin
+                                                                                                                              begin
+                                                                                                                                integer f;
+                                                                                                                                f = $fopen("verilog/trace_verilog.txt", "a");
+                                                                                                                                $fdisplay(f, "Location: Chip.java:0575:<init>|  Chip.java:0767:<init>|  Chip.java:0766:RegisterSet|  Chip.java:2265:test_register_array|  Chip.java:2307:newTests|  Chip.java:2312:main|");
+                                                                                                                                $fclose(f);
+                                                                                                                              end
+            end
+          endcase
         end
         3: begin
           process_b_1[1] <= process_a_0;
           process_pc <= process_pc + 1;
-          begin
-            integer f;
-            f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:0572:<init>|  Chip.java:0833:<init>|  Chip.java:0832:Copy|  Chip.java:2237:test_register_array|  Chip.java:2278:newTests|  Chip.java:2283:main|");
-            $fclose(f);
-          end
+          case (process_pc)
+            0: begin
+                                                                                                                              begin
+                                                                                                                                integer f;
+                                                                                                                                f = $fopen("verilog/trace_verilog.txt", "a");
+                                                                                                                                $fdisplay(f, "Location: Chip.java:0575:<init>|  Chip.java:0767:<init>|  Chip.java:0766:RegisterSet|  Chip.java:2265:test_register_array|  Chip.java:2307:newTests|  Chip.java:2312:main|");
+                                                                                                                                $fclose(f);
+                                                                                                                              end
+            end
+          endcase
         end
         4: begin
           process_a_0 <= 5;
           process_pc <= process_pc + 1;
-          begin
-            integer f;
-            f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:0572:<init>|  Chip.java:0764:<init>|  Chip.java:0763:RegisterSet|  Chip.java:2238:test_register_array|  Chip.java:2278:newTests|  Chip.java:2283:main|");
-            $fclose(f);
-          end
+          case (process_pc)
+            0: begin
+                                                                                                                              begin
+                                                                                                                                integer f;
+                                                                                                                                f = $fopen("verilog/trace_verilog.txt", "a");
+                                                                                                                                $fdisplay(f, "Location: Chip.java:0575:<init>|  Chip.java:0767:<init>|  Chip.java:0766:RegisterSet|  Chip.java:2265:test_register_array|  Chip.java:2307:newTests|  Chip.java:2312:main|");
+                                                                                                                                $fclose(f);
+                                                                                                                              end
+            end
+          endcase
         end
         5: begin
           process_b_1[2] <= process_a_0;
           process_pc <= process_pc + 1;
-          begin
-            integer f;
-            f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:0572:<init>|  Chip.java:0833:<init>|  Chip.java:0832:Copy|  Chip.java:2238:test_register_array|  Chip.java:2278:newTests|  Chip.java:2283:main|");
-            $fclose(f);
-          end
+          case (process_pc)
+            0: begin
+                                                                                                                              begin
+                                                                                                                                integer f;
+                                                                                                                                f = $fopen("verilog/trace_verilog.txt", "a");
+                                                                                                                                $fdisplay(f, "Location: Chip.java:0575:<init>|  Chip.java:0767:<init>|  Chip.java:0766:RegisterSet|  Chip.java:2265:test_register_array|  Chip.java:2307:newTests|  Chip.java:2312:main|");
+                                                                                                                                $fclose(f);
+                                                                                                                              end
+            end
+          endcase
         end
         6: begin
           process_a_0 <= 7;
           process_pc <= process_pc + 1;
-          begin
-            integer f;
-            f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:0572:<init>|  Chip.java:0764:<init>|  Chip.java:0763:RegisterSet|  Chip.java:2239:test_register_array|  Chip.java:2278:newTests|  Chip.java:2283:main|");
-            $fclose(f);
-          end
+          case (process_pc)
+            0: begin
+                                                                                                                              begin
+                                                                                                                                integer f;
+                                                                                                                                f = $fopen("verilog/trace_verilog.txt", "a");
+                                                                                                                                $fdisplay(f, "Location: Chip.java:0575:<init>|  Chip.java:0767:<init>|  Chip.java:0766:RegisterSet|  Chip.java:2265:test_register_array|  Chip.java:2307:newTests|  Chip.java:2312:main|");
+                                                                                                                                $fclose(f);
+                                                                                                                              end
+            end
+          endcase
         end
         7: begin
           process_b_1[3] <= process_a_0;
           process_pc <= process_pc + 1;
-          begin
-            integer f;
-            f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:0572:<init>|  Chip.java:0833:<init>|  Chip.java:0832:Copy|  Chip.java:2239:test_register_array|  Chip.java:2278:newTests|  Chip.java:2283:main|");
-            $fclose(f);
-          end
+          case (process_pc)
+            0: begin
+                                                                                                                              begin
+                                                                                                                                integer f;
+                                                                                                                                f = $fopen("verilog/trace_verilog.txt", "a");
+                                                                                                                                $fdisplay(f, "Location: Chip.java:0575:<init>|  Chip.java:0767:<init>|  Chip.java:0766:RegisterSet|  Chip.java:2265:test_register_array|  Chip.java:2307:newTests|  Chip.java:2312:main|");
+                                                                                                                                $fclose(f);
+                                                                                                                              end
+            end
+          endcase
         end
         8: begin
           process_c_2 <= process_b_1[2];
           process_pc <= process_pc + 1;
-          begin
-            integer f;
-            f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:0572:<init>|  Chip.java:0810:<init>|  Chip.java:0809:Copy|  Chip.java:2240:test_register_array|  Chip.java:2278:newTests|  Chip.java:2283:main|");
-            $fclose(f);
-          end
+          case (process_pc)
+            0: begin
+                                                                                                                              begin
+                                                                                                                                integer f;
+                                                                                                                                f = $fopen("verilog/trace_verilog.txt", "a");
+                                                                                                                                $fdisplay(f, "Location: Chip.java:0575:<init>|  Chip.java:0767:<init>|  Chip.java:0766:RegisterSet|  Chip.java:2265:test_register_array|  Chip.java:2307:newTests|  Chip.java:2312:main|");
+                                                                                                                                $fclose(f);
+                                                                                                                              end
+            end
+          endcase
         end
         default: process_stop <= 1;
       endcase
