@@ -112,7 +112,7 @@ END
     - name: Test $j
       if: matrix.task == '$j'
       run: |
-        java -cp Classes $c/$j
+        java -XX:+UseZGC -cp Classes $c/$j
 
 END
    }
