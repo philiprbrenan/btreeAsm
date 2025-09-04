@@ -25,9 +25,8 @@ module Test;                                                                    
   end
   // Process: process  process_process_0000
   reg [8-1:0] process_a_0;
-  reg [8-1:0] process_b_1;
-  reg [8-1:0] process_d_2;
-  reg [8-1:0] process_d_3;
+  reg [8-1:0] process_b_1[4];
+  reg [8-1:0] process_c_2;
   integer process_pc;
   integer process_stop;
   integer process_returnCode;
@@ -38,9 +37,13 @@ module Test;                                                                    
       process_stop <= 0;
       process_returnCode <= 0;
       process_a_0 <= 0;
-      process_b_1 <= 0;
-      process_d_2 <= 0;
-      process_d_3 <= 0;
+      begin
+        integer i;
+        for(i = 0; i < 4; i = i + 1) begin
+          process_b_1[i] <= 0;
+        end
+      end
+      process_c_2 <= 0;
     end
     else if (processCurrent == 0) begin
       case(process_pc)
@@ -50,47 +53,87 @@ module Test;                                                                    
           begin
             integer f;
             f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:0514:<init>|  Chip.java:0678:<init>|  Chip.java:0677:RegisterSet|  Chip.java:2066:test_sum|  Chip.java:2092:oldTests|  Chip.java:2096:newTests|  Chip.java:2101:main|");
+            $fdisplay(f, "Location: Chip.java:0572:<init>|  Chip.java:0764:<init>|  Chip.java:0763:RegisterSet|  Chip.java:2236:test_register_array|  Chip.java:2278:newTests|  Chip.java:2283:main|");
             $fclose(f);
           end
         end
         1: begin
-          process_b_1 <= 2;
+          process_b_1[0] <= process_a_0;
           process_pc <= process_pc + 1;
           begin
             integer f;
             f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:0514:<init>|  Chip.java:0678:<init>|  Chip.java:0677:RegisterSet|  Chip.java:2067:test_sum|  Chip.java:2092:oldTests|  Chip.java:2096:newTests|  Chip.java:2101:main|");
+            $fdisplay(f, "Location: Chip.java:0572:<init>|  Chip.java:0833:<init>|  Chip.java:0832:Copy|  Chip.java:2236:test_register_array|  Chip.java:2278:newTests|  Chip.java:2283:main|");
             $fclose(f);
           end
         end
         2: begin
-          process_d_2 <= 3;
+          process_a_0 <= 3;
           process_pc <= process_pc + 1;
           begin
             integer f;
             f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:0514:<init>|  Chip.java:0678:<init>|  Chip.java:0677:RegisterSet|  Chip.java:2068:test_sum|  Chip.java:2092:oldTests|  Chip.java:2096:newTests|  Chip.java:2101:main|");
+            $fdisplay(f, "Location: Chip.java:0572:<init>|  Chip.java:0764:<init>|  Chip.java:0763:RegisterSet|  Chip.java:2237:test_register_array|  Chip.java:2278:newTests|  Chip.java:2283:main|");
             $fclose(f);
           end
         end
         3: begin
-          process_d_3 <= 4;
+          process_b_1[1] <= process_a_0;
           process_pc <= process_pc + 1;
           begin
             integer f;
             f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:0514:<init>|  Chip.java:0678:<init>|  Chip.java:0677:RegisterSet|  Chip.java:2069:test_sum|  Chip.java:2092:oldTests|  Chip.java:2096:newTests|  Chip.java:2101:main|");
+            $fdisplay(f, "Location: Chip.java:0572:<init>|  Chip.java:0833:<init>|  Chip.java:0832:Copy|  Chip.java:2237:test_register_array|  Chip.java:2278:newTests|  Chip.java:2283:main|");
             $fclose(f);
           end
         end
         4: begin
-          process_a_0 <= process_a_0 + process_b_1 + process_d_2 + process_d_3;
+          process_a_0 <= 5;
           process_pc <= process_pc + 1;
           begin
             integer f;
             f = $fopen("verilog/trace_verilog.txt", "a");
-            $fdisplay(f, "Location: Chip.java:0514:<init>|  Chip.java:0885:<init>|  Chip.java:0884:Sum|  Chip.java:2071:test_sum|  Chip.java:2092:oldTests|  Chip.java:2096:newTests|  Chip.java:2101:main|");
+            $fdisplay(f, "Location: Chip.java:0572:<init>|  Chip.java:0764:<init>|  Chip.java:0763:RegisterSet|  Chip.java:2238:test_register_array|  Chip.java:2278:newTests|  Chip.java:2283:main|");
+            $fclose(f);
+          end
+        end
+        5: begin
+          process_b_1[2] <= process_a_0;
+          process_pc <= process_pc + 1;
+          begin
+            integer f;
+            f = $fopen("verilog/trace_verilog.txt", "a");
+            $fdisplay(f, "Location: Chip.java:0572:<init>|  Chip.java:0833:<init>|  Chip.java:0832:Copy|  Chip.java:2238:test_register_array|  Chip.java:2278:newTests|  Chip.java:2283:main|");
+            $fclose(f);
+          end
+        end
+        6: begin
+          process_a_0 <= 7;
+          process_pc <= process_pc + 1;
+          begin
+            integer f;
+            f = $fopen("verilog/trace_verilog.txt", "a");
+            $fdisplay(f, "Location: Chip.java:0572:<init>|  Chip.java:0764:<init>|  Chip.java:0763:RegisterSet|  Chip.java:2239:test_register_array|  Chip.java:2278:newTests|  Chip.java:2283:main|");
+            $fclose(f);
+          end
+        end
+        7: begin
+          process_b_1[3] <= process_a_0;
+          process_pc <= process_pc + 1;
+          begin
+            integer f;
+            f = $fopen("verilog/trace_verilog.txt", "a");
+            $fdisplay(f, "Location: Chip.java:0572:<init>|  Chip.java:0833:<init>|  Chip.java:0832:Copy|  Chip.java:2239:test_register_array|  Chip.java:2278:newTests|  Chip.java:2283:main|");
+            $fclose(f);
+          end
+        end
+        8: begin
+          process_c_2 <= process_b_1[2];
+          process_pc <= process_pc + 1;
+          begin
+            integer f;
+            f = $fopen("verilog/trace_verilog.txt", "a");
+            $fdisplay(f, "Location: Chip.java:0572:<init>|  Chip.java:0810:<init>|  Chip.java:0809:Copy|  Chip.java:2240:test_register_array|  Chip.java:2278:newTests|  Chip.java:2283:main|");
             $fclose(f);
           end
         end
@@ -107,12 +150,14 @@ module Test;                                                                    
       $fwrite(o, "Chip: %-16s step: %1d, maxSteps: %1d, running: %1d\n", "Test", step, maxSteps, !stop);
       $fwrite(o, "  Processes:\n");
 
-      $fwrite(o, "    Process: %1d - %-21s instructions: %1d, pc: %1d, rc: %1d\n", 0, "process", 5, process_pc, process_returnCode);
+      $fwrite(o, "    Process: %1d - %-21s instructions: %1d, pc: %1d, rc: %1d\n", 0, "process", 9, process_pc, process_returnCode);
       $fwrite(o, "      Registers :\n");
-      $fwrite(o, "        Register: %-32s = %1d\n",  "process_a_0", process_a_0);
-      $fwrite(o, "        Register: %-32s = %1d\n",  "process_b_1", process_b_1);
-      $fwrite(o, "        Register: %-32s = %1d\n",  "process_d_2", process_d_2);
-      $fwrite(o, "        Register: %-32s = %1d\n",  "process_d_3", process_d_3);
+      $fwrite(o, "        %-32s = %1d\n",  "process_a_0", process_a_0);
+      $fwrite(o, "        %-26s[%4d] = %1d\n",  "process_b_1", 0, process_b_1[0]);
+      $fwrite(o, "        %-26s[%4d] = %1d\n",  "process_b_1", 1, process_b_1[1]);
+      $fwrite(o, "        %-26s[%4d] = %1d\n",  "process_b_1", 2, process_b_1[2]);
+      $fwrite(o, "        %-26s[%4d] = %1d\n",  "process_b_1", 3, process_b_1[3]);
+      $fwrite(o, "        %-32s = %1d\n",  "process_c_2", process_c_2);
       $fclose(o);
     end
   endtask
