@@ -187,7 +187,7 @@ class Verilog extends Test                                                      
    {For(String variable, String condition)
      {begin();
       i(variable);
-      A("for("+variable+" = 0; "+condition+"; "+variable + " = "+variable + " + 1)");                                                          //
+      A("for("+variable+" = 0; "+condition+"; "+variable + " = "+variable + " + 1) begin");                                                          //
       indent();
       body();
       end();
@@ -331,7 +331,7 @@ end
     ok(""+v, """
 begin
   integer i;
-  for(i = 0; i < n; i = i + 1)
+  for(i = 0; i < n; i = i + 1) begin
     c = c + i;
   end
 end
