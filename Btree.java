@@ -1276,7 +1276,7 @@ chipStop = true;
              }
             void Else()
              {Found.zero(v);
-              StuckIndex.registerSet(v, size);
+              StuckIndex.copy(v, size);
               v.new Case(maxStuckSize, size.registerName())
                {void Choice(int I)
                  {Stuck.this.Data.copy(v, data[I]);
