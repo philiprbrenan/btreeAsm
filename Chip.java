@@ -90,13 +90,13 @@ class Chip extends Test                                                         
         for (Process.Register r: p.registers)                                   // Print registers associated with this process
          {if (r.registerArrayed())                                              // Single register
            {s.append(String.format(
-             "        %-32s = %1d\n",
+             "        %-50s = %1d\n",
             r.registerName(), r.registerGet()));
            }
           else                                                                  // Array of registers
            {for (int i = 0; i < r.registerSize; i++)
              {s.append(String.format(
-               "        %-32s[%4d] = %1d\n",
+               "        %-44s[%4d] = %1d\n",
               r.registerName(), i, r.registerGet(i)));
              }
            }
@@ -139,13 +139,13 @@ class Chip extends Test                                                         
       for (Process.Register r: p.registers)                                     // Print registers associated with this process
        {if (!r.registerArrayed())                                               // Single register
          {s.append(String.format(
-           "        %-32s = %1d\n",
+           "        %-50s = %1d\n",
           r.registerName(), r.registerGet()));
          }
         else                                                                    // Array of registers
          {for (int i = 0; i < r.registerSize; i++)
            {s.append(String.format(
-             "        %-26s[%4d] = %1d\n",
+             "        %-44s[%4d] = %1d\n",
             r.registerName(), i, r.registerGet(i)));
            }
          }
@@ -165,12 +165,12 @@ class Chip extends Test                                                         
            {s.append(in+"  Inputs      :\n");
             for (Process.Register r : t.transactionInputRegisters)
              {if (!r.registerArrayed())
-               {s.append(String.format("%s    %-38s = %1d\n",
+               {s.append(String.format("%s    %-46s = %1d\n",
                 in, r.registerName(), r.registerGet()));
                }
               else
                {for (int i = 0; i < r.registerSize; i++)
-                 {s.append(String.format("%s    %-32s[%4d] = %1d\n",
+                 {s.append(String.format("%s    %-40s[%4d] = %1d\n",
                   in, r.registerName(), i, r.registerGet(i)));
                  }
                }
@@ -182,12 +182,12 @@ class Chip extends Test                                                         
             for (Process.Register r : t.transactionOutputRegisters)
              {if (!r.registerArrayed())
                {s.append(String.format(
-                 "%s    %-38s = %1d\n",
+                 "%s    %-46s = %1d\n",
                  in, r.registerName(), r.registerGet()));
                }
               else
                {for (int i = 0; i < r.registerSize; i++)
-                 {s.append(String.format("%s    %-32s[%4d] = %1d\n",
+                 {s.append(String.format("%s    %-40s[%4d] = %1d\n",
                   in, r.registerName(), i, r.registerGet(i)));
                  }
                }
@@ -235,12 +235,12 @@ class Chip extends Test                                                         
           v.A("$fwrite(o, \"      Registers :\\n\");");
           for (Process.Register r: p.registers)                                 // Registers
            {if (!r.registerArrayed())
-             {v.A("$fwrite(o, \"        %-32s = %1d\\n\", "+
+             {v.A("$fwrite(o, \"        %-50s = %1d\\n\", "+
                " \""+r.registerName()+"\", "+r.registerName()+");");
              }
             else
              {for (int i = 0; i < r.registerSize; i++)
-               {v.A("$fwrite(o, \"        %-26s[%4d] = %1d\\n\", "+
+               {v.A("$fwrite(o, \"        %-44s[%4d] = %1d\\n\", "+
                  " \""+r.registerName()+"\", "+i+", "+r.registerName(i)+");");
                }
              }
@@ -260,12 +260,12 @@ class Chip extends Test                                                         
                {v.A("$fwrite(o, \"          Inputs      :\\n\");");
                 for (Process.Register r: t.transactionInputRegisters)           // Registers
                  {if (!r.registerArrayed())
-                   {v.A("$fwrite(o, \"            %-32s       = %1d\\n\", "+
+                   {v.A("$fwrite(o, \"            %-46s = %1d\\n\", "+
                      " \""+r.registerName()+"\", "+r.registerName()+");");
                    }
                   else
                    {for (int i = 0; i < r.registerSize; i++)
-                     {v.A("$fwrite(o, \"             %-26s[%4d] = %1d\\n\", "+
+                     {v.A("$fwrite(o, \"            %-40s[%4d] = %1d\\n\", "+
                        " \""+r.registerName()+"\", "+i+", "+r.registerName(i)+");");
                      }
                    }
@@ -276,12 +276,12 @@ class Chip extends Test                                                         
                {v.A("$fwrite(o, \"          Outputs     :\\n\");\n");
                 for (Process.Register r : t.transactionOutputRegisters)
                  {if (!r.registerArrayed())
-                   {v.A("$fwrite(o, \"            %-32s       = %1d\\n\", "+
+                   {v.A("$fwrite(o, \"            %-46s = %1d\\n\", "+
                      " \""+r.registerName()+"\", "+r.registerName()+");");
                    }
                   else
                    {for (int i = 0; i < r.registerSize; i++)
-                     {v.A("$fwrite(o, \"            %-26s[%4d]      = %1d\\n\", "+
+                     {v.A("$fwrite(o, \"             %-40[%4d] = %1d\\n\", "+
                        " \""+r.registerName()+"\", "+i+", "+r.registerName(i)+");");
                      }
                    }
@@ -1702,19 +1702,19 @@ Chip: Test             step: 5, maxSteps: 10, running: 0
       Memory: size: 8, width: 8, block: 2
          1,  2,  3,  4,  5,  6,  7,  8,  9, 10, 11, 12, 13, 14, 15, 16
       Registers :
-        Memory_Memory_1_result_0         = 3
-        Memory_Memory_1_result_1         = 4
+        Memory_Memory_1_result_0                           = 3
+        Memory_Memory_1_result_1                           = 4
       Transactions:
         Transaction   : get      - Memory_1          requested at: 2, finished at: 3, returnCode: 0, executable: 0, finished: 1
           Inputs      :
-            Requests_Memory_1_index_1              = 1
+            Requests_Memory_1_index_1                      = 1
           Outputs     :
-            Memory_Memory_1_result_0               = 3
-            Memory_Memory_1_result_1               = 4
+            Memory_Memory_1_result_0                       = 3
+            Memory_Memory_1_result_1                       = 4
     Process: 1 - Requests              instructions: 4, pc: 4, rc: 0
       Registers :
-        Requests_index_0                 = 1
-        Requests_Memory_1_index_1        = 1
+        Requests_index_0                                   = 1
+        Requests_Memory_1_index_1                          = 1
 """);
     c.chipRunVerilog();
    }
@@ -1785,39 +1785,39 @@ Chip: Test             step: 12, maxSteps: 100, running: 0
       Memory: size: 8, width: 8, block: 2
          1,  2,  3,  4, 11, 22,  7,  8,  9, 10, 11, 12, 13, 14, 15, 16
       Registers :
-        Memory_Memory_1_result_0         = 3
-        Memory_Memory_1_result_1         = 4
-        Memory_Memory_2_result_2         = 5
-        Memory_Memory_2_result_3         = 6
+        Memory_Memory_1_result_0                           = 3
+        Memory_Memory_1_result_1                           = 4
+        Memory_Memory_2_result_2                           = 5
+        Memory_Memory_2_result_3                           = 6
       Transactions:
         Transaction   : get      - Memory_1          requested at: 2, finished at: 3, returnCode: 0, executable: 0, finished: 1
           Inputs      :
-            Requests_Memory_1_index_1              = 1
+            Requests_Memory_1_index_1                      = 1
           Outputs     :
-            Memory_Memory_1_result_0               = 3
-            Memory_Memory_1_result_1               = 4
+            Memory_Memory_1_result_0                       = 3
+            Memory_Memory_1_result_1                       = 4
         Transaction   : get      - Memory_2          requested at: 4, finished at: 5, returnCode: 0, executable: 0, finished: 1
           Inputs      :
-            Requests_Memory_2_index_3              = 2
+            Requests_Memory_2_index_3                      = 2
           Outputs     :
-            Memory_Memory_2_result_2               = 5
-            Memory_Memory_2_result_3               = 6
+            Memory_Memory_2_result_2                       = 5
+            Memory_Memory_2_result_3                       = 6
         Transaction   : set      - Memory_3          requested at: 9, finished at: 10, returnCode: 0, executable: 0, finished: 1
           Inputs      :
-            Requests_Memory_3_index_6              = 2
-            Requests_Memory_3_value_7              = 11
-            Requests_Memory_3_value_8              = 22
+            Requests_Memory_3_index_6                      = 2
+            Requests_Memory_3_value_7                      = 11
+            Requests_Memory_3_value_8                      = 22
     Process: 1 - Requests              instructions: 12, pc: 12, rc: 1
       Registers :
-        Requests_index_0                 = 1
-        Requests_Memory_1_index_1        = 1
-        Requests_index_2                 = 2
-        Requests_Memory_2_index_3        = 2
-        Requests_value_4                 = 11
-        Requests_value_5                 = 22
-        Requests_Memory_3_index_6        = 2
-        Requests_Memory_3_value_7        = 11
-        Requests_Memory_3_value_8        = 22
+        Requests_index_0                                   = 1
+        Requests_Memory_1_index_1                          = 1
+        Requests_index_2                                   = 2
+        Requests_Memory_2_index_3                          = 2
+        Requests_value_4                                   = 11
+        Requests_value_5                                   = 22
+        Requests_Memory_3_index_6                          = 2
+        Requests_Memory_3_value_7                          = 11
+        Requests_Memory_3_value_8                          = 22
 """);
    }
 
@@ -1880,12 +1880,12 @@ Chip: Test             step: 82, maxSteps: 100, running: 0
   Processes:
     Process: 0 - Main                  instructions: 82, pc: 82, rc: 1
       Registers :
-        Main_a_0                         = 987
-        Main_b_1                         = 1597
-        Main_c_2                         = 1597
-        Main_i_3                         = 16
-        Main_Memory_1_index_4            = 15
-        Main_Memory_1_value_5            = 1597
+        Main_a_0                                           = 987
+        Main_b_1                                           = 1597
+        Main_c_2                                           = 1597
+        Main_i_3                                           = 16
+        Main_Memory_1_index_4                              = 15
+        Main_Memory_1_value_5                              = 1597
     Process: 1 - Memory                instructions: 1, pc: 0, rc: 0
       Memory: size: 16, width: 16, block: 1
          1,  2,  3,  5,  8, 13, 21, 34, 55, 89, 144, 233, 377, 610, 987, 1597
@@ -1893,8 +1893,8 @@ Chip: Test             step: 82, maxSteps: 100, running: 0
       Transactions:
         Transaction   : set      - Memory_1          requested at: 78, finished at: 79, returnCode: 0, executable: 0, finished: 1
           Inputs      :
-            Main_Memory_1_index_4                  = 15
-            Main_Memory_1_value_5                  = 1597
+            Main_Memory_1_index_4                          = 15
+            Main_Memory_1_value_5                          = 1597
 """);
 
     //stop(C.chipPrintMemory());
@@ -2246,12 +2246,12 @@ Chip: Test             step: 10, maxSteps: 10, running: 0
   Processes:
     Process: 0 - process               instructions: 9, pc: 9, rc: 0
       Registers :
-        process_a_0                      = 7
-        process_b_1               [   0] = 1
-        process_b_1               [   1] = 3
-        process_b_1               [   2] = 5
-        process_b_1               [   3] = 7
-        process_c_2                      = 5
+        process_a_0                                        = 7
+        process_b_1                                 [   0] = 1
+        process_b_1                                 [   1] = 3
+        process_b_1                                 [   2] = 5
+        process_b_1                                 [   3] = 7
+        process_c_2                                        = 5
 """);
    }
 
@@ -2274,7 +2274,7 @@ Chip: Test             step: 10, maxSteps: 10, running: 0
    }
 
   static void newTests()                                                        // Tests being worked on
-   {//oldTests();
+   {oldTests();
     test_register_array();
    }
 
