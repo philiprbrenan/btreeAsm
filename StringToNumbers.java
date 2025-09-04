@@ -25,6 +25,8 @@ class StringToNumbers extends Test                                              
       output.add(this);
      }                                                                          // Compare two ordered elements by the lowest integer associated with each
 
+    boolean has(int N) {z(); return keys.contains(N);}                          // Does this order contain this number
+
     String joinKeys()                                                           // Join the keys with commas
      {z();
       final String j = ", ";
@@ -162,10 +164,15 @@ endtask
     //stop(o.joinKeys());
     ok(o.size(),     2);
     ok(o.joinKeys(), "1, 2");
+    ok(o.has(1), true);
+    ok(o.has(2), true);
+    ok(o.has(3), false);
+
     ok(s.isFirst(1), true);
     ok(s.isFirst(2), false);
     ok(s.isFirst(4), true);
     ok(s.isFirst(5), false);
+
    }
 
   protected static void oldTests()                                              // Tests thought to be in good shape
