@@ -145,19 +145,23 @@ class Verilog extends Test                                                      
      {A("case ("+condition+")");
       indent();
       for (int i = 0; i < N; i++)
-       {A(""+i+": begin");
-        indent();
-        Choice(i);
-        end();
+       {if (allowChoice(i))
+         {A(""+i+": begin");
+          indent();
+          Choice(i);
+          end();
+         }
        }
-      A("default: begin");
-      indent();
-      final int d = lines.size();
-      Default();
-      final int D = lines.size();
-      end();
-      if (D == d)                                                               // Remove default if empty
-       {lines.pop(); lines.pop();
+      if (allowDefault())
+       {A("default: begin");
+        indent();
+        final int d = lines.size();
+        Default();
+        final int D = lines.size();
+        end();
+        if (D == d)                                                               // Remove default if empty
+         {lines.pop(); lines.pop();
+         }
        }
       dedent();
       A("endcase");
@@ -183,8 +187,8 @@ class Verilog extends Test                                                      
       dedent();
       A("endcase");
      }
-    void Choice(int i) {}
-    void Default()     {}
+    void Choice(int i) {} boolean allowChoice(int n) {return true;}
+    void Default()     {} boolean allowDefault()     {return true;}
    }
 
   class For                                                                     // For
@@ -370,6 +374,29 @@ endcase
 """);
    }
 
+  static void test_case2()
+   {final Verilog v = new Verilog();
+    v.new Case(4, "i")
+     {void Choice(int i) {v.assign("c",  i);}
+      void Default()     {v.assign("c", -1);}
+
+      boolean allowChoice(int i) {return i % 2 == 0;}
+      boolean allowDefault()     {return false;}
+
+     };
+    //stop(v);
+    ok(""+v, """
+case (i)
+  0: begin
+    c = 0;
+  end
+  2: begin
+    c = 2;
+  end
+endcase
+""");
+   }
+
   static void test_comment()
    {final Verilog v = new Verilog();
     v.comment("Hello Word");
@@ -475,6 +502,7 @@ b = b - 1;
     test_elseIf();
     test_for();
     test_case();
+    test_case2();
     test_comment();
     test_display();
     test_begin();
