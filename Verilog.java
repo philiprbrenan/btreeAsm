@@ -41,7 +41,11 @@ class Verilog extends Test                                                      
    {final StringBuilder line = new StringBuilder();                             // A line of verilog
     int lineIndent = indent;                                                    // Indentation of this line
     Line()       {lines.push(this);}
-    Line(Line l) {l.lineIndent += indent;lines.push(l);}
+    Line(Line l)
+     {line.append(l.line);
+      lineIndent = l.lineIndent + indent;
+      lines.push(this);
+     }
     void a(String s) {line.append(s);}
    }
 
@@ -340,7 +344,7 @@ end
 
   static void test_case()
    {final Verilog v = new Verilog();
-    v.new Case(2, "i")
+    v.new Case(4, "i")
      {void Choice(int i) {v.assign("c",  i);}
       void Default()     {v.assign("c", -1);}
      };
@@ -352,6 +356,12 @@ case (i)
   end
   1: begin
     c = 1;
+  end
+  2: begin
+    c = 2;
+  end
+  3: begin
+    c = 3;
   end
   default: begin
     c = -1;
