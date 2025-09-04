@@ -484,7 +484,7 @@ if ($file =~ m(\.java\Z))                                                       
     my $class = $package ? "$package.$Name" : $Name;                            # Class location
     my $p = join ' ', @ARGV;                                                    # Collect the remaining parameters and pass them to the java application
     my $f = profile($file);
-    my $c = "javac -g -d $cp -cp $cp $f && java -ea -cp $cp $class $p";         # Run java
+    my $c = "javac -g -d $cp -cp $cp $f && java -XX:+UseZGC -ea -cp $cp $class $p";         # Run java
     say STDERR $c;
 
     runTests($file, $c);
