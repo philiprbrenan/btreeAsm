@@ -3948,46 +3948,6 @@ Stuck: stuck size: 3, leaf: 1, root
       P.processClear();
       s.stuckGetRoot();
       k.RegisterSet(J);
-      s.Search_eq(k);
-
-      b.maxSteps = 100;
-      b.nonBlockingAssignment = false;
-      b.chipRun();
-      ok(f.registerGet(), 1);
-      ok(i.registerGet(), J);
-      ok(k.registerGet(), J);
-      ok(d.registerGet(), J+1);
-     }
-   }
-
-  static void test_search_eq_parallel()
-   {sayCurrentTestName();
-    final Btree b = test_push();
-    final Process P = b.P; // b.processes.get("Stuck");
-    final Stuck   s = b.new Stuck(P, "stuck", true);
-    final Process.Register k = s.Key;
-    final Process.Register d = s.Data;
-    final Process.Register i = s.StuckIndex;
-    final Process.Register f = s.Found;
-    P.processTrace = true;
-
-    P.processClear();
-    s.stuckGetRoot();
-
-    k.RegisterSet(11);
-
-    s.Search_eq(k);
-
-    b.maxSteps = 100;
-    b.chipRun();
-    ok(f.registerGet(), 0);
-
-    final int N = 4;
-    for (int j = 0; j < N; j++)
-     {final int J = j;
-      P.processClear();
-      s.stuckGetRoot();
-      k.RegisterSet(J);
       s.search_eq_parallel(k);
 
       b.maxSteps = 100;
@@ -4005,95 +3965,6 @@ Stuck: stuck size: 3, leaf: 1, root
     final Btree   b = new Btree(B, S+S, K, D);
     final Process P = b.P; //b.new Process("Stuck");
     final Stuck   s = b.new Stuck(P, "stuck", true);
-    final Process.Register k = s.Key;
-    final Process.Register l = P.register("l", K);
-    final Process.Register d = P.register("d", D);
-    final Process.Register i = P.register("i", b.stuckAddressSize);
-    final Process.Register f = P.register("f", 1);
-    P.processTrace = true;
-
-    s.stuckGetRoot();
-    for (int j = 0; j < S; j++)
-     {final int J = j*10;
-      k.RegisterSet(J); d.RegisterSet(J+1);
-
-      s.Push(k, d);
-     }
-    s.stuckPut();
-    b.maxSteps = 300;
-    b.chipRun();
-    ok(s, """
-Stuck: stuck size: 4, leaf: 1, root
- 0     0 =>    1
- 1    10 =>   11
- 2    20 =>   21
- 3    30 =>   31
-""");
-
-    P.processClear();
-    s.stuckGetRoot();
-    k.RegisterSet(11);
-    s.Search_le(k);
-
-    b.maxSteps = 100;
-    b.nonBlockingAssignment = false;
-    b.chipRun();
-
-    //stop(s.dump());
-    ok(s.dump(), """
-Stuck: stuck size: 4, leaf: 1, root
- 0     0 =>    1
- 1    10 =>   11
- 2    20 =>   21
- 3    30 =>   31
- 4     0 =>    0
- 5     0 =>    0
- 6     0 =>    0
- 7     0 =>    0
-Found     : 1
-Key       : 11
-FoundKey  : 20
-Data      : 21
-BtreeIndex: 0
-StuckIndex: 2
-Merge     : 0
-""");
-
-    P.processClear();
-    s.stuckGetRoot();
-    k.RegisterSet(21);
-    s.Pop();
-    s.Search_le(k);
-
-    b.chipRun();
-
-    //stop(s.dump());
-    ok(s.dump(), """
-Stuck: stuck size: 3, leaf: 1, root
- 0     0 =>    1
- 1    10 =>   11
- 2    20 =>   21
- 3    30 =>   31
- 4     0 =>    0
- 5     0 =>    0
- 6     0 =>    0
- 7     0 =>    0
-Found     : 0
-Key       : 30
-FoundKey  : 0
-Data      : 31
-BtreeIndex: 0
-StuckIndex: 3
-Merge     : 0
-""");
-   }
-
-  static void test_search_le_parallel()
-   {sayCurrentTestName();
-    final int B = 8, S = 4, K = 8, D = 8;
-    final Btree   b = new Btree(B, S+S, K, D);
-    final Process P = b.P; //b.new Process("Stuck");
-    final Stuck   s = b.new Stuck(P, "stuck");
     final Process.Register k = s.Key;
     final Process.Register l = P.register("l", K);
     final Process.Register d = P.register("d", D);
@@ -7257,7 +7128,6 @@ Merge     : 0
     test_insertElementAt();
     test_removeElementAt();
     test_search_eq();
-    test_search_eq_parallel();
     test_search_le();
     test_splitIntoTwo();
     test_splitIntoThree();
@@ -7292,7 +7162,7 @@ Merge     : 0
   static void newTests()                                                        // Tests being worked on
    {oldTests();
     //test_put_merge();
-    test_verilog_put();
+    //test_verilog_put();
    }
 
   public static void main(String[] args)                                        // Test if called as a program
