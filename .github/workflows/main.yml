@@ -1,4 +1,4 @@
-# Test 2025-09-04 at 13:52:47
+# Test 2025-09-04 at 14:39:30
 
 name: Test
 run-name: btreeAsm
@@ -20,7 +20,7 @@ jobs:
 
     strategy:
       matrix:
-        task: [Btree, Children, Chip, Test, Verilog]
+        task: [Btree, Children, Chip, StringToNumbers, Test, Verilog]
 
     steps:
     - uses: actions/checkout@v4
@@ -48,29 +48,35 @@ jobs:
     - name: Test Btree
       if: matrix.task == 'Btree'
       run: |
-        java -cp Classes com/AppaApps/Silicon/Btree
+        java -XX:+UseZGC -cp Classes com/AppaApps/Silicon/Btree
 
 
     - name: Test Children
       if: matrix.task == 'Children'
       run: |
-        java -cp Classes com/AppaApps/Silicon/Children
+        java -XX:+UseZGC -cp Classes com/AppaApps/Silicon/Children
 
 
     - name: Test Chip
       if: matrix.task == 'Chip'
       run: |
-        java -cp Classes com/AppaApps/Silicon/Chip
+        java -XX:+UseZGC -cp Classes com/AppaApps/Silicon/Chip
+
+
+    - name: Test StringToNumbers
+      if: matrix.task == 'StringToNumbers'
+      run: |
+        java -XX:+UseZGC -cp Classes com/AppaApps/Silicon/StringToNumbers
 
 
     - name: Test Test
       if: matrix.task == 'Test'
       run: |
-        java -cp Classes com/AppaApps/Silicon/Test
+        java -XX:+UseZGC -cp Classes com/AppaApps/Silicon/Test
 
 
     - name: Test Verilog
       if: matrix.task == 'Verilog'
       run: |
-        java -cp Classes com/AppaApps/Silicon/Verilog
+        java -XX:+UseZGC -cp Classes com/AppaApps/Silicon/Verilog
 
