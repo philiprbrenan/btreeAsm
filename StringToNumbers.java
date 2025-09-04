@@ -34,6 +34,8 @@ class StringToNumbers extends Test                                              
       return s.toString();
      }
 
+    int size() {return keys.size();}                                            // Size of order
+
     public int compareTo(Order B)
      {zz();
       final Integer a = keys.first(), b = B.keys.first();
@@ -54,9 +56,25 @@ class StringToNumbers extends Test                                              
    {zz(); for (String s : input.keySet()) new Order(s, input.get(s));
     for (Order o : output)
      {final int l = o.ordinal = outputOrder.size(); outputOrder.push(o);
-      for (Integer i : o.keys) lowest.put(i, l);                            // For each integer associated with a string locates its lowest occurence.
+      for (Integer i : o.keys) lowest.put(i, l);                                // For each integer associated with a string locates its lowest occurence.
      }
    }
+
+  Order order(int Index)                                                        // Get the order associated with a number
+   {final Integer l = lowest.get((Integer)Index);
+    if (l == null) stop("No order for instruction with index:", Index);
+    if (l >= outputOrder.size()) stop("No such:", lowest, "corresponding to instruction with index:", Index);
+    return outputOrder.elementAt(l);
+   }
+
+  boolean isFirst(int Index)                                                    // Whether this is the first occurence of the index
+   {final Integer l = lowest.get((Integer)Index);
+    if (l == null) stop("No order for instruction with index:", Index);
+    if (l >= size()) stop("No such:", lowest, "corresponding to instruction with index:", Index);
+    return outputOrder.elementAt(l).keys.first() == Index;
+   }
+
+  int size() {return outputOrder.size();}                                       // Number of different strings
 
 //D1 Verilog                                                                    // Generate verilog
 
@@ -116,7 +134,7 @@ c [4, 5]
 d [6]
 """);
       ok(s.output.first().joinKeys(), "1, 2");
-     }
+      ok(s.size(), 4);     }
 
     if (true)
      {final String t = tempFile();
@@ -139,6 +157,15 @@ endtask
      }
 
     ok(""+s.lowest, "{1=0, 2=0, 3=1, 4=2, 5=2, 6=3}");
+
+    final Order o = s.order(2);
+    //stop(o.joinKeys());
+    ok(o.size(),     2);
+    ok(o.joinKeys(), "1, 2");
+    ok(s.isFirst(1), true);
+    ok(s.isFirst(2), false);
+    ok(s.isFirst(4), true);
+    ok(s.isFirst(5), false);
    }
 
   protected static void oldTests()                                              // Tests thought to be in good shape
