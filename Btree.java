@@ -67,12 +67,12 @@ class Btree extends Chip                                                        
     LeftMergeBranchesIntoRoot  = new Stuck(P, "LeftMergeBranchesIntoRoot");     // Left sibling in merge branches into root
     RightMergeBranchesIntoRoot = new Stuck(P, "RightMergeBranchesIntoRoot");    // Right sibling in merge branches into root
 
-    mergeSum = P.new Register("sum", 1+stuckAddressSize);                       // Sum of the lengths of the two stucks
-    mergeCan = P.new Register("can", 1);                                        // Can merge
+    mergeSum = register("sum", 1+stuckAddressSize);                             // Sum of the lengths of the two stucks
+    mergeCan = register("can", 1);                                              // Can merge
 
-    splitIl = P.new Register("indexLeft",  btreeAddressSize);                   // Index in memory of the left stuck
-    splitIr = P.new Register("indexRight", btreeAddressSize);                   // Index in memory of the right stuck
-    splitMk = P.new Register("midKey",     bitsPerKey);                         // Mid key
+    splitIl  = register("indexLeft",  btreeAddressSize);                        // Index in memory of the left stuck
+    splitIr  = register("indexRight", btreeAddressSize);                        // Index in memory of the right stuck
+    splitMk  = register("midKey",     bitsPerKey);                              // Mid key
 
 chipStop = true;
     createFreeChain();                                                          // Create the free chain
@@ -97,7 +97,7 @@ chipStop = true;
 
   private void allocate(Process.Register ref, boolean leaf)                     // Allocate a stuck and set a ref to the allocated node
    {final Process       P         = ref.registerProcess();
-    final Memory.Get    gFreeNext = freeNext.memoryGetFromProcess(P);           // Get next free stuck
+    final Memory.Get    gFreeNext = freeNext   .memoryGetFromProcess(P);        // Get next free stuck
     final Memory.Set    sFreeNext = freeNext   .memorySetIntoProcess(P);        // Set next free stuck
     final Memory.Set    sIsLeaf   = stuckIsLeaf.memorySetIntoProcess(P);        // Set leaf or branch
     final Memory.Set    sIsFree   = stuckIsFree.memorySetIntoProcess(P);        // Set stuck is free field
@@ -108,8 +108,7 @@ chipStop = true;
     root.Zero();
     gFreeNext.ExecuteTransaction(root);
     gFreeNext.waitResultOfTransaction();
-    ref.Copy(gFreeNext.transactionOutputRegisters.firstElement());              // Save reference to allocated stuck
-
+    ref.Copy(gFreeNext.transactionOutputRegisters.firstElement(), 0);              // Save reference to allocated stuck
     P.new Instruction()                                                         // First free stuck if any is the allocated stuck
      {void action()
        {if (ref.registerGet() == 0) P.processStop(20);
@@ -139,7 +138,7 @@ chipStop = true;
      };
 
     gFreeNext.waitResultOfTransaction();
-    next.Copy(gFreeNext.transactionOutputRegisters.firstElement());
+    next.Copy(gFreeNext.transactionOutputRegisters.firstElement(), 0);
     sFreeNext.ExecuteTransaction(root, next);                                   // Next free stuck is now first on free chain from root
     sFreeNext.waitResultOfTransaction();
     sIsLeaf  .waitResultOfTransaction();
@@ -162,12 +161,12 @@ chipStop = true;
 
     P.new Instruction()                                                         // Next free stuck
      {void action()
-       {next.copy(gFreeNext.transactionOutputRegisters.firstElement());
+       {next.copy(gFreeNext.transactionOutputRegisters.firstElement(), 0);
         sFreeRoot.executeTransaction(root, ref);                                // Root points to the stuck being freed
         isFree.one();
        }
       void verilog(Verilog v)
-       {next.copy(v, gFreeNext.transactionOutputRegisters.firstElement());
+       {next.copy(v, gFreeNext.transactionOutputRegisters.firstElement(), 0);
         sFreeRoot.executeTransaction(v, root, ref);                             // Root points to the stuck being freed
         isFree.one(v);
        }
@@ -236,10 +235,10 @@ chipStop = true;
     final Process.Register size;                                                // Size of the stuck locally
     final Process.Register isLeaf;                                              // Whether the stuck is a leaf
     final Process.Register nextFree;                                            // Free chain from root
-    final Process.Register[]keys;                                               // Keys in the stuck copied out of memory
-    final Process.Register[]compares;                                           // The results of the latest key comparison against every key in the stuck
-    final Process.Register[]collapse;                                           // The collapse of the key numbers to find the one chosen
-    final Process.Register[]data;                                               // Data in the stuck copied out of memory
+    final Process.Register keys;                                                // Keys in the stuck copied out of memory
+    final Process.Register compares;                                            // The results of the latest key comparison against every key in the stuck
+    final Process.Register collapse;                                            // The collapse of the key numbers to find the one chosen
+    final Process.Register data;                                                // Data in the stuck copied out of memory
     final Memory.Get gSize;                                                     // Transaction to get the current size of the stuck
     final Memory.Set sSize;                                                     // Transaction to set the current size of the stuck
     final Memory.Get gLeaf;                                                     // Transaction to discover whether this stuck is acting as a leaf or a branch
@@ -272,18 +271,11 @@ chipStop = true;
       size         = P.register("size",     stuckAddressSize);                  // Size of the stuck locally
       isLeaf       = P.register("isLeaf",   1);                                 // Whether the stuck is a leaf
       nextFree     = P.register("nextFree", btreeAddressSize);                  // Free chain from root
-      keys         = new Process.Register[maxStuckSize];                        // Keys in the stuck copied out of memory
-      compares     = new Process.Register[maxStuckSize];                        // The results of key comparisons
-      collapse     = new Process.Register[maxStuckSize];                        // The collapse of the key comparisons
-      data         = new Process.Register[maxStuckSize];                        // Data in the stuck copied out of memory
-      for (int i   = 0; i < maxStuckSize; i++)                                  // Create registers to hold stuck
-       {keys[i]    = P.new Register("Key_"+i, bitsPerKey);                      // Keys in the stuck copied out of the memory of the btree into local registers
-        if (compareable)
-         {compares[i]= P.new Register("KeyCompares_"+i, 1);                     // The result of comparing the search key with each stuck key
-          collapse[i]= P.new Register("KeyCollapse_"+i, stuckAddressSize);      // The result of collapsing the comparisons
-         }
-        data[i]    = P.new Register("Data_"+i, bitsPerData);                    // Data in the stuck copied out of the memory of the btree into local registers
-       }
+      keys         = P.register("Key",      bitsPerKey,       maxStuckSize);    // Keys in the stuck copied out of memory
+      compares     = P.register("Compares", 1,                maxStuckSize);    // The results of key comparisons
+      collapse     = P.register("Collapse", stuckAddressSize, maxStuckSize);    // The collapse of the key comparisons
+      data         = P.register("Data",     bitsPerData,      maxStuckSize);    // Data in the stuck copied out of memory
+
       gKeys = stuckKeys.memoryGetFromProcess(P);                                // Transactions to get each key in the stuck. Reuseing the transaction reduces generated Verilog code size by 30% at the cost of requiring each stuck Get/Set from/into memory to finish before the next one can start.
       sKeys = stuckKeys.memorySetIntoProcess(P);                                // Transactions to set each key in the stuck
       gData = stuckData.memoryGetFromProcess(P);                                // Transactions to get each data element in the stuck
@@ -293,6 +285,7 @@ chipStop = true;
       sSize = stuckSize  .memorySetIntoProcess(P);                              // Transaction to set the current size of the stuck
       gLeaf = stuckIsLeaf.memoryGetFromProcess(P);                              // Transaction to discover whether this stuck is acting as a leaf or a branch
       sLeaf = stuckIsLeaf.memorySetIntoProcess(P);                              // Transaction to set the stuck in memory to  a leaf or a branch
+
       Found        = P.register("Found",        1);                             // Whether the key was found
       Key          = P.register("Key",          bitsPerKey);                    // The key that was found as a result of an equal search
       FoundKey     = P.register("FoundKey",     bitsPerKey);                    // Key found as a result of a less than or equal search
@@ -331,26 +324,22 @@ chipStop = true;
        };
       gSize.waitResultOfTransaction();                                          // Wait for size from memory
       gLeaf.waitResultOfTransaction();                                          // Wait for leaf status from memory
-
       gKeys.waitResultOfTransaction();                                          // Load results from transactions into local registers
       gData.waitResultOfTransaction();
 
       P.new Instruction()
        {void action()
-         {size.copy(gSize.transactionOutputRegisters.firstElement());
-          isLeaf.copy(gLeaf.transactionOutputRegisters.firstElement());
-          for (int i = 0; i < maxStuckSize; i++)
-           {keys[i].copy(gKeys.transactionOutputRegisters.elementAt(i));
-            data[i].copy(gData.transactionOutputRegisters.elementAt(i));
-           }
+         {Chip.debug = true;
+          size  .copy(   gSize.transactionOutputRegisters.firstElement(), 0);
+          isLeaf.copy(   gLeaf.transactionOutputRegisters.firstElement(), 0);
+          keys  .copy(   gKeys.transactionOutputRegisters.firstElement());
+          data  .copy(   gData.transactionOutputRegisters.firstElement());
          }
         void verilog(Verilog v)
-         {size.copy(v, gSize.transactionOutputRegisters.firstElement());
-          isLeaf.copy(v, gLeaf.transactionOutputRegisters.firstElement());
-          for (int i = 0; i < maxStuckSize; i++)
-           {keys[i].copy(v, gKeys.transactionOutputRegisters.elementAt(i));
-            data[i].copy(v, gData.transactionOutputRegisters.elementAt(i));
-           }
+         {size  .copy(v, gSize.transactionOutputRegisters.firstElement(), 0);
+          isLeaf.copy(v, gLeaf.transactionOutputRegisters.firstElement(), 0);
+          keys  .copy(v, gKeys.transactionOutputRegisters.firstElement());
+          data  .copy(v, gData.transactionOutputRegisters.firstElement());
          }
        };
      }
@@ -394,8 +383,8 @@ chipStop = true;
       S.append("Stuck: "+nm+" size: "+ns+", leaf: "+il+", "+rt+"\n");           // Title
 
       for (int i = 0; i < ns; i++)                                              // Each key, data pair
-       {final int K = keys[i].registerGet();
-        final int D = data[i].registerGet();
+       {final int K = keys.registerGet(i);
+        final int D = data.registerGet(i);
         S.append(String.format("%2d  %4d => %4d\n", i, K, D));
        }
       return ""+S;
@@ -410,8 +399,8 @@ chipStop = true;
       S.append("Stuck: "+nm+" size: "+ns+", leaf: "+il+", "+rt+"\n");           // Title
 
       for (int i = 0; i < maxStuckSize; i++)                                    // Each key, data pair
-       {final int k = keys[i].registerGet();
-        final int d = data[i].registerGet();
+       {final int k = keys.registerGet(i);
+        final int d = data.registerGet(i);
         S.append(String.format("%2d  %4d => %4d\n", i, k, d));
        }
 
@@ -430,8 +419,8 @@ chipStop = true;
 
     void copy(Stuck Source)                                                     // Copy a stuck from the specified source to this stuck
      {for (int i = 0; i < maxStuckSize; i++)
-       {keys[i].copy(Source.keys[i]);
-        data[i].copy(Source.data[i]);
+       {keys.copy(i, Source.keys, i);
+        data.copy(i, Source.data, i);
        }
       size  .copy(Source.size);
       isLeaf.copy(Source.isLeaf);
@@ -439,8 +428,8 @@ chipStop = true;
 
     void copy(Verilog v, Stuck Source)                                          // Copy a stuck from the specified source to this stuck
      {for (int i = 0; i < maxStuckSize; i++)
-       {keys[i].copy(v, Source.keys[i]);
-        data[i].copy(v, Source.data[i]);
+       {keys.copy(v, i, Source.keys, i);
+        data.copy(v, i, Source.data, i);
        }
       size  .copy(v, Source.size);
       isLeaf.copy(v, Source.isLeaf);
@@ -454,17 +443,13 @@ chipStop = true;
      }
 
     void combine(Stuck Source)                                                  // Combine a stuck from the specified source to this stuck
-     {for (int i = 0; i < maxStuckSize; i++)
-       {keys[i].combine(Source.keys[i]);
-        data[i].combine(Source.data[i]);
-       }
+     {keys.combine(Source.keys);
+      data.combine(Source.data);
      }
 
     void combine(Verilog v, Stuck Source)                                       // Combine a stuck from the specified source to this stuck
-     {for (int i = 0; i < maxStuckSize; i++)
-       {keys[i].combine(v, Source.keys[i]);
-        data[i].combine(v, Source.data[i]);
-       }
+     {keys.combine(v, Source.keys);
+      data.combine(v, Source.data);
      }
 
     void Combine(Stuck Source)                                                  // Combine a stuck from the specified source to this stuck as an instruction
@@ -477,24 +462,24 @@ chipStop = true;
     void copyDown(Stuck Source, int Power)                                      // Copy a stuck into itself or another stuck shifting the elements down in the stuck by a predetermined amount
      {final int delta = powerTwo(Power);
       for (int i = 0; i < maxStuckSize-delta; i++)
-       {keys[i].copy(Source.keys[i+delta]);
-        data[i].copy(Source.data[i+delta]);
+       {keys.copy(i, Source.keys, i+delta);
+        data.copy(i, Source.data, i+delta);
        }
       for (int i = maxStuckSize-delta; i < maxStuckSize; i++)
-       {keys[i].zero();
-        data[i].zero();
+       {keys.zero(i);
+        data.zero(i);
        }
      }
 
     void copyDown(Verilog v, Stuck Source, int Power)                           // Copy a stuck into itself or another stuck shifting the elements down in the stuck by a predetermined amount
      {final int delta = powerTwo(Power);
       for (int i = 0; i < maxStuckSize - delta; i++)
-       {keys[i].copy(v, Source.keys[i+delta]);
-        data[i].copy(v, Source.data[i+delta]);
+       {keys.copy(v, i, Source.keys, i+delta);
+        data.copy(v, i, Source.data, i+delta);
        }
       for (int i = maxStuckSize - delta; i < maxStuckSize; i++)
-       {keys[i].zero(v);
-        data[i].zero(v);
+       {keys.zero(v, i);
+        data.zero(v, i);
        }
      }
 
@@ -529,24 +514,24 @@ chipStop = true;
     void copyUp(Stuck Source, int Power)                                        // Copy a stuck into itself or another stuck shifting the elements up in the stuck by a predetermined amount
      {final int delta = powerTwo(Power);
       for (int i = maxStuckSize-1; i >= delta; i--)
-       {keys[i].copy(Source.keys[i-delta]);
-        data[i].copy(Source.data[i-delta]);
+       {keys.copy(i, Source.keys, i-delta);
+        data.copy(i, Source.data, i-delta);
        }
       for (int i = 0; i < delta; i++)
-       {keys[i].zero();
-        data[i].zero();
+       {keys.zero(i);
+        data.zero(i);
        }
      }
 
     void copyUp(Verilog v, Stuck Source, int Power)                             // Copy a stuck into itself or another stuck shifting the elements up in the stuck by a predetermined amount
      {final int delta = powerTwo(Power);
       for (int i = maxStuckSize-1; i >= delta; i--)
-       {keys[i].copy(v, Source.keys[i-delta]);
-        data[i].copy(v, Source.data[i-delta]);
+       {keys.copy(v, i, Source.keys, i-delta);
+        data.copy(v, i, Source.data, i-delta);
        }
       for (int i = 0; i < delta; i++)
-       {keys[i].zero(v);
-        data[i].zero(v);
+       {keys.zero(v, i);
+        data.zero(v, i);
        }
      }
 
@@ -602,8 +587,8 @@ chipStop = true;
        {P.processStop(1);
        }
       else
-       {keys[N].copy(Key);
-        data[N].copy(Data);
+       {keys.copy(N, Key);
+        data.copy(N, Data);
         size.inc();
        }
      }
@@ -611,8 +596,8 @@ chipStop = true;
     void push(Verilog v, Process.Register Key, Process.Register Data)           // Push a key, data pair to the local copy of the stuck
      {v.new Case(maxStuckSize, size.registerName())
        {void Choice(int i)
-         {keys[i].copy(v, Key);
-          data[i].copy(v, Data);
+         {keys.copy(v, i, Key);
+          data.copy(v, i, Data);
          }
        };
       size.inc(v);
@@ -631,8 +616,8 @@ chipStop = true;
        {P.processStop(2);
        }
       else
-       {Key.copy (keys[N-1]);
-        Data.copy(data[N-1]);
+       {Key.copy (keys, N-1);
+        Data.copy(data, N-1);
         size.dec();
        }
      }
@@ -640,8 +625,8 @@ chipStop = true;
     void pop(Verilog v)                                                         // Pop a key, data pair from the local copy of the stuck
      {v.new Case(1, maxStuckSize+1, size.registerName())
        {void Choice(int N)
-         {Key.copy (v, keys[N-1]);
-          Data.copy(v, data[N-1]);
+         {Key.copy (v, keys, N-1);
+          Data.copy(v, data, N-1);
          }
        };
       size.dec(v);
@@ -660,7 +645,7 @@ chipStop = true;
        {P.processStop(3);
        }
       else
-       {keys[N].copy(Key);
+       {keys.copy(N, Key);
        }
      }
 
@@ -668,7 +653,7 @@ chipStop = true;
      (Verilog v, Process.Register Key)
      {v.new Case(maxStuckSize, size.registerName())
        {void Choice(int i)
-         {keys[i].copy(v, Key);
+         {keys.copy(v, i, Key);
          }
        };
      }
@@ -686,14 +671,14 @@ chipStop = true;
        {P.processStop(3);
        }
       else
-       {data[N].copy(Data);
+       {data.copy(N, Data);
        }
      }
 
     void setPastLastData (Verilog v, Process.Register Data)                     // Set the data past the top of the stuck
      {v.new Case(maxStuckSize, size.registerName())
        {void Choice(int i)
-         {data[i].copy(v, Data);
+         {data.copy(v, i, Data);
          }
        };
      }
@@ -711,8 +696,8 @@ chipStop = true;
        {P.processStop(3);
        }
       else
-       {keys[N].copy(Key);
-        data[N].copy(Data);
+       {keys.copy(N, Key);
+        data.copy(N, Data);
        }
      }
 
@@ -720,8 +705,8 @@ chipStop = true;
      (Verilog v, Process.Register Key, Process.Register Data)
      {v.new Case(maxStuckSize, size.registerName())
        {void Choice(int i)
-         {keys[i].copy(v, Key);
-          data[i].copy(v, Data);
+         {keys.copy(v, i, Key);
+          data.copy(v, i, Data);
          }
        };
      }
@@ -739,14 +724,14 @@ chipStop = true;
        {P.processStop(4);
        }
       else
-       {Key.copy (keys[0]);
-        Data.copy(data[0]);
+       {Key .copy(keys, 0);
+        Data.copy(data, 0);
        }
      }
 
     void firstElement(Verilog v)                                                // Get the first key, data pair
-     {Key .copy(v, keys[0]);
-      Data.copy(v, data[0]);
+     {Key .copy(v, keys, 0);
+      Data.copy(v, data, 0);
      }
 
     void FirstElement()                                                         // Get the first key, data pair as a single instruction
@@ -762,16 +747,16 @@ chipStop = true;
        {P.processStop(5);
        }
       else
-       {Key.copy (keys[N-1]);
-        Data.copy(data[N-1]);
+       {Key.copy (keys, N-1);
+        Data.copy(data, N-1);
        }
      }
 
     void lastElement(Verilog v)                                                 // Get the last key, data pair
      {v.new Case(1, maxStuckSize, size.registerName())
        {void Choice(int i)
-         {Key.copy (v, keys[i-1]);
-          Data.copy(v, data[i-1]);
+         {Key.copy (v, keys, i-1);
+          Data.copy(v, data, i-1);
          }
        };
      }
@@ -789,16 +774,16 @@ chipStop = true;
        {P.processStop(6);
        }
       else
-       {Key.copy (keys[N]);
-        Data.copy(data[N]);
+       {Key.copy (keys, N);
+        Data.copy(data, N);
        }
      }
 
     void pastLastElement(Verilog v)                                             // Get the past last key, data pair
      {v.new Case(maxStuckSize, size.registerName())
        {void Choice(int i)
-         {Key.copy (v, keys[i]);
-          Data.copy(v, data[i]);
+         {Key.copy (v, keys, i);
+          Data.copy(v, data, i);
          }
        };
      }
@@ -816,15 +801,15 @@ chipStop = true;
        {P.processStop(7);
         return;
        }
-      Key.copy (keys[N]);
-      Data.copy(data[N]);
+      Key.copy (keys, N);
+      Data.copy(data, N);
      }
 
     void elementAt(Verilog v, Process.Register Index)                           // Get the indexed key, data pair
      {v.new Case(maxStuckSize, Index.registerName())
        {void Choice(int i)
-         {Key.copy (v, keys[i]);
-          Data.copy(v, data[i]);
+         {Key.copy (v, keys, i);
+          Data.copy(v, data, i);
          }
        };
      }
@@ -851,8 +836,8 @@ chipStop = true;
       if (N == M)
        {size.inc();
        }
-      keys[N].copy(Key);
-      data[N].copy(Data);
+      keys.copy(N, Key);
+      data.copy(N, Data);
      }
 
     void setElementAt(Verilog v,                                                // Set the indexed key, data pair
@@ -864,8 +849,8 @@ chipStop = true;
        };
       v.new Case(maxStuckSize, Index.registerName())
        {void Choice(int i)
-         {keys[i].copy(v, Key);
-          data[i].copy(v, Data);
+         {keys.copy(v, i, Key);
+          data.copy(v, i, Data);
          }
        };
      }
@@ -885,13 +870,13 @@ chipStop = true;
        {P.processStop(10);
         return;
        }
-      data[N].copy(Data);
+      data.copy(N, Data);
      }
 
     void setDataAt(Verilog v, Process.Register Index, Process.Register Data)    // Set the indexed data pair
      {v.new Case(maxStuckSize, Index.registerName())
        {void Choice(int i)
-         {data[i].copy(v, Data);
+         {data.copy(v, i, Data);
          }
        };
      }
@@ -917,11 +902,11 @@ chipStop = true;
        }
       size.inc();                                                               // Increase number of elements
       for (int i = maxStuckSize-1; i > N; i--)
-       {keys[i].copy(keys[i-1]);
-        data[i].copy(data[i-1]);
+       {keys.copy(i, keys, i-1);
+        data.copy(i, data, i-1);
        }
-      keys[N].copy(Key);
-      data[N].copy(Data);
+      keys.copy(N, Key);
+      data.copy(N, Data);
      }
 
     void insertElementAt                                                        // Set the indexed key, data pair
@@ -932,15 +917,15 @@ chipStop = true;
        {final int I = i;
          v.new If(""+i+" > "+Index.registerName())
          {void Then()
-           {keys[I].copy(v, keys[I-1]);
-            data[I].copy(v, data[I-1]);
+           {keys.copy(v, I, keys, I-1);
+            data.copy(v, I, data, I-1);
            }
          };
        }
       v.new Case(maxStuckSize, Index.registerName())
-       {void Choice(int i)
-         {keys[i].copy(v, Key);
-          data[i].copy(v, Data);
+       {void Choice(int I)
+         {keys.copy(v, I, Key);
+          data.copy(v, I, Data);
          }
        };
      }
@@ -960,12 +945,12 @@ chipStop = true;
         return;
        }
       size.dec();
-      Key.copy (keys[N]);
-      Data.copy(data[N]);
+      Key.copy (keys, N);
+      Data.copy(data, N);
       final int M = maxStuckSize-1;
       for (int i = N; i < M; i++)
-       {keys[i].copy(keys[i+1]);
-        data[i].copy(data[i+1]);
+       {keys.copy(i, keys, i+1);
+        data.copy(i, data, i+1);
        }
      }
 
@@ -973,16 +958,16 @@ chipStop = true;
      {size.dec(v);
       v.new Case(maxStuckSize, Index.registerName())
        {void Choice(int i)
-         {Key .copy(v, keys[i]);
-          Data.copy(v, data[i]);
+         {Key .copy(v, keys, i);
+          Data.copy(v, data, i);
          }
        };
       for (int i = 0; i < maxStuckSize-1; i++)
        {final int I = i;
         v.new If (""+i + ">= "+Index.registerName())
          {void Then()
-           {keys[I].copy(v, keys[I+1]);
-            data[I].copy(v, data[I+1]);
+           {keys.copy(v, I, keys, I+1);
+            data.copy(v, I, data, I+1);
            }
          };
        }
@@ -997,75 +982,24 @@ chipStop = true;
 
 //D3 Search                                                                     // Search the stuck
 
-    void search_eq(Process.Register Key)                                        // Find the specified key if possible in the stuck
-     {R(); final int N = size.registerGet();
-      if (!compareable) stop("Stuck "+stuckName+" was not declared compareable");
-      Found.zero();
-      for (int i = 0; i < N; ++i)
-       {if (Found.registerGet() == 0)
-         {final int I = i;
-          if (keys[i].registerGet() == Key.registerGet())
-           {Found.one();
-            StuckIndex.registerSet(I);
-            Stuck.this.Key .copy(keys[I]);
-            Stuck.this.Data.copy(data[I]);
-           }
-         }
-       }
-     }
-
-    void search_eq(Verilog v, Process.Register Key)                             // Find the specified key if possible in the stuck
-     {Found.zero(v);
-      for (int i = 0; i < maxStuckSize; ++i)
-       {final int I = i;
-        v.new If ("!"+Found.registerName())
-         {void Then()
-           {v.new If (""+I+" < "+size.registerName())
-             {void Then()
-               {v.new If (keys[I].registerName()+" == "+Key.registerName())
-                 {void Then()
-                   {Found.one(v);
-                    StuckIndex.registerSet(v, I);
-                    Stuck.this.Key .copy(v, keys[I]);
-                    Stuck.this.Data.copy(v, data[I]);
-                   }
-                 };
-               }
-             };
-           }
-         };
-       }
-     }
-
-    void Search_eq(Process.Register Key)                                        // Find the specified key if possible in the stuck
-     {P.new Instruction()
-       {void action()
-         {search_eq(Key);
-         }
-        void verilog(Verilog v)
-         {search_eq(v, Key);
-         }
-       };
-     }
-
     void search_eq_parallel(Process.Register Key)                               // Find the specified key if possible in the stuck
      {if (!compareable) stop("Stuck "+stuckName+" was not declared compareable");
       P.new Instruction()
        {void action()
          {final int N = size.registerGet();
           for (int i = 0; i < maxStuckSize; ++i)                                // Compare each key
-           {final boolean eq = Key.registerGet() == keys[i].registerGet() && i < N;
-            compares[i].registerSet(eq ? 1 : 0);
-            collapse[i].registerSet(i);
+           {final boolean eq = Key.registerGet() == keys.registerGet(i) && i < N;
+            compares.registerSet(eq ? 1 : 0, i);
+            collapse.registerSet(i, i);                                         // The number of the test being collapsed
            }
          }
         void verilog(Verilog v)
          {final String N = size.registerName();
           for (int i = 0; i < maxStuckSize; ++i)                                // Compare each key
-           {final String eq = Key.registerName()+" == "+keys[i].registerName()+
+           {final String eq = Key.registerName()+" == "+keys.registerName(i)+
               " && "+i+" < "+N;
-            v.assign(compares[i].registerName(), eq);
-            collapse[i].registerSet(v, i);
+            v.assign(compares.registerName(i), eq);
+            collapse.registerSet(v, i, i);
            }
          }
        };
@@ -1074,19 +1008,19 @@ chipStop = true;
         P.new Instruction()
          {void action()
            {for (int j = 0; j < maxStuckSize-I; j += I+I)
-             {if (compares[j+I].registerGet() > 0)
-               {compares[j].one();
-                collapse[j].copy(collapse[j+I]);
+             {if (compares.registerGet(j+I) > 0)
+               {compares.one(j);
+                collapse.copy(j, collapse, j+I);
                }
              }
            }
           void verilog(Verilog v)
            {for (int j = 0; j < maxStuckSize-I; j += I+I)
              {final int J = j;
-               v.new If (compares[J+I].registerName())
+               v.new If (compares.registerName(J+I))
                {void Then()
-                 {compares[J].one(v);
-                  collapse[J].copy(v, collapse[J+I]);
+                 {compares.one (v, J);
+                  collapse.copy(v, J, collapse, J+I);
                  }
                };
              }
@@ -1095,26 +1029,26 @@ chipStop = true;
        }
       P.new Instruction()                                                       // Set result
        {void action()
-         {if (compares[0].registerGet() > 0)
+         {if (compares.registerGet(0) > 0)
            {Found.one();
-            final int I = collapse[0].registerGet();
+            final int I = collapse.registerGet(0);
             StuckIndex.registerSet(I);
-            Stuck.this.Key .copy(keys[I]);
-            Stuck.this.Data.copy(data[I]);
+            Stuck.this.Key .copy(keys, I);
+            Stuck.this.Data.copy(data, I);
            }
           else
            {Found.zero();
            }
          };
         void verilog(Verilog v)
-         {v.new If (compares[0].registerName())
+         {v.new If (compares.registerName(0))
            {void Then()
              {Found.one(v);
-              StuckIndex.copy(v, collapse[0]);
-              v.new Case(maxStuckSize, collapse[0].registerName())
+              StuckIndex.copy(v, collapse, 0);
+              v.new Case(maxStuckSize, collapse.registerName(0))
                {void Choice(int I)
-                 {Stuck.this.Key .copy(v, keys[I]);
-                  Stuck.this.Data.copy(v, data[I]);
+                 {Stuck.this.Key .copy(v, keys, I);
+                  Stuck.this.Data.copy(v, data, I);
                  }
                };
              }
@@ -1126,99 +1060,39 @@ chipStop = true;
        };
      }
 
-    void search_le(Process.Register Key)                                        // Find the first key in the stuck so that the search key is less than or equal to this key
-     {R(); final int N = size.registerGet();
-      if (!compareable) stop("Stuck "+stuckName+" was not declared compareable");
-      Found.zero();
-      StuckIndex.registerSet(N);
-      Data.copy(data[N]);
-      for (int i = 0; i < N; ++i)
-       {if (Found.registerGet() == 0)
-         {final int I = i;
-          if (Key.registerGet() <= keys[I].registerGet())
-           {Found.one();
-            StuckIndex.registerSet(I);
-            FoundKey.copy(keys[I]);
-            Data    .copy(data[I]);
-           }
-         }
-       }
-     }
-
-    void search_le(Verilog v, Process.Register Key)                             // Find the first key in the stuck so that the search key is less than or equal to this key
-     {Found.zero(v);
-      StuckIndex.copy(v, size);                                                 // Default is top if no match found
-      v.new Case(maxStuckSize, size.registerName())
-       {void Choice(int i)
-         {Data.copy(v, data[i]);
-         }
-       };
-
-      for (int i = 0; i < maxStuckSize; ++i)                                    // Check each key
-       {final int I = i;
-        v.new If ("!"+Found.registerName())
-         {void Then()
-           {v.new If (""+I+" < "+size.registerName())
-             {void Then()
-               {v.new If (Key.registerName() +  "<= " +keys[I].registerName())
-                 {void Then()
-                   {Found.one(v);
-                    StuckIndex.registerSet(v, I);
-                    FoundKey.copy(v, keys[I]);
-                    Data    .copy(v, data[I]);
-                   }
-                 };
-               }
-             };
-           }
-         };
-       }
-     }
-
-    void Search_le(Process.Register Key)                                        // Find the first key in the stuck so that the search key is less than or equal to this key
-     {P.new Instruction()
-       {void action()
-         {search_le(Key);
-         }
-        void verilog(Verilog v)
-         {search_le(v, Key);
-         }
-       };
-     }
-
     void search_le_parallel(Process.Register Key)                               // Find the specified key if possible in the stuck
      {if (!compareable) stop("Stuck "+stuckName+" was not declared compareable");
       P.new Instruction()
        {void action()
          {final int N = size.registerGet();
           if (true)                                                             // Compare first key
-           {final boolean le = Key.registerGet() <= keys[0].registerGet() && 0 < N;
-            compares[0].registerSet(le ? 1 : 0);
-            collapse[0].registerSet(0);
+           {final boolean le = Key.registerGet() <= keys.registerGet(0) && 0 < N;
+            compares.registerSet(le ? 1 : 0, 0);
+            collapse.registerSet(0, 0);
            }
           for (int i = 1; i < maxStuckSize; ++i)                                // Compare each key range
            {final boolean in =
-              Key.registerGet() >  keys[i-1].registerGet() &&
-              Key.registerGet() <= keys[i]  .registerGet() && i < N;
-            compares[i].registerSet(in ? 1 : 0);
-            collapse[i].registerSet(i);
+              Key.registerGet() >  keys.registerGet(i-1) &&
+              Key.registerGet() <= keys.registerGet(i) && i < N;
+            compares.registerSet(in ? 1 : 0, i);
+            collapse.registerSet(i, i);
            }
          }
         void verilog(Verilog v)
          {final String N = size.registerName();
           if (true)                                                             // Compare first key
-           {final String le = Key.registerName()+" <= "+keys[0].registerName()+
+           {final String le = Key.registerName()+" <= "+keys.registerName(0)+
               " && 0 < "+N;
-            v.assign(compares[0].registerName(), le);
-            collapse[0].registerSet(v, 0);
+            v.assign(compares.registerName(0), le);
+            collapse.registerSet(v, 0, 0);
            }
           for (int i = 1; i < maxStuckSize; ++i)                                // Compare each key
            {final String K = Key.registerName();
              final String in =
-              K + " >  " + keys[i-1].registerName() + " && " +
-              K + " <= " + keys[i]  .registerName() + " && " +i+ " < "+N;
-            v.assign(compares[i].registerName(), in);
-            collapse[i].registerSet(v, i);
+              K + " >  " + keys.registerName(i-1) + " && " +
+              K + " <= " + keys.registerName(i)   + " && " +i+ " < "+N;
+            v.assign(compares.registerName(i), in);
+            collapse.registerSet(v, i, i);
            }
          }
        };
@@ -1227,19 +1101,19 @@ chipStop = true;
         P.new Instruction()
          {void action()
            {for (int j = 0; j < maxStuckSize-I; j += I+I)
-             {if (compares[j+I].registerGet() > 0)
-               {compares[j].one();
-                collapse[j].copy(collapse[j+I]);
+             {if (compares.registerGet(j+I) > 0)
+               {compares.one(j);
+                collapse.copy(j, collapse, j+I);
                }
              }
            }
           void verilog(Verilog v)
            {for (int j = 0; j < maxStuckSize-I; j += I+I)
              {final int J = j;
-               v.new If (compares[J+I].registerName())
+               v.new If (compares.registerName(J+I))
                {void Then()
-                 {compares[J].one(v);
-                  collapse[J].copy(v, collapse[J+I]);
+                 {compares.one (v, J);
+                  collapse.copy(v, J, collapse, J+I);
                  }
                };
              }
@@ -1248,29 +1122,29 @@ chipStop = true;
        }
       P.new Instruction()                                                       // Set result
        {void action()
-         {if (compares[0].registerGet() > 0)
+         {if (compares.registerGet(0) > 0)
            {Found.one();
-            final int I = collapse[0].registerGet();
+            final int I = collapse.registerGet(0);
             StuckIndex.registerSet(I);
-            Stuck.this.FoundKey .copy(keys[I]);
-            Stuck.this.Data     .copy(data[I]);
+            Stuck.this.FoundKey .copy(keys, I);
+            Stuck.this.Data     .copy(data, I);
            }
           else
            {final int N = size.registerGet();
             Found.zero();
             StuckIndex.registerSet(N);
-            Stuck.this.Data    .copy(data[N]);
+            Stuck.this.Data    .copy(data, N);
            }
          };
         void verilog(Verilog v)
-         {v.new If (compares[0].registerName())
+         {v.new If (compares.registerName(0))
            {void Then()
              {Found.one(v);
-              StuckIndex.copy(v, collapse[0]);
-              v.new Case(maxStuckSize, collapse[0].registerName())
+              StuckIndex.copy(v, collapse, 0);
+              v.new Case(maxStuckSize, collapse.registerName(0))
                {void Choice(int I)
-                 {Stuck.this.FoundKey.copy(v, keys[I]);
-                  Stuck.this.Data    .copy(v, data[I]);
+                 {Stuck.this.FoundKey.copy(v, keys, I);
+                  Stuck.this.Data    .copy(v, data, I);
                  }
                };
              }
@@ -1279,7 +1153,7 @@ chipStop = true;
               StuckIndex.copy(v, size);
               v.new Case(maxStuckSize, size.registerName())
                {void Choice(int I)
-                 {Stuck.this.Data.copy(v, data[I]);
+                 {Stuck.this.Data.copy(v, data, I);
                  }
                };
              }
@@ -1300,28 +1174,28 @@ chipStop = true;
            }
 
           for (int i = 0; i < C; ++i)                                           // Move left keys
-           {Left.keys[i].copy(keys[i]);
-            Left.data[i].copy(data[i]);
+           {Left.keys.copy(i, keys, i);
+            Left.data.copy(i, data, i);
            }                                                                    // Left size
           Left .size.registerSet(C);
 
           for (int i = 0; i < C; ++i)                                           // Move right keys
-           {Right.keys[i].copy(keys[C+i]);
-            Right.data[i].copy(data[C+i]);
+           {Right.keys.copy(i, keys, C+i);
+            Right.data.copy(i, data, C+i);
            }
           Right.size.registerSet(C);                                            // Right size
          }
 
         void verilog(Verilog v)
          {for (int i = 0; i < C; ++i)
-           {Left.keys[i].copy(v, keys[i]);
-            Left.data[i].copy(v, data[i]);
+           {Left.keys.copy(v, i, keys, i);
+            Left.data.copy(v, i, data, i);
            }
           Left  .size.registerSet(v, C);
 
           for (int i = 0; i < C; ++i)
-           {Right.keys[i].copy(v, keys[C+i]);
-            Right.data[i].copy(v, data[C+i]);
+           {Right.keys.copy(v, i, keys, C+i);
+            Right.data.copy(v, i, data, C+i);
             }
           Right.size.registerSet(v, C);
          }
@@ -1337,37 +1211,37 @@ chipStop = true;
             return;
            }
           for (int i = 0; i < Copy; ++i)
-           {Left.keys[i].copy(keys[i]);
-            Left.data[i].copy(data[i]);
+           {Left.keys.copy(i, keys, i);
+            Left.data.copy(i, data, i);
            }
           Left.size.registerSet(Copy);
-          Left.data[Copy].copy(data[Copy]);
+          Left.data.copy(Copy, data, Copy);
 
           for (int i = 0; i < Copy; ++i)
-           {Right.keys[i].copy(keys[Copy+i+1]);
-            Right.data[i].copy(data[Copy+i+1]);
+           {Right.keys.copy(i, keys, Copy+i+1);
+            Right.data.copy(i, data, Copy+i+1);
            }
           Right.size.registerSet(N - Copy-1);
-          Right.data[Copy].copy(data[2*Copy+1]);
+          Right.data.copy(Copy, data, 2*Copy+1);
          }
 
         void verilog(Verilog v)
          {for (int i = 0; i < Copy; ++i)
-           {Left.keys[i].copy(v, keys[i]);
-            Left.data[i].copy(v, data[i]);
+           {Left.keys.copy(v, i, keys, i);
+            Left.data.copy(v, i, data, i);
            }
           Left.size.registerSet(v, Copy);
-          Left.data[Copy].copy(v, data[Copy]);
+          Left.data.copy       (v, Copy, data, Copy);
 
           for (int i = 0; i < Copy; ++i)
-           {Right.keys[i].copy(v, keys[Copy+i+1]);
-            Right.data[i].copy(v, data[Copy+i+1]);
+           {Right.keys.copy(v, i, keys, Copy+i+1);
+            Right.data.copy(v, i, data, Copy+i+1);
            }
 
           v.new Case(maxStuckSize, size.registerName())
            {void Choice(int N)
              {Right.size.registerSet(v, N - Copy-1);
-              Right.data[Copy].copy(v, data[2*Copy+1]);
+              Right.data.copy(v, Copy, data, 2*Copy+1);
              }
            };
          }
@@ -1387,28 +1261,28 @@ chipStop = true;
            }
           final int N = maxStuckSize / 2;
           for (int i = 0; i < N; ++i)
-           {Left.keys[i].copy(keys[i]);
-            Left.data[i].copy(data[i]);
+           {Left.keys.copy(i, keys, i);
+            Left.data.copy(i, data, i);
            }
           Left.size.registerSet(N);
 
           for (int i = 0; i < N; ++i)
-           {keys[i].copy(keys[N+i]);
-            data[i].copy(data[N+i]);
+           {keys.copy(i, keys, N+i);
+            data.copy(i, data, N+i);
            }
           size.registerSet(N);
          }
         void verilog(Verilog v)
          {final int N = maxStuckSize / 2;
           for (int i = 0; i < N; ++i)
-           {Left.keys[i].copy(v, keys[i]);
-            Left.data[i].copy(v, data[i]);
+           {Left.keys.copy(v, i, keys, i);
+            Left.data.copy(v, i, data, i);
            }
           Left.size.registerSet(v, N);
 
           for (int i = 0; i < N; ++i)
-           {keys[i].copy(v, keys[N+i]);
-            data[i].copy(v, data[N+i]);
+           {keys.copy(v, i, keys, N+i);
+            data.copy(v, i, data, N+i);
            }
           size.registerSet(v, N);
          }
@@ -1428,32 +1302,32 @@ chipStop = true;
            }
           final int N = (maxStuckSize-1) / 2;
           for (int i = 0; i < N; ++i)
-           {Left.keys[i].copy(keys[i]);
-            Left.data[i].copy(data[i]);
+           {Left.keys.copy(i, keys, i);
+            Left.data.copy(i, data, i);
            }
           Left.size.registerSet(N);
-          Left.data[N].copy(data[N]);
-          Key.copy(keys[N]);
+          Left.data.copy(N, data, N);
+          Key.copy(keys, N);
 
           for (int i = 0; i <= N; ++i)                                          // Move the top element element down as well
-           {keys[i].copy(keys[N+i+1]);
-            data[i].copy(data[N+i+1]);
+           {keys.copy(i, keys, N+i+1);
+            data.copy(i, data, N+i+1);
            }
           size.registerSet(N);
          }
         void verilog(Verilog v)
          {final int N = (maxStuckSize-1) / 2;
           for (int i = 0; i < N; ++i)
-           {Left.keys[i].copy(v, keys[i]);
-            Left.data[i].copy(v, data[i]);
+           {Left.keys.copy(v, i, keys, i);
+            Left.data.copy(v, i, data, i);
            }
           Left.size.registerSet(v, N);
-          Left.data[N].    copy(v, data[N]);
-          Key.copy(v, keys[N]);
+          Left.data.       copy(v, N, data, N);
+          Key.copy(v, keys, N);
 
           for (int i = 0; i <= N; ++i)                                          // Move the top element element down as well
-           {keys[i].copy(v, keys[N+i+1]);
-            data[i].copy(v, data[N+i+1]);
+           {keys.copy(v, i, keys, N+i+1);
+            data.copy(v, i, data, N+i+1);
            }
           size.registerSet(v, N);
          }
@@ -1749,7 +1623,7 @@ chipStop = true;
     allocateBranch(il); l.stuckPut(il);                                         // Allocate and save left branch
     allocateBranch(ir); r.stuckPut(ir);                                         // Allocate and save right branch
                                                                                 // Update root with new children
-    mk.Copy(p.keys[midPoint]);                                                  // Get splitting key
+    mk.Copy(p.keys, midPoint);                                                  // Get splitting key
     p.Clear();                                                                  // Clear the root so we can add the left and right children to it.
     p.Push(mk, il);                                                             // Add reference to left child
     p.SetPastLastElement(mk, ir);                                               // Add reference to right child as top element past the end of the stuck
@@ -1772,14 +1646,14 @@ chipStop = true;
 
     P.new Instruction()
      {void action()
-       {ck.copy(p.keys[StuckIndex.registerGet()]);                              // Key of child
-        cd.copy(p.data[StuckIndex.registerGet()]);                              // Index of child in btree
+       {ck.copy(p.keys, StuckIndex.registerGet());                              // Key of child
+        cd.copy(p.data, StuckIndex.registerGet());                              // Index of child in btree
        }
       void verilog(Verilog v)
        {v.new Case(maxStuckSize, StuckIndex.registerName())
          {void Choice(int I)
-           {ck.copy(v, p.keys[I]);                                              // Key of child
-            cd.copy(v, p.data[I]);                                              // Index of child in btree
+           {ck.copy(v, p.keys, I);                                              // Key of child
+            cd.copy(v, p.data, I);                                              // Index of child in btree
            }
          };
        }
@@ -1854,14 +1728,14 @@ chipStop = true;
     p.stuckGet(ParentIndex);                                                    // Load parent stuck from btree
     P.new Instruction()
      {void action()
-       {ck.copy(p.keys[StuckIndex.registerGet()]);                              // Key of child
-        cd.copy(p.data[StuckIndex.registerGet()]);                              // Data of child
+       {ck.copy(p.keys, StuckIndex.registerGet());                              // Key of child
+        cd.copy(p.data, StuckIndex.registerGet());                              // Data of child
        }
       void verilog(Verilog v)
        {v.new Case(maxStuckSize, StuckIndex.registerName())
          {void Choice(int I)
-           {ck.copy(v, p.keys[I]);                                              // Key of child
-            cd.copy(v, p.data[I]);                                              // Data of child
+           {ck.copy(v, p.keys, I);                                              // Key of child
+            cd.copy(v, p.data, I);                                              // Data of child
            }
          };
        }
@@ -1978,12 +1852,12 @@ chipStop = true;
 
         P.new Instruction()                                                     // Check that the root has one entry and thus two children
          {void action()
-           {il.copy(p.data[0]);                                                 // Index of left leaf
-            ir.copy(p.data[1]);                                                 // Index of right leaf
+           {il.copy(p.data, 0);                                                 // Index of left leaf
+            ir.copy(p.data, 1);                                                 // Index of right leaf
            };
           void verilog(Verilog v)
-           {il.copy(v, p.data[0]);                                              // Index of left leaf
-            ir.copy(v, p.data[1]);                                              // Index of right leaf
+           {il.copy(v, p.data, 0);                                              // Index of left leaf
+            ir.copy(v, p.data, 1);                                              // Index of right leaf
            };
          };
 
@@ -2031,14 +1905,14 @@ chipStop = true;
 
         P.new Instruction()                                                     // Indexes of left and right leaves with the indicated child being the left leaf
          {void action()
-           {il.copy(p.data[LeftLeaf.registerGet()]);                            // Get the btree index of the left child leaf
-            ir.copy(p.data[LeftLeaf.registerGet() + 1]);                        // Get the btree index of the right child leaf
+           {il.copy(p.data, LeftLeaf.registerGet());                            // Get the btree index of the left child leaf
+            ir.copy(p.data, LeftLeaf.registerGet() + 1);                        // Get the btree index of the right child leaf
            }
           void verilog(Verilog v)
            {v.new Case(maxStuckSize-1, LeftLeaf.registerName())
              {void Choice(int i)
-               {il.copy(v, p.data[i]);                                          // Get the btree index of the left child leaf
-                ir.copy(v, p.data[i + 1]);                                      // Get the btree index of the right child leaf
+               {il.copy(v, p.data, i);                                          // Get the btree index of the left child leaf
+                ir.copy(v, p.data, i + 1);                                      // Get the btree index of the right child leaf
                }
              };
            }
@@ -2102,14 +1976,14 @@ chipStop = true;
 
         P.new Instruction()
          {void action()
-           {il.copy(p.data[sz.registerGet()-1]);                                // Get the btree index of the left child leaf
-            ir.copy(p.data[sz.registerGet()]);                                  // Get the btree index of the right child leaf
+           {il.copy(p.data, sz.registerGet()-1);                                // Get the btree index of the left child leaf
+            ir.copy(p.data, sz.registerGet());                                  // Get the btree index of the right child leaf
            }
           void verilog(Verilog v)
            {v.new Case(1, maxStuckSize, sz.registerName())
              {void Choice(int i)
-               {il.copy(v, p.data[i-1]);                                        // Get the btree index of the left child leaf
-                ir.copy(v, p.data[i]);                                          // Get the btree index of the right child leaf
+               {il.copy(v, p.data, i-1);                                        // Get the btree index of the left child leaf
+                ir.copy(v, p.data, i);                                          // Get the btree index of the right child leaf
                }
              };
            }
@@ -2190,14 +2064,14 @@ chipStop = true;
 
         P.new Instruction()                                                     // Check that the root has one entry and thus two children
          {void action()
-           {mk.copy(p.keys[0]);                                                 // Splitting key
-            il.copy(p.data[0]);                                                 // Index of left branch
-            ir.copy(p.data[1]);                                                 // Index of right branch
+           {mk.copy(p.keys, 0);                                                 // Splitting key
+            il.copy(p.data, 0);                                                 // Index of left branch
+            ir.copy(p.data, 1);                                                 // Index of right branch
            }
           void verilog(Verilog v)
-           {mk.copy(v, p.keys[0]);                                              // Splitting key
-            il.copy(v, p.data[0]);                                              // Index of left branch
-            ir.copy(v, p.data[1]);                                              // Index of right branch
+           {mk.copy(v, p.keys, 0);                                              // Splitting key
+            il.copy(v, p.data, 0);                                              // Index of left branch
+            ir.copy(v, p.data, 1);                                              // Index of right branch
            }
          };
 
@@ -2253,14 +2127,14 @@ chipStop = true;
 
         P.new Instruction()                                                     // Check that the parent has a child at the specified index
          {void action()
-           {il.copy(p.data[LeftBranch.registerGet()+0]);                        // Get the btree index of the left child branch
-            ir.copy(p.data[LeftBranch.registerGet()+1]);                        // Get the btree index of the right child branch
+           {il.copy(p.data, LeftBranch.registerGet()+0);                        // Get the btree index of the left child branch
+            ir.copy(p.data, LeftBranch.registerGet()+1);                        // Get the btree index of the right child branch
            }
           void verilog(Verilog v)
            {v.new Case(maxStuckSize-1, LeftBranch.registerName())
              {void Choice(int i)
-               {il.copy(v, p.data[i+0]);                                        // Get the btree index of the left child branch
-                ir.copy(v, p.data[i+1]);                                        // Get the btree index of the right child branch
+               {il.copy(v, p.data, i+0);                                        // Get the btree index of the left child branch
+                ir.copy(v, p.data, i+1);                                        // Get the btree index of the right child branch
                }
              };
            }
@@ -2275,12 +2149,12 @@ chipStop = true;
              {void Branch()
                {P.new Instruction()                                             // Check that the parent has a child at the specified index
                  {void action()
-                   {mk.copy(p.keys[LeftBranch.registerGet()]);                  // Key associated with left child branch
+                   {mk.copy(p.keys, LeftBranch.registerGet());                  // Key associated with left child branch
                    }
                   void verilog(Verilog v)
                    {v.new Case(maxStuckSize, LeftBranch.registerName())
                      {void Choice(int i)
-                       {mk.copy(v, p.keys[i]);                                  // Key associated with left child branch
+                       {mk.copy(v, p.keys, i);                                  // Key associated with left child branch
                        }
                      };
                    }
@@ -2337,14 +2211,14 @@ chipStop = true;
 
         P.new Instruction()                                                     // Check that the parent has a child at the specified index
          {void action()
-           {il.copy(p.data[sz.registerGet()-1]);                                // Get the btree index of the left branch branch
-            ir.copy(p.data[sz.registerGet()  ]);                                // Get the btree index of the right branch branch
+           {il.copy(p.data, sz.registerGet()-1);                                // Get the btree index of the left branch branch
+            ir.copy(p.data, sz.registerGet()  );                                // Get the btree index of the right branch branch
            }
           void verilog(Verilog v)
            {v.new Case(1, maxStuckSize, sz.registerName())
              {void Choice(int i)
-               {il.copy(v, p.data[i-1]);                                        // Get the btree index of the left branch branch
-                ir.copy(v, p.data[i  ]);                                        // Get the btree index of the right branch branch
+               {il.copy(v, p.data, i-1);                                        // Get the btree index of the left branch branch
+                ir.copy(v, p.data, i  );                                        // Get the btree index of the right branch branch
                }
              };
            }
@@ -2861,7 +2735,8 @@ Merge     : 0
     s.stuckGetRoot();
     t.CopyDown(s, 1);
     b.chipRun();
-
+    //stop(b);
+    //stop(s.dump());
     //stop(t.dump());
     ok(t.dump(), """
 Stuck: Target size: 0, leaf: 0, root
@@ -3104,10 +2979,10 @@ Merge     : 1
 
     Stuck s = b.new Stuck(P, "Stuck");
     s.stuckGetRoot();
-
     b.maxSteps = 200;
     b.chipRunJava();                                                            // We are creating the tree not testing it
-
+    //stop(s.dump());
+    //stop(b.chipPrintMemory());
     //stop(s);
     ok(s, """
 Stuck: Stuck size: 2, leaf: 1, root
@@ -3119,9 +2994,10 @@ Stuck: Stuck size: 2, leaf: 1, root
     s.stuckGetRoot();
     P.new Instruction()
      {void action()
-       {s.isLeaf .registerSet(0);
-        s.size   .registerSet(1);
-        s.keys[0].registerSet(3); s.data[0].registerSet(4);
+       {s.isLeaf.registerSet(0);
+        s.size  .registerSet(1);
+        s.keys  .registerSet(3, 0);
+        s.data  .registerSet(4, 0);
        }
      };
     s.stuckPut(true);
@@ -3936,7 +3812,7 @@ Stuck: stuck size: 3, leaf: 1, root
 
     k.RegisterSet(11);
 
-    s.Search_eq(k);
+    s.search_eq_parallel(k);
 
     b.maxSteps = 100;
     b.chipRun();
@@ -4022,7 +3898,7 @@ Merge     : 0
     s.stuckGetRoot();
     k.RegisterSet(21);
     s.Pop();
-    s.Search_le(k);
+    s.search_le_parallel(k);
 
     b.chipRun();
 
@@ -7089,8 +6965,8 @@ Merge     : 0
 
   static void test_verilog_put()
    {sayCurrentTestName();
-// Keys per stuck->lines of code: 10-> 24,168 20->37,578 40->64,919
-    final Btree            b = new Btree(1024, 32, 32, 32);
+// Keys per stuck->lines of code: 10-> 24,168 20->37,578 40->64,919-41,418
+    final Btree            b = new Btree(1024, 20, 32, 32);
     final Process          P = b.P; //b.new Process("verilogPut");
     final Process.Register k = P.register("k", b.bitsPerKey);   k.input();
     final Process.Register d = P.register("d", b.bitsPerData);  d.input();
@@ -7161,8 +7037,8 @@ Merge     : 0
 
   static void newTests()                                                        // Tests being worked on
    {oldTests();
-    //test_put_merge();
-    test_verilog_put();
+    test_allocate();
+    //test_verilog_put();
    }
 
   public static void main(String[] args)                                        // Test if called as a program
