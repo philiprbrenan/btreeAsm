@@ -2032,15 +2032,10 @@ chipStop = true;
    {final Stuck   p = ParentStuck;                                              // Parent stuck
     final Stuck   l = LeftMergeBranchesIntoRoot;                                // Left split stuck
     final Stuck   r = RightMergeBranchesIntoRoot;                               // Right split stuck
-    final Process.Register ck = P.new Register("childKey",   bitsPerKey);       // Index in memory of the left stuck
-    final Process.Register ls = P.new Register("leftChild",  stuckAddressSize); // Index in memory of the left stuck
-    final Process.Register rs = P.new Register("rightChild", stuckAddressSize); // Index in memory of the left stuck
-    final Process.Register cd = P.new Register("childData",  btreeAddressSize); // Index in memory of the left stuck
     final Process.Register il = P.new Register("indexLeft",  btreeAddressSize); // Index in memory of the left stuck
     final Process.Register ir = P.new Register("indexRight", btreeAddressSize); // Index in memory of the right stuck
     final Process.Register mk = P.new Register("midKey",     bitsPerKey);       // Mid key
     final Process.Register success = P.new Register("success", 1);              // Success of merge - the result of this operation
-    final Process.Register test    = P.new Register("test",    1);              // A generic test
 
     //P.new Instruction() {void action() {say("AAAA 44 mergeLeavesIntoRoot");}};
 
@@ -2110,7 +2105,6 @@ chipStop = true;
     final Stuck   p = Stuck;                                                    // Parent stuck
     final Stuck   l = LeftMergeStuck;                                           // Left split stuck
     final Stuck   r = RightMergeStuck;                                          // Right split stuck
-    final Process.Register ck = P.new Register("childKey",   bitsPerKey);       // Index in memory of the left stuck
     final Process.Register ls = P.new Register("leftChild",  stuckAddressSize); // Index in memory of the left stuck
     final Process.Register rs = P.new Register("rightChild", stuckAddressSize); // Index in memory of the left stuck
     final Process.Register cd = P.new Register("childData",  btreeAddressSize); // Index in memory of the left stuck
