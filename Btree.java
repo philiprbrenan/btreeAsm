@@ -6965,8 +6965,8 @@ Merge     : 0
 
   static void test_verilog_put()
    {sayCurrentTestName();
-// Keys per stuck->lines of code: 10-> 24,168 20->37,578 40->64,919-41,418
-    final Btree            b = new Btree(1024, 20, 32, 32);
+// Keys per stuck->lines of code: 10-> 24,168 20->37,578  40->64,919 - 41,418 - 35,883  1024->800K
+    final Btree            b = new Btree(1024, 40, 32, 32);
     final Process          P = b.P; //b.new Process("verilogPut");
     final Process.Register k = P.register("k", b.bitsPerKey);   k.input();
     final Process.Register d = P.register("d", b.bitsPerData);  d.input();
@@ -7036,9 +7036,8 @@ Merge     : 0
    }
 
   static void newTests()                                                        // Tests being worked on
-   {oldTests();
-    test_allocate();
-    //test_verilog_put();
+   {//oldTests();
+    test_verilog_put();
    }
 
   public static void main(String[] args)                                        // Test if called as a program
