@@ -1078,8 +1078,7 @@ if __name__ == "__main__":
        }
 
       void zero(Verilog v)                                                      // Zero a register in Verilog
-       {v.comment("AAAA");
-        if (registerSingle()) v.assign(rn(),  "0");
+       {if (registerSingle()) v.assign(rn(),  "0");
         else
          {final String i = processMemoryIndexName();
           v.new For(i, i+" < "+registerSize)
