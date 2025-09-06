@@ -31,6 +31,7 @@ class Btree extends Chip                                                        
   final Stuck LeftMergeBranchesIntoRoot;                                        // Left sibling in merge branches into root
   final Stuck RightMergeBranchesIntoRoot;                                       // Right sibling in merge branches into root
   final Stuck SourceCopyStuck;                                                  // Copy of a stuck used during merge to combine with target
+  final Stuck SplitStuck;                                                       // Copy of a stuck used during splits
 
   final Process.Register mergeSum;                                              // Sum of the lengths of the two stucks to be merged
   final Process.Register mergeCan;                                              // Can merge two stucks
@@ -66,6 +67,7 @@ class Btree extends Chip                                                        
     LeftSplitStuck  = new Stuck(P, "SplitLeft");                                // Left  stuck in a split operation
     RightSplitStuck = new Stuck(P, "SplitRight");                               // Right stuck in a split operation
     SourceCopyStuck = new Stuck(P, "SourceCopyStuck");                          // Copy of a stuck used during merge to combine with target
+    SplitStuck      = new Stuck(P, "SplitStuck");                               // Copy of a stuck used during splits
 
     LeftMergeBranchesIntoRoot  = new Stuck(P, "LeftMergeBranchesIntoRoot");     // Left sibling in merge branches into root
     RightMergeBranchesIntoRoot = new Stuck(P, "RightMergeBranchesIntoRoot");    // Right sibling in merge branches into root
@@ -1639,7 +1641,7 @@ chipStop = true;
     final Stuck p = ParentStuck;                                                // Parent stuck
     final Stuck l = LeftSplitStuck;                                             // Left split stuck
     final Stuck r = RightSplitStuck;                                            // Right split stuck
-    final Stuck c = new Stuck(P, "splitLeafNotTopChild"); //////////                     // Left split stuck
+    final Stuck c = SplitStuck;                                                 // Left split stuck
     final Process.Register ck = P.new Register("childKey",   bitsPerKey);       // Index in memory of the left stuck
     final Process.Register cd = P.new Register("childData",  btreeAddressSize); // Index in memory of the left stuck
     final Process.Register il = splitIl;                                        // Index in memory of the left stuck
