@@ -30,6 +30,8 @@ class Btree extends Chip                                                        
   final Stuck RightSplitStuck;                                                  // Right sibling in split operation
   final Stuck LeftMergeBranchesIntoRoot;                                        // Left sibling in merge branches into root
   final Stuck RightMergeBranchesIntoRoot;                                       // Right sibling in merge branches into root
+  final Stuck SourceCopyStuck;                                                  // Copy of a stuck used during merge to combine with target
+
   final Process.Register mergeSum;                                              // Sum of the lengths of the two stucks to be merged
   final Process.Register mergeCan;                                              // Can merge two stucks
   final Process.Register splitIl;                                               // Index in memory of the left stuck
@@ -58,11 +60,12 @@ class Btree extends Chip                                                        
     stuckKeys    = new Memory("stuckKeys"  , Size, bitsPerKey , MaxStuckSize);  // Keys fields
     stuckData    = new Memory("stuckData"  , Size, bitsPerData, MaxStuckSize);  // Data fields
 
-    ParentStuck  = new Stuck(P, "Parent");                                      // Parent stuck
+    ParentStuck     = new Stuck(P, "Parent");                                   // Parent stuck
     LeftMergeStuck  = new Stuck(P, "MergeLeft");                                // Left stuck sibling in merge operation
     RightMergeStuck = new Stuck(P, "MergeRight");                               // Right stuck sibling in merge operation
     LeftSplitStuck  = new Stuck(P, "SplitLeft");                                // Left  stuck in a split operation
     RightSplitStuck = new Stuck(P, "SplitRight");                               // Right stuck in a split operation
+    SourceCopyStuck = new Stuck(P, "SourceCopyStuck");                          // Copy of a stuck used during merge to combine with target
 
     LeftMergeBranchesIntoRoot  = new Stuck(P, "LeftMergeBranchesIntoRoot");     // Left sibling in merge branches into root
     RightMergeBranchesIntoRoot = new Stuck(P, "RightMergeBranchesIntoRoot");    // Right sibling in merge branches into root
@@ -1343,7 +1346,7 @@ chipStop = true;
       can.Le (sum, maxStuckSize);
       P.new If(can)
        {void Then()
-         {final Stuck s = new Stuck(P, "sourceCopy");
+         {final Stuck s = SourceCopyStuck;
           s.Copy(Source);
           s.CopyUp(size);
           Combine(s);
@@ -1384,7 +1387,7 @@ chipStop = true;
        {void Then()
          {PastLastElement();
           Push(Key, Data);
-          final Stuck s = new Stuck(P, "sourceCopy");
+          final Stuck s = SourceCopyStuck;
           s.Copy(Source);
           s.CopyUp(size);
           Combine(s);
@@ -7036,7 +7039,7 @@ Merge     : 0
    }
 
   static void newTests()                                                        // Tests being worked on
-   {//oldTests();
+   {oldTests();
     test_verilog_put();
    }
 
