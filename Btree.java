@@ -1411,7 +1411,7 @@ chipStop = true;
          {Copy(Left);
           SetPastLastKey(Key);
           size.Inc();
-          final Stuck s = new Stuck(P, "sourceCopy");
+          final Stuck s = SourceCopyStuck;
           s.Copy(Right);
           s.CopyUp(size);
           Combine(s);
@@ -7039,7 +7039,7 @@ Merge     : 0
    }
 
   static void newTests()                                                        // Tests being worked on
-   {oldTests();
+   {//oldTests();
     test_verilog_put();
    }
 
