@@ -1639,9 +1639,8 @@ chipStop = true;
    (Process.Register ParentIndex, Process.Register StuckIndex)
    {Process     P = ParentIndex.registerProcess();
     final Stuck p = ParentStuck;                                                // Parent stuck
-    final Stuck l = LeftSplitStuck;                                             // Left split stuck
-    final Stuck r = RightSplitStuck;                                            // Right split stuck
-    final Stuck c = SplitStuck;                                                 // Left split stuck
+    final Stuck l = LeftSplitStuck;                                             // Left stuck split from leaf
+    final Stuck c = SplitStuck;                                                 // Leaf to be split
     final Process.Register ck = P.new Register("childKey",   bitsPerKey);       // Index in memory of the left stuck
     final Process.Register cd = P.new Register("childData",  btreeAddressSize); // Index in memory of the left stuck
     final Process.Register il = splitIl;                                        // Index in memory of the left stuck
