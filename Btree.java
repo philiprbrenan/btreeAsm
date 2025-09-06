@@ -32,6 +32,8 @@ class Btree extends Chip                                                        
   final Stuck RightMergeBranchesIntoRoot;                                       // Right sibling in merge branches into root
   final Stuck SourceCopyStuck;                                                  // Copy of a stuck used during merge to combine with target
   final Stuck SplitStuck;                                                       // Copy of a stuck used during splits
+  final Stuck PutParentStuck;                                                   // Parent stuck during put
+  final Stuck PutChildStuck;                                                    // Child stuck during put
 
   final Process.Register mergeSum;                                              // Sum of the lengths of the two stucks to be merged
   final Process.Register mergeCan;                                              // Can merge two stucks
@@ -71,6 +73,9 @@ class Btree extends Chip                                                        
 
     LeftMergeBranchesIntoRoot  = new Stuck(P, "LeftMergeBranchesIntoRoot");     // Left sibling in merge branches into root
     RightMergeBranchesIntoRoot = new Stuck(P, "RightMergeBranchesIntoRoot");    // Right sibling in merge branches into root
+
+    PutParentStuck  = new Stuck(P, "putParent", true);                          // Parent stuck during put
+    PutChildStuck   = new Stuck(P, "putChild");                                 // Child stuck during put
 
     mergeSum = register("sum", 1+stuckAddressSize);                             // Sum of the lengths of the two stucks
     mergeCan = register("can", 1);                                              // Can merge
@@ -2332,8 +2337,8 @@ chipStop = true;
 
   public void put(Process.Register Key, Process.Register Data)                  // Insert a key, data pair into the tree or update and existing key with a new datum
    {final Process          P     = Key.registerProcess();                       // Process in which to write code
-    final Stuck            S     = new Stuck(P, "putParent", true);             // Parent stuck
-    final Stuck            s     = new Stuck(P, "putChild");                    // Child stuck
+    final Stuck            S     = PutParentStuck;                              // Parent stuck
+    final Stuck            s     = PutChildStuck;                               // Child stuck
     final FindAndInsert    f     = new FindAndInsert(P);                        // Find and insert
     final Process.Register c     = P.new Register("child",  btreeAddressSize);  // Current child in tree
     final Process.Register p     = P.new Register("parent", btreeAddressSize);  // Parent of current child in tree
