@@ -921,6 +921,27 @@ if __name__ == "__main__":
          };
        }
 
+//D4 Source Register Indexed by Register and Offset to Register
+
+      void copyIs(Register Source, Register Index, int Offset)                  // Copy an element of an arrayed register indexed by a register and an offset to a target register
+       {R(); registerCheckSize(Source);                                         // Make sure the target register is big enough
+        Source.registerCheckArrayed();
+        Index.registerCheckSingle();
+        value = (BitSet)Source.values[Index.registerGet()+Offset].clone();      // Copy the source value into the target
+       }
+
+      void copyIs(Verilog v, Register Source, Register Index, int Offset)       // Copy a register indexed element of an arrayed source register into this target register
+       {v.assign(registerName(), Source.registerName()+
+         "["+Index.registerName()+"+"+Offset+"]");
+       }
+
+      void CopyIs(Register Source, Register Index, int Offset)                  // Copy instruction
+       {new Instruction()
+         {void action()           {copyIs(   Source, Index, Offset);};
+          void verilog(Verilog v) {copyIs(v, Source, Index, Offset);};
+         };
+       }
+
 //D4 Register to Integer Indexed Register                                       // Copy a source register to an integer indexed element of an arrayed target register
 
       void copy(int RegisterIndex, Register Source)                             // Copy the source register into the specified indexed register
