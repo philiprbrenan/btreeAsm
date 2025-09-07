@@ -430,10 +430,8 @@ chipStop = true;
 //D3 Copy                                                                       // Copy a stuck into itself or another stuck shifting the elements in the stuck by a predetermined amount
 
     void copy(Stuck Source)                                                     // Copy a stuck from the specified source to this stuck
-     {for (int i = 0; i < maxStuckSize; i++)
-       {keys.copy(i, Source.keys, i);
-        data.copy(i, Source.data, i);
-       }
+     {keys  .copy(Source.keys);
+      data  .copy(Source.data);
       size  .copy(Source.size);
       isLeaf.copy(Source.isLeaf);
      }
@@ -451,23 +449,6 @@ chipStop = true;
      {P.new Instruction()
        {void action()           {copy(   Source);}
         void verilog(Verilog v) {copy(v, Source);}
-       };
-     }
-
-    void combine(Stuck Source)                                                  // Combine a stuck from the specified source to this stuck
-     {keys.combine(Source.keys);
-      data.combine(Source.data);
-     }
-
-    void combine(Verilog v, Stuck Source)                                       // Combine a stuck from the specified source to this stuck
-     {keys.combine(v, Source.keys);
-      data.combine(v, Source.data);
-     }
-
-    void Combine(Stuck Source)                                                  // Combine a stuck from the specified source to this stuck as an instruction
-     {P.new Instruction()
-       {void action()           {combine(   Source);}
-        void verilog(Verilog v) {combine(v, Source);}
        };
      }
 
@@ -574,6 +555,25 @@ chipStop = true;
            }
          };
        }
+     }
+
+//D4 Combine                                                                    // Combine stucks by "or"ing their elements
+
+    void combine(Stuck Source)                                                  // Combine a stuck from the specified source to this stuck
+     {keys.combine(Source.keys);
+      data.combine(Source.data);
+     }
+
+    void combine(Verilog v, Stuck Source)                                       // Combine a stuck from the specified source to this stuck
+     {keys.combine(v, Source.keys);
+      data.combine(v, Source.data);
+     }
+
+    void Combine(Stuck Source)                                                  // Combine a stuck from the specified source to this stuck as an instruction
+     {P.new Instruction()
+       {void action()           {combine(   Source);}
+        void verilog(Verilog v) {combine(v, Source);}
+       };
      }
 
 //D3 Actions                                                                    // Just the actions needed on a stuck to support a btree
@@ -6849,14 +6849,10 @@ Merge     : 0
 
   static void test_verilog_put()
    {sayCurrentTestName();
-// Stucks, Keys as powers of two
-//           4        5        6       7       8        9       10
-// 10:   8,814   10,974   15,046  24,511  43,215   81,630  160,455
-// 12:  10,862   17,119   21,551  30,655  49,359   87,775  166,639
-// 14:  23,150   41,694   46,126  55,230  73,934
-// 16:  72,303  139,998  144,430
-// 18: 268,910
-    final Btree            b = new Btree(powerTwo(10), powerTwo(4), 32, 32);
+// Keys as powers of two
+//     4        5        6       7       8        9       10
+// 6,772                                             158,452
+    final Btree            b = new Btree(powerTwo(20), powerTwo(4), 32, 32);
     final Process          P = b.P; //b.new Process("verilogPut");
     final Process.Register k = P.register("k", b.bitsPerKey);   k.input();
     final Process.Register d = P.register("d", b.bitsPerData);  d.input();
@@ -6927,7 +6923,7 @@ Merge     : 0
    }
 
   static void newTests()                                                        // Tests being worked on
-   {oldTests();
+   {//oldTests();
     test_verilog_put();
    }
 
