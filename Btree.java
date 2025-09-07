@@ -932,8 +932,8 @@ chipStop = true;
 
     void removeElementAt(Verilog v, Process.Register Index)                     // Remove the indexed key, data pair from the stuck as a single instruction
      {size.dec(v);
-      Key .copys(v, keys, Index);
-      Data.copys(v, data, Index);
+      Key .copyIs(v, keys, Index);
+      Data.copyIs(v, data, Index);
 
       for (int i = 0; i < maxStuckSize-1; i++)
        {final int I = i;
@@ -1618,12 +1618,8 @@ chipStop = true;
         cd.copy(p.data, StuckIndex.registerGet());                              // Index of child in btree
        }
       void verilog(Verilog v)
-       {v.new Case(maxStuckSize, StuckIndex.registerName())
-         {void Choice(int I)
-           {ck.copy(v, p.keys, I);                                              // Key of child
-            cd.copy(v, p.data, I);                                              // Index of child in btree
-           }
-         };
+       {ck.copyIs(v, p.keys, StuckIndex);                                       // Key of child
+        cd.copyIs(v, p.data, StuckIndex);                                       // Index of child in btree
        }
      };
     c.stuckGet(cd);                                                             // Load child
