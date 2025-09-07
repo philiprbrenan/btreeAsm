@@ -675,16 +675,12 @@ chipStop = true;
        {P.processStop(3);
        }
       else
-       {data.copy(N, Data);
+       {data.copyIt(size, Data);
        }
      }
 
     void setPastLastData (Verilog v, Process.Register Data)                     // Set the data past the top of the stuck
-     {v.new Case(maxStuckSize, size.registerName())
-       {void Choice(int i)
-         {data.copy(v, i, Data);
-         }
-       };
+     {data.copyIt(v, size, Data);
      }
 
     void SetPastLastData(Process.Register Data)                                 // Set the data element past the top of the stuck as an instruction
@@ -700,19 +696,15 @@ chipStop = true;
        {P.processStop(3);
        }
       else
-       {keys.copy(N, Key);
-        data.copy(N, Data);
+       {keys.copyIt(size, Key);
+        data.copyIt(size, Data);
        }
      }
 
     void setPastLastElement                                                     // Push a key, data pair to the local copy of the stuck without changing the size
      (Verilog v, Process.Register Key, Process.Register Data)
-     {v.new Case(maxStuckSize, size.registerName())
-       {void Choice(int i)
-         {keys.copy(v, i, Key);
-          data.copy(v, i, Data);
-         }
-       };
+     {keys.copyIt(v, size, Key);
+      data.copyIt(v, size, Data);
      }
 
     void SetPastLastElement(Process.Register Key, Process.Register Data)        // Push a key, data pair to the local copy of the stuck without changing the size as a single instruction
@@ -801,17 +793,13 @@ chipStop = true;
        {P.processStop(7);
         return;
        }
-      Key.copy (keys, N);
-      Data.copy(data, N);
+      Key .copyIs(keys, Index);
+      Data.copyIs(data, Index);
      }
 
     void elementAt(Verilog v, Process.Register Index)                           // Get the indexed key, data pair
-     {v.new Case(maxStuckSize, Index.registerName())
-       {void Choice(int i)
-         {Key.copy (v, keys, i);
-          Data.copy(v, data, i);
-         }
-       };
+     {Key .copyIs(v, keys, Index);
+      Data.copyIs(v, data, Index);
      }
 
     void ElementAt(Process.Register Index)                                      // Get the indexed key, data pair as a single instruction
@@ -847,12 +835,8 @@ chipStop = true;
          {size.inc(v);
          }
        };
-      v.new Case(maxStuckSize, Index.registerName())
-       {void Choice(int i)
-         {keys.copy(v, i, Key);
-          data.copy(v, i, Data);
-         }
-       };
+      keys.copyIt(v, Index, Key);
+      data.copyIt(v, Index, Data);
      }
 
     void SetElementAt                                                           // Set the indexed key, data pair as a single instruction
@@ -874,11 +858,7 @@ chipStop = true;
      }
 
     void setDataAt(Verilog v, Process.Register Index, Process.Register Data)    // Set the indexed data pair
-     {v.new Case(maxStuckSize, Index.registerName())
-       {void Choice(int i)
-         {data.copy(v, i, Data);
-         }
-       };
+     {data.copyIt(v, Index, Data);
      }
 
     void SetDataAt(Process.Register Index, Process.Register Data)               // Set the indexed data pair  as a single instruction
@@ -6987,7 +6967,7 @@ Merge     : 0
    }
 
   static void newTests()                                                        // Tests being worked on
-   {//oldTests();
+   {oldTests();
     test_verilog_put();
    }
 
