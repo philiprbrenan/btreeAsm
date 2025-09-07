@@ -1696,12 +1696,8 @@ chipStop = true;
         cd.copy(p.data, StuckIndex.registerGet());                              // Data of child
        }
       void verilog(Verilog v)
-       {v.new Case(maxStuckSize, StuckIndex.registerName())
-         {void Choice(int I)
-           {ck.copy(v, p.keys, I);                                              // Key of child
-            cd.copy(v, p.data, I);                                              // Data of child
-           }
-         };
+       {ck.copyIs(v, p.keys, StuckIndex);                                       // Key of child
+        cd.copyIs(v, p.data, StuckIndex);                                       // Data of child
        }
      };
     c.stuckGet(cd);                                                             // Load child
