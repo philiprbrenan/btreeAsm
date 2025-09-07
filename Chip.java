@@ -4,6 +4,7 @@
 //------------------------------------------------------------------------------
 package com.AppaApps.Silicon;                                                   // B-tree implemented in a memory block on a silicon chip.
 // Try eliminating .clone() in case they are used excessively
+// Tests for copyIs and copyIt
 import java.util.*;
 
 class Chip extends Test                                                         // A chip designed to manipulate a B-tree stored in a memory block
@@ -842,7 +843,9 @@ if __name__ == "__main__":
 
 //D3 Copy                                                                       // Copy between registers
 
-      void copy(Register Source)                                                // Copy a source register into this register.
+//D4 Register to Register                                                       // Register to register copy
+
+      void copy(Register Source)                                                // Copy a source register into the target register.
        {R(); registerCheckSize(Source);                                         // Make sure the target register is big enough
 
         if (registerSingle())
@@ -878,7 +881,9 @@ if __name__ == "__main__":
          };
        }
 
-      void copy(Register Source, int RegisterIndex)                             // Copy an indexed source register into this register.
+//D4 Integer Indexed Register to Register                                       // Copy an integer indexed element of an arrayed source register to a target register
+
+      void copy(Register Source, int RegisterIndex)                             // Copy an integer indexed source register into this target register.
        {R(); registerCheckSize(Source);                                         // Make sure the target register is big enough
         Source.registerCheckArrayed();
         value = (BitSet)Source.values[RegisterIndex].clone();                   // Copy the source value into the target
@@ -894,6 +899,29 @@ if __name__ == "__main__":
           void verilog(Verilog v) {copy(v, Source, RegisterIndex);};
          };
        }
+
+//D4 Register Indexed Register to Register                                      // Copy a register indexed element of an arrayed source register to a target register
+
+      void copyIs(Register Source, Register Index)                              // Copy a register indexed source register into this target register.
+       {R(); registerCheckSize(Source);                                         // Make sure the target register is big enough
+        Source.registerCheckArrayed();
+        Index.registerCheckSingle();
+        value = (BitSet)Source.values[Index.registerGet()].clone();             // Copy the source value into the target
+       }
+
+      void copyIs(Verilog v, Register Source, Register Index)                   // Copy a register indexed element of an arrayed source register into this target register
+       {v.assign(registerName(), Source.registerName()+
+         "["+Index.registerName()+"]");
+       }
+
+      void CopyIs(Register Source, Register Index)                              // Copy instruction
+       {new Instruction()
+         {void action()           {copyIs(   Source, Index);};
+          void verilog(Verilog v) {copyIs(v, Source, Index);};
+         };
+       }
+
+//D4 Register to Integer Indexed Register                                       // Copy a source register to an integer indexed element of an arrayed target register
 
       void copy(int RegisterIndex, Register Source)                             // Copy the source register into the specified indexed register
        {R(); registerCheckSize(Source);                                         // Make sure the target register is big enough
@@ -913,6 +941,30 @@ if __name__ == "__main__":
          };
        }
 
+//D4 Register to indexed Register                                               // Copy a source register to a register indexed element of this target register
+
+      void copyIt(Register Index, Register Source)                               // Copy a source register to a register indexed element of this target register
+       {R(); registerCheckSize(Source);                                         // Make sure the target register is big enough
+        Index.registerCheckSingle();
+        Source.registerCheckSingle();
+        registerCheckArrayed();
+        values[Index.registerGet()] = (BitSet)Source.value.clone();             // Copy the source value into the target
+       }
+
+      void copyIt(Verilog v, Register Index, Register Source)                   // Copy a source register into this register which we can do because each and only each process can write to its own registers
+       {v.assign(registerName()+"["+Index.registerName()+"]",
+                 Source.registerName());
+       }
+
+      void CopyIt(Register Index, Register Source)                              // Copy instruction
+       {new Instruction()
+         {void action()           {copyIt(   Index, Source);};
+          void verilog(Verilog v) {copyIt(v, Index, Source);};
+         };
+       }
+
+//D4 Integer Indexed Register to Integer Indexed Register                       // Copy an elementf of an integer indexed source register to an integer indexed element of an arrayed target register
+
       void copy(int TargetIndex, Register Source, int SourceIndex)              // Copy an element from an arrayed source to an element of an arrayed target register
        {R(); registerCheckSize(Source);                                         // Make sure the target register is big enough
         Source.registerCheckArrayed(); registerCheckArrayed();
@@ -929,6 +981,8 @@ if __name__ == "__main__":
           void verilog(Verilog v) {copy(v, TargetIndex, Source, SourceIndex);};
          };
        }
+
+//D2 Combine                                                                    // Or two registers together
 
       void combine(Register Source)                                             // Copy the source register into the target if the source is not zero
        {R(); registerCheckSize(Source);                                         // Make sure the target register is big enough
