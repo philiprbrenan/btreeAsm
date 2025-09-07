@@ -624,9 +624,9 @@ chipStop = true;
        {P.processStop(2);
        }
       else
-       {Key.copy (keys, N-1);
+       {size.dec();
+        Key .copy(keys, N-1);
         Data.copy(data, N-1);
-        size.dec();
        }
      }
 
@@ -659,11 +659,7 @@ chipStop = true;
 
     void setPastLastKey                                                         // Set the key past the top of the stuck
      (Verilog v, Process.Register Key)
-     {v.new Case(maxStuckSize, size.registerName())
-       {void Choice(int i)
-         {keys.copy(v, i, Key);
-         }
-       };
+     {keys.copyIt(v, size, Key);
      }
 
     void SetPastLastKey(Process.Register Key)                                   // Set the key past the top of the stuck as an instruction
