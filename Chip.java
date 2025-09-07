@@ -1399,26 +1399,32 @@ if __name__ == "__main__":
                }
 
               if (hasMemory())                                                  // Load memory to match the state at the start of the Java run
-               {int s = 0, f = 0;
-                for(int i = 0; i < memory.length; i++)
-                 {final int V = memoryGetBackUp(i);
-                  if (V == 0) f++;
-                  else
-                   {if (f > s)
-                     {final String j = processMemoryIndexName();
-                      v.A("for("+j+" = "+s+"; "+j+" < "+f+"; "+j+" = "+j+" + 1) begin");
-                      v.A("  "+processMemoryName()+"["+j+"] <= 0;");
-                      v.A("end");
-                     }
-                    v.assign(processMemoryName()+"["+i+"]", V);
-                    s = f = i+1;
+               {class Run                                                       // Collect identical memory initial values in consecutive elements
+                 {int start, finish, value;
+                  Run(int Start, int Finish, int Value)
+                   {start = Start; finish = Finish; value = Value;
                    }
                  }
-                if (f > s)
-                 {final String j = processMemoryIndexName();
-                  v.A("for("+j+" = "+s+"; "+j+" < "+f+"; "+j+" = "+j+" + 1) begin");
-                  v.A("  "+processMemoryName()+"["+j+"] <= 0;");
-                  v.A("end");
+                final Stack<Run>runs = new Stack<>();                           // Runs
+                runs.push(new Run(0, 1, memoryGetBackUp(0)));                   // First run
+                for(int i = 1; i < memory.length; i++)
+                 {final int V = memoryGetBackUp(i);
+                  final Run r = runs.lastElement();
+                  if (r.value == V) r.finish = i+1;
+                  else runs.push(new Run(i, i+1, V));
+                 }
+                for(Run r: runs)                                                // Write out the runs
+                 {if (r.start + 3 > r.finish)                                   // Write out the runs as individual assign stataments because there are only a few
+                   {for(int i = r.start; i < r.finish; ++i)
+                     {v.A(processMemoryName()+"["+i+"] <= "+r.value+";");
+                     }
+                   }
+                  else                                                          // Write out a run as a for loop as there are quite a few
+                   {final String j = processMemoryIndexName();
+                    v.A("for("+j+" = "+r.start+"; "+j+" < "+r.finish+"; "+j+" = "+j+" + 1) begin");
+                    v.A("  "+processMemoryName()+"["+j+"] <= "+r.value+";");
+                    v.A("end");
+                   }
                  }
                }
 
