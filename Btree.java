@@ -606,12 +606,8 @@ chipStop = true;
      }
 
     void push(Verilog v, Process.Register Key, Process.Register Data)           // Push a key, data pair to the local copy of the stuck
-     {v.new Case(maxStuckSize, size.registerName())
-       {void Choice(int i)
-         {keys.copy(v, i, Key);
-          data.copy(v, i, Data);
-         }
-       };
+     {keys.copyIt(v, size, Key);
+      data.copyIt(v, size, Data);
       size.inc(v);
      }
 
@@ -6924,7 +6920,7 @@ Merge     : 0
 
   static void test_verilog_put()
    {sayCurrentTestName();
-// Keys per stuck->lines of code: 4->8331,  8-> 10-> 405K
+// Keys per stuck->lines of code: 4->8252  5->8284  10-> 10,268
     final Btree            b = new Btree(powerTwo(4), 10, 32, 32);
     final Process          P = b.P; //b.new Process("verilogPut");
     final Process.Register k = P.register("k", b.bitsPerKey);   k.input();
@@ -6995,7 +6991,7 @@ Merge     : 0
    }
 
   static void newTests()                                                        // Tests being worked on
-   {oldTests();
+   {//oldTests();
     test_verilog_put();
    }
 
