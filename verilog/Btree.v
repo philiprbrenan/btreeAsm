@@ -15,7 +15,7 @@ module Btree;                                                                   
 
   initial begin
     returnCode = 0;
-    maxSteps = 100;
+    maxSteps = 200;
     for(step = -1; step < 0 || step < maxSteps && !stop; step = step + 1) begin // Steps below zero are run unconditionally to initialize each process so that Java and Verilog start in sync at step zero
 
       processCurrent = 0; clock = 0; #1; clock = 1; #1; // process_main_0000
@@ -30,10 +30,10 @@ module Btree;                                                                   
     if (!stop) $finish(1); else $finish(0);                                // Set return code depending on whether the simulation halted
   end
   // Process: main  process_main_0000
-  reg [4-1:0] main_index_0;
+  reg [2-1:0] main_index_0;
   reg [4-1:0] main_size_1;
   reg [1-1:0] main_isLeaf_2;
-  reg [4-1:0] main_nextFree_3;
+  reg [2-1:0] main_nextFree_3;
   (* nomem2reg *)
   reg [8-1:0] main_Keys_4[8];
   (* nomem2reg *)
@@ -42,33 +42,33 @@ module Btree;                                                                   
   reg [4-1:0] main_Collapse_6[8];
   (* nomem2reg *)
   reg [8-1:0] main_Data_7[8];
-  reg [3-1:0] main_stuckKeys_1_index_8;
-  reg [3-1:0] main_stuckKeys_2_index_9;
+  reg [1-1:0] main_stuckKeys_1_index_8;
+  reg [1-1:0] main_stuckKeys_2_index_9;
   (* nomem2reg *)
   reg [8-1:0] main_stuckKeys_2_value_10[8];
-  reg [3-1:0] main_stuckData_3_index_11;
-  reg [3-1:0] main_stuckData_4_index_12;
+  reg [1-1:0] main_stuckData_3_index_11;
+  reg [1-1:0] main_stuckData_4_index_12;
   (* nomem2reg *)
   reg [8-1:0] main_stuckData_4_value_13[8];
-  reg [3-1:0] main_stuckSize_5_index_14;
-  reg [3-1:0] main_stuckSize_6_index_15;
+  reg [1-1:0] main_stuckSize_5_index_14;
+  reg [1-1:0] main_stuckSize_6_index_15;
   (* nomem2reg *)
   reg [4-1:0] main_stuckSize_6_value_16[1];
-  reg [3-1:0] main_stuckIsLeaf_7_index_17;
-  reg [3-1:0] main_stuckIsLeaf_8_index_18;
+  reg [1-1:0] main_stuckIsLeaf_7_index_17;
+  reg [1-1:0] main_stuckIsLeaf_8_index_18;
   (* nomem2reg *)
   reg [1-1:0] main_stuckIsLeaf_8_value_19[1];
   reg [1-1:0] main_Found_20;
   reg [8-1:0] main_Key_21;
   reg [8-1:0] main_FoundKey_22;
   reg [8-1:0] main_Data_23;
-  reg [4-1:0] main_BtreeIndex_24;
+  reg [2-1:0] main_BtreeIndex_24;
   reg [4-1:0] main_StuckIndex_25;
   reg [1-1:0] main_MergeSuccess_26;
-  reg [4-1:0] main_index_27;
+  reg [2-1:0] main_index_27;
   reg [4-1:0] main_size_28;
   reg [1-1:0] main_isLeaf_29;
-  reg [4-1:0] main_nextFree_30;
+  reg [2-1:0] main_nextFree_30;
   (* nomem2reg *)
   reg [8-1:0] main_Keys_31[8];
   (* nomem2reg *)
@@ -81,13 +81,13 @@ module Btree;                                                                   
   reg [8-1:0] main_Key_36;
   reg [8-1:0] main_FoundKey_37;
   reg [8-1:0] main_Data_38;
-  reg [4-1:0] main_BtreeIndex_39;
+  reg [2-1:0] main_BtreeIndex_39;
   reg [4-1:0] main_StuckIndex_40;
   reg [1-1:0] main_MergeSuccess_41;
-  reg [4-1:0] main_index_42;
+  reg [2-1:0] main_index_42;
   reg [4-1:0] main_size_43;
   reg [1-1:0] main_isLeaf_44;
-  reg [4-1:0] main_nextFree_45;
+  reg [2-1:0] main_nextFree_45;
   (* nomem2reg *)
   reg [8-1:0] main_Keys_46[8];
   (* nomem2reg *)
@@ -100,13 +100,13 @@ module Btree;                                                                   
   reg [8-1:0] main_Key_51;
   reg [8-1:0] main_FoundKey_52;
   reg [8-1:0] main_Data_53;
-  reg [4-1:0] main_BtreeIndex_54;
+  reg [2-1:0] main_BtreeIndex_54;
   reg [4-1:0] main_StuckIndex_55;
   reg [1-1:0] main_MergeSuccess_56;
-  reg [4-1:0] main_index_57;
+  reg [2-1:0] main_index_57;
   reg [4-1:0] main_size_58;
   reg [1-1:0] main_isLeaf_59;
-  reg [4-1:0] main_nextFree_60;
+  reg [2-1:0] main_nextFree_60;
   (* nomem2reg *)
   reg [8-1:0] main_Keys_61[8];
   (* nomem2reg *)
@@ -119,13 +119,13 @@ module Btree;                                                                   
   reg [8-1:0] main_Key_66;
   reg [8-1:0] main_FoundKey_67;
   reg [8-1:0] main_Data_68;
-  reg [4-1:0] main_BtreeIndex_69;
+  reg [2-1:0] main_BtreeIndex_69;
   reg [4-1:0] main_StuckIndex_70;
   reg [1-1:0] main_MergeSuccess_71;
-  reg [4-1:0] main_index_72;
+  reg [2-1:0] main_index_72;
   reg [4-1:0] main_size_73;
   reg [1-1:0] main_isLeaf_74;
-  reg [4-1:0] main_nextFree_75;
+  reg [2-1:0] main_nextFree_75;
   (* nomem2reg *)
   reg [8-1:0] main_Keys_76[8];
   (* nomem2reg *)
@@ -138,13 +138,13 @@ module Btree;                                                                   
   reg [8-1:0] main_Key_81;
   reg [8-1:0] main_FoundKey_82;
   reg [8-1:0] main_Data_83;
-  reg [4-1:0] main_BtreeIndex_84;
+  reg [2-1:0] main_BtreeIndex_84;
   reg [4-1:0] main_StuckIndex_85;
   reg [1-1:0] main_MergeSuccess_86;
-  reg [4-1:0] main_index_87;
+  reg [2-1:0] main_index_87;
   reg [4-1:0] main_size_88;
   reg [1-1:0] main_isLeaf_89;
-  reg [4-1:0] main_nextFree_90;
+  reg [2-1:0] main_nextFree_90;
   (* nomem2reg *)
   reg [8-1:0] main_Keys_91[8];
   (* nomem2reg *)
@@ -157,13 +157,13 @@ module Btree;                                                                   
   reg [8-1:0] main_Key_96;
   reg [8-1:0] main_FoundKey_97;
   reg [8-1:0] main_Data_98;
-  reg [4-1:0] main_BtreeIndex_99;
+  reg [2-1:0] main_BtreeIndex_99;
   reg [4-1:0] main_StuckIndex_100;
   reg [1-1:0] main_MergeSuccess_101;
-  reg [4-1:0] main_index_102;
+  reg [2-1:0] main_index_102;
   reg [4-1:0] main_size_103;
   reg [1-1:0] main_isLeaf_104;
-  reg [4-1:0] main_nextFree_105;
+  reg [2-1:0] main_nextFree_105;
   (* nomem2reg *)
   reg [8-1:0] main_Keys_106[8];
   (* nomem2reg *)
@@ -176,13 +176,13 @@ module Btree;                                                                   
   reg [8-1:0] main_Key_111;
   reg [8-1:0] main_FoundKey_112;
   reg [8-1:0] main_Data_113;
-  reg [4-1:0] main_BtreeIndex_114;
+  reg [2-1:0] main_BtreeIndex_114;
   reg [4-1:0] main_StuckIndex_115;
   reg [1-1:0] main_MergeSuccess_116;
-  reg [4-1:0] main_index_117;
+  reg [2-1:0] main_index_117;
   reg [4-1:0] main_size_118;
   reg [1-1:0] main_isLeaf_119;
-  reg [4-1:0] main_nextFree_120;
+  reg [2-1:0] main_nextFree_120;
   (* nomem2reg *)
   reg [8-1:0] main_Keys_121[8];
   (* nomem2reg *)
@@ -195,13 +195,13 @@ module Btree;                                                                   
   reg [8-1:0] main_Key_126;
   reg [8-1:0] main_FoundKey_127;
   reg [8-1:0] main_Data_128;
-  reg [4-1:0] main_BtreeIndex_129;
+  reg [2-1:0] main_BtreeIndex_129;
   reg [4-1:0] main_StuckIndex_130;
   reg [1-1:0] main_MergeSuccess_131;
-  reg [4-1:0] main_index_132;
+  reg [2-1:0] main_index_132;
   reg [4-1:0] main_size_133;
   reg [1-1:0] main_isLeaf_134;
-  reg [4-1:0] main_nextFree_135;
+  reg [2-1:0] main_nextFree_135;
   (* nomem2reg *)
   reg [8-1:0] main_Keys_136[8];
   (* nomem2reg *)
@@ -214,18 +214,18 @@ module Btree;                                                                   
   reg [8-1:0] main_Key_141;
   reg [8-1:0] main_FoundKey_142;
   reg [8-1:0] main_Data_143;
-  reg [4-1:0] main_BtreeIndex_144;
+  reg [2-1:0] main_BtreeIndex_144;
   reg [4-1:0] main_StuckIndex_145;
   reg [1-1:0] main_MergeSuccess_146;
   reg [5-1:0] main_sum_147;
   reg [1-1:0] main_can_148;
-  reg [4-1:0] main_indexLeft_149;
-  reg [4-1:0] main_indexRight_150;
+  reg [2-1:0] main_indexLeft_149;
+  reg [2-1:0] main_indexRight_150;
   reg [8-1:0] main_midKey_151;
-  reg [4-1:0] main_index_152;
+  reg [2-1:0] main_index_152;
   reg [4-1:0] main_size_153;
   reg [1-1:0] main_isLeaf_154;
-  reg [4-1:0] main_nextFree_155;
+  reg [2-1:0] main_nextFree_155;
   (* nomem2reg *)
   reg [8-1:0] main_Keys_156[8];
   (* nomem2reg *)
@@ -238,112 +238,29 @@ module Btree;                                                                   
   reg [8-1:0] main_Key_161;
   reg [8-1:0] main_FoundKey_162;
   reg [8-1:0] main_Data_163;
-  reg [4-1:0] main_BtreeIndex_164;
+  reg [2-1:0] main_BtreeIndex_164;
   reg [4-1:0] main_StuckIndex_165;
   reg [1-1:0] main_MergeSuccess_166;
-  reg [8-1:0] main_d_167;
-  reg [4-1:0] main_n_168;
-  reg [4-1:0] main_index_169;
-  reg [4-1:0] main_size_170;
-  reg [1-1:0] main_isLeaf_171;
-  reg [4-1:0] main_nextFree_172;
+  reg [2-1:0] main_index_167;
+  reg [4-1:0] main_size_168;
+  reg [1-1:0] main_isLeaf_169;
+  reg [2-1:0] main_nextFree_170;
   (* nomem2reg *)
-  reg [8-1:0] main_Keys_173[8];
+  reg [8-1:0] main_Keys_171[8];
   (* nomem2reg *)
-  reg [1-1:0] main_Compares_174[8];
+  reg [1-1:0] main_Compares_172[8];
   (* nomem2reg *)
-  reg [4-1:0] main_Collapse_175[8];
+  reg [4-1:0] main_Collapse_173[8];
   (* nomem2reg *)
-  reg [8-1:0] main_Data_176[8];
-  reg [1-1:0] main_Found_177;
-  reg [8-1:0] main_Key_178;
-  reg [8-1:0] main_FoundKey_179;
-  reg [8-1:0] main_Data_180;
-  reg [4-1:0] main_BtreeIndex_181;
-  reg [4-1:0] main_StuckIndex_182;
-  reg [1-1:0] main_MergeSuccess_183;
-  reg [8-1:0] main_d_184;
-  reg [4-1:0] main_n_185;
-  reg [4-1:0] main_index_186;
-  reg [4-1:0] main_size_187;
-  reg [1-1:0] main_isLeaf_188;
-  reg [4-1:0] main_nextFree_189;
-  (* nomem2reg *)
-  reg [8-1:0] main_Keys_190[8];
-  (* nomem2reg *)
-  reg [1-1:0] main_Compares_191[8];
-  (* nomem2reg *)
-  reg [4-1:0] main_Collapse_192[8];
-  (* nomem2reg *)
-  reg [8-1:0] main_Data_193[8];
-  reg [1-1:0] main_Found_194;
-  reg [8-1:0] main_Key_195;
-  reg [8-1:0] main_FoundKey_196;
-  reg [8-1:0] main_Data_197;
-  reg [4-1:0] main_BtreeIndex_198;
-  reg [4-1:0] main_StuckIndex_199;
-  reg [1-1:0] main_MergeSuccess_200;
-  reg [8-1:0] main_d_201;
-  reg [4-1:0] main_n_202;
-  reg [4-1:0] main_index_203;
-  reg [4-1:0] main_size_204;
-  reg [1-1:0] main_isLeaf_205;
-  reg [4-1:0] main_nextFree_206;
-  (* nomem2reg *)
-  reg [8-1:0] main_Keys_207[8];
-  (* nomem2reg *)
-  reg [1-1:0] main_Compares_208[8];
-  (* nomem2reg *)
-  reg [4-1:0] main_Collapse_209[8];
-  (* nomem2reg *)
-  reg [8-1:0] main_Data_210[8];
-  reg [1-1:0] main_Found_211;
-  reg [8-1:0] main_Key_212;
-  reg [8-1:0] main_FoundKey_213;
-  reg [8-1:0] main_Data_214;
-  reg [4-1:0] main_BtreeIndex_215;
-  reg [4-1:0] main_StuckIndex_216;
-  reg [1-1:0] main_MergeSuccess_217;
-  reg [4-1:0] main_index_218;
-  reg [4-1:0] main_size_219;
-  reg [1-1:0] main_isLeaf_220;
-  reg [4-1:0] main_nextFree_221;
-  (* nomem2reg *)
-  reg [8-1:0] main_Keys_222[8];
-  (* nomem2reg *)
-  reg [1-1:0] main_Compares_223[8];
-  (* nomem2reg *)
-  reg [4-1:0] main_Collapse_224[8];
-  (* nomem2reg *)
-  reg [8-1:0] main_Data_225[8];
-  reg [1-1:0] main_Found_226;
-  reg [8-1:0] main_Key_227;
-  reg [8-1:0] main_FoundKey_228;
-  reg [8-1:0] main_Data_229;
-  reg [4-1:0] main_BtreeIndex_230;
-  reg [4-1:0] main_StuckIndex_231;
-  reg [1-1:0] main_MergeSuccess_232;
-  reg [4-1:0] main_index_233;
-  reg [4-1:0] main_size_234;
-  reg [1-1:0] main_isLeaf_235;
-  reg [4-1:0] main_nextFree_236;
-  (* nomem2reg *)
-  reg [8-1:0] main_Keys_237[8];
-  (* nomem2reg *)
-  reg [1-1:0] main_Compares_238[8];
-  (* nomem2reg *)
-  reg [4-1:0] main_Collapse_239[8];
-  (* nomem2reg *)
-  reg [8-1:0] main_Data_240[8];
-  reg [1-1:0] main_Found_241;
-  reg [8-1:0] main_Key_242;
-  reg [8-1:0] main_FoundKey_243;
-  reg [8-1:0] main_Data_244;
-  reg [4-1:0] main_BtreeIndex_245;
-  reg [4-1:0] main_StuckIndex_246;
-  reg [1-1:0] main_MergeSuccess_247;
-  reg [8-1:0] main_l_248;
-  reg [8-1:0] main_r_249;
+  reg [8-1:0] main_Data_174[8];
+  reg [1-1:0] main_Found_175;
+  reg [8-1:0] main_Key_176;
+  reg [8-1:0] main_FoundKey_177;
+  reg [8-1:0] main_Data_178;
+  reg [2-1:0] main_BtreeIndex_179;
+  reg [4-1:0] main_StuckIndex_180;
+  reg [1-1:0] main_MergeSuccess_181;
+  reg [2-1:0] main_Index_182;
   integer main_pc;
   integer main_stop;
   integer main_returnCode;
@@ -696,169 +613,38 @@ module Btree;                                                                   
       main_BtreeIndex_164 <= 0;
       main_StuckIndex_165 <= 0;
       main_MergeSuccess_166 <= 0;
-      main_d_167 <= 0;
-      main_n_168 <= 0;
-      main_index_169 <= 0;
-      main_size_170 <= 0;
-      main_isLeaf_171 <= 0;
-      main_nextFree_172 <= 0;
+      main_index_167 <= 0;
+      main_size_168 <= 0;
+      main_isLeaf_169 <= 0;
+      main_nextFree_170 <= 0;
       begin
         for(main_memory_index = 0; main_memory_index < 8; main_memory_index = main_memory_index + 1) begin
-          main_Keys_173[main_memory_index] <= 0;
+          main_Keys_171[main_memory_index] <= 0;
         end
       end
       begin
         for(main_memory_index = 0; main_memory_index < 8; main_memory_index = main_memory_index + 1) begin
-          main_Compares_174[main_memory_index] <= 0;
+          main_Compares_172[main_memory_index] <= 0;
         end
       end
       begin
         for(main_memory_index = 0; main_memory_index < 8; main_memory_index = main_memory_index + 1) begin
-          main_Collapse_175[main_memory_index] <= 0;
+          main_Collapse_173[main_memory_index] <= 0;
         end
       end
       begin
         for(main_memory_index = 0; main_memory_index < 8; main_memory_index = main_memory_index + 1) begin
-          main_Data_176[main_memory_index] <= 0;
+          main_Data_174[main_memory_index] <= 0;
         end
       end
-      main_Found_177 <= 0;
-      main_Key_178 <= 0;
-      main_FoundKey_179 <= 0;
-      main_Data_180 <= 0;
-      main_BtreeIndex_181 <= 0;
-      main_StuckIndex_182 <= 0;
-      main_MergeSuccess_183 <= 0;
-      main_d_184 <= 0;
-      main_n_185 <= 0;
-      main_index_186 <= 0;
-      main_size_187 <= 0;
-      main_isLeaf_188 <= 0;
-      main_nextFree_189 <= 0;
-      begin
-        for(main_memory_index = 0; main_memory_index < 8; main_memory_index = main_memory_index + 1) begin
-          main_Keys_190[main_memory_index] <= 0;
-        end
-      end
-      begin
-        for(main_memory_index = 0; main_memory_index < 8; main_memory_index = main_memory_index + 1) begin
-          main_Compares_191[main_memory_index] <= 0;
-        end
-      end
-      begin
-        for(main_memory_index = 0; main_memory_index < 8; main_memory_index = main_memory_index + 1) begin
-          main_Collapse_192[main_memory_index] <= 0;
-        end
-      end
-      begin
-        for(main_memory_index = 0; main_memory_index < 8; main_memory_index = main_memory_index + 1) begin
-          main_Data_193[main_memory_index] <= 0;
-        end
-      end
-      main_Found_194 <= 0;
-      main_Key_195 <= 0;
-      main_FoundKey_196 <= 0;
-      main_Data_197 <= 0;
-      main_BtreeIndex_198 <= 0;
-      main_StuckIndex_199 <= 0;
-      main_MergeSuccess_200 <= 0;
-      main_d_201 <= 0;
-      main_n_202 <= 0;
-      main_index_203 <= 0;
-      main_size_204 <= 0;
-      main_isLeaf_205 <= 0;
-      main_nextFree_206 <= 0;
-      begin
-        for(main_memory_index = 0; main_memory_index < 8; main_memory_index = main_memory_index + 1) begin
-          main_Keys_207[main_memory_index] <= 0;
-        end
-      end
-      begin
-        for(main_memory_index = 0; main_memory_index < 8; main_memory_index = main_memory_index + 1) begin
-          main_Compares_208[main_memory_index] <= 0;
-        end
-      end
-      begin
-        for(main_memory_index = 0; main_memory_index < 8; main_memory_index = main_memory_index + 1) begin
-          main_Collapse_209[main_memory_index] <= 0;
-        end
-      end
-      begin
-        for(main_memory_index = 0; main_memory_index < 8; main_memory_index = main_memory_index + 1) begin
-          main_Data_210[main_memory_index] <= 0;
-        end
-      end
-      main_Found_211 <= 0;
-      main_Key_212 <= 0;
-      main_FoundKey_213 <= 0;
-      main_Data_214 <= 0;
-      main_BtreeIndex_215 <= 0;
-      main_StuckIndex_216 <= 0;
-      main_MergeSuccess_217 <= 0;
-      main_index_218 <= 0;
-      main_size_219 <= 0;
-      main_isLeaf_220 <= 0;
-      main_nextFree_221 <= 0;
-      begin
-        for(main_memory_index = 0; main_memory_index < 8; main_memory_index = main_memory_index + 1) begin
-          main_Keys_222[main_memory_index] <= 0;
-        end
-      end
-      begin
-        for(main_memory_index = 0; main_memory_index < 8; main_memory_index = main_memory_index + 1) begin
-          main_Compares_223[main_memory_index] <= 0;
-        end
-      end
-      begin
-        for(main_memory_index = 0; main_memory_index < 8; main_memory_index = main_memory_index + 1) begin
-          main_Collapse_224[main_memory_index] <= 0;
-        end
-      end
-      begin
-        for(main_memory_index = 0; main_memory_index < 8; main_memory_index = main_memory_index + 1) begin
-          main_Data_225[main_memory_index] <= 0;
-        end
-      end
-      main_Found_226 <= 0;
-      main_Key_227 <= 0;
-      main_FoundKey_228 <= 0;
-      main_Data_229 <= 0;
-      main_BtreeIndex_230 <= 0;
-      main_StuckIndex_231 <= 0;
-      main_MergeSuccess_232 <= 0;
-      main_index_233 <= 0;
-      main_size_234 <= 0;
-      main_isLeaf_235 <= 0;
-      main_nextFree_236 <= 0;
-      begin
-        for(main_memory_index = 0; main_memory_index < 8; main_memory_index = main_memory_index + 1) begin
-          main_Keys_237[main_memory_index] <= 0;
-        end
-      end
-      begin
-        for(main_memory_index = 0; main_memory_index < 8; main_memory_index = main_memory_index + 1) begin
-          main_Compares_238[main_memory_index] <= 0;
-        end
-      end
-      begin
-        for(main_memory_index = 0; main_memory_index < 8; main_memory_index = main_memory_index + 1) begin
-          main_Collapse_239[main_memory_index] <= 0;
-        end
-      end
-      begin
-        for(main_memory_index = 0; main_memory_index < 8; main_memory_index = main_memory_index + 1) begin
-          main_Data_240[main_memory_index] <= 0;
-        end
-      end
-      main_Found_241 <= 0;
-      main_Key_242 <= 0;
-      main_FoundKey_243 <= 0;
-      main_Data_244 <= 0;
-      main_BtreeIndex_245 <= 0;
-      main_StuckIndex_246 <= 0;
-      main_MergeSuccess_247 <= 0;
-      main_l_248 <= 0;
-      main_r_249 <= 0;
+      main_Found_175 <= 0;
+      main_Key_176 <= 0;
+      main_FoundKey_177 <= 0;
+      main_Data_178 <= 0;
+      main_BtreeIndex_179 <= 0;
+      main_StuckIndex_180 <= 0;
+      main_MergeSuccess_181 <= 0;
+      main_Index_182 <= 0;
       stuckIsLeaf_7_requestedAt <= -1;
       stuckIsLeaf_8_requestedAt <= -1;
       stuckSize_5_requestedAt <= -1;
@@ -870,39 +656,31 @@ module Btree;                                                                   
     end
     else if (processCurrent == 0) begin
       case(main_pc)
-        0, 8: begin
-          main_index_203 <= 0;
+        0: begin
+          main_index_167 <= 0;
           main_pc <= main_pc + 1;
           case (main_pc)
             0: begin
               begin
                 integer f;
                 f = $fopen("verilog/trace_verilog.txt", "a");
-                $fdisplay(f, "Location: Chip.java:0575:<init>|  Chip.java:1148:<init>|  Chip.java:1147:Zero|  Btree.java:0318:stuckGetRoot|  Btree.java:4094:test_merge2|  Btree.java:6929:oldTests|  Btree.java:6955:newTests|  Btree.java:6961:main|");
-                $fclose(f);
-              end
-            end
-            8: begin
-              begin
-                integer f;
-                f = $fopen("verilog/trace_verilog.txt", "a");
-                $fdisplay(f, "Location: Chip.java:0575:<init>|  Chip.java:1148:<init>|  Chip.java:1147:Zero|  Btree.java:0318:stuckGetRoot|  Btree.java:4106:test_merge2|  Btree.java:6929:oldTests|  Btree.java:6955:newTests|  Btree.java:6961:main|");
+                $fdisplay(f, "Location: Chip.java:0575:<init>|  Chip.java:1148:<init>|  Chip.java:1147:Zero|  Btree.java:0318:stuckGetRoot|  Btree.java:2811:test_merge_two|  Btree.java:6904:oldTests|  Btree.java:6951:newTests|  Btree.java:6957:main|");
                 $fclose(f);
               end
             end
           endcase
         end
-        1, 9: begin
-          main_stuckSize_5_index_14 <= main_index_203;
+        1: begin
+          main_stuckSize_5_index_14 <= main_index_167;
           stuckSize_5_requestedAt <= step;
           stuckSize_5_finishedAt <= -1;
-          main_stuckIsLeaf_7_index_17 <= main_index_203;
+          main_stuckIsLeaf_7_index_17 <= main_index_167;
           stuckIsLeaf_7_requestedAt <= step;
           stuckIsLeaf_7_finishedAt <= -1;
-          main_stuckKeys_1_index_8 <= main_index_203;
+          main_stuckKeys_1_index_8 <= main_index_167;
           stuckKeys_1_requestedAt <= step;
           stuckKeys_1_finishedAt <= -1;
-          main_stuckData_3_index_11 <= main_index_203;
+          main_stuckData_3_index_11 <= main_index_167;
           stuckData_3_requestedAt <= step;
           stuckData_3_finishedAt <= -1;
           main_pc <= main_pc + 1;
@@ -911,21 +689,13 @@ module Btree;                                                                   
               begin
                 integer f;
                 f = $fopen("verilog/trace_verilog.txt", "a");
-                $fdisplay(f, "Location: Chip.java:0575:<init>|  Btree.java:0324:<init>|  Btree.java:0323:stuckGet|  Btree.java:0319:stuckGetRoot|  Btree.java:4094:test_merge2|  Btree.java:6929:oldTests|  Btree.java:6955:newTests|  Btree.java:6961:main|");
-                $fclose(f);
-              end
-            end
-            9: begin
-              begin
-                integer f;
-                f = $fopen("verilog/trace_verilog.txt", "a");
-                $fdisplay(f, "Location: Chip.java:0575:<init>|  Btree.java:0324:<init>|  Btree.java:0323:stuckGet|  Btree.java:0319:stuckGetRoot|  Btree.java:4106:test_merge2|  Btree.java:6929:oldTests|  Btree.java:6955:newTests|  Btree.java:6961:main|");
+                $fdisplay(f, "Location: Chip.java:0575:<init>|  Btree.java:0324:<init>|  Btree.java:0323:stuckGet|  Btree.java:0319:stuckGetRoot|  Btree.java:2811:test_merge_two|  Btree.java:6904:oldTests|  Btree.java:6951:newTests|  Btree.java:6957:main|");
                 $fclose(f);
               end
             end
           endcase
         end
-        2, 10, 17, 24: begin
+        2, 11: begin
           if ((stuckSize_5_requestedAt < stuckSize_5_finishedAt)) begin
             main_pc <= main_pc + 1;
           end
@@ -934,37 +704,21 @@ module Btree;                                                                   
               begin
                 integer f;
                 f = $fopen("verilog/trace_verilog.txt", "a");
-                $fdisplay(f, "Location: Chip.java:1812:<init>|  Chip.java:1811:waitResultOfTransaction|  Btree.java:0337:stuckGet|  Btree.java:0319:stuckGetRoot|  Btree.java:4094:test_merge2|  Btree.java:6929:oldTests|  Btree.java:6955:newTests|  Btree.java:6961:main|");
+                $fdisplay(f, "Location: Chip.java:1812:<init>|  Chip.java:1811:waitResultOfTransaction|  Btree.java:0337:stuckGet|  Btree.java:0319:stuckGetRoot|  Btree.java:2811:test_merge_two|  Btree.java:6904:oldTests|  Btree.java:6951:newTests|  Btree.java:6957:main|");
                 $fclose(f);
               end
             end
-            10: begin
+            11: begin
               begin
                 integer f;
                 f = $fopen("verilog/trace_verilog.txt", "a");
-                $fdisplay(f, "Location: Chip.java:1812:<init>|  Chip.java:1811:waitResultOfTransaction|  Btree.java:0337:stuckGet|  Btree.java:0319:stuckGetRoot|  Btree.java:4106:test_merge2|  Btree.java:6929:oldTests|  Btree.java:6955:newTests|  Btree.java:6961:main|");
-                $fclose(f);
-              end
-            end
-            17: begin
-              begin
-                integer f;
-                f = $fopen("verilog/trace_verilog.txt", "a");
-                $fdisplay(f, "Location: Chip.java:1812:<init>|  Chip.java:1811:waitResultOfTransaction|  Btree.java:0337:stuckGet|  Btree.java:0314:stuckGet|  Btree.java:4107:test_merge2|  Btree.java:6929:oldTests|  Btree.java:6955:newTests|  Btree.java:6961:main|");
-                $fclose(f);
-              end
-            end
-            24: begin
-              begin
-                integer f;
-                f = $fopen("verilog/trace_verilog.txt", "a");
-                $fdisplay(f, "Location: Chip.java:1812:<init>|  Chip.java:1811:waitResultOfTransaction|  Btree.java:0337:stuckGet|  Btree.java:0314:stuckGet|  Btree.java:4108:test_merge2|  Btree.java:6929:oldTests|  Btree.java:6955:newTests|  Btree.java:6961:main|");
+                $fdisplay(f, "Location: Chip.java:1812:<init>|  Chip.java:1811:waitResultOfTransaction|  Btree.java:0337:stuckGet|  Btree.java:0314:stuckGet|  Btree.java:2814:test_merge_two|  Btree.java:6904:oldTests|  Btree.java:6951:newTests|  Btree.java:6957:main|");
                 $fclose(f);
               end
             end
           endcase
         end
-        3, 11, 18, 25: begin
+        3, 12: begin
           if ((stuckIsLeaf_7_requestedAt < stuckIsLeaf_7_finishedAt)) begin
             main_pc <= main_pc + 1;
           end
@@ -973,37 +727,21 @@ module Btree;                                                                   
               begin
                 integer f;
                 f = $fopen("verilog/trace_verilog.txt", "a");
-                $fdisplay(f, "Location: Chip.java:1812:<init>|  Chip.java:1811:waitResultOfTransaction|  Btree.java:0338:stuckGet|  Btree.java:0319:stuckGetRoot|  Btree.java:4094:test_merge2|  Btree.java:6929:oldTests|  Btree.java:6955:newTests|  Btree.java:6961:main|");
+                $fdisplay(f, "Location: Chip.java:1812:<init>|  Chip.java:1811:waitResultOfTransaction|  Btree.java:0338:stuckGet|  Btree.java:0319:stuckGetRoot|  Btree.java:2811:test_merge_two|  Btree.java:6904:oldTests|  Btree.java:6951:newTests|  Btree.java:6957:main|");
                 $fclose(f);
               end
             end
-            11: begin
+            12: begin
               begin
                 integer f;
                 f = $fopen("verilog/trace_verilog.txt", "a");
-                $fdisplay(f, "Location: Chip.java:1812:<init>|  Chip.java:1811:waitResultOfTransaction|  Btree.java:0338:stuckGet|  Btree.java:0319:stuckGetRoot|  Btree.java:4106:test_merge2|  Btree.java:6929:oldTests|  Btree.java:6955:newTests|  Btree.java:6961:main|");
-                $fclose(f);
-              end
-            end
-            18: begin
-              begin
-                integer f;
-                f = $fopen("verilog/trace_verilog.txt", "a");
-                $fdisplay(f, "Location: Chip.java:1812:<init>|  Chip.java:1811:waitResultOfTransaction|  Btree.java:0338:stuckGet|  Btree.java:0314:stuckGet|  Btree.java:4107:test_merge2|  Btree.java:6929:oldTests|  Btree.java:6955:newTests|  Btree.java:6961:main|");
-                $fclose(f);
-              end
-            end
-            25: begin
-              begin
-                integer f;
-                f = $fopen("verilog/trace_verilog.txt", "a");
-                $fdisplay(f, "Location: Chip.java:1812:<init>|  Chip.java:1811:waitResultOfTransaction|  Btree.java:0338:stuckGet|  Btree.java:0314:stuckGet|  Btree.java:4108:test_merge2|  Btree.java:6929:oldTests|  Btree.java:6955:newTests|  Btree.java:6961:main|");
+                $fdisplay(f, "Location: Chip.java:1812:<init>|  Chip.java:1811:waitResultOfTransaction|  Btree.java:0338:stuckGet|  Btree.java:0314:stuckGet|  Btree.java:2814:test_merge_two|  Btree.java:6904:oldTests|  Btree.java:6951:newTests|  Btree.java:6957:main|");
                 $fclose(f);
               end
             end
           endcase
         end
-        4, 12, 19, 26: begin
+        4, 13: begin
           if ((stuckKeys_1_requestedAt < stuckKeys_1_finishedAt)) begin
             main_pc <= main_pc + 1;
           end
@@ -1012,37 +750,21 @@ module Btree;                                                                   
               begin
                 integer f;
                 f = $fopen("verilog/trace_verilog.txt", "a");
-                $fdisplay(f, "Location: Chip.java:1812:<init>|  Chip.java:1811:waitResultOfTransaction|  Btree.java:0339:stuckGet|  Btree.java:0319:stuckGetRoot|  Btree.java:4094:test_merge2|  Btree.java:6929:oldTests|  Btree.java:6955:newTests|  Btree.java:6961:main|");
+                $fdisplay(f, "Location: Chip.java:1812:<init>|  Chip.java:1811:waitResultOfTransaction|  Btree.java:0339:stuckGet|  Btree.java:0319:stuckGetRoot|  Btree.java:2811:test_merge_two|  Btree.java:6904:oldTests|  Btree.java:6951:newTests|  Btree.java:6957:main|");
                 $fclose(f);
               end
             end
-            12: begin
+            13: begin
               begin
                 integer f;
                 f = $fopen("verilog/trace_verilog.txt", "a");
-                $fdisplay(f, "Location: Chip.java:1812:<init>|  Chip.java:1811:waitResultOfTransaction|  Btree.java:0339:stuckGet|  Btree.java:0319:stuckGetRoot|  Btree.java:4106:test_merge2|  Btree.java:6929:oldTests|  Btree.java:6955:newTests|  Btree.java:6961:main|");
-                $fclose(f);
-              end
-            end
-            19: begin
-              begin
-                integer f;
-                f = $fopen("verilog/trace_verilog.txt", "a");
-                $fdisplay(f, "Location: Chip.java:1812:<init>|  Chip.java:1811:waitResultOfTransaction|  Btree.java:0339:stuckGet|  Btree.java:0314:stuckGet|  Btree.java:4107:test_merge2|  Btree.java:6929:oldTests|  Btree.java:6955:newTests|  Btree.java:6961:main|");
-                $fclose(f);
-              end
-            end
-            26: begin
-              begin
-                integer f;
-                f = $fopen("verilog/trace_verilog.txt", "a");
-                $fdisplay(f, "Location: Chip.java:1812:<init>|  Chip.java:1811:waitResultOfTransaction|  Btree.java:0339:stuckGet|  Btree.java:0314:stuckGet|  Btree.java:4108:test_merge2|  Btree.java:6929:oldTests|  Btree.java:6955:newTests|  Btree.java:6961:main|");
+                $fdisplay(f, "Location: Chip.java:1812:<init>|  Chip.java:1811:waitResultOfTransaction|  Btree.java:0339:stuckGet|  Btree.java:0314:stuckGet|  Btree.java:2814:test_merge_two|  Btree.java:6904:oldTests|  Btree.java:6951:newTests|  Btree.java:6957:main|");
                 $fclose(f);
               end
             end
           endcase
         end
-        5, 13, 20, 27: begin
+        5, 14: begin
           if ((stuckData_3_requestedAt < stuckData_3_finishedAt)) begin
             main_pc <= main_pc + 1;
           end
@@ -1051,47 +773,31 @@ module Btree;                                                                   
               begin
                 integer f;
                 f = $fopen("verilog/trace_verilog.txt", "a");
-                $fdisplay(f, "Location: Chip.java:1812:<init>|  Chip.java:1811:waitResultOfTransaction|  Btree.java:0340:stuckGet|  Btree.java:0319:stuckGetRoot|  Btree.java:4094:test_merge2|  Btree.java:6929:oldTests|  Btree.java:6955:newTests|  Btree.java:6961:main|");
+                $fdisplay(f, "Location: Chip.java:1812:<init>|  Chip.java:1811:waitResultOfTransaction|  Btree.java:0340:stuckGet|  Btree.java:0319:stuckGetRoot|  Btree.java:2811:test_merge_two|  Btree.java:6904:oldTests|  Btree.java:6951:newTests|  Btree.java:6957:main|");
                 $fclose(f);
               end
             end
-            13: begin
+            14: begin
               begin
                 integer f;
                 f = $fopen("verilog/trace_verilog.txt", "a");
-                $fdisplay(f, "Location: Chip.java:1812:<init>|  Chip.java:1811:waitResultOfTransaction|  Btree.java:0340:stuckGet|  Btree.java:0319:stuckGetRoot|  Btree.java:4106:test_merge2|  Btree.java:6929:oldTests|  Btree.java:6955:newTests|  Btree.java:6961:main|");
-                $fclose(f);
-              end
-            end
-            20: begin
-              begin
-                integer f;
-                f = $fopen("verilog/trace_verilog.txt", "a");
-                $fdisplay(f, "Location: Chip.java:1812:<init>|  Chip.java:1811:waitResultOfTransaction|  Btree.java:0340:stuckGet|  Btree.java:0314:stuckGet|  Btree.java:4107:test_merge2|  Btree.java:6929:oldTests|  Btree.java:6955:newTests|  Btree.java:6961:main|");
-                $fclose(f);
-              end
-            end
-            27: begin
-              begin
-                integer f;
-                f = $fopen("verilog/trace_verilog.txt", "a");
-                $fdisplay(f, "Location: Chip.java:1812:<init>|  Chip.java:1811:waitResultOfTransaction|  Btree.java:0340:stuckGet|  Btree.java:0314:stuckGet|  Btree.java:4108:test_merge2|  Btree.java:6929:oldTests|  Btree.java:6955:newTests|  Btree.java:6961:main|");
+                $fdisplay(f, "Location: Chip.java:1812:<init>|  Chip.java:1811:waitResultOfTransaction|  Btree.java:0340:stuckGet|  Btree.java:0314:stuckGet|  Btree.java:2814:test_merge_two|  Btree.java:6904:oldTests|  Btree.java:6951:newTests|  Btree.java:6957:main|");
                 $fclose(f);
               end
             end
           endcase
         end
-        6, 14: begin
-          main_size_204 <= stuckSize_stuckSize_5_result_0[0];
-          main_isLeaf_205 <= stuckIsLeaf_stuckIsLeaf_7_result_0[0];
+        6: begin
+          main_size_168 <= stuckSize_stuckSize_5_result_0[0];
+          main_isLeaf_169 <= stuckIsLeaf_stuckIsLeaf_7_result_0[0];
           begin
             for(main_memory_index = 0; main_memory_index < 8; main_memory_index = main_memory_index + 1) begin
-              main_Keys_207[main_memory_index] <= stuckKeys_stuckKeys_1_result_0[main_memory_index];
+              main_Keys_171[main_memory_index] <= stuckKeys_stuckKeys_1_result_0[main_memory_index];
             end
           end
           begin
             for(main_memory_index = 0; main_memory_index < 8; main_memory_index = main_memory_index + 1) begin
-              main_Data_210[main_memory_index] <= stuckData_stuckData_3_result_0[main_memory_index];
+              main_Data_174[main_memory_index] <= stuckData_stuckData_3_result_0[main_memory_index];
             end
           end
           main_pc <= main_pc + 1;
@@ -1100,304 +806,217 @@ module Btree;                                                                   
               begin
                 integer f;
                 f = $fopen("verilog/trace_verilog.txt", "a");
-                $fdisplay(f, "Location: Chip.java:0575:<init>|  Btree.java:0343:<init>|  Btree.java:0342:stuckGet|  Btree.java:0319:stuckGetRoot|  Btree.java:4094:test_merge2|  Btree.java:6929:oldTests|  Btree.java:6955:newTests|  Btree.java:6961:main|");
-                $fclose(f);
-              end
-            end
-            14: begin
-              begin
-                integer f;
-                f = $fopen("verilog/trace_verilog.txt", "a");
-                $fdisplay(f, "Location: Chip.java:0575:<init>|  Btree.java:0343:<init>|  Btree.java:0342:stuckGet|  Btree.java:0319:stuckGetRoot|  Btree.java:4106:test_merge2|  Btree.java:6929:oldTests|  Btree.java:6955:newTests|  Btree.java:6961:main|");
+                $fdisplay(f, "Location: Chip.java:0575:<init>|  Btree.java:0343:<init>|  Btree.java:0342:stuckGet|  Btree.java:0319:stuckGetRoot|  Btree.java:2811:test_merge_two|  Btree.java:6904:oldTests|  Btree.java:6951:newTests|  Btree.java:6957:main|");
                 $fclose(f);
               end
             end
           endcase
         end
         7: begin
-          main_l_248 <= 1;
-          main_r_249 <= 2;
+          case (main_size_168)
+            1: begin
+              main_Key_176 <= main_Keys_171[0];
+              main_Data_178 <= main_Data_174[0];
+            end
+            2: begin
+              main_Key_176 <= main_Keys_171[1];
+              main_Data_178 <= main_Data_174[1];
+            end
+            3: begin
+              main_Key_176 <= main_Keys_171[2];
+              main_Data_178 <= main_Data_174[2];
+            end
+            4: begin
+              main_Key_176 <= main_Keys_171[3];
+              main_Data_178 <= main_Data_174[3];
+            end
+            5: begin
+              main_Key_176 <= main_Keys_171[4];
+              main_Data_178 <= main_Data_174[4];
+            end
+            6: begin
+              main_Key_176 <= main_Keys_171[5];
+              main_Data_178 <= main_Data_174[5];
+            end
+            7: begin
+              main_Key_176 <= main_Keys_171[6];
+              main_Data_178 <= main_Data_174[6];
+            end
+            8: begin
+              main_Key_176 <= main_Keys_171[7];
+              main_Data_178 <= main_Data_174[7];
+            end
+          endcase
+          main_size_168 <= main_size_168-1;
           main_pc <= main_pc + 1;
           case (main_pc)
             7: begin
               begin
                 integer f;
                 f = $fopen("verilog/trace_verilog.txt", "a");
-                $fdisplay(f, "Location: Chip.java:0575:<init>|  Btree.java:4097:<init>|  Btree.java:4096:test_merge2|  Btree.java:6929:oldTests|  Btree.java:6955:newTests|  Btree.java:6961:main|");
+                $fdisplay(f, "Location: Chip.java:0575:<init>|  Btree.java:0645:<init>|  Btree.java:0644:Pop|  Btree.java:2812:test_merge_two|  Btree.java:6904:oldTests|  Btree.java:6951:newTests|  Btree.java:6957:main|");
+                $fclose(f);
+              end
+            end
+          endcase
+        end
+        8: begin
+          main_Index_182 <= 1;
+          main_pc <= main_pc + 1;
+          case (main_pc)
+            8: begin
+              begin
+                integer f;
+                f = $fopen("verilog/trace_verilog.txt", "a");
+                $fdisplay(f, "Location: Chip.java:0575:<init>|  Chip.java:0823:<init>|  Chip.java:0822:RegisterSet|  Btree.java:2813:test_merge_two|  Btree.java:6904:oldTests|  Btree.java:6951:newTests|  Btree.java:6957:main|");
+                $fclose(f);
+              end
+            end
+          endcase
+        end
+        9: begin
+          main_index_152 <= main_Index_182;
+          main_pc <= main_pc + 1;
+          case (main_pc)
+            9: begin
+              begin
+                integer f;
+                f = $fopen("verilog/trace_verilog.txt", "a");
+                $fdisplay(f, "Location: Chip.java:0575:<init>|  Chip.java:0879:<init>|  Chip.java:0878:Copy|  Btree.java:0313:stuckGet|  Btree.java:2814:test_merge_two|  Btree.java:6904:oldTests|  Btree.java:6951:newTests|  Btree.java:6957:main|");
+                $fclose(f);
+              end
+            end
+          endcase
+        end
+        10: begin
+          main_stuckSize_5_index_14 <= main_index_152;
+          stuckSize_5_requestedAt <= step;
+          stuckSize_5_finishedAt <= -1;
+          main_stuckIsLeaf_7_index_17 <= main_index_152;
+          stuckIsLeaf_7_requestedAt <= step;
+          stuckIsLeaf_7_finishedAt <= -1;
+          main_stuckKeys_1_index_8 <= main_index_152;
+          stuckKeys_1_requestedAt <= step;
+          stuckKeys_1_finishedAt <= -1;
+          main_stuckData_3_index_11 <= main_index_152;
+          stuckData_3_requestedAt <= step;
+          stuckData_3_finishedAt <= -1;
+          main_pc <= main_pc + 1;
+          case (main_pc)
+            10: begin
+              begin
+                integer f;
+                f = $fopen("verilog/trace_verilog.txt", "a");
+                $fdisplay(f, "Location: Chip.java:0575:<init>|  Btree.java:0324:<init>|  Btree.java:0323:stuckGet|  Btree.java:0314:stuckGet|  Btree.java:2814:test_merge_two|  Btree.java:6904:oldTests|  Btree.java:6951:newTests|  Btree.java:6957:main|");
                 $fclose(f);
               end
             end
           endcase
         end
         15: begin
-          main_index_218 <= main_l_248;
+          main_size_153 <= stuckSize_stuckSize_5_result_0[0];
+          main_isLeaf_154 <= stuckIsLeaf_stuckIsLeaf_7_result_0[0];
+          begin
+            for(main_memory_index = 0; main_memory_index < 8; main_memory_index = main_memory_index + 1) begin
+              main_Keys_156[main_memory_index] <= stuckKeys_stuckKeys_1_result_0[main_memory_index];
+            end
+          end
+          begin
+            for(main_memory_index = 0; main_memory_index < 8; main_memory_index = main_memory_index + 1) begin
+              main_Data_159[main_memory_index] <= stuckData_stuckData_3_result_0[main_memory_index];
+            end
+          end
           main_pc <= main_pc + 1;
           case (main_pc)
             15: begin
               begin
                 integer f;
                 f = $fopen("verilog/trace_verilog.txt", "a");
-                $fdisplay(f, "Location: Chip.java:0575:<init>|  Chip.java:0879:<init>|  Chip.java:0878:Copy|  Btree.java:0313:stuckGet|  Btree.java:4107:test_merge2|  Btree.java:6929:oldTests|  Btree.java:6955:newTests|  Btree.java:6961:main|");
+                $fdisplay(f, "Location: Chip.java:0575:<init>|  Btree.java:0343:<init>|  Btree.java:0342:stuckGet|  Btree.java:0314:stuckGet|  Btree.java:2814:test_merge_two|  Btree.java:6904:oldTests|  Btree.java:6951:newTests|  Btree.java:6957:main|");
                 $fclose(f);
               end
             end
           endcase
         end
         16: begin
-          main_stuckSize_5_index_14 <= main_index_218;
-          stuckSize_5_requestedAt <= step;
-          stuckSize_5_finishedAt <= -1;
-          main_stuckIsLeaf_7_index_17 <= main_index_218;
-          stuckIsLeaf_7_requestedAt <= step;
-          stuckIsLeaf_7_finishedAt <= -1;
-          main_stuckKeys_1_index_8 <= main_index_218;
-          stuckKeys_1_requestedAt <= step;
-          stuckKeys_1_finishedAt <= -1;
-          main_stuckData_3_index_11 <= main_index_218;
-          stuckData_3_requestedAt <= step;
-          stuckData_3_finishedAt <= -1;
+          main_sum_147 <= main_size_153 + main_size_168;
           main_pc <= main_pc + 1;
           case (main_pc)
             16: begin
               begin
                 integer f;
                 f = $fopen("verilog/trace_verilog.txt", "a");
-                $fdisplay(f, "Location: Chip.java:0575:<init>|  Btree.java:0324:<init>|  Btree.java:0323:stuckGet|  Btree.java:0314:stuckGet|  Btree.java:4107:test_merge2|  Btree.java:6929:oldTests|  Btree.java:6955:newTests|  Btree.java:6961:main|");
+                $fdisplay(f, "Location: Chip.java:0575:<init>|  Chip.java:1235:<init>|  Chip.java:1234:Sum|  Btree.java:1311:merge|  Btree.java:2815:test_merge_two|  Btree.java:6904:oldTests|  Btree.java:6951:newTests|  Btree.java:6957:main|");
                 $fclose(f);
               end
             end
           endcase
         end
-        21: begin
-          main_size_219 <= stuckSize_stuckSize_5_result_0[0];
-          main_isLeaf_220 <= stuckIsLeaf_stuckIsLeaf_7_result_0[0];
-          begin
-            for(main_memory_index = 0; main_memory_index < 8; main_memory_index = main_memory_index + 1) begin
-              main_Keys_222[main_memory_index] <= stuckKeys_stuckKeys_1_result_0[main_memory_index];
-            end
-          end
-          begin
-            for(main_memory_index = 0; main_memory_index < 8; main_memory_index = main_memory_index + 1) begin
-              main_Data_225[main_memory_index] <= stuckData_stuckData_3_result_0[main_memory_index];
-            end
-          end
-          main_pc <= main_pc + 1;
-          case (main_pc)
-            21: begin
-              begin
-                integer f;
-                f = $fopen("verilog/trace_verilog.txt", "a");
-                $fdisplay(f, "Location: Chip.java:0575:<init>|  Btree.java:0343:<init>|  Btree.java:0342:stuckGet|  Btree.java:0314:stuckGet|  Btree.java:4107:test_merge2|  Btree.java:6929:oldTests|  Btree.java:6955:newTests|  Btree.java:6961:main|");
-                $fclose(f);
-              end
-            end
-          endcase
-        end
-        22: begin
-          main_index_233 <= main_r_249;
-          main_pc <= main_pc + 1;
-          case (main_pc)
-            22: begin
-              begin
-                integer f;
-                f = $fopen("verilog/trace_verilog.txt", "a");
-                $fdisplay(f, "Location: Chip.java:0575:<init>|  Chip.java:0879:<init>|  Chip.java:0878:Copy|  Btree.java:0313:stuckGet|  Btree.java:4108:test_merge2|  Btree.java:6929:oldTests|  Btree.java:6955:newTests|  Btree.java:6961:main|");
-                $fclose(f);
-              end
-            end
-          endcase
-        end
-        23: begin
-          main_stuckSize_5_index_14 <= main_index_233;
-          stuckSize_5_requestedAt <= step;
-          stuckSize_5_finishedAt <= -1;
-          main_stuckIsLeaf_7_index_17 <= main_index_233;
-          stuckIsLeaf_7_requestedAt <= step;
-          stuckIsLeaf_7_finishedAt <= -1;
-          main_stuckKeys_1_index_8 <= main_index_233;
-          stuckKeys_1_requestedAt <= step;
-          stuckKeys_1_finishedAt <= -1;
-          main_stuckData_3_index_11 <= main_index_233;
-          stuckData_3_requestedAt <= step;
-          stuckData_3_finishedAt <= -1;
-          main_pc <= main_pc + 1;
-          case (main_pc)
-            23: begin
-              begin
-                integer f;
-                f = $fopen("verilog/trace_verilog.txt", "a");
-                $fdisplay(f, "Location: Chip.java:0575:<init>|  Btree.java:0324:<init>|  Btree.java:0323:stuckGet|  Btree.java:0314:stuckGet|  Btree.java:4108:test_merge2|  Btree.java:6929:oldTests|  Btree.java:6955:newTests|  Btree.java:6961:main|");
-                $fclose(f);
-              end
-            end
-          endcase
-        end
-        28: begin
-          main_size_234 <= stuckSize_stuckSize_5_result_0[0];
-          main_isLeaf_235 <= stuckIsLeaf_stuckIsLeaf_7_result_0[0];
-          begin
-            for(main_memory_index = 0; main_memory_index < 8; main_memory_index = main_memory_index + 1) begin
-              main_Keys_237[main_memory_index] <= stuckKeys_stuckKeys_1_result_0[main_memory_index];
-            end
-          end
-          begin
-            for(main_memory_index = 0; main_memory_index < 8; main_memory_index = main_memory_index + 1) begin
-              main_Data_240[main_memory_index] <= stuckData_stuckData_3_result_0[main_memory_index];
-            end
-          end
-          main_pc <= main_pc + 1;
-          case (main_pc)
-            28: begin
-              begin
-                integer f;
-                f = $fopen("verilog/trace_verilog.txt", "a");
-                $fdisplay(f, "Location: Chip.java:0575:<init>|  Btree.java:0343:<init>|  Btree.java:0342:stuckGet|  Btree.java:0314:stuckGet|  Btree.java:4108:test_merge2|  Btree.java:6929:oldTests|  Btree.java:6955:newTests|  Btree.java:6961:main|");
-                $fclose(f);
-              end
-            end
-          endcase
-        end
-        29: begin
-          main_sum_147 <= main_size_219 + main_size_234;
-          main_pc <= main_pc + 1;
-          case (main_pc)
-            29: begin
-              begin
-                integer f;
-                f = $fopen("verilog/trace_verilog.txt", "a");
-                $fdisplay(f, "Location: Chip.java:0575:<init>|  Chip.java:1235:<init>|  Chip.java:1234:Sum|  Btree.java:1331:merge|  Btree.java:4110:test_merge2|  Btree.java:6929:oldTests|  Btree.java:6955:newTests|  Btree.java:6961:main|");
-                $fclose(f);
-              end
-            end
-          endcase
-        end
-        30, 34, 47: begin
+        17: begin
           main_can_148 <= main_sum_147<=8 ? 1 : 0;
           main_pc <= main_pc + 1;
           case (main_pc)
-            30: begin
+            17: begin
               begin
                 integer f;
                 f = $fopen("verilog/trace_verilog.txt", "a");
-                $fdisplay(f, "Location: Chip.java:0575:<init>|  Chip.java:1119:<init>|  Chip.java:1119:Le|  Btree.java:1332:merge|  Btree.java:4110:test_merge2|  Btree.java:6929:oldTests|  Btree.java:6955:newTests|  Btree.java:6961:main|");
-                $fclose(f);
-              end
-            end
-            34: begin
-              begin
-                integer f;
-                f = $fopen("verilog/trace_verilog.txt", "a");
-                $fdisplay(f, "Location: Chip.java:0575:<init>|  Chip.java:1119:<init>|  Chip.java:1119:Le|  Btree.java:1312:merge|  Btree.java:1336:Then|  Chip.java:0673:<init>|  Btree.java:1334:<init>|  Btree.java:1333:merge|  Btree.java:4110:test_merge2|  Btree.java:6929:oldTests|  Btree.java:6955:newTests|  Btree.java:6961:main|");
-                $fclose(f);
-              end
-            end
-            47: begin
-              begin
-                integer f;
-                f = $fopen("verilog/trace_verilog.txt", "a");
-                $fdisplay(f, "Location: Chip.java:0575:<init>|  Chip.java:1119:<init>|  Chip.java:1119:Le|  Btree.java:1312:merge|  Btree.java:1337:Then|  Chip.java:0673:<init>|  Btree.java:1334:<init>|  Btree.java:1333:merge|  Btree.java:4110:test_merge2|  Btree.java:6929:oldTests|  Btree.java:6955:newTests|  Btree.java:6961:main|");
+                $fdisplay(f, "Location: Chip.java:0575:<init>|  Chip.java:1119:<init>|  Chip.java:1119:Le|  Btree.java:1312:merge|  Btree.java:2815:test_merge_two|  Btree.java:6904:oldTests|  Btree.java:6951:newTests|  Btree.java:6957:main|");
                 $fclose(f);
               end
             end
           endcase
         end
-        31: begin
+        18: begin
           if (main_can_148 == 0) begin
-            main_pc <= 61;
+            main_pc <= 28;
           end
           else begin
             main_pc <= main_pc + 1;
           end
           case (main_pc)
-            31: begin
+            18: begin
               begin
                 integer f;
                 f = $fopen("verilog/trace_verilog.txt", "a");
-                $fdisplay(f, "Location: Chip.java:0666:<init>|  Chip.java:0665:<init>|  Btree.java:1334:<init>|  Btree.java:1333:merge|  Btree.java:4110:test_merge2|  Btree.java:6929:oldTests|  Btree.java:6955:newTests|  Btree.java:6961:main|");
+                $fdisplay(f, "Location: Chip.java:0666:<init>|  Chip.java:0665:<init>|  Btree.java:1314:<init>|  Btree.java:1313:merge|  Btree.java:2815:test_merge_two|  Btree.java:6904:oldTests|  Btree.java:6951:newTests|  Btree.java:6957:main|");
                 $fclose(f);
               end
             end
           endcase
         end
-        32: begin
-          main_size_204 <= 0;
+        19: begin
+          main_Keys_61[0] <= main_Keys_156[0];
+          main_Data_64[0] <= main_Data_159[0];
+          main_Keys_61[1] <= main_Keys_156[1];
+          main_Data_64[1] <= main_Data_159[1];
+          main_Keys_61[2] <= main_Keys_156[2];
+          main_Data_64[2] <= main_Data_159[2];
+          main_Keys_61[3] <= main_Keys_156[3];
+          main_Data_64[3] <= main_Data_159[3];
+          main_Keys_61[4] <= main_Keys_156[4];
+          main_Data_64[4] <= main_Data_159[4];
+          main_Keys_61[5] <= main_Keys_156[5];
+          main_Data_64[5] <= main_Data_159[5];
+          main_Keys_61[6] <= main_Keys_156[6];
+          main_Data_64[6] <= main_Data_159[6];
+          main_Keys_61[7] <= main_Keys_156[7];
+          main_Data_64[7] <= main_Data_159[7];
+          main_size_58 <= main_size_153;
+          main_isLeaf_59 <= main_isLeaf_154;
           main_pc <= main_pc + 1;
           case (main_pc)
-            32: begin
+            19: begin
               begin
                 integer f;
                 f = $fopen("verilog/trace_verilog.txt", "a");
-                $fdisplay(f, "Location: Chip.java:0575:<init>|  Btree.java:0591:<init>|  Btree.java:0590:Clear|  Btree.java:1335:Then|  Chip.java:0673:<init>|  Btree.java:1334:<init>|  Btree.java:1333:merge|  Btree.java:4110:test_merge2|  Btree.java:6929:oldTests|  Btree.java:6955:newTests|  Btree.java:6961:main|");
+                $fdisplay(f, "Location: Chip.java:0575:<init>|  Btree.java:0452:<init>|  Btree.java:0451:Copy|  Btree.java:1316:Then|  Chip.java:0673:<init>|  Btree.java:1314:<init>|  Btree.java:1313:merge|  Btree.java:2815:test_merge_two|  Btree.java:6904:oldTests|  Btree.java:6951:newTests|  Btree.java:6957:main|");
                 $fclose(f);
               end
             end
           endcase
         end
-        33: begin
-          main_sum_147 <= main_size_219 + main_size_204;
-          main_pc <= main_pc + 1;
-          case (main_pc)
-            33: begin
-              begin
-                integer f;
-                f = $fopen("verilog/trace_verilog.txt", "a");
-                $fdisplay(f, "Location: Chip.java:0575:<init>|  Chip.java:1235:<init>|  Chip.java:1234:Sum|  Btree.java:1311:merge|  Btree.java:1336:Then|  Chip.java:0673:<init>|  Btree.java:1334:<init>|  Btree.java:1333:merge|  Btree.java:4110:test_merge2|  Btree.java:6929:oldTests|  Btree.java:6955:newTests|  Btree.java:6961:main|");
-                $fclose(f);
-              end
-            end
-          endcase
-        end
-        35: begin
-          if (main_can_148 == 0) begin
-            main_pc <= 45;
-          end
-          else begin
-            main_pc <= main_pc + 1;
-          end
-          case (main_pc)
-            35: begin
-              begin
-                integer f;
-                f = $fopen("verilog/trace_verilog.txt", "a");
-                $fdisplay(f, "Location: Chip.java:0666:<init>|  Chip.java:0665:<init>|  Btree.java:1314:<init>|  Btree.java:1313:merge|  Btree.java:1336:Then|  Chip.java:0673:<init>|  Btree.java:1334:<init>|  Btree.java:1333:merge|  Btree.java:4110:test_merge2|  Btree.java:6929:oldTests|  Btree.java:6955:newTests|  Btree.java:6961:main|");
-                $fclose(f);
-              end
-            end
-          endcase
-        end
-        36: begin
-          main_Keys_61[0] <= main_Keys_222[0];
-          main_Data_64[0] <= main_Data_225[0];
-          main_Keys_61[1] <= main_Keys_222[1];
-          main_Data_64[1] <= main_Data_225[1];
-          main_Keys_61[2] <= main_Keys_222[2];
-          main_Data_64[2] <= main_Data_225[2];
-          main_Keys_61[3] <= main_Keys_222[3];
-          main_Data_64[3] <= main_Data_225[3];
-          main_Keys_61[4] <= main_Keys_222[4];
-          main_Data_64[4] <= main_Data_225[4];
-          main_Keys_61[5] <= main_Keys_222[5];
-          main_Data_64[5] <= main_Data_225[5];
-          main_Keys_61[6] <= main_Keys_222[6];
-          main_Data_64[6] <= main_Data_225[6];
-          main_Keys_61[7] <= main_Keys_222[7];
-          main_Data_64[7] <= main_Data_225[7];
-          main_size_58 <= main_size_219;
-          main_isLeaf_59 <= main_isLeaf_220;
-          main_pc <= main_pc + 1;
-          case (main_pc)
-            36: begin
-              begin
-                integer f;
-                f = $fopen("verilog/trace_verilog.txt", "a");
-                $fdisplay(f, "Location: Chip.java:0575:<init>|  Btree.java:0452:<init>|  Btree.java:0451:Copy|  Btree.java:1316:Then|  Chip.java:0673:<init>|  Btree.java:1314:<init>|  Btree.java:1313:merge|  Btree.java:1336:Then|  Chip.java:0673:<init>|  Btree.java:1334:<init>|  Btree.java:1333:merge|  Btree.java:4110:test_merge2|  Btree.java:6929:oldTests|  Btree.java:6955:newTests|  Btree.java:6961:main|");
-                $fclose(f);
-              end
-            end
-          endcase
-        end
-        37, 50: begin
-          if (main_size_204 & 8) begin
+        20: begin
+          if (main_size_168 & 8) begin
             main_Keys_61[0] <= 0;
             main_Data_64[0] <= 0;
             main_Keys_61[1] <= 0;
@@ -1417,26 +1036,18 @@ module Btree;                                                                   
           end
           main_pc <= main_pc + 1;
           case (main_pc)
-            37: begin
+            20: begin
               begin
                 integer f;
                 f = $fopen("verilog/trace_verilog.txt", "a");
-                $fdisplay(f, "Location: Chip.java:0575:<init>|  Btree.java:0563:<init>|  Btree.java:0562:CopyUp|  Btree.java:1317:Then|  Chip.java:0673:<init>|  Btree.java:1314:<init>|  Btree.java:1313:merge|  Btree.java:1336:Then|  Chip.java:0673:<init>|  Btree.java:1334:<init>|  Btree.java:1333:merge|  Btree.java:4110:test_merge2|  Btree.java:6929:oldTests|  Btree.java:6955:newTests|  Btree.java:6961:main|");
-                $fclose(f);
-              end
-            end
-            50: begin
-              begin
-                integer f;
-                f = $fopen("verilog/trace_verilog.txt", "a");
-                $fdisplay(f, "Location: Chip.java:0575:<init>|  Btree.java:0563:<init>|  Btree.java:0562:CopyUp|  Btree.java:1317:Then|  Chip.java:0673:<init>|  Btree.java:1314:<init>|  Btree.java:1313:merge|  Btree.java:1337:Then|  Chip.java:0673:<init>|  Btree.java:1334:<init>|  Btree.java:1333:merge|  Btree.java:4110:test_merge2|  Btree.java:6929:oldTests|  Btree.java:6955:newTests|  Btree.java:6961:main|");
+                $fdisplay(f, "Location: Chip.java:0575:<init>|  Btree.java:0563:<init>|  Btree.java:0562:CopyUp|  Btree.java:1317:Then|  Chip.java:0673:<init>|  Btree.java:1314:<init>|  Btree.java:1313:merge|  Btree.java:2815:test_merge_two|  Btree.java:6904:oldTests|  Btree.java:6951:newTests|  Btree.java:6957:main|");
                 $fclose(f);
               end
             end
           endcase
         end
-        38, 51: begin
-          if (main_size_204 & 4) begin
+        21: begin
+          if (main_size_168 & 4) begin
             main_Keys_61[7] <= main_Keys_61[3];
             main_Data_64[7] <= main_Data_64[3];
             main_Keys_61[6] <= main_Keys_61[2];
@@ -1456,26 +1067,18 @@ module Btree;                                                                   
           end
           main_pc <= main_pc + 1;
           case (main_pc)
-            38: begin
+            21: begin
               begin
                 integer f;
                 f = $fopen("verilog/trace_verilog.txt", "a");
-                $fdisplay(f, "Location: Chip.java:0575:<init>|  Btree.java:0563:<init>|  Btree.java:0562:CopyUp|  Btree.java:1317:Then|  Chip.java:0673:<init>|  Btree.java:1314:<init>|  Btree.java:1313:merge|  Btree.java:1336:Then|  Chip.java:0673:<init>|  Btree.java:1334:<init>|  Btree.java:1333:merge|  Btree.java:4110:test_merge2|  Btree.java:6929:oldTests|  Btree.java:6955:newTests|  Btree.java:6961:main|");
-                $fclose(f);
-              end
-            end
-            51: begin
-              begin
-                integer f;
-                f = $fopen("verilog/trace_verilog.txt", "a");
-                $fdisplay(f, "Location: Chip.java:0575:<init>|  Btree.java:0563:<init>|  Btree.java:0562:CopyUp|  Btree.java:1317:Then|  Chip.java:0673:<init>|  Btree.java:1314:<init>|  Btree.java:1313:merge|  Btree.java:1337:Then|  Chip.java:0673:<init>|  Btree.java:1334:<init>|  Btree.java:1333:merge|  Btree.java:4110:test_merge2|  Btree.java:6929:oldTests|  Btree.java:6955:newTests|  Btree.java:6961:main|");
+                $fdisplay(f, "Location: Chip.java:0575:<init>|  Btree.java:0563:<init>|  Btree.java:0562:CopyUp|  Btree.java:1317:Then|  Chip.java:0673:<init>|  Btree.java:1314:<init>|  Btree.java:1313:merge|  Btree.java:2815:test_merge_two|  Btree.java:6904:oldTests|  Btree.java:6951:newTests|  Btree.java:6957:main|");
                 $fclose(f);
               end
             end
           endcase
         end
-        39, 52: begin
-          if (main_size_204 & 2) begin
+        22: begin
+          if (main_size_168 & 2) begin
             main_Keys_61[7] <= main_Keys_61[5];
             main_Data_64[7] <= main_Data_64[5];
             main_Keys_61[6] <= main_Keys_61[4];
@@ -1495,26 +1098,18 @@ module Btree;                                                                   
           end
           main_pc <= main_pc + 1;
           case (main_pc)
-            39: begin
+            22: begin
               begin
                 integer f;
                 f = $fopen("verilog/trace_verilog.txt", "a");
-                $fdisplay(f, "Location: Chip.java:0575:<init>|  Btree.java:0563:<init>|  Btree.java:0562:CopyUp|  Btree.java:1317:Then|  Chip.java:0673:<init>|  Btree.java:1314:<init>|  Btree.java:1313:merge|  Btree.java:1336:Then|  Chip.java:0673:<init>|  Btree.java:1334:<init>|  Btree.java:1333:merge|  Btree.java:4110:test_merge2|  Btree.java:6929:oldTests|  Btree.java:6955:newTests|  Btree.java:6961:main|");
-                $fclose(f);
-              end
-            end
-            52: begin
-              begin
-                integer f;
-                f = $fopen("verilog/trace_verilog.txt", "a");
-                $fdisplay(f, "Location: Chip.java:0575:<init>|  Btree.java:0563:<init>|  Btree.java:0562:CopyUp|  Btree.java:1317:Then|  Chip.java:0673:<init>|  Btree.java:1314:<init>|  Btree.java:1313:merge|  Btree.java:1337:Then|  Chip.java:0673:<init>|  Btree.java:1334:<init>|  Btree.java:1333:merge|  Btree.java:4110:test_merge2|  Btree.java:6929:oldTests|  Btree.java:6955:newTests|  Btree.java:6961:main|");
+                $fdisplay(f, "Location: Chip.java:0575:<init>|  Btree.java:0563:<init>|  Btree.java:0562:CopyUp|  Btree.java:1317:Then|  Chip.java:0673:<init>|  Btree.java:1314:<init>|  Btree.java:1313:merge|  Btree.java:2815:test_merge_two|  Btree.java:6904:oldTests|  Btree.java:6951:newTests|  Btree.java:6957:main|");
                 $fclose(f);
               end
             end
           endcase
         end
-        40, 53: begin
-          if (main_size_204 & 1) begin
+        23: begin
+          if (main_size_168 & 1) begin
             main_Keys_61[7] <= main_Keys_61[6];
             main_Data_64[7] <= main_Data_64[6];
             main_Keys_61[6] <= main_Keys_61[5];
@@ -1534,278 +1129,127 @@ module Btree;                                                                   
           end
           main_pc <= main_pc + 1;
           case (main_pc)
-            40: begin
+            23: begin
               begin
                 integer f;
                 f = $fopen("verilog/trace_verilog.txt", "a");
-                $fdisplay(f, "Location: Chip.java:0575:<init>|  Btree.java:0563:<init>|  Btree.java:0562:CopyUp|  Btree.java:1317:Then|  Chip.java:0673:<init>|  Btree.java:1314:<init>|  Btree.java:1313:merge|  Btree.java:1336:Then|  Chip.java:0673:<init>|  Btree.java:1334:<init>|  Btree.java:1333:merge|  Btree.java:4110:test_merge2|  Btree.java:6929:oldTests|  Btree.java:6955:newTests|  Btree.java:6961:main|");
-                $fclose(f);
-              end
-            end
-            53: begin
-              begin
-                integer f;
-                f = $fopen("verilog/trace_verilog.txt", "a");
-                $fdisplay(f, "Location: Chip.java:0575:<init>|  Btree.java:0563:<init>|  Btree.java:0562:CopyUp|  Btree.java:1317:Then|  Chip.java:0673:<init>|  Btree.java:1314:<init>|  Btree.java:1313:merge|  Btree.java:1337:Then|  Chip.java:0673:<init>|  Btree.java:1334:<init>|  Btree.java:1333:merge|  Btree.java:4110:test_merge2|  Btree.java:6929:oldTests|  Btree.java:6955:newTests|  Btree.java:6961:main|");
+                $fdisplay(f, "Location: Chip.java:0575:<init>|  Btree.java:0563:<init>|  Btree.java:0562:CopyUp|  Btree.java:1317:Then|  Chip.java:0673:<init>|  Btree.java:1314:<init>|  Btree.java:1313:merge|  Btree.java:2815:test_merge_two|  Btree.java:6904:oldTests|  Btree.java:6951:newTests|  Btree.java:6957:main|");
                 $fclose(f);
               end
             end
           endcase
         end
-        41, 54: begin
+        24: begin
           if (main_Keys_61[0]) begin
-            main_Keys_207[0] <= main_Keys_61[0];
+            main_Keys_171[0] <= main_Keys_61[0];
           end
           if (main_Keys_61[1]) begin
-            main_Keys_207[1] <= main_Keys_61[1];
+            main_Keys_171[1] <= main_Keys_61[1];
           end
           if (main_Keys_61[2]) begin
-            main_Keys_207[2] <= main_Keys_61[2];
+            main_Keys_171[2] <= main_Keys_61[2];
           end
           if (main_Keys_61[3]) begin
-            main_Keys_207[3] <= main_Keys_61[3];
+            main_Keys_171[3] <= main_Keys_61[3];
           end
           if (main_Keys_61[4]) begin
-            main_Keys_207[4] <= main_Keys_61[4];
+            main_Keys_171[4] <= main_Keys_61[4];
           end
           if (main_Keys_61[5]) begin
-            main_Keys_207[5] <= main_Keys_61[5];
+            main_Keys_171[5] <= main_Keys_61[5];
           end
           if (main_Keys_61[6]) begin
-            main_Keys_207[6] <= main_Keys_61[6];
+            main_Keys_171[6] <= main_Keys_61[6];
           end
           if (main_Keys_61[7]) begin
-            main_Keys_207[7] <= main_Keys_61[7];
+            main_Keys_171[7] <= main_Keys_61[7];
           end
           if (main_Data_64[0]) begin
-            main_Data_210[0] <= main_Data_64[0];
+            main_Data_174[0] <= main_Data_64[0];
           end
           if (main_Data_64[1]) begin
-            main_Data_210[1] <= main_Data_64[1];
+            main_Data_174[1] <= main_Data_64[1];
           end
           if (main_Data_64[2]) begin
-            main_Data_210[2] <= main_Data_64[2];
+            main_Data_174[2] <= main_Data_64[2];
           end
           if (main_Data_64[3]) begin
-            main_Data_210[3] <= main_Data_64[3];
+            main_Data_174[3] <= main_Data_64[3];
           end
           if (main_Data_64[4]) begin
-            main_Data_210[4] <= main_Data_64[4];
+            main_Data_174[4] <= main_Data_64[4];
           end
           if (main_Data_64[5]) begin
-            main_Data_210[5] <= main_Data_64[5];
+            main_Data_174[5] <= main_Data_64[5];
           end
           if (main_Data_64[6]) begin
-            main_Data_210[6] <= main_Data_64[6];
+            main_Data_174[6] <= main_Data_64[6];
           end
           if (main_Data_64[7]) begin
-            main_Data_210[7] <= main_Data_64[7];
+            main_Data_174[7] <= main_Data_64[7];
           end
           main_pc <= main_pc + 1;
           case (main_pc)
-            41: begin
+            24: begin
               begin
                 integer f;
                 f = $fopen("verilog/trace_verilog.txt", "a");
-                $fdisplay(f, "Location: Chip.java:0575:<init>|  Btree.java:0469:<init>|  Btree.java:0468:Combine|  Btree.java:1318:Then|  Chip.java:0673:<init>|  Btree.java:1314:<init>|  Btree.java:1313:merge|  Btree.java:1336:Then|  Chip.java:0673:<init>|  Btree.java:1334:<init>|  Btree.java:1333:merge|  Btree.java:4110:test_merge2|  Btree.java:6929:oldTests|  Btree.java:6955:newTests|  Btree.java:6961:main|");
-                $fclose(f);
-              end
-            end
-            54: begin
-              begin
-                integer f;
-                f = $fopen("verilog/trace_verilog.txt", "a");
-                $fdisplay(f, "Location: Chip.java:0575:<init>|  Btree.java:0469:<init>|  Btree.java:0468:Combine|  Btree.java:1318:Then|  Chip.java:0673:<init>|  Btree.java:1314:<init>|  Btree.java:1313:merge|  Btree.java:1337:Then|  Chip.java:0673:<init>|  Btree.java:1334:<init>|  Btree.java:1333:merge|  Btree.java:4110:test_merge2|  Btree.java:6929:oldTests|  Btree.java:6955:newTests|  Btree.java:6961:main|");
+                $fdisplay(f, "Location: Chip.java:0575:<init>|  Btree.java:0469:<init>|  Btree.java:0468:Combine|  Btree.java:1318:Then|  Chip.java:0673:<init>|  Btree.java:1314:<init>|  Btree.java:1313:merge|  Btree.java:2815:test_merge_two|  Btree.java:6904:oldTests|  Btree.java:6951:newTests|  Btree.java:6957:main|");
                 $fclose(f);
               end
             end
           endcase
         end
-        42: begin
-          main_size_204 <= main_size_204 + main_size_219;
+        25: begin
+          main_size_168 <= main_size_168 + main_size_153;
           main_pc <= main_pc + 1;
           case (main_pc)
-            42: begin
+            25: begin
               begin
                 integer f;
                 f = $fopen("verilog/trace_verilog.txt", "a");
-                $fdisplay(f, "Location: Chip.java:0575:<init>|  Chip.java:1197:<init>|  Chip.java:1196:Add|  Btree.java:1319:Then|  Chip.java:0673:<init>|  Btree.java:1314:<init>|  Btree.java:1313:merge|  Btree.java:1336:Then|  Chip.java:0673:<init>|  Btree.java:1334:<init>|  Btree.java:1333:merge|  Btree.java:4110:test_merge2|  Btree.java:6929:oldTests|  Btree.java:6955:newTests|  Btree.java:6961:main|");
+                $fdisplay(f, "Location: Chip.java:0575:<init>|  Chip.java:1197:<init>|  Chip.java:1196:Add|  Btree.java:1319:Then|  Chip.java:0673:<init>|  Btree.java:1314:<init>|  Btree.java:1313:merge|  Btree.java:2815:test_merge_two|  Btree.java:6904:oldTests|  Btree.java:6951:newTests|  Btree.java:6957:main|");
                 $fclose(f);
               end
             end
           endcase
         end
-        43, 56, 59: begin
-          main_MergeSuccess_217 <= 1;
+        26: begin
+          main_MergeSuccess_181 <= 1;
           main_pc <= main_pc + 1;
           case (main_pc)
-            43: begin
+            26: begin
               begin
                 integer f;
                 f = $fopen("verilog/trace_verilog.txt", "a");
-                $fdisplay(f, "Location: Chip.java:0575:<init>|  Chip.java:1166:<init>|  Chip.java:1165:One|  Btree.java:1320:Then|  Chip.java:0673:<init>|  Btree.java:1314:<init>|  Btree.java:1313:merge|  Btree.java:1336:Then|  Chip.java:0673:<init>|  Btree.java:1334:<init>|  Btree.java:1333:merge|  Btree.java:4110:test_merge2|  Btree.java:6929:oldTests|  Btree.java:6955:newTests|  Btree.java:6961:main|");
-                $fclose(f);
-              end
-            end
-            56: begin
-              begin
-                integer f;
-                f = $fopen("verilog/trace_verilog.txt", "a");
-                $fdisplay(f, "Location: Chip.java:0575:<init>|  Chip.java:1166:<init>|  Chip.java:1165:One|  Btree.java:1320:Then|  Chip.java:0673:<init>|  Btree.java:1314:<init>|  Btree.java:1313:merge|  Btree.java:1337:Then|  Chip.java:0673:<init>|  Btree.java:1334:<init>|  Btree.java:1333:merge|  Btree.java:4110:test_merge2|  Btree.java:6929:oldTests|  Btree.java:6955:newTests|  Btree.java:6961:main|");
-                $fclose(f);
-              end
-            end
-            59: begin
-              begin
-                integer f;
-                f = $fopen("verilog/trace_verilog.txt", "a");
-                $fdisplay(f, "Location: Chip.java:0575:<init>|  Chip.java:1166:<init>|  Chip.java:1165:One|  Btree.java:1338:Then|  Chip.java:0673:<init>|  Btree.java:1334:<init>|  Btree.java:1333:merge|  Btree.java:4110:test_merge2|  Btree.java:6929:oldTests|  Btree.java:6955:newTests|  Btree.java:6961:main|");
+                $fdisplay(f, "Location: Chip.java:0575:<init>|  Chip.java:1166:<init>|  Chip.java:1165:One|  Btree.java:1320:Then|  Chip.java:0673:<init>|  Btree.java:1314:<init>|  Btree.java:1313:merge|  Btree.java:2815:test_merge_two|  Btree.java:6904:oldTests|  Btree.java:6951:newTests|  Btree.java:6957:main|");
                 $fclose(f);
               end
             end
           endcase
         end
-        44: begin
-          main_pc <= 46;
+        27: begin
+          main_pc <= 29;
           case (main_pc)
-            44: begin
+            27: begin
               begin
                 integer f;
                 f = $fopen("verilog/trace_verilog.txt", "a");
-                $fdisplay(f, "Location: Chip.java:0675:<init>|  Chip.java:0674:<init>|  Btree.java:1314:<init>|  Btree.java:1313:merge|  Btree.java:1336:Then|  Chip.java:0673:<init>|  Btree.java:1334:<init>|  Btree.java:1333:merge|  Btree.java:4110:test_merge2|  Btree.java:6929:oldTests|  Btree.java:6955:newTests|  Btree.java:6961:main|");
+                $fdisplay(f, "Location: Chip.java:0675:<init>|  Chip.java:0674:<init>|  Btree.java:1314:<init>|  Btree.java:1313:merge|  Btree.java:2815:test_merge_two|  Btree.java:6904:oldTests|  Btree.java:6951:newTests|  Btree.java:6957:main|");
                 $fclose(f);
               end
             end
           endcase
         end
-        45, 58, 61: begin
-          main_MergeSuccess_217 <= 0;
+        28: begin
+          main_MergeSuccess_181 <= 0;
           main_pc <= main_pc + 1;
           case (main_pc)
-            45: begin
+            28: begin
               begin
                 integer f;
                 f = $fopen("verilog/trace_verilog.txt", "a");
-                $fdisplay(f, "Location: Chip.java:0575:<init>|  Chip.java:1148:<init>|  Chip.java:1147:Zero|  Btree.java:1323:Else|  Chip.java:0683:<init>|  Btree.java:1314:<init>|  Btree.java:1313:merge|  Btree.java:1336:Then|  Chip.java:0673:<init>|  Btree.java:1334:<init>|  Btree.java:1333:merge|  Btree.java:4110:test_merge2|  Btree.java:6929:oldTests|  Btree.java:6955:newTests|  Btree.java:6961:main|");
-                $fclose(f);
-              end
-            end
-            58: begin
-              begin
-                integer f;
-                f = $fopen("verilog/trace_verilog.txt", "a");
-                $fdisplay(f, "Location: Chip.java:0575:<init>|  Chip.java:1148:<init>|  Chip.java:1147:Zero|  Btree.java:1323:Else|  Chip.java:0683:<init>|  Btree.java:1314:<init>|  Btree.java:1313:merge|  Btree.java:1337:Then|  Chip.java:0673:<init>|  Btree.java:1334:<init>|  Btree.java:1333:merge|  Btree.java:4110:test_merge2|  Btree.java:6929:oldTests|  Btree.java:6955:newTests|  Btree.java:6961:main|");
-                $fclose(f);
-              end
-            end
-            61: begin
-              begin
-                integer f;
-                f = $fopen("verilog/trace_verilog.txt", "a");
-                $fdisplay(f, "Location: Chip.java:0575:<init>|  Chip.java:1148:<init>|  Chip.java:1147:Zero|  Btree.java:1341:Else|  Chip.java:0683:<init>|  Btree.java:1334:<init>|  Btree.java:1333:merge|  Btree.java:4110:test_merge2|  Btree.java:6929:oldTests|  Btree.java:6955:newTests|  Btree.java:6961:main|");
-                $fclose(f);
-              end
-            end
-          endcase
-        end
-        46: begin
-          main_sum_147 <= main_size_234 + main_size_204;
-          main_pc <= main_pc + 1;
-          case (main_pc)
-            46: begin
-              begin
-                integer f;
-                f = $fopen("verilog/trace_verilog.txt", "a");
-                $fdisplay(f, "Location: Chip.java:0575:<init>|  Chip.java:1235:<init>|  Chip.java:1234:Sum|  Btree.java:1311:merge|  Btree.java:1337:Then|  Chip.java:0673:<init>|  Btree.java:1334:<init>|  Btree.java:1333:merge|  Btree.java:4110:test_merge2|  Btree.java:6929:oldTests|  Btree.java:6955:newTests|  Btree.java:6961:main|");
-                $fclose(f);
-              end
-            end
-          endcase
-        end
-        48: begin
-          if (main_can_148 == 0) begin
-            main_pc <= 58;
-          end
-          else begin
-            main_pc <= main_pc + 1;
-          end
-          case (main_pc)
-            48: begin
-              begin
-                integer f;
-                f = $fopen("verilog/trace_verilog.txt", "a");
-                $fdisplay(f, "Location: Chip.java:0666:<init>|  Chip.java:0665:<init>|  Btree.java:1314:<init>|  Btree.java:1313:merge|  Btree.java:1337:Then|  Chip.java:0673:<init>|  Btree.java:1334:<init>|  Btree.java:1333:merge|  Btree.java:4110:test_merge2|  Btree.java:6929:oldTests|  Btree.java:6955:newTests|  Btree.java:6961:main|");
-                $fclose(f);
-              end
-            end
-          endcase
-        end
-        49: begin
-          main_Keys_61[0] <= main_Keys_237[0];
-          main_Data_64[0] <= main_Data_240[0];
-          main_Keys_61[1] <= main_Keys_237[1];
-          main_Data_64[1] <= main_Data_240[1];
-          main_Keys_61[2] <= main_Keys_237[2];
-          main_Data_64[2] <= main_Data_240[2];
-          main_Keys_61[3] <= main_Keys_237[3];
-          main_Data_64[3] <= main_Data_240[3];
-          main_Keys_61[4] <= main_Keys_237[4];
-          main_Data_64[4] <= main_Data_240[4];
-          main_Keys_61[5] <= main_Keys_237[5];
-          main_Data_64[5] <= main_Data_240[5];
-          main_Keys_61[6] <= main_Keys_237[6];
-          main_Data_64[6] <= main_Data_240[6];
-          main_Keys_61[7] <= main_Keys_237[7];
-          main_Data_64[7] <= main_Data_240[7];
-          main_size_58 <= main_size_234;
-          main_isLeaf_59 <= main_isLeaf_235;
-          main_pc <= main_pc + 1;
-          case (main_pc)
-            49: begin
-              begin
-                integer f;
-                f = $fopen("verilog/trace_verilog.txt", "a");
-                $fdisplay(f, "Location: Chip.java:0575:<init>|  Btree.java:0452:<init>|  Btree.java:0451:Copy|  Btree.java:1316:Then|  Chip.java:0673:<init>|  Btree.java:1314:<init>|  Btree.java:1313:merge|  Btree.java:1337:Then|  Chip.java:0673:<init>|  Btree.java:1334:<init>|  Btree.java:1333:merge|  Btree.java:4110:test_merge2|  Btree.java:6929:oldTests|  Btree.java:6955:newTests|  Btree.java:6961:main|");
-                $fclose(f);
-              end
-            end
-          endcase
-        end
-        55: begin
-          main_size_204 <= main_size_204 + main_size_234;
-          main_pc <= main_pc + 1;
-          case (main_pc)
-            55: begin
-              begin
-                integer f;
-                f = $fopen("verilog/trace_verilog.txt", "a");
-                $fdisplay(f, "Location: Chip.java:0575:<init>|  Chip.java:1197:<init>|  Chip.java:1196:Add|  Btree.java:1319:Then|  Chip.java:0673:<init>|  Btree.java:1314:<init>|  Btree.java:1313:merge|  Btree.java:1337:Then|  Chip.java:0673:<init>|  Btree.java:1334:<init>|  Btree.java:1333:merge|  Btree.java:4110:test_merge2|  Btree.java:6929:oldTests|  Btree.java:6955:newTests|  Btree.java:6961:main|");
-                $fclose(f);
-              end
-            end
-          endcase
-        end
-        57: begin
-          main_pc <= 59;
-          case (main_pc)
-            57: begin
-              begin
-                integer f;
-                f = $fopen("verilog/trace_verilog.txt", "a");
-                $fdisplay(f, "Location: Chip.java:0675:<init>|  Chip.java:0674:<init>|  Btree.java:1314:<init>|  Btree.java:1313:merge|  Btree.java:1337:Then|  Chip.java:0673:<init>|  Btree.java:1334:<init>|  Btree.java:1333:merge|  Btree.java:4110:test_merge2|  Btree.java:6929:oldTests|  Btree.java:6955:newTests|  Btree.java:6961:main|");
-                $fclose(f);
-              end
-            end
-          endcase
-        end
-        60: begin
-          main_pc <= 62;
-          case (main_pc)
-            60: begin
-              begin
-                integer f;
-                f = $fopen("verilog/trace_verilog.txt", "a");
-                $fdisplay(f, "Location: Chip.java:0675:<init>|  Chip.java:0674:<init>|  Btree.java:1334:<init>|  Btree.java:1333:merge|  Btree.java:4110:test_merge2|  Btree.java:6929:oldTests|  Btree.java:6955:newTests|  Btree.java:6961:main|");
+                $fdisplay(f, "Location: Chip.java:0575:<init>|  Chip.java:1148:<init>|  Chip.java:1147:Zero|  Btree.java:1323:Else|  Chip.java:0683:<init>|  Btree.java:1314:<init>|  Btree.java:1313:merge|  Btree.java:2815:test_merge_two|  Btree.java:6904:oldTests|  Btree.java:6951:newTests|  Btree.java:6957:main|");
                 $fclose(f);
               end
             end
@@ -1817,7 +1261,7 @@ module Btree;                                                                   
   end
   // Process: stuckIsLeaf  process_stuckIsLeaf_0001
   (* ram_style = "block" *)
-  reg [1-1:0] stuckIsLeaf_memory[8*1];
+  reg [1-1:0] stuckIsLeaf_memory[2*1];
   (* nomem2reg *)
   reg [1-1:0] stuckIsLeaf_stuckIsLeaf_7_result_0[1];
   integer stuckIsLeaf_7_requestedAt;
@@ -1845,9 +1289,7 @@ module Btree;                                                                   
       stuckIsLeaf_8_finishedAt <= -1;
       stuckIsLeaf_stuckIsLeaf_8_returnCode <= 0;
       stuckIsLeaf_memory[0] <= 1;
-      for(stuckIsLeaf_memory_index = 1; stuckIsLeaf_memory_index < 8; stuckIsLeaf_memory_index = stuckIsLeaf_memory_index + 1) begin
-        stuckIsLeaf_memory[stuckIsLeaf_memory_index] <= 0;
-      end
+      stuckIsLeaf_memory[1] <= 1;
     end
     else if (processCurrent == 1) begin
       case(stuckIsLeaf_pc)
@@ -1877,7 +1319,7 @@ module Btree;                                                                   
   end
   // Process: stuckIsFree  process_stuckIsFree_0002
   (* ram_style = "block" *)
-  reg [1-1:0] stuckIsFree_memory[8*1];
+  reg [1-1:0] stuckIsFree_memory[2*1];
   integer stuckIsFree_pc;
   integer stuckIsFree_stop;
   integer stuckIsFree_returnCode;
@@ -1891,12 +1333,6 @@ module Btree;                                                                   
         stuckIsFree_memory[stuckIsFree_memory_index] <= 0;
       end
       stuckIsFree_memory[1] <= 1;
-      stuckIsFree_memory[2] <= 1;
-      stuckIsFree_memory[3] <= 1;
-      stuckIsFree_memory[4] <= 1;
-      stuckIsFree_memory[5] <= 1;
-      stuckIsFree_memory[6] <= 1;
-      stuckIsFree_memory[7] <= 1;
     end
     else if (processCurrent == 2) begin
       case(stuckIsFree_pc)
@@ -1908,7 +1344,7 @@ module Btree;                                                                   
   end
   // Process: freeNext  process_freeNext_0003
   (* ram_style = "block" *)
-  reg [4-1:0] freeNext_memory[8*1];
+  reg [2-1:0] freeNext_memory[2*1];
   integer freeNext_pc;
   integer freeNext_stop;
   integer freeNext_returnCode;
@@ -1919,13 +1355,7 @@ module Btree;                                                                   
       freeNext_stop <= 0;
       freeNext_returnCode <= 0;
       freeNext_memory[0] <= 1;
-      freeNext_memory[1] <= 2;
-      freeNext_memory[2] <= 3;
-      freeNext_memory[3] <= 4;
-      freeNext_memory[4] <= 5;
-      freeNext_memory[5] <= 6;
-      freeNext_memory[6] <= 7;
-      for(freeNext_memory_index = 7; freeNext_memory_index < 8; freeNext_memory_index = freeNext_memory_index + 1) begin
+      for(freeNext_memory_index = 1; freeNext_memory_index < 2; freeNext_memory_index = freeNext_memory_index + 1) begin
         freeNext_memory[freeNext_memory_index] <= 0;
       end
     end
@@ -1939,7 +1369,7 @@ module Btree;                                                                   
   end
   // Process: stuckSize  process_stuckSize_0004
   (* ram_style = "block" *)
-  reg [4-1:0] stuckSize_memory[8*1];
+  reg [4-1:0] stuckSize_memory[2*1];
   (* nomem2reg *)
   reg [4-1:0] stuckSize_stuckSize_5_result_0[1];
   integer stuckSize_5_requestedAt;
@@ -1968,10 +1398,6 @@ module Btree;                                                                   
       stuckSize_stuckSize_6_returnCode <= 0;
       stuckSize_memory[0] <= 4;
       stuckSize_memory[1] <= 4;
-      stuckSize_memory[2] <= 4;
-      for(stuckSize_memory_index = 3; stuckSize_memory_index < 8; stuckSize_memory_index = stuckSize_memory_index + 1) begin
-        stuckSize_memory[stuckSize_memory_index] <= 0;
-      end
     end
     else if (processCurrent == 4) begin
       case(stuckSize_pc)
@@ -2001,7 +1427,7 @@ module Btree;                                                                   
   end
   // Process: stuckKeys  process_stuckKeys_0005
   (* ram_style = "block" *)
-  reg [8-1:0] stuckKeys_memory[8*8];
+  reg [8-1:0] stuckKeys_memory[2*8];
   (* nomem2reg *)
   reg [8-1:0] stuckKeys_stuckKeys_1_result_0[8];
   integer stuckKeys_1_requestedAt;
@@ -2028,27 +1454,22 @@ module Btree;                                                                   
       stuckKeys_stuckKeys_1_returnCode <= 0;
       stuckKeys_2_finishedAt <= -1;
       stuckKeys_stuckKeys_2_returnCode <= 0;
-      for(stuckKeys_memory_index = 0; stuckKeys_memory_index < 1; stuckKeys_memory_index = stuckKeys_memory_index + 1) begin
-        stuckKeys_memory[stuckKeys_memory_index] <= 0;
-      end
-      stuckKeys_memory[1] <= 1;
-      stuckKeys_memory[2] <= 2;
-      stuckKeys_memory[3] <= 3;
-      for(stuckKeys_memory_index = 4; stuckKeys_memory_index < 9; stuckKeys_memory_index = stuckKeys_memory_index + 1) begin
-        stuckKeys_memory[stuckKeys_memory_index] <= 0;
-      end
-      stuckKeys_memory[9] <= 1;
-      stuckKeys_memory[10] <= 2;
-      stuckKeys_memory[11] <= 3;
-      for(stuckKeys_memory_index = 12; stuckKeys_memory_index < 17; stuckKeys_memory_index = stuckKeys_memory_index + 1) begin
-        stuckKeys_memory[stuckKeys_memory_index] <= 0;
-      end
-      stuckKeys_memory[17] <= 1;
-      stuckKeys_memory[18] <= 2;
-      stuckKeys_memory[19] <= 3;
-      for(stuckKeys_memory_index = 20; stuckKeys_memory_index < 64; stuckKeys_memory_index = stuckKeys_memory_index + 1) begin
-        stuckKeys_memory[stuckKeys_memory_index] <= 0;
-      end
+      stuckKeys_memory[0] <= 2;
+      stuckKeys_memory[1] <= 4;
+      stuckKeys_memory[2] <= 6;
+      stuckKeys_memory[3] <= 8;
+      stuckKeys_memory[4] <= 10;
+      stuckKeys_memory[5] <= 12;
+      stuckKeys_memory[6] <= 14;
+      stuckKeys_memory[7] <= 16;
+      stuckKeys_memory[8] <= 3;
+      stuckKeys_memory[9] <= 5;
+      stuckKeys_memory[10] <= 7;
+      stuckKeys_memory[11] <= 9;
+      stuckKeys_memory[12] <= 11;
+      stuckKeys_memory[13] <= 13;
+      stuckKeys_memory[14] <= 15;
+      stuckKeys_memory[15] <= 17;
     end
     else if (processCurrent == 5) begin
       case(stuckKeys_pc)
@@ -2078,7 +1499,7 @@ module Btree;                                                                   
   end
   // Process: stuckData  process_stuckData_0006
   (* ram_style = "block" *)
-  reg [8-1:0] stuckData_memory[8*8];
+  reg [8-1:0] stuckData_memory[2*8];
   (* nomem2reg *)
   reg [8-1:0] stuckData_stuckData_3_result_0[8];
   integer stuckData_3_requestedAt;
@@ -2105,27 +1526,22 @@ module Btree;                                                                   
       stuckData_stuckData_3_returnCode <= 0;
       stuckData_4_finishedAt <= -1;
       stuckData_stuckData_4_returnCode <= 0;
-      stuckData_memory[0] <= 1;
-      stuckData_memory[1] <= 2;
-      stuckData_memory[2] <= 3;
-      stuckData_memory[3] <= 4;
-      for(stuckData_memory_index = 4; stuckData_memory_index < 8; stuckData_memory_index = stuckData_memory_index + 1) begin
-        stuckData_memory[stuckData_memory_index] <= 0;
-      end
-      stuckData_memory[8] <= 1;
-      stuckData_memory[9] <= 2;
-      stuckData_memory[10] <= 3;
-      stuckData_memory[11] <= 4;
-      for(stuckData_memory_index = 12; stuckData_memory_index < 16; stuckData_memory_index = stuckData_memory_index + 1) begin
-        stuckData_memory[stuckData_memory_index] <= 0;
-      end
-      stuckData_memory[16] <= 1;
-      stuckData_memory[17] <= 2;
-      stuckData_memory[18] <= 3;
-      stuckData_memory[19] <= 4;
-      for(stuckData_memory_index = 20; stuckData_memory_index < 64; stuckData_memory_index = stuckData_memory_index + 1) begin
-        stuckData_memory[stuckData_memory_index] <= 0;
-      end
+      stuckData_memory[0] <= 3;
+      stuckData_memory[1] <= 5;
+      stuckData_memory[2] <= 7;
+      stuckData_memory[3] <= 9;
+      stuckData_memory[4] <= 11;
+      stuckData_memory[5] <= 13;
+      stuckData_memory[6] <= 15;
+      stuckData_memory[7] <= 17;
+      stuckData_memory[8] <= 2;
+      stuckData_memory[9] <= 4;
+      stuckData_memory[10] <= 6;
+      stuckData_memory[11] <= 8;
+      stuckData_memory[12] <= 10;
+      stuckData_memory[13] <= 12;
+      stuckData_memory[14] <= 14;
+      stuckData_memory[15] <= 16;
     end
     else if (processCurrent == 6) begin
       case(stuckData_pc)
@@ -2162,7 +1578,7 @@ module Btree;                                                                   
       $fwrite(o, "Chip: %-16s step: %1d, maxSteps: %1d, running: %1d\n", "Btree", step, maxSteps, !stop);
       $fwrite(o, "  Processes:\n");
 
-      $fwrite(o, "    Process: %1d - %-21s instructions: %1d, pc: %1d, rc: %1d\n", 0, "main", 62, main_pc, main_returnCode);
+      $fwrite(o, "    Process: %1d - %-21s instructions: %1d, pc: %1d, rc: %1d\n", 0, "main", 29, main_pc, main_returnCode);
       $fwrite(o, "      Registers :\n");
       $fwrite(o, "        %-50s = %1d\n",  "main_index_0", main_index_0);
       $fwrite(o, "        %-50s = %1d\n",  "main_size_1", main_size_1);
@@ -2625,239 +2041,54 @@ module Btree;                                                                   
       $fwrite(o, "        %-50s = %1d\n",  "main_BtreeIndex_164", main_BtreeIndex_164);
       $fwrite(o, "        %-50s = %1d\n",  "main_StuckIndex_165", main_StuckIndex_165);
       $fwrite(o, "        %-50s = %1d\n",  "main_MergeSuccess_166", main_MergeSuccess_166);
-      $fwrite(o, "        %-50s = %1d\n",  "main_d_167", main_d_167);
-      $fwrite(o, "        %-50s = %1d\n",  "main_n_168", main_n_168);
-      $fwrite(o, "        %-50s = %1d\n",  "main_index_169", main_index_169);
-      $fwrite(o, "        %-50s = %1d\n",  "main_size_170", main_size_170);
-      $fwrite(o, "        %-50s = %1d\n",  "main_isLeaf_171", main_isLeaf_171);
-      $fwrite(o, "        %-50s = %1d\n",  "main_nextFree_172", main_nextFree_172);
-      $fwrite(o, "        %-44s[%4d] = %1d\n",  "main_Keys_173", 0, main_Keys_173[0]);
-      $fwrite(o, "        %-44s[%4d] = %1d\n",  "main_Keys_173", 1, main_Keys_173[1]);
-      $fwrite(o, "        %-44s[%4d] = %1d\n",  "main_Keys_173", 2, main_Keys_173[2]);
-      $fwrite(o, "        %-44s[%4d] = %1d\n",  "main_Keys_173", 3, main_Keys_173[3]);
-      $fwrite(o, "        %-44s[%4d] = %1d\n",  "main_Keys_173", 4, main_Keys_173[4]);
-      $fwrite(o, "        %-44s[%4d] = %1d\n",  "main_Keys_173", 5, main_Keys_173[5]);
-      $fwrite(o, "        %-44s[%4d] = %1d\n",  "main_Keys_173", 6, main_Keys_173[6]);
-      $fwrite(o, "        %-44s[%4d] = %1d\n",  "main_Keys_173", 7, main_Keys_173[7]);
-      $fwrite(o, "        %-44s[%4d] = %1d\n",  "main_Compares_174", 0, main_Compares_174[0]);
-      $fwrite(o, "        %-44s[%4d] = %1d\n",  "main_Compares_174", 1, main_Compares_174[1]);
-      $fwrite(o, "        %-44s[%4d] = %1d\n",  "main_Compares_174", 2, main_Compares_174[2]);
-      $fwrite(o, "        %-44s[%4d] = %1d\n",  "main_Compares_174", 3, main_Compares_174[3]);
-      $fwrite(o, "        %-44s[%4d] = %1d\n",  "main_Compares_174", 4, main_Compares_174[4]);
-      $fwrite(o, "        %-44s[%4d] = %1d\n",  "main_Compares_174", 5, main_Compares_174[5]);
-      $fwrite(o, "        %-44s[%4d] = %1d\n",  "main_Compares_174", 6, main_Compares_174[6]);
-      $fwrite(o, "        %-44s[%4d] = %1d\n",  "main_Compares_174", 7, main_Compares_174[7]);
-      $fwrite(o, "        %-44s[%4d] = %1d\n",  "main_Collapse_175", 0, main_Collapse_175[0]);
-      $fwrite(o, "        %-44s[%4d] = %1d\n",  "main_Collapse_175", 1, main_Collapse_175[1]);
-      $fwrite(o, "        %-44s[%4d] = %1d\n",  "main_Collapse_175", 2, main_Collapse_175[2]);
-      $fwrite(o, "        %-44s[%4d] = %1d\n",  "main_Collapse_175", 3, main_Collapse_175[3]);
-      $fwrite(o, "        %-44s[%4d] = %1d\n",  "main_Collapse_175", 4, main_Collapse_175[4]);
-      $fwrite(o, "        %-44s[%4d] = %1d\n",  "main_Collapse_175", 5, main_Collapse_175[5]);
-      $fwrite(o, "        %-44s[%4d] = %1d\n",  "main_Collapse_175", 6, main_Collapse_175[6]);
-      $fwrite(o, "        %-44s[%4d] = %1d\n",  "main_Collapse_175", 7, main_Collapse_175[7]);
-      $fwrite(o, "        %-44s[%4d] = %1d\n",  "main_Data_176", 0, main_Data_176[0]);
-      $fwrite(o, "        %-44s[%4d] = %1d\n",  "main_Data_176", 1, main_Data_176[1]);
-      $fwrite(o, "        %-44s[%4d] = %1d\n",  "main_Data_176", 2, main_Data_176[2]);
-      $fwrite(o, "        %-44s[%4d] = %1d\n",  "main_Data_176", 3, main_Data_176[3]);
-      $fwrite(o, "        %-44s[%4d] = %1d\n",  "main_Data_176", 4, main_Data_176[4]);
-      $fwrite(o, "        %-44s[%4d] = %1d\n",  "main_Data_176", 5, main_Data_176[5]);
-      $fwrite(o, "        %-44s[%4d] = %1d\n",  "main_Data_176", 6, main_Data_176[6]);
-      $fwrite(o, "        %-44s[%4d] = %1d\n",  "main_Data_176", 7, main_Data_176[7]);
-      $fwrite(o, "        %-50s = %1d\n",  "main_Found_177", main_Found_177);
-      $fwrite(o, "        %-50s = %1d\n",  "main_Key_178", main_Key_178);
-      $fwrite(o, "        %-50s = %1d\n",  "main_FoundKey_179", main_FoundKey_179);
-      $fwrite(o, "        %-50s = %1d\n",  "main_Data_180", main_Data_180);
-      $fwrite(o, "        %-50s = %1d\n",  "main_BtreeIndex_181", main_BtreeIndex_181);
-      $fwrite(o, "        %-50s = %1d\n",  "main_StuckIndex_182", main_StuckIndex_182);
-      $fwrite(o, "        %-50s = %1d\n",  "main_MergeSuccess_183", main_MergeSuccess_183);
-      $fwrite(o, "        %-50s = %1d\n",  "main_d_184", main_d_184);
-      $fwrite(o, "        %-50s = %1d\n",  "main_n_185", main_n_185);
-      $fwrite(o, "        %-50s = %1d\n",  "main_index_186", main_index_186);
-      $fwrite(o, "        %-50s = %1d\n",  "main_size_187", main_size_187);
-      $fwrite(o, "        %-50s = %1d\n",  "main_isLeaf_188", main_isLeaf_188);
-      $fwrite(o, "        %-50s = %1d\n",  "main_nextFree_189", main_nextFree_189);
-      $fwrite(o, "        %-44s[%4d] = %1d\n",  "main_Keys_190", 0, main_Keys_190[0]);
-      $fwrite(o, "        %-44s[%4d] = %1d\n",  "main_Keys_190", 1, main_Keys_190[1]);
-      $fwrite(o, "        %-44s[%4d] = %1d\n",  "main_Keys_190", 2, main_Keys_190[2]);
-      $fwrite(o, "        %-44s[%4d] = %1d\n",  "main_Keys_190", 3, main_Keys_190[3]);
-      $fwrite(o, "        %-44s[%4d] = %1d\n",  "main_Keys_190", 4, main_Keys_190[4]);
-      $fwrite(o, "        %-44s[%4d] = %1d\n",  "main_Keys_190", 5, main_Keys_190[5]);
-      $fwrite(o, "        %-44s[%4d] = %1d\n",  "main_Keys_190", 6, main_Keys_190[6]);
-      $fwrite(o, "        %-44s[%4d] = %1d\n",  "main_Keys_190", 7, main_Keys_190[7]);
-      $fwrite(o, "        %-44s[%4d] = %1d\n",  "main_Compares_191", 0, main_Compares_191[0]);
-      $fwrite(o, "        %-44s[%4d] = %1d\n",  "main_Compares_191", 1, main_Compares_191[1]);
-      $fwrite(o, "        %-44s[%4d] = %1d\n",  "main_Compares_191", 2, main_Compares_191[2]);
-      $fwrite(o, "        %-44s[%4d] = %1d\n",  "main_Compares_191", 3, main_Compares_191[3]);
-      $fwrite(o, "        %-44s[%4d] = %1d\n",  "main_Compares_191", 4, main_Compares_191[4]);
-      $fwrite(o, "        %-44s[%4d] = %1d\n",  "main_Compares_191", 5, main_Compares_191[5]);
-      $fwrite(o, "        %-44s[%4d] = %1d\n",  "main_Compares_191", 6, main_Compares_191[6]);
-      $fwrite(o, "        %-44s[%4d] = %1d\n",  "main_Compares_191", 7, main_Compares_191[7]);
-      $fwrite(o, "        %-44s[%4d] = %1d\n",  "main_Collapse_192", 0, main_Collapse_192[0]);
-      $fwrite(o, "        %-44s[%4d] = %1d\n",  "main_Collapse_192", 1, main_Collapse_192[1]);
-      $fwrite(o, "        %-44s[%4d] = %1d\n",  "main_Collapse_192", 2, main_Collapse_192[2]);
-      $fwrite(o, "        %-44s[%4d] = %1d\n",  "main_Collapse_192", 3, main_Collapse_192[3]);
-      $fwrite(o, "        %-44s[%4d] = %1d\n",  "main_Collapse_192", 4, main_Collapse_192[4]);
-      $fwrite(o, "        %-44s[%4d] = %1d\n",  "main_Collapse_192", 5, main_Collapse_192[5]);
-      $fwrite(o, "        %-44s[%4d] = %1d\n",  "main_Collapse_192", 6, main_Collapse_192[6]);
-      $fwrite(o, "        %-44s[%4d] = %1d\n",  "main_Collapse_192", 7, main_Collapse_192[7]);
-      $fwrite(o, "        %-44s[%4d] = %1d\n",  "main_Data_193", 0, main_Data_193[0]);
-      $fwrite(o, "        %-44s[%4d] = %1d\n",  "main_Data_193", 1, main_Data_193[1]);
-      $fwrite(o, "        %-44s[%4d] = %1d\n",  "main_Data_193", 2, main_Data_193[2]);
-      $fwrite(o, "        %-44s[%4d] = %1d\n",  "main_Data_193", 3, main_Data_193[3]);
-      $fwrite(o, "        %-44s[%4d] = %1d\n",  "main_Data_193", 4, main_Data_193[4]);
-      $fwrite(o, "        %-44s[%4d] = %1d\n",  "main_Data_193", 5, main_Data_193[5]);
-      $fwrite(o, "        %-44s[%4d] = %1d\n",  "main_Data_193", 6, main_Data_193[6]);
-      $fwrite(o, "        %-44s[%4d] = %1d\n",  "main_Data_193", 7, main_Data_193[7]);
-      $fwrite(o, "        %-50s = %1d\n",  "main_Found_194", main_Found_194);
-      $fwrite(o, "        %-50s = %1d\n",  "main_Key_195", main_Key_195);
-      $fwrite(o, "        %-50s = %1d\n",  "main_FoundKey_196", main_FoundKey_196);
-      $fwrite(o, "        %-50s = %1d\n",  "main_Data_197", main_Data_197);
-      $fwrite(o, "        %-50s = %1d\n",  "main_BtreeIndex_198", main_BtreeIndex_198);
-      $fwrite(o, "        %-50s = %1d\n",  "main_StuckIndex_199", main_StuckIndex_199);
-      $fwrite(o, "        %-50s = %1d\n",  "main_MergeSuccess_200", main_MergeSuccess_200);
-      $fwrite(o, "        %-50s = %1d\n",  "main_d_201", main_d_201);
-      $fwrite(o, "        %-50s = %1d\n",  "main_n_202", main_n_202);
-      $fwrite(o, "        %-50s = %1d\n",  "main_index_203", main_index_203);
-      $fwrite(o, "        %-50s = %1d\n",  "main_size_204", main_size_204);
-      $fwrite(o, "        %-50s = %1d\n",  "main_isLeaf_205", main_isLeaf_205);
-      $fwrite(o, "        %-50s = %1d\n",  "main_nextFree_206", main_nextFree_206);
-      $fwrite(o, "        %-44s[%4d] = %1d\n",  "main_Keys_207", 0, main_Keys_207[0]);
-      $fwrite(o, "        %-44s[%4d] = %1d\n",  "main_Keys_207", 1, main_Keys_207[1]);
-      $fwrite(o, "        %-44s[%4d] = %1d\n",  "main_Keys_207", 2, main_Keys_207[2]);
-      $fwrite(o, "        %-44s[%4d] = %1d\n",  "main_Keys_207", 3, main_Keys_207[3]);
-      $fwrite(o, "        %-44s[%4d] = %1d\n",  "main_Keys_207", 4, main_Keys_207[4]);
-      $fwrite(o, "        %-44s[%4d] = %1d\n",  "main_Keys_207", 5, main_Keys_207[5]);
-      $fwrite(o, "        %-44s[%4d] = %1d\n",  "main_Keys_207", 6, main_Keys_207[6]);
-      $fwrite(o, "        %-44s[%4d] = %1d\n",  "main_Keys_207", 7, main_Keys_207[7]);
-      $fwrite(o, "        %-44s[%4d] = %1d\n",  "main_Compares_208", 0, main_Compares_208[0]);
-      $fwrite(o, "        %-44s[%4d] = %1d\n",  "main_Compares_208", 1, main_Compares_208[1]);
-      $fwrite(o, "        %-44s[%4d] = %1d\n",  "main_Compares_208", 2, main_Compares_208[2]);
-      $fwrite(o, "        %-44s[%4d] = %1d\n",  "main_Compares_208", 3, main_Compares_208[3]);
-      $fwrite(o, "        %-44s[%4d] = %1d\n",  "main_Compares_208", 4, main_Compares_208[4]);
-      $fwrite(o, "        %-44s[%4d] = %1d\n",  "main_Compares_208", 5, main_Compares_208[5]);
-      $fwrite(o, "        %-44s[%4d] = %1d\n",  "main_Compares_208", 6, main_Compares_208[6]);
-      $fwrite(o, "        %-44s[%4d] = %1d\n",  "main_Compares_208", 7, main_Compares_208[7]);
-      $fwrite(o, "        %-44s[%4d] = %1d\n",  "main_Collapse_209", 0, main_Collapse_209[0]);
-      $fwrite(o, "        %-44s[%4d] = %1d\n",  "main_Collapse_209", 1, main_Collapse_209[1]);
-      $fwrite(o, "        %-44s[%4d] = %1d\n",  "main_Collapse_209", 2, main_Collapse_209[2]);
-      $fwrite(o, "        %-44s[%4d] = %1d\n",  "main_Collapse_209", 3, main_Collapse_209[3]);
-      $fwrite(o, "        %-44s[%4d] = %1d\n",  "main_Collapse_209", 4, main_Collapse_209[4]);
-      $fwrite(o, "        %-44s[%4d] = %1d\n",  "main_Collapse_209", 5, main_Collapse_209[5]);
-      $fwrite(o, "        %-44s[%4d] = %1d\n",  "main_Collapse_209", 6, main_Collapse_209[6]);
-      $fwrite(o, "        %-44s[%4d] = %1d\n",  "main_Collapse_209", 7, main_Collapse_209[7]);
-      $fwrite(o, "        %-44s[%4d] = %1d\n",  "main_Data_210", 0, main_Data_210[0]);
-      $fwrite(o, "        %-44s[%4d] = %1d\n",  "main_Data_210", 1, main_Data_210[1]);
-      $fwrite(o, "        %-44s[%4d] = %1d\n",  "main_Data_210", 2, main_Data_210[2]);
-      $fwrite(o, "        %-44s[%4d] = %1d\n",  "main_Data_210", 3, main_Data_210[3]);
-      $fwrite(o, "        %-44s[%4d] = %1d\n",  "main_Data_210", 4, main_Data_210[4]);
-      $fwrite(o, "        %-44s[%4d] = %1d\n",  "main_Data_210", 5, main_Data_210[5]);
-      $fwrite(o, "        %-44s[%4d] = %1d\n",  "main_Data_210", 6, main_Data_210[6]);
-      $fwrite(o, "        %-44s[%4d] = %1d\n",  "main_Data_210", 7, main_Data_210[7]);
-      $fwrite(o, "        %-50s = %1d\n",  "main_Found_211", main_Found_211);
-      $fwrite(o, "        %-50s = %1d\n",  "main_Key_212", main_Key_212);
-      $fwrite(o, "        %-50s = %1d\n",  "main_FoundKey_213", main_FoundKey_213);
-      $fwrite(o, "        %-50s = %1d\n",  "main_Data_214", main_Data_214);
-      $fwrite(o, "        %-50s = %1d\n",  "main_BtreeIndex_215", main_BtreeIndex_215);
-      $fwrite(o, "        %-50s = %1d\n",  "main_StuckIndex_216", main_StuckIndex_216);
-      $fwrite(o, "        %-50s = %1d\n",  "main_MergeSuccess_217", main_MergeSuccess_217);
-      $fwrite(o, "        %-50s = %1d\n",  "main_index_218", main_index_218);
-      $fwrite(o, "        %-50s = %1d\n",  "main_size_219", main_size_219);
-      $fwrite(o, "        %-50s = %1d\n",  "main_isLeaf_220", main_isLeaf_220);
-      $fwrite(o, "        %-50s = %1d\n",  "main_nextFree_221", main_nextFree_221);
-      $fwrite(o, "        %-44s[%4d] = %1d\n",  "main_Keys_222", 0, main_Keys_222[0]);
-      $fwrite(o, "        %-44s[%4d] = %1d\n",  "main_Keys_222", 1, main_Keys_222[1]);
-      $fwrite(o, "        %-44s[%4d] = %1d\n",  "main_Keys_222", 2, main_Keys_222[2]);
-      $fwrite(o, "        %-44s[%4d] = %1d\n",  "main_Keys_222", 3, main_Keys_222[3]);
-      $fwrite(o, "        %-44s[%4d] = %1d\n",  "main_Keys_222", 4, main_Keys_222[4]);
-      $fwrite(o, "        %-44s[%4d] = %1d\n",  "main_Keys_222", 5, main_Keys_222[5]);
-      $fwrite(o, "        %-44s[%4d] = %1d\n",  "main_Keys_222", 6, main_Keys_222[6]);
-      $fwrite(o, "        %-44s[%4d] = %1d\n",  "main_Keys_222", 7, main_Keys_222[7]);
-      $fwrite(o, "        %-44s[%4d] = %1d\n",  "main_Compares_223", 0, main_Compares_223[0]);
-      $fwrite(o, "        %-44s[%4d] = %1d\n",  "main_Compares_223", 1, main_Compares_223[1]);
-      $fwrite(o, "        %-44s[%4d] = %1d\n",  "main_Compares_223", 2, main_Compares_223[2]);
-      $fwrite(o, "        %-44s[%4d] = %1d\n",  "main_Compares_223", 3, main_Compares_223[3]);
-      $fwrite(o, "        %-44s[%4d] = %1d\n",  "main_Compares_223", 4, main_Compares_223[4]);
-      $fwrite(o, "        %-44s[%4d] = %1d\n",  "main_Compares_223", 5, main_Compares_223[5]);
-      $fwrite(o, "        %-44s[%4d] = %1d\n",  "main_Compares_223", 6, main_Compares_223[6]);
-      $fwrite(o, "        %-44s[%4d] = %1d\n",  "main_Compares_223", 7, main_Compares_223[7]);
-      $fwrite(o, "        %-44s[%4d] = %1d\n",  "main_Collapse_224", 0, main_Collapse_224[0]);
-      $fwrite(o, "        %-44s[%4d] = %1d\n",  "main_Collapse_224", 1, main_Collapse_224[1]);
-      $fwrite(o, "        %-44s[%4d] = %1d\n",  "main_Collapse_224", 2, main_Collapse_224[2]);
-      $fwrite(o, "        %-44s[%4d] = %1d\n",  "main_Collapse_224", 3, main_Collapse_224[3]);
-      $fwrite(o, "        %-44s[%4d] = %1d\n",  "main_Collapse_224", 4, main_Collapse_224[4]);
-      $fwrite(o, "        %-44s[%4d] = %1d\n",  "main_Collapse_224", 5, main_Collapse_224[5]);
-      $fwrite(o, "        %-44s[%4d] = %1d\n",  "main_Collapse_224", 6, main_Collapse_224[6]);
-      $fwrite(o, "        %-44s[%4d] = %1d\n",  "main_Collapse_224", 7, main_Collapse_224[7]);
-      $fwrite(o, "        %-44s[%4d] = %1d\n",  "main_Data_225", 0, main_Data_225[0]);
-      $fwrite(o, "        %-44s[%4d] = %1d\n",  "main_Data_225", 1, main_Data_225[1]);
-      $fwrite(o, "        %-44s[%4d] = %1d\n",  "main_Data_225", 2, main_Data_225[2]);
-      $fwrite(o, "        %-44s[%4d] = %1d\n",  "main_Data_225", 3, main_Data_225[3]);
-      $fwrite(o, "        %-44s[%4d] = %1d\n",  "main_Data_225", 4, main_Data_225[4]);
-      $fwrite(o, "        %-44s[%4d] = %1d\n",  "main_Data_225", 5, main_Data_225[5]);
-      $fwrite(o, "        %-44s[%4d] = %1d\n",  "main_Data_225", 6, main_Data_225[6]);
-      $fwrite(o, "        %-44s[%4d] = %1d\n",  "main_Data_225", 7, main_Data_225[7]);
-      $fwrite(o, "        %-50s = %1d\n",  "main_Found_226", main_Found_226);
-      $fwrite(o, "        %-50s = %1d\n",  "main_Key_227", main_Key_227);
-      $fwrite(o, "        %-50s = %1d\n",  "main_FoundKey_228", main_FoundKey_228);
-      $fwrite(o, "        %-50s = %1d\n",  "main_Data_229", main_Data_229);
-      $fwrite(o, "        %-50s = %1d\n",  "main_BtreeIndex_230", main_BtreeIndex_230);
-      $fwrite(o, "        %-50s = %1d\n",  "main_StuckIndex_231", main_StuckIndex_231);
-      $fwrite(o, "        %-50s = %1d\n",  "main_MergeSuccess_232", main_MergeSuccess_232);
-      $fwrite(o, "        %-50s = %1d\n",  "main_index_233", main_index_233);
-      $fwrite(o, "        %-50s = %1d\n",  "main_size_234", main_size_234);
-      $fwrite(o, "        %-50s = %1d\n",  "main_isLeaf_235", main_isLeaf_235);
-      $fwrite(o, "        %-50s = %1d\n",  "main_nextFree_236", main_nextFree_236);
-      $fwrite(o, "        %-44s[%4d] = %1d\n",  "main_Keys_237", 0, main_Keys_237[0]);
-      $fwrite(o, "        %-44s[%4d] = %1d\n",  "main_Keys_237", 1, main_Keys_237[1]);
-      $fwrite(o, "        %-44s[%4d] = %1d\n",  "main_Keys_237", 2, main_Keys_237[2]);
-      $fwrite(o, "        %-44s[%4d] = %1d\n",  "main_Keys_237", 3, main_Keys_237[3]);
-      $fwrite(o, "        %-44s[%4d] = %1d\n",  "main_Keys_237", 4, main_Keys_237[4]);
-      $fwrite(o, "        %-44s[%4d] = %1d\n",  "main_Keys_237", 5, main_Keys_237[5]);
-      $fwrite(o, "        %-44s[%4d] = %1d\n",  "main_Keys_237", 6, main_Keys_237[6]);
-      $fwrite(o, "        %-44s[%4d] = %1d\n",  "main_Keys_237", 7, main_Keys_237[7]);
-      $fwrite(o, "        %-44s[%4d] = %1d\n",  "main_Compares_238", 0, main_Compares_238[0]);
-      $fwrite(o, "        %-44s[%4d] = %1d\n",  "main_Compares_238", 1, main_Compares_238[1]);
-      $fwrite(o, "        %-44s[%4d] = %1d\n",  "main_Compares_238", 2, main_Compares_238[2]);
-      $fwrite(o, "        %-44s[%4d] = %1d\n",  "main_Compares_238", 3, main_Compares_238[3]);
-      $fwrite(o, "        %-44s[%4d] = %1d\n",  "main_Compares_238", 4, main_Compares_238[4]);
-      $fwrite(o, "        %-44s[%4d] = %1d\n",  "main_Compares_238", 5, main_Compares_238[5]);
-      $fwrite(o, "        %-44s[%4d] = %1d\n",  "main_Compares_238", 6, main_Compares_238[6]);
-      $fwrite(o, "        %-44s[%4d] = %1d\n",  "main_Compares_238", 7, main_Compares_238[7]);
-      $fwrite(o, "        %-44s[%4d] = %1d\n",  "main_Collapse_239", 0, main_Collapse_239[0]);
-      $fwrite(o, "        %-44s[%4d] = %1d\n",  "main_Collapse_239", 1, main_Collapse_239[1]);
-      $fwrite(o, "        %-44s[%4d] = %1d\n",  "main_Collapse_239", 2, main_Collapse_239[2]);
-      $fwrite(o, "        %-44s[%4d] = %1d\n",  "main_Collapse_239", 3, main_Collapse_239[3]);
-      $fwrite(o, "        %-44s[%4d] = %1d\n",  "main_Collapse_239", 4, main_Collapse_239[4]);
-      $fwrite(o, "        %-44s[%4d] = %1d\n",  "main_Collapse_239", 5, main_Collapse_239[5]);
-      $fwrite(o, "        %-44s[%4d] = %1d\n",  "main_Collapse_239", 6, main_Collapse_239[6]);
-      $fwrite(o, "        %-44s[%4d] = %1d\n",  "main_Collapse_239", 7, main_Collapse_239[7]);
-      $fwrite(o, "        %-44s[%4d] = %1d\n",  "main_Data_240", 0, main_Data_240[0]);
-      $fwrite(o, "        %-44s[%4d] = %1d\n",  "main_Data_240", 1, main_Data_240[1]);
-      $fwrite(o, "        %-44s[%4d] = %1d\n",  "main_Data_240", 2, main_Data_240[2]);
-      $fwrite(o, "        %-44s[%4d] = %1d\n",  "main_Data_240", 3, main_Data_240[3]);
-      $fwrite(o, "        %-44s[%4d] = %1d\n",  "main_Data_240", 4, main_Data_240[4]);
-      $fwrite(o, "        %-44s[%4d] = %1d\n",  "main_Data_240", 5, main_Data_240[5]);
-      $fwrite(o, "        %-44s[%4d] = %1d\n",  "main_Data_240", 6, main_Data_240[6]);
-      $fwrite(o, "        %-44s[%4d] = %1d\n",  "main_Data_240", 7, main_Data_240[7]);
-      $fwrite(o, "        %-50s = %1d\n",  "main_Found_241", main_Found_241);
-      $fwrite(o, "        %-50s = %1d\n",  "main_Key_242", main_Key_242);
-      $fwrite(o, "        %-50s = %1d\n",  "main_FoundKey_243", main_FoundKey_243);
-      $fwrite(o, "        %-50s = %1d\n",  "main_Data_244", main_Data_244);
-      $fwrite(o, "        %-50s = %1d\n",  "main_BtreeIndex_245", main_BtreeIndex_245);
-      $fwrite(o, "        %-50s = %1d\n",  "main_StuckIndex_246", main_StuckIndex_246);
-      $fwrite(o, "        %-50s = %1d\n",  "main_MergeSuccess_247", main_MergeSuccess_247);
-      $fwrite(o, "        %-50s = %1d\n",  "main_l_248", main_l_248);
-      $fwrite(o, "        %-50s = %1d\n",  "main_r_249", main_r_249);
+      $fwrite(o, "        %-50s = %1d\n",  "main_index_167", main_index_167);
+      $fwrite(o, "        %-50s = %1d\n",  "main_size_168", main_size_168);
+      $fwrite(o, "        %-50s = %1d\n",  "main_isLeaf_169", main_isLeaf_169);
+      $fwrite(o, "        %-50s = %1d\n",  "main_nextFree_170", main_nextFree_170);
+      $fwrite(o, "        %-44s[%4d] = %1d\n",  "main_Keys_171", 0, main_Keys_171[0]);
+      $fwrite(o, "        %-44s[%4d] = %1d\n",  "main_Keys_171", 1, main_Keys_171[1]);
+      $fwrite(o, "        %-44s[%4d] = %1d\n",  "main_Keys_171", 2, main_Keys_171[2]);
+      $fwrite(o, "        %-44s[%4d] = %1d\n",  "main_Keys_171", 3, main_Keys_171[3]);
+      $fwrite(o, "        %-44s[%4d] = %1d\n",  "main_Keys_171", 4, main_Keys_171[4]);
+      $fwrite(o, "        %-44s[%4d] = %1d\n",  "main_Keys_171", 5, main_Keys_171[5]);
+      $fwrite(o, "        %-44s[%4d] = %1d\n",  "main_Keys_171", 6, main_Keys_171[6]);
+      $fwrite(o, "        %-44s[%4d] = %1d\n",  "main_Keys_171", 7, main_Keys_171[7]);
+      $fwrite(o, "        %-44s[%4d] = %1d\n",  "main_Compares_172", 0, main_Compares_172[0]);
+      $fwrite(o, "        %-44s[%4d] = %1d\n",  "main_Compares_172", 1, main_Compares_172[1]);
+      $fwrite(o, "        %-44s[%4d] = %1d\n",  "main_Compares_172", 2, main_Compares_172[2]);
+      $fwrite(o, "        %-44s[%4d] = %1d\n",  "main_Compares_172", 3, main_Compares_172[3]);
+      $fwrite(o, "        %-44s[%4d] = %1d\n",  "main_Compares_172", 4, main_Compares_172[4]);
+      $fwrite(o, "        %-44s[%4d] = %1d\n",  "main_Compares_172", 5, main_Compares_172[5]);
+      $fwrite(o, "        %-44s[%4d] = %1d\n",  "main_Compares_172", 6, main_Compares_172[6]);
+      $fwrite(o, "        %-44s[%4d] = %1d\n",  "main_Compares_172", 7, main_Compares_172[7]);
+      $fwrite(o, "        %-44s[%4d] = %1d\n",  "main_Collapse_173", 0, main_Collapse_173[0]);
+      $fwrite(o, "        %-44s[%4d] = %1d\n",  "main_Collapse_173", 1, main_Collapse_173[1]);
+      $fwrite(o, "        %-44s[%4d] = %1d\n",  "main_Collapse_173", 2, main_Collapse_173[2]);
+      $fwrite(o, "        %-44s[%4d] = %1d\n",  "main_Collapse_173", 3, main_Collapse_173[3]);
+      $fwrite(o, "        %-44s[%4d] = %1d\n",  "main_Collapse_173", 4, main_Collapse_173[4]);
+      $fwrite(o, "        %-44s[%4d] = %1d\n",  "main_Collapse_173", 5, main_Collapse_173[5]);
+      $fwrite(o, "        %-44s[%4d] = %1d\n",  "main_Collapse_173", 6, main_Collapse_173[6]);
+      $fwrite(o, "        %-44s[%4d] = %1d\n",  "main_Collapse_173", 7, main_Collapse_173[7]);
+      $fwrite(o, "        %-44s[%4d] = %1d\n",  "main_Data_174", 0, main_Data_174[0]);
+      $fwrite(o, "        %-44s[%4d] = %1d\n",  "main_Data_174", 1, main_Data_174[1]);
+      $fwrite(o, "        %-44s[%4d] = %1d\n",  "main_Data_174", 2, main_Data_174[2]);
+      $fwrite(o, "        %-44s[%4d] = %1d\n",  "main_Data_174", 3, main_Data_174[3]);
+      $fwrite(o, "        %-44s[%4d] = %1d\n",  "main_Data_174", 4, main_Data_174[4]);
+      $fwrite(o, "        %-44s[%4d] = %1d\n",  "main_Data_174", 5, main_Data_174[5]);
+      $fwrite(o, "        %-44s[%4d] = %1d\n",  "main_Data_174", 6, main_Data_174[6]);
+      $fwrite(o, "        %-44s[%4d] = %1d\n",  "main_Data_174", 7, main_Data_174[7]);
+      $fwrite(o, "        %-50s = %1d\n",  "main_Found_175", main_Found_175);
+      $fwrite(o, "        %-50s = %1d\n",  "main_Key_176", main_Key_176);
+      $fwrite(o, "        %-50s = %1d\n",  "main_FoundKey_177", main_FoundKey_177);
+      $fwrite(o, "        %-50s = %1d\n",  "main_Data_178", main_Data_178);
+      $fwrite(o, "        %-50s = %1d\n",  "main_BtreeIndex_179", main_BtreeIndex_179);
+      $fwrite(o, "        %-50s = %1d\n",  "main_StuckIndex_180", main_StuckIndex_180);
+      $fwrite(o, "        %-50s = %1d\n",  "main_MergeSuccess_181", main_MergeSuccess_181);
+      $fwrite(o, "        %-50s = %1d\n",  "main_Index_182", main_Index_182);
       $fwrite(o, "    Process: %1d - %-21s instructions: %1d, pc: %1d, rc: %1d\n", 1, "stuckIsLeaf", 1, stuckIsLeaf_pc, stuckIsLeaf_returnCode);
-      $fwrite(o, "      Memory: size: %1d, width: %1d, block: %1d\n", 8, 1, 1);
+      $fwrite(o, "      Memory: size: %1d, width: %1d, block: %1d\n", 2, 1, 1);
       $fwrite(o, "        %2d", stuckIsLeaf_memory[0]);
       $fwrite(o, ", %2d", stuckIsLeaf_memory[1]);
-      $fwrite(o, ", %2d", stuckIsLeaf_memory[2]);
-      $fwrite(o, ", %2d", stuckIsLeaf_memory[3]);
-      $fwrite(o, ", %2d", stuckIsLeaf_memory[4]);
-      $fwrite(o, ", %2d", stuckIsLeaf_memory[5]);
-      $fwrite(o, ", %2d", stuckIsLeaf_memory[6]);
-      $fwrite(o, ", %2d", stuckIsLeaf_memory[7]);
       $fwrite(o, "\n");
       $fwrite(o, "      Registers :\n");
       $fwrite(o, "        %-44s[%4d] = %1d\n",  "stuckIsLeaf_stuckIsLeaf_7_result_0", 0, stuckIsLeaf_stuckIsLeaf_7_result_0[0]);
@@ -2875,39 +2106,21 @@ module Btree;                                                                   
       $fwrite(o, "            %-46s = %1d\n",  "main_stuckIsLeaf_8_index_18", main_stuckIsLeaf_8_index_18);
       $fwrite(o, "            %-40s[%4d] = %1d\n",  "main_stuckIsLeaf_8_value_19", 0, main_stuckIsLeaf_8_value_19[0]);
       $fwrite(o, "    Process: %1d - %-21s instructions: %1d, pc: %1d, rc: %1d\n", 2, "stuckIsFree", 1, stuckIsFree_pc, stuckIsFree_returnCode);
-      $fwrite(o, "      Memory: size: %1d, width: %1d, block: %1d\n", 8, 1, 1);
+      $fwrite(o, "      Memory: size: %1d, width: %1d, block: %1d\n", 2, 1, 1);
       $fwrite(o, "        %2d", stuckIsFree_memory[0]);
       $fwrite(o, ", %2d", stuckIsFree_memory[1]);
-      $fwrite(o, ", %2d", stuckIsFree_memory[2]);
-      $fwrite(o, ", %2d", stuckIsFree_memory[3]);
-      $fwrite(o, ", %2d", stuckIsFree_memory[4]);
-      $fwrite(o, ", %2d", stuckIsFree_memory[5]);
-      $fwrite(o, ", %2d", stuckIsFree_memory[6]);
-      $fwrite(o, ", %2d", stuckIsFree_memory[7]);
       $fwrite(o, "\n");
       $fwrite(o, "      Registers :\n");
       $fwrite(o, "    Process: %1d - %-21s instructions: %1d, pc: %1d, rc: %1d\n", 3, "freeNext", 1, freeNext_pc, freeNext_returnCode);
-      $fwrite(o, "      Memory: size: %1d, width: %1d, block: %1d\n", 8, 4, 1);
+      $fwrite(o, "      Memory: size: %1d, width: %1d, block: %1d\n", 2, 2, 1);
       $fwrite(o, "        %2d", freeNext_memory[0]);
       $fwrite(o, ", %2d", freeNext_memory[1]);
-      $fwrite(o, ", %2d", freeNext_memory[2]);
-      $fwrite(o, ", %2d", freeNext_memory[3]);
-      $fwrite(o, ", %2d", freeNext_memory[4]);
-      $fwrite(o, ", %2d", freeNext_memory[5]);
-      $fwrite(o, ", %2d", freeNext_memory[6]);
-      $fwrite(o, ", %2d", freeNext_memory[7]);
       $fwrite(o, "\n");
       $fwrite(o, "      Registers :\n");
       $fwrite(o, "    Process: %1d - %-21s instructions: %1d, pc: %1d, rc: %1d\n", 4, "stuckSize", 1, stuckSize_pc, stuckSize_returnCode);
-      $fwrite(o, "      Memory: size: %1d, width: %1d, block: %1d\n", 8, 4, 1);
+      $fwrite(o, "      Memory: size: %1d, width: %1d, block: %1d\n", 2, 4, 1);
       $fwrite(o, "        %2d", stuckSize_memory[0]);
       $fwrite(o, ", %2d", stuckSize_memory[1]);
-      $fwrite(o, ", %2d", stuckSize_memory[2]);
-      $fwrite(o, ", %2d", stuckSize_memory[3]);
-      $fwrite(o, ", %2d", stuckSize_memory[4]);
-      $fwrite(o, ", %2d", stuckSize_memory[5]);
-      $fwrite(o, ", %2d", stuckSize_memory[6]);
-      $fwrite(o, ", %2d", stuckSize_memory[7]);
       $fwrite(o, "\n");
       $fwrite(o, "      Registers :\n");
       $fwrite(o, "        %-44s[%4d] = %1d\n",  "stuckSize_stuckSize_5_result_0", 0, stuckSize_stuckSize_5_result_0[0]);
@@ -2925,7 +2138,7 @@ module Btree;                                                                   
       $fwrite(o, "            %-46s = %1d\n",  "main_stuckSize_6_index_15", main_stuckSize_6_index_15);
       $fwrite(o, "            %-40s[%4d] = %1d\n",  "main_stuckSize_6_value_16", 0, main_stuckSize_6_value_16[0]);
       $fwrite(o, "    Process: %1d - %-21s instructions: %1d, pc: %1d, rc: %1d\n", 5, "stuckKeys", 1, stuckKeys_pc, stuckKeys_returnCode);
-      $fwrite(o, "      Memory: size: %1d, width: %1d, block: %1d\n", 8, 8, 8);
+      $fwrite(o, "      Memory: size: %1d, width: %1d, block: %1d\n", 2, 8, 8);
       $fwrite(o, "        %2d", stuckKeys_memory[0]);
       $fwrite(o, ", %2d", stuckKeys_memory[1]);
       $fwrite(o, ", %2d", stuckKeys_memory[2]);
@@ -2942,54 +2155,6 @@ module Btree;                                                                   
       $fwrite(o, ", %2d", stuckKeys_memory[13]);
       $fwrite(o, ", %2d", stuckKeys_memory[14]);
       $fwrite(o, ", %2d", stuckKeys_memory[15]);
-      $fwrite(o, ", %2d", stuckKeys_memory[16]);
-      $fwrite(o, ", %2d", stuckKeys_memory[17]);
-      $fwrite(o, ", %2d", stuckKeys_memory[18]);
-      $fwrite(o, ", %2d", stuckKeys_memory[19]);
-      $fwrite(o, ", %2d", stuckKeys_memory[20]);
-      $fwrite(o, ", %2d", stuckKeys_memory[21]);
-      $fwrite(o, ", %2d", stuckKeys_memory[22]);
-      $fwrite(o, ", %2d", stuckKeys_memory[23]);
-      $fwrite(o, ", %2d", stuckKeys_memory[24]);
-      $fwrite(o, ", %2d", stuckKeys_memory[25]);
-      $fwrite(o, ", %2d", stuckKeys_memory[26]);
-      $fwrite(o, ", %2d", stuckKeys_memory[27]);
-      $fwrite(o, ", %2d", stuckKeys_memory[28]);
-      $fwrite(o, ", %2d", stuckKeys_memory[29]);
-      $fwrite(o, ", %2d", stuckKeys_memory[30]);
-      $fwrite(o, ", %2d", stuckKeys_memory[31]);
-      $fwrite(o, ", %2d", stuckKeys_memory[32]);
-      $fwrite(o, ", %2d", stuckKeys_memory[33]);
-      $fwrite(o, ", %2d", stuckKeys_memory[34]);
-      $fwrite(o, ", %2d", stuckKeys_memory[35]);
-      $fwrite(o, ", %2d", stuckKeys_memory[36]);
-      $fwrite(o, ", %2d", stuckKeys_memory[37]);
-      $fwrite(o, ", %2d", stuckKeys_memory[38]);
-      $fwrite(o, ", %2d", stuckKeys_memory[39]);
-      $fwrite(o, ", %2d", stuckKeys_memory[40]);
-      $fwrite(o, ", %2d", stuckKeys_memory[41]);
-      $fwrite(o, ", %2d", stuckKeys_memory[42]);
-      $fwrite(o, ", %2d", stuckKeys_memory[43]);
-      $fwrite(o, ", %2d", stuckKeys_memory[44]);
-      $fwrite(o, ", %2d", stuckKeys_memory[45]);
-      $fwrite(o, ", %2d", stuckKeys_memory[46]);
-      $fwrite(o, ", %2d", stuckKeys_memory[47]);
-      $fwrite(o, ", %2d", stuckKeys_memory[48]);
-      $fwrite(o, ", %2d", stuckKeys_memory[49]);
-      $fwrite(o, ", %2d", stuckKeys_memory[50]);
-      $fwrite(o, ", %2d", stuckKeys_memory[51]);
-      $fwrite(o, ", %2d", stuckKeys_memory[52]);
-      $fwrite(o, ", %2d", stuckKeys_memory[53]);
-      $fwrite(o, ", %2d", stuckKeys_memory[54]);
-      $fwrite(o, ", %2d", stuckKeys_memory[55]);
-      $fwrite(o, ", %2d", stuckKeys_memory[56]);
-      $fwrite(o, ", %2d", stuckKeys_memory[57]);
-      $fwrite(o, ", %2d", stuckKeys_memory[58]);
-      $fwrite(o, ", %2d", stuckKeys_memory[59]);
-      $fwrite(o, ", %2d", stuckKeys_memory[60]);
-      $fwrite(o, ", %2d", stuckKeys_memory[61]);
-      $fwrite(o, ", %2d", stuckKeys_memory[62]);
-      $fwrite(o, ", %2d", stuckKeys_memory[63]);
       $fwrite(o, "\n");
       $fwrite(o, "      Registers :\n");
       $fwrite(o, "        %-44s[%4d] = %1d\n",  "stuckKeys_stuckKeys_1_result_0", 0, stuckKeys_stuckKeys_1_result_0[0]);
@@ -3028,7 +2193,7 @@ module Btree;                                                                   
       $fwrite(o, "            %-40s[%4d] = %1d\n",  "main_stuckKeys_2_value_10", 6, main_stuckKeys_2_value_10[6]);
       $fwrite(o, "            %-40s[%4d] = %1d\n",  "main_stuckKeys_2_value_10", 7, main_stuckKeys_2_value_10[7]);
       $fwrite(o, "    Process: %1d - %-21s instructions: %1d, pc: %1d, rc: %1d\n", 6, "stuckData", 1, stuckData_pc, stuckData_returnCode);
-      $fwrite(o, "      Memory: size: %1d, width: %1d, block: %1d\n", 8, 8, 8);
+      $fwrite(o, "      Memory: size: %1d, width: %1d, block: %1d\n", 2, 8, 8);
       $fwrite(o, "        %2d", stuckData_memory[0]);
       $fwrite(o, ", %2d", stuckData_memory[1]);
       $fwrite(o, ", %2d", stuckData_memory[2]);
@@ -3045,54 +2210,6 @@ module Btree;                                                                   
       $fwrite(o, ", %2d", stuckData_memory[13]);
       $fwrite(o, ", %2d", stuckData_memory[14]);
       $fwrite(o, ", %2d", stuckData_memory[15]);
-      $fwrite(o, ", %2d", stuckData_memory[16]);
-      $fwrite(o, ", %2d", stuckData_memory[17]);
-      $fwrite(o, ", %2d", stuckData_memory[18]);
-      $fwrite(o, ", %2d", stuckData_memory[19]);
-      $fwrite(o, ", %2d", stuckData_memory[20]);
-      $fwrite(o, ", %2d", stuckData_memory[21]);
-      $fwrite(o, ", %2d", stuckData_memory[22]);
-      $fwrite(o, ", %2d", stuckData_memory[23]);
-      $fwrite(o, ", %2d", stuckData_memory[24]);
-      $fwrite(o, ", %2d", stuckData_memory[25]);
-      $fwrite(o, ", %2d", stuckData_memory[26]);
-      $fwrite(o, ", %2d", stuckData_memory[27]);
-      $fwrite(o, ", %2d", stuckData_memory[28]);
-      $fwrite(o, ", %2d", stuckData_memory[29]);
-      $fwrite(o, ", %2d", stuckData_memory[30]);
-      $fwrite(o, ", %2d", stuckData_memory[31]);
-      $fwrite(o, ", %2d", stuckData_memory[32]);
-      $fwrite(o, ", %2d", stuckData_memory[33]);
-      $fwrite(o, ", %2d", stuckData_memory[34]);
-      $fwrite(o, ", %2d", stuckData_memory[35]);
-      $fwrite(o, ", %2d", stuckData_memory[36]);
-      $fwrite(o, ", %2d", stuckData_memory[37]);
-      $fwrite(o, ", %2d", stuckData_memory[38]);
-      $fwrite(o, ", %2d", stuckData_memory[39]);
-      $fwrite(o, ", %2d", stuckData_memory[40]);
-      $fwrite(o, ", %2d", stuckData_memory[41]);
-      $fwrite(o, ", %2d", stuckData_memory[42]);
-      $fwrite(o, ", %2d", stuckData_memory[43]);
-      $fwrite(o, ", %2d", stuckData_memory[44]);
-      $fwrite(o, ", %2d", stuckData_memory[45]);
-      $fwrite(o, ", %2d", stuckData_memory[46]);
-      $fwrite(o, ", %2d", stuckData_memory[47]);
-      $fwrite(o, ", %2d", stuckData_memory[48]);
-      $fwrite(o, ", %2d", stuckData_memory[49]);
-      $fwrite(o, ", %2d", stuckData_memory[50]);
-      $fwrite(o, ", %2d", stuckData_memory[51]);
-      $fwrite(o, ", %2d", stuckData_memory[52]);
-      $fwrite(o, ", %2d", stuckData_memory[53]);
-      $fwrite(o, ", %2d", stuckData_memory[54]);
-      $fwrite(o, ", %2d", stuckData_memory[55]);
-      $fwrite(o, ", %2d", stuckData_memory[56]);
-      $fwrite(o, ", %2d", stuckData_memory[57]);
-      $fwrite(o, ", %2d", stuckData_memory[58]);
-      $fwrite(o, ", %2d", stuckData_memory[59]);
-      $fwrite(o, ", %2d", stuckData_memory[60]);
-      $fwrite(o, ", %2d", stuckData_memory[61]);
-      $fwrite(o, ", %2d", stuckData_memory[62]);
-      $fwrite(o, ", %2d", stuckData_memory[63]);
       $fwrite(o, "\n");
       $fwrite(o, "      Registers :\n");
       $fwrite(o, "        %-44s[%4d] = %1d\n",  "stuckData_stuckData_3_result_0", 0, stuckData_stuckData_3_result_0[0]);
