@@ -631,12 +631,8 @@ chipStop = true;
      }
 
     void pop(Verilog v)                                                         // Pop a key, data pair from the local copy of the stuck
-     {v.new Case(1, maxStuckSize+1, size.registerName())
-       {void Choice(int N)
-         {Key.copy (v, keys, N-1);
-          Data.copy(v, data, N-1);
-         }
-       };
+     {Key .copyIs(v, keys, size, -1);
+      Data.copyIs(v, data, size, -1);
       size.dec(v);
      }
 
@@ -6945,7 +6941,8 @@ Merge     : 0
 
   static void newTests()                                                        // Tests being worked on
    {//oldTests();
-    test_verilog_put();
+    test_pop();
+    //test_verilog_put();
    }
 
   public static void main(String[] args)                                        // Test if called as a program
