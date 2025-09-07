@@ -1861,12 +1861,8 @@ chipStop = true;
             ir.copy(p.data, LeftLeaf.registerGet() + 1);                        // Get the btree index of the right child leaf
            }
           void verilog(Verilog v)
-           {v.new Case(maxStuckSize-1, LeftLeaf.registerName())
-             {void Choice(int i)
-               {il.copy(v, p.data, i);                                          // Get the btree index of the left child leaf
-                ir.copy(v, p.data, i + 1);                                      // Get the btree index of the right child leaf
-               }
-             };
+           {il.copyIs(v, p.data, LeftLeaf);                                     // Get the btree index of the left child leaf
+            ir.copyIs(v, p.data, LeftLeaf, +1);                                 // Get the btree index of the right child leaf
            }
          };
 
