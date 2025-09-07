@@ -2102,11 +2102,7 @@ chipStop = true;
                    {mk.copy(p.keys, LeftBranch.registerGet());                  // Key associated with left child branch
                    }
                   void verilog(Verilog v)
-                   {v.new Case(maxStuckSize, LeftBranch.registerName())
-                     {void Choice(int i)
-                       {mk.copy(v, p.keys, i);                                  // Key associated with left child branch
-                       }
-                     };
+                   {mk.copyIs(v, p.keys, LeftBranch);                           // Key associated with left child branch
                    }
                  };
 
@@ -6877,8 +6873,8 @@ Merge     : 0
 
   static void test_verilog_put()
    {sayCurrentTestName();
-// Keys per stuck->lines of code: 4->8252  5->8284  10-> 10,268
-    final Btree            b = new Btree(powerTwo(4), 10, 32, 32);
+// Keys per stuck->lines of code: 4->8252  5->8284  10->8589
+    final Btree            b = new Btree(powerTwo(10), 10, 32, 32);
     final Process          P = b.P; //b.new Process("verilogPut");
     final Process.Register k = P.register("k", b.bitsPerKey);   k.input();
     final Process.Register d = P.register("d", b.bitsPerData);  d.input();
@@ -6948,7 +6944,7 @@ Merge     : 0
    }
 
   static void newTests()                                                        // Tests being worked on
-   {oldTests();
+   {//oldTests();
     test_verilog_put();
    }
 
