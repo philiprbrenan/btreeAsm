@@ -902,12 +902,8 @@ chipStop = true;
            }
          };
        }
-      v.new Case(maxStuckSize, Index.registerName())
-       {void Choice(int I)
-         {keys.copy(v, I, Key);
-          data.copy(v, I, Data);
-         }
-       };
+      keys.copyIt(v, Index, Key);
+      data.copyIt(v, Index, Data);
      }
 
     void InsertElementAt                                                        // Set the indexed key, data pair as a single instruction
