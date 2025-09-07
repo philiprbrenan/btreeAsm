@@ -941,7 +941,7 @@ if __name__ == "__main__":
          };
        }
 
-//D4 Register to indexed Register                                               // Copy a source register to a register indexed element of this target register
+//D4 Register to register indexed Register                                               // Copy a source register to a register indexed element of this target register
 
       void copyIt(Register Index, Register Source)                               // Copy a source register to a register indexed element of this target register
        {R(); registerCheckSize(Source);                                         // Make sure the target register is big enough
