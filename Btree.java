@@ -288,15 +288,15 @@ chipStop = true;
       collapse     = P.register("Collapse", stuckAddressSize, maxStuckSize);    // The collapse of the key comparisons
       data         = P.register("Data",     bitsPerData,      maxStuckSize);    // Data in the stuck copied out of memory
 
-      gKeys = stuckKeys.memoryGetFromProcess(P);                                // Transactions to get each key in the stuck. Reuseing the transaction reduces generated Verilog code size by 30% at the cost of requiring each stuck Get/Set from/into memory to finish before the next one can start.
-      sKeys = stuckKeys.memorySetIntoProcess(P);                                // Transactions to set each key in the stuck
-      gData = stuckData.memoryGetFromProcess(P);                                // Transactions to get each data element in the stuck
-      sData = stuckData.memorySetIntoProcess(P);                                // Transactions to set each data element in the stuck
+      gKeys        = stuckKeys.memoryGetFromProcess(P);                         // Transactions to get each key in the stuck. Reuseing the transaction reduces generated Verilog code size by 30% at the cost of requiring each stuck Get/Set from/into memory to finish before the next one can start.
+      sKeys        = stuckKeys.memorySetIntoProcess(P);                         // Transactions to set each key in the stuck
+      gData        = stuckData.memoryGetFromProcess(P);                         // Transactions to get each data element in the stuck
+      sData        = stuckData.memorySetIntoProcess(P);                         // Transactions to set each data element in the stuck
 
-      gSize = stuckSize  .memoryGetFromProcess(P);                              // Transaction to get the current size of the stuck
-      sSize = stuckSize  .memorySetIntoProcess(P);                              // Transaction to set the current size of the stuck
-      gLeaf = stuckIsLeaf.memoryGetFromProcess(P);                              // Transaction to discover whether this stuck is acting as a leaf or a branch
-      sLeaf = stuckIsLeaf.memorySetIntoProcess(P);                              // Transaction to set the stuck in memory to  a leaf or a branch
+      gSize        = stuckSize  .memoryGetFromProcess(P);                       // Transaction to get the current size of the stuck
+      sSize        = stuckSize  .memorySetIntoProcess(P);                       // Transaction to set the current size of the stuck
+      gLeaf        = stuckIsLeaf.memoryGetFromProcess(P);                       // Transaction to discover whether this stuck is acting as a leaf or a branch
+      sLeaf        = stuckIsLeaf.memorySetIntoProcess(P);                       // Transaction to set the stuck in memory to  a leaf or a branch
 
       Found        = P.register("Found",        1);                             // Whether the key was found
       Key          = P.register("Key",          bitsPerKey);                    // The key that was found as a result of an equal search
@@ -6881,6 +6881,29 @@ Merge     : 0
 """);
    }
 
+  static void test_verilog_find()
+   {sayCurrentTestName();
+// Keys per stuck->lines of code: 10->10347  20->14053  40->21529   1024->405K
+    final Btree            b = new Btree(1024, 10, 32, 32);
+    final Process          P = b.P;
+    final Process.Register k = P.register("k", b.bitsPerKey);   k.input();
+    final Find             f = b.new Find(P);
+
+    k.RegisterSet(1);
+    b.chipRunJava();                                                            // Set memory
+    f.findSearch(k);
+//  final Chip.Synthesize S = b.new Synthesize();
+//  ok(S.e.out, "");
+//  ok(S.e.err, "");
+    final Chip.SiliconCompiler S = b.new SiliconCompiler()                      // Create silicon compiler files
+     {String description()
+       {return String.format("%s_%d_%d_%d_%d",
+          b.chipName, b.size, b.maxStuckSize, b.bitsPerKey, b.bitsPerData);
+       }
+     };
+    say(S.launchFile);
+   }
+
   static void test_verilog_put()
    {sayCurrentTestName();
 // Keys per stuck->lines of code: 10->10347  20->14053  40->21529   1024->405K
@@ -6955,7 +6978,7 @@ Merge     : 0
 
   static void newTests()                                                        // Tests being worked on
    {//oldTests();
-    test_verilog_put();
+    test_verilog_find();
    }
 
   public static void main(String[] args)                                        // Test if called as a program
