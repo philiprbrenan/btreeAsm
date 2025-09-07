@@ -68,7 +68,7 @@ class Btree extends Chip                                                        
     LeftMergeStuck  = new Stuck(P, "MergeLeft");                                // Left stuck sibling in merge operation
     RightMergeStuck = new Stuck(P, "MergeRight");                               // Right stuck sibling in merge operation
     LeftSplitStuck  = LeftMergeStuck; //new Stuck(P, "SplitLeft");                                // Left  stuck in a split operation
-    RightSplitStuck = new Stuck(P, "SplitRight");                               // Right stuck in a split operation
+    RightSplitStuck = RightMergeStuck; //new Stuck(P, "SplitRight");                               // Right stuck in a split operation
     SourceCopyStuck = new Stuck(P, "SourceCopyStuck");                          // Copy of a stuck used during merge to combine with target
     SplitStuck      = new Stuck(P, "SplitStuck");                               // Copy of a stuck used during splits
 
