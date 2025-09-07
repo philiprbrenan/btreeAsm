@@ -792,12 +792,8 @@ chipStop = true;
      }
 
     void pastLastElement(Verilog v)                                             // Get the past last key, data pair
-     {v.new Case(maxStuckSize, size.registerName())
-       {void Choice(int i)
-         {Key.copy (v, keys, i);
-          Data.copy(v, data, i);
-         }
-       };
+     {Key .copyIs(v, keys, size);
+      Data.copyIs(v, data, size);
      }
 
     void PastLastElement()                                                      // Get the past last key, data pair as a single instruction
@@ -6883,8 +6879,8 @@ Merge     : 0
 
   static void test_verilog_find()
    {sayCurrentTestName();
-// Keys per stuck->lines of code: 10->10347  20->14053  40->21529   1024->405K
-    final Btree            b = new Btree(1024, 10, 32, 32);
+// Keys per stuck->lines of code: 4-> 20K,  8-> 12-> 16->
+    final Btree            b = new Btree(powerTwo(8), 1024, 32, 32);
     final Process          P = b.P;
     final Process.Register k = P.register("k", b.bitsPerKey);   k.input();
     final Find             f = b.new Find(P);
@@ -6904,10 +6900,32 @@ Merge     : 0
     say(S.launchFile);
    }
 
+  static void test_verilog_delete()
+   {sayCurrentTestName();
+// Keys per stuck->lines of code: 10->8549  20->11395  40->17151  1024-> 316K
+    final Btree            b = new Btree(powerTwo(10), 1024, 32, 32);
+    final Process          P = b.P;
+    final Process.Register k = P.register("k", b.bitsPerKey);   k.input();
+
+    k.RegisterSet(1);
+    b.chipRunJava();                                                            // Set memory
+    b.delete(k);
+//  final Chip.Synthesize S = b.new Synthesize();
+//  ok(S.e.out, "");
+//  ok(S.e.err, "");
+    final Chip.SiliconCompiler S = b.new SiliconCompiler()                      // Create silicon compiler files
+     {String description()
+       {return String.format("%s_%d_%d_%d_%d",
+          b.chipName, b.size, b.maxStuckSize, b.bitsPerKey, b.bitsPerData);
+       }
+     };
+    say(S.launchFile);
+   }
+
   static void test_verilog_put()
    {sayCurrentTestName();
-// Keys per stuck->lines of code: 10->10347  20->14053  40->21529   1024->405K
-    final Btree            b = new Btree(1024, 10, 32, 32);
+// Keys per stuck->lines of code: 4->8331,  8-> 10-> 405K
+    final Btree            b = new Btree(powerTwo(4), 10, 32, 32);
     final Process          P = b.P; //b.new Process("verilogPut");
     final Process.Register k = P.register("k", b.bitsPerKey);   k.input();
     final Process.Register d = P.register("d", b.bitsPerData);  d.input();
@@ -6977,8 +6995,8 @@ Merge     : 0
    }
 
   static void newTests()                                                        // Tests being worked on
-   {//oldTests();
-    test_verilog_find();
+   {oldTests();
+    test_verilog_put();
    }
 
   public static void main(String[] args)                                        // Test if called as a program
