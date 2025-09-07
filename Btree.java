@@ -2137,12 +2137,8 @@ chipStop = true;
             ir.copy(p.data, sz.registerGet()  );                                // Get the btree index of the right branch branch
            }
           void verilog(Verilog v)
-           {v.new Case(1, maxStuckSize, sz.registerName())
-             {void Choice(int i)
-               {il.copy(v, p.data, i-1);                                        // Get the btree index of the left branch branch
-                ir.copy(v, p.data, i  );                                        // Get the btree index of the right branch branch
-               }
-             };
+           {il.copyIs(v, p.data, sz, -1);                                       // Get the btree index of the left branch branch
+            ir.copyIs(v, p.data, sz);                                           // Get the btree index of the right branch branch
            }
          };
 
