@@ -6849,8 +6849,14 @@ Merge     : 0
 
   static void test_verilog_put()
    {sayCurrentTestName();
-// Keys per stuck->lines of code: 4->8252  5->8284  10->8589
-    final Btree            b = new Btree(powerTwo(10), 10, 32, 32);
+// Stucks, Keys as powers of two
+//           4        5        6       7       8        9       10
+// 10:   8,814   10,974   15,046  24,511  43,215   81,630  160,455
+// 12:  10,862   17,119   21,551  30,655  49,359   87,775  166,639
+// 14:  39,538   41,694   46,126  55,230  73,934
+// 16: 137,838  139,998  144,430
+// 18: 531,054
+    final Btree            b = new Btree(powerTwo(14), powerTwo(4), 32, 32);
     final Process          P = b.P; //b.new Process("verilogPut");
     final Process.Register k = P.register("k", b.bitsPerKey);   k.input();
     final Process.Register d = P.register("d", b.bitsPerData);  d.input();
@@ -6869,6 +6875,7 @@ Merge     : 0
        }
      };
     say(S.launchFile);
+    say(readFile(S.sourceFile).size());
    }
 
   static void oldTests()                                                        // Tests thought to be in good shape
@@ -6921,8 +6928,7 @@ Merge     : 0
 
   static void newTests()                                                        // Tests being worked on
    {//oldTests();
-    test_pop();
-    //test_verilog_put();
+    test_verilog_put();
    }
 
   public static void main(String[] args)                                        // Test if called as a program
