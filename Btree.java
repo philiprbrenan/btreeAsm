@@ -745,12 +745,8 @@ chipStop = true;
      }
 
     void lastElement(Verilog v)                                                 // Get the last key, data pair
-     {v.new Case(1, maxStuckSize, size.registerName())
-       {void Choice(int i)
-         {Key.copy (v, keys, i-1);
-          Data.copy(v, data, i-1);
-         }
-       };
+     {Key .copyIs(v, keys, size, -1);
+      Data.copyIs(v, data, size, -1);
      }
 
     void LastElement()                                                          // Get the last key, data pair as a single instruction
