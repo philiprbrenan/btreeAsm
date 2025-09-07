@@ -437,10 +437,8 @@ chipStop = true;
      }
 
     void copy(Verilog v, Stuck Source)                                          // Copy a stuck from the specified source to this stuck
-     {for (int i = 0; i < maxStuckSize; i++)
-       {keys.copy(v, i, Source.keys, i);
-        data.copy(v, i, Source.data, i);
-       }
+     {keys  .copy(v, Source.keys);
+      data  .copy(v, Source.data);
       size  .copy(v, Source.size);
       isLeaf.copy(v, Source.isLeaf);
      }
