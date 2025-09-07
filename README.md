@@ -54,6 +54,15 @@ Registers are local blocks of [memory](https://en.wikipedia.org/wiki/Computer_me
 
 - Lose their values if the [chip](https://en.wikipedia.org/wiki/Integrated_circuit) is powered off.
 
+- Start set to zero when the [Silicon](https://en.wikipedia.org/wiki/Silicon) chip is powered on
+
+### Single versus arrayed
+
+Registers can contain just a single element in a [register](https://en.wikipedia.org/wiki/Processor_register) or a predefined
+number of elements in an arrayed [register](https://en.wikipedia.org/wiki/Processor_register). Single and arrayed [registers](https://en.wikipedia.org/wiki/Processor_register) can be
+copied into other single and arrayed registes, with either the whole [register](https://en.wikipedia.org/wiki/Processor_register) being copied or with specific elements being selected with either integer or
+single [register](https://en.wikipedia.org/wiki/Processor_register) indices.
+
 ## Program Execution
 
 Each [process](https://en.wikipedia.org/wiki/Process_management_(computing)) executes a single [program](https://en.wikipedia.org/wiki/Computer_program) composed of sequential [instructions](https://en.wikipedia.org/wiki/Instruction_set_architecture). A [chip](https://en.wikipedia.org/wiki/Integrated_circuit) may contain multiple [processes](https://en.wikipedia.org/wiki/Process_management_(computing)). 
