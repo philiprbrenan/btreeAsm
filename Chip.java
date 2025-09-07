@@ -1405,24 +1405,51 @@ if __name__ == "__main__":
                    {start = Start; finish = Finish; value = Value;
                    }
                  }
+                class Seq                                                       // Collect increasing memory initial values in consecutive elements
+                 {int start, finish, value;
+                  Seq(int Start, int Finish, int Value)
+                   {start = Start; finish = Finish; value = Value;
+                   }
+                 }
                 final Stack<Run>runs = new Stack<>();                           // Runs
+                final Stack<Seq>seqs = new Stack<>();                           // Sequences
                 runs.push(new Run(0, 1, memoryGetBackUp(0)));                   // First run
+                seqs.push(new Seq(0, 1, memoryGetBackUp(0)));                   // First run
                 for(int i = 1; i < memory.length; i++)
                  {final int V = memoryGetBackUp(i);
-                  final Run r = runs.lastElement();
+
+                  final Run r = runs.lastElement();                             // Run of same element
                   if (r.value == V) r.finish = i+1;
                   else runs.push(new Run(i, i+1, V));
+
+                  final Seq s = seqs.lastElement();                             // Sequence of increasing elements
+                  if (s.value == V-1)
+                   {s.finish = i+1; s.value = V;
+                   }
+                  else seqs.push(new Seq(i, i+1, V));
                  }
-                for(Run r: runs)                                                // Write out the runs
-                 {if (r.start + 3 > r.finish)                                   // Write out the runs as individual assign stataments because there are only a few
-                   {for(int i = r.start; i < r.finish; ++i)
-                     {v.A(processMemoryName()+"["+i+"] <= "+r.value+";");
+
+                if (runs.size() < seqs.size())                                  // Use the shortest methodology
+                 {for(Run r: runs)                                              // Write out the runs
+                   {if (r.start + 3 > r.finish)                                 // Write out the runs as individual assign stataments because there are only a few
+                     {for(int i = r.start; i < r.finish; ++i)
+                       {v.A(processMemoryName()+"["+i+"] <= "+r.value+";");
+                       }
+                     }
+                    else                                                        // Write out a run as a for loop as there are quite a few
+                     {final String j = processMemoryIndexName();
+                      v.A("for("+j+" = "+r.start+"; "+j+" < "+r.finish+"; "+j+" = "+j+" + 1) begin");
+                      v.A("  "+processMemoryName()+"["+j+"] <= "+r.value+";");
+                      v.A("end");
                      }
                    }
-                  else                                                          // Write out a run as a for loop as there are quite a few
+                 }
+                else
+                 {for(Seq s: seqs)                                              // Write out the sequence
                    {final String j = processMemoryIndexName();
-                    v.A("for("+j+" = "+r.start+"; "+j+" < "+r.finish+"; "+j+" = "+j+" + 1) begin");
-                    v.A("  "+processMemoryName()+"["+j+"] <= "+r.value+";");
+                    final int start = s.value - s.finish + 1;
+                    v.A("for("+j+" = "+s.start+"; "+j+" < "+s.finish+"; "+j+" = "+j+" + 1) begin");
+                    v.A("  "+processMemoryName()+"["+j+"] <= "+start+"+"+j+";");
                     v.A("end");
                    }
                  }
