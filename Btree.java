@@ -932,12 +932,9 @@ chipStop = true;
 
     void removeElementAt(Verilog v, Process.Register Index)                     // Remove the indexed key, data pair from the stuck as a single instruction
      {size.dec(v);
-      v.new Case(maxStuckSize, Index.registerName())
-       {void Choice(int i)
-         {Key .copy(v, keys, i);
-          Data.copy(v, data, i);
-         }
-       };
+      Key .copys(v, keys, Index);
+      Data.copys(v, data, Index);
+
       for (int i = 0; i < maxStuckSize-1; i++)
        {final int I = i;
         v.new If (""+i + ">= "+Index.registerName())
