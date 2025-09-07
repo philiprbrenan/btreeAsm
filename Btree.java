@@ -67,8 +67,8 @@ class Btree extends Chip                                                        
     ParentStuck     = new Stuck(P, "Parent");                                   // Parent stuck
     LeftMergeStuck  = new Stuck(P, "MergeLeft");                                // Left stuck sibling in merge operation
     RightMergeStuck = new Stuck(P, "MergeRight");                               // Right stuck sibling in merge operation
-    LeftSplitStuck  = LeftMergeStuck; //new Stuck(P, "SplitLeft");                                // Left  stuck in a split operation
-    RightSplitStuck = RightMergeStuck; //new Stuck(P, "SplitRight");                               // Right stuck in a split operation
+    LeftSplitStuck  = LeftMergeStuck;                                           // Left  stuck in a split operation
+    RightSplitStuck = RightMergeStuck;                                          // Right stuck in a split operation
     SourceCopyStuck = new Stuck(P, "SourceCopyStuck");                          // Copy of a stuck used during merge to combine with target
     SplitStuck      = new Stuck(P, "SplitStuck");                               // Copy of a stuck used during splits
 
@@ -77,7 +77,7 @@ class Btree extends Chip                                                        
 
     PutParentStuck  = new Stuck(P, "putParent", true);                          // Parent stuck during put
     PutChildStuck   = new Stuck(P, "putChild");                                 // Child stuck during put
-    MergeStuck      = new Stuck(P, "merge", true);                              // Parent stuck during merge
+    MergeStuck      = PutParentStuck; //new Stuck(P, "merge", true);                              // Parent stuck during merge
 
     mergeSum = register("sum", 1+stuckAddressSize);                             // Sum of the lengths of the two stucks
     mergeCan = register("can", 1);                                              // Can merge
