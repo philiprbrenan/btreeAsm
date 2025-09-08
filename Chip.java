@@ -754,9 +754,14 @@ if __name__ == "__main__":
        {return processName + "_" + registerName;
        }
 
-      String registerName(int RegisterIndex)                                    // The name of an element of an arrayed register
+      String registerName(int Index)                                            // The name of an element of an arrayed register
        {registerCheckArrayed();
-        return processName + "_" + registerName+"["+RegisterIndex+"]";
+        return processName + "_" + registerName+"["+Index+"]";
+       }
+
+      String registerName(String Index)                                         // The name of an element of an arrayed register
+       {registerCheckArrayed();
+        return processName + "_" + registerName+"["+Index+"]";
        }
 
       void input()                                                              // Mark a register a being connected to input pins
