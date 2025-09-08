@@ -1138,14 +1138,16 @@ chipStop = true;
             v.assign(compares.registerName(0), le);
             collapse.registerSet(v, 0, 0);
            }
-          for (int i = 1; i < maxStuckSize; ++i)                                // Compare each key
-           {final String K = Key.registerName();
-             final String in =
-              K + " >  " + keys.registerName(i-1) + " && " +
-              K + " <= " + keys.registerName(i)   + " && " +i+ " < "+N;
-            v.assign(compares.registerName(i), in);
-            collapse.registerSet(v, i, i);
-           }
+          final String i = P.processMemoryIndexName();
+          v.A("for("+i+" = 1;"+i+" < "+maxStuckSize+"; "+i+" = "+i+"+1) begin");
+          v.indent();
+          final String K = Key.registerName();
+          final String in =
+            K + " >  " + keys.registerName(i+"-1") + " && " +
+            K + " <= " + keys.registerName(i)      + " && " +i+ " < "+N;
+          v.assign(compares.registerName(i), in);
+          v.assign(collapse.registerName(i), i);
+          v.end();
          }
        };
       for(int i = 1; i < maxStuckSize; i *= 2)                                  // Collapse the comparison
@@ -7028,8 +7030,8 @@ Merge     : 0
 
   static void newTests()                                                        // Tests being worked on
    {//oldTests();
-    test_insertElementAt();
-    //test_search_eq();
+    //test_insertElementAt();
+    test_search_le();
     //test_verilog_put();
    }
 
