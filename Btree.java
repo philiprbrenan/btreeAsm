@@ -484,8 +484,8 @@ chipStop = true;
       v.end();
       v.A("for ("+i+" = "+(maxStuckSize - delta)+"; "+i+" < "+maxStuckSize+"; "+i+" = "+i+"+1) begin");
       v.indent();
-      v.A(keys.registerName+"["+i+"] <= 0;");
-      v.A(data.registerName+"["+i+"] <= 0;");
+      v.A(keys.registerName()+"["+i+"] <= 0;");
+      v.A(data.registerName()+"["+i+"] <= 0;");
       v.end();
      }
 
@@ -550,10 +550,10 @@ chipStop = true;
       v.A(data.registerName()+"["+i+"] <= "+Source.data.registerName()+"["+i+"-"+delta+"];");
       v.end();
 
-      v.A("for ("+i+" = 0; i < "+delta+"; "+i+" = "+i+"+1) begin");
+      v.A("for ("+i+" = 0; "+i+" < "+delta+"; "+i+" = "+i+"+1) begin");
       v.indent();
-      v.A(keys.registerName+"["+i+"] <= 0;");
-      v.A(data.registerName+"["+i+"] <= 0;");
+      v.A(keys.registerName()+"["+i+"] <= 0;");
+      v.A(data.registerName()+"["+i+"] <= 0;");
       v.end();
      }
 
@@ -910,7 +910,7 @@ chipStop = true;
       data.copy(N, Data);
      }
 
-    void insertElementAt                                                        // Set the indexed key, data pair
+    void insertElementAtUnrolled                                                // Set the indexed key, data pair
      (Verilog v, Process.Register Index,
       Process.Register Key, Process.Register Data)
      {size.inc(v);                                                              // Increase number of elements
@@ -923,6 +923,24 @@ chipStop = true;
            }
          };
        }
+      keys.copyIt(v, Index, Key);
+      data.copyIt(v, Index, Data);
+     }
+
+    void insertElementAt                                                        // Set the indexed key, data pair
+     (Verilog v, Process.Register Index,
+      Process.Register Key, Process.Register Data)
+     {size.inc(v);                                                              // Increase number of elements
+      final String i = P.processMemoryIndexName();
+      v.A("for("+i+" = "+maxStuckSize+"-1; "+i+" > 0; "+i+" = "+i+"+1) begin");
+      v.indent();
+      v.new If(i+" > "+Index.registerName())
+       {void Then()
+         {v.A(keys.registerName()+"["+i+"] <= "+keys.registerName()+"["+i+"-1];");
+          v.A(data.registerName()+"["+i+"] <= "+data.registerName()+"["+i+"-1];");
+         }
+       };
+      v.end();
       keys.copyIt(v, Index, Key);
       data.copyIt(v, Index, Data);
      }
@@ -6982,7 +7000,8 @@ Merge     : 0
 
   static void newTests()                                                        // Tests being worked on
    {//oldTests();
-    test_verilog_put();
+    test_copy();
+    //test_verilog_put();
    }
 
   public static void main(String[] args)                                        // Test if called as a program
