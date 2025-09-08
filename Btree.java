@@ -462,7 +462,7 @@ chipStop = true;
        }
      }
 
-    void copyDown(Verilog v, Stuck Source, int Power)                           // Copy a stuck into itself or another stuck shifting the elements down in the stuck by a predetermined amount
+    void copyDownUnrolled(Verilog v, Stuck Source, int Power)                   // Copy a stuck into itself or another stuck shifting the elements down in the stuck by a predetermined amount
      {final int delta = powerTwo(Power);
       for (int i = 0; i < maxStuckSize - delta; i++)
        {keys.copy(v, i, Source.keys, i+delta);
@@ -472,6 +472,21 @@ chipStop = true;
        {keys.zero(v, i);
         data.zero(v, i);
        }
+     }
+
+    void copyDown(Verilog v, Stuck Source, int Power)                           // Copy a stuck into itself or another stuck shifting the elements down in the stuck by a predetermined amount
+     {final int delta = powerTwo(Power);
+      final String i = P.processMemoryIndexName();
+      v.A("for ("+i+" = 0; "+i+" < "+(maxStuckSize - delta)+"; "+i+" = "+i+" + 1) begin");
+      v.indent();
+      v.A(keys.registerName()+"["+i+"] <= "+Source.keys.registerName()+"["+i+"+"+delta+"];");
+      v.A(data.registerName()+"["+i+"] <= "+Source.data.registerName()+"["+i+"+"+delta+"];");
+      v.end();
+      v.A("for ("+i+" = "+(maxStuckSize - delta)+"; "+i+" < "+maxStuckSize+"; "+i+" = "+i+"+1) begin");
+      v.indent();
+      v.A(keys.registerName+"["+i+"] <= 0;");
+      v.A(data.registerName+"["+i+"] <= 0;");
+      v.end();
      }
 
     void CopyDown(Stuck Source, int Power)                                      // Copy a stuck into itself or another stuck shifting the elements down in the stuck by a predetermined amount as an instruction
@@ -514,7 +529,7 @@ chipStop = true;
        }
      }
 
-    void copyUp(Verilog v, Stuck Source, int Power)                             // Copy a stuck into itself or another stuck shifting the elements up in the stuck by a predetermined amount
+    void copyUpUnrolled(Verilog v, Stuck Source, int Power)                     // Copy a stuck into itself or another stuck shifting the elements up in the stuck by a predetermined amount
      {final int delta = powerTwo(Power);
       for (int i = maxStuckSize-1; i >= delta; i--)
        {keys.copy(v, i, Source.keys, i-delta);
@@ -524,6 +539,22 @@ chipStop = true;
        {keys.zero(v, i);
         data.zero(v, i);
        }
+     }
+
+    void copyUp(Verilog v, Stuck Source, int Power)                             // Copy a stuck into itself or another stuck shifting the elements up in the stuck by a predetermined amount
+     {final int delta = powerTwo(Power);
+      final String i = P.processMemoryIndexName();
+      v.A("for ("+i+" = "+maxStuckSize+"-1; "+i+" >= "+delta+"; "+i+" = "+i+" -1) begin");
+      v.indent();
+      v.A(keys.registerName()+"["+i+"] <= "+Source.keys.registerName()+"["+i+"-"+delta+"];");
+      v.A(data.registerName()+"["+i+"] <= "+Source.data.registerName()+"["+i+"-"+delta+"];");
+      v.end();
+
+      v.A("for ("+i+" = 0; i < "+delta+"; "+i+" = "+i+"+1) begin");
+      v.indent();
+      v.A(keys.registerName+"["+i+"] <= 0;");
+      v.A(data.registerName+"["+i+"] <= 0;");
+      v.end();
      }
 
     void CopyUp(Stuck Source, int Power)                                        // Copy a stuck into itself or another stuck shifting the elements up in the stuck by a predetermined amount as an instruction
@@ -977,7 +1008,7 @@ chipStop = true;
                }
              }
            }
-          void verilog(Verilog v)
+          void verilogUnrolled(Verilog v)                                       // Produces slightly longer code than the method below by unrolling the loop in Java
            {for (int j = 0; j < maxStuckSize-I; j += I+I)
              {final int J = j;
                v.new If (compares.registerName(J+I))
@@ -987,6 +1018,18 @@ chipStop = true;
                  }
                };
              }
+           }
+          void verilog(Verilog v)
+           {final String j = P.processMemoryIndexName();
+            v.A("for("+j+" = 0; "+j+" < "+(maxStuckSize-I)+"; "+j+" = "+j+"+"+2*I+") begin");
+            v.indent();
+            v.new If (compares.registerName()+"["+j+"+"+I+"]")
+             {void Then()
+               {v.A("  "+compares.registerName()+"["+j+"] <= 1;");
+                v.A("  "+collapse.registerName()+"["+j+"] <= "+collapse.registerName()+"["+j+"+"+I+"];");
+                v.end();
+               }
+             };
            }
          };
        }
@@ -1070,7 +1113,7 @@ chipStop = true;
                }
              }
            }
-          void verilog(Verilog v)
+          void verilogTest(Verilog v)
            {for (int j = 0; j < maxStuckSize-I; j += I+I)
              {final int J = j;
                v.new If (compares.registerName(J+I))
@@ -1080,6 +1123,18 @@ chipStop = true;
                  }
                };
              }
+           }
+          void verilog(Verilog v)                                               // Unrolled verion - produces slightly less code
+           {final String j = P.processMemoryIndexName();
+            v.A("for("+j+" = 0; "+j+" < "+(maxStuckSize-I)+"; "+j+" = "+j+"+"+2*I+") begin");
+            v.indent();
+            v.new If (compares.registerName()+"["+j+"+"+I+"]")
+             {void Then()
+               {v.A("  "+compares.registerName()+"["+j+"] <= 1;");
+                v.A("  "+collapse.registerName()+"["+j+"] <= "+collapse.registerName()+"["+j+"+"+I+"];");
+                v.end();
+               }
+             };
            }
          };
        }
@@ -6803,7 +6858,7 @@ Merge     : 0
   static void test_verilog_find()
    {sayCurrentTestName();
 // Keys per stuck->lines of code: 4-> 20K,  8-> 12-> 16->
-    final Btree            b = new Btree(powerTwo(8), 1024, 32, 32);
+    final Btree            b = new Btree(powerTwo(8), powerTwo(10), 32, 32);
     final Process          P = b.P;
     final Process.Register k = P.register("k", b.bitsPerKey);   k.input();
     final Find             f = b.new Find(P);
@@ -6821,6 +6876,7 @@ Merge     : 0
        }
      };
     say(S.launchFile);
+    say(readFile(S.sourceFile).size());
    }
 
   static void test_verilog_delete()
@@ -6843,6 +6899,7 @@ Merge     : 0
        }
      };
     say(S.launchFile);
+    say(readFile(S.sourceFile).size());
    }
 
   static void test_verilog_put()
@@ -6850,7 +6907,10 @@ Merge     : 0
 // Keys as powers of two
 //     4        5        6       7       8        9       10
 // 6,772                                             158,452
-    final Btree            b = new Btree(powerTwo(20), powerTwo(4), 32, 32);
+// 10,4  rolled up:   6,694, unrolled:  12,730
+// 10,6  rolled up:  12,460, unrolled:  12,730
+// 10,10 rolled up:  97,356, unrolled: 146,358
+    final Btree            b = new Btree(powerTwo(10), powerTwo(10), 32, 32);
     final Process          P = b.P; //b.new Process("verilogPut");
     final Process.Register k = P.register("k", b.bitsPerKey);   k.input();
     final Process.Register d = P.register("d", b.bitsPerData);  d.input();
