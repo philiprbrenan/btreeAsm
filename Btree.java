@@ -969,7 +969,7 @@ chipStop = true;
        }
      }
 
-    void removeElementAt(Verilog v, Process.Register Index)                     // Remove the indexed key, data pair from the stuck as a single instruction
+    void removeElementAtUnrolled(Verilog v, Process.Register Index)             // Remove the indexed key, data pair from the stuck as a single instruction
      {size.dec(v);
       Key .copyIs(v, keys, Index);
       Data.copyIs(v, data, Index);
@@ -983,6 +983,23 @@ chipStop = true;
            }
          };
        }
+     }
+
+    void removeElementAt(Verilog v, Process.Register Index)                     // Remove the indexed key, data pair from the stuck as a single instruction
+     {size.dec(v);
+      Key .copyIs(v, keys, Index);
+      Data.copyIs(v, data, Index);
+
+      final String i = P.processMemoryIndexName();
+      v.A("for("+i+" = 0;"+i+" < "+maxStuckSize+"-1; "+i+" = "+i+"+1) begin");
+      v.indent();
+      v.new If (i + ">= "+Index.registerName())
+       {void Then()
+         {v.assign(keys.registerName(i), keys.registerName(i+"+1"));
+          v.assign(data.registerName(i), data.registerName(i+"+1"));
+         }
+       };
+      v.end();
      }
 
     void RemoveElementAt(Process.Register Index)                                // Remove the indexed key, data pair from the stuck as a single instruction
@@ -1161,7 +1178,7 @@ chipStop = true;
                }
              }
            }
-          void verilogTest(Verilog v)
+          void verilogUnrolled(Verilog v)                                       // Unrolled version
            {for (int j = 0; j < maxStuckSize-I; j += I+I)
              {final int J = j;
                v.new If (compares.registerName(J+I))
@@ -1172,14 +1189,14 @@ chipStop = true;
                };
              }
            }
-          void verilog(Verilog v)                                               // Unrolled verion - produces slightly less code
+          void verilog(Verilog v)
            {final String j = P.processMemoryIndexName();
             v.A("for("+j+" = 0; "+j+" < "+(maxStuckSize-I)+"; "+j+" = "+j+"+"+2*I+") begin");
             v.indent();
-            v.new If (compares.registerName()+"["+j+"+"+I+"]")
+            v.new If (compares.registerName(j+"+"+I))
              {void Then()
-               {v.A("  "+compares.registerName()+"["+j+"] <= 1;");
-                v.A("  "+collapse.registerName()+"["+j+"] <= "+collapse.registerName()+"["+j+"+"+I+"];");
+               {v.A("  "+compares.registerName(j)+" <= 1;");
+                v.A("  "+collapse.registerName(j)+" <= "+collapse.registerName(j+"+"+I)+";");
                 v.end();
                }
              };
@@ -7031,7 +7048,7 @@ Merge     : 0
   static void newTests()                                                        // Tests being worked on
    {//oldTests();
     //test_insertElementAt();
-    test_search_le();
+    test_removeElementAt();
     //test_verilog_put();
    }
 
