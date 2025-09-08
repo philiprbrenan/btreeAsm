@@ -936,8 +936,8 @@ chipStop = true;
       v.indent();
       v.new If(i+" > "+Index.registerName())
        {void Then()
-         {v.A(keys.registerName(i)+" <= "+keys.registerName(i+"-1"));
-          v.A(data.registerName(i)+" <= "+data.registerName(i+"-1"));
+         {v.A(keys.registerName(i)+" <= "+keys.registerName(i+"-1")+";");
+          v.A(data.registerName(i)+" <= "+data.registerName(i+"-1")+";");
          }
        };
       v.end();
@@ -1111,6 +1111,23 @@ chipStop = true;
               Key.registerGet() <= keys.registerGet(i) && i < N;
             compares.registerSet(in ? 1 : 0, i);
             collapse.registerSet(i, i);
+           }
+         }
+        void verilogUnrolled(Verilog v)
+         {final String N = size.registerName();
+          if (true)                                                             // Compare first key
+           {final String le = Key.registerName()+" <= "+keys.registerName(0)+
+              " && 0 < "+N;
+            v.assign(compares.registerName(0), le);
+            collapse.registerSet(v, 0, 0);
+           }
+          for (int i = 1; i < maxStuckSize; ++i)                                // Compare each key
+           {final String K = Key.registerName();
+             final String in =
+              K + " >  " + keys.registerName(i-1) + " && " +
+              K + " <= " + keys.registerName(i)   + " && " +i+ " < "+N;
+            v.assign(compares.registerName(i), in);
+            collapse.registerSet(v, i, i);
            }
          }
         void verilog(Verilog v)
@@ -7011,7 +7028,8 @@ Merge     : 0
 
   static void newTests()                                                        // Tests being worked on
    {//oldTests();
-    test_search_eq();
+    test_insertElementAt();
+    //test_search_eq();
     //test_verilog_put();
    }
 
