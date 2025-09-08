@@ -776,7 +776,7 @@ module Btree;                                                                   
               begin
                 integer f;
                 f = $fopen("verilog/trace_verilog.txt", "a");
-                $fdisplay(f, "Location: Chip.java:0575:<init>|  Chip.java:1174:<init>|  Chip.java:1173:Zero|  Btree.java:0318:stuckGetRoot|  Btree.java:3732:test_removeElementAt|  Btree.java:7051:newTests|  Btree.java:7057:main|");
+                $fdisplay(f, "Location: Chip.java:0575:<init>|  Chip.java:1174:<init>|  Chip.java:1173:Zero|  Btree.java:0318:stuckGetRoot|  Btree.java:3734:test_removeElementAt|  Btree.java:7053:newTests|  Btree.java:7059:main|");
                 $fclose(f);
               end
             end
@@ -801,7 +801,7 @@ module Btree;                                                                   
               begin
                 integer f;
                 f = $fopen("verilog/trace_verilog.txt", "a");
-                $fdisplay(f, "Location: Chip.java:0575:<init>|  Btree.java:0324:<init>|  Btree.java:0323:stuckGet|  Btree.java:0319:stuckGetRoot|  Btree.java:3732:test_removeElementAt|  Btree.java:7051:newTests|  Btree.java:7057:main|");
+                $fdisplay(f, "Location: Chip.java:0575:<init>|  Btree.java:0324:<init>|  Btree.java:0323:stuckGet|  Btree.java:0319:stuckGetRoot|  Btree.java:3734:test_removeElementAt|  Btree.java:7053:newTests|  Btree.java:7059:main|");
                 $fclose(f);
               end
             end
@@ -816,7 +816,7 @@ module Btree;                                                                   
               begin
                 integer f;
                 f = $fopen("verilog/trace_verilog.txt", "a");
-                $fdisplay(f, "Location: Chip.java:1871:<init>|  Chip.java:1870:waitResultOfTransaction|  Btree.java:0337:stuckGet|  Btree.java:0319:stuckGetRoot|  Btree.java:3732:test_removeElementAt|  Btree.java:7051:newTests|  Btree.java:7057:main|");
+                $fdisplay(f, "Location: Chip.java:1871:<init>|  Chip.java:1870:waitResultOfTransaction|  Btree.java:0337:stuckGet|  Btree.java:0319:stuckGetRoot|  Btree.java:3734:test_removeElementAt|  Btree.java:7053:newTests|  Btree.java:7059:main|");
                 $fclose(f);
               end
             end
@@ -831,7 +831,7 @@ module Btree;                                                                   
               begin
                 integer f;
                 f = $fopen("verilog/trace_verilog.txt", "a");
-                $fdisplay(f, "Location: Chip.java:1871:<init>|  Chip.java:1870:waitResultOfTransaction|  Btree.java:0338:stuckGet|  Btree.java:0319:stuckGetRoot|  Btree.java:3732:test_removeElementAt|  Btree.java:7051:newTests|  Btree.java:7057:main|");
+                $fdisplay(f, "Location: Chip.java:1871:<init>|  Chip.java:1870:waitResultOfTransaction|  Btree.java:0338:stuckGet|  Btree.java:0319:stuckGetRoot|  Btree.java:3734:test_removeElementAt|  Btree.java:7053:newTests|  Btree.java:7059:main|");
                 $fclose(f);
               end
             end
@@ -846,7 +846,7 @@ module Btree;                                                                   
               begin
                 integer f;
                 f = $fopen("verilog/trace_verilog.txt", "a");
-                $fdisplay(f, "Location: Chip.java:1871:<init>|  Chip.java:1870:waitResultOfTransaction|  Btree.java:0339:stuckGet|  Btree.java:0319:stuckGetRoot|  Btree.java:3732:test_removeElementAt|  Btree.java:7051:newTests|  Btree.java:7057:main|");
+                $fdisplay(f, "Location: Chip.java:1871:<init>|  Chip.java:1870:waitResultOfTransaction|  Btree.java:0339:stuckGet|  Btree.java:0319:stuckGetRoot|  Btree.java:3734:test_removeElementAt|  Btree.java:7053:newTests|  Btree.java:7059:main|");
                 $fclose(f);
               end
             end
@@ -861,7 +861,7 @@ module Btree;                                                                   
               begin
                 integer f;
                 f = $fopen("verilog/trace_verilog.txt", "a");
-                $fdisplay(f, "Location: Chip.java:1871:<init>|  Chip.java:1870:waitResultOfTransaction|  Btree.java:0340:stuckGet|  Btree.java:0319:stuckGetRoot|  Btree.java:3732:test_removeElementAt|  Btree.java:7051:newTests|  Btree.java:7057:main|");
+                $fdisplay(f, "Location: Chip.java:1871:<init>|  Chip.java:1870:waitResultOfTransaction|  Btree.java:0340:stuckGet|  Btree.java:0319:stuckGetRoot|  Btree.java:3734:test_removeElementAt|  Btree.java:7053:newTests|  Btree.java:7059:main|");
                 $fclose(f);
               end
             end
@@ -886,7 +886,7 @@ module Btree;                                                                   
               begin
                 integer f;
                 f = $fopen("verilog/trace_verilog.txt", "a");
-                $fdisplay(f, "Location: Chip.java:0575:<init>|  Btree.java:0343:<init>|  Btree.java:0342:stuckGet|  Btree.java:0319:stuckGetRoot|  Btree.java:3732:test_removeElementAt|  Btree.java:7051:newTests|  Btree.java:7057:main|");
+                $fdisplay(f, "Location: Chip.java:0575:<init>|  Btree.java:0343:<init>|  Btree.java:0342:stuckGet|  Btree.java:0319:stuckGetRoot|  Btree.java:3734:test_removeElementAt|  Btree.java:7053:newTests|  Btree.java:7059:main|");
                 $fclose(f);
               end
             end
@@ -900,7 +900,7 @@ module Btree;                                                                   
               begin
                 integer f;
                 f = $fopen("verilog/trace_verilog.txt", "a");
-                $fdisplay(f, "Location: Chip.java:0575:<init>|  Chip.java:0828:<init>|  Chip.java:0827:RegisterSet|  Btree.java:3733:test_removeElementAt|  Btree.java:7051:newTests|  Btree.java:7057:main|");
+                $fdisplay(f, "Location: Chip.java:0575:<init>|  Chip.java:0828:<init>|  Chip.java:0827:RegisterSet|  Btree.java:3735:test_removeElementAt|  Btree.java:7053:newTests|  Btree.java:7059:main|");
                 $fclose(f);
               end
             end
@@ -922,7 +922,7 @@ module Btree;                                                                   
               begin
                 integer f;
                 f = $fopen("verilog/trace_verilog.txt", "a");
-                $fdisplay(f, "Location: Chip.java:0575:<init>|  Btree.java:3735:<init>|  Btree.java:3734:test_removeElementAt|  Btree.java:7051:newTests|  Btree.java:7057:main|");
+                $fdisplay(f, "Location: Chip.java:0575:<init>|  Btree.java:3737:<init>|  Btree.java:3736:test_removeElementAt|  Btree.java:7053:newTests|  Btree.java:7059:main|");
                 $fclose(f);
               end
             end
