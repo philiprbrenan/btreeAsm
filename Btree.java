@@ -477,16 +477,18 @@ chipStop = true;
     void copyDown(Verilog v, Stuck Source, int Power)                           // Copy a stuck into itself or another stuck shifting the elements down in the stuck by a predetermined amount
      {final int delta = powerTwo(Power);
       final String i = P.processMemoryIndexName();
-      v.A("for ("+i+" = 0; "+i+" < "+(maxStuckSize - delta)+"; "+i+" = "+i+" + 1) begin");
-      v.indent();
-      v.A(keys.registerName(i)+" <= "+Source.keys.registerName(i+"+"+delta)+";");
-      v.A(data.registerName(i)+" <= "+Source.data.registerName(i+"+"+delta)+";");
-      v.end();
-      v.A("for ("+i+" = "+(maxStuckSize - delta)+"; "+i+" < "+maxStuckSize+"; "+i+" = "+i+"+1) begin");
-      v.indent();
-      v.A(keys.registerName(i)+" <= 0;");
-      v.A(data.registerName(i)+" <= 0;");
-      v.end();
+      v.new For(i, "0", ""+(maxStuckSize - delta))
+       {void body()
+         {v.A(keys.registerName(i)+" <= "+Source.keys.registerName(i+"+"+delta)+";");
+          v.A(data.registerName(i)+" <= "+Source.data.registerName(i+"+"+delta)+";");
+         }
+       };
+      v.new For(i, ""+(maxStuckSize - delta), ""+maxStuckSize)
+       {void body()
+         {v.A(keys.registerName(i)+" <= 0;");
+          v.A(data.registerName(i)+" <= 0;");
+         }
+       };
      }
 
     void CopyDown(Stuck Source, int Power)                                      // Copy a stuck into itself or another stuck shifting the elements down in the stuck by a predetermined amount as an instruction
@@ -7048,7 +7050,6 @@ Merge     : 0
   static void newTests()                                                        // Tests being worked on
    {//oldTests();
     //test_insertElementAt();
-    test_removeElementAt();
     //test_verilog_put();
    }
 
