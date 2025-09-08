@@ -932,7 +932,7 @@ chipStop = true;
       Process.Register Key, Process.Register Data)
      {size.inc(v);                                                              // Increase number of elements
       final String i = P.processMemoryIndexName();
-      v.A("for("+i+" = "+maxStuckSize+"-1; "+i+" > 0; "+i+" = "+i+"+1) begin");
+      v.A("for("+i+" = "+maxStuckSize+"-1; "+i+" > 0; "+i+" = "+i+"-1) begin");
       v.indent();
       v.new If(i+" > "+Index.registerName())
        {void Then()
@@ -6999,7 +6999,7 @@ Merge     : 0
    }
 
   static void newTests()                                                        // Tests being worked on
-   {//oldTests();
+   {oldTests();
     test_copy();
     //test_verilog_put();
    }
