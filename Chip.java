@@ -1192,7 +1192,7 @@ if __name__ == "__main__":
       void one(           int i) {R(); registerCheckArrayed(); rs(1, i);}       // One an element of a register array in Java
       void one(Verilog v, int i) {v.assign(rn(i), "1");}                        // One an element of a register array in Verilog
 
-      void One(int Index)                                                       // Oner a register instruction
+      void One(int Index)                                                       // One as an instruction
        {new Instruction()
          {void action()           {one(   Index);};
           void verilog(Verilog v) {one(v, Index);};
