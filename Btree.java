@@ -77,7 +77,7 @@ class Btree extends Chip                                                        
 
     PutParentStuck  = new Stuck(P, "putParent", true);                          // Parent stuck during put
     PutChildStuck   = new Stuck(P, "putChild");                                 // Child stuck during put
-    MergeStuck      = PutParentStuck; //new Stuck(P, "merge", true);                              // Parent stuck during merge
+    MergeStuck      = PutParentStuck; //new Stuck(P, "merge", true);            // Parent stuck during merge
 
     mergeSum = register("sum", 1+stuckAddressSize);                             // Sum of the lengths of the two stucks
     mergeCan = register("can", 1);                                              // Can merge
@@ -120,7 +120,7 @@ chipStop = true;
     root.Zero();
     gFreeNext.ExecuteTransaction(root);
     gFreeNext.waitResultOfTransaction();
-    ref.Copy(gFreeNext.transactionOutputRegisters.firstElement(), 0);              // Save reference to allocated stuck
+    ref.Copy(gFreeNext.transactionOutputRegisters.firstElement(), 0);           // Save reference to allocated stuck
     P.new Instruction()                                                         // First free stuck if any is the allocated stuck
      {void action()
        {if (ref.registerGet() == 0) P.processStop(20);
@@ -2563,8 +2563,8 @@ chipStop = true;
                    {stuckIndex1.Copy(S.size);
                     stuckIndex1.Dec();
 
-                    //mergeLeavesNotTop  (S, s, stuckIndex1);                     // Try merging last leleaves not at top into parent
-                    //mergeBranchesNotTop(S, s, stuckIndex1);                     // Try merging branches not at top into parent
+                    //mergeLeavesNotTop  (S, s, stuckIndex1);                   // Try merging last leleaves not at top into parent
+                    //mergeBranchesNotTop(S, s, stuckIndex1);                   // Try merging branches not at top into parent
 
                     P.new If(stuckIndex1)
                      {void Then()
@@ -6051,7 +6051,7 @@ Merge     : 0
      {void code()
        {k.Inc(); d.Copy(k); d.Inc();
         b.put(k, d);
-        if (false)                                                               // Create test trees
+        if (false)                                                              // Create test trees
          {P.new Instruction()
            {void action()
              {say("  static String test_put_save_"+k.registerGet()+"()\n   {return \"\"\"", b.btreeSave() + "\"\"\";\n   }\n");
