@@ -552,11 +552,12 @@ chipStop = true;
       v.A(data.registerName(i)+" <= "+Source.data.registerName(i+"-"+delta)+";");
       v.end();
 
-      v.A("for ("+i+" = 0; "+i+" < "+delta+"; "+i+" = "+i+"+1) begin");
-      v.indent();
-      v.A(keys.registerName(i)+" <= 0;");
-      v.A(data.registerName(i)+" <= 0;");
-      v.end();
+      v.new For(i, "0", ""+delta)
+       {void body()
+         {v.A(keys.registerName(i)+" <= 0;");
+          v.A(data.registerName(i)+" <= 0;");
+         }
+       };
      }
 
     void CopyUp(Stuck Source, int Power)                                        // Copy a stuck into itself or another stuck shifting the elements up in the stuck by a predetermined amount as an instruction
@@ -565,7 +566,6 @@ chipStop = true;
         void verilog(Verilog v) {copyUp(v, Source, Power);}
        };
      }
-
 
     void CopyUp(Process.Register Delta)                                         // Copy a stuck up into itself a variable number of places
      {for (int i = logTwo(prevPowerOfTwo(maxStuckSize)); i >= 0; i--)
@@ -993,15 +993,16 @@ chipStop = true;
       Data.copyIs(v, data, Index);
 
       final String i = P.processMemoryIndexName();
-      v.A("for("+i+" = 0;"+i+" < "+maxStuckSize+"-1; "+i+" = "+i+"+1) begin");
-      v.indent();
-      v.new If (i + ">= "+Index.registerName())
-       {void Then()
-         {v.assign(keys.registerName(i), keys.registerName(i+"+1"));
-          v.assign(data.registerName(i), data.registerName(i+"+1"));
+      v.new For(i, "0", ""+(maxStuckSize-1))
+       {void body()
+         {v.new If (i + ">= "+Index.registerName())
+           {void Then()
+             {v.assign(keys.registerName(i), keys.registerName(i+"+1"));
+              v.assign(data.registerName(i), data.registerName(i+"+1"));
+             }
+           };
          }
        };
-      v.end();
      }
 
     void RemoveElementAt(Process.Register Index)                                // Remove the indexed key, data pair from the stuck as a single instruction
@@ -1036,13 +1037,14 @@ chipStop = true;
         void verilog(Verilog v)
          {final String N = size.registerName();
           final String i = P.processMemoryIndexName();
-          v.A("for("+i+" = 0;"+i+" < "+maxStuckSize+"; "+i+" = "+i+"+1) begin");
-          v.indent();
-          final String eq = Key.registerName()+" == "+keys.registerName(i)+
-              " && "+i+" < "+N;
-          v.assign(compares.registerName(i), eq);
-          v.assign(collapse.registerName(i), i);
-          v.end();
+          v.new For(i, "0", ""+maxStuckSize)
+           {void body()
+             {final String eq = Key.registerName()+" == "+keys.registerName(i)+
+                  " && "+i+" < "+N;
+              v.assign(compares.registerName(i), eq);
+              v.assign(collapse.registerName(i), i);
+             }
+           };
          }
        };
       for(int i = 1; i < maxStuckSize; i *= 2)                                  // Collapse the comparison
@@ -1158,15 +1160,16 @@ chipStop = true;
             collapse.registerSet(v, 0, 0);
            }
           final String i = P.processMemoryIndexName();
-          v.A("for("+i+" = 1;"+i+" < "+maxStuckSize+"; "+i+" = "+i+"+1) begin");
-          v.indent();
-          final String K = Key.registerName();
-          final String in =
-            K + " >  " + keys.registerName(i+"-1") + " && " +
-            K + " <= " + keys.registerName(i)      + " && " +i+ " < "+N;
-          v.assign(compares.registerName(i), in);
-          v.assign(collapse.registerName(i), i);
-          v.end();
+          v.new For(i, "1", ""+maxStuckSize)
+           {void body()
+             {final String K = Key.registerName();
+              final String in =
+                K + " >  " + keys.registerName(i+"-1") + " && " +
+                K + " <= " + keys.registerName(i)      + " && " +i+ " < "+N;
+              v.assign(compares.registerName(i), in);
+              v.assign(collapse.registerName(i), i);
+             }
+           };
          }
        };
       for(int i = 1; i < maxStuckSize; i *= 2)                                  // Collapse the comparison
