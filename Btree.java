@@ -479,13 +479,13 @@ chipStop = true;
       final String i = P.processMemoryIndexName();
       v.A("for ("+i+" = 0; "+i+" < "+(maxStuckSize - delta)+"; "+i+" = "+i+" + 1) begin");
       v.indent();
-      v.A(keys.registerName()+"["+i+"] <= "+Source.keys.registerName()+"["+i+"+"+delta+"];");
-      v.A(data.registerName()+"["+i+"] <= "+Source.data.registerName()+"["+i+"+"+delta+"];");
+      v.A(keys.registerName(i)+" <= "+Source.keys.registerName(i+"+"+delta)+";");
+      v.A(data.registerName(i)+" <= "+Source.data.registerName(i+"+"+delta)+";");
       v.end();
       v.A("for ("+i+" = "+(maxStuckSize - delta)+"; "+i+" < "+maxStuckSize+"; "+i+" = "+i+"+1) begin");
       v.indent();
-      v.A(keys.registerName()+"["+i+"] <= 0;");
-      v.A(data.registerName()+"["+i+"] <= 0;");
+      v.A(keys.registerName(i)+" <= 0;");
+      v.A(data.registerName(i)+" <= 0;");
       v.end();
      }
 
@@ -546,14 +546,14 @@ chipStop = true;
       final String i = P.processMemoryIndexName();
       v.A("for ("+i+" = "+maxStuckSize+"-1; "+i+" >= "+delta+"; "+i+" = "+i+" -1) begin");
       v.indent();
-      v.A(keys.registerName()+"["+i+"] <= "+Source.keys.registerName()+"["+i+"-"+delta+"];");
-      v.A(data.registerName()+"["+i+"] <= "+Source.data.registerName()+"["+i+"-"+delta+"];");
+      v.A(keys.registerName(i)+" <= "+Source.keys.registerName(i+"-"+delta)+";");
+      v.A(data.registerName(i)+" <= "+Source.data.registerName(i+"-"+delta)+";");
       v.end();
 
       v.A("for ("+i+" = 0; "+i+" < "+delta+"; "+i+" = "+i+"+1) begin");
       v.indent();
-      v.A(keys.registerName()+"["+i+"] <= 0;");
-      v.A(data.registerName()+"["+i+"] <= 0;");
+      v.A(keys.registerName(i)+" <= 0;");
+      v.A(data.registerName(i)+" <= 0;");
       v.end();
      }
 
@@ -936,8 +936,8 @@ chipStop = true;
       v.indent();
       v.new If(i+" > "+Index.registerName())
        {void Then()
-         {v.A(keys.registerName()+"["+i+"] <= "+keys.registerName()+"["+i+"-1];");
-          v.A(data.registerName()+"["+i+"] <= "+data.registerName()+"["+i+"-1];");
+         {v.A(keys.registerName(i)+" <= "+keys.registerName(i+"-1"));
+          v.A(data.registerName(i)+" <= "+data.registerName(i+"-1"));
          }
        };
       v.end();
@@ -1005,7 +1005,7 @@ chipStop = true;
             collapse.registerSet(i, i);                                         // The number of the test being collapsed
            }
          }
-        void verilog(Verilog v)
+        void verilogUnRolled(Verilog v)
          {final String N = size.registerName();
           for (int i = 0; i < maxStuckSize; ++i)                                // Compare each key
            {final String eq = Key.registerName()+" == "+keys.registerName(i)+
@@ -1013,6 +1013,17 @@ chipStop = true;
             v.assign(compares.registerName(i), eq);
             collapse.registerSet(v, i, i);
            }
+         }
+        void verilog(Verilog v)
+         {final String N = size.registerName();
+          final String i = P.processMemoryIndexName();
+          v.A("for("+i+" = 0;"+i+" < "+maxStuckSize+"; "+i+" = "+i+"+1) begin");
+          v.indent();
+          final String eq = Key.registerName()+" == "+keys.registerName(i)+
+              " && "+i+" < "+N;
+          v.assign(compares.registerName(i), eq);
+          v.assign(collapse.registerName(i), i);
+          v.end();
          }
        };
       for(int i = 1; i < maxStuckSize; i *= 2)                                  // Collapse the comparison
@@ -1043,8 +1054,8 @@ chipStop = true;
             v.indent();
             v.new If (compares.registerName()+"["+j+"+"+I+"]")
              {void Then()
-               {v.A("  "+compares.registerName()+"["+j+"] <= 1;");
-                v.A("  "+collapse.registerName()+"["+j+"] <= "+collapse.registerName()+"["+j+"+"+I+"];");
+               {v.A("  "+compares.registerName(j)+" <= 1;");
+                v.A("  "+collapse.registerName(j)+" <= "+collapse.registerName(j+"+"+I)+";");
                 v.end();
                }
              };
@@ -6999,8 +7010,8 @@ Merge     : 0
    }
 
   static void newTests()                                                        // Tests being worked on
-   {oldTests();
-    test_copy();
+   {//oldTests();
+    test_search_eq();
     //test_verilog_put();
    }
 
