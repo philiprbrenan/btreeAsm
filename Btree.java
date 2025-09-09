@@ -477,7 +477,7 @@ chipStop = true;
     void copyDown(Verilog v, Stuck Source, int Power)                           // Copy a stuck into itself or another stuck shifting the elements down in the stuck by a predetermined amount
      {final int delta = powerTwo(Power);
       final String i = P.processMemoryIndexName();
-      v.new For(i, "0", ""+(maxStuckSize - delta))
+      v.new For(i, ""+(maxStuckSize - delta))
        {void body()
          {v.A(keys.registerName(i)+" <= "+Source.keys.registerName(i+"+"+delta)+";");
           v.A(data.registerName(i)+" <= "+Source.data.registerName(i+"+"+delta)+";");
@@ -552,7 +552,7 @@ chipStop = true;
       v.A(data.registerName(i)+" <= "+Source.data.registerName(i+"-"+delta)+";");
       v.end();
 
-      v.new For(i, "0", ""+delta)
+      v.new For(i, ""+delta)
        {void body()
          {v.A(keys.registerName(i)+" <= 0;");
           v.A(data.registerName(i)+" <= 0;");
@@ -993,7 +993,7 @@ chipStop = true;
       Data.copyIs(v, data, Index);
 
       final String i = P.processMemoryIndexName();
-      v.new For(i, "0", ""+(maxStuckSize-1))
+      v.new For(i, ""+(maxStuckSize-1))
        {void body()
          {v.new If (i + ">= "+Index.registerName())
            {void Then()
@@ -1037,7 +1037,7 @@ chipStop = true;
         void verilog(Verilog v)
          {final String N = size.registerName();
           final String i = P.processMemoryIndexName();
-          v.new For(i, "0", ""+maxStuckSize)
+          v.new For(i, ""+maxStuckSize)
            {void body()
              {final String eq = Key.registerName()+" == "+keys.registerName(i)+
                   " && "+i+" < "+N;
@@ -1278,7 +1278,7 @@ chipStop = true;
 
         void verilog(Verilog v)
          {final String i = P.processMemoryIndexName();
-          v.new For(i, "0", ""+C)
+          v.new For(i, ""+C)
            {void body()
              {v.assign(Left .keys.registerName(i), keys.registerName(i));
               v.assign(Left .data.registerName(i), data.registerName(i));
@@ -1338,7 +1338,7 @@ chipStop = true;
 
         void verilog(Verilog v)
          {final String i = P.processMemoryIndexName();
-          v.new For(i, "0", ""+Copy)
+          v.new For(i, ""+Copy)
            {void body()
              {v.assign(Left .keys.registerName(i), keys.registerName(i));
               v.assign(Left .data.registerName(i), data.registerName(i));
@@ -1396,7 +1396,7 @@ chipStop = true;
         void verilog(Verilog v)
          {final int N = maxStuckSize / 2;
           final String i = P.processMemoryIndexName();
-          v.new For(i, "0", ""+N)
+          v.new For(i, ""+N)
            {void body()
              {v.assign(Left.keys.registerName(i), keys.registerName(i));
               v.assign(Left.data.registerName(i), data.registerName(i));
@@ -1455,7 +1455,7 @@ chipStop = true;
         void verilog(Verilog v)
          {final int N = (maxStuckSize-1) / 2;
           final String i = P.processMemoryIndexName();
-          v.new For(i, "0", ""+N)
+          v.new For(i, ""+N)
            {void body()
              {v.assign(Left.keys.registerName(i), keys.registerName(i));
               v.assign(Left.data.registerName(i), data.registerName(i));
@@ -1465,7 +1465,7 @@ chipStop = true;
           Left.data.       copy(v, N, data, N);
           Key.copy(v, keys, N);
 
-          v.new For(i, "0", ""+(N+1))
+          v.new For(i, ""+(N+1))
            {void body()
              {v.assign(keys.registerName(i), keys.registerName(i+"+"+(N+1)));
               v.assign(data.registerName(i), data.registerName(i+"+"+(N+1)));
@@ -7035,11 +7035,11 @@ Merge     : 0
 
   static void test_verilog_put()
    {sayCurrentTestName();
-// 10,4    5,706
-// 10,6    7,618
-// 10,8   15,010
-// 10,10  44,290
-    final Btree            b = new Btree(powerTwo(10), powerTwo(4), 32, 32);
+// 10,4    5,542
+// 10,6    6,886
+// 10,8   11,974
+// 10,10  32,038
+    final Btree            b = new Btree(powerTwo(10), powerTwo(10), 32, 32);
     final Process          P = b.P; //b.new Process("verilogPut");
     final Process.Register k = P.register("k", b.bitsPerKey);   k.input();
     final Process.Register d = P.register("d", b.bitsPerData);  d.input();
@@ -7111,7 +7111,7 @@ Merge     : 0
 
   static void newTests()                                                        // Tests being worked on
    {//oldTests();
-    test_splitLowButOne();
+    //test_splitLowButOne();
     test_verilog_put();
    }
 
