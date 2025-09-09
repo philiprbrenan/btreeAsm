@@ -1,6 +1,4 @@
-<div>
-   <p><a href="https://github.com/philiprbrenan/btreeAsm"><img src="https://github.com/philiprbrenan/btreeAsm/workflows/Test/badge.svg"></a>
-</div>
+[![Test](https://github.com/philiprbrenan/btreeAsm/workflows/Test/badge.svg)](https://github.com/philiprbrenan/btreeAsm)
 
 # Goal
 
