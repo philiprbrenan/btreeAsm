@@ -871,7 +871,7 @@ if __name__ == "__main__":
          }
         else
          {final String i = processMemoryIndexName();
-          v.new For(i, i+" < "+registerSize)
+          v.new For(i, "0", ""+registerSize)
            {void body()
              {v.assign(registerName()+"["+i+"]", Source.registerName()+"["+i+"]");
              }
@@ -1034,14 +1034,16 @@ if __name__ == "__main__":
            };
          }
         else                                                                    // Array register
-         {for (int i = 0; i < registerSize; i++)
-           {final int I = i;
-             v.new If (Source.registerName(I))
-             {void Then()
-               {v.assign(registerName(I), Source.registerName(I));
-               }
-             };
-           }
+         {final String i = processMemoryIndexName();
+          v.new For(i, "0", ""+registerSize)
+           {void body()
+             {v.new If (Source.registerName(i))
+               {void Then()
+                 {v.assign(registerName(i), Source.registerName(i));
+                 }
+               };
+             }
+           };
          }
        }
 
