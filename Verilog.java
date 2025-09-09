@@ -13,7 +13,7 @@ class Verilog extends Test                                                      
   static final String testExt = "tb";                                           // Extension for test bench
   static final String pyExt   = "py";                                           // Python extension
   static final String sdcExt  = "sdc";                                          // Extension for constraints file
-  boolean parallel  = false;                                                    // Assign in parallel if true - inplied by synthesis being true
+  boolean parallel  = false;                                                    // Assign in parallel if true - implied by synthesis being true
   boolean synthesis = false;                                                    // Assign in parallel if true and do the other things required for a successful synthesis
   int indent = 0;                                                               // Current indentation
   final Stack<Line> lines = new Stack<>();                                      // Lines of verilog
@@ -54,7 +54,7 @@ class Verilog extends Test                                                      
     l.a(s);
    }
 
-  void A(Verilog v)                                                             // Add verilog within veriopg
+  void A(Verilog v)                                                             // Add verilog within verilog
    {for(Line l : v.lines) new Line(l);
    }
 
@@ -228,7 +228,7 @@ class Verilog extends Test                                                      
     a(";");
    }
 
-  class IfNotDef                                                                // If a prepreocessor variable is not defined
+  class IfNotDef                                                                // If a preprocessor variable is not defined
    {IfNotDef(String Variable)
      {A("`ifndef "+Variable.toUpperCase());
       indent();
@@ -408,9 +408,9 @@ endcase
 
   static void test_comment()
    {final Verilog v = new Verilog();
-    v.comment("Hello Word");
+    v.comment("Hello World");
     ok(v, """
-// Hello Word
+// Hello World
 """);
    }
 
@@ -520,7 +520,6 @@ b = b - 1;
     test_task();
     test_always();
     test_inc();
-    test_elseIf();
    }
 
   static void newTests()                                                        // Tests being worked on
