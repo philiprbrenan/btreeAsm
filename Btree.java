@@ -7035,7 +7035,7 @@ Merge     : 0
 
   static void test_verilog_put()
    {sayCurrentTestName();
-// 10,4    5,698
+// 10,4    5,706
 // 10,6    7,618
 // 10,8   15,010
 // 10,10  44,290
@@ -7112,7 +7112,7 @@ Merge     : 0
   static void newTests()                                                        // Tests being worked on
    {//oldTests();
     test_splitLowButOne();
-    //test_verilog_find();
+    test_verilog_put();
    }
 
   public static void main(String[] args)                                        // Test if called as a program
