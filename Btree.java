@@ -1282,8 +1282,8 @@ chipStop = true;
            {void body()
              {v.assign(Left .keys.registerName(i), keys.registerName(i));
               v.assign(Left .data.registerName(i), data.registerName(i));
-              v.assign(Right.keys.registerName(i), keys.registerName(i+C));
-              v.assign(Right.data.registerName(i), data.registerName(i+C));
+              v.assign(Right.keys.registerName(i), keys.registerName(i+"+"+C));
+              v.assign(Right.data.registerName(i), data.registerName(i+"+"+C));
              }
            };
           Left .size.registerSet(v, C);
@@ -1315,7 +1315,7 @@ chipStop = true;
           Right.data.copy(Copy, data, 2*Copy+1);
          }
 
-        void verilog(Verilog v)
+        void verilogUnrolled(Verilog v)
          {for (int i = 0; i < Copy; ++i)
            {Left.keys.copy(v, i, keys, i);
             Left.data.copy(v, i, data, i);
@@ -1333,6 +1333,23 @@ chipStop = true;
              {Right.size.registerSet(v, N - Copy-1);
              }
            };
+          Right.data.copy(v, Copy, data, 2*Copy+1);
+         }
+
+        void verilog(Verilog v)
+         {final String i = P.processMemoryIndexName();
+          v.new For(i, "0", ""+Copy)
+           {void body()
+             {v.assign(Left .keys.registerName(i), keys.registerName(i));
+              v.assign(Left .data.registerName(i), data.registerName(i));
+              v.assign(Right.keys.registerName(i), keys.registerName(i+"+"+(Copy+1)));
+              v.assign(Right.data.registerName(i), data.registerName(i+"+"+(Copy+1)));
+             }
+           };
+          Left.size.registerSet(v, Copy);
+          Left.data.copy       (v, Copy, data, Copy);
+
+          v.assign(Right.size.registerName(), size.registerName()+"-"+(Copy+1));
           Right.data.copy(v, Copy, data, 2*Copy+1);
          }
        };
@@ -6987,7 +7004,7 @@ Merge     : 0
 // 10,6    8,403
 // 10,8   18,291
 // 10,10  57,555
-    final Btree            b = new Btree(powerTwo(10), powerTwo(4), 32, 32);
+    final Btree            b = new Btree(powerTwo(10), powerTwo(10), 32, 32);
     final Process          P = b.P; //b.new Process("verilogPut");
     final Process.Register k = P.register("k", b.bitsPerKey);   k.input();
     final Process.Register d = P.register("d", b.bitsPerData);  d.input();
