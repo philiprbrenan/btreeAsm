@@ -25,8 +25,8 @@ class Chip extends Test                                                         
   Chip chip()                   {return this;}                                  // This chip
   static Chip chip(String Name) {return new Chip(Name);}                        // Create a new chip
 
-  void chipRunJava()                                                            // Run the processes == programs defined on this chip using the Java implementation
-   {for(Process p : processes) p.processInit();                                 // Initialize each process == program. Capture the memeory set as up by Java so that it can be used to initialize memory in Verilog. Capture the Java execution trace so that the Verilog execution trace can be comapred to it to ensure that the Verilog executes along the same path as the Java did.
+  void chipRunJava()                                                            // Run the processes == ograms defined on this chip using the Java implementation
+   {for(Process p : processes) p.processInit();                                 // Initialize each process == program. Capture the memory set as up by Java so that it can be used to initialize memory in Verilog. Capture the Java execution trace so that the Verilog execution trace can be compared to it to ensure that the Verilog executes along the same path as the Java did.
     chipStop = false;                                                           // Show the program as running
     deleteFile(javaTraceFile);                                                  // Remove Java trace file
     for(step = 0; !chipStop && step < maxSteps; ++step)                         // Run each program
@@ -1309,7 +1309,7 @@ if __name__ == "__main__":
     void processStep()                                                          // Execute one step in the program
      {if (code.size() == 0) return;                                             // No code to run
       if (processPc >= code.size())                                             // Stop the run if we go off the end of the code
-       {//err("Stopped by prcess", processName);
+       {//err("Stopped by process", processName);
         processStop = chipStop = true;
         return;
        }
@@ -2015,7 +2015,7 @@ if __name__ == "__main__":
      }
    }
 
-//D2 Tests                                                                      // Run tests
+//D0 Tests                                                                      // Run tests
 
   static void test_stop()
    {final int B = 8, N = 16;
