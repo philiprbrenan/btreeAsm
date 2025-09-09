@@ -1436,7 +1436,7 @@ chipStop = true;
            }
           size.registerSet(N);
          }
-        void verilog(Verilog v)
+        void verilogUnrolled(Verilog v)
          {final int N = (maxStuckSize-1) / 2;
           for (int i = 0; i < N; ++i)
            {Left.keys.copy(v, i, keys, i);
@@ -1450,6 +1450,22 @@ chipStop = true;
            {keys.copy(v, i, keys, N+i+1);
             data.copy(v, i, data, N+i+1);
            }
+          size.registerSet(v, N);
+         }
+        void verilog(Verilog v)
+         {final int N = (maxStuckSize-1) / 2;
+          final String i = P.processMemoryIndexName();
+          v.new For(i, "0", ""+N)
+           {void body()
+             {v.assign(Left.keys.registerName(i), keys.registerName(i));
+              v.assign(Left.data.registerName(i), data.registerName(i));
+              v.assign(     keys.registerName(i), keys.registerName(i+"+"+(N+1)));
+              v.assign(     data.registerName(i), data.registerName(i+"+"+(N+1)));
+             }
+           };
+          Left.size.registerSet(v, N);
+          Left.data.       copy(v, N, data, N);
+          Key.copy(v, keys, N);
           size.registerSet(v, N);
          }
        };
