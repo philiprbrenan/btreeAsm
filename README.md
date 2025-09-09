@@ -3,7 +3,8 @@
 # Goal
 
 Use [Java](https://en.wikipedia.org/wiki/Java_(programming_language)) to generate synthesizable [Verilog](https://en.wikipedia.org/wiki/Verilog) to layout a [B-Tree](https://en.wikipedia.org/wiki/B-tree) on the surface of
-a specialized [Silicon](https://en.wikipedia.org/wiki/Silicon) [chip](https://en.wikipedia.org/wiki/Integrated_circuit) so that the [find](https://en.wikipedia.org/wiki/Find_(Unix)), put and delete operations on a [B-Tree](https://en.wikipedia.org/wiki/B-tree) can be performed more quickly than [software](https://en.wikipedia.org/wiki/Software) running on a generic
+a specialized [Silicon](https://en.wikipedia.org/wiki/Silicon) [chip](https://en.wikipedia.org/wiki/Integrated_circuit) so that the [find](https://en.wikipedia.org/wiki/Find_(Unix)), put and delete operations on
+btrees can be performed more quickly than [software](https://en.wikipedia.org/wiki/Software) running on a generic
 processor .
 
 ![put](images/Btree.png)
@@ -15,9 +16,8 @@ processor .
 A [chip](https://en.wikipedia.org/wiki/Integrated_circuit) implements an [algorithm](https://en.wikipedia.org/wiki/Algorithm) in [Silicon](https://en.wikipedia.org/wiki/Silicon). 
 A [chip](https://en.wikipedia.org/wiki/Integrated_circuit) design exists in one of two states:
 
-- **Design**: The stage where the layout of the [chip](https://en.wikipedia.org/wiki/Integrated_circuit) is defined on [Silicon](https://en.wikipedia.org/wiki/Silicon). 
-- **Execution**: When the [chip](https://en.wikipedia.org/wiki/Integrated_circuit) runs a fixed set of parallel [processes](https://en.wikipedia.org/wiki/Process_management_(computing)) to perform work.
-
+- **Design**: The stage where the layout of the [chip](https://en.wikipedia.org/wiki/Integrated_circuit) is described in [Java](https://en.wikipedia.org/wiki/Java_(programming_language)) 
+- **Execution**: When the [chip](https://en.wikipedia.org/wiki/Integrated_circuit) runs a fixed set of parallel [processes](https://en.wikipedia.org/wiki/Process_management_(computing)) to perform work.  This is simulated in [Verilog](https://en.wikipedia.org/wiki/Verilog) 
 ## Process
 
 Each [process](https://en.wikipedia.org/wiki/Process_management_(computing)) is assigned a unique identifier at design time. A [process](https://en.wikipedia.org/wiki/Process_management_(computing)) includes:
@@ -52,14 +52,13 @@ Registers are local blocks of [memory](https://en.wikipedia.org/wiki/Computer_me
 
 - Lose their values if the [chip](https://en.wikipedia.org/wiki/Integrated_circuit) is powered off.
 
-- Start set to zero when the [Silicon](https://en.wikipedia.org/wiki/Silicon) chip is powered on
+- Start set to zero when the [chip](https://en.wikipedia.org/wiki/Integrated_circuit) is powered on
 
 ### Single versus arrayed
 
 Registers can contain just a single element in a [register](https://en.wikipedia.org/wiki/Processor_register) or a predefined
 number of elements in an arrayed [register](https://en.wikipedia.org/wiki/Processor_register). Single and arrayed [registers](https://en.wikipedia.org/wiki/Processor_register) can be
-copied into other single and arrayed registes, with either the whole [register](https://en.wikipedia.org/wiki/Processor_register) being copied or with specific elements being selected with either integer or
-single [register](https://en.wikipedia.org/wiki/Processor_register) indices.
+copied into other single and arrayed [registers](https://en.wikipedia.org/wiki/Processor_register), with either the whole [register](https://en.wikipedia.org/wiki/Processor_register) being copied or with specific elements being selected from arrayed [registers](https://en.wikipedia.org/wiki/Processor_register) with either integer and/or single [register](https://en.wikipedia.org/wiki/Processor_register) indices.
 
 ## Program Execution
 
@@ -71,8 +70,10 @@ evolution of memories and [registers](https://en.wikipedia.org/wiki/Processor_re
 under [Java](https://en.wikipedia.org/wiki/Java_(programming_language)). 
 ## Transactions
 
-A [transaction](https://en.wikipedia.org/wiki/Database_transaction) enables one [process](https://en.wikipedia.org/wiki/Process_management_(computing)) to request work from another [process](https://en.wikipedia.org/wiki/Process_management_(computing)) using a parameter [list](https://en.wikipedia.org/wiki/Linked_list) comprised of [registers](https://en.wikipedia.org/wiki/Processor_register). 
-Processes handle transactions in round-robin polling mode, fixed at design time. Each [process](https://en.wikipedia.org/wiki/Process_management_(computing)): 
+A [transaction](https://en.wikipedia.org/wiki/Database_transaction) enables one [process](https://en.wikipedia.org/wiki/Process_management_(computing)) to request work from another [process](https://en.wikipedia.org/wiki/Process_management_(computing)) using a
+parameter [list](https://en.wikipedia.org/wiki/Linked_list) comprised of [registers](https://en.wikipedia.org/wiki/Processor_register). 
+Processes handle transactions in round-robin polling mode, fixed at design
+time. Each [process](https://en.wikipedia.org/wiki/Process_management_(computing)): 
 1. Polls its inbound transactions for work.
 
 2. When a [transaction](https://en.wikipedia.org/wiki/Database_transaction) is found:
@@ -83,14 +84,16 @@ Processes handle transactions in round-robin polling mode, fixed at design time.
    - Marks the [transaction](https://en.wikipedia.org/wiki/Database_transaction) as complete so that its results can be used by the caller.
 
 3. The requesting [process](https://en.wikipedia.org/wiki/Process_management_(computing)) waits for the completion of a [transaction](https://en.wikipedia.org/wiki/Database_transaction) by spinning on an [instruction](https://en.wikipedia.org/wiki/Instruction_set_architecture). 
-The output remains in the [transaction](https://en.wikipedia.org/wiki/Database_transaction) [registers](https://en.wikipedia.org/wiki/Processor_register) until they are overwritten by the next use of the same [transaction](https://en.wikipedia.org/wiki/Database_transaction). 
+The output remains in the [transaction](https://en.wikipedia.org/wiki/Database_transaction) [registers](https://en.wikipedia.org/wiki/Processor_register) until they are overwritten by
+the next use of the same [transaction](https://en.wikipedia.org/wiki/Database_transaction). 
 ## Deadlock Prevention
 
 To avoid deadlocks, [processes](https://en.wikipedia.org/wiki/Process_management_(computing)) may only request work from [processes](https://en.wikipedia.org/wiki/Process_management_(computing)) with lower [process](https://en.wikipedia.org/wiki/Process_management_(computing)) numbers.
 
 ## Verilog Implementation
 
-The [chip](https://en.wikipedia.org/wiki/Integrated_circuit) is implemented in [Verilog](https://en.wikipedia.org/wiki/Verilog). Each [process](https://en.wikipedia.org/wiki/Process_management_(computing)) is mapped to an `always` block that:
+The [chip](https://en.wikipedia.org/wiki/Integrated_circuit) is implemented in [Verilog](https://en.wikipedia.org/wiki/Verilog). Each [process](https://en.wikipedia.org/wiki/Process_management_(computing)) is mapped to an
+`always` block that:
 
 - Executes [instructions](https://en.wikipedia.org/wiki/Instruction_set_architecture) comprising in-flight transactions or polls its non-in-flight transactions for work.
 
@@ -235,7 +238,8 @@ git clone git@github.com:philiprbrenan/btreeAsm.git  # Download repo
 
 ## Create Silicon Compiler Docker Container
 
-The following notes explain how to create the [Docker](https://en.wikipedia.org/wiki/Docker_(software)) container referenced above to run [Open Source Silicon Compiler](https://docs.siliconcompiler.com/en/latest/index.html) .
+The following notes explain how to create the [Docker](https://en.wikipedia.org/wiki/Docker_(software)) container referenced above
+to run [Open Source Silicon Compiler](https://docs.siliconcompiler.com/en/latest/index.html) .
 
 ### OpenROAD
 
@@ -255,7 +259,8 @@ openroad -V
 
 ### Silicon compiler
 
-Create a [Python](https://www.python.org/) virtual environment, activate it, [install](https://en.wikipedia.org/wiki/Installation_(computer_programs)) [Open Source Silicon Compiler](https://docs.siliconcompiler.com/en/latest/index.html) and confirm the installation:
+Create a [Python](https://www.python.org/) virtual environment, activate it, [install](https://en.wikipedia.org/wiki/Installation_(computer_programs)) [Open Source Silicon Compiler](https://docs.siliconcompiler.com/en/latest/index.html) and
+confirm the installation:
 
 ```
 sudo apt update
