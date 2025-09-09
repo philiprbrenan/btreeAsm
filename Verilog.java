@@ -191,22 +191,17 @@ class Verilog extends Test                                                      
     void Default()     {} boolean allowDefault()     {return true;}
    }
 
-  class For                                                                     // For
-   {For(String Variable, String Condition)
-     {begin();
-      A("for("+Variable+" = 0; "+Condition+"; "+Variable + " = "+Variable + " + 1) begin");                                                          //
-      indent();
-      body();
-      end();
-      end();
-     }
-    For(String Variable, String Start, String To)
+  class For                                                                     // For from start to limit
+   {For(String Variable, String Start, String To)
      {begin();
       A("for("+Variable+" = "+Start+"; "+Variable+" < "+To+"; "+Variable + " = "+Variable + " + 1) begin");                                                          //
       indent();
       body();
       end();
       end();
+     }
+    For(String Variable, String To)                                             // For from 0 to limit
+     {this(Variable, "0", To);
      }
     void body() {}
    }
@@ -339,7 +334,7 @@ end
 
   static void test_for()
    {final Verilog v = new Verilog();
-    v.new For ("i", "i < n")
+    v.new For ("i", "n")
      {void body() {v.assign("a", "a + i");}
      };
     v.new For ("i", "0", "n")
