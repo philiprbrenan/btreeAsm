@@ -1101,12 +1101,9 @@ chipStop = true;
            {void Then()
              {Found.one(v);
               StuckIndex.copy(v, collapse, 0);
-              v.new Case(maxStuckSize, collapse.registerName(0))
-               {void Choice(int I)
-                 {Stuck.this.Key .copy(v, keys, I);
-                  Stuck.this.Data.copy(v, data, I);
-                 }
-               };
+v.comment("AAAAa");
+              v.assign(Stuck.this.Key .registerName(), keys.registerName(collapse.registerName(0)));
+              v.assign(Stuck.this.Data.registerName(), data.registerName(collapse.registerName(0)));
              }
             void Else()
              {Found.zero(v);
@@ -1229,6 +1226,7 @@ chipStop = true;
            {void Then()
              {Found.one(v);
               StuckIndex.copy(v, collapse, 0);
+v.comment("BBBBb");
               v.new Case(maxStuckSize, collapse.registerName(0))
                {void Choice(int I)
                  {Stuck.this.FoundKey.copy(v, keys, I);
@@ -6927,8 +6925,11 @@ Merge     : 0
 
   static void test_verilog_find()
    {sayCurrentTestName();
-// Keys per stuck->lines of code: 4-> 20K,  8-> 12-> 16->
-    final Btree            b = new Btree(powerTwo(8), powerTwo(10), 32, 32);
+// 10, 4  1202
+// 10, 6  1604
+// 10, 8  3158
+// 10,10  9320
+    final Btree            b = new Btree(powerTwo(10), powerTwo(10), 32, 32);
     final Process          P = b.P;
     final Process.Register k = P.register("k", b.bitsPerKey);   k.input();
     final Find             f = b.new Find(P);
@@ -6977,10 +6978,11 @@ Merge     : 0
 // Keys as powers of two
 //     4        5        6       7       8        9       10
 // 6,772                                             158,452
-// 10,4  rolled up:   6,694, unrolled:  12,730
-// 10,6  rolled up:  12,460, unrolled:  12,730
-// 10,10 rolled up:  97,356, unrolled: 146,358
-    final Btree            b = new Btree(powerTwo(10), powerTwo(10), 32, 32);
+// 10,4  rolled up:   6,066, unrolled:  12,730
+// 10,6  rolled up:   9,234, unrolled:
+// 10,8  rolled up:  21,618, unrolled:
+// 10,10 rolled up:  70,866, unrolled: 146,358
+    final Btree            b = new Btree(powerTwo(10), powerTwo(8), 32, 32);
     final Process          P = b.P; //b.new Process("verilogPut");
     final Process.Register k = P.register("k", b.bitsPerKey);   k.input();
     final Process.Register d = P.register("d", b.bitsPerData);  d.input();
@@ -7052,8 +7054,8 @@ Merge     : 0
 
   static void newTests()                                                        // Tests being worked on
    {//oldTests();
-    //test_insertElementAt();
-    //test_verilog_put();
+    test_search_eq();
+    //test_verilog_find();
    }
 
   public static void main(String[] args)                                        // Test if called as a program
