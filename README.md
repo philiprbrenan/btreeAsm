@@ -110,7 +110,7 @@ Programs are implemented using a `case` statement where:
 This is **not** a general-purpose processor. It is a specialized [chip](https://en.wikipedia.org/wiki/Integrated_circuit) with **statically optimized** execution paths for minimal time and power
 consumption.
 
-## Java Simulation
+## Java and Verilog Simulation
 
 Writing [Verilog](https://en.wikipedia.org/wiki/Verilog) directly is time-consuming and error-prone. To mitigate this
 problem:
