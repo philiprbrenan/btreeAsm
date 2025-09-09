@@ -967,9 +967,9 @@ if __name__ == "__main__":
          };
        }
 
-//D4 Register to register indexed Register                                               // Copy a source register to a register indexed element of this target register
+//D4 Register to register indexed Register                                      // Copy a source register to a register indexed element of this target register
 
-      void copyIt(Register Index, Register Source)                               // Copy a source register to a register indexed element of this target register
+      void copyIt(Register Index, Register Source)                              // Copy a source register to a register indexed element of this target register
        {R(); registerCheckSize(Source);                                         // Make sure the target register is big enough
         Index.registerCheckSingle();
         Source.registerCheckSingle();
@@ -1569,12 +1569,12 @@ if __name__ == "__main__":
         final long[] V = b.toLongArray();                                       // Convert bitset to long
         Value.registerSet(V.length > 0 ? (int)V[0] : 0);                        // Take the first element if it exists relying on the fact that in the Java code we test with just sufficiently large numbers to test the verilog in priniple
        }
-      else if (Value.registerSize == memoryBlockSize)                                                                      // Arrayed register from memory
+      else if (Value.registerSize == memoryBlockSize)                           // Arrayed register from memory
        {int I = Index.registerGet() * memoryBlockSize;                          // Offset into memory
-        for (int i = 0; i < memoryBlockSize; i++)                            // Each element of an arrayed register
+        for (int i = 0; i < memoryBlockSize; i++)                               // Each element of an arrayed register
          {final BitSet b = (BitSet)memory[I++].clone();                         // Read memory as bit set
           final long[] V = b.toLongArray();                                     // Convert bitset to long
-          Value.registerSet(V.length > 0 ? (int)V[0] : 0, i);                      // Take the first element if it exists relying on the fact that in the Java code we test with just sufficiently large numbers to test the verilog in priniple
+          Value.registerSet(V.length > 0 ? (int)V[0] : 0, i);                   // Take the first element if it exists relying on the fact that in the Java code we test with just sufficiently large numbers to test the verilog in priniple
          }
        }
       else stop("Register has wrong size");
