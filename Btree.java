@@ -1101,7 +1101,6 @@ chipStop = true;
            {void Then()
              {Found.one(v);
               StuckIndex.copy(v, collapse, 0);
-v.comment("AAAAa");
               v.assign(Stuck.this.Key .registerName(), keys.registerName(collapse.registerName(0)));
               v.assign(Stuck.this.Data.registerName(), data.registerName(collapse.registerName(0)));
              }
@@ -1226,13 +1225,8 @@ v.comment("AAAAa");
            {void Then()
              {Found.one(v);
               StuckIndex.copy(v, collapse, 0);
-v.comment("BBBBb");
-              v.new Case(maxStuckSize, collapse.registerName(0))
-               {void Choice(int I)
-                 {Stuck.this.FoundKey.copy(v, keys, I);
-                  Stuck.this.Data    .copy(v, data, I);
-                 }
-               };
+              v.assign(Stuck.this.FoundKey.registerName(), keys.registerName(collapse.registerName(0)));
+              v.assign(Stuck.this.Data    .registerName(), data.registerName(collapse.registerName(0)));
              }
             void Else()
              {Found.zero(v);
@@ -1323,9 +1317,9 @@ v.comment("BBBBb");
           v.new Case(maxStuckSize, size.registerName())
            {void Choice(int N)
              {Right.size.registerSet(v, N - Copy-1);
-              Right.data.copy(v, Copy, data, 2*Copy+1);
              }
            };
+          Right.data.copy(v, Copy, data, 2*Copy+1);
          }
        };
      }
@@ -6928,7 +6922,7 @@ Merge     : 0
 // 10, 4  1202
 // 10, 6  1604
 // 10, 8  3158
-// 10,10  9320
+// 10,10  5224
     final Btree            b = new Btree(powerTwo(10), powerTwo(10), 32, 32);
     final Process          P = b.P;
     final Process.Register k = P.register("k", b.bitsPerKey);   k.input();
@@ -7054,8 +7048,8 @@ Merge     : 0
 
   static void newTests()                                                        // Tests being worked on
    {//oldTests();
-    test_search_eq();
-    //test_verilog_find();
+    //test_search_eq();
+    test_verilog_find();
    }
 
   public static void main(String[] args)                                        // Test if called as a program
