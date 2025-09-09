@@ -1459,13 +1459,18 @@ chipStop = true;
            {void body()
              {v.assign(Left.keys.registerName(i), keys.registerName(i));
               v.assign(Left.data.registerName(i), data.registerName(i));
-              v.assign(     keys.registerName(i), keys.registerName(i+"+"+(N+1)));
-              v.assign(     data.registerName(i), data.registerName(i+"+"+(N+1)));
              }
            };
           Left.size.registerSet(v, N);
           Left.data.       copy(v, N, data, N);
           Key.copy(v, keys, N);
+
+          v.new For(i, "0", ""+(N+1))
+           {void body()
+             {v.assign(keys.registerName(i), keys.registerName(i+"+"+(N+1)));
+              v.assign(data.registerName(i), data.registerName(i+"+"+(N+1)));
+             }
+           };
           size.registerSet(v, N);
          }
        };
@@ -6984,7 +6989,7 @@ Merge     : 0
 // 10, 6  1090
 // 10, 8  1108
 // 10,10  1126
-    final Btree            b = new Btree(powerTwo(10), powerTwo(4), 32, 32);
+    final Btree            b = new Btree(powerTwo(10), powerTwo(10), 32, 32);
     final Process          P = b.P;
     final Process.Register k = P.register("k", b.bitsPerKey);   k.input();
     final Find             f = b.new Find(P);
@@ -7030,11 +7035,11 @@ Merge     : 0
 
   static void test_verilog_put()
    {sayCurrentTestName();
-// 10,4    5,859
-// 10,6    8,403
-// 10,8   18,291
-// 10,10  57,555
-    final Btree            b = new Btree(powerTwo(10), powerTwo(10), 32, 32);
+// 10,4    5,698
+// 10,6    7,618
+// 10,8   15,010
+// 10,10  44,290
+    final Btree            b = new Btree(powerTwo(10), powerTwo(4), 32, 32);
     final Process          P = b.P; //b.new Process("verilogPut");
     final Process.Register k = P.register("k", b.bitsPerKey);   k.input();
     final Process.Register d = P.register("d", b.bitsPerData);  d.input();
@@ -7106,8 +7111,8 @@ Merge     : 0
 
   static void newTests()                                                        // Tests being worked on
    {//oldTests();
-    //test_search_eq();
-    test_verilog_put();
+    test_splitLowButOne();
+    //test_verilog_find();
    }
 
   public static void main(String[] args)                                        // Test if called as a program
