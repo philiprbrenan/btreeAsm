@@ -1929,7 +1929,7 @@ if __name__ == "__main__":
          {for (int i = 0; i < memoryBlockSize; i++) value.copy(v, i, Value[i]);
          }
         else if (Value.length == 1)                                             // Values to be loaded into memory are being supplied in a single arrayed register
-         {for (int i = 0; i < memoryBlockSize; i++) value.copy(v, i, Value[0], i);
+         {value.copy(v, Value[0]);
          }
         else stop("Wrong register size");                                       // Not enough single registers or incorrect size of arrayed register
         transactionSetExecutable(v);
