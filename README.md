@@ -3,9 +3,9 @@
 # Goal
 
 Use [Java](https://en.wikipedia.org/wiki/Java_(programming_language)) to generate synthesizable [Verilog](https://en.wikipedia.org/wiki/Verilog) to layout a [B-Tree](https://en.wikipedia.org/wiki/B-tree) on the surface of
-a specialized [Silicon](https://en.wikipedia.org/wiki/Silicon) [chip](https://en.wikipedia.org/wiki/Integrated_circuit) so that the [find](https://en.wikipedia.org/wiki/Find_(Unix)), put and delete operations on
-btrees can be performed more quickly than [software](https://en.wikipedia.org/wiki/Software) running on a generic
-processor .
+a specialized [Silicon](https://en.wikipedia.org/wiki/Silicon) [chip](https://en.wikipedia.org/wiki/Integrated_circuit) so that the [B-Tree](https://en.wikipedia.org/wiki/B-tree) [find](https://en.wikipedia.org/wiki/Find_(Unix)), put and delete
+operations can be performed more quickly and efficiently than [software](https://en.wikipedia.org/wiki/Software) running
+on a generic processor .
 
 ![put](images/Btree.png)
 
@@ -107,11 +107,13 @@ Programs are implemented using a `case` statement where:
 
 - Each [process](https://en.wikipedia.org/wiki/Process_management_(computing)) has a [program](https://en.wikipedia.org/wiki/Computer_program) counter that selects the next [instruction](https://en.wikipedia.org/wiki/Instruction_set_architecture) to be executed.
 
-This is **not** a general-purpose processor. It is a specialized [chip](https://en.wikipedia.org/wiki/Integrated_circuit) with **statically optimized** execution paths for minimal time and power consumption.
+This is **not** a general-purpose processor. It is a specialized [chip](https://en.wikipedia.org/wiki/Integrated_circuit) with **statically optimized** execution paths for minimal time and power
+consumption.
 
 ## Java Simulation
 
-Writing [Verilog](https://en.wikipedia.org/wiki/Verilog) directly is time-consuming and error-prone. To mitigate this problem:
+Writing [Verilog](https://en.wikipedia.org/wiki/Verilog) directly is time-consuming and error-prone. To mitigate this
+problem:
 
 - The [algorithm](https://en.wikipedia.org/wiki/Algorithm) is first written and debugged in [Java](https://en.wikipedia.org/wiki/Java_(programming_language)) using familiar programming paradigms and tools.
 
