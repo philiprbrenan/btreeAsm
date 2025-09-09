@@ -871,7 +871,7 @@ if __name__ == "__main__":
          }
         else
          {final String i = processMemoryIndexName();
-          v.new For(i, "0", ""+registerSize)
+          v.new For(i, ""+registerSize)
            {void body()
              {v.assign(registerName()+"["+i+"]", Source.registerName()+"["+i+"]");
              }
@@ -1035,7 +1035,7 @@ if __name__ == "__main__":
          }
         else                                                                    // Array register
          {final String i = processMemoryIndexName();
-          v.new For(i, "0", ""+registerSize)
+          v.new For(i, ""+registerSize)
            {void body()
              {v.new If (Source.registerName(i))
                {void Then()
@@ -1163,7 +1163,7 @@ if __name__ == "__main__":
        {if (registerSingle()) v.assign(rn(),  "0");
         else
          {final String i = processMemoryIndexName();
-          v.new For(i, i+" < "+registerSize)
+          v.new For(i, ""+registerSize)
            {void body()
              {v.assign(rn()+"["+i+"]", "0");
              }
@@ -1383,7 +1383,7 @@ if __name__ == "__main__":
                    }
                   else
                    {final String i = processMemoryIndexName();
-                    v.new For(i, i+" < "+r.registerSize)
+                    v.new For(i, ""+r.registerSize)
                      {void body()
                        {v.assign(r.registerName()+"["+i+"]", "0");
                        }
@@ -1601,7 +1601,7 @@ if __name__ == "__main__":
       else                                                                      // Arrayed register into memory
        {int I = Index.registerGet() * memoryBlockSize;
         final String i = processMemoryIndexName();
-        v.new For(i, i+" < "+memoryBlockSize)
+        v.new For(i, ""+memoryBlockSize)
          {void body()
            {v.assign(Value.registerName()+"["+i+"]",                            // Read memory into register
                processMemoryName()+
@@ -1642,7 +1642,7 @@ if __name__ == "__main__":
        }
       else if (Value.registerSize == memoryBlockSize)                           // Arrayed register into memory
        {final String i = processMemoryIndexName();
-        v.new For(i, i+" < "+memoryBlockSize)
+        v.new For(i, ""+memoryBlockSize)
          {void body()
            {v.assign
              (processMemoryName()+"["+Index.registerName()+"*"+
