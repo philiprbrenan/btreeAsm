@@ -1443,9 +1443,11 @@ if __name__ == "__main__":
                      }
                     else                                                        // Write out a run as a for loop as there are quite a few
                      {final String j = processMemoryIndexName();
-                      v.A("for("+j+" = "+r.start+"; "+j+" < "+r.finish+"; "+j+" = "+j+" + 1) begin");
-                      v.A("  "+processMemoryName()+"["+j+"] <= "+r.value+";");
-                      v.A("end");
+                      v.new For(j, ""+r.start, ""+r.finish)
+                       {void body()
+                         {v.A(processMemoryName()+"["+j+"] <= "+r.value+";");
+                         }
+                       };
                      }
                    }
                  }
@@ -1453,9 +1455,11 @@ if __name__ == "__main__":
                  {for(Seq s: seqs)                                              // Write out the sequence
                    {final String j = processMemoryIndexName();
                     final int start = s.value - s.finish + 1;
-                    v.A("for("+j+" = "+s.start+"; "+j+" < "+s.finish+"; "+j+" = "+j+" + 1) begin");
-                    v.A("  "+processMemoryName()+"["+j+"] <= "+start+"+"+j+";");
-                    v.A("end");
+                    v.new For(j, ""+s.start, ""+s.finish)
+                     {void body()
+                       {v.A(processMemoryName()+"["+j+"] <= "+start+"+"+j+";");
+                       }
+                     };
                    }
                  }
                }
