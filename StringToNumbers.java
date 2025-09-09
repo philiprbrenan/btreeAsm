@@ -29,11 +29,9 @@ class StringToNumbers extends Test                                              
 
     String joinKeys()                                                           // Join the keys with commas
      {z();
-      final String j = ", ";
-      final StringBuilder s = new StringBuilder();
-      for(int k : keys) s.append(""+k+j);
-      if (s.length() > j.length()) s.setLength(s.length() - j.length());        // Remove join following last element
-      return s.toString();
+      final StringJoiner s = new StringJoiner(", ");
+      for(int k : keys) s.add(""+k);
+      return ""+s;
      }
 
     int size() {return keys.size();}                                            // Size of order
