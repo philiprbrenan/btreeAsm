@@ -31,14 +31,14 @@ public class Children<E> extends Test implements Iterable<E>                    
 
   public int size() {return stack.size();}                                      // String representation of the map in insertion order
   public E   elementAt(int p) {return stack.elementAt(p);}                      // Entry by index
-  public E   firstElement()   {return stack.firstElement();}                      // Entry by index
-  public E   lastElement ()   {return stack.lastElement();}                      // Entry by index
+  public E   firstElement()   {return stack.firstElement();}                    // Entry by index
+  public E   lastElement ()   {return stack.lastElement();}                     // Entry by index
 
   public String toString()                                                      // String representation of the map in insertion order
    {if (stack.size() == 0) return "Empty";
-    final StringBuilder s = new StringBuilder();
-    for(E e : stack) s.append(""+e+", ");
-    return ("{"+s).substring(0, s.length()-1)+"}";
+    final StringJoiner s = new StringJoiner(", ", "{", "}");
+    for(E e : stack) s.add(""+e);
+    return ""+s;
    }
 
 //D1 Tests                                                                      // Tests
