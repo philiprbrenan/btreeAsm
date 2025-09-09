@@ -6986,10 +6986,8 @@ Merge     : 0
   static void test_verilog_find()
    {sayCurrentTestName();
 // 10, 4  1072
-// 10, 6  1090
-// 10, 8  1108
 // 10,10  1126
-    final Btree            b = new Btree(powerTwo(10), powerTwo(10), 32, 32);
+    final Btree            b = new Btree(powerTwo(10), powerTwo(4), 32, 32);
     final Process          P = b.P;
     final Process.Register k = P.register("k", b.bitsPerKey);   k.input();
     final Find             f = b.new Find(P);
@@ -7012,8 +7010,9 @@ Merge     : 0
 
   static void test_verilog_delete()
    {sayCurrentTestName();
-// Keys per stuck->lines of code: 10->8549  20->11395  40->17151  1024-> 316K
-    final Btree            b = new Btree(powerTwo(10), 1024, 32, 32);
+// 10,4    4,160
+// 10,10   4,448
+    final Btree            b = new Btree(powerTwo(10), powerTwo(10), 32, 32);
     final Process          P = b.P;
     final Process.Register k = P.register("k", b.bitsPerKey);   k.input();
 
@@ -7035,11 +7034,9 @@ Merge     : 0
 
   static void test_verilog_put()
    {sayCurrentTestName();
-// 10,4    5,542
-// 10,6    6,886
-// 10,8   11,974
-// 10,10  32,038
-    final Btree            b = new Btree(powerTwo(10), powerTwo(10), 32, 32);
+// 10,4    5,256
+// 10,10   5,544
+    final Btree            b = new Btree(powerTwo(10), powerTwo(4), 32, 32);
     final Process          P = b.P; //b.new Process("verilogPut");
     final Process.Register k = P.register("k", b.bitsPerKey);   k.input();
     final Process.Register d = P.register("d", b.bitsPerData);  d.input();
@@ -7112,7 +7109,7 @@ Merge     : 0
   static void newTests()                                                        // Tests being worked on
    {//oldTests();
     //test_splitLowButOne();
-    test_verilog_put();
+    test_verilog_find();
    }
 
   public static void main(String[] args)                                        // Test if called as a program
