@@ -12,7 +12,7 @@ module Btree;                                                                   
   integer          returnCode;                                                  // Return code
   integer      processCurrent;                                                  // To ensure we get the same results in Java and Verilog we have to run the processes single threaded in a constant order
 
-  assign stop = main_stop||stuckIsLeaf_stop||stuckIsFree_stop||freeNext_stop||stuckSize_stop||stuckKeys_stop||stuckData_stop;                                                             // Or of process stop fields
+  assign stop = main_stop||stuckIsLeaf_stop||stuckIsFree_stop||freeNext_stop||stuckSize_stop||stuckKeys_stop||stuckData_stop||stucksUsed_stop;                                                             // Or of process stop fields
 
   initial begin
     returnCode = 0;
@@ -27,6 +27,7 @@ module Btree;                                                                   
       processCurrent = 4; clock = 0; #1; clock = 1; #1; // process_stuckSize_0004
       processCurrent = 5; clock = 0; #1; clock = 1; #1; // process_stuckKeys_0005
       processCurrent = 6; clock = 0; #1; clock = 1; #1; // process_stuckData_0006
+      processCurrent = 7; clock = 0; #1; clock = 1; #1; // process_stucksUsed_0007
       if (step >= 0) chipPrint();                                            // Steps prior to zero are for initialization to make Java and Verilog match
     end
     if (!stop) $finish(1); else $finish(0);                                // Set return code depending on whether the simulation halted
@@ -782,7 +783,7 @@ module Btree;                                                                   
                 begin
                   integer f;
                   f = $fopen("verilog/trace_verilog.txt", "a");
-                  $fdisplay(f, "Location: Chip.java:0585:<init>|  Chip.java:1186:<init>|  Chip.java:1185:Zero|  Btree.java:0320:stuckGetRoot|  Btree.java:3847:test_search_eq|  Btree.java:7113:newTests|  Btree.java:7119:main|");
+                  $fdisplay(f, "Location: Chip.java:0602:<init>|  Chip.java:1203:<init>|  Chip.java:1202:Zero|  Btree.java:0322:stuckGetRoot|  Btree.java:3849:test_search_eq|  Btree.java:7115:newTests|  Btree.java:7121:main|");
                   $fclose(f);
                 end
               end
@@ -807,7 +808,7 @@ module Btree;                                                                   
                 begin
                   integer f;
                   f = $fopen("verilog/trace_verilog.txt", "a");
-                  $fdisplay(f, "Location: Chip.java:0585:<init>|  Btree.java:0326:<init>|  Btree.java:0325:stuckGet|  Btree.java:0321:stuckGetRoot|  Btree.java:3847:test_search_eq|  Btree.java:7113:newTests|  Btree.java:7119:main|");
+                  $fdisplay(f, "Location: Chip.java:0602:<init>|  Btree.java:0328:<init>|  Btree.java:0327:stuckGet|  Btree.java:0323:stuckGetRoot|  Btree.java:3849:test_search_eq|  Btree.java:7115:newTests|  Btree.java:7121:main|");
                   $fclose(f);
                 end
               end
@@ -822,7 +823,7 @@ module Btree;                                                                   
                 begin
                   integer f;
                   f = $fopen("verilog/trace_verilog.txt", "a");
-                  $fdisplay(f, "Location: Chip.java:1915:<init>|  Chip.java:1914:waitResultOfTransaction|  Btree.java:0339:stuckGet|  Btree.java:0321:stuckGetRoot|  Btree.java:3847:test_search_eq|  Btree.java:7113:newTests|  Btree.java:7119:main|");
+                  $fdisplay(f, "Location: Chip.java:1930:<init>|  Chip.java:1929:waitResultOfTransaction|  Btree.java:0341:stuckGet|  Btree.java:0323:stuckGetRoot|  Btree.java:3849:test_search_eq|  Btree.java:7115:newTests|  Btree.java:7121:main|");
                   $fclose(f);
                 end
               end
@@ -837,7 +838,7 @@ module Btree;                                                                   
                 begin
                   integer f;
                   f = $fopen("verilog/trace_verilog.txt", "a");
-                  $fdisplay(f, "Location: Chip.java:1915:<init>|  Chip.java:1914:waitResultOfTransaction|  Btree.java:0340:stuckGet|  Btree.java:0321:stuckGetRoot|  Btree.java:3847:test_search_eq|  Btree.java:7113:newTests|  Btree.java:7119:main|");
+                  $fdisplay(f, "Location: Chip.java:1930:<init>|  Chip.java:1929:waitResultOfTransaction|  Btree.java:0342:stuckGet|  Btree.java:0323:stuckGetRoot|  Btree.java:3849:test_search_eq|  Btree.java:7115:newTests|  Btree.java:7121:main|");
                   $fclose(f);
                 end
               end
@@ -852,7 +853,7 @@ module Btree;                                                                   
                 begin
                   integer f;
                   f = $fopen("verilog/trace_verilog.txt", "a");
-                  $fdisplay(f, "Location: Chip.java:1915:<init>|  Chip.java:1914:waitResultOfTransaction|  Btree.java:0341:stuckGet|  Btree.java:0321:stuckGetRoot|  Btree.java:3847:test_search_eq|  Btree.java:7113:newTests|  Btree.java:7119:main|");
+                  $fdisplay(f, "Location: Chip.java:1930:<init>|  Chip.java:1929:waitResultOfTransaction|  Btree.java:0343:stuckGet|  Btree.java:0323:stuckGetRoot|  Btree.java:3849:test_search_eq|  Btree.java:7115:newTests|  Btree.java:7121:main|");
                   $fclose(f);
                 end
               end
@@ -867,7 +868,7 @@ module Btree;                                                                   
                 begin
                   integer f;
                   f = $fopen("verilog/trace_verilog.txt", "a");
-                  $fdisplay(f, "Location: Chip.java:1915:<init>|  Chip.java:1914:waitResultOfTransaction|  Btree.java:0342:stuckGet|  Btree.java:0321:stuckGetRoot|  Btree.java:3847:test_search_eq|  Btree.java:7113:newTests|  Btree.java:7119:main|");
+                  $fdisplay(f, "Location: Chip.java:1930:<init>|  Chip.java:1929:waitResultOfTransaction|  Btree.java:0344:stuckGet|  Btree.java:0323:stuckGetRoot|  Btree.java:3849:test_search_eq|  Btree.java:7115:newTests|  Btree.java:7121:main|");
                   $fclose(f);
                 end
               end
@@ -892,7 +893,7 @@ module Btree;                                                                   
                 begin
                   integer f;
                   f = $fopen("verilog/trace_verilog.txt", "a");
-                  $fdisplay(f, "Location: Chip.java:0585:<init>|  Btree.java:0345:<init>|  Btree.java:0344:stuckGet|  Btree.java:0321:stuckGetRoot|  Btree.java:3847:test_search_eq|  Btree.java:7113:newTests|  Btree.java:7119:main|");
+                  $fdisplay(f, "Location: Chip.java:0602:<init>|  Btree.java:0347:<init>|  Btree.java:0346:stuckGet|  Btree.java:0323:stuckGetRoot|  Btree.java:3849:test_search_eq|  Btree.java:7115:newTests|  Btree.java:7121:main|");
                   $fclose(f);
                 end
               end
@@ -906,7 +907,7 @@ module Btree;                                                                   
                 begin
                   integer f;
                   f = $fopen("verilog/trace_verilog.txt", "a");
-                  $fdisplay(f, "Location: Chip.java:0585:<init>|  Chip.java:0838:<init>|  Chip.java:0837:RegisterSet|  Btree.java:3848:test_search_eq|  Btree.java:7113:newTests|  Btree.java:7119:main|");
+                  $fdisplay(f, "Location: Chip.java:0602:<init>|  Chip.java:0855:<init>|  Chip.java:0854:RegisterSet|  Btree.java:3850:test_search_eq|  Btree.java:7115:newTests|  Btree.java:7121:main|");
                   $fclose(f);
                 end
               end
@@ -925,7 +926,7 @@ module Btree;                                                                   
                 begin
                   integer f;
                   f = $fopen("verilog/trace_verilog.txt", "a");
-                  $fdisplay(f, "Location: Chip.java:0585:<init>|  Btree.java:1022:<init>|  Btree.java:1021:search_eq_parallel|  Btree.java:3849:test_search_eq|  Btree.java:7113:newTests|  Btree.java:7119:main|");
+                  $fdisplay(f, "Location: Chip.java:0602:<init>|  Btree.java:1024:<init>|  Btree.java:1023:search_eq_parallel|  Btree.java:3851:test_search_eq|  Btree.java:7115:newTests|  Btree.java:7121:main|");
                   $fclose(f);
                 end
               end
@@ -944,7 +945,7 @@ module Btree;                                                                   
                 begin
                   integer f;
                   f = $fopen("verilog/trace_verilog.txt", "a");
-                  $fdisplay(f, "Location: Chip.java:0585:<init>|  Btree.java:1055:<init>|  Btree.java:1054:search_eq_parallel|  Btree.java:3849:test_search_eq|  Btree.java:7113:newTests|  Btree.java:7119:main|");
+                  $fdisplay(f, "Location: Chip.java:0602:<init>|  Btree.java:1057:<init>|  Btree.java:1056:search_eq_parallel|  Btree.java:3851:test_search_eq|  Btree.java:7115:newTests|  Btree.java:7121:main|");
                   $fclose(f);
                 end
               end
@@ -963,7 +964,7 @@ module Btree;                                                                   
                 begin
                   integer f;
                   f = $fopen("verilog/trace_verilog.txt", "a");
-                  $fdisplay(f, "Location: Chip.java:0585:<init>|  Btree.java:1055:<init>|  Btree.java:1054:search_eq_parallel|  Btree.java:3849:test_search_eq|  Btree.java:7113:newTests|  Btree.java:7119:main|");
+                  $fdisplay(f, "Location: Chip.java:0602:<init>|  Btree.java:1057:<init>|  Btree.java:1056:search_eq_parallel|  Btree.java:3851:test_search_eq|  Btree.java:7115:newTests|  Btree.java:7121:main|");
                   $fclose(f);
                 end
               end
@@ -982,7 +983,7 @@ module Btree;                                                                   
                 begin
                   integer f;
                   f = $fopen("verilog/trace_verilog.txt", "a");
-                  $fdisplay(f, "Location: Chip.java:0585:<init>|  Btree.java:1055:<init>|  Btree.java:1054:search_eq_parallel|  Btree.java:3849:test_search_eq|  Btree.java:7113:newTests|  Btree.java:7119:main|");
+                  $fdisplay(f, "Location: Chip.java:0602:<init>|  Btree.java:1057:<init>|  Btree.java:1056:search_eq_parallel|  Btree.java:3851:test_search_eq|  Btree.java:7115:newTests|  Btree.java:7121:main|");
                   $fclose(f);
                 end
               end
@@ -1004,7 +1005,7 @@ module Btree;                                                                   
                 begin
                   integer f;
                   f = $fopen("verilog/trace_verilog.txt", "a");
-                  $fdisplay(f, "Location: Chip.java:0585:<init>|  Btree.java:1089:<init>|  Btree.java:1088:search_eq_parallel|  Btree.java:3849:test_search_eq|  Btree.java:7113:newTests|  Btree.java:7119:main|");
+                  $fdisplay(f, "Location: Chip.java:0602:<init>|  Btree.java:1091:<init>|  Btree.java:1090:search_eq_parallel|  Btree.java:3851:test_search_eq|  Btree.java:7115:newTests|  Btree.java:7121:main|");
                   $fclose(f);
                 end
               end
@@ -1981,6 +1982,41 @@ module Btree;                                                                   
       end
     end
   end
+  // Process: stucksUsed  process_stucksUsed_0007
+  (* ram_style = "block" *)
+  reg [4-1:0] stucksUsed_memory[1*1];
+  integer stucksUsed_pc;
+  integer stucksUsed_stop;
+  integer stucksUsed_returnCode;
+  integer stucksUsed_memory_index;
+  reg[4-1:0] stucksUsed_memory_value;
+  always @ (posedge clock) begin
+    if (reset) begin
+      stucksUsed_pc <= 0;
+      stucksUsed_stop <= 0;
+      stucksUsed_returnCode <= 0;
+      stucksUsed_memory_index <= 0;
+      stucksUsed_memory_value <= 0;
+    end
+    else begin
+      if (step < 0) begin
+        case (-(step+1))
+          0: begin
+            stucksUsed_memory_index <= 0;
+            stucksUsed_memory_value <= 1;
+          end
+        endcase
+        stucksUsed_memory[stucksUsed_memory_index] <= stucksUsed_memory_value;
+      end
+      else if (processCurrent == 7) begin
+        case(stucksUsed_pc)
+          0: begin
+          end
+          default: stucksUsed_stop <= 1;
+        endcase
+      end
+    end
+  end
   task chipPrint;
     begin
       integer o;
@@ -2870,6 +2906,11 @@ module Btree;                                                                   
       $fwrite(o, "            %-40s[%4d] = %1d\n",  "main_stuckData_4_value_13", 5, main_stuckData_4_value_13[5]);
       $fwrite(o, "            %-40s[%4d] = %1d\n",  "main_stuckData_4_value_13", 6, main_stuckData_4_value_13[6]);
       $fwrite(o, "            %-40s[%4d] = %1d\n",  "main_stuckData_4_value_13", 7, main_stuckData_4_value_13[7]);
+      $fwrite(o, "    Process: %1d - %-21s instructions: %1d, pc: %1d, rc: %1d\n", 7, "stucksUsed", 1, stucksUsed_pc, stucksUsed_returnCode);
+      $fwrite(o, "      Memory: size: %1d, width: %1d, block: %1d\n", 1, 4, 1);
+      $fwrite(o, "        %2d", stucksUsed_memory[0]);
+      $fwrite(o, "\n");
+      $fwrite(o, "      Registers :\n");
       $fclose(o);
     end
   endtask
