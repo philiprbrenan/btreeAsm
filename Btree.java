@@ -5,6 +5,8 @@
 package com.AppaApps.Silicon;                                                   // Btree in a block on the surface of a silicon chip.
 // Squeeze out all redundant variables and check all code paths are being tested
 // Improve chipPrintMemory to make the output more compact and readable
+// Warning: Replacing memory \freeNext_memory with list of registers. See inputs/Btree.v:873
+// Warning: Replacing memory \stuckIsFree_memory with list of registers. See inputs/Btree.v:844
 import java.util.*;
 
 class Btree extends Chip                                                        // Manipulate a btree in a block of memory
@@ -6987,7 +6989,7 @@ Merge     : 0
    {sayCurrentTestName();
 // 10, 4  1072
 // 10,10  1126
-    final Btree            b = new Btree(powerTwo(10), powerTwo(4), 32, 32);
+    final Btree            b = new Btree(powerTwo(4), powerTwo(4), 32, 32);
     final Process          P = b.P;
     final Process.Register k = P.register("k", b.bitsPerKey);   k.input();
     final Find             f = b.new Find(P);
@@ -7108,8 +7110,8 @@ Merge     : 0
 
   static void newTests()                                                        // Tests being worked on
    {//oldTests();
-    //test_splitLowButOne();
-    test_verilog_find();
+    test_search_eq();
+    //test_verilog_find();
    }
 
   public static void main(String[] args)                                        // Test if called as a program
