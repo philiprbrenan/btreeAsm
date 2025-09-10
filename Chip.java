@@ -19,6 +19,9 @@ class Chip extends Test                                                         
   int                           step;                                           // Current simulation step being executed
   int                       maxSteps = 10;                                      // Maximum number of steps to execute in the simulation
   static boolean               debug = false;                                   // Debug when true
+  final String         projectFolder = "btreeAsm";                              // Folder containing this project under home folder
+  final String   openRoadDockerImage = "appaapps/openroad:latest";              // Docker image used to run OpenRoad
+  String           remoteMachineName = "s";                                     // Remote machine name as defined in .ssh/config where the OpenRoad build should be run
 
 //D1 Chip                                                                       // A chip is constructed from a fixed number of communicating processes that execute code on the chip to produce the desired outputs from the inputs to the chip
 
@@ -467,7 +470,6 @@ module %s(                                                                      
     final String       sdcFile = fne(Verilog.folder, chipName, Verilog.sdcExt); // Constraints file
     final String       logFile = fne(Verilog.folder, chipName, "log");          // Log file from Silicon Compiler
     final String    launchFile = fne(Verilog.folder, chipName, "sh");           // Launch file to run silicon compiler
-    final String   dockerImage = "appaapps/openroad:latest";                    // Docker image
     final StringBuilder python = new StringBuilder();
     final StringBuilder    sdc = new StringBuilder();
     final StringBuilder launch = new StringBuilder();
@@ -480,23 +482,38 @@ module %s(                                                                      
 
     abstract String description();                                              // Produce a description of the chip
 
-    void writeLaunch()                                                          // Write launch file
-     {final String v = Verilog.folder;
-      final String f = fn(resultsFolder, description());
+    void writeLaunch()                                                          // Write launch file to run synthesis on a remote machine
+     {final String v = Verilog.folder;                                          // Verilog Working folder
+      final String f = fn(resultsFolder, description());                        // Folder in which the summary of the results of this run will be stored for posterity
+      final String d = openRoadDockerImage;                                     // Docker image containing OpenRoad
       launch.append(String.format("""
-echo "rsync -r /home/phil/btreeAsm a: # Copy local files to aws"
-#git fetch origin && git reset --hard @{u}  # Fetch changes from remote ovewriting any local changes
-#gzip -dc verilog/Btree.v.gz > verilog/Btree.v # Unzip as large verilog source cannot be stored on github
-mkdir -p %s
-docker pull %s
-docker run --rm -it -v ~/btreeAsm/:/root/btreeAsm -w /root/btreeAsm %s bash -ic "source /root/sc/bin/activate; python3 /root/btreeAsm/verilog/Btree.py"
-cp "%s/build/Btree/job0/Btree.pkg.json" "%s"
-cp "%s/build/Btree/job0/Btree.png"      "%s"
-cp "%s/build/Btree/job0/job.log"        "%s"
-""",   f, dockerImage, dockerImage,
+REMOTE=%s                                                                       # Remote user and machine definition from .ssh/config
+FOLDER=%s                                                                       # Folder containing project under user's home folder
+DESIGN=%s                                                                       # The name of the chip being designed
+WORKSP=%s                                                                       # Verilog workspace folder
+rsync -r ~/$FOLDER $REMOTE:~/$FOLDER                                            # Copy local project files to remote system
+ssh -S none $REMOTE << EOF                                                      # Execute the following commands on the remote system using a non shared ssh connection
+cd $FOLDER                                                                      # Project folder
+mkdir -p %s                                                                     # Results folder where the summary of the OpenRoad run will be saved
+docker pull %s                                                                  # OpenRoad docker image
+# Start silicon compiler environment and run OpenRoad script in a docker container
+docker run --rm                                                                 \\
+  -v ~/$FOLDER/:/root/$FOLDER                                                   \\
+  -w /root/$FOLDER                                                              \\
+  %s                                                                            \\
+  bash -ic "source /root/sc/bin/activate; python3 /root/$FOLDER/$WORKSP/$DESIGN.py"
+cp "%s/build/$DESIGN/job0/$DESIGN.pkg.json" "%s"                                # Copy results out of docker to remote system
+cp "%s/build/$DESIGN/job0/$DESIGN.png"      "%s"
+cp "%s/build/$DESIGN/job0/job.log"          "%s"
+EOF
+rsync -r $REMOTE:~/$FOLDER/results/%s ~/$FOLDER/results                         # Copy results back to local system from remote system
+""",
+       remoteMachineName, projectFolder, chipName, v,
+       f,
+       d, d,
        v, fne(f, chipName, "json"),
        v, fne(f, chipName, "png"),
-       v, fne(f, "job",    "log")));
+       v, fne(f, chipName, "log"), "*"));
       writeFile(launchFile, launch);
      }
 
@@ -516,7 +533,7 @@ from siliconcompiler.targets import freepdk45_demo
 
 if __name__ == "__main__":
   chip = Chip('%s')                                                             # Create chip object.  The name is used to create the summary and mask image file
-# chip.set('option', 'loglevel', 'warning')                                     # Warnings and above
+  chip.set('option', 'loglevel', 'warning')                                     # Warnings and above
 # chip.set('option', 'loglevel', 'error')                                       # Warnings and above
   chip.set('option', 'builddir', '%s/build')                                    # Build folder
   chip.input('%s')                                                              # Source code
