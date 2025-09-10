@@ -3128,6 +3128,10 @@ Chip: Btree            step: 0, maxSteps: 10, running: 0
       Memory: size:  2, width:  8, block:  4
         0  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24
         0  0  0  0  0  0  0  0
+    stucksUsed
+      Memory: size:  1, width:  2, block:  1
+        0  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24
+        1
 """);
     return b;
    }
@@ -7128,7 +7132,7 @@ Merge     : 0
 
   static void newTests()                                                        // Tests being worked on
    {//oldTests();
-    test_create1();
+    test_create2();
     //test_verilog_find();
    }
 
