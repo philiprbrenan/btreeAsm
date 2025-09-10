@@ -138,10 +138,20 @@ class Chip extends Test                                                         
          {s.append(String.format("      Memory: size: %1d, width: %1d, block: %1d\n",
             p.memorySize, p.memoryWidth, p.memoryBlockSize));
 
-          s.append(String.format("        %2d", p.memoryGet(0)));
+          if (p.memorySet[0])
+           {s.append(String.format("        %2d", p.memoryGet(0)));
+           }
+          else
+           {s.append              ("         x");
+           }
 
           for(int i = 1; i < p.memory.length; i++)
-           {s.append(String.format(", %2d", p.memoryGet(i)));
+           {if (p.memorySet[i])
+             {s.append(String.format(", %2d", p.memoryGet(i)));
+             }
+            else
+             {s.append(",  x");
+             }
            }
           s.append("\n");
          }
@@ -569,7 +579,9 @@ if __name__ == "__main__":
     final int                memorySize;                                        // The number of memory elements in the memory available to this process
     final int                memoryBlockSize;                                   // Number of elements to read at a time
     final BitSet[]           memory;                                            // Memory is represented as an array of bit vectors
+    final boolean[]          memorySet;                                         // Whether the corresponding memory elementh has been set
     final BitSet[]           memoryBackUp;                                      // Before a Java run starts we back up the memory for this process so that we can start in the same state with the equivalent Verilog run allowing us to confirm that memory evolves in the same way for both Java and Verilog
+    final boolean[]          memoryBackUpSet;                                   // Whether the corresponding memeory element has beens set so far by memory set.  This is used to record the memory set up before the java traced run is started so that the verilog memory can be set up in the same way at the start of its run
     final Children<Transaction> transactions = new Children<>();                // Transactions representing work requests to this process
     final Children<Register> registers       = new Children<>();                // Registers used in this process
     final Stack<Instruction> code            = new Stack<>();                   // A fixed set of instructions for this process
@@ -1307,26 +1319,31 @@ if __name__ == "__main__":
 
     Process(String ProcessName, int MemorySize, int MemoryWidth, int BlockSize) // Create a process with the specified memory attached to it
      {N();
-      processName   = ProcessName;
-      processNumber = processes.size();
+      processName     = ProcessName;
+      processNumber   = processes.size();
       processes.put(processName, this);
 
       memoryBlockSize = BlockSize;                                              // Block size of memory
 
-      memorySize    = MemorySize;                                               // Create memory
-      memoryWidth   = MemoryWidth;
+      memorySize      = MemorySize;                                             // Create memory
+      memoryWidth     = MemoryWidth;
 
-      final int M   = processMemorySize();                                      // Actual size of memory
-      memory        = new BitSet[M];
-      memoryBackUp  = new BitSet[M];
-      for (int i = 0; i < M; i++) memory[i] = new BitSet(memoryWidth);
+      final int M     = processMemorySize();                                    // Actual size of memory
+      memory          = new BitSet[M];
+      memorySet       = new boolean[M];
+      memoryBackUp    = new BitSet[M];
+      memoryBackUpSet = new boolean[M];
+      for (int i = 0; i < M; i++) memory         [i] = new BitSet(memoryWidth);
+      for (int i = 0; i < M; i++) memoryBackUp   [i] = new BitSet(memoryWidth);
+      for (int i = 0; i < M; i++) memorySet      [i] = false;
+      for (int i = 0; i < M; i++) memoryBackUpSet[i] = false;
      }
 
     int processMemorySize() {return memorySize * memoryBlockSize;}              // Number of memory elements associated with this process
 
     void processInit()                                                          // Get ready to execute the program
      {N(); processPc = 0;                                                       // Program always starts at the first instruction
-      memoryBackUp();                                                           // Back up memory for each process so we can start in the same state in Verilog
+      memoryBackUp();                                                           // Back up memory for each process as set in java before the run Java runs starts so we can start in the same state in Verilog
       for (Register r: registers) r.registerSet(0);                             // Clear all registers so we start in a known state
       for (Transaction t: transactions)                                         // Initialize transactions
        {t.transactionRc          =  0;
@@ -1443,9 +1460,9 @@ if __name__ == "__main__":
              {v.A("if (step < 0) begin");                                       // Load memory
               v.indent();
               if (hasMemory())                                                  // Load memory to match the state at the start of the Java run
-               {//if (v.synthesis) processLoadMemorySynthesis(v);               // Load memory for synthesis
-                //else             processLoadMemoryTestBench(v);               // Load memory for test bench
-                processLoadMemorySynthesis(v);
+               {if (v.synthesis) processLoadMemorySynthesis(v);               // Load memory for synthesis
+                else             processLoadMemoryTestBench(v);               // Load memory for test bench
+                //processLoadMemorySynthesis(v);
                }
               v.end();
 
@@ -1519,13 +1536,21 @@ if __name__ == "__main__":
      }
 
     void processLoadMemorySynthesis(Verilog v)                                  // Load memory in verilog being synthesized in a form that yosys will intepret as a memory load not a register load
-     {v.new Case(memory.length, "-(step+"+memoryInitDelay+")")
-       {void Choice(int i)
-         {v.assign(processMemoryIndexName(), ""+i);                             // Memory index to be loaded
-          v.assign(processMemoryValueName(), memoryGetBackUp(i));               // Value to be loaded into memory
-         }
-       };
-      v.A(processMemoryName()+"["+processMemoryIndexName()+"] <= "+processMemoryValueName()+";"); // Load memory in a format that yosys will intepret as memory not registers
+     {int s = 0; for (int i = 0; i < memory.length; i++)                        // Count the number of set elements
+       {if (memoryBackUpSet[i]) ++s;
+       }
+
+      if (s > 0)                                                                // Only load memory if some fields were set
+       {v.new Case(memory.length, "-(step+"+memoryInitDelay+")")
+         {void Choice(int i)
+           {v.assign(processMemoryIndexName(), ""+i);                           // Memory index to be loaded
+            v.assign(processMemoryValueName(), memoryGetBackUp(i));             // Value to be loaded into memory
+           }
+          boolean allowChoice(int i) {return memorySet[i];}                     // Only set if the memory element was set
+          boolean allowDefault()     {return false;}
+         };
+        v.A(processMemoryName()+"["+processMemoryIndexName()+"] <= "+processMemoryValueName()+";"); // Load memory in a format that yosys will intepret as memory not registers
+       }
      }
 
     void processLoadMemoryTestBench(Verilog v)                                  // Load memory in verilog being executed under the test bench to match the state at the start of the Java run
@@ -1541,25 +1566,32 @@ if __name__ == "__main__":
          {start = Start; finish = Finish; value = Value;
          }
        }
+
       final Stack<Run>runs = new Stack<>();                                     // Runs
       final Stack<Seq>seqs = new Stack<>();                                     // Sequences
-      runs.push(new Run(0, 1, memoryGetBackUp(0)));                             // First run
-      seqs.push(new Seq(0, 1, memoryGetBackUp(0)));                             // First run
-      for(int i = 1; i < memory.length; i++)
-       {final int V = memoryGetBackUp(i);
+      for(int i = 0; i < memory.length; i++)                                    // Scan memory
+       {final int     V = memoryGetBackUp(i);                                   // Memory value at each index
+        final boolean S = memoryBackUpSet[i];                                   // Whether this element has been set for back up
+        if (!S) continue;                                                       // No value set for this element
 
-        final Run r = runs.lastElement();                                       // Run of same element
-        if (r.value == V) r.finish = i+1;
-        else runs.push(new Run(i, i+1, V));
-
-        final Seq s = seqs.lastElement();                                       // Sequence of increasing elements
-        if (s.value == V-1)
-         {s.finish = i+1; s.value = V;
+        if (runs.size() == 0)                                                   // First run and seq
+         {runs.push(new Run(i, i+1, V));
+          seqs.push(new Seq(i, i+1, V));
          }
-        else seqs.push(new Seq(i, i+1, V));
+        else                                                                    // Subsequent run and sequence
+         {final Run r = runs.lastElement();                                     // Run of same element
+          if (r.value == V && r.finish == i) r.finish = i+1;                    // Run continued
+          else runs.push(new Run(i, i+1, V));
+
+          final Seq s = seqs.lastElement();                                     // Sequence of increasing elements
+          if (s.value == V-1 && s.finish == i)
+           {s.finish = i+1; s.value = V;
+           }
+          else seqs.push(new Seq(i, i+1, V));
+         }
        }
 
-      if (runs.size() < seqs.size())                                            // Use the shortest methodology
+      if (runs.size() > 0 && runs.size() < seqs.size())                         // Use the shortest methodology
        {for(Run r: runs)                                                        // Write out the runs
          {if (r.start + 3 > r.finish)                                           // Write out the runs as individual assign stataments because there are only a few
            {for(int i = r.start; i < r.finish; ++i)
@@ -1576,7 +1608,7 @@ if __name__ == "__main__":
            }
          }
        }
-      else
+      else if (seqs.size() > 0)
        {for(Seq s: seqs)                                                        // Write out the sequence
          {final String j = processMemoryIndexName();
           final int start = s.value - s.finish + 1;
@@ -1672,20 +1704,24 @@ if __name__ == "__main__":
 
     void memorySet(Register Value, Register Index)                              // Set a memory element indexed by a register
      {if (Value.registerSingle())                                               // Single register into memory
-       {memory[Index.registerGet()] = (BitSet)Value.value.clone();
+       {final int i = Index.registerGet();
+        memory   [i] = (BitSet)Value.value.clone();
+        memorySet[i] = true;
        }
       else if (Value.registerSize == memoryBlockSize)                           // Arrayed register into memory
        {int I = Index.registerGet() * memoryBlockSize;
         for (int i = 0; i < memoryBlockSize; i++)
-         {memory[I++] = (BitSet)Value.values[i].clone();
+         {memory   [I]   = (BitSet)Value.values[i].clone();
+          memorySet[I++] = true;
          }
        }
       else stop("Wrong register size");
      }
 
     void memorySet(Register Value, Register Index, int OffSet)                  // Set a memory element indexed by a register plus an offset
-     {memory[Index.registerGet()*memoryBlockSize+OffSet] =
-       (BitSet)Value.value.clone();
+     {final int i = Index.registerGet()*memoryBlockSize+OffSet;
+      memorySet[i] = true;
+      memory   [i] = (BitSet)Value.value.clone();
      }
 
     void memorySet(Verilog v, Register Value, Register Index)                   // Set a memory element indexed by a register
@@ -1715,11 +1751,10 @@ if __name__ == "__main__":
 
     void memorySet(int Value, int Index)                                        // Set a memory element
      {final int l = min(memoryWidth, Integer.SIZE-1);                           // The most bits we can hope to represent
-      final BitSet v = memory[Index];                                           // Memory element
+      final BitSet v = memory   [Index];                                        // Memory element
+                       memorySet[Index] = true;                                 // This memory element has been set
       v.clear();                                                                // Zero the memory
-      for (int i = 0; i < l; i++)                                               // Set each bit in the bitset if the corresponding bit in the value is set
-       {if (((Value >> i) & 1) != 0) v.set(i);
-       }
+      for (int i = 0; i < l; i++) if (((Value >> i) & 1) != 0) v.set(i);        // Set each bit in the bitset if the corresponding bit in the value is set
      }
 
     void memorySet(Verilog v, int Value, int Index)                             // Set a memory element in Verilog
@@ -1728,11 +1763,10 @@ if __name__ == "__main__":
 
     void memorySet(int Value, int Index, int OffSet)                            // Set a memory element
      {final int l = min(memoryWidth, Integer.SIZE-1);                           // The most bits we can hope to represent
-      final BitSet v = memory[Index*memoryBlockSize+OffSet];                    // Memory element
+      final BitSet v = memory   [Index*memoryBlockSize+OffSet];                 // Memory element
+                       memorySet[Index*memoryBlockSize+OffSet] = true;          // This memory element has been set
       v.clear();                                                                // Zero the memory
-      for (int i = 0; i < l; i++)                                               // Set each bit in the bitset if the corresponding bit in the value is set
-       {if (((Value >> i) & 1) != 0) v.set(i);
-       }
+      for (int i = 0; i < l; i++) if (((Value >> i) & 1) != 0) v.set(i);        // Set each bit in the bitset if the corresponding bit in the value is set
      }
 
     void memorySet(Verilog v, int Value, int Index, int OffSet)                 // Set a memory element in Verilog
@@ -1742,7 +1776,10 @@ if __name__ == "__main__":
 
     void memoryBackUp()                                                         // Back up memory
      {for (int i = 0; i < memory.length; i++)
-       {memoryBackUp[i] = (BitSet)memory[i].clone();
+       {if (memorySet[i])
+         {memoryBackUp   [i] = (BitSet)memory[i].clone();
+          memoryBackUpSet[i] = true;
+         }
        }
      }
 
