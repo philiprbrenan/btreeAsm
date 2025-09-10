@@ -103,7 +103,7 @@ chipStop = true;
 
   void createFreeChain()                                                        // Create the free chain before the chip starts running as this is a one time event
    {for (int i = 0; i < size-1; i++)
-     {freeNext.memorySet(i+1, i);                                               // Free chain hangs from root
+     {freeNext   .memorySet(i+1, i);                                            // Free chain hangs from root
       stuckIsFree.memorySet(1, i+1);                                            // Start with the root as a leaf
      }
     stuckIsLeaf.memorySet(1, 0);                                                // Start with the root as a leaf
@@ -4406,6 +4406,10 @@ Chip: Btree            step: 0, maxSteps: 10, running: 0
       Memory: size:  4, width:  8, block:  4
         0  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24
         0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0
+    stucksUsed
+      Memory: size:  1, width:  3, block:  1
+        0  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24
+        1
 """);
     p.processClear();
     b.allocate(i, true);
@@ -4478,6 +4482,10 @@ Chip: Btree            step: 53, maxSteps: 100, running: 0
       Memory: size:  4, width:  8, block:  4
         0  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24
         0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0
+    stucksUsed
+      Memory: size:  1, width:  3, block:  1
+        0  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24
+        1
 """);
     ok(i.registerGet(), 1);
    }
@@ -7112,7 +7120,7 @@ Merge     : 0
 
   static void newTests()                                                        // Tests being worked on
    {//oldTests();
-    test_search_eq();
+    test_allocate();
     //test_verilog_find();
    }
 
