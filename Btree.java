@@ -5,8 +5,7 @@
 package com.AppaApps.Silicon;                                                   // Btree in a block on the surface of a silicon chip.
 // Squeeze out all redundant variables and check all code paths are being tested
 // Improve chipPrintMemory to make the output more compact and readable
-// Warning: Replacing memory \freeNext_memory with list of registers. See inputs/Btree.v:873
-// Warning: Replacing memory \stuckIsFree_memory with list of registers. See inputs/Btree.v:844
+// Clear memory incrementally as needed rather than all at once at the start
 import java.util.*;
 
 class Btree extends Chip                                                        // Manipulate a btree in a block of memory
@@ -24,6 +23,7 @@ class Btree extends Chip                                                        
   final Memory stuckSize;                                                       // Current size of stuck up to the maximum size
   final Memory stuckKeys;                                                       // Keys field
   final Memory stuckData;                                                       // Data field
+  final Memory stucksUsed;                                                      // Maximumnumbver of stucks used at any one time so far - this allows us to avoid initializing all the stucks at the start
 
   final Stuck ParentStuck;                                                      // Parent stuck
   final Stuck LeftMergeStuck;                                                   // Left sibling in merge operation
@@ -65,6 +65,7 @@ class Btree extends Chip                                                        
     stuckSize    = new Memory("stuckSize"  , Size, stuckAddressSize);           // Current size of stuck up to the maximum size
     stuckKeys    = new Memory("stuckKeys"  , Size, bitsPerKey , MaxStuckSize);  // Keys fields
     stuckData    = new Memory("stuckData"  , Size, bitsPerData, MaxStuckSize);  // Data fields
+    stucksUsed   = new Memory("stucksUsed" , 1, btreeAddressSize, 1);           // Maximum number of stucks used at one time so far
 
     ParentStuck     = new Stuck(P, "Parent");                                   // Parent stuck
     LeftMergeStuck  = new Stuck(P, "MergeLeft");                                // Left stuck sibling in merge operation
@@ -106,7 +107,8 @@ chipStop = true;
       stuckIsFree.memorySet(1, i+1);                                            // Start with the root as a leaf
      }
     stuckIsLeaf.memorySet(1, 0);                                                // Start with the root as a leaf
-    stuckIsFree.memorySet(0, 0);                                                // Start with the root as a leaf
+    stuckIsFree.memorySet(0, 0);                                                // Start with the root allocated
+    stucksUsed .memorySet(1, 0);                                                // The maximum number of stucks allocated so far
    }
 
   private void allocate(Process.Register ref, boolean leaf)                     // Allocate a stuck and set a ref to the allocated node
@@ -6989,7 +6991,7 @@ Merge     : 0
    {sayCurrentTestName();
 // 10, 4  1072
 // 10,10  1126
-    final Btree            b = new Btree(powerTwo(4), powerTwo(4), 32, 32);
+    final Btree            b = new Btree(powerTwo(2), powerTwo(4), 32, 32);
     final Process          P = b.P;
     final Process.Register k = P.register("k", b.bitsPerKey);   k.input();
     final Find             f = b.new Find(P);
@@ -7003,7 +7005,7 @@ Merge     : 0
     final Chip.SiliconCompiler S = b.new SiliconCompiler()                      // Create silicon compiler files
      {String description()
        {return String.format("%s_%d_%d_%d_%d",
-          b.chipName, b.size, b.maxStuckSize, b.bitsPerKey, b.bitsPerData);
+          b.chipName, logTwo(b.size), logTwo(b.maxStuckSize), b.bitsPerKey, b.bitsPerData);
        }
      };
     say(S.launchFile);
