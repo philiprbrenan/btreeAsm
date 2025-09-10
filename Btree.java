@@ -3054,6 +3054,10 @@ Chip: Btree            step: 9, maxSteps: 200, running: 0
       Memory: size:  1, width:  8, block:  4
         0  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24
         3  5  0  0
+    stucksUsed
+      Memory: size:  1, width:  1, block:  1
+        0  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24
+        1
 """);
 
     b.chipRunJava();
@@ -3086,6 +3090,10 @@ Chip: Btree            step: 16, maxSteps: 200, running: 0
       Memory: size:  1, width:  8, block:  4
         0  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24
         4  5  0  0
+    stucksUsed
+      Memory: size:  1, width:  1, block:  1
+        0  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24
+        1
 """);
    }
 
@@ -7120,7 +7128,7 @@ Merge     : 0
 
   static void newTests()                                                        // Tests being worked on
    {//oldTests();
-    test_allocate();
+    test_create1();
     //test_verilog_find();
    }
 
