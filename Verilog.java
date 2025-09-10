@@ -75,6 +75,13 @@ class Verilog extends Test                                                      
   void endCase()            {dedent(); A("endcase");}                           // End
   void endModule()          {dedent(); A("endmodule");}                         // End
 
+  class Initial
+   {Initial()
+     {A("initial begin"); indent(); Body(); end();                              // Initial begin - ignored during synthesis
+     }
+    void Body() {}
+   }
+
   class Always
    {Always()
      {A("always @ (posedge clock) begin"); indent(); Body(); end();             // Always block
