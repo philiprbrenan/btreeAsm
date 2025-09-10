@@ -1387,17 +1387,17 @@ if __name__ == "__main__":
        {void Body()
          {v.new If("reset")                                                     // Clear all control variables and registers on reset
            {void Then()                                                         // Steps less than zero are used for initialization
-             {v.assign(processPcName(),     "0");                               // Program counter for this process
-              v.assign(processStopName(),   "0");                               // Stop process when true
-              v.assign(processRCName(),     "0");                               // Return code after stopping
+             {v.assign(processPcName(),          "0");                          // Program counter for this process
+              v.assign(processStopName(),        "0");                          // Stop process when true
+              v.assign(processRCName(),          "0");                          // Return code after stopping
               v.assign(processMemoryIndexName(), "0");                          // Index of memory to load into
               v.assign(processMemoryValueName(), "0");                          // Value to be loaded into memory
               for (Register r: registers)                                       // Clear all registers
                {if (!r.input && !r.output)
-                 {if (!r.registerArrayed())
-                   {v.assign(r.registerName(), "0");
+                 {if (!r.registerArrayed())                                     // Initialize single register
+                   {v.assign(r.registerName(),  "0");
                    }
-                  else
+                  else                                                          // Initialize arrayed register
                    {final String i = processMemoryIndexName();
                     v.new For(i, ""+r.registerSize)
                      {void body()
@@ -1426,8 +1426,8 @@ if __name__ == "__main__":
              {v.A("if (step < 0) begin");                                       // Load memory
               v.indent();
               if (hasMemory())                                                  // Load memory to match the state at the start of the Java run
-               {//if (v.synthesis) processLoadMemorySynthesis(v);                 // Load memory for synthesis
-                //else             processLoadMemoryTestBench(v);                 // Load memory for test bench
+               {//if (v.synthesis) processLoadMemorySynthesis(v);               // Load memory for synthesis
+                //else             processLoadMemoryTestBench(v);               // Load memory for test bench
                 processLoadMemorySynthesis(v);
                }
               v.end();
@@ -1437,7 +1437,6 @@ if __name__ == "__main__":
                ("else if (processCurrent == %s) begin", processNumber));
 
               v.indent();
-//            v.assign(processNextPcName(), "-1");
               v.A(String.format("case(%s)", processPcName()));                  // Execute instructions in process
               v.indent();
 
@@ -1577,15 +1576,14 @@ if __name__ == "__main__":
      {return String.format("process_%s_%04d", processName, processNumber);
      }
 
-    String processPcName()     {return processName+"_pc";}                      // Program counter
-//  String processNextPcName() {return processName+"_next_pc";}                 // Next program counter
-    String processMemoryName() {return processName+"_memory";}                  // Name of the memory block used by this process
-    String processStopName()   {return processName+"_stop";}                    // Name of the stop field in verilog for this process
-    String processRCName()     {return processName+"_returnCode";}              // Name of the return code in verilog for this process
+    String processPcName         () {return processName+"_pc";}                 // Program counter
+    String processMemoryName     () {return processName+"_memory";}             // Name of the memory block used by this process
+    String processStopName       () {return processName+"_stop";}               // Name of the stop field in verilog for this process
+    String processRCName         () {return processName+"_returnCode";}         // Name of the return code in verilog for this process
     String processMemoryIndexName() {return processName+"_memory_index";}       // Index variable to initialize memory
     String processMemoryValueName() {return processName+"_memory_value";}       // Value variable to initialize memory
 
-    boolean hasMemory()        {return memoryWidth > 0 && memorySize > 0;}      // Whether this process has any memory attached directly to it
+    boolean hasMemory()             {return memoryWidth > 0 && memorySize > 0;} // Whether this process has any memory attached directly to it
 
 //D3 Memory                                                                     // Process operations on memory
 
