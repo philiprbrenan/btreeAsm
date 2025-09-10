@@ -13,6 +13,7 @@ class Chip extends Test                                                         
   final String         javaTraceFile = fn(Verilog.folder, "trace_java.txt");    // Java trace file for comparison with verilog
   final String      verilogTraceFile = fn(Verilog.folder, "trace_verilog.txt"); // Verilog trace file
   final String         resultsFolder = fn("results/");                          // Results of each synthesis
+  final int          memoryInitDelay = 1;                                       // Extra steps needed to complete initialization of memory
   static boolean            chipStop = true;                                    // False when the chip is running, true when it is not
   int memoryProcessTransactionNumber = 0;                                       // Make transaction names unique
   int                           step;                                           // Current simulation step being executed
@@ -53,6 +54,14 @@ class Chip extends Test                                                         
      }
     if (s.length() > 0) s.setLength(s.length()-2);
     return ""+s;
+   }
+
+  int chipMaxMemory()
+   {int m = 0;
+    for(Process p: processes)                                                   // Maximum memory used
+     {if (m < p.processMemorySize()) m = p.processMemorySize();
+     }
+    return m;
    }
 
 //D2 Print                                                                      // Print the state of a chip
@@ -311,6 +320,7 @@ class Chip extends Test                                                         
 module %s;                                                                      // Test bench for database on a chip
   reg                    stop;                                                  // Program has stopped when this goes high
   reg                   clock;                                                  // Clock
+  integer               reset;                                                  // Reset chip to known state
   integer                step;                                                  // Step of the simulation
   integer            maxSteps;                                                  // Maximum number of steps to execute
   integer          returnCode;                                                  // Return code
@@ -321,8 +331,9 @@ module %s;                                                                      
   initial begin
     returnCode = 0;
     maxSteps = %d;
-    for(step = -1; step < 0 || step < maxSteps && !stop; step = step + 1) begin // Steps below zero are run unconditionally to initialize each process so that Java and Verilog start in sync at step zero
-""", chipName, chipStopExpression(), maxSteps));
+    reset = 1; clock = 0; #1; clock = 1; #1; reset = 0; #1                      // Reset to known state
+    for(step = -%d; step < 0 || step < maxSteps && !stop; step = step + 1) begin // Steps below zero are run unconditionally to initialize each process so that Java and Verilog start in sync at step zero
+""", chipName, chipStopExpression(), maxSteps, memoryInitDelay+chipMaxMemory()));
 
     v.indent(); v.indent(); v.indent();
 
@@ -336,7 +347,7 @@ module %s;                                                                      
     v.end();
 
     v.parallel = true;                                                          // Use parallel assign for each process being driven by the test bench
-    for(Process p: processes) p.processVerilog(v);                              // Generate
+    for(Process p: processes) p.processVerilog(v);                              // Generate verilog for each process
 
     chipPrintVerilog(v);                                                        // Add code to print the state of the chip at each step
     v.endModule();
@@ -348,7 +359,6 @@ module %s;                                                                      
 
   void chipRunVerilog()                                                         // Run Verilog describing the chip confirming that it follows the same execution path as the Java
    {final String source = chipRunVerilogGenerate();                             // Source code in Verilog to run the test in a way that matches the java run
-
     deleteFile(verilogTraceFile);                                               // Remove Java trace file
 
     final var n = chipName;
@@ -419,7 +429,7 @@ module %s(                                                                      
      {void Body()
        {v.new If("reset")
          {void Then()
-           {v.assign("step", "-2");
+           {v.assign("step", "-"+(memoryInitDelay+chipMaxMemory()));            // The negative steps are used to load a memory cell at each clock so that the memory is fully loaded by step zero and is thus in a known state at the start while preventing yosys from converting the memory to registers
            }
           void Else()
            {v.assign("step", "step + 1");
@@ -1289,11 +1299,13 @@ if __name__ == "__main__":
       memorySize    = MemorySize;                                               // Create memory
       memoryWidth   = MemoryWidth;
 
-      final int M   = memorySize * memoryBlockSize;                             // Actual size of memory
+      final int M   = processMemorySize();                                      // Actual size of memory
       memory        = new BitSet[M];
       memoryBackUp  = new BitSet[M];
       for (int i = 0; i < M; i++) memory[i] = new BitSet(memoryWidth);
      }
+
+    int processMemorySize() {return memorySize * memoryBlockSize;}              // Number of memory elements associated with this process
 
     void processInit()                                                          // Get ready to execute the program
      {N(); processPc = 0;                                                       // Program always starts at the first instruction
@@ -1367,15 +1379,19 @@ if __name__ == "__main__":
         v.i(t.transactionRcName());
        }
 
-      v.i(processPcName(), processStopName(), processRCName(),
+      v.i(processPcName(), processStopName(), processRCName(),                  // Declare temporary variables
           processMemoryIndexName());
-      v.new Always()
+      v.A(String.format("reg[%d-1:0] %s;", memoryWidth, processMemoryValueName())); // Value to be loaded into memory
+
+      v.new Always()                                                            // Always block for this process
        {void Body()
-         {v.new If("step < 0")                                                  // Execute next step in program
+         {v.new If("reset")                                                     // Clear all control variables and registers on reset
            {void Then()                                                         // Steps less than zero are used for initialization
              {v.assign(processPcName(),     "0");                               // Program counter for this process
               v.assign(processStopName(),   "0");                               // Stop process when true
               v.assign(processRCName(),     "0");                               // Return code after stopping
+              v.assign(processMemoryIndexName(), "0");                          // Index of memory to load into
+              v.assign(processMemoryValueName(), "0");                          // Value to be loaded into memory
               for (Register r: registers)                                       // Clear all registers
                {if (!r.input && !r.output)
                  {if (!r.registerArrayed())
@@ -1404,69 +1420,18 @@ if __name__ == "__main__":
                    }
                  }
                }
+             }
 
+            void Else()                                                         // We are no longer in reset
+             {v.A("if (step < 0) begin");                                       // Load memory
+              v.indent();
               if (hasMemory())                                                  // Load memory to match the state at the start of the Java run
-               {class Run                                                       // Collect identical memory initial values in consecutive elements
-                 {int start, finish, value;
-                  Run(int Start, int Finish, int Value)
-                   {start = Start; finish = Finish; value = Value;
-                   }
-                 }
-                class Seq                                                       // Collect increasing memory initial values in consecutive elements
-                 {int start, finish, value;
-                  Seq(int Start, int Finish, int Value)
-                   {start = Start; finish = Finish; value = Value;
-                   }
-                 }
-                final Stack<Run>runs = new Stack<>();                           // Runs
-                final Stack<Seq>seqs = new Stack<>();                           // Sequences
-                runs.push(new Run(0, 1, memoryGetBackUp(0)));                   // First run
-                seqs.push(new Seq(0, 1, memoryGetBackUp(0)));                   // First run
-                for(int i = 1; i < memory.length; i++)
-                 {final int V = memoryGetBackUp(i);
-
-                  final Run r = runs.lastElement();                             // Run of same element
-                  if (r.value == V) r.finish = i+1;
-                  else runs.push(new Run(i, i+1, V));
-
-                  final Seq s = seqs.lastElement();                             // Sequence of increasing elements
-                  if (s.value == V-1)
-                   {s.finish = i+1; s.value = V;
-                   }
-                  else seqs.push(new Seq(i, i+1, V));
-                 }
-
-                if (runs.size() < seqs.size())                                  // Use the shortest methodology
-                 {for(Run r: runs)                                              // Write out the runs
-                   {if (r.start + 3 > r.finish)                                 // Write out the runs as individual assign stataments because there are only a few
-                     {for(int i = r.start; i < r.finish; ++i)
-                       {v.A(processMemoryName()+"["+i+"] <= "+r.value+";");
-                       }
-                     }
-                    else                                                        // Write out a run as a for loop as there are quite a few
-                     {final String j = processMemoryIndexName();
-                      v.new For(j, ""+r.start, ""+r.finish)
-                       {void body()
-                         {v.A(processMemoryName()+"["+j+"] <= "+r.value+";");
-                         }
-                       };
-                     }
-                   }
-                 }
-                else
-                 {for(Seq s: seqs)                                              // Write out the sequence
-                   {final String j = processMemoryIndexName();
-                    final int start = s.value - s.finish + 1;
-                    v.new For(j, ""+s.start, ""+s.finish)
-                     {void body()
-                       {v.A(processMemoryName()+"["+j+"] <= "+start+"+"+j+";");
-                       }
-                     };
-                   }
-                 }
+               {//if (v.synthesis) processLoadMemorySynthesis(v);                 // Load memory for synthesis
+                //else             processLoadMemoryTestBench(v);                 // Load memory for test bench
+                processLoadMemorySynthesis(v);
                }
-
               v.end();
+
               if (v.synthesis) v.A("else begin                                  // Run the process in full parallel");
               else v.A(String.format                                            // Run each process to match Java execution
                ("else if (processCurrent == %s) begin", processNumber));
@@ -1529,11 +1494,83 @@ if __name__ == "__main__":
                }
               v.A("default: "+processStopName()+" "+v.assignOp()+" 1;");
               v.endCase();
+              v.end();
              }
            };
          }
        };
       return ""+v;
+     }
+
+    void processLoadMemorySynthesis(Verilog v)                                  // Load memory in verilog being synthesized in a form that yosys will intepret as a memory load not a register load
+     {v.new Case(memory.length, "-(step+"+memoryInitDelay+")")
+       {void Choice(int i)
+         {v.assign(processMemoryIndexName(), ""+i);                             // Memory index to be loaded
+          v.assign(processMemoryValueName(), memoryGetBackUp(i));               // Value to be loaded into memory
+         }
+       };
+      v.A(processMemoryName()+"["+processMemoryIndexName()+"] <= "+processMemoryValueName()+";"); // Load memory in a format that yosys will intepret as memory not registers
+     }
+
+    void processLoadMemoryTestBench(Verilog v)                                  // Load memory in verilog being executed under the test bench to match the state at the start of the Java run
+     {class Run                                                                 // Collect identical memory initial values in consecutive elements
+       {int start, finish, value;
+        Run(int Start, int Finish, int Value)
+         {start = Start; finish = Finish; value = Value;
+         }
+       }
+      class Seq                                                                 // Collect increasing memory initial values in consecutive elements
+       {int start, finish, value;
+        Seq(int Start, int Finish, int Value)
+         {start = Start; finish = Finish; value = Value;
+         }
+       }
+      final Stack<Run>runs = new Stack<>();                                     // Runs
+      final Stack<Seq>seqs = new Stack<>();                                     // Sequences
+      runs.push(new Run(0, 1, memoryGetBackUp(0)));                             // First run
+      seqs.push(new Seq(0, 1, memoryGetBackUp(0)));                             // First run
+      for(int i = 1; i < memory.length; i++)
+       {final int V = memoryGetBackUp(i);
+
+        final Run r = runs.lastElement();                                       // Run of same element
+        if (r.value == V) r.finish = i+1;
+        else runs.push(new Run(i, i+1, V));
+
+        final Seq s = seqs.lastElement();                                       // Sequence of increasing elements
+        if (s.value == V-1)
+         {s.finish = i+1; s.value = V;
+         }
+        else seqs.push(new Seq(i, i+1, V));
+       }
+
+      if (runs.size() < seqs.size())                                            // Use the shortest methodology
+       {for(Run r: runs)                                                        // Write out the runs
+         {if (r.start + 3 > r.finish)                                           // Write out the runs as individual assign stataments because there are only a few
+           {for(int i = r.start; i < r.finish; ++i)
+             {v.A(processMemoryName()+"["+i+"] <= "+r.value+";");
+             }
+           }
+          else                                                                  // Write out a run as a for loop as there are quite a few
+           {final String j = processMemoryIndexName();
+            v.new For(j, ""+r.start, ""+r.finish)
+             {void body()
+               {v.A(processMemoryName()+"["+j+"] <= "+r.value+";");
+               }
+             };
+           }
+         }
+       }
+      else
+       {for(Seq s: seqs)                                                        // Write out the sequence
+         {final String j = processMemoryIndexName();
+          final int start = s.value - s.finish + 1;
+          v.new For(j, ""+s.start, ""+s.finish)
+           {void body()
+             {v.A(processMemoryName()+"["+j+"] <= "+start+"+"+j+";");
+             }
+           };
+         }
+       }
      }
 
     String processNameAndNumber()                                               // Used to generate skip to comments
@@ -1546,6 +1583,7 @@ if __name__ == "__main__":
     String processStopName()   {return processName+"_stop";}                    // Name of the stop field in verilog for this process
     String processRCName()     {return processName+"_returnCode";}              // Name of the return code in verilog for this process
     String processMemoryIndexName() {return processName+"_memory_index";}       // Index variable to initialize memory
+    String processMemoryValueName() {return processName+"_memory_value";}       // Value variable to initialize memory
 
     boolean hasMemory()        {return memoryWidth > 0 && memorySize > 0;}      // Whether this process has any memory attached directly to it
 
@@ -2702,8 +2740,8 @@ Chip: Test             step: 6, maxSteps: 10, running: 0
    }
 
   static void newTests()                                                        // Tests being worked on
-   {oldTests();
-    //test_register_array();
+   {//oldTests();
+    test_arithmeticFibonacci();
    }
 
   public static void main(String[] args)                                        // Test if called as a program
