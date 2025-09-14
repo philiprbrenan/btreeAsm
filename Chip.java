@@ -766,7 +766,7 @@ if __name__ == "__main__":
       final int     registerSize;                                               // Size of array if an array register
       final int     registerBits;                                               // Number of bits the register can hold
       final boolean registerSingle;                                             // A single register if true else an array of registers
-      final boolean registerUnSetAllowed;                                       // Whether this register is allowed to have an unknown value state
+      final boolean registerNullable;                                           // Whether this register can differentiate between being set and unset
       BitSet        value = new BitSet();                                       // Current value of the register in Java
       final BitSet[]values;                                                     // Values if register is an array
       boolean registerSet = true;                                               // Initially registers are set to zero before process execution begins so they have a known value
@@ -776,14 +776,14 @@ if __name__ == "__main__":
       Register                                                                  // Create a register that can take an unknonw value state
        (String RegisterName,    int RegisterBits,
         boolean RegisterSingle, int RegisterSize,
-        boolean RegisterUnsetAllowed)
+        boolean RegisterNullable)
        {N();
         registerBaseName     = RegisterName;
         registerSingle       = RegisterSingle;
         final String n       = registerName = RegisterName + "_" + registers.size();
         registerBits         = RegisterBits;
         registerSize         = RegisterSize;
-        registerUnSetAllowed = RegisterUnsetAllowed;
+        registerNullable     = RegisterNullable;
         registerSets         = new boolean[registerSize];
         values = registerArrayed() ? new BitSet[registerSize] : null;           // Array of registers if requested
         if (registerArrayed())
@@ -869,7 +869,7 @@ if __name__ == "__main__":
       boolean C(Register...R)                                                   // Check whether the specified registers have known values that can be used to compute the value of the current register. If anomalies are detected preemptively mark the register cas conatyioning an inset value - the caller can override this if necessary in their code.
        {if (R.length == 0)                                                      // The target is an input to this computation
          {if (!registerSet)                                                     // The target requires a known value but is currently unset and is an input to this computation which makes it unlikeley that the computation will yield a known result
-           {if (!registerUnSetAllowed)
+           {if (!registerNullable)
              {stop("Register:", registerName, "cannot have an unknown value");
              }
             else return false;                                                  // The register is unset but this permissible
@@ -877,7 +877,7 @@ if __name__ == "__main__":
           else return true;                                                     // The register contains a known value so everything is probably fine
          }
 
-        if (!registerUnSetAllowed)                                              // The target cannot be set to an unknown value
+        if (!registerNullable)                                              // The target cannot be set to an unknown value
          {for (Register r : R)                                                  // Each input register to the computation
            {if (!r.registerSet)
              {stop("Register:", registerName, "cannot have an unknown value, ", // An unknown value might be used to compute the value of a register that does not allow unknown values
@@ -1787,7 +1787,7 @@ if __name__ == "__main__":
             final long[] V = b.toLongArray();                                   // Convert bitset to long
             Value.registerSet(V.length > 0 ? (int)V[0] : 0, i);                 // Take the first element if it exists relying on the fact that in the Java code we test with just sufficiently large numbers to test the verilog in priniple
            }
-          else if (Value.registerUnSetAllowed) Value.registerSets[i] = false;   // Memory was not set but register can accept unset values
+          else if (Value.registerNullable) Value.registerSets[i] = false;   // Memory was not set but register can accept unset values
           else stop("Cannot put unset memory value from:", processMemoryName(),
             "into register:", Value.registerName());
          }
