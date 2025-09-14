@@ -106,10 +106,11 @@ chipStop = true;
 //D2 Allocation                                                                 // Allocate stucks from the free chain
 
   void createFreeChain()                                                        // Create the free chain before the chip starts running as this is a one time event
-   {for (int i = 0; i < size-1; i++)
-     {freeNext   .memorySet(i+1, i);                                            // Free chain hangs from root
-      stuckIsFree.memorySet(1, i+1);                                            // Start with the root as a leaf
-     }
+   {//for (int i = 0; i < size-1; i++)
+    // {freeNext   .memorySet(i+1, i);                                            // Free chain hangs from root
+    //  stuckIsFree.memorySet(1, i+1);                                            // Start with the root as a leaf
+    // }
+    freeNext   .memorySet(0, 0);                                                // Start with the root empty
     stuckSize  .memorySet(0, 0);                                                // Start with the root empty
     stuckIsLeaf.memorySet(1, 0);                                                // Start with the root as a leaf
     stuckIsFree.memorySet(0, 0);                                                // Start with the root allocated
@@ -122,53 +123,79 @@ chipStop = true;
     final Memory.Set    sFreeNext = freeNext   .memorySetIntoProcess(P);        // Set next free stuck
     final Memory.Set    sIsLeaf   = stuckIsLeaf.memorySetIntoProcess(P);        // Set leaf or branch
     final Memory.Set    sIsFree   = stuckIsFree.memorySetIntoProcess(P);        // Set stuck is free field
+    final Memory.Get      gUsed   = stuckUsed  .memoryGetFromProcess(P);        // Transactions to get next unused stuck index
+    final Memory.Set      sUsed   = stuckUsed  .memorySetIntoProcess(P);        // Transactions to set next unused stuck index
+
     final Process.Register   root = btreeIndex(P, "root");                      // Index of the first free stuck in the btree
     final Process.Register   next = btreeIndex(P, "next");                      // Index of the second free stuck in the btree
     final Process.Register  nUsed = btreeIndex(P, "notUsed");                   // Index of next non used stuck
+    final Process.Register  avail = P.register("notUsedAvailable", 1);          // Next non used stuck available
     final Process.Register isLeaf = P.register("isLeaf", 1);                    // Indicate whether the allocated stuck is a leaf or a branch
     final Process.Register isFree = P.register("isFree", 1);                    // Indicate that the allocated stuck is not free but in use
     root.Zero();
     gFreeNext.ExecuteTransaction(root);                                         // Get next free stuck from the free chain
     gFreeNext.waitResultOfTransaction();
     ref.Copy(gFreeNext.transactionOutputRegisters.firstElement(), 0);           // Save reference to allocated stuck
-    P.new Instruction()                                                         // First free stuck if any is the allocated stuck
-     {void action()
-       {if (ref.registerGet() == 0)                                             // Nothing on the free chain
-         {//gUsed.ExecuteTransaction();                                           // Get next free stuck from the free chain
-          //gUsed.waitResultOfTransaction();
 
-          P.processStop(20);
-         }
-        if (leaf) isLeaf.one(); else isLeaf.zero();                             // Leaf or branch
+    P.new If (ref)                                                              // Check next free chain entry
+     {void Then()                                                               // There is a stuck available on the free chain that we can reuse
+       {P.new Instruction()                                                     // First free stuck if any is the allocated stuck
+         {void action()
+           {gFreeNext.executeTransaction(ref);                                  // Next free stuck
+           }
+          void verilog(Verilog v)
+           {gFreeNext.executeTransaction(v, ref);                               // Next free stuck
+           }
+         };
+
+        gFreeNext.waitResultOfTransaction();
+        next.Copy(gFreeNext.transactionOutputRegisters.firstElement(), 0);
+        sFreeNext.ExecuteTransaction(root, next);                               // Next free stuck is now first on free chain from root
+        sFreeNext.waitResultOfTransaction();
+       }
+
+      void Else()                                                               // Nothing on free chain
+       {gUsed.ExecuteTransaction(root);                                         // Get next free stuck from unallocated memory
+        gUsed.waitResultOfTransaction();                                        // Wait for next free stuck from unallocated memory
+        nUsed.Copy(gUsed.transactionOutputRegisters.firstElement(), 0);         // Copy unused stuck index
+        avail.Lt(nUsed, size);                                                  // Whether any more stucks are available
+        P.new If (avail)                                                        // More stucks available
+         {void Then()                                                           // There is another tsuck avauilable
+           {ref.Copy(nUsed);                                                    // Refer to the latest free stuck
+            nUsed.Inc();                                                        // Step to next unused stuck index
+            sUsed.ExecuteTransaction(root, nUsed);                              // Update next unused stuck index
+            sUsed.waitResultOfTransaction();                                    // Wait for update of next unused stuck index
+           }
+          void Else()                                                           // Out of memory, the free chain is empty and no more stucks are available
+           {P.ProcessStop(20);
+           }
+         };
+       }
+     };
+
+    P.new Instruction()                                                         // Set the allocated stuck to be a leaf or a branch
+     {void action()
+       {if (leaf) isLeaf.one(); else isLeaf.zero();
         isFree.zero();
        }
       void verilog(Verilog v)
-       {v.new If (ref.registerName() + " == 0")
-         {void Then() {P.processStop(v, 20);}
-         };
-        if (leaf) isLeaf.one(v); else isLeaf.zero(v);                           // Leaf or branch
+       {if (leaf) isLeaf.one(v); else isLeaf.zero(v);
         isFree.zero(v);
        }
      };
 
-    P.new Instruction()                                                         // First free stuck if any is the allocated stuck
+    P.new Instruction()                                                         // Update memory with leaf or branch status of allocated stuck
      {void action()
-       {gFreeNext.executeTransaction(ref);                                      // Next free stuck
-        sIsLeaf.executeTransaction(ref, isLeaf);                                // Set allocated stuck to leaf or branch
-        sIsFree.executeTransaction(ref, isFree);                                // Set allocated stuck to leaf or branch
+       {sIsLeaf.executeTransaction(ref, isLeaf);
+        sIsFree.executeTransaction(ref, isFree);
        }
       void verilog(Verilog v)
-       {gFreeNext.executeTransaction(v, ref);                                   // Next free stuck
-        sIsLeaf.executeTransaction(v, ref, isLeaf);                             // Set allocated stuck to leaf or branch
-        sIsFree.executeTransaction(v, ref, isFree);                             // Set allocated stuck to leaf or branch
+       {sIsLeaf.executeTransaction(v, ref, isLeaf);
+        sIsFree.executeTransaction(v, ref, isFree);
        }
      };
 
-    gFreeNext.waitResultOfTransaction();
-    next.Copy(gFreeNext.transactionOutputRegisters.firstElement(), 0);
-    sFreeNext.ExecuteTransaction(root, next);                                   // Next free stuck is now first on free chain from root
-    sFreeNext.waitResultOfTransaction();
-    sIsLeaf  .waitResultOfTransaction();
+    sIsLeaf  .waitResultOfTransaction();                                        // Wait for memory update of leaf or branch to finish
     sIsFree  .waitResultOfTransaction();
    }
 
@@ -274,8 +301,6 @@ chipStop = true;
     final Memory.Set sKeys;                                                     // Transactions to set each key in the stuck
     final Memory.Get gData;                                                     // Transactions to get each data element in the stuck
     final Memory.Set sData;                                                     // Transactions to set each data element in the stuck
-    final Memory.Get gUsed;                                                     // Transactions to get next unused stuck index
-    final Memory.Set sUsed;                                                     // Transactions to set next unused stuck index
                                                                                 // Output registers so they must be owned by this process so that we can write into them
     final Process.Register Found;                                               // Whether the key was found
     final Process.Register Key;                                                 // Data associated with the key if found
@@ -309,8 +334,6 @@ chipStop = true;
       sKeys        = stuckKeys.memorySetIntoProcess(P);                         // Transactions to set each key in the stuck
       gData        = stuckData.memoryGetFromProcess(P);                         // Transactions to get each data element in the stuck
       sData        = stuckData.memorySetIntoProcess(P);                         // Transactions to set each data element in the stuck
-      gUsed        = stuckUsed.memoryGetFromProcess(P);                         // Transactions to get each data element in the stuck
-      sUsed        = stuckUsed.memorySetIntoProcess(P);                         // Transactions to set each data element in the stuck
 
       gSize        = stuckSize  .memoryGetFromProcess(P);                       // Transaction to get the current size of the stuck
       sSize        = stuckSize  .memorySetIntoProcess(P);                       // Transaction to set the current size of the stuck
@@ -3141,11 +3164,11 @@ Chip: Btree            step: 0, maxSteps: 10, running: 0
     stuckIsFree
       Memory: size:  2, width:  1, block:  1
         0  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24
-        0  1
+        0  0
     freeNext
       Memory: size:  2, width:  2, block:  1
         0  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24
-        1  0
+        0  0
     stuckSize
       Memory: size:  2, width:  3, block:  1
         0  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24
@@ -4454,11 +4477,11 @@ Chip: Btree            step: 0, maxSteps: 10, running: 0
     stuckIsFree
       Memory: size:  4, width:  1, block:  1
         0  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24
-        0  1  1  1
+        0  0  0  0
     freeNext
       Memory: size:  4, width:  3, block:  1
         0  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24
-        1  2  3  0
+        0  0  0  0
     stuckSize
       Memory: size:  4, width:  3, block:  1
         0  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24
@@ -4479,49 +4502,11 @@ Chip: Btree            step: 0, maxSteps: 10, running: 0
     p.processClear();
     b.allocate(i, true);
     b.allocate(j, false);
-    //stop(b.chipPrintMemory());
-    if (false) p.new Instruction()
+    if (true) p.new Instruction()
      {void action()
-       {ok(b.chipPrintMemory(), """
-Chip: Btree            step: 0, maxSteps: 10, running: 0
-  Processes:
-    stuckIsLeaf
-      Memory: size:  4, width:  1, block:  1
-        0  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24
-        1  0  0  0
-    stuckIsFree
-      Memory: size:  4, width:  1, block:  1
-        0  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24
-        0  1  1  1
-    freeNext
-      Memory: size:  4, width:  3, block:  1
-        0  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24
-        1  2  3  0
-    stuckSize
-      Memory: size:  4, width:  3, block:  1
-        0  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24
-        0  0  0  0
-    stuckKeys
-      Memory: size:  4, width:  8, block:  4
-        0  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24
-        0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0
-    stuckData
-      Memory: size:  4, width:  8, block:  4
-        0  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24
-        0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0
-""");
-        ok(i, "alloc_index1_0 = 1");
-        ok(j, "alloc_index2_1 = 2");
-       }
-      void verilog(Verilog v) {v.A("");}
-     };
-    b.free(i);
-    b.free(j);
-    b.maxSteps = 100;
-    b.chipRun();
-    //stop(b.chipPrintMemory());
-    ok(b.chipPrintMemory(), """
-Chip: Btree            step: 53, maxSteps: 100, running: 0
+       {//stop(b.chipPrintMemory());
+        ok(b.chipPrintMemory(), """
+Chip: Btree            step: 46, maxSteps: 100, running: 1
   Processes:
     stuckIsLeaf
       Memory: size:  4, width:  1, block:  1
@@ -4530,11 +4515,11 @@ Chip: Btree            step: 53, maxSteps: 100, running: 0
     stuckIsFree
       Memory: size:  4, width:  1, block:  1
         0  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24
-        0  1  1  1
+        0  0  0  0
     freeNext
       Memory: size:  4, width:  3, block:  1
         0  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24
-        2  3  1  0
+        0  0  0  0
     stuckSize
       Memory: size:  4, width:  3, block:  1
         0  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24
@@ -4550,7 +4535,49 @@ Chip: Btree            step: 53, maxSteps: 100, running: 0
     stucksUsed
       Memory: size:  1, width:  3, block:  1
         0  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24
-        1
+        3
+""");
+        ok(i.registerGet(), 1);
+        ok(j.registerGet(), 2);
+       }
+      void verilog(Verilog v) {v.A("");}
+     };
+    b.free(i);
+    b.free(j);
+    b.maxSteps = 100;
+    b.chipRun();
+    //stop(b.chipPrintMemory());
+    ok(b.chipPrintMemory(), """
+Chip: Btree            step: 70, maxSteps: 100, running: 0
+  Processes:
+    stuckIsLeaf
+      Memory: size:  4, width:  1, block:  1
+        0  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24
+        1  1  0  0
+    stuckIsFree
+      Memory: size:  4, width:  1, block:  1
+        0  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24
+        0  1  1  0
+    freeNext
+      Memory: size:  4, width:  3, block:  1
+        0  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24
+        2  0  1  0
+    stuckSize
+      Memory: size:  4, width:  3, block:  1
+        0  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24
+        0  0  0  0
+    stuckKeys
+      Memory: size:  4, width:  8, block:  4
+        0  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24
+        0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0
+    stuckData
+      Memory: size:  4, width:  8, block:  4
+        0  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24
+        0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0
+    stucksUsed
+      Memory: size:  1, width:  3, block:  1
+        0  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24
+        3
 """);
     ok(i.registerGet(), 1);
    }
@@ -7187,7 +7214,6 @@ Merge     : 0
 
   static void newTests()                                                        // Tests being worked on
    {oldTests();
-    test_findAndInsert();
    }
 
   public static void main(String[] args)                                        // Test if called as a program
