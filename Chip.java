@@ -877,7 +877,7 @@ if __name__ == "__main__":
           else return true;                                                     // The register contains a known value so everything is probably fine
          }
 
-        if (!registerNullable)                                              // The target cannot be set to an unknown value
+        if (!registerNullable)                                                  // The target cannot be set to an unknown value
          {for (Register r : R)                                                  // Each input register to the computation
            {if (!r.registerSet)
              {stop("Register:", registerName, "cannot have an unknown value, ", // An unknown value might be used to compute the value of a register that does not allow unknown values
@@ -891,7 +891,7 @@ if __name__ == "__main__":
         return true;                                                            // Computation should proceed because the register can accept unknown values if necessary
        }
 
-      int registerGet()                                                         // Return the registerâs value as an integer
+      int registerGet()                                                         // Return the registerâs value as an integer. If the register is nullable check whether the register is currently set
        {C(); registerCheckSingle();
         return value.length() == 0 ? 0 : (int) value.toLongArray()[0];          // Relies on the fact that this Java code is only used for testing, unlike the Verilog version
        }
@@ -1117,7 +1117,7 @@ if __name__ == "__main__":
       void copy(int TargetIndex, Register Source, int SourceIndex)              // Copy an element from an arrayed source to an element of an arrayed target register
        {R(); registerCheckSize(Source);                                         // Make sure the target register is big enough
         Source.registerCheckArrayed(); registerCheckArrayed();
-        values      [TargetIndex] = (BitSet)Source.values[SourceIndex].clone();       // Copy the source value into the target
+        values      [TargetIndex] = (BitSet)Source.values[SourceIndex].clone(); // Copy the source value into the target
         registerSets[TargetIndex] =   Source.registerSets[SourceIndex];
        }
 
@@ -1132,7 +1132,7 @@ if __name__ == "__main__":
          };
        }
 
-//D2 Combine                                                                    // Or two registers together
+//D3 Combine                                                                    // Or two registers together
 
       void combine(Register Source)                                             // Copy the source register into the target if the source is not zero
        {R(); registerCheckSize(Source);                                         // Make sure the target register is big enough
@@ -2185,9 +2185,9 @@ if __name__ == "__main__":
          {for (var t : transactions)                                            // All transactions
            {if (t.transactionExecutable())                                      // Executable transactions
              {if (t.transactionOpCode.equals("get"))                            // Memory get requests
-               {memoryGet                                                       // Set output register with value of memory at index
-                 (t.transactionOutputRegisters.elementAt(0),
-                  t.transactionInputRegisters .elementAt(0));
+               {final Register I = t.transactionInputRegisters .elementAt(0);   // Address index register which is sngle
+                final Register V = t.transactionOutputRegisters.elementAt(0);   // Address value register which is arrayed
+                memoryGet(V, I);                                                // Set output register with value of memory at index
                 t.transactionSetFinished();                                     // Mark the transaction as complete
                 break;                                                          // Execute one memory request per clock
                }
