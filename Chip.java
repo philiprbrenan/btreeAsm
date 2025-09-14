@@ -90,10 +90,10 @@ class Chip extends Test                                                         
          }
         s.append("\n");
 
-        s.append(String.format("       %2d", p.memoryGet(0)));
+        s.append(String.format("       %2d", p.memoryGetNoCheck(0)));
 
         for (int i = 1; i < p.memory.length; i++)
-         {s.append(String.format(" %2d", p.memoryGet(i)));
+         {s.append(String.format(" %2d", p.memoryGetNoCheck(i)));
          }
         s.append("\n");
        }
@@ -160,15 +160,24 @@ class Chip extends Test                                                         
 
       for (Process.Register r: p.registers)                                     // Print registers associated with this process
        {if (!r.registerArrayed())                                               // Single register
-         {s.append(String.format(
-           "        %-50s = %1d\n",
-          r.registerName(), r.registerGet()));
+         {if (r.registerSet)
+           {s.append(String.format("        %-50s = %1d\n",
+            r.registerName(), r.registerGet()));
+           }
+          else
+           {s.append(String.format("        %-50s = x\n", r.registerName()));
+           }
          }
         else                                                                    // Array of registers
          {for (int i = 0; i < r.registerSize; i++)
-           {s.append(String.format(
-             "        %-44s[%4d] = %1d\n",
-            r.registerName(), i, r.registerGet(i)));
+           {if (r.registerSets[i])
+             {s.append(String.format("        %-44s[%4d] = %1d\n",
+              r.registerName(), i, r.registerGet(i)));
+             }
+            else
+             {s.append(String.format("        %-44s[%4d] = x\n",
+              r.registerName(), i));
+             }
            }
          }
        }
@@ -187,13 +196,25 @@ class Chip extends Test                                                         
            {s.append(in+"  Inputs      :\n");
             for (Process.Register r : t.transactionInputRegisters)
              {if (!r.registerArrayed())
-               {s.append(String.format("%s    %-46s = %1d\n",
-                in, r.registerName(), r.registerGet()));
+               {if (r.registerSet)
+                 {s.append(String.format("%s    %-46s = %1d\n",
+                  in, r.registerName(), r.registerGet()));
+                 }
+                else
+                 {s.append(String.format("%s    %-46s = x\n",
+                    in, r.registerName()));
+                 }
                }
               else
                {for (int i = 0; i < r.registerSize; i++)
-                 {s.append(String.format("%s    %-40s[%4d] = %1d\n",
-                  in, r.registerName(), i, r.registerGet(i)));
+                 {if (r.registerSets[i])
+                   {s.append(String.format("%s    %-40s[%4d] = %1d\n",
+                    in, r.registerName(), i, r.registerGet(i)));
+                   }
+                  else
+                   {s.append(String.format("%s    %-40s[%4d] = x\n",
+                    in, r.registerName(), i));
+                   }
                  }
                }
              }
@@ -203,14 +224,25 @@ class Chip extends Test                                                         
            {s.append(in+"  Outputs     :\n");
             for (Process.Register r : t.transactionOutputRegisters)
              {if (!r.registerArrayed())
-               {s.append(String.format(
-                 "%s    %-46s = %1d\n",
-                 in, r.registerName(), r.registerGet()));
+               {if (r.registerSet)
+                 {s.append(String.format("%s    %-46s = %1d\n",
+                   in, r.registerName(), r.registerGet()));
+                 }
+                else
+                 {s.append(String.format("%s    %-46s = x\n",
+                   in, r.registerName()));
+                 }
                }
               else
                {for (int i = 0; i < r.registerSize; i++)
-                 {s.append(String.format("%s    %-40s[%4d] = %1d\n",
-                  in, r.registerName(), i, r.registerGet(i)));
+                 {if (r.registerSets[i])
+                   {s.append(String.format("%s    %-40s[%4d] = %1d\n",
+                    in, r.registerName(), i, r.registerGet(i)));
+                   }
+                  else
+                   {s.append(String.format("%s    %-40s[%4d] = x\n",
+                    in, r.registerName(), i));
+                   }
                  }
                }
              }
@@ -734,34 +766,47 @@ if __name__ == "__main__":
       final int     registerSize;                                               // Size of array if an array register
       final int     registerBits;                                               // Number of bits the register can hold
       final boolean registerSingle;                                             // A single register if true else an array of registers
+      final boolean registerUnSetAllowed;                                       // Whether this register is allowed to have an unknown value state
+      BitSet        value = new BitSet();                                       // Current value of the register in Java
       final BitSet[]values;                                                     // Values if register is an array
-      BitSet  value = new BitSet();                                             // Current value of the register in Java
+      boolean registerSet = true;                                               // Initially registers are set to zero before process execution begins so they have a known value
+      final boolean[]registerSets;                                              // Whether elements of an arrayed register have been set to a known value or not
       boolean input = false, output = false;                                    // Register is connected to input pins or output pins
 
-      Register                                                                  // Create the register
+      Register                                                                  // Create a register that can take an unknonw value state
        (String RegisterName,    int RegisterBits,
-        boolean RegisterSingle, int RegisterSize)
+        boolean RegisterSingle, int RegisterSize,
+        boolean RegisterUnsetAllowed)
        {N();
-        registerBaseName = RegisterName;
-        registerSingle   = RegisterSingle;
-        final String n   = registerName = RegisterName + "_" + registers.size();
-        registerBits     = RegisterBits;
-        registerSize     = RegisterSize;
+        registerBaseName     = RegisterName;
+        registerSingle       = RegisterSingle;
+        final String n       = registerName = RegisterName + "_" + registers.size();
+        registerBits         = RegisterBits;
+        registerSize         = RegisterSize;
+        registerUnSetAllowed = RegisterUnsetAllowed;
+        registerSets         = new boolean[registerSize];
         values = registerArrayed() ? new BitSet[registerSize] : null;           // Array of registers if requested
         if (registerArrayed())
          {for (int i = 0; i < RegisterSize; i++)                                // Create array of register values
            {values[i] = new BitSet();
+            registerSets[i] = true;                                             // Initially registers are set to zero and unset
            }
          }
         registers.put(n, this);                                                 // Save registers associated with each process
        }
 
-      Register(String RegisterName, int RegisterBits)                           // Create the register
-       {this(RegisterName, RegisterBits, true, 0);
+      Register                                                                  // Create a register
+       (String RegisterName,    int RegisterBits,
+        boolean RegisterSingle, int RegisterSize)
+       {this(RegisterName, RegisterBits, RegisterSingle, RegisterSize, false);
        }
 
-      Register(String RegisterName, int RegisterBits, int RegisterSize)         // Create the register
-       {this(RegisterName, RegisterBits, false, RegisterSize);
+      Register(String RegisterName, int RegisterBits)                           // Create a register
+       {this(RegisterName, RegisterBits, true, 0, false);
+       }
+
+      Register(String RegisterName, int RegisterBits, int RegisterSize)         // Create a register
+       {this(RegisterName, RegisterBits, false, RegisterSize, false);
        }
 
       boolean registerSingle()  {return  registerSingle;}                       // Whether the register is a single element or an array of elements
@@ -821,13 +866,39 @@ if __name__ == "__main__":
       private void   rs  (int v)        {registerSet(v);}
       private void   rs  (int v, int i) {registerSet(v, i);}
 
+      boolean C(Register...R)                                                   // Check whether the specified registers have known values that can be used to compute the value of the current register. If anomalies are detected preemptively mark the register cas conatyioning an inset value - the caller can override this if necessary in their code.
+       {if (R.length == 0)                                                      // The target is an input to this computation
+         {if (!registerSet)                                                     // The target requires a known value but is currently unset and is an input to this computation which makes it unlikeley that the computation will yield a known result
+           {if (!registerUnSetAllowed)
+             {stop("Register:", registerName, "cannot have an unknown value");
+             }
+            else return false;                                                  // The register is unset but this permissible
+           }
+          else return true;                                                     // The register contains a known value so everything is probably fine
+         }
+
+        if (!registerUnSetAllowed)                                              // The target cannot be set to an unknown value
+         {for (Register r : R)                                                  // Each input register to the computation
+           {if (!r.registerSet)
+             {stop("Register:", registerName, "cannot have an unknown value, ", // An unknown value might be used to compute the value of a register that does not allow unknown values
+               "yet it is being computed from a register:", r.registerName,
+               "that has an unknown value");
+             }
+           }
+          return registerSet = true;                                            // Safe to continue the computation as all the input registers have known values which will probably produce a known result
+         }
+
+        return true;                                                            // Computation should proceed because the register can accept unknown values if necessary
+       }
+
       int registerGet()                                                         // Return the registerâs value as an integer
-       {registerCheckSingle();
+       {C(); registerCheckSingle();
         return value.length() == 0 ? 0 : (int) value.toLongArray()[0];          // Relies on the fact that this Java code is only used for testing, unlike the Verilog version
        }
 
       int registerGet(int Index)                                                // Return the value at the specified index in an arrayed set of registers
        {registerCheckArrayed();
+        if (!registerSets[Index]) stop("Register:", registerName, "not set at index:", Index);
         final BitSet value = values[Index];                                     // Indexed value
         return value.length() == 0 ? 0 : (int) value.toLongArray()[0];          // Convert to integer
        }
@@ -843,10 +914,12 @@ if __name__ == "__main__":
       void registerSet(int Value)                                               // Set the value of the register from an integer
        {if (registerSingle())                                                   // Set value of single register
          {registerSetBitSet(value, Value);
+          registerSet = true;                                                   // The register now has a known value
          }
         else
          {for (int i = 0; i < registerSize; i++)                                // Set all the elements of the register to the specified value
            {registerSetBitSet(values[i], Value);
+            registerSets[i] = true;                                             // The register now has a known value for all its elements
            }
          }
        }
@@ -872,6 +945,7 @@ if __name__ == "__main__":
       void registerSet(int Value, int Index)                                    // Set the value of an element of a register array from an integer
        {registerCheckArrayed();
         registerSetBitSet(values[Index], Value);
+        registerSets[Index] = true;                                             // The register now has a known value at the specified index
        }
 
       void registerSet(Verilog v, int Value, int Index)                         // Set the value of an element of a register array from an integer
@@ -895,11 +969,13 @@ if __name__ == "__main__":
         if (registerSingle())
          {Source.registerCheckSingle();
           value = (BitSet)Source.value.clone();                                 // Copy the single source value into the target
+          registerSet = Source.registerSet;
          }
         else
          {Source.registerCheckArrayed();
           for (int i = 0; i < registerSize; i++)
            {values[i] = (BitSet)Source.values[i].clone();                       // Copy the source values into the target
+            registerSets[i] = Source.registerSets[i];                           // The "set" status of each target element is set to match that of the source register elements
            }
          }
        }
@@ -930,7 +1006,8 @@ if __name__ == "__main__":
       void copy(Register Source, int RegisterIndex)                             // Copy an integer indexed source register into this target register.
        {R(); registerCheckSize(Source);                                         // Make sure the target register is big enough
         Source.registerCheckArrayed();
-        value = (BitSet)Source.values[RegisterIndex].clone();                   // Copy the source value into the target
+        value     = (BitSet)Source.values[RegisterIndex].clone();               // Copy the source value into the target
+        registerSet = Source.registerSets[RegisterIndex];
        }
 
       void copy(Verilog v, Register Source, int RegisterIndex)                  // Copy a source register into this register which we can do because each and only each process can write to its own registers
@@ -950,7 +1027,9 @@ if __name__ == "__main__":
        {R(); registerCheckSize(Source);                                         // Make sure the target register is big enough
         Source.registerCheckArrayed();
         Index.registerCheckSingle();
-        value = (BitSet)Source.values[Index.registerGet()].clone();             // Copy the source value into the target
+        final int i = Index.registerGet();
+        value = (BitSet)Source.values[i].clone();                               // Copy the source value into the target
+        registerSet = Source.registerSets[i];                                   // Target's knowness is now set in the same was the source element
        }
 
       void copyIs(Verilog v, Register Source, Register Index)                   // Copy a register indexed element of an arrayed source register into this target register
@@ -971,7 +1050,9 @@ if __name__ == "__main__":
        {R(); registerCheckSize(Source);                                         // Make sure the target register is big enough
         Source.registerCheckArrayed();
         Index.registerCheckSingle();
-        value = (BitSet)Source.values[Index.registerGet()+Offset].clone();      // Copy the source value into the target
+        final int i = Index.registerGet()+Offset;                               // Index in source
+        value     = (BitSet)Source.values[i].clone();                           // Copy the source value into the target
+        registerSet = Source.registerSets[i];                                   // Target's knowness is now set in the same was the source element
        }
 
       void copyIs(Verilog v, Register Source, Register Index, int Offset)       // Copy a register indexed element of an arrayed source register into this target register
@@ -993,6 +1074,7 @@ if __name__ == "__main__":
         Source.registerCheckSingle();
         registerCheckArrayed();
         values[RegisterIndex] = (BitSet)Source.value.clone();                   // Copy the source value into the target
+        registerSets[RegisterIndex] = Source.registerSet;
        }
 
       void copy(Verilog v, int RegisterIndex, Register Source)                  // Copy a source register into this register which we can do because each and only each process can write to its own registers
@@ -1013,7 +1095,9 @@ if __name__ == "__main__":
         Index.registerCheckSingle();
         Source.registerCheckSingle();
         registerCheckArrayed();
-        values[Index.registerGet()] = (BitSet)Source.value.clone();             // Copy the source value into the target
+        final int i = Index.registerGet();                                      // Index of source element
+        values[i] = (BitSet)Source.value.clone();                               // Copy the source value into the target
+        registerSets[i] = Source.registerSet;
        }
 
       void copyIt(Verilog v, Register Index, Register Source)                   // Copy a source register into this register which we can do because each and only each process can write to its own registers
@@ -1033,7 +1117,8 @@ if __name__ == "__main__":
       void copy(int TargetIndex, Register Source, int SourceIndex)              // Copy an element from an arrayed source to an element of an arrayed target register
        {R(); registerCheckSize(Source);                                         // Make sure the target register is big enough
         Source.registerCheckArrayed(); registerCheckArrayed();
-        values[TargetIndex] = (BitSet)Source.values[SourceIndex].clone();       // Copy the source value into the target
+        values      [TargetIndex] = (BitSet)Source.values[SourceIndex].clone();       // Copy the source value into the target
+        registerSets[TargetIndex] =   Source.registerSets[SourceIndex];
        }
 
       void copy(Verilog v, int TargetIndex, Register Source, int SourceIndex)   // Copy an elemen of an arrayed source register into an element of an arrayed target register
@@ -1094,10 +1179,22 @@ if __name__ == "__main__":
        }
 
       public String toString()                                                  // Print the register
-       {if (registerSingle) return registerName()+" = "+registerGet();
+       {if (registerSingle)
+         {if (registerSet)
+           {return registerName()+" = "+registerGet();
+           }
+          else
+           {return registerName()+" = x";
+           }
+         }
         final StringBuilder s = new StringBuilder(registerName()+" = ");
         for (int i = 0; i < registerSize; i++)
-         {s.append(String.format(" %2d", registerGet(i)));
+         {if (registerSets[i])
+           {s.append(String.format(" %2d", registerGet(i)));
+           }
+          else
+           {s.append(String.format("  x"));
+           }
          }
         return ""+s;
        }
@@ -1117,29 +1214,29 @@ if __name__ == "__main__":
 
 //D3 Arithmetic                                                                 // Operations on registers
 
-      void one () {R(); rs(1);                }                                 // One a register in Java
-      void inc () {R(); rs(rg()+1);           }                                 // Increment a register in Java
-      void dec () {R(); rs(rg()-1);           }                                 // Decrement a register in Java
-      void not () {R(); rs(rg() != 0 ? 0 : 1);}                                 // Not a register in Java
-      void half() {R(); rs(rg() >> 1);        }                                 // Halve a register
-      void add (Register source) {R(); rs(rg()+source.rg());  }                 // Add the source register to the current register in Java
-      void add1(Register source) {R(); rs(rg()+source.rg()+1);}                 // Add the source register to the current register plus one in Java
-      void add (int      source) {R(); rs(rg()+source);       }                 // Add the source register to the current register in Java
-      void average(Register s1, Register s2) {R(); rs((s1.rg()+s2.rg())/2);}    // Average of two registers
+      void one () {R(); rs(1); registerSet = true; }                            // One a register in Java
+      void inc () {R(); if (C()) rs(rg()+1);           }                        // Increment a register in Java
+      void dec () {R(); if (C()) rs(rg()-1);           }                        // Decrement a register in Java
+      void not () {R(); if (C()) rs(rg() != 0 ? 0 : 1);}                        // Not a register in Java
+      void half() {R(); if (C()) rs(rg() >> 1);        }                        // Halve a register
+      void add (Register S) {R(); if (C(S)) rs(rg()+S.rg());  }                 // Add the source register to the current register in Java
+      void add1(Register S) {R(); if (C(S)) rs(rg()+S.rg()+1);}                 // Add the source register to the current register plus one in Java
+      void add (int      S) {R(); if (C())  rs(rg()+S);       }                 // Add the source register to the current register in Java
+      void average(Register S1, Register S2) {R(); if (C(S1)) rs((S1.rg()+S2.rg())/2);}  // Average of two registers
 
-      void gt (Register a, Register b) {R(); rs(a.rg() >  b.rg() ? 1 : 0);}     // Set the target register to one if the test between the 'a' and 'b' register is true else 0
-      void ge (Register a, Register b) {R(); rs(a.rg() >= b.rg() ? 1 : 0);}     // Set the target register to one if the test between the 'a' and 'b' register is true else 0
-      void eq (Register a, Register b) {R(); rs(a.rg() == b.rg() ? 1 : 0);}     // Set the target register to one if the test between the 'a' and 'b' register is true else 0
-      void ne (Register a, Register b) {R(); rs(a.rg() != b.rg() ? 1 : 0);}     // Set the target register to one if the test between the 'a' and 'b' register is true else 0
-      void le (Register a, Register b) {R(); rs(a.rg() <= b.rg() ? 1 : 0);}     // Set the target register to one if the test between the 'a' and 'b' register is true else 0
-      void lt (Register a, Register b) {R(); rs(a.rg() <  b.rg() ? 1 : 0);}     // Set the target register to one if the test between the 'a' and 'b' register is true else 0
+      void gt (Register a, Register b) {R(); if (C(a, b)) rs(a.rg() >  b.rg() ? 1 : 0);} // Set the target register to one if the test between the 'a' and 'b' register is true else 0
+      void ge (Register a, Register b) {R(); if (C(a, b)) rs(a.rg() >= b.rg() ? 1 : 0);} // Set the target register to one if the test between the 'a' and 'b' register is true else 0
+      void eq (Register a, Register b) {R(); if (C(a, b)) rs(a.rg() == b.rg() ? 1 : 0);} // Set the target register to one if the test between the 'a' and 'b' register is true else 0
+      void ne (Register a, Register b) {R(); if (C(a, b)) rs(a.rg() != b.rg() ? 1 : 0);} // Set the target register to one if the test between the 'a' and 'b' register is true else 0
+      void le (Register a, Register b) {R(); if (C(a, b)) rs(a.rg() <= b.rg() ? 1 : 0);} // Set the target register to one if the test between the 'a' and 'b' register is true else 0
+      void lt (Register a, Register b) {R(); if (C(a, b)) rs(a.rg() <  b.rg() ? 1 : 0);} // Set the target register to one if the test between the 'a' and 'b' register is true else 0
 
-      void gt (Register a, int b) {R(); rs(a.rg() >  b ? 1 : 0);}               // Set the target register to one if the test between the 'a' and 'b' register is true else 0
-      void ge (Register a, int b) {R(); rs(a.rg() >= b ? 1 : 0);}               // Set the target register to one if the test between the 'a' and 'b' register is true else 0
-      void eq (Register a, int b) {R(); rs(a.rg() == b ? 1 : 0);}               // Set the target register to one if the test between the 'a' and 'b' register is true else 0
-      void ne (Register a, int b) {R(); rs(a.rg() != b ? 1 : 0);}               // Set the target register to one if the test between the 'a' and 'b' register is true else 0
-      void le (Register a, int b) {R(); rs(a.rg() <= b ? 1 : 0);}               // Set the target register to one if the test between the 'a' and 'b' register is true else 0
-      void lt (Register a, int b) {R(); rs(a.rg() <  b ? 1 : 0);}               // Set the target register to one if the test between the 'a' and 'b' register is true else 0
+      void gt (Register a, int b) {R(); if (C(a)) rs(a.rg() >  b ? 1 : 0);}     // Set the target register to one if the test between the 'a' and 'b' register is true else 0
+      void ge (Register a, int b) {R(); if (C(a)) rs(a.rg() >= b ? 1 : 0);}     // Set the target register to one if the test between the 'a' and 'b' register is true else 0
+      void eq (Register a, int b) {R(); if (C(a)) rs(a.rg() == b ? 1 : 0);}     // Set the target register to one if the test between the 'a' and 'b' register is true else 0
+      void ne (Register a, int b) {R(); if (C(a)) rs(a.rg() != b ? 1 : 0);}     // Set the target register to one if the test between the 'a' and 'b' register is true else 0
+      void le (Register a, int b) {R(); if (C(a)) rs(a.rg() <= b ? 1 : 0);}     // Set the target register to one if the test between the 'a' and 'b' register is true else 0
+      void lt (Register a, int b) {R(); if (C(a)) rs(a.rg() <  b ? 1 : 0);}     // Set the target register to one if the test between the 'a' and 'b' register is true else 0
 
       void one (Verilog v)        {v.assign(rn(),  "1");}                       // One a register in Verilog
       void inc (Verilog v)        {v.assign(rn(), rn()+"+1");}                  // Increment a register in Verilog
@@ -1457,16 +1554,17 @@ if __name__ == "__main__":
              }
 
             void Else()                                                         // We are no longer in reset
-             {v.A("if (step < 0) begin");                                       // Load memory
+             {v.comment("Set memory");
+              v.A("if (step < 0) begin");                                       // Load memory
               v.indent();
               if (hasMemory())                                                  // Load memory to match the state at the start of the Java run
-               {if (v.synthesis) processLoadMemorySynthesis(v);               // Load memory for synthesis
-                else             processLoadMemoryTestBench(v);               // Load memory for test bench
+               {if (v.synthesis) processLoadMemorySynthesis(v);                 // Load memory for synthesis
+                else             processLoadMemoryTestBench(v);                 // Load memory for test bench
                 //processLoadMemorySynthesis(v);
                }
               v.end();
 
-              if (v.synthesis) v.A("else begin                                  // Run the process in full parallel");
+              if (v.synthesis) v.A("else begin");
               else v.A(String.format                                            // Run each process to match Java execution
                ("else if (processCurrent == %s) begin", processNumber));
 
@@ -1570,9 +1668,9 @@ if __name__ == "__main__":
       final Stack<Run>runs = new Stack<>();                                     // Runs
       final Stack<Seq>seqs = new Stack<>();                                     // Sequences
       for(int i = 0; i < memory.length; i++)                                    // Scan memory
-       {final int     V = memoryGetBackUp(i);                                   // Memory value at each index
-        final boolean S = memoryBackUpSet[i];                                   // Whether this element has been set for back up
+       {final boolean S = memoryBackUpSet[i];                                   // Whether this element has been set for back up
         if (!S) continue;                                                       // No value set for this element
+        final int     V = memoryGetBackUp(i);                                   // Memory value at each index
 
         if (runs.size() == 0)                                                   // First run and seq
          {runs.push(new Run(i, i+1, V));
@@ -1637,43 +1735,70 @@ if __name__ == "__main__":
 //D3 Memory                                                                     // Process operations on memory
 
     protected int memoryGetBackUp(int Index)                                    // Get the value of the indexed location in the backup copy of memory made at the start of the Java run so we could confirm that memory evolves from a known state
-     {final BitSet b = memoryBackUp[Index];                                     // Read memory as bit set
+     {if (!memoryBackUpSet[Index])                                              // Confirm that this element has been backed up
+       {stop("Back up memory:", processMemoryName(), "at index", Index, "has not been set");
+       }
+      final BitSet b = memoryBackUp[Index];                                     // Read memory as bit set
       final long[]V = b.toLongArray();                                          // Convert bitset to long
       return V.length > 0 ? (int)V[0] : 0;                                      // Take the first element if it exists relying on the fact that in the Java code we test with just sufficiently large numbers to test the Verilog in principle
      }
 
-    protected int memoryGet(int Index)                                          // Get a memory element as an integer
+    void memoryCheckHasBeenSet(int Index)                                       // Check that a memory element has been set
+     {if (!memorySet[Index])
+       {stop(processName, "memory at index:", Index,
+         "has not been set so cannot be read");
+       }
+     }
+
+    protected int memoryGetNoCheck(int Index)                                   // Get a memory element as an integer without cheecinkg if ot ahs ever been set.
      {final BitSet b = memory[Index];                                           // Read memory as bit set
       final long[]V = b.toLongArray();                                          // Convert bitset to long
       return V.length > 0 ? (int)V[0] : 0;                                      // Take the first element if it exists relying on the fact that in the Java code we test with just sufficiently large numbers to test the Verilog in principle
      }
 
+    protected int memoryGet(int Index)                                          // Get a memory element as an integer.
+     {memoryCheckHasBeenSet(Index);                                             // Check memory element has been set
+      final BitSet b = memory[Index];                                           // Read memory as bit set
+      final long[]V = b.toLongArray();                                          // Convert bitset to long
+      return V.length > 0 ? (int)V[0] : 0;                                      // Take the first element if it exists relying on the fact that in the Java code we test with just sufficiently large numbers to test the Verilog in principle
+     }
+
     protected int memoryGet(int Index, int Offset)                              // Get a memory element as an integer
-     {final BitSet b = memory[Index*memoryBlockSize + Offset];                  // Read memory as bit set
+     {final int i = Index*memoryBlockSize + Offset;                             // Index of memeory to be read
+      memoryCheckHasBeenSet(i);                                                 // Check memory element has been set
+      final BitSet b = memory[i];                                               // Read memory as bit set
       final long[] V = b.toLongArray();                                         // Convert bitset to long
       return V.length > 0 ? (int)V[0] : 0;                                      // Take the first element if it exists relying on the fact that in the Java code we test with just sufficiently large numbers to test the Verilog in principle
      }
 
     void memoryGet(Register Value, Register Index)                              // Get a memory element indexed by a register as an integer setting the memory cache register to the value of the element retrieved
      {if (Value.registerSingle())                                               // Single register from memory
-       {final BitSet b = (BitSet)memory[Index.registerGet()].clone();           // Read memory as bit set
+       {final int i = Index.registerGet();                                      // Index of memeory to be read
+        memoryCheckHasBeenSet(i);                                               // Check memory element has been set
+        final BitSet b = (BitSet)memory[i].clone();                             // Read memory as bit set
         final long[] V = b.toLongArray();                                       // Convert bitset to long
         Value.registerSet(V.length > 0 ? (int)V[0] : 0);                        // Take the first element if it exists relying on the fact that in the Java code we test with just sufficiently large numbers to test the verilog in priniple
        }
       else if (Value.registerSize == memoryBlockSize)                           // Arrayed register from memory
-       {int I = Index.registerGet() * memoryBlockSize;                          // Offset into memory
+       {final int I = Index.registerGet() * memoryBlockSize;                    // Offset into memory
         for (int i = 0; i < memoryBlockSize; i++)                               // Each element of an arrayed register
-         {final BitSet b = (BitSet)memory[I++].clone();                         // Read memory as bit set
-          final long[] V = b.toLongArray();                                     // Convert bitset to long
-          Value.registerSet(V.length > 0 ? (int)V[0] : 0, i);                   // Take the first element if it exists relying on the fact that in the Java code we test with just sufficiently large numbers to test the verilog in priniple
+         {if (memorySet[I+i])                                                   // Each element of the bloxk - ythis might need to be revisted as it creates meultiple mmeory reads per clock which is not allowed by yosys for memory
+           {final BitSet b = (BitSet)memory[I+i].clone();                       // Read memory as bit set
+            final long[] V = b.toLongArray();                                   // Convert bitset to long
+            Value.registerSet(V.length > 0 ? (int)V[0] : 0, i);                 // Take the first element if it exists relying on the fact that in the Java code we test with just sufficiently large numbers to test the verilog in priniple
+           }
+          else if (Value.registerUnSetAllowed) Value.registerSets[i] = false;   // Memory was not set but register can accept unset values
+          else stop("Cannot put unset memory value from:", processMemoryName(),
+            "into register:", Value.registerName());
          }
        }
       else stop("Register has wrong size");
      }
 
     void memoryGet(Register Value, Register Index, int OffSet)                  // Get a memory element indexed by a register as an integer setting the memory cache register to the value of the element retrieved
-     {final BitSet b = (BitSet)memory[Index.registerGet()*memoryBlockSize +
-                        OffSet].clone();                                        // Read memory as bit set
+     {final int i = Index.registerGet()*memoryBlockSize + OffSet;
+      memoryCheckHasBeenSet(i);                                                 // Check memory element has been set
+      final BitSet b = (BitSet)memory[i].clone();                               // Read memory as bit set
       final long[] V = b.toLongArray();                                         // Convert bitset to long
       Value.registerSet(V.length > 0 ? (int)V[0] : 0);                          // Take the first element if it exists relying on the fact that in the Java code we test with just sufficiently large numbers to test the verilog in priniple
      }
@@ -1706,21 +1831,21 @@ if __name__ == "__main__":
      {if (Value.registerSingle())                                               // Single register into memory
        {final int i = Index.registerGet();
         memory   [i] = (BitSet)Value.value.clone();
-        memorySet[i] = true;
+        memorySet[i] = Value.registerSet;                                       // Match input register, if it is set then so is memory, otherwise not
        }
       else if (Value.registerSize == memoryBlockSize)                           // Arrayed register into memory
        {int I = Index.registerGet() * memoryBlockSize;
         for (int i = 0; i < memoryBlockSize; i++)
          {memory   [I]   = (BitSet)Value.values[i].clone();
-          memorySet[I++] = true;
+          memorySet[I++] = Value.registerSets[i];                               // Match input array, where it is set so is memory, otherwise unset memory where the register is unset
          }
        }
       else stop("Wrong register size");
      }
 
-    void memorySet(Register Value, Register Index, int OffSet)                  // Set a memory element indexed by a register plus an offset
+    void memorySet(Register Value, Register Index, int OffSet)                  // Set a memory element indexed by a register plus an offset to the value of the specified register
      {final int i = Index.registerGet()*memoryBlockSize+OffSet;
-      memorySet[i] = true;
+      memorySet[i] = Value.registerSet;
       memory   [i] = (BitSet)Value.value.clone();
      }
 
@@ -1763,8 +1888,9 @@ if __name__ == "__main__":
 
     void memorySet(int Value, int Index, int OffSet)                            // Set a memory element
      {final int l = min(memoryWidth, Integer.SIZE-1);                           // The most bits we can hope to represent
-      final BitSet v = memory   [Index*memoryBlockSize+OffSet];                 // Memory element
-                       memorySet[Index*memoryBlockSize+OffSet] = true;          // This memory element has been set
+      final int j = Index*memoryBlockSize+OffSet;
+      final BitSet v = memory   [j];                                            // Memory element
+                       memorySet[j] = true;                                     // This memory element has been set
       v.clear();                                                                // Zero the memory
       for (int i = 0; i < l; i++) if (((Value >> i) & 1) != 0) v.set(i);        // Set each bit in the bitset if the corresponding bit in the value is set
      }
@@ -1938,8 +2064,8 @@ if __name__ == "__main__":
         process = Process;                                                      // The calling process requesting a value from the memory of this memory process
         index   = transactionCallingProcess.register                            // A register that will index the memory managed by this process
          (transactionName+"_index", logTwo(memorySize));
-        result  = register                                                      // An arrayed register that will contain the result of the memory read operation
-         (transactionName+"_result", memoryWidth, memoryBlockSize);
+        result  = new Register                                                  // An arrayed register that will contain the result of the memory read operation
+         (transactionName+"_result", memoryWidth, false, memoryBlockSize, true);
         transactionInputRegisters(index);                                       // Make the index an input register
         transactionOutputRegisters(result);                                     // Make the result an output register
         memoryGetFromProcess.put(Process.processName, this);                    // Make it possible to reuse this transaction from the calling process rather than creating a new one each time
@@ -1993,8 +2119,8 @@ if __name__ == "__main__":
         process = Process;                                                      // The calling process requesting that a value be written into the memory of this process
         index   = transactionCallingProcess.register                            // A register that will index the memory managed by this process
          (transactionName+"_index", logTwo(memorySize));
-        value = transactionCallingProcess.register                              // The arrayed register that will contain the value to be written into memory
-           (transactionName+"_value", memoryWidth, memoryBlockSize);
+        value = transactionCallingProcess.new Register                          // The arrayed register that will contain the value to be written into memory
+           (transactionName+"_value", memoryWidth, false, memoryBlockSize, true);
 
         transactionInputRegisters(index);                                       // Make the index an input register
         transactionInputRegisters(value);                                       // Make the value an input register
@@ -2792,8 +2918,8 @@ Chip: Test             step: 6, maxSteps: 10, running: 0
    }
 
   static void newTests()                                                        // Tests being worked on
-   {//oldTests();
-    test_arithmeticFibonacci();
+   {oldTests();
+    //test_arithmeticFibonacci();
    }
 
   public static void main(String[] args)                                        // Test if called as a program
