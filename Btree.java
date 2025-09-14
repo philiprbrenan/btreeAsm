@@ -97,6 +97,10 @@ chipStop = true;
    {return Process.register(Name, btreeAddressSize);
    }
 
+  Process.Register stuckIndex(Process Process, String Name)
+   {return Process.register(Name, stuckAddressSize);
+   }
+
   Btree Btree() {return this;}
 
 //D2 Allocation                                                                 // Allocate stucks from the free chain
@@ -293,7 +297,7 @@ chipStop = true;
       compareable  = Compareable;
       stuckName    = Name;
       index        = btreeIndex(P, "index");                                    // The address of the stuck in main memory
-      size         = P.register("size",     stuckAddressSize);                  // Size of the stuck locally
+      size         = stuckIndex(P, "size");                                     // Size of the stuck locally
       isLeaf       = P.register("isLeaf",   1);                                 // Whether the stuck is a leaf
       nextFree     = btreeIndex(P, "nextFree");                                 // Free chain from root
       keys         = P.new Register("Keys", bitsPerKey,       false, maxStuckSize, true); // Keys in the stuck copied out of memory
@@ -318,7 +322,7 @@ chipStop = true;
       FoundKey     = P.register("FoundKey",     bitsPerKey);                    // Key found as a result of a less than or equal search
       Data         = P.register("Data",         bitsPerData);                   // Data associated with the key if found
       BtreeIndex   = btreeIndex(P, "BtreeIndex");                               // Index of stuck in Btree in which the key should reside
-      StuckIndex   = P.register("StuckIndex",   stuckAddressSize);              // Index in stuck of the key
+      StuckIndex   = stuckIndex(P, "StuckIndex");                               // Index in stuck of the key
       MergeSuccess = P.register("MergeSuccess", 1);                             // Whether a merge was completed successfully or not
      }
 
@@ -2107,7 +2111,7 @@ chipStop = true;
    {final Stuck   p = Stuck;
     final Stuck   l = LeftMergeStuck;                                           // Left split stuck
     final Stuck   r = RightMergeStuck;                                          // Right split stuckfinal Process.Register ck = P.new Register("childKey",   bitsPerKey);       // Index in memory of the left stuck
-    final Process.Register sz = P.new Register("size",       stuckAddressSize); // Index in memory of the left stuck
+    final Process.Register sz = stuckIndex(P, "size");                          // Index in memory of the left stuck
     final Process.Register cd = btreeIndex(P, "childData");                     // Index in memory of the left stuck
     final Process.Register il = btreeIndex(P, "indexLeft");                     // Index in memory of the left stuck
     final Process.Register ir = btreeIndex(P, "indexRight");                    // Index in memory of the right stuck
@@ -2322,7 +2326,7 @@ chipStop = true;
     final Stuck   p = Stuck;                                                    // Parent stuck
     final Stuck   l = LeftMergeStuck;                                           // Left split stuck
     final Stuck   r = RightMergeStuck;                                          // Right split stuck
-    final Process.Register sz = P.new Register("size",       stuckAddressSize); // Index in memory of the left stuck
+    final Process.Register sz = stuckIndex(P, "size");                          // Index in memory of the left stuck
     final Process.Register il = btreeIndex(P, "indexLeft");                     // Index in memory of the left stuck
     final Process.Register ir = btreeIndex(P, "indexRight");                    // Index in memory of the right stuck
     final Process.Register success = P.new Register("success", 1);              // Success of merge - the result of this operation
@@ -2430,7 +2434,7 @@ chipStop = true;
     Stuck stuck() {return (Stuck)this;}
 
     void findAndInsert(Process.Register Key, Process.Register Data)             // Find the leaf stuck that should contain this key and insert or update it if possible
-     {final Process.Register i       = P.new Register("i", stuckAddressSize);
+     {final Process.Register i       = stuckIndex(P, "i");
       final Process.Register notFull = P.new Register("notFull", 1);            // The leaf is not full
 
       P.new Block()
@@ -2474,7 +2478,7 @@ chipStop = true;
     final FindAndInsert    f     = new FindAndInsert(P);                        // Find and insert
     final Process.Register c     = btreeIndex(P, "child");                      // Current child in tree
     final Process.Register p     = btreeIndex(P, "parent");                     // Parent of current child in tree
-    final Process.Register ci    = P.new Register("childInparent", stuckAddressSize); // Position of child in parent
+    final Process.Register ci    = stuckIndex(P, "childInparent");              // Position of child in parent
     final Process.Register found = P.new Register("found",  1);                 // Whether the child was found in its parent (true) or defaulted to top (false)
     final Process.Register full  = P.new Register("full", 1);                   // Whether a stuck is full or not
 
@@ -2576,8 +2580,8 @@ chipStop = true;
    {final Process          P           = Key.registerProcess();
     final Stuck            S           = MergeStuck;                            // Parent stuck during merge
     final Process.Register s           = btreeIndex(P, "position");             // Current position in the btree
-    final Process.Register stuckIndex  = P.new Register("index",    stuckAddressSize); // Position within current stuck
-    final Process.Register stuckIndex1 = P.new Register("index1",   stuckAddressSize); // One step left of the current position
+    final Process.Register stuckIndex  = stuckIndex(P, "index");                // Position within current stuck
+    final Process.Register stuckIndex1 = stuckIndex(P, "index1");               // One step left of the current position
     final Process.Register within      = P.new Register("within",   1);         // Success of merge - the result of this operation
     final Process.Register isLeaf      = P.new Register("isLeaf",   1);         // Success of merge - the result of this operation
 
@@ -3526,7 +3530,7 @@ Merge     : 0
     final Btree   b = test_push();
     final Process P = b.P; // b.processes.get("Stuck");
     final Stuck   s = b.new Stuck(P, "stuck");
-    final Process.Register i = P.register("i", b.stuckAddressSize);
+    final Process.Register i = b.stuckIndex(P, "i");
     final StringBuilder    S = new StringBuilder();
     P.processTrace = true;
 
@@ -3625,7 +3629,7 @@ Merge     : 0
     final Stuck   s = b.new Stuck(P, "stuck");
     final Process.Register k = P.register("k", b.bitsPerKey);
     final Process.Register d = P.register("d", b.bitsPerData);
-    final Process.Register i = P.register("i", b.stuckAddressSize);
+    final Process.Register i = b.stuckIndex(P, "i");
     P.processTrace = true;
 
     P.processClear();
@@ -3674,7 +3678,7 @@ Stuck: stuck size: 5, leaf: 1, root
     final Stuck   s = b.new Stuck(P, "stuck");
     final Process.Register k = P.register("k", b.bitsPerKey);
     final Process.Register d = P.register("d", b.bitsPerData);
-    final Process.Register i = P.register("i", b.stuckAddressSize);
+    final Process.Register i = b.stuckIndex(P, "i");
     P.processTrace = true;
 
     P.processClear();
@@ -3785,7 +3789,7 @@ Merge     : 0
     final Stuck   s = b.new Stuck(P, "stuck");
     final Process.Register k = P.register("k", b.bitsPerKey);
     final Process.Register d = P.register("d", b.bitsPerData);
-    final Process.Register i = P.register("i", b.stuckAddressSize);
+    final Process.Register i = b.stuckIndex(P, "i");
     P.processTrace = true;
 
     P.processClear();
@@ -3831,7 +3835,7 @@ Stuck: stuck size: 5, leaf: 1, root
     final Stuck   s = b.new Stuck(P, "stuck");
     final Process.Register k = s.Key;
     final Process.Register d = s.Data;
-    final Process.Register i = P.register("i", b.stuckAddressSize);
+    final Process.Register i = b.stuckIndex(P, "i");
     P.processTrace = true;
 
     P.processClear();
@@ -3929,7 +3933,7 @@ Stuck: stuck size: 3, leaf: 1, root
     final Process.Register k = s.Key;
     final Process.Register l = P.register("l", K);
     final Process.Register d = P.register("d", D);
-    final Process.Register i = P.register("i", b.stuckAddressSize);
+    final Process.Register i = b.stuckIndex(P, "i");
     final Process.Register f = P.register("f", 1);
     P.processTrace = true;
 
@@ -4558,7 +4562,7 @@ Chip: Btree            step: 53, maxSteps: 100, running: 0
     final Process.Register k = P.register("k", b.bitsPerKey);
     final Process.Register d = P.register("d", b.bitsPerData);
     final Process.Register i = b.btreeIndex(P, "i");
-    final Process.Register j = P.register("j", b.stuckAddressSize);
+    final Process.Register j = b.stuckIndex(P, "j");
 
 
     final FindAndInsert f = b.new FindAndInsert(P);
@@ -4600,7 +4604,7 @@ Chip: Btree            step: 53, maxSteps: 100, running: 0
     final Process.Register k = P.register("k", b.bitsPerKey);
     final Process.Register d = P.register("d", b.bitsPerData);
     final Process.Register i = b.btreeIndex(P, "i");
-    final Process.Register j = P.register("j", b.stuckAddressSize);
+    final Process.Register j = b.stuckIndex(P, "j");
     P.processTrace = true;
 
     final FindAndInsert f = b.new FindAndInsert(P);
@@ -4705,7 +4709,7 @@ Chip: Btree            step: 53, maxSteps: 100, running: 0
     final Process.Register k = P.register("k", b.bitsPerKey);
     final Process.Register d = P.register("d", b.bitsPerData);
     final Process.Register i = b.btreeIndex(P, "i");
-    final Process.Register j = P.register("j", b.stuckAddressSize);
+    final Process.Register j = b.stuckIndex(P, "j");
     P.processTrace = true;
 
     final FindAndInsert f = b.new FindAndInsert(P);
@@ -4763,7 +4767,7 @@ Chip: Btree            step: 53, maxSteps: 100, running: 0
     final Process          P = b.P; //b.new Process("findAndInsert");
     final Stuck            s = b.new Stuck(P, "findAndInsert");
     final Process.Register i = b.btreeIndex(P, "i");
-    final Process.Register j = P.register("j", b.stuckAddressSize);
+    final Process.Register j = b.stuckIndex(P, "j");
     P.processTrace = true;
 
     i.RegisterSet(0); j.RegisterSet(0);
@@ -5010,7 +5014,7 @@ Merge     : 0
     final Process.Register k = P.register("k", b.bitsPerKey);
     final Process.Register d = P.register("d", b.bitsPerData);
     final Process.Register i = b.btreeIndex(P, "i");
-    final Process.Register j = P.register("j", b.stuckAddressSize);
+    final Process.Register j = b.stuckIndex(P, "j");
     P.processTrace = true;
 
     b.maxSteps = 2000;
