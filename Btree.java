@@ -106,6 +106,7 @@ chipStop = true;
      {freeNext   .memorySet(i+1, i);                                            // Free chain hangs from root
       stuckIsFree.memorySet(1, i+1);                                            // Start with the root as a leaf
      }
+    stuckSize  .memorySet(0, 0);                                                // Start with the root empty
     stuckIsLeaf.memorySet(1, 0);                                                // Start with the root as a leaf
     stuckIsFree.memorySet(0, 0);                                                // Start with the root allocated
     stucksUsed .memorySet(1, 0);                                                // The maximum number of stucks allocated so far
@@ -287,10 +288,10 @@ chipStop = true;
       size         = P.register("size",     stuckAddressSize);                  // Size of the stuck locally
       isLeaf       = P.register("isLeaf",   1);                                 // Whether the stuck is a leaf
       nextFree     = P.register("nextFree", btreeAddressSize);                  // Free chain from root
-      keys         = P.register("Keys",     bitsPerKey,       maxStuckSize);    // Keys in the stuck copied out of memory
-      compares     = P.register("Compares", 1,                maxStuckSize);    // The results of key comparisons
-      collapse     = P.register("Collapse", stuckAddressSize, maxStuckSize);    // The collapse of the key comparisons
-      data         = P.register("Data",     bitsPerData,      maxStuckSize);    // Data in the stuck copied out of memory
+      keys         = P.new Register("Keys", bitsPerKey,       false, maxStuckSize, true); // Keys in the stuck copied out of memory
+      compares     = P.register("Compares", 1,                       maxStuckSize);       // The results of key comparisons
+      collapse     = P.register("Collapse", stuckAddressSize,        maxStuckSize);       // The collapse of the key comparisons
+      data         = P.new Register("Data", bitsPerData,      false, maxStuckSize, true); // Data in the stuck copied out of memory
 
       gKeys        = stuckKeys.memoryGetFromProcess(P);                         // Transactions to get each key in the stuck. Reuseing the transaction reduces generated Verilog code size by 30% at the cost of requiring each stuck Get/Set from/into memory to finish before the next one can start.
       sKeys        = stuckKeys.memorySetIntoProcess(P);                         // Transactions to set each key in the stuck
@@ -386,6 +387,16 @@ chipStop = true;
     void stuckPut()                       {stuckPut(index, false);}             // Update a stuck in memory from the registers describing his stuck
     void stuckPut(Process.Register Index) {stuckPut(Index, false);}             // Update a stuck in memory from the registers describing his stuck
     void stuckPut(boolean SetLeaf)        {stuckPut(index, SetLeaf);}           // Update a stuck in memory from the registers describing his stuck
+
+    void stuckPutRoot()                                                         // Update the root stuck in memory
+     {index.Zero();                                                             // The root is always stuck zero
+      stuckPut(index, false);                                                   // Write the stuck into memory location zero
+     }
+
+    void stuckPutRoot(boolean SetLeaf)                                          // Update the root stuck in memory setting it as a leaf or a branch
+     {index.Zero();                                                             // The root is always stuck zero
+      stuckPut(index, SetLeaf);                                                 // Write the stuck into memory location zero
+     }
 
 //D3 Print                                                                      // Print the stuck
 
@@ -1024,7 +1035,7 @@ chipStop = true;
        {void action()
          {final int N = size.registerGet();
           for (int i = 0; i < maxStuckSize; ++i)                                // Compare each key
-           {final boolean eq = Key.registerGet() == keys.registerGet(i) && i < N;
+           {final boolean eq = i < N && Key.registerGet() == keys.registerGet(i);
             compares.registerSet(eq ? 1 : 0, i);
             collapse.registerSet(i, i);                                         // The number of the test being collapsed
            }
@@ -1122,14 +1133,14 @@ chipStop = true;
        {void action()
          {final int N = size.registerGet();
           if (true)                                                             // Compare first key
-           {final boolean le = Key.registerGet() <= keys.registerGet(0) && 0 < N;
+           {final boolean le = 0 < N && Key.registerGet() <= keys.registerGet(0);
             compares.registerSet(le ? 1 : 0, 0);
             collapse.registerSet(0, 0);
            }
           for (int i = 1; i < maxStuckSize; ++i)                                // Compare each key range
-           {final boolean in =
+           {final boolean in = i < N &&
               Key.registerGet() >  keys.registerGet(i-1) &&
-              Key.registerGet() <= keys.registerGet(i) && i < N;
+              Key.registerGet() <= keys.registerGet(i);
             compares.registerSet(in ? 1 : 0, i);
             collapse.registerSet(i, i);
            }
@@ -2426,7 +2437,10 @@ chipStop = true;
 
               P.new If (notFull)                                                // Leaf not full so we can insert into this leaf
                {void Then()                                                     // Position in leaf - we know it is not present and thatthere is room for the key, data pair in the leaf
-                 {search_le_parallel(Key);                                      // Find insert position in leaf
+                 {
+
+
+                  search_le_parallel(Key);                                      // Find insert position in leaf
                   InsertElementAt(StuckIndex, Key, Data);                       // Insert into leaf
                   Found.One();                                                  // Show success
                   P.COntinue();                                                 // Finished
@@ -3000,6 +3014,8 @@ Merge     : 1
     b.stuckSize  .memorySet(2, 0);
     b.stuckKeys  .memorySet(2, 0, 0); b.stuckData.memorySet(3, 0, 0);
     b.stuckKeys  .memorySet(4, 0, 1); b.stuckData.memorySet(5, 0, 1);
+    b.stuckKeys  .memorySet(0, 0, 2); b.stuckData.memorySet(0, 0, 2);
+    b.stuckKeys  .memorySet(0, 0, 3); b.stuckData.memorySet(0, 0, 3);
 
     Stuck s = b.new Stuck(P, "Stuck");
     s.stuckGetRoot();
@@ -3152,15 +3168,16 @@ Chip: Btree            step: 0, maxSteps: 10, running: 0
       final Process.Register d = P.register("d", D);
       final Process.Register n = P.register("n", b.btreeAddressSize);
 
-      n.RegisterSet(J);
-      s.stuckGet(n);
-
+      s.Clear();
       for (int i = 0; i < S; i++)
        {final int I = i;
         k.RegisterSet(I); d.RegisterSet(I+1);
         s.Push(k, d);
        }
-      s.stuckPut();
+
+      n.RegisterSet(J);
+      s.isLeaf.One();
+      s.stuckPut(n, true);
 
       b.maxSteps = 100;
       b.chipRunJava();
@@ -3871,6 +3888,28 @@ Stuck: stuck size: 3, leaf: 1, root
      }
    }
 
+  static void test_search_eq_partial()
+   {sayCurrentTestName();
+    final Btree b = new Btree(4, 4, 8, 8);
+    final Process P = b.P; // b.processes.get("Stuck");
+    final Stuck   s = b.new Stuck(P, "stuck", true);
+    final Process.Register k = s.Key;
+    final Process.Register d = s.Data;
+    final Process.Register i = s.StuckIndex;
+    final Process.Register f = s.Found;
+    P.processTrace = true;
+
+    P.processClear();
+    k.RegisterSet(2); d.RegisterSet(22); s.Push(k, d);
+    k.RegisterSet(4); d.RegisterSet(44); s.Push(k, d);
+
+    k.RegisterSet(3);
+    s.search_eq_parallel(k);
+
+    b.maxSteps = 100;
+    b.chipRun();
+   }
+
   static void test_search_le()
    {sayCurrentTestName();
     final int B = 8, S = 4, K = 8, D = 8;
@@ -3884,14 +3923,14 @@ Stuck: stuck size: 3, leaf: 1, root
     final Process.Register f = P.register("f", 1);
     P.processTrace = true;
 
-    s.stuckGetRoot();
     for (int j = 0; j < S; j++)
      {final int J = j*10;
       k.RegisterSet(J); d.RegisterSet(J+1);
 
       s.Push(k, d);
      }
-    s.stuckPut();
+    s.isLeaf.One();
+    s.stuckPutRoot(true);
     b.maxSteps = 300;
     b.chipRun();
     ok(s, """
@@ -3997,13 +4036,13 @@ Stuck: stuck size: 4, leaf: 1, root
 """);
     //stop(l);
     ok(l, """
-Stuck: left size: 2, leaf: 0, index: 1
+Stuck: left size: 2, leaf: 1, index: 1
  0     0 =>    1
  1     1 =>    2
 """);
     //stop(r);
     ok(r, """
-Stuck: right size: 2, leaf: 0, index: 2
+Stuck: right size: 2, leaf: 1, index: 2
  0     2 =>    3
  1     3 =>    4
 """);
@@ -4064,7 +4103,7 @@ Merge     : 0
 """);
     //stop(l.dump());
     ok(l.dump(), """
-Stuck: left size: 1, leaf: 0, index: 1
+Stuck: left size: 1, leaf: 1, index: 1
  0     0 =>    1
  1     1 =>    2
  2     2 =>    3
@@ -4079,7 +4118,7 @@ Merge     : 0
 """);
     //stop(r.dump());
     ok(r.dump(), """
-Stuck: right size: 1, leaf: 0, index: 2
+Stuck: right size: 1, leaf: 1, index: 2
  0     2 =>    3
  1     1 =>    4
  2     2 =>    3
@@ -4135,7 +4174,7 @@ Stuck: stuck size: 2, leaf: 1, root
 """);
     //stop(l);
     ok(l, """
-Stuck: left size: 2, leaf: 0, index: 1
+Stuck: left size: 2, leaf: 1, index: 1
  0     0 =>    1
  1     1 =>    2
 """);
@@ -4189,7 +4228,7 @@ Merge     : 0
 
     //stop(l.dump());
     ok(l.dump(), """
-Stuck: left size: 1, leaf: 0, index: 1
+Stuck: left size: 1, leaf: 1, index: 1
  0     0 =>    1
  1     1 =>    2
  2     2 =>    3
@@ -4364,7 +4403,7 @@ Merge     : 1
     b.chipRun();
     //stop(s.dump());
     ok(s.dump(), """
-Stuck: stuck size: 7, leaf: 0, root
+Stuck: stuck size: 7, leaf: 1, root
  0     0 =>    1
  1     1 =>    2
  2     2 =>    3
@@ -7099,6 +7138,7 @@ Merge     : 0
     test_insertElementAt();
     test_removeElementAt();
     test_search_eq();
+    test_search_eq_partial();
     test_search_le();
     test_splitIntoTwo();
     test_splitIntoThree();
@@ -7132,8 +7172,7 @@ Merge     : 0
 
   static void newTests()                                                        // Tests being worked on
    {//oldTests();
-    test_create2();
-    //test_verilog_find();
+    test_findAndInsert();
    }
 
   public static void main(String[] args)                                        // Test if called as a program
