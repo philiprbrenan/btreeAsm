@@ -1,5 +1,5 @@
 //------------------------------------------------------------------------------
-// B-tree implemented using block-based, asynchronous memory.
+// Define the capabilities of a chip sufficent to support the btree algorithm
 // Philip R Brenan at appaapps dot com, Appa Apps Ltd Inc., 2025
 //------------------------------------------------------------------------------
 package com.AppaApps.Silicon;                                                   // B-tree implemented in a memory block on a silicon chip.
@@ -613,7 +613,7 @@ if __name__ == "__main__":
     final BitSet[]           memory;                                            // Memory is represented as an array of bit vectors
     final boolean[]          memorySet;                                         // Whether the corresponding memory elementh has been set
     final BitSet[]           memoryBackUp;                                      // Before a Java run starts we back up the memory for this process so that we can start in the same state with the equivalent Verilog run allowing us to confirm that memory evolves in the same way for both Java and Verilog
-    final boolean[]          memoryBackUpSet;                                   // Whether the corresponding memeory element has beens set so far by memory set.  This is used to record the memory set up before the java traced run is started so that the verilog memory can be set up in the same way at the start of its run
+    final boolean[]          memoryBackUpSet;                                   // Whether the corresponding memory element has beens set so far by memory set.  This is used to record the memory set up before the java traced run is started so that the verilog memory can be set up in the same way at the start of its run
     final Children<Transaction> transactions = new Children<>();                // Transactions representing work requests to this process
     final Children<Register> registers       = new Children<>();                // Registers used in this process
     final Stack<Instruction> code            = new Stack<>();                   // A fixed set of instructions for this process
@@ -1112,7 +1112,7 @@ if __name__ == "__main__":
          };
        }
 
-//D4 Integer Indexed Register to Integer Indexed Register                       // Copy an elementf of an integer indexed source register to an integer indexed element of an arrayed target register
+//D4 Integer Indexed Register to Integer Indexed Register                       // Copy an element of an integer indexed source register to an integer indexed element of an arrayed target register
 
       void copy(int TargetIndex, Register Source, int SourceIndex)              // Copy an element from an arrayed source to an element of an arrayed target register
        {R(); registerCheckSize(Source);                                         // Make sure the target register is big enough
@@ -1633,7 +1633,7 @@ if __name__ == "__main__":
       return ""+v;
      }
 
-    void processLoadMemorySynthesis(Verilog v)                                  // Load memory in verilog being synthesized in a form that yosys will intepret as a memory load not a register load
+    void processLoadMemorySynthesis(Verilog v)                                  // Load memory in verilog being synthesized in a form that yosys will interpret as a memory load not a register load
      {int s = 0; for (int i = 0; i < memory.length; i++)                        // Count the number of set elements
        {if (memoryBackUpSet[i]) ++s;
        }
@@ -1647,7 +1647,7 @@ if __name__ == "__main__":
           boolean allowChoice(int i) {return memorySet[i];}                     // Only set if the memory element was set
           boolean allowDefault()     {return false;}
          };
-        v.A(processMemoryName()+"["+processMemoryIndexName()+"] <= "+processMemoryValueName()+";"); // Load memory in a format that yosys will intepret as memory not registers
+        v.A(processMemoryName()+"["+processMemoryIndexName()+"] <= "+processMemoryValueName()+";"); // Load memory in a format that yosys will interpret as memory not registers
        }
      }
 
@@ -1691,7 +1691,7 @@ if __name__ == "__main__":
 
       if (runs.size() > 0 && runs.size() < seqs.size())                         // Use the shortest methodology
        {for(Run r: runs)                                                        // Write out the runs
-         {if (r.start + 3 > r.finish)                                           // Write out the runs as individual assign stataments because there are only a few
+         {if (r.start + 3 > r.finish)                                           // Write out the runs as individual assign statements because there are only a few
            {for(int i = r.start; i < r.finish; ++i)
              {v.A(processMemoryName()+"["+i+"] <= "+r.value+";");
              }
@@ -1750,7 +1750,7 @@ if __name__ == "__main__":
        }
      }
 
-    protected int memoryGetNoCheck(int Index)                                   // Get a memory element as an integer without cheecinkg if ot ahs ever been set.
+    protected int memoryGetNoCheck(int Index)                                   // Get a memory element as an integer without checking if it has ever been set.
      {final BitSet b = memory[Index];                                           // Read memory as bit set
       final long[]V = b.toLongArray();                                          // Convert bitset to long
       return V.length > 0 ? (int)V[0] : 0;                                      // Take the first element if it exists relying on the fact that in the Java code we test with just sufficiently large numbers to test the Verilog in principle
@@ -1764,7 +1764,7 @@ if __name__ == "__main__":
      }
 
     protected int memoryGet(int Index, int Offset)                              // Get a memory element as an integer
-     {final int i = Index*memoryBlockSize + Offset;                             // Index of memeory to be read
+     {final int i = Index*memoryBlockSize + Offset;                             // Index of memory to be read
       memoryCheckHasBeenSet(i);                                                 // Check memory element has been set
       final BitSet b = memory[i];                                               // Read memory as bit set
       final long[] V = b.toLongArray();                                         // Convert bitset to long
@@ -1773,7 +1773,7 @@ if __name__ == "__main__":
 
     void memoryGet(Register Value, Register Index)                              // Get a memory element indexed by a register as an integer setting the memory cache register to the value of the element retrieved
      {if (Value.registerSingle())                                               // Single register from memory
-       {final int i = Index.registerGet();                                      // Index of memeory to be read
+       {final int i = Index.registerGet();                                      // Index of memory to be read
         memoryCheckHasBeenSet(i);                                               // Check memory element has been set
         final BitSet b = (BitSet)memory[i].clone();                             // Read memory as bit set
         final long[] V = b.toLongArray();                                       // Convert bitset to long
@@ -1782,12 +1782,12 @@ if __name__ == "__main__":
       else if (Value.registerSize == memoryBlockSize)                           // Arrayed register from memory
        {final int I = Index.registerGet() * memoryBlockSize;                    // Offset into memory
         for (int i = 0; i < memoryBlockSize; i++)                               // Each element of an arrayed register
-         {if (memorySet[I+i])                                                   // Each element of the bloxk - ythis might need to be revisted as it creates meultiple mmeory reads per clock which is not allowed by yosys for memory
+         {if (memorySet[I+i])                                                   // Each element of the block - this might need to be revisited as it creates multiple memory reads per clock which will make yosys convert memory to registers
            {final BitSet b = (BitSet)memory[I+i].clone();                       // Read memory as bit set
             final long[] V = b.toLongArray();                                   // Convert bitset to long
             Value.registerSet(V.length > 0 ? (int)V[0] : 0, i);                 // Take the first element if it exists relying on the fact that in the Java code we test with just sufficiently large numbers to test the verilog in priniple
            }
-          else if (Value.registerNullable) Value.registerSets[i] = false;   // Memory was not set but register can accept unset values
+          else if (Value.registerNullable) Value.registerSets[i] = false;       // Memory was not set but register can accept unset values
           else stop("Cannot put unset memory value from:", processMemoryName(),
             "into register:", Value.registerName());
          }
@@ -2185,14 +2185,14 @@ if __name__ == "__main__":
          {for (var t : transactions)                                            // All transactions
            {if (t.transactionExecutable())                                      // Executable transactions
              {if (t.transactionOpCode.equals("get"))                            // Memory get requests
-               {final Register I = t.transactionInputRegisters .elementAt(0);   // Address index register which is sngle
+               {final Register I = t.transactionInputRegisters .elementAt(0);   // Address index register which is single
                 final Register V = t.transactionOutputRegisters.elementAt(0);   // Address value register which is arrayed
                 memoryGet(V, I);                                                // Set output register with value of memory at index
                 t.transactionSetFinished();                                     // Mark the transaction as complete
                 break;                                                          // Execute one memory request per clock
                }
               else if (t.transactionOpCode.equals("set"))                       // Set an indexed memory element to a specified value
-               {final Register I = t.transactionInputRegisters.elementAt(0);    // Address index register which is sngle
+               {final Register I = t.transactionInputRegisters.elementAt(0);    // Address index register which is single
                 final Register V = t.transactionInputRegisters.elementAt(1);    // Address value register which is arrayed
                 memorySet(V, I);                                                // Set memory at indexed location
                 t.transactionSetFinished();                                     // Mark the update transaction as complete
