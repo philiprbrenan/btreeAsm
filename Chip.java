@@ -1519,6 +1519,7 @@ if __name__ == "__main__":
       if (hasMemory())                                                          // Not all processes have memory attached to them: declare memory for those that do.
        {v.A("(* ram_style = \"block\" *)");
         v.A("reg ["+memoryWidth+"-1:0] "+processMemoryName()+"["+memorySize+"*"+memoryBlockSize+"];");
+//M     v.A("reg ["+memoryWidth+"*"+memoryBlockSize+"-1:0] "+processMemoryName()+"["+memorySize+"];");
        }
 
       for (Register r: registers)                                               // Registers associated with this process
@@ -1795,11 +1796,7 @@ if __name__ == "__main__":
 
     void memoryGet(Register Value, Register Index)                              // Get a memory element indexed by a register as an integer setting the memory cache register to the value of the element retrieved
      {if (Value.registerSingle())                                               // Single register from memory
-       {final int i = Index.registerGet();                                      // Index of memory to be read
-        memoryCheckHasBeenSet(i);                                               // Check memory element has been set
-        final BitSet b = (BitSet)memory[i].clone();                             // Read memory as bit set
-        final long[] V = b.toLongArray();                                       // Convert bitset to long
-        Value.registerSet(V.length > 0 ? (int)V[0] : 0);                        // Take the first element if it exists relying on the fact that in the Java code we test with just sufficiently large numbers to test the verilog in priniple
+       {stop("Not in use");
        }
       else if (Value.registerSize == memoryBlockSize)                           // Arrayed register from memory
        {final int I = Index.registerGet() * memoryBlockSize;                    // Offset into memory
@@ -1817,18 +1814,9 @@ if __name__ == "__main__":
       else stop("Register has wrong size");
      }
 
-    void memoryGet(Register Value, Register Index, int OffSet)                  // Get a memory element indexed by a register as an integer setting the memory cache register to the value of the element retrieved
-     {final int i = Index.registerGet()*memoryBlockSize + OffSet;
-      memoryCheckHasBeenSet(i);                                                 // Check memory element has been set
-      final BitSet b = (BitSet)memory[i].clone();                               // Read memory as bit set
-      final long[] V = b.toLongArray();                                         // Convert bitset to long
-      Value.registerSet(V.length > 0 ? (int)V[0] : 0);                          // Take the first element if it exists relying on the fact that in the Java code we test with just sufficiently large numbers to test the verilog in priniple
-     }
-
     void memoryGet(Verilog v, Register Value, Register Index)                   // Get a memory element indexed by a register as an integer setting the memory cache register to the value of the element retrieved
      {if (Value.registerSingle())                                               // Single register into memory
-       {v.assign(Value.registerName(),                                          // Read memory into register
-               processMemoryName()+"["+Index.registerName()+"]");
+       {stop("Not in use");
        }
       else                                                                      // Arrayed register into memory
        {int I = Index.registerGet() * memoryBlockSize;
@@ -1845,19 +1833,31 @@ if __name__ == "__main__":
        }
      }
 
-    void memoryGet(Verilog v, Register Value, Register Index, int OffSet)       // Get a memory element indexed by a register as an integer setting the memory cache register to the value of the element retrieved
-     {v.assign(Value.registerName(),                                            // Read memory into register
-               processMemoryName()+
-               "[$unsigned("+Index.registerName()+")*"+
-                "$unsigned("+memoryBlockSize     +")+"+
-                "$unsigned("+OffSet              +")]");
-     }
+//M    void memoryGet(Verilog v, Register Value, Register Index)                   // Get a memory element indexed by a register as an integer setting the memory cache register to the value of the element retrieved
+//M     {final String m = processMemoryName();                                     // Memory name
+//M      final String n = Index.registerName();                                    // Index register
+//M      final int    b = memoryBlockSize;                                         // Number of elements per memory block
+//M      final int    w = memoryWidth;                                             // Width of each memory element
+//M      if (Value.registerSingle())                                               // Read single register from memory
+//M       {final String i = n+"/"+b;                                               // Block to read
+//M        final String s = "(("+n+"%"+b+")*"+w+")";                               // Offset within block
+//M        v.assign(Value.registerName(),                                          // Read memory into register
+//M          "("+m+"["+i+"] >> "+s+"){"+w+"-1:0};");                               // Select lowest bits
+//M       }
+//M      else                                                                      // Read arrayed register from memory
+//M       {final String i = processMemoryIndexName();
+//M        v.new For(i, ""+memoryBlockSize)
+//M         {void body()
+//M           {v.assign(Value.registerName()+"["+i+"]",                            // Read memory into register
+//M               "("+m+"["+n+"] >> ("+i+"*"+w+")){"+w+"-1:0};");
+//M           }
+//M         };
+//M       }
+//M     }
 
     void memorySet(Register Value, Register Index)                              // Set a memory element indexed by a register
      {if (Value.registerSingle())                                               // Single register into memory
-       {final int i = Index.registerGet();
-        memory   [i] = (BitSet)Value.value.clone();
-        memorySet[i] = Value.registerSet;                                       // Match input register, if it is set then so is memory, otherwise not
+       {stop("Not used");
        }
       else if (Value.registerSize == memoryBlockSize)                           // Arrayed register into memory
        {int I = Index.registerGet() * memoryBlockSize;
@@ -1873,6 +1873,7 @@ if __name__ == "__main__":
      {final int i = Index.registerGet()*memoryBlockSize+OffSet;
       memorySet[i] = Value.registerSet;
       memory   [i] = (BitSet)Value.value.clone();
+      stop("Not used");
      }
 
     void memorySet(Verilog v, Register Value, Register Index)                   // Set a memory element indexed by a register
@@ -2956,8 +2957,8 @@ Chip: Test             step: 6, maxSteps: 10, running: 0
    }
 
   static void newTests()                                                        // Tests being worked on
-   {//oldTests();
-    test_arithmeticFibonacci();
+   {oldTests();
+    //test_arithmeticFibonacci();
    }
 
   public static void main(String[] args)                                        // Test if called as a program
