@@ -90,10 +90,20 @@ class Chip extends Test                                                         
          }
         s.append("\n");
 
-        s.append(String.format("       %2d", p.memoryGetNoCheck(0)));
+        if (p.memorySet[0])
+         {s.append(String.format("       %2d", p.memoryGet(0)));
+         }
+        else
+         {s.append("        x");
+         }
 
         for (int i = 1; i < p.memory.length; i++)
-         {s.append(String.format(" %2d", p.memoryGetNoCheck(i)));
+         {if (p.memorySet[i])
+           {s.append(String.format(" %2d", p.memoryGet(i)));
+           }
+          else
+           {s.append("  x");
+           }
          }
         s.append("\n");
        }
@@ -1748,12 +1758,6 @@ if __name__ == "__main__":
        {stop(processName, "memory at index:", Index,
          "has not been set so cannot be read");
        }
-     }
-
-    protected int memoryGetNoCheck(int Index)                                   // Get a memory element as an integer without checking if it has ever been set.
-     {final BitSet b = memory[Index];                                           // Read memory as bit set
-      final long[]V = b.toLongArray();                                          // Convert bitset to long
-      return V.length > 0 ? (int)V[0] : 0;                                      // Take the first element if it exists relying on the fact that in the Java code we test with just sufficiently large numbers to test the Verilog in principle
      }
 
     protected int memoryGet(int Index)                                          // Get a memory element as an integer.
