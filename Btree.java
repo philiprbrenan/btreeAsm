@@ -3124,11 +3124,11 @@ Chip: Btree            step: 9, maxSteps: 200, running: 0
     stuckIsFree
       Memory: size:  1, width:  1, block:  1
         0  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24
-        0
+        x
     freeNext
       Memory: size:  1, width:  1, block:  1
         0  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24
-        0
+        x
     stuckSize
       Memory: size:  1, width:  3, block:  1
         0  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24
@@ -3144,7 +3144,7 @@ Chip: Btree            step: 9, maxSteps: 200, running: 0
     stucksUsed
       Memory: size:  1, width:  1, block:  1
         0  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24
-        1
+        x
 """);
 
     b.chipRunJava();
@@ -3160,11 +3160,11 @@ Chip: Btree            step: 16, maxSteps: 200, running: 0
     stuckIsFree
       Memory: size:  1, width:  1, block:  1
         0  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24
-        0
+        x
     freeNext
       Memory: size:  1, width:  1, block:  1
         0  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24
-        0
+        x
     stuckSize
       Memory: size:  1, width:  3, block:  1
         0  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24
@@ -3180,45 +3180,47 @@ Chip: Btree            step: 16, maxSteps: 200, running: 0
     stucksUsed
       Memory: size:  1, width:  1, block:  1
         0  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24
-        0
+        x
 """);
    }
 
   static Btree test_create2()
    {final Btree b = new Btree(2, 4, 8, 8);
 
+    b.maxSteps = 100;
+    b.chipRun();
     //stop(b.chipPrintMemory());
     ok(b.chipPrintMemory(), """
-Chip: Btree            step: 0, maxSteps: 10, running: 0
+Chip: Btree            step: 17, maxSteps: 100, running: 0
   Processes:
     stuckIsLeaf
       Memory: size:  2, width:  1, block:  1
         0  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24
-        1  0
+        1  x
     stuckIsFree
       Memory: size:  2, width:  1, block:  1
         0  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24
-        0  0
+        0  x
     freeNext
       Memory: size:  2, width:  2, block:  1
         0  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24
-        0  0
+        0  x
     stuckSize
       Memory: size:  2, width:  3, block:  1
         0  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24
-        0  0
+        0  x
     stuckKeys
       Memory: size:  2, width:  8, block:  4
         0  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24
-        0  0  0  0  0  0  0  0
+        x  x  x  x  x  x  x  x
     stuckData
       Memory: size:  2, width:  8, block:  4
         0  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24
-        0  0  0  0  0  0  0  0
+        x  x  x  x  x  x  x  x
     stucksUsed
       Memory: size:  1, width:  2, block:  1
         0  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24
-        0
+        1
 """);
     return b;
    }
@@ -4500,114 +4502,117 @@ Merge     : 1
     final Process.Register i = b.btreeIndex(p, "index1");
     final Process.Register j = b.btreeIndex(p, "index2");
     p.processTrace = true;
+    b.maxSteps = 100;
+    b.chipRun();
     //stop(b.chipPrintMemory());
     ok(""+b.chipPrintMemory(), """
-Chip: Btree            step: 0, maxSteps: 10, running: 0
+Chip: Btree            step: 17, maxSteps: 100, running: 0
   Processes:
     stuckIsLeaf
       Memory: size:  4, width:  1, block:  1
         0  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24
-        1  0  0  0
+        1  x  x  x
     stuckIsFree
       Memory: size:  4, width:  1, block:  1
         0  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24
-        0  0  0  0
+        0  x  x  x
     freeNext
       Memory: size:  4, width:  3, block:  1
         0  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24
-        0  0  0  0
+        0  x  x  x
     stuckSize
       Memory: size:  4, width:  3, block:  1
         0  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24
-        0  0  0  0
+        0  x  x  x
     stuckKeys
       Memory: size:  4, width:  8, block:  4
         0  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24
-        0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0
+        x  x  x  x  x  x  x  x  x  x  x  x  x  x  x  x
     stuckData
       Memory: size:  4, width:  8, block:  4
         0  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24
-        0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0
+        x  x  x  x  x  x  x  x  x  x  x  x  x  x  x  x
     stucksUsed
       Memory: size:  1, width:  3, block:  1
         0  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24
         1
 """);
+
     p.processClear();
     b.allocate(i, true);
     b.allocate(j, false);
-    if (true) p.new Instruction()
-     {void action()
-       {//stop(b.chipPrintMemory());
-        ok(b.chipPrintMemory(), """
-Chip: Btree            step: 46, maxSteps: 100, running: 1
+    b.chipRun();
+    //stop(b.chipPrintMemory());
+    ok(b.chipPrintMemory(), """
+Chip: Btree            step: 47, maxSteps: 100, running: 0
   Processes:
     stuckIsLeaf
       Memory: size:  4, width:  1, block:  1
         0  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24
-        1  1  0  0
+        1  1  0  x
     stuckIsFree
       Memory: size:  4, width:  1, block:  1
         0  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24
-        0  0  0  0
+        0  0  0  x
     freeNext
       Memory: size:  4, width:  3, block:  1
         0  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24
-        0  0  0  0
+        0  x  x  x
     stuckSize
       Memory: size:  4, width:  3, block:  1
         0  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24
-        0  0  0  0
+        0  x  x  x
     stuckKeys
       Memory: size:  4, width:  8, block:  4
         0  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24
-        0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0
+        x  x  x  x  x  x  x  x  x  x  x  x  x  x  x  x
     stuckData
       Memory: size:  4, width:  8, block:  4
         0  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24
-        0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0
+        x  x  x  x  x  x  x  x  x  x  x  x  x  x  x  x
     stucksUsed
       Memory: size:  1, width:  3, block:  1
         0  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24
         3
 """);
-        ok(i.registerGet(), 1);
-        ok(j.registerGet(), 2);
-       }
-      void verilog(Verilog v) {v.A("");}
-     };
+    ok(i.registerGet(), 1);
+    ok(j.registerGet(), 2);
+
+    p.processClear();
+    i.RegisterSet(1);
+    j.RegisterSet(2);
     b.free(i);
     b.free(j);
     b.maxSteps = 100;
     b.chipRun();
     //stop(b.chipPrintMemory());
     ok(b.chipPrintMemory(), """
-Chip: Btree            step: 70, maxSteps: 100, running: 0
+Chip: Btree            step: 25, maxSteps: 100, running: 0
   Processes:
     stuckIsLeaf
       Memory: size:  4, width:  1, block:  1
         0  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24
-        1  1  0  0
+        1  1  0  x
     stuckIsFree
       Memory: size:  4, width:  1, block:  1
         0  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24
-        0  1  1  0
+        0  1  1  x
     freeNext
       Memory: size:  4, width:  3, block:  1
         0  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24
-        2  0  1  0
+        2  0  1  x
     stuckSize
       Memory: size:  4, width:  3, block:  1
         0  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24
-        0  0  0  0
+        0  x  x  x
     stuckKeys
       Memory: size:  4, width:  8, block:  4
         0  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24
-        0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0
+        x  x  x  x  x  x  x  x  x  x  x  x  x  x  x  x
     stuckData
       Memory: size:  4, width:  8, block:  4
         0  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24
-        0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0
+        x  x  x  x  x  x  x  x  x  x  x  x  x  x  x  x
     stucksUsed
       Memory: size:  1, width:  3, block:  1
         0  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24
@@ -4702,12 +4707,13 @@ Chip: Btree            step: 70, maxSteps: 100, running: 0
   static void test_mergeLeavesAtTop()
    {sayCurrentTestName();
     final Btree            b = new Btree(32, 4, 8, 8);
-    b.btreeLoad(test_put_save_9());
     final Process          P = b.P; //b.new Process("findAndInsert");
     final Stuck            p = b.new Stuck(P, "findAndInsert");
     final Process.Register i = b.btreeIndex(P, "i");
     P.processTrace = true;
 
+    P.processClear();
+    b.btreeLoad(test_put_save_9());
     i.RegisterSet(2);
     p.stuckGet(i);
     p.Pop();
@@ -4949,6 +4955,7 @@ Chip: Btree            step: 70, maxSteps: 100, running: 0
     b.stuckKeys.memorySet(14, 2, 3); b.stuckData.memorySet(32, 2, 3);
     b.stuckKeys.memorySet(24, 3, 3); b.stuckData.memorySet(33, 3, 3);
 
+    b.P.processClear();
     //stop(b.print());
     ok(b.btreePrint(), """
         10              20               |
@@ -5002,7 +5009,6 @@ Merge     : 0
     final FindAndInsert f = b.new FindAndInsert(P);
     b.maxSteps = 2000;
     P.processTrace = true;
-    P.processClear();
 
     k.RegisterSet(10); d.RegisterSet(20); f.findAndInsert(k, d);
     k.RegisterSet(20); d.RegisterSet(30); f.findAndInsert(k, d);
@@ -5077,10 +5083,8 @@ Merge     : 0
     final Process.Register i = b.btreeIndex(P, "i");
     final Process.Register j = b.stuckIndex(P, "j");
     P.processTrace = true;
-
     b.maxSteps = 2000;
     s.stuckGetRoot();
-    P.processClear();
     k.RegisterSet(10); d.RegisterSet(20); s.Push(k, d);
     k.RegisterSet(20); d.RegisterSet(30); s.Push(k, d);
     k.RegisterSet(30); d.RegisterSet(40); s.Push(k, d);
@@ -5091,6 +5095,13 @@ Merge     : 0
     b.chipRun();
     //stop(b.chipPrintMemory());
     //stop(b.btreePrint());
+    ok(b.btreePrint(), """
+        25        |
+        0         |
+        1         |
+        2         |
+10,20=1   30,40=2 |
+""");
    }
 
   static void test_delete_ascending()
@@ -5106,6 +5117,7 @@ Merge     : 0
     final StringBuilder    t = new StringBuilder();
 
     P.processTrace = true;
+    P.processClear();
     b.maxSteps = 30000;
 
     k.RegisterSet(0);
@@ -6491,6 +6503,7 @@ Merge     : 0
 
   static Btree test_put_reload()
    {final Btree b = new Btree(32, 4, 8, 8);
+    b.P.processClear();
     b.btreeLoad(test_put_save_32());
     //stop(b.btreePrint());                                                     // Create test_put_print
     ok(b.btreePrint(), test_put_print());
@@ -7247,8 +7260,7 @@ Merge     : 0
    }
 
   static void newTests()                                                        // Tests being worked on
-   {//oldTests();
-    test_create1();
+   {oldTests();
    }
 
   public static void main(String[] args)                                        // Test if called as a program
