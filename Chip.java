@@ -2918,8 +2918,8 @@ Chip: Test             step: 6, maxSteps: 10, running: 0
    }
 
   static void newTests()                                                        // Tests being worked on
-   {oldTests();
-    //test_arithmeticFibonacci();
+   {//oldTests();
+    test_arithmeticFibonacci();
    }
 
   public static void main(String[] args)                                        // Test if called as a program
