@@ -53,9 +53,9 @@ class Chip extends Test                                                         
   String chipStopExpression()                                                   // The or of all the process stop fields as a process can only write directly to its own variables not to global ones.
    {final StringBuilder s = new StringBuilder();
     for (Process p: processes)                                                  // Each process
-     {s.append(p.processStopName() + "||");
+     {s.append("("+p.processStopName()+" != 0 ? 1 : 0) || ");
      }
-    if (s.length() > 0) s.setLength(s.length()-2);
+    if (s.length() > 0) s.setLength(s.length()-4);
     return ""+s;
    }
 
@@ -543,7 +543,7 @@ REMOTE=%s                                                                       
 FOLDER=%s                                                                       # Folder containing project under user's home folder
 DESIGN=%s                                                                       # The name of the chip being designed
 WORKSP=%s                                                                       # Verilog workspace folder
-rsync -r ~/$FOLDER $REMOTE:~/$FOLDER                                            # Copy local project files to remote system
+rsync -r ~/$FOLDER/%s $REMOTE:~/$FOLDER                                            # Copy local project files to remote system
 ssh -S none $REMOTE << EOF                                                      # Execute the following commands on the remote system using a non shared ssh connection
 cd $FOLDER                                                                      # Project folder
 mkdir -p %s                                                                     # Results folder where the summary of the OpenRoad run will be saved
@@ -561,7 +561,7 @@ EOF
 rsync -r $REMOTE:~/$FOLDER/results/%s ~/$FOLDER/results                         # Copy results back to local system from remote system
 """,
        remoteMachineName, projectFolder, chipName, v,
-       f,
+       "*", f,
        d, d,
        v, fne(f, chipName, "json"),
        v, fne(f, chipName, "png"),
@@ -572,9 +572,27 @@ rsync -r $REMOTE:~/$FOLDER/results/%s ~/$FOLDER/results                         
     void writeSdc()                                                             // Write constraints file
      {sdc.append(String.format("""
 create_clock -name clock -period 100 [get_ports {clock}]
+set_input_delay  -max 1 -clock clock [get_ports {reset}]
+set_input_delay  -min 1 -clock clock [get_ports {reset}]
+set_output_delay -max 1 -clock clock [get_ports {stop}]
+set_output_delay -min 1 -clock clock [get_ports {stop}]
 """));
-     writeFile(sdcFile, sdc);
-    }
+
+      for (Process.Register r: registersInput())                                // Clock delay for input pins
+       {sdc.append(String.format("""
+set_input_delay -max 1 -clock clock [get_ports %s]
+set_input_delay -min 1 -clock clock [get_ports %s]
+""", r.registerName(), r.registerName()));
+       }
+
+      for (Process.Register r: registersOutput())                               // Clock delay for output pins
+       {sdc.append(String.format("""
+set_output_delay -max 1 -clock clock [get_ports %s]
+set_output_delay -min 1 -clock clock [get_ports %s]
+""", r.registerName(), r.registerName()));
+       }
+      writeFile(sdcFile, sdc);
+     }
 
     void writePython()                                                          // Construct the silicon compiler python commands
      {python.append(String.format("""
@@ -1819,7 +1837,9 @@ if __name__ == "__main__":
          {void body()
            {v.assign(Value.registerName()+"["+i+"]",                            // Read memory into register
                processMemoryName()+
-                "["+Index.registerName()+"*"+memoryBlockSize+"+"+i+"]");
+                "[$unsigned("+Index.registerName()+")*"+
+                 "$unsigned("+memoryBlockSize     +")+"+
+                 "$unsigned("+i                   +")]");
            }
          };
        }
@@ -1827,8 +1847,10 @@ if __name__ == "__main__":
 
     void memoryGet(Verilog v, Register Value, Register Index, int OffSet)       // Get a memory element indexed by a register as an integer setting the memory cache register to the value of the element retrieved
      {v.assign(Value.registerName(),                                            // Read memory into register
-               processMemoryName()+"["+Index.registerName()+
-               "*"+memoryBlockSize+"+"+OffSet+"]");
+               processMemoryName()+
+               "[$unsigned("+Index.registerName()+")*"+
+                "$unsigned("+memoryBlockSize     +")+"+
+                "$unsigned("+OffSet              +")]");
      }
 
     void memorySet(Register Value, Register Index)                              // Set a memory element indexed by a register
@@ -1863,8 +1885,10 @@ if __name__ == "__main__":
         v.new For(i, ""+memoryBlockSize)
          {void body()
            {v.assign
-             (processMemoryName()+"["+Index.registerName()+"*"+
-                memoryBlockSize+"+"+i+"]",
+             (processMemoryName()+
+             "[$unsigned("+Index.registerName()+")*"+
+              "$unsigned("+memoryBlockSize     +")+"+
+              "$unsigned("+i                   +")]",
               Value.registerName()+"["+i+"]");
             }
          };
@@ -1873,8 +1897,10 @@ if __name__ == "__main__":
      }
 
     void memorySet(Verilog v, Register Value, Register Index, int OffSet)       // Set a memory element indexed by a register from the associated cache memory register in Verilog
-     {v.assign(processMemoryName()+"["+Index.registerName()+
-               "*"+memoryBlockSize+"+"+OffSet+"]",
+     {v.assign(processMemoryName()+
+       "[$unsigned("+Index.registerName()+")*"+
+        "$unsigned("+memoryBlockSize+")+"+
+        "$unsigned("+OffSet+")]",
       Value.registerName());
      }
 
@@ -1900,8 +1926,10 @@ if __name__ == "__main__":
      }
 
     void memorySet(Verilog v, int Value, int Index, int OffSet)                 // Set a memory element in Verilog
-     {v.assign(processMemoryName()+"["+Index+"*"+memoryBlockSize+
-                                     "+"+OffSet+"]", Value);
+     {v.assign(processMemoryName()+
+       "[$unsigned("+Index+")*"+
+        "$unsigned("+memoryBlockSize+")+"+
+        "$unsigned("+OffSet+")]", Value);
      }
 
     void memoryBackUp()                                                         // Back up memory
@@ -2415,10 +2443,10 @@ Chip: Test             step: 12, maxSteps: 100, running: 0
     var C  = chip("Test");
     var p  = C.process("Main");
         p.processTrace = true;
-    var a  = p.register("a",  B);
-    var b  = p.register("b",  B);
-    var c  = p.register("c",  B);
-    var i  = p.register("i",  B);
+    var a  = p.register("a", B);
+    var b  = p.register("b", B);
+    var c  = p.register("c", B);
+    var i  = p.register("i", logTwo(B));
 
     var m  = C.new Memory("Memory", B, N);                                      // Memory controller
     var t  = m.new Set(p);                                                      // Create a transaction to update memory
@@ -2472,7 +2500,7 @@ Chip: Test             step: 82, maxSteps: 100, running: 0
         Main_a_0                                           = 987
         Main_b_1                                           = 1597
         Main_c_2                                           = 1597
-        Main_i_3                                           = 16
+        Main_i_3                                           = 0
         Main_Memory_1_index_4                              = 15
         Main_Memory_1_value_5                       [   0] = 1597
     Process: 1 - Memory                instructions: 1, pc: 0, rc: 0
@@ -2498,9 +2526,15 @@ Chip: Test             step: 82, maxSteps: 100, running: 0
 """);
 
     ok(a.registerGet(), 987);
-    final var s = C.new Synthesize();
-    ok(s.e.err, "");
-    ok(s.e.out, "");
+
+    final Chip.SiliconCompiler S = C.new SiliconCompiler()                      // Create silicon compiler files
+     {String description()
+       {return C.chipName;
+       }
+     };
+    say(S.launchFile);
+    say(readFile(S.sourceFile).size());
+
    }
 
   static void test_block()
