@@ -1248,9 +1248,9 @@ if __name__ == "__main__":
       void le (Register a, int b) {R(); if (C(a)) rs(a.rg() <= b ? 1 : 0);}     // Set the target register to one if the test between the 'a' and 'b' register is true else 0
       void lt (Register a, int b) {R(); if (C(a)) rs(a.rg() <  b ? 1 : 0);}     // Set the target register to one if the test between the 'a' and 'b' register is true else 0
 
-      void one (Verilog v)        {v.assign(rn(),  "1");}                       // One a register in Verilog
-      void inc (Verilog v)        {v.assign(rn(), rn()+"+1");}                  // Increment a register in Verilog
-      void dec (Verilog v)        {v.assign(rn(), rn()+"-1");}                  // Decrement a register in Verilog
+      void one (Verilog v)        {v.assign(rn(),         "1");}                // One a register in Verilog
+      void inc (Verilog v)        {v.assign(rn(), rn()+" + 1");}                // Increment a register in Verilog
+      void dec (Verilog v)        {v.assign(rn(), rn()+" - 1");}                // Decrement a register in Verilog
       void not (Verilog v)        {v.assign(rn(), rn()+" != 0 ? 0 : 1");}       // Not a register in Verilog
       void half(Verilog v)        {v.assign(rn(), rn()+" >> 1");}               // Half a number
       void add (Verilog v, Register source)                                     // Add the source register to the current register in Verilog
@@ -1265,19 +1265,19 @@ if __name__ == "__main__":
       void average(Verilog v, Register source1, Register source2)               // Average of two registers
        {v.assign(rn(), "(" + source1.rn() + " + " + source2.rn() + ") / 2");
        }
-      void gt(Verilog v, Register a, Register b) {v.assign(rn(), a.rn() +"> "+ b.rn()+" ? 1 : 0");} // Set the target register to one if the test between the 'a' and 'b' register is true else 0
-      void ge(Verilog v, Register a, Register b) {v.assign(rn(), a.rn() +">="+ b.rn()+" ? 1 : 0");} // Set the target register to one if the test between the 'a' and 'b' register is true else 0
-      void eq(Verilog v, Register a, Register b) {v.assign(rn(), a.rn() +"=="+ b.rn()+" ? 1 : 0");} // Set the target register to one if the test between the 'a' and 'b' register is true else 0
-      void ne(Verilog v, Register a, Register b) {v.assign(rn(), a.rn() +"!="+ b.rn()+" ? 1 : 0");} // Set the target register to one if the test between the 'a' and 'b' register is true else 0
-      void le(Verilog v, Register a, Register b) {v.assign(rn(), a.rn() +"<="+ b.rn()+" ? 1 : 0");} // Set the target register to one if the test between the 'a' and 'b' register is true else 0
-      void lt(Verilog v, Register a, Register b) {v.assign(rn(), a.rn() +"< "+ b.rn()+" ? 1 : 0");} // Set the target register to one if the test between the 'a' and 'b' register is true else 0
+      void gt(Verilog v, Register a, Register b) {v.assign(rn(), a.rn() +" >  "+ b.rn()+" ? 1 : 0");} // Set the target register to one if the test between the 'a' and 'b' register is true else 0
+      void ge(Verilog v, Register a, Register b) {v.assign(rn(), a.rn() +" >= "+ b.rn()+" ? 1 : 0");} // Set the target register to one if the test between the 'a' and 'b' register is true else 0
+      void eq(Verilog v, Register a, Register b) {v.assign(rn(), a.rn() +" == "+ b.rn()+" ? 1 : 0");} // Set the target register to one if the test between the 'a' and 'b' register is true else 0
+      void ne(Verilog v, Register a, Register b) {v.assign(rn(), a.rn() +" != "+ b.rn()+" ? 1 : 0");} // Set the target register to one if the test between the 'a' and 'b' register is true else 0
+      void le(Verilog v, Register a, Register b) {v.assign(rn(), a.rn() +" <= "+ b.rn()+" ? 1 : 0");} // Set the target register to one if the test between the 'a' and 'b' register is true else 0
+      void lt(Verilog v, Register a, Register b) {v.assign(rn(), a.rn() +" <  "+ b.rn()+" ? 1 : 0");} // Set the target register to one if the test between the 'a' and 'b' register is true else 0
 
-      void gt(Verilog v, Register a, int b) {v.assign(rn(), a.rn() +"> "+ b +" ? 1 : 0");} // Set the target register to one if the test between the 'a' and 'b' register is true else 0
-      void ge(Verilog v, Register a, int b) {v.assign(rn(), a.rn() +">="+ b +" ? 1 : 0");} // Set the target register to one if the test between the 'a' and 'b' register is true else 0
-      void eq(Verilog v, Register a, int b) {v.assign(rn(), a.rn() +"=="+ b +" ? 1 : 0");} // Set the target register to one if the test between the 'a' and 'b' register is true else 0
-      void ne(Verilog v, Register a, int b) {v.assign(rn(), a.rn() +"!="+ b +" ? 1 : 0");} // Set the target register to one if the test between the 'a' and 'b' register is true else 0
-      void le(Verilog v, Register a, int b) {v.assign(rn(), a.rn() +"<="+ b +" ? 1 : 0");} // Set the target register to one if the test between the 'a' and 'b' register is true else 0
-      void lt(Verilog v, Register a, int b) {v.assign(rn(), a.rn() +"< "+ b +" ? 1 : 0");} // Set the target register to one if the test between the 'a' and 'b' register is true else 0
+      void gt(Verilog v, Register a, int b) {v.assign(rn(), a.rn() +" >  "+ b +" ? 1 : 0");} // Set the target register to one if the test between the 'a' and 'b' register is true else 0
+      void ge(Verilog v, Register a, int b) {v.assign(rn(), a.rn() +" >= "+ b +" ? 1 : 0");} // Set the target register to one if the test between the 'a' and 'b' register is true else 0
+      void eq(Verilog v, Register a, int b) {v.assign(rn(), a.rn() +" == "+ b +" ? 1 : 0");} // Set the target register to one if the test between the 'a' and 'b' register is true else 0
+      void ne(Verilog v, Register a, int b) {v.assign(rn(), a.rn() +" != "+ b +" ? 1 : 0");} // Set the target register to one if the test between the 'a' and 'b' register is true else 0
+      void le(Verilog v, Register a, int b) {v.assign(rn(), a.rn() +" <= "+ b +" ? 1 : 0");} // Set the target register to one if the test between the 'a' and 'b' register is true else 0
+      void lt(Verilog v, Register a, int b) {v.assign(rn(), a.rn() +" <  "+ b +" ? 1 : 0");} // Set the target register to one if the test between the 'a' and 'b' register is true else 0
 
       void Gt(Register a, Register b) {new Instruction() {void action() {gt(a, b);} void verilog(Verilog v) {gt(v, a, b);}};} // Set the target register to one if the test between the 'a' and 'b' register is true else 0 as an instruction
       void Ge(Register a, Register b) {new Instruction() {void action() {ge(a, b);} void verilog(Verilog v) {ge(v, a, b);}};} // Set the target register to one if the test between the 'a' and 'b' register is true else 0 as an instruction
@@ -1436,9 +1436,9 @@ if __name__ == "__main__":
       memoryWidth     = MemoryWidth;
 
       final int M     = processMemorySize();                                    // Actual size of memory
-      memory          = new BitSet[M];
+      memory          = new BitSet [M];
       memorySet       = new boolean[M];
-      memoryBackUp    = new BitSet[M];
+      memoryBackUp    = new BitSet [M];
       memoryBackUpSet = new boolean[M];
       for (int i = 0; i < M; i++) memory         [i] = new BitSet(memoryWidth);
       for (int i = 0; i < M; i++) memoryBackUp   [i] = new BitSet(memoryWidth);
@@ -1536,7 +1536,7 @@ if __name__ == "__main__":
               for (Register r: registers)                                       // Clear all registers
                {if (!r.input && !r.output)
                  {if (!r.registerArrayed())                                     // Initialize single register
-                   {v.assign(r.registerName(),  "0");
+                   {v.assign(r.registerName(),   "0");
                    }
                   else                                                          // Initialize arrayed register
                    {final String i = processMemoryIndexName();
@@ -1550,7 +1550,7 @@ if __name__ == "__main__":
                }
               for (Transaction t: transactions)                                 // Initialize transactions
                {v.assign(t.transactionName+"_finishedAt", "-1");
-                v.assign(t.transactionRcName(), "0");
+                v.assign(t.transactionRcName(),  "0");
                }
 
               for (Process p: processes)                                        // Find transactions of which we are the source
