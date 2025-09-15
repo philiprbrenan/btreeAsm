@@ -90,7 +90,7 @@ class Btree extends Chip                                                        
     splitMk  = register("midKey",     bitsPerKey);                              // Mid key
 
 chipStop = true;
-    createFreeChain();                                                          // Create the free chain
+    createRootStuck();                                                          // Create the free chain
    }
 
   Process.Register btreeIndex(Process Process, String Name)
@@ -105,16 +105,46 @@ chipStop = true;
 
 //D2 Allocation                                                                 // Allocate stucks from the free chain
 
-  void createFreeChain()                                                        // Create the free chain before the chip starts running as this is a one time event
+  void createRootStuck()                                                        // Initialize the root stuck
    {//for (int i = 0; i < size-1; i++)
-    // {freeNext   .memorySet(i+1, i);                                            // Free chain hangs from root
-    //  stuckIsFree.memorySet(1, i+1);                                            // Start with the root as a leaf
+    // {freeNext   .memorySet(i+1, i);                                          // Free chain hangs from root
+    //  stuckIsFree.memorySet(1, i+1);                                          // Start with the root as a leaf
     // }
-    freeNext   .memorySet(0, 0);                                                // Start with the root empty
-    stuckSize  .memorySet(0, 0);                                                // Start with the root empty
-    stuckIsLeaf.memorySet(1, 0);                                                // Start with the root as a leaf
-    stuckIsFree.memorySet(0, 0);                                                // Start with the root allocated
-    stuckUsed  .memorySet(1, 0);                                                // The maximum number of stucks allocated so far
+
+    final Memory.Set  sFreeNext = freeNext   .memorySetIntoProcess(P);          // Set next free stuck
+    final Memory.Set      sSize = stuckSize  .memorySetIntoProcess(P);          // Size of root stuck
+    final Memory.Set    sIsLeaf = stuckIsLeaf.memorySetIntoProcess(P);          // Set leaf or branch
+    final Memory.Set    sIsFree = stuckIsFree.memorySetIntoProcess(P);          // Set stuck is free field
+    final Memory.Set      sUsed = stuckUsed  .memorySetIntoProcess(P);          // Transactions to set next unused stuck index
+
+    final Process.Register   root = btreeIndex(P, "root");                      // Index of root
+    final Process.Register     sz = stuckIndex(P, "rootSize");                  // Size of root
+    final Process.Register   True = P.register("true",   1);                    // True
+    final Process.Register  False = P.register("false",  1);                    // False
+    final Process.Register   used = btreeIndex(P, "rootUsed");                  // False
+
+    P.new Instruction()
+     {void action()
+       {root.zero();  sz.zero();  True.one();  False.zero();  used.one();
+       }
+      void verilog(Verilog v)
+       {root.zero(v); sz.zero(v); True.one(v); False.zero(v); used.one(v);
+       }
+     };
+    sFreeNext.ExecuteTransaction(root, root);                                   // Next free stuck is now first on free chain from root
+    sFreeNext.waitResultOfTransaction();
+
+    sSize.ExecuteTransaction(root, sz);                                         // Next free stuck is now first on free chain from root
+    sSize.waitResultOfTransaction();
+
+    sIsLeaf.ExecuteTransaction(root, True);                                     // Next free stuck is now first on free chain from root
+    sIsLeaf.waitResultOfTransaction();
+
+    sIsFree.ExecuteTransaction(root, False);                                    // Next free stuck is now first on free chain from root
+    sIsFree.waitResultOfTransaction();
+
+    sUsed.ExecuteTransaction(root, used);                                       // Next free stuck is now first on free chain from root
+    sUsed.waitResultOfTransaction();
    }
 
   private void allocate(Process.Register ref, boolean leaf)                     // Allocate a stuck and set a ref to the allocated node
@@ -2760,6 +2790,7 @@ chipStop = true;
     b.stuckKeys.memorySet(14, 0, 6); b.stuckData.memorySet(15, 0, 6);
     b.stuckKeys.memorySet(16, 0, 7); b.stuckData.memorySet(17, 0, 7);
 
+    P.processClear();                                                           // Remove root initialization code
     s.stuckGetRoot();
     t.CopyDown(s, 0);
 
@@ -2968,6 +2999,7 @@ Merge     : 0
     b.stuckKeys.memorySet(15, 1, 6); b.stuckData.memorySet(14, 1, 6);
     b.stuckKeys.memorySet(17, 1, 7); b.stuckData.memorySet(16, 1, 7);
 
+    P.processClear();                                                           // Remove root initialization code
     t.stuckGetRoot();
     index.RegisterSet(1);
     s.stuckGet(index);
@@ -3055,9 +3087,11 @@ Merge     : 1
     b.stuckKeys  .memorySet(0, 0, 3); b.stuckData.memorySet(0, 0, 3);
 
     Stuck s = b.new Stuck(P, "Stuck");
+    P.processClear();                                                           // Remove root initialization code
     s.stuckGetRoot();
     b.maxSteps = 200;
     b.chipRunJava();                                                            // We are creating the tree not testing it
+    //stop(b.chipPrintMemory());
     //stop(s.dump());
     //stop(b.chipPrintMemory());
     //stop(s);
@@ -3146,7 +3180,7 @@ Chip: Btree            step: 16, maxSteps: 200, running: 0
     stucksUsed
       Memory: size:  1, width:  1, block:  1
         0  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24
-        1
+        0
 """);
    }
 
@@ -3184,7 +3218,7 @@ Chip: Btree            step: 0, maxSteps: 10, running: 0
     stucksUsed
       Memory: size:  1, width:  2, block:  1
         0  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24
-        1
+        0
 """);
     return b;
    }
@@ -7213,7 +7247,8 @@ Merge     : 0
    }
 
   static void newTests()                                                        // Tests being worked on
-   {oldTests();
+   {//oldTests();
+    test_create1();
    }
 
   public static void main(String[] args)                                        // Test if called as a program
