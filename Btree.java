@@ -7192,7 +7192,7 @@ Merge     : 0
     final Process          P = b.P; //b.new Process("verilogPut");
     final Process.Register k = P.register("k", b.bitsPerKey);   k.input();
     final Process.Register d = P.register("d", b.bitsPerData);  d.input();
-
+    b.maxSteps = 1000;
     k.RegisterSet(1);
     d.RegisterSet(11);
     b.chipRunJava();                                                            // Set memory
@@ -7260,7 +7260,8 @@ Merge     : 0
    }
 
   static void newTests()                                                        // Tests being worked on
-   {oldTests();
+   {//oldTests();
+    test_verilog_put();
    }
 
   public static void main(String[] args)                                        // Test if called as a program
