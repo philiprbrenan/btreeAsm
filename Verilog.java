@@ -37,6 +37,11 @@ class Verilog extends Test                                                      
     return ""+s;
    }
 
+  static String pad(String S)
+   {final int N = 16, L = ((S.length() + N) / N) * N;
+    return S + " ".repeat(L - S.length());
+   }
+
   class Line
    {final StringBuilder line = new StringBuilder();                             // A line of verilog
     int lineIndent = indent;                                                    // Indentation of this line
@@ -92,19 +97,19 @@ class Verilog extends Test                                                      
   String assignOp() {return synthesis || parallel ? "<=" : "=";}                // Assignment operator in use
 
   void assign(String a, String b)                                               // Assign
-   {A(a + " " + assignOp()+ " " + b + ";");
+   {A(String.format("%s %s %s;",     pad(a), assignOp(), b));
    }
 
   void assign(String a, int b)                                                  // Assign
-   {A(a + " " + assignOp() + " " + b + ";");
+   {A(String.format("%s %s %d;",     pad(a), assignOp(), b));
    }
 
   void inc(String a)                                                            // Increment
-   {A(a + " " + assignOp() + " " + a + " + 1;");
+   {A(String.format("%s %s %s + 1;", pad(a), assignOp(), a));
    }
 
   void dec(String a)                                                            // Decrement
-   {A(a + " " + assignOp() + " " + a + " - 1;");
+   {A(String.format("%s %s %s - 1;", pad(a), assignOp(), a));
    }
 
   class If                                                                      // If
@@ -290,7 +295,7 @@ end
    {final Verilog v = new Verilog(2);
     v.assign("a", "b");
     ok(""+v, """
-    a = b;
+    a                = b;
 """);
    }
 
@@ -300,12 +305,13 @@ end
      {void Then() {v.assign("c", "a");}
       void Else() {v.assign("c", "b");}
      };
+    //stop(v);
     ok(""+v, """
 if (a > b) begin
-  c = a;
+  c                = a;
 end
 else begin
-  c = b;
+  c                = b;
 end
 """);
    }
@@ -325,16 +331,16 @@ end
     //stop(v);
     ok(""+v, """
 if (a == 1) begin
-  A = 1;
+  A                = 1;
 end
 else if (a == 2) begin
-  A = 2;
+  A                = 2;
 end
 else if (a == 3) begin
-  A = 3;
+  A                = 3;
 end
 else begin
-  A = -1;
+  A                = -1;
 end
 """);
    }
@@ -351,12 +357,12 @@ end
     ok(""+v, """
 begin
   for(i = 0; i < n; i = i + 1) begin
-    a = a + i;
+    a                = a + i;
   end
 end
 begin
   for(i = 0; i < n; i = i + 1) begin
-    b = b + i;
+    b                = b + i;
   end
 end
 """);
@@ -372,19 +378,19 @@ end
     ok(""+v, """
 case (i)
   0: begin
-    c = 0;
+    c                = 0;
   end
   1: begin
-    c = 1;
+    c                = 1;
   end
   2: begin
-    c = 2;
+    c                = 2;
   end
   3: begin
-    c = 3;
+    c                = 3;
   end
   default: begin
-    c = -1;
+    c                = -1;
   end
 endcase
 """);
@@ -404,10 +410,10 @@ endcase
     ok(""+v, """
 case (i)
   0: begin
-    c = 0;
+    c                = 0;
   end
   2: begin
-    c = 2;
+    c                = 2;
   end
 endcase
 """);
@@ -504,10 +510,17 @@ end
    {final Verilog v = new Verilog();
     v.inc("a");
     v.dec("b");
+    //stop(v);
     ok(v, """
-a = a + 1;
-b = b - 1;
+a                = a + 1;
+b                = b - 1;
 """);
+   }
+
+  static void test_pad()
+   {ok(pad("a"),                 "a               ");
+    ok(pad("ab"),                "ab              ");
+    ok(pad("abcdefghijklmmopq"), "abcdefghijklmmopq               ");
    }
 
   static void oldTests()                                                        // Tests thought to be in good shape
@@ -527,6 +540,7 @@ b = b - 1;
     test_task();
     test_always();
     test_inc();
+    test_pad();
    }
 
   static void newTests()                                                        // Tests being worked on
