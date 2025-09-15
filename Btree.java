@@ -7260,8 +7260,8 @@ Merge     : 0
    }
 
   static void newTests()                                                        // Tests being worked on
-   {//oldTests();
-    test_verilog_put();
+   {oldTests();
+    //test_verilog_put();
    }
 
   public static void main(String[] args)                                        // Test if called as a program
