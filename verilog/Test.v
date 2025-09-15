@@ -40,19 +40,19 @@ module Test(                                                                    
       Main_pc          <= 0;
       Main_stop        <= 0;
       Main_returnCode  <= 0;
-      Main_memory_index <= 0;
-      Main_memory_value <= 0;
+      Main_memory_index                <= 0;
+      Main_memory_value                <= 0;
       Main_a_0         <= 0;
       Main_b_1         <= 0;
       Main_c_2         <= 0;
       Main_i_3         <= 0;
-      Main_Memory_1_index_4 <= 0;
+      Main_Memory_1_index_4            <= 0;
       begin
         for(Main_memory_index = 0; Main_memory_index < 1; Main_memory_index = Main_memory_index + 1) begin
-          Main_Memory_1_value_5[Main_memory_index] <= 0;
+          Main_Memory_1_value_5[Main_memory_index]         <= 0;
         end
       end
-      Memory_1_requestedAt <= -1;
+      Memory_1_requestedAt             <= -1;
     end
     else begin
       // Set memory
@@ -77,13 +77,13 @@ module Test(                                                                    
           end
           3, 8, 13, 18, 23, 28, 33, 38, 43, 48, 53, 58, 63, 68, 73, 78: begin
             Main_b_1         <= Main_c_2;
-            Main_Memory_1_index_4 <= Main_i_3;
-            Main_Memory_1_value_5[0] <= Main_c_2;
-            Memory_1_requestedAt <= step;
+            Main_Memory_1_index_4            <= Main_i_3;
+            Main_Memory_1_value_5[0]         <= Main_c_2;
+            Memory_1_requestedAt             <= step;
             Main_pc          <= Main_pc + 1;
           end
           4, 9, 14, 19, 24, 29, 34, 39, 44, 49, 54, 59, 64, 69, 74, 79: begin
-            Main_i_3         <= Main_i_3+1;
+            Main_i_3         <= Main_i_3 + 1;
             Main_pc          <= Main_pc + 1;
           end
           5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55, 60, 65, 70, 75, 80: begin
@@ -116,11 +116,11 @@ module Test(                                                                    
     if (reset) begin
       Memory_pc        <= 0;
       Memory_stop      <= 0;
-      Memory_returnCode <= 0;
-      Memory_memory_index <= 0;
-      Memory_memory_value <= 0;
-      Memory_1_finishedAt <= -1;
-      Memory_Memory_1_returnCode <= 0;
+      Memory_returnCode                <= 0;
+      Memory_memory_index              <= 0;
+      Memory_memory_value              <= 0;
+      Memory_1_finishedAt              <= -1;
+      Memory_Memory_1_returnCode       <= 0;
     end
     else begin
       // Set memory
@@ -132,10 +132,10 @@ module Test(                                                                    
             if ((Memory_1_requestedAt > Memory_1_finishedAt && Memory_1_requestedAt != step)) begin
               begin
                 for(Memory_memory_index = 0; Memory_memory_index < 1; Memory_memory_index = Memory_memory_index + 1) begin
-                  Memory_memory[Main_Memory_1_index_4*1+Memory_memory_index] <= Main_Memory_1_value_5[Memory_memory_index];
+                  Memory_memory[Main_Memory_1_index_4*1+Memory_memory_index]       <= Main_Memory_1_value_5[Memory_memory_index];
                 end
               end
-              Memory_1_finishedAt <= step;
+              Memory_1_finishedAt              <= step;
             end
             else begin
             end
