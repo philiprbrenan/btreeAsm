@@ -11,7 +11,7 @@ module Test(                                                                    
   );
   integer step;
   integer returnCode;
-  assign stop = Main_stop||Memory_stop;
+  assign stop = (Main_stop != 0 ? 1 : 0) || (Memory_stop != 0 ? 1 : 0);
   always @ (posedge clock) begin
     if (reset) begin
       step             <= -17;
@@ -26,7 +26,7 @@ module Test(                                                                    
   reg [16-1:0] Main_a_0;
   reg [16-1:0] Main_b_1;
   reg [16-1:0] Main_c_2;
-  reg [16-1:0] Main_i_3;
+  reg [4-1:0] Main_i_3;
   reg [4-1:0] Main_Memory_1_index_4;
   (* nomem2reg *)
   reg [16-1:0] Main_Memory_1_value_5[1];
@@ -132,7 +132,7 @@ module Test(                                                                    
             if ((Memory_1_requestedAt > Memory_1_finishedAt && Memory_1_requestedAt != step)) begin
               begin
                 for(Memory_memory_index = 0; Memory_memory_index < 1; Memory_memory_index = Memory_memory_index + 1) begin
-                  Memory_memory[Main_Memory_1_index_4*1+Memory_memory_index]       <= Main_Memory_1_value_5[Memory_memory_index];
+                  Memory_memory[$unsigned(Main_Memory_1_index_4)*$unsigned(1)+$unsigned(Memory_memory_index)]      <= Main_Memory_1_value_5[Memory_memory_index];
                 end
               end
               Memory_1_finishedAt              <= step;
