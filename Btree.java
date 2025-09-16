@@ -2763,7 +2763,7 @@ chipStop = true;
     return f;
    }
 
-//D1 Tests                                                                      // Test the btree
+//D1 Tests                                                                      // Test the bTree
 
   final static int[]random_32 = {12, 3, 27, 1, 23, 20, 8, 18, 2, 31, 25, 16, 13, 32, 11, 21, 5, 24, 4, 10, 26, 30, 9, 6, 29, 17, 28, 15, 14, 19, 7, 22};
 
