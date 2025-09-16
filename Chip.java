@@ -25,12 +25,12 @@ class Chip extends Test                                                         
 
 //D1 Chip                                                                       // A chip is constructed from a fixed number of communicating processes that execute code on the chip to produce the desired outputs from the inputs to the chip
 
-  Chip(String Name)             {chipName = Name;}                              // Create a new chip
-  Chip chip()                   {return this;}                                  // This chip
-  static Chip chip(String Name) {return new Chip(Name);}                        // Create a new chip
+  Chip(String Name)             {zz(); chipName = Name;}                        // Create a new chip
+  Chip chip()                   {zz(); return this;}                            // This chip
+  static Chip chip(String Name) {zz(); return new Chip(Name);}                  // Create a new chip
 
   void chipRunJava()                                                            // Run the processes == ograms defined on this chip using the Java implementation
-   {for(Process p : processes) p.processInit();                                 // Initialize each process == program. Capture the memory set as up by Java so that it can be used to initialize memory in Verilog. Capture the Java execution trace so that the Verilog execution trace can be compared to it to ensure that the Verilog executes along the same path as the Java did.
+   {zz(); for(Process p : processes) p.processInit();                           // Initialize each process == program. Capture the memory set as up by Java so that it can be used to initialize memory in Verilog. Capture the Java execution trace so that the Verilog execution trace can be compared to it to ensure that the Verilog executes along the same path as the Java did.
     chipStop = false;                                                           // Show the program as running
     deleteFile(javaTraceFile);                                                  // Remove Java trace file
     for(step = 0; !chipStop && step < maxSteps; ++step)                         // Run each program
@@ -51,7 +51,7 @@ class Chip extends Test                                                         
   void N() {if (!chipStop) stop("Running");}                                    // Confirm that the simulation of the chip is not running
 
   String chipStopExpression()                                                   // The or of all the process stop fields as a process can only write directly to its own variables not to global ones.
-   {final StringBuilder s = new StringBuilder();
+   {zz(); final StringBuilder s = new StringBuilder();
     for (Process p: processes)                                                  // Each process
      {s.append("("+p.processStopName()+" != 0 ? 1 : 0) || ");
      }
@@ -60,7 +60,7 @@ class Chip extends Test                                                         
    }
 
   int chipMaxMemory()
-   {int m = 0;
+   {zz(); int m = 0;
     for(Process p: processes)                                                   // Maximum memory used
      {if (m < p.processMemorySize()) m = p.processMemorySize();
      }
@@ -287,11 +287,20 @@ class Chip extends Test                                                         
              p.processPcName()+", "+p.processRCName()+");");
 
           if (p.memory.length > 0)                                              // Print memory
-           {v.A("$fwrite(o, \"      Memory: size: %1d, width: %1d, block: %1d\\n\", "+
-               p.memorySize+", "+p.memoryWidth+", "+p.memoryBlockSize+");");
-            v.A("$fwrite(o, \"        %2d\", "+p.processMemoryName()+"[0]);");
-            for (int i = 1; i < p.memory.length; i++)
-             {v.A("$fwrite(o, \", %2d\", "+p.processMemoryName()+"["+i+"]);");
+           {final int    s = p.memorySize, b = p.memoryBlockSize, w = p.memoryWidth;
+            final String n = p.processMemoryName();
+            v.A("$fwrite(o, \"      Memory: size: %1d, width: %1d, block: %1d\\n\", "+
+               s+", "+w+", "+b+");");
+
+            v.A("$fwrite(o, \"        %2d\", "+n+"[0][0+:"+w+"]);");            // First element of first block
+            for (int j = 1; j < b; j++)
+             {v.A("$fwrite(o, \", %2d\", "+n+"[0]["+(j*w)+"+:"+w+"]);");        // Second and subsequent elements of first block
+             }
+
+            for   (int i = 1; i < s; i++)                                       // Second and subsequqnt blocks
+             {for (int j = 0; j < b; j++)
+               {v.A("$fwrite(o, \", %2d\", "+n+"["+i+"]["+(j*w)+"+:"+w+"]); //CCCC");
+               }
              }
             v.A("$fwrite(o, \"\\n\");");
            }
@@ -387,8 +396,8 @@ module %s;                                                                      
     returnCode = 0;
     maxSteps = %d;
     reset = 1; clock = 0; #1; clock = 1; #1; reset = 0; #1                      // Reset to known state
-    for(step = -%d; step < 0 || step < maxSteps && !stop; step = step + 1) begin // Steps below zero are run unconditionally to initialize each process so that Java and Verilog start in sync at step zero
-""", chipName, chipStopExpression(), maxSteps, memoryInitDelay+chipMaxMemory()));
+    for(step = 0; step < maxSteps && !stop; step = step + 1) begin              // Steps below zero are run unconditionally to initialize each process so that Java and Verilog start in sync at step zero
+""", chipName,  chipStopExpression(), maxSteps));
 
     v.indent(); v.indent(); v.indent();
 
@@ -841,13 +850,13 @@ if __name__ == "__main__":
       boolean registerArrayed() {return !registerSingle;}                       // Whether the register is an array of elements or a single element
 
       void registerCheckSingle()                                                // Confirm that the register is not an array
-       {if (!registerSingle())
+       {zz(); if (!registerSingle())
          {stop("Register:", registerName, "is arrayed, not single as required");
          }
        }
 
       void registerCheckArrayed()                                               // Confirm that the register is an array
-       {if (registerSingle())
+       {zz(); if (registerSingle())
          {stop("Register:", registerName, "is single, not arrayed as required");
          }
        }
@@ -863,29 +872,29 @@ if __name__ == "__main__":
        }
 
       String registerName()                                                     // The name of the register
-       {return processName + "_" + registerName;
+       {zz(); return processName + "_" + registerName;
        }
 
       String registerName(int Index)                                            // The name of an element of an arrayed register
-       {registerCheckArrayed();
+       {zz(); registerCheckArrayed();
         return processName + "_" + registerName+"["+Index+"]";
        }
 
       String registerName(String Index)                                         // The name of an element of an arrayed register
-       {registerCheckArrayed();
+       {zz(); registerCheckArrayed();
         return processName + "_" + registerName+"["+Index+"]";
        }
 
       void input()                                                              // Mark a register a being connected to input pins
-       {if (output) stop("Already used for output");
+       {zz(); if (output) stop("Already used for output");
         input = true;
        }
       void output()                                                             // Mark a register a being connected to output pins
-       {if (input) stop("Already used for input");
+       {zz(); if (input) stop("Already used for input");
         output = true;
        }
 
-      Process registerProcess()         {return Process.this;}                  // Process associated with this register
+      Process registerProcess()         {zz(); return Process.this;}            // Process associated with this register
 
       private String rn  ()             {return registerName();}                // Shorten names
       private String rn  (int i)        {return registerName(i);}
@@ -920,19 +929,19 @@ if __name__ == "__main__":
        }
 
       int registerGet()                                                         // Return the registerâs value as an integer. If the register is nullable check whether the register is currently set
-       {C(); registerCheckSingle();
+       {C(); zz(); registerCheckSingle();
         return value.length() == 0 ? 0 : (int) value.toLongArray()[0];          // Relies on the fact that this Java code is only used for testing, unlike the Verilog version
        }
 
       int registerGet(int Index)                                                // Return the value at the specified index in an arrayed set of registers
-       {registerCheckArrayed();
+       {zz(); registerCheckArrayed();
         if (!registerSets[Index]) stop("Register:", registerName, "not set at index:", Index);
         final BitSet value = values[Index];                                     // Indexed value
         return value.length() == 0 ? 0 : (int) value.toLongArray()[0];          // Convert to integer
        }
 
       void registerSetBitSet(BitSet value, int Value)                           // Set the value of a bit set
-       {final int l = min(registerBits, Integer.SIZE-1);                        // The most bits we can hope to represent
+       {zz(); final int l = min(registerBits, Integer.SIZE-1);                  // The most bits we can hope to represent
         value.clear();                                                          // Zero the bit set
         for (int i = 0; i < l; i++)                                             // Set each bit in the bitset if the corresponding bit in the value is set
          {if (((Value >> i) & 1) != 0) value.set(i);
@@ -940,7 +949,7 @@ if __name__ == "__main__":
        }
 
       void registerSet(int Value)                                               // Set the value of the register from an integer
-       {if (registerSingle())                                                   // Set value of single register
+       {zz(); if (registerSingle())                                             // Set value of single register
          {registerSetBitSet(value, Value);
           registerSet = true;                                                   // The register now has a known value
          }
@@ -953,7 +962,7 @@ if __name__ == "__main__":
        }
 
       void registerSet(Verilog v, int Value)                                    // Set the value of the register from an integer
-       {if (registerSingle())                                                   // Set value of single register
+       {zz(); if (registerSingle())                                             // Set value of single register
          {v.assign(registerName(), Value);
          }
         else
@@ -971,13 +980,13 @@ if __name__ == "__main__":
        }
 
       void registerSet(int Value, int Index)                                    // Set the value of an element of a register array from an integer
-       {registerCheckArrayed();
+       {zz(); registerCheckArrayed();
         registerSetBitSet(values[Index], Value);
         registerSets[Index] = true;                                             // The register now has a known value at the specified index
        }
 
       void registerSet(Verilog v, int Value, int Index)                         // Set the value of an element of a register array from an integer
-       {v.assign(registerName(Index), Value);
+       {zz(); v.assign(registerName(Index), Value);
        }
 
       void RegisterSet(int Value, int Index)                                    // Set the value of an element of a register array from an integer as an instruction
@@ -992,7 +1001,7 @@ if __name__ == "__main__":
 //D4 Register to Register                                                       // Register to register copy
 
       void copy(Register Source)                                                // Copy a source register into the target register.
-       {R(); registerCheckSize(Source);                                         // Make sure the target register is big enough
+       {R(); zz(); registerCheckSize(Source);                                   // Make sure the target register is big enough
 
         if (registerSingle())
          {Source.registerCheckSingle();
@@ -1009,7 +1018,7 @@ if __name__ == "__main__":
        }
 
       void copy(Verilog v, Register Source)                                     // Copy a source register into this register.
-       {if (registerSingle())
+       {zz(); if (registerSingle())
          {v.assign(registerName(), Source.registerName());
          }
         else
@@ -1023,7 +1032,7 @@ if __name__ == "__main__":
        }
 
       void Copy(Register Source)                                                // Copy instruction
-       {new Instruction()
+       {zz(); new Instruction()
          {void action()           {copy(Source);};
           void verilog(Verilog v) {copy(v, Source);};
          };
@@ -1032,18 +1041,18 @@ if __name__ == "__main__":
 //D4 Integer Indexed Register to Register                                       // Copy an integer indexed element of an arrayed source register to a target register
 
       void copy(Register Source, int RegisterIndex)                             // Copy an integer indexed source register into this target register.
-       {R(); registerCheckSize(Source);                                         // Make sure the target register is big enough
+       {R(); zz(); registerCheckSize(Source);                                   // Make sure the target register is big enough
         Source.registerCheckArrayed();
         value     = (BitSet)Source.values[RegisterIndex].clone();               // Copy the source value into the target
         registerSet = Source.registerSets[RegisterIndex];
        }
 
       void copy(Verilog v, Register Source, int RegisterIndex)                  // Copy a source register into this register which we can do because each and only each process can write to its own registers
-       {v.assign(registerName(), Source.registerName(RegisterIndex));
+       {zz(); v.assign(registerName(), Source.registerName(RegisterIndex));
        }
 
       void Copy(Register Source, int RegisterIndex)                             // Copy instruction
-       {new Instruction()
+       {zz(); new Instruction()
          {void action()           {copy(   Source, RegisterIndex);};
           void verilog(Verilog v) {copy(v, Source, RegisterIndex);};
          };
@@ -1052,7 +1061,7 @@ if __name__ == "__main__":
 //D4 Register Indexed Register to Register                                      // Copy a register indexed element of an arrayed source register to a target register
 
       void copyIs(Register Source, Register Index)                              // Copy a register indexed source register into this target register.
-       {R(); registerCheckSize(Source);                                         // Make sure the target register is big enough
+       {R(); zz(); registerCheckSize(Source);                                   // Make sure the target register is big enough
         Source.registerCheckArrayed();
         Index.registerCheckSingle();
         final int i = Index.registerGet();
@@ -1061,12 +1070,12 @@ if __name__ == "__main__":
        }
 
       void copyIs(Verilog v, Register Source, Register Index)                   // Copy a register indexed element of an arrayed source register into this target register
-       {v.assign(registerName(), Source.registerName()+
+       {zz(); v.assign(registerName(), Source.registerName()+
          "["+Index.registerName()+"]");
        }
 
       void CopyIs(Register Source, Register Index)                              // Copy instruction
-       {new Instruction()
+       {zz(); new Instruction()
          {void action()           {copyIs(   Source, Index);};
           void verilog(Verilog v) {copyIs(v, Source, Index);};
          };
@@ -1075,7 +1084,7 @@ if __name__ == "__main__":
 //D4 Source Register Indexed by Register and Offset to Register
 
       void copyIs(Register Source, Register Index, int Offset)                  // Copy an element of an arrayed register indexed by a register and an offset to a target register
-       {R(); registerCheckSize(Source);                                         // Make sure the target register is big enough
+       {R(); zz(); registerCheckSize(Source);                                   // Make sure the target register is big enough
         Source.registerCheckArrayed();
         Index.registerCheckSingle();
         final int i = Index.registerGet()+Offset;                               // Index in source
@@ -1084,12 +1093,12 @@ if __name__ == "__main__":
        }
 
       void copyIs(Verilog v, Register Source, Register Index, int Offset)       // Copy a register indexed element of an arrayed source register into this target register
-       {v.assign(registerName(), Source.registerName()+
+       {zz(); v.assign(registerName(), Source.registerName()+
          "["+Index.registerName()+"+"+Offset+"]");
        }
 
       void CopyIs(Register Source, Register Index, int Offset)                  // Copy instruction
-       {new Instruction()
+       {zz(); new Instruction()
          {void action()           {copyIs(   Source, Index, Offset);};
           void verilog(Verilog v) {copyIs(v, Source, Index, Offset);};
          };
@@ -1098,7 +1107,7 @@ if __name__ == "__main__":
 //D4 Register to Integer Indexed Register                                       // Copy a source register to an integer indexed element of an arrayed target register
 
       void copy(int RegisterIndex, Register Source)                             // Copy the source register into the specified indexed register
-       {R(); registerCheckSize(Source);                                         // Make sure the target register is big enough
+       {R(); zz(); registerCheckSize(Source);                                   // Make sure the target register is big enough
         Source.registerCheckSingle();
         registerCheckArrayed();
         values[RegisterIndex] = (BitSet)Source.value.clone();                   // Copy the source value into the target
@@ -1106,11 +1115,11 @@ if __name__ == "__main__":
        }
 
       void copy(Verilog v, int RegisterIndex, Register Source)                  // Copy a source register into this register which we can do because each and only each process can write to its own registers
-       {v.assign(registerName(RegisterIndex), Source.registerName());
+       {zz(); v.assign(registerName(RegisterIndex), Source.registerName());
        }
 
       void Copy(int RegisterIndex, Register Source)                             // Copy instruction
-       {new Instruction()
+       {zz(); new Instruction()
          {void action()           {copy(   RegisterIndex, Source);};
           void verilog(Verilog v) {copy(v, RegisterIndex, Source);};
          };
@@ -1119,7 +1128,7 @@ if __name__ == "__main__":
 //D4 Register to register indexed Register                                      // Copy a source register to a register indexed element of this target register
 
       void copyIt(Register Index, Register Source)                              // Copy a source register to a register indexed element of this target register
-       {R(); registerCheckSize(Source);                                         // Make sure the target register is big enough
+       {R(); zz(); registerCheckSize(Source);                                   // Make sure the target register is big enough
         Index.registerCheckSingle();
         Source.registerCheckSingle();
         registerCheckArrayed();
@@ -1129,12 +1138,12 @@ if __name__ == "__main__":
        }
 
       void copyIt(Verilog v, Register Index, Register Source)                   // Copy a source register into this register which we can do because each and only each process can write to its own registers
-       {v.assign(registerName()+"["+Index.registerName()+"]",
+       {zz(); v.assign(registerName()+"["+Index.registerName()+"]",
                  Source.registerName());
        }
 
       void CopyIt(Register Index, Register Source)                              // Copy instruction
-       {new Instruction()
+       {zz(); new Instruction()
          {void action()           {copyIt(   Index, Source);};
           void verilog(Verilog v) {copyIt(v, Index, Source);};
          };
@@ -1143,18 +1152,19 @@ if __name__ == "__main__":
 //D4 Integer Indexed Register to Integer Indexed Register                       // Copy an element of an integer indexed source register to an integer indexed element of an arrayed target register
 
       void copy(int TargetIndex, Register Source, int SourceIndex)              // Copy an element from an arrayed source to an element of an arrayed target register
-       {R(); registerCheckSize(Source);                                         // Make sure the target register is big enough
+       {R(); zz(); registerCheckSize(Source);                                   // Make sure the target register is big enough
         Source.registerCheckArrayed(); registerCheckArrayed();
         values      [TargetIndex] = (BitSet)Source.values[SourceIndex].clone(); // Copy the source value into the target
         registerSets[TargetIndex] =   Source.registerSets[SourceIndex];
        }
 
       void copy(Verilog v, int TargetIndex, Register Source, int SourceIndex)   // Copy an elemen of an arrayed source register into an element of an arrayed target register
-       {v.assign(registerName(TargetIndex), Source.registerName(SourceIndex));
+       {zz();
+        v.assign(registerName(TargetIndex), Source.registerName(SourceIndex));
        }
 
       void Copy(int TargetIndex, Register Source, int SourceIndex)              // Copy instruction
-       {new Instruction()
+       {zz(); new Instruction()
          {void action()           {copy(   TargetIndex, Source, SourceIndex);};
           void verilog(Verilog v) {copy(v, TargetIndex, Source, SourceIndex);};
          };
@@ -1163,7 +1173,7 @@ if __name__ == "__main__":
 //D3 Combine                                                                    // Or two registers together
 
       void combine(Register Source)                                             // Copy the source register into the target if the source is not zero
-       {R(); registerCheckSize(Source);                                         // Make sure the target register is big enough
+       {R(); zz(); registerCheckSize(Source);                                   // Make sure the target register is big enough
 
         if (registerSingle())                                                   // Single register
          {if (!Source.value.isEmpty()) value = (BitSet)Source.value.clone();    // Combine the source value into the target
@@ -1178,7 +1188,7 @@ if __name__ == "__main__":
        }
 
       void combine(Verilog v, Register Source)                                  // Combine a source register into this register
-       {if (registerSingle())                                                   // Single register
+       {zz(); if (registerSingle())                                             // Single register
          {v.new If(Source.registerName())
            {void Then()
              {v.assign(rn(), Source.rn());
@@ -1200,7 +1210,7 @@ if __name__ == "__main__":
        }
 
       void Combine(Register Source)                                             // Combine instruction
-       {new Instruction()
+       {zz(); new Instruction()
          {void action()           {combine(Source);};
           void verilog(Verilog v) {combine(v, Source);};
          };
@@ -1228,7 +1238,7 @@ if __name__ == "__main__":
        }
 
       String registerDeclareModuleParameter()                                   // Declare a register in Verilog
-       {if (input)
+       {zz(); if (input)
          {return "input wire ["+registerBits+"-1:0] "+registerBaseName;
          }
         else if (output)
@@ -1242,29 +1252,29 @@ if __name__ == "__main__":
 
 //D3 Arithmetic                                                                 // Operations on registers
 
-      void one () {R(); rs(1); registerSet = true; }                            // One a register in Java
-      void inc () {R(); if (C()) rs(rg()+1);           }                        // Increment a register in Java
-      void dec () {R(); if (C()) rs(rg()-1);           }                        // Decrement a register in Java
-      void not () {R(); if (C()) rs(rg() != 0 ? 0 : 1);}                        // Not a register in Java
-      void half() {R(); if (C()) rs(rg() >> 1);        }                        // Halve a register
-      void add (Register S) {R(); if (C(S)) rs(rg()+S.rg());  }                 // Add the source register to the current register in Java
-      void add1(Register S) {R(); if (C(S)) rs(rg()+S.rg()+1);}                 // Add the source register to the current register plus one in Java
-      void add (int      S) {R(); if (C())  rs(rg()+S);       }                 // Add the source register to the current register in Java
-      void average(Register S1, Register S2) {R(); if (C(S1)) rs((S1.rg()+S2.rg())/2);}  // Average of two registers
+      void one () {R(); zz(); rs(1); registerSet = true; }                      // One a register in Java
+      void inc () {R(); zz(); if (C()) rs(rg()+1);           }                  // Increment a register in Java
+      void dec () {R(); zz(); if (C()) rs(rg()-1);           }                  // Decrement a register in Java
+      void not () {R(); zz(); if (C()) rs(rg() != 0 ? 0 : 1);}                  // Not a register in Java
+      void half() {R(); zz(); if (C()) rs(rg() >> 1);        }                  // Halve a register
+      void add (Register S) {R(); zz(); if (C(S)) rs(rg()+S.rg());  }           // Add the source register to the current register in Java
+      void add1(Register S) {R(); zz(); if (C(S)) rs(rg()+S.rg()+1);}           // Add the source register to the current register plus one in Java
+      void add (int      S) {R(); zz(); if (C())  rs(rg()+S);       }           // Add the source register to the current register in Java
+      void average(Register S1, Register S2) {R(); zz(); if (C(S1)) rs((S1.rg()+S2.rg())/2);}  // Average of two registers
 
-      void gt (Register a, Register b) {R(); if (C(a, b)) rs(a.rg() >  b.rg() ? 1 : 0);} // Set the target register to one if the test between the 'a' and 'b' register is true else 0
-      void ge (Register a, Register b) {R(); if (C(a, b)) rs(a.rg() >= b.rg() ? 1 : 0);} // Set the target register to one if the test between the 'a' and 'b' register is true else 0
-      void eq (Register a, Register b) {R(); if (C(a, b)) rs(a.rg() == b.rg() ? 1 : 0);} // Set the target register to one if the test between the 'a' and 'b' register is true else 0
-      void ne (Register a, Register b) {R(); if (C(a, b)) rs(a.rg() != b.rg() ? 1 : 0);} // Set the target register to one if the test between the 'a' and 'b' register is true else 0
-      void le (Register a, Register b) {R(); if (C(a, b)) rs(a.rg() <= b.rg() ? 1 : 0);} // Set the target register to one if the test between the 'a' and 'b' register is true else 0
-      void lt (Register a, Register b) {R(); if (C(a, b)) rs(a.rg() <  b.rg() ? 1 : 0);} // Set the target register to one if the test between the 'a' and 'b' register is true else 0
+      void gt (Register a, Register b) {R(); zz(); if (C(a, b)) rs(a.rg() >  b.rg() ? 1 : 0);} // Set the target register to one if the test between the 'a' and 'b' register is true else 0
+      void ge (Register a, Register b) {R(); zz(); if (C(a, b)) rs(a.rg() >= b.rg() ? 1 : 0);} // Set the target register to one if the test between the 'a' and 'b' register is true else 0
+      void eq (Register a, Register b) {R(); zz(); if (C(a, b)) rs(a.rg() == b.rg() ? 1 : 0);} // Set the target register to one if the test between the 'a' and 'b' register is true else 0
+      void ne (Register a, Register b) {R(); zz(); if (C(a, b)) rs(a.rg() != b.rg() ? 1 : 0);} // Set the target register to one if the test between the 'a' and 'b' register is true else 0
+      void le (Register a, Register b) {R(); zz(); if (C(a, b)) rs(a.rg() <= b.rg() ? 1 : 0);} // Set the target register to one if the test between the 'a' and 'b' register is true else 0
+      void lt (Register a, Register b) {R(); zz(); if (C(a, b)) rs(a.rg() <  b.rg() ? 1 : 0);} // Set the target register to one if the test between the 'a' and 'b' register is true else 0
 
-      void gt (Register a, int b) {R(); if (C(a)) rs(a.rg() >  b ? 1 : 0);}     // Set the target register to one if the test between the 'a' and 'b' register is true else 0
-      void ge (Register a, int b) {R(); if (C(a)) rs(a.rg() >= b ? 1 : 0);}     // Set the target register to one if the test between the 'a' and 'b' register is true else 0
-      void eq (Register a, int b) {R(); if (C(a)) rs(a.rg() == b ? 1 : 0);}     // Set the target register to one if the test between the 'a' and 'b' register is true else 0
-      void ne (Register a, int b) {R(); if (C(a)) rs(a.rg() != b ? 1 : 0);}     // Set the target register to one if the test between the 'a' and 'b' register is true else 0
-      void le (Register a, int b) {R(); if (C(a)) rs(a.rg() <= b ? 1 : 0);}     // Set the target register to one if the test between the 'a' and 'b' register is true else 0
-      void lt (Register a, int b) {R(); if (C(a)) rs(a.rg() <  b ? 1 : 0);}     // Set the target register to one if the test between the 'a' and 'b' register is true else 0
+      void gt (Register a, int b) {R(); zz(); if (C(a)) rs(a.rg() >  b ? 1 : 0);} // Set the target register to one if the test between the 'a' and 'b' register is true else 0
+      void ge (Register a, int b) {R(); zz(); if (C(a)) rs(a.rg() >= b ? 1 : 0);} // Set the target register to one if the test between the 'a' and 'b' register is true else 0
+      void eq (Register a, int b) {R(); zz(); if (C(a)) rs(a.rg() == b ? 1 : 0);} // Set the target register to one if the test between the 'a' and 'b' register is true else 0
+      void ne (Register a, int b) {R(); zz(); if (C(a)) rs(a.rg() != b ? 1 : 0);} // Set the target register to one if the test between the 'a' and 'b' register is true else 0
+      void le (Register a, int b) {R(); zz(); if (C(a)) rs(a.rg() <= b ? 1 : 0);} // Set the target register to one if the test between the 'a' and 'b' register is true else 0
+      void lt (Register a, int b) {R(); zz(); if (C(a)) rs(a.rg() <  b ? 1 : 0);} // Set the target register to one if the test between the 'a' and 'b' register is true else 0
 
       void one (Verilog v)        {v.assign(rn(),         "1");}                // One a register in Verilog
       void inc (Verilog v)        {v.assign(rn(), rn()+" + 1");}                // Increment a register in Verilog
@@ -1297,22 +1307,22 @@ if __name__ == "__main__":
       void le(Verilog v, Register a, int b) {v.assign(rn(), a.rn() +" <= "+ b +" ? 1 : 0");} // Set the target register to one if the test between the 'a' and 'b' register is true else 0
       void lt(Verilog v, Register a, int b) {v.assign(rn(), a.rn() +" <  "+ b +" ? 1 : 0");} // Set the target register to one if the test between the 'a' and 'b' register is true else 0
 
-      void Gt(Register a, Register b) {new Instruction() {void action() {gt(a, b);} void verilog(Verilog v) {gt(v, a, b);}};} // Set the target register to one if the test between the 'a' and 'b' register is true else 0 as an instruction
-      void Ge(Register a, Register b) {new Instruction() {void action() {ge(a, b);} void verilog(Verilog v) {ge(v, a, b);}};} // Set the target register to one if the test between the 'a' and 'b' register is true else 0 as an instruction
-      void Eq(Register a, Register b) {new Instruction() {void action() {eq(a, b);} void verilog(Verilog v) {eq(v, a, b);}};} // Set the target register to one if the test between the 'a' and 'b' register is true else 0 as an instruction
-      void Ne(Register a, Register b) {new Instruction() {void action() {ne(a, b);} void verilog(Verilog v) {ne(v, a, b);}};} // Set the target register to one if the test between the 'a' and 'b' register is true else 0 as an instruction
-      void Le(Register a, Register b) {new Instruction() {void action() {le(a, b);} void verilog(Verilog v) {le(v, a, b);}};} // Set the target register to one if the test between the 'a' and 'b' register is true else 0 as an instruction
-      void Lt(Register a, Register b) {new Instruction() {void action() {lt(a, b);} void verilog(Verilog v) {lt(v, a, b);}};} // Set the target register to one if the test between the 'a' and 'b' register is true else 0 as an instruction
+      void Gt(Register a, Register b) {zz(); new Instruction() {void action() {gt(a, b);} void verilog(Verilog v) {gt(v, a, b);}};} // Set the target register to one if the test between the 'a' and 'b' register is true else 0 as an instruction
+      void Ge(Register a, Register b) {zz(); new Instruction() {void action() {ge(a, b);} void verilog(Verilog v) {ge(v, a, b);}};} // Set the target register to one if the test between the 'a' and 'b' register is true else 0 as an instruction
+      void Eq(Register a, Register b) {zz(); new Instruction() {void action() {eq(a, b);} void verilog(Verilog v) {eq(v, a, b);}};} // Set the target register to one if the test between the 'a' and 'b' register is true else 0 as an instruction
+      void Ne(Register a, Register b) {zz(); new Instruction() {void action() {ne(a, b);} void verilog(Verilog v) {ne(v, a, b);}};} // Set the target register to one if the test between the 'a' and 'b' register is true else 0 as an instruction
+      void Le(Register a, Register b) {zz(); new Instruction() {void action() {le(a, b);} void verilog(Verilog v) {le(v, a, b);}};} // Set the target register to one if the test between the 'a' and 'b' register is true else 0 as an instruction
+      void Lt(Register a, Register b) {zz(); new Instruction() {void action() {lt(a, b);} void verilog(Verilog v) {lt(v, a, b);}};} // Set the target register to one if the test between the 'a' and 'b' register is true else 0 as an instruction
 
-      void Gt(Register a, int b)      {new Instruction() {void action() {gt(a, b);} void verilog(Verilog v) {gt(v, a, b);}};} // Set the target register to one if the test between the 'a' and 'b' register is true else 0 as an instruction
-      void Ge(Register a, int b)      {new Instruction() {void action() {ge(a, b);} void verilog(Verilog v) {ge(v, a, b);}};} // Set the target register to one if the test between the 'a' and 'b' register is true else 0 as an instruction
-      void Eq(Register a, int b)      {new Instruction() {void action() {eq(a, b);} void verilog(Verilog v) {eq(v, a, b);}};} // Set the target register to one if the test between the 'a' and 'b' register is true else 0 as an instruction
-      void Ne(Register a, int b)      {new Instruction() {void action() {ne(a, b);} void verilog(Verilog v) {ne(v, a, b);}};} // Set the target register to one if the test between the 'a' and 'b' register is true else 0 as an instruction
-      void Le(Register a, int b)      {new Instruction() {void action() {le(a, b);} void verilog(Verilog v) {le(v, a, b);}};} // Set the target register to one if the test between the 'a' and 'b' register is true else 0 as an instruction
-      void Lt(Register a, int b)      {new Instruction() {void action() {lt(a, b);} void verilog(Verilog v) {lt(v, a, b);}};} // Set the target register to one if the test between the 'a' and 'b' register is true else 0 as an instruction
+      void Gt(Register a, int b)      {zz(); new Instruction() {void action() {gt(a, b);} void verilog(Verilog v) {gt(v, a, b);}};} // Set the target register to one if the test between the 'a' and 'b' register is true else 0 as an instruction
+      void Ge(Register a, int b)      {zz(); new Instruction() {void action() {ge(a, b);} void verilog(Verilog v) {ge(v, a, b);}};} // Set the target register to one if the test between the 'a' and 'b' register is true else 0 as an instruction
+      void Eq(Register a, int b)      {zz(); new Instruction() {void action() {eq(a, b);} void verilog(Verilog v) {eq(v, a, b);}};} // Set the target register to one if the test between the 'a' and 'b' register is true else 0 as an instruction
+      void Ne(Register a, int b)      {zz(); new Instruction() {void action() {ne(a, b);} void verilog(Verilog v) {ne(v, a, b);}};} // Set the target register to one if the test between the 'a' and 'b' register is true else 0 as an instruction
+      void Le(Register a, int b)      {zz(); new Instruction() {void action() {le(a, b);} void verilog(Verilog v) {le(v, a, b);}};} // Set the target register to one if the test between the 'a' and 'b' register is true else 0 as an instruction
+      void Lt(Register a, int b)      {zz(); new Instruction() {void action() {lt(a, b);} void verilog(Verilog v) {lt(v, a, b);}};} // Set the target register to one if the test between the 'a' and 'b' register is true else 0 as an instruction
 
       void zero()                                                               // Zero a register in Java
-       {R();
+       {R(); zz();
         if (registerSingle())
          {rs(0);
          }
@@ -1324,7 +1334,7 @@ if __name__ == "__main__":
        }
 
       void zero(Verilog v)                                                      // Zero a register in Verilog
-       {if (registerSingle()) v.assign(rn(),  "0");
+       {zz(); if (registerSingle()) v.assign(rn(),  "0");
         else
          {final String i = processMemoryIndexName();
           v.new For(i, ""+registerSize)
@@ -1336,17 +1346,17 @@ if __name__ == "__main__":
        }
 
       void Zero()                                                               // Zero a register instruction
-       {new Instruction()
+       {zz(); new Instruction()
          {void action()           {zero();};
           void verilog(Verilog v) {zero(v);};
          };
        }
 
-      void zero(           int i) {R(); registerCheckArrayed(); rs(0, i);}      // Zero an element of a register array in Java
-      void zero(Verilog v, int i) {v.assign(rn(i), "0");}                       // Zero an element of a register array in Verilog
+      void zero(           int i) {R(); zz(); registerCheckArrayed(); rs(0, i);}// Zero an element of a register array in Java
+      void zero(Verilog v, int i) {zz(); v.assign(rn(i), "0");}                 // Zero an element of a register array in Verilog
 
       void Zero(int Index)                                                      // Zero a register instruction
-       {registerCheckArrayed();
+       {zz(); registerCheckArrayed();
         new Instruction()
          {void action()           {zero(   Index);};
           void verilog(Verilog v) {zero(v, Index);};
@@ -1354,66 +1364,66 @@ if __name__ == "__main__":
        }
 
       void One()                                                                // One a register instruction
-       {new Instruction()
+       {zz(); new Instruction()
          {void action()           {one();};
           void verilog(Verilog v) {one(v);};
          };
        }
 
-      void one(           int i) {R(); registerCheckArrayed(); rs(1, i);}       // One an element of a register array in Java
-      void one(Verilog v, int i) {v.assign(rn(i), "1");}                        // One an element of a register array in Verilog
+      void one(           int i) {R(); zz(); registerCheckArrayed(); rs(1, i);} // One an element of a register array in Java
+      void one(Verilog v, int i) {zz(); v.assign(rn(i), "1");}                  // One an element of a register array in Verilog
 
       void One(int Index)                                                       // One as an instruction
-       {new Instruction()
+       {zz(); new Instruction()
          {void action()           {one(   Index);};
           void verilog(Verilog v) {one(v, Index);};
          };
        }
 
       void Inc()                                                                // Increment a register instruction
-       {new Instruction()
+       {zz(); new Instruction()
          {void action()           {inc();};
           void verilog(Verilog v) {inc(v);};
          };
        }
 
       void Dec()                                                                // Decrement a register instruction
-       {new Instruction()
+       {zz(); new Instruction()
          {void action()           {dec();};
           void verilog(Verilog v) {dec(v);};
          };
        }
 
       void Add(Register Source)                                                 // Add the value of a register to the specified register as an instruction
-       {new Instruction()
+       {zz(); new Instruction()
          {void action()           {add(   Source);};
           void verilog(Verilog v) {add(v, Source);};
          };
        }
 
       void Add1(Register Source)                                                // Add the value of a register plus one to the specified register as an instruction
-       {new Instruction()
+       {zz(); new Instruction()
          {void action()           {add1(   Source);};
           void verilog(Verilog v) {add1(v, Source);};
          };
        }
 
       void Average(Register Source1, Register Source2)                          // Average of two registers as an instruction
-       {new Instruction()
+       {zz(); new Instruction()
          {void action()           {average(   Source1, Source2);};
           void verilog(Verilog v) {average(v, Source1, Source2);};
          };
        }
 
       void sum(Process.Register...Source)                                       // Sum the source registers in Java
-       {R();
+       {R(); zz();
         int sum = 0;
         for (int i = 0; i < Source.length; i++) sum += Source[i].registerGet();
         registerSet(sum);
        }
 
       void sum(Verilog v, Process.Register...Source)                            // Sum the source registers in Verilog
-       {if (Source.length == 0)  return;
+       {zz(); if (Source.length == 0)  return;
         final StringBuilder s = new StringBuilder();
         s.append(Source[0].registerName());
         for (int i = 1; i < Source.length; i++)
@@ -1423,7 +1433,7 @@ if __name__ == "__main__":
        }
 
       void Sum(Register...Source)                                               // Sum the source registers as an instruction
-       {new Instruction()
+       {zz(); new Instruction()
          {void action()           {sum(   Source);};
           void verilog(Verilog v) {sum(v, Source);};
          };
@@ -1431,19 +1441,19 @@ if __name__ == "__main__":
      } // Register
 
     Register register(String RegisterName, int RegisterBits)                    // Create the register
-     {N(); return new Register(RegisterName, RegisterBits, true, 0);
+     {N(); zz(); return new Register(RegisterName, RegisterBits, true, 0);
      }
 
     Register register(String RegisterName, int RegisterBits, int RegisterSize)  // Create the register
-     {N(); return new Register(RegisterName, RegisterBits, RegisterSize);
+     {N(); zz(); return new Register(RegisterName, RegisterBits, RegisterSize);
      }
 
 //D2 Process                                                                    // Start, step and stop a process while modifying its memory
 
-    Process(String ProcessName) {this(ProcessName, 0, 0, 1);}                   // Create a process without any memory attached to it
+    Process(String ProcessName) {this(ProcessName, 0, 0, 1); zz();}             // Create a process without any memory attached to it
 
     Process(String ProcessName, int MemorySize, int MemoryWidth, int BlockSize) // Create a process with the specified memory attached to it
-     {N();
+     {N(); zz();
       processName     = ProcessName;
       processNumber   = processes.size();
       processes.put(processName, this);
@@ -1467,7 +1477,7 @@ if __name__ == "__main__":
     int processMemorySize() {return memorySize * memoryBlockSize;}              // Number of memory elements associated with this process
 
     void processInit()                                                          // Get ready to execute the program
-     {N(); processPc = 0;                                                       // Program always starts at the first instruction
+     {N(); zz(); processPc = 0;                                                 // Program always starts at the first instruction
       memoryBackUp();                                                           // Back up memory for each process as set in java before the run Java runs starts so we can start in the same state in Verilog
       for (Register r: registers) r.registerSet(0);                             // Clear all registers so we start in a known state
       for (Transaction t: transactions)                                         // Initialize transactions
@@ -1478,7 +1488,7 @@ if __name__ == "__main__":
      }
 
     void processStep()                                                          // Execute one step in the program
-     {if (code.size() == 0) return;                                             // No code to run
+     {zz(); if (code.size() == 0) return;                                       // No code to run
       if (processPc >= code.size())                                             // Stop the run if we go off the end of the code
        {//err("Stopped by process", processName);
         processStop = chipStop = true;
@@ -1492,20 +1502,20 @@ if __name__ == "__main__":
        }
      }
 
-    void processClear() {code.clear();}                                         // Clear current process code. This facilitates testing by allowing a program to be written and executed incrementally.
+    void processClear() {zz(); code.clear();}                                   // Clear current process code. This facilitates testing by allowing a program to be written and executed incrementally.
 
     void processStop(int ReturnCode)                                            // Stop the chip
-     {processRC = ReturnCode;
+     {zz(); processRC = ReturnCode;
       processStop = chipStop = true;
      }
 
     void processStop(Verilog v, int ReturnCode)                                 // Stop the chip in Verilog
-     {v.assign(processRCName(), ReturnCode);
+     {v.assign(processRCName(), ReturnCode); zz();
       v.assign(processStopName(),       1);
      }
 
     void ProcessStop(int ReturnCode)                                            // Process stop instruction
-       {new Instruction()
+       {zz(); new Instruction()
          {void action()           {processStop(ReturnCode);};
           void verilog(Verilog v) {processStop(v, ReturnCode);};
          };
@@ -1514,12 +1524,12 @@ if __name__ == "__main__":
 //D3 Verilog                                                                    // Generate a Verilog always block to implement this process
 
     String processVerilog(Verilog v)                                            // Generate Verilog code for this process
-     {N();
+     {N(); zz();
       v.comment("Process: "+processName+"  "+processNameAndNumber());
       if (hasMemory())                                                          // Not all processes have memory attached to them: declare memory for those that do.
        {v.A("(* ram_style = \"block\" *)");
-        v.A("reg ["+memoryWidth+"-1:0] "+processMemoryName()+"["+memorySize+"*"+memoryBlockSize+"];");
-//M     v.A("reg ["+memoryWidth+"*"+memoryBlockSize+"-1:0] "+processMemoryName()+"["+memorySize+"];");
+//M     v.A("reg ["+memoryWidth+"-1:0] "+processMemoryName()+"["+memorySize+"*"+memoryBlockSize+"];");
+        v.A("reg ["+memoryWidth+"*"+memoryBlockSize+"-1:0] "+processMemoryName()+"["+memorySize+"];");
        }
 
       for (Register r: registers)                                               // Registers associated with this process
@@ -1580,22 +1590,13 @@ if __name__ == "__main__":
                    }
                  }
                }
+              if (!v.synthesis) processLoadMemoryTestBench(v);                  // Load memory for test bench
              }
 
             void Else()                                                         // We are no longer in reset
-             {v.comment("Set memory");
-              v.A("if (step < 0) begin");                                       // Load memory
-              v.indent();
-              if (hasMemory())                                                  // Load memory to match the state at the start of the Java run
-               {if (v.synthesis) processLoadMemorySynthesis(v);                 // Load memory for synthesis
-                else             processLoadMemoryTestBench(v);                 // Load memory for test bench
-                //processLoadMemorySynthesis(v);
-               }
-              v.end();
-
-              if (v.synthesis) v.A("else begin");
+             {if (v.synthesis) v.A("begin");                                    // Run all processes in parallel
               else v.A(String.format                                            // Run each process to match Java execution
-               ("else if (processCurrent == %s) begin", processNumber));
+               ("if (processCurrent == %s) begin", processNumber));
 
               v.indent();
               v.A(String.format("case(%s)", processPcName()));                  // Execute instructions in process
@@ -1662,89 +1663,20 @@ if __name__ == "__main__":
       return ""+v;
      }
 
-    void processLoadMemorySynthesis(Verilog v)                                  // Load memory in verilog being synthesized in a form that yosys will interpret as a memory load not a register load
-     {int s = 0; for (int i = 0; i < memory.length; i++)                        // Count the number of set elements
-       {if (memoryBackUpSet[i]) ++s;
-       }
-
-      if (s > 0)                                                                // Only load memory if some fields were set
-       {v.new Case(memory.length, "-(step+"+memoryInitDelay+")")
-         {void Choice(int i)
-           {v.assign(processMemoryIndexName(), ""+i);                           // Memory index to be loaded
-            v.assign(processMemoryValueName(), memoryGetBackUp(i));             // Value to be loaded into memory
-           }
-          boolean allowChoice(int i) {return memorySet[i];}                     // Only set if the memory element was set
-          boolean allowDefault()     {return false;}
-         };
-        v.A(processMemoryName()+"["+processMemoryIndexName()+"] <= "+processMemoryValueName()+";"); // Load memory in a format that yosys will interpret as memory not registers
-       }
-     }
-
     void processLoadMemoryTestBench(Verilog v)                                  // Load memory in verilog being executed under the test bench to match the state at the start of the Java run
-     {class Run                                                                 // Collect identical memory initial values in consecutive elements
-       {int start, finish, value;
-        Run(int Start, int Finish, int Value)
-         {start = Start; finish = Finish; value = Value;
-         }
-       }
-      class Seq                                                                 // Collect increasing memory initial values in consecutive elements
-       {int start, finish, value;
-        Seq(int Start, int Finish, int Value)
-         {start = Start; finish = Finish; value = Value;
-         }
-       }
-
-      final Stack<Run>runs = new Stack<>();                                     // Runs
-      final Stack<Seq>seqs = new Stack<>();                                     // Sequences
-      for(int i = 0; i < memory.length; i++)                                    // Scan memory
-       {final boolean S = memoryBackUpSet[i];                                   // Whether this element has been set for back up
-        if (!S) continue;                                                       // No value set for this element
-        final int     V = memoryGetBackUp(i);                                   // Memory value at each index
-
-        if (runs.size() == 0)                                                   // First run and seq
-         {runs.push(new Run(i, i+1, V));
-          seqs.push(new Seq(i, i+1, V));
-         }
-        else                                                                    // Subsequent run and sequence
-         {final Run r = runs.lastElement();                                     // Run of same element
-          if (r.value == V && r.finish == i) r.finish = i+1;                    // Run continued
-          else runs.push(new Run(i, i+1, V));
-
-          final Seq s = seqs.lastElement();                                     // Sequence of increasing elements
-          if (s.value == V-1 && s.finish == i)
-           {s.finish = i+1; s.value = V;
+     {final int s = memorySize, b = memoryBlockSize, w = memoryWidth;
+      for  (int i = 0; i < s;      i++)                                         // Scan memory
+       {final StringJoiner a = new StringJoiner(", ", "{", "}");                // Values in each block
+        for(int j = b-1; j >= 0; j--)                                           // Load block high bits first
+         {final int n = i * b + j;                                              // Index in Java
+          if (memoryBackUpSet[n])                                               // A value was set for this element
+           {a.add(String.format("%d'd%d", w, memoryGetBackUp(n)));              // Memory value at each index
            }
-          else seqs.push(new Seq(i, i+1, V));
-         }
-       }
-
-      if (runs.size() > 0 && runs.size() < seqs.size())                         // Use the shortest methodology
-       {for(Run r: runs)                                                        // Write out the runs
-         {if (r.start + 3 > r.finish)                                           // Write out the runs as individual assign statements because there are only a few
-           {for(int i = r.start; i < r.finish; ++i)
-             {v.A(processMemoryName()+"["+i+"] <= "+r.value+";");
-             }
-           }
-          else                                                                  // Write out a run as a for loop as there are quite a few
-           {final String j = processMemoryIndexName();
-            v.new For(j, ""+r.start, ""+r.finish)
-             {void body()
-               {v.A(processMemoryName()+"["+j+"] <= "+r.value+";");
-               }
-             };
+          else                                                                  // A value was not set for this element
+           {a.add(String.format("%d'bx",  w));                                  // Memory value at each index
            }
          }
-       }
-      else if (seqs.size() > 0)
-       {for(Seq s: seqs)                                                        // Write out the sequence
-         {final String j = processMemoryIndexName();
-          final int start = s.value - s.finish + 1;
-          v.new For(j, ""+s.start, ""+s.finish)
-           {void body()
-             {v.A(processMemoryName()+"["+j+"] <= "+start+"+"+j+";");
-             }
-           };
-         }
+        v.assign(processMemoryName()+"["+i+"]", ""+a);                          // First run and seq
        }
      }
 
@@ -1780,7 +1712,7 @@ if __name__ == "__main__":
      }
 
     protected int memoryGet(int Index)                                          // Get a memory element as an integer.
-     {memoryCheckHasBeenSet(Index);                                             // Check memory element has been set
+     {zz(); memoryCheckHasBeenSet(Index);                                       // Check memory element has been set
       final BitSet b = memory[Index];                                           // Read memory as bit set
       final long[]V = b.toLongArray();                                          // Convert bitset to long
       return V.length > 0 ? (int)V[0] : 0;                                      // Take the first element if it exists relying on the fact that in the Java code we test with just sufficiently large numbers to test the Verilog in principle
@@ -1788,15 +1720,15 @@ if __name__ == "__main__":
 
     protected int memoryGet(int Index, int Offset)                              // Get a memory element as an integer
      {final int i = Index*memoryBlockSize + Offset;                             // Index of memory to be read
-      memoryCheckHasBeenSet(i);                                                 // Check memory element has been set
+      zz(); memoryCheckHasBeenSet(i);                                           // Check memory element has been set
       final BitSet b = memory[i];                                               // Read memory as bit set
       final long[] V = b.toLongArray();                                         // Convert bitset to long
       return V.length > 0 ? (int)V[0] : 0;                                      // Take the first element if it exists relying on the fact that in the Java code we test with just sufficiently large numbers to test the Verilog in principle
      }
 
     void memoryGet(Register Value, Register Index)                              // Get a memory element indexed by a register as an integer setting the memory cache register to the value of the element retrieved
-     {if (Value.registerSingle())                                               // Single register from memory
-       {stop("Not in use");
+     {zz(); if (Value.registerSingle())                                         // Single register from memory
+       {stop("Arrayed register required");
        }
       else if (Value.registerSize == memoryBlockSize)                           // Arrayed register from memory
        {final int I = Index.registerGet() * memoryBlockSize;                    // Offset into memory
@@ -1815,48 +1747,21 @@ if __name__ == "__main__":
      }
 
     void memoryGet(Verilog v, Register Value, Register Index)                   // Get a memory element indexed by a register as an integer setting the memory cache register to the value of the element retrieved
-     {if (Value.registerSingle())                                               // Single register into memory
-       {stop("Not in use");
-       }
-      else                                                                      // Arrayed register into memory
-       {int I = Index.registerGet() * memoryBlockSize;
-        final String i = processMemoryIndexName();
-        v.new For(i, ""+memoryBlockSize)
-         {void body()
-           {v.assign(Value.registerName()+"["+i+"]",                            // Read memory into register
-               processMemoryName()+
-                "[$unsigned("+Index.registerName()+")*"+
-                 "$unsigned("+memoryBlockSize     +")+"+
-                 "$unsigned("+i                   +")]");
-           }
-         };
-       }
+     {final String n = processMemoryIndexName();                                // Memory index name
+      final String i = Index.registerName();                                    // Index register
+      final int    w = memoryWidth;                                             // Width of each memory element
+      zz();
+      v.new For(n, ""+memoryBlockSize)
+       {void body()
+         {v.assign
+           (Value.registerName()+"["+n+"]",                                     // Read memory into register
+             processMemoryName()+"["+i+"]["+n+"*"+w+"+:"+w+"]");                // Get indexed element
+         }
+       };
      }
 
-//M    void memoryGet(Verilog v, Register Value, Register Index)                   // Get a memory element indexed by a register as an integer setting the memory cache register to the value of the element retrieved
-//M     {final String m = processMemoryName();                                     // Memory name
-//M      final String n = Index.registerName();                                    // Index register
-//M      final int    b = memoryBlockSize;                                         // Number of elements per memory block
-//M      final int    w = memoryWidth;                                             // Width of each memory element
-//M      if (Value.registerSingle())                                               // Read single register from memory
-//M       {final String i = n+"/"+b;                                               // Block to read
-//M        final String s = "(("+n+"%"+b+")*"+w+")";                               // Offset within block
-//M        v.assign(Value.registerName(),                                          // Read memory into register
-//M          "("+m+"["+i+"] >> "+s+"){"+w+"-1:0};");                               // Select lowest bits
-//M       }
-//M      else                                                                      // Read arrayed register from memory
-//M       {final String i = processMemoryIndexName();
-//M        v.new For(i, ""+memoryBlockSize)
-//M         {void body()
-//M           {v.assign(Value.registerName()+"["+i+"]",                            // Read memory into register
-//M               "("+m+"["+n+"] >> ("+i+"*"+w+")){"+w+"-1:0};");
-//M           }
-//M         };
-//M       }
-//M     }
-
     void memorySet(Register Value, Register Index)                              // Set a memory element indexed by a register
-     {if (Value.registerSingle())                                               // Single register into memory
+     {zz(); if (Value.registerSingle())                                         // Single register into memory
        {stop("Not used");
        }
       else if (Value.registerSize == memoryBlockSize)                           // Arrayed register into memory
@@ -1869,72 +1774,42 @@ if __name__ == "__main__":
       else stop("Wrong register size");
      }
 
-    void memorySet(Register Value, Register Index, int OffSet)                  // Set a memory element indexed by a register plus an offset to the value of the specified register
-     {final int i = Index.registerGet()*memoryBlockSize+OffSet;
-      memorySet[i] = Value.registerSet;
-      memory   [i] = (BitSet)Value.value.clone();
-      stop("Not used");
-     }
-
     void memorySet(Verilog v, Register Value, Register Index)                   // Set a memory element indexed by a register
-     {if (Value.registerSingle())                                               // Single register into memory
-       {v.assign(processMemoryName()+"["+Index.registerName()+"]",
-          Value.registerName());
+     {zz(); if (Value.registerSingle())                                         // Single register into memory
+       {stop("Arrayed register required");
        }
       else if (Value.registerSize == memoryBlockSize)                           // Arrayed register into memory
-       {final String i = processMemoryIndexName();
-        v.new For(i, ""+memoryBlockSize)
-         {void body()
-           {v.assign
-             (processMemoryName()+
-             "[$unsigned("+Index.registerName()+")*"+
-              "$unsigned("+memoryBlockSize     +")+"+
-              "$unsigned("+i                   +")]",
-              Value.registerName()+"["+i+"]");
-            }
-         };
+       {final StringJoiner s = new StringJoiner(", ", "{", "}");                // Concatenate the register elements
+
+        for (int i = Value.registerSize-1; i >= 0;  i--)                        // Concatenate the elements of the register
+         {s.add(Value.registerName()+"["+i+"]");
+         }
+
+        v.assign(processMemoryName()+"["+Index.registerName()+"]", ""+s);       // Single assign into memory
        }
       else stop("Wrong register size");
      }
 
-    void memorySet(Verilog v, Register Value, Register Index, int OffSet)       // Set a memory element indexed by a register from the associated cache memory register in Verilog
-     {v.assign(processMemoryName()+
-       "[$unsigned("+Index.registerName()+")*"+
-        "$unsigned("+memoryBlockSize+")+"+
-        "$unsigned("+OffSet+")]",
-      Value.registerName());
-     }
-
-    void memorySet(int Value, int Index)                                        // Set a memory element
+    void memorySetValue(int Value, int Index)                                   // Set a memory element
      {final int l = min(memoryWidth, Integer.SIZE-1);                           // The most bits we can hope to represent
       final BitSet v = memory   [Index];                                        // Memory element
                        memorySet[Index] = true;                                 // This memory element has been set
-      v.clear();                                                                // Zero the memory
+      zz(); v.clear();                                                          // Zero the memory
       for (int i = 0; i < l; i++) if (((Value >> i) & 1) != 0) v.set(i);        // Set each bit in the bitset if the corresponding bit in the value is set
      }
 
-    void memorySet(Verilog v, int Value, int Index)                             // Set a memory element in Verilog
-     {v.assign(processMemoryName()+"["+Index+"]", Value);
-     }
-
-    void memorySet(int Value, int Index, int OffSet)                            // Set a memory element
-     {final int l = min(memoryWidth, Integer.SIZE-1);                           // The most bits we can hope to represent
-      final int j = Index*memoryBlockSize+OffSet;
-      final BitSet v = memory   [j];                                            // Memory element
-                       memorySet[j] = true;                                     // This memory element has been set
-      v.clear();                                                                // Zero the memory
-      for (int i = 0; i < l; i++) if (((Value >> i) & 1) != 0) v.set(i);        // Set each bit in the bitset if the corresponding bit in the value is set
-     }
-
-    void memorySet(Verilog v, int Value, int Index, int OffSet)                 // Set a memory element in Verilog
-     {v.assign(processMemoryName()+
-       "[$unsigned("+Index+")*"+
-        "$unsigned("+memoryBlockSize+")+"+
-        "$unsigned("+OffSet+")]", Value);
+    void memorySet(int Index, int...Values)                                     // Set a memory block to the specified values
+     {zz(); if (Values.length != memoryBlockSize)
+       {stop("Wrong number of values supplied:", memoryBlockSize,
+             "expected", Values.length, "supplied");
+       }
+      for (int i = 0; i < Values.length; i++)                                   // Load each element of the block
+       {memorySetValue(Values[i], Index*memoryBlockSize + i);
+       }
      }
 
     void memoryBackUp()                                                         // Back up memory
-     {for (int i = 0; i < memory.length; i++)
+     {zz(); for (int i = 0; i < memory.length; i++)
        {if (memorySet[i])
          {memoryBackUp   [i] = (BitSet)memory[i].clone();
           memoryBackUpSet[i] = true;
@@ -1955,7 +1830,7 @@ if __name__ == "__main__":
       final String  transactionOpCode;                                          // The service requested by the caller
 
       Transaction(String Name, Process CallingProcess, String OpCode)           // Transactions allow one process to request services from another process
-       {N();
+       {N(); zz();
         transactionName = Name;
         transactionCallingProcess = CallingProcess;
         transactionOpCode = OpCode;
@@ -1963,14 +1838,14 @@ if __name__ == "__main__":
        }
 
       void transactionInputRegisters(Process.Register...InputRegisters)         // The registers used to provide inputs to this transaction. As they are only going to be read during the transaction they can be owned by any process
-       {N();
+       {N(); zz();
         for(Process.Register r : InputRegisters)                                // Save input registers
          {transactionInputRegisters.put(r.registerName(), r);
          }
        }
 
       void transactionOutputRegisters(Process.Register...OutputRegisters)       // The registers used as outputs by this transaction. As they are going to be written into by the transaction they have to be owned by the process executing the transaction
-       {N();
+       {N(); zz();
         for(Process.Register r : OutputRegisters)                               // Save output registers
          {if (r.registerProcess() != transactionProcess())                      // Check that the output registers are owned by the target process of the transaction as that process is the only process that can write into them
            {stop("Output transaction register:",
@@ -1993,26 +1868,26 @@ if __name__ == "__main__":
         return r < f;                                                           // The transaction has finished and is not currently executing
        }
 
-      int transactionExecutableAsInt() {return transactionExecutable() ? 1 : 0;}// Whether the transaction is executable or not as an integer
-      int transactionFinishedAsInt  () {return transactionFinished  () ? 1 : 0;}// Whether the transaction has finished or not as an integer
+      int transactionExecutableAsInt() {zz(); return transactionExecutable() ? 1 : 0;}// Whether the transaction is executable or not as an integer
+      int transactionFinishedAsInt  () {zz(); return transactionFinished  () ? 1 : 0;}// Whether the transaction has finished or not as an integer
 
-      String transactionRequestedAt() {N(); return transactionName+"_requestedAt";} // Name of the requested at field for a transaction
-      String transactionFinishedAt()  {N(); return transactionName+"_finishedAt";}  // Name of the finished at field for a transaction
+      String transactionRequestedAt() {N(); zz(); return transactionName+"_requestedAt";} // Name of the requested at field for a transaction
+      String transactionFinishedAt()  {N(); zz(); return transactionName+"_finishedAt";}  // Name of the finished at field for a transaction
 
       String transactionExecutableV()                                           // Whether the transaction is executable or not in verilog
        {final String r = transactionRequestedAt();
         final String f = transactionFinishedAt();
-        N(); return "("+r+" > "+f + " && "+r + " != step)";
+        N(); zz(); return "("+r+" > "+f + " && "+r + " != step)";
        }
 
       String transactionFinishedV()                                             // Whether the transaction has finished or not in verilog
        {final String r = transactionRequestedAt();
         final String f = transactionFinishedAt();
-        N(); return "("+r+" < "+f+")";
+        N(); zz(); return "("+r+" < "+f+")";
        }
 
       void transactionSetExecutable()                                           // Mark a transaction as executable
-       {R();
+       {R(); zz();
         if (transactionRequestedAt > transactionFinishedAt)
          {stop("Transaction already running");
          }
@@ -2034,11 +1909,11 @@ if __name__ == "__main__":
          transactionName+"_returnCode";
        }
 
-      Process transactionProcess() {return Process.this;}                       // Process associated with this transaction
+      Process transactionProcess() {zz(); return Process.this;}                 // Process associated with this transaction
      } // Transaction
 
     Transaction transaction(String Name, Process CallingProcess, String OpCode) // Transactions allow one process to request services from another process by supplying the service name and the input and output registers
-     {return new Transaction(Name, CallingProcess, OpCode);
+     {zz(); return new Transaction(Name, CallingProcess, OpCode);
      }
 
 //D3 Store and Retrieve                                                         // Save memory to a string or reload memory from a string
@@ -2062,7 +1937,7 @@ if __name__ == "__main__":
       if (memoryWidth     != n[0]) stop("Wrong width:",     memoryWidth,     n[0]);
       if (memorySize      != n[1]) stop("Wrong size",       memorySize,      n[1]);
       if (memoryBlockSize != n[2]) stop("Wrong block size", memoryBlockSize, n[2]);
-      for (int i = 0; i < memory.length; i++) memorySet(n[i+3], i);
+      for (int i = 0; i < memory.length; i++) memorySetValue(n[i+3], i);
      }
    } // Process
 
@@ -2105,24 +1980,24 @@ if __name__ == "__main__":
        }
 
       void executeTransaction(Register Index)                                   // Execute the request in Java
-       {R(); index.copy(Index);
+       {R(); zz(); index.copy(Index);
         transactionSetExecutable();
        }
 
       void executeTransaction(Verilog v, Register Index)                        // Execute the request in verilog
-       {index.copy(v, Index);
+       {zz(); index.copy(v, Index);
         transactionSetExecutable(v);
        }
 
       void ExecuteTransaction(Register Index)                                   // Execute the requested memory read instruction
-       {process.new Instruction()
+       {zz(); process.new Instruction()
          {void action ()          {executeTransaction(   Index);}
           void verilog(Verilog v) {executeTransaction(v, Index);}
          };
        }
 
       void waitResultOfTransaction()                                            // Wait for the request to finish
-       {process.new Instruction(true)
+       {zz(); process.new Instruction(true)
          {void action()
            {if (transactionFinished()) process.Continue();
            }
@@ -2136,7 +2011,7 @@ if __name__ == "__main__":
      } // Get
 
     Memory.Get memoryGetFromProcess(Process Caller)                             // Reuse the existing transaction if it exists else create a new one
-     {if (memoryGetFromProcess.containsKey(Caller.processName))
+     {zz(); if (memoryGetFromProcess.containsKey(Caller.processName))
        {return memoryGetFromProcess.get(Caller.processName);                    // Return existing transaction
        }
       return new Get(Caller);                                                   // Create a transaction to allow the caller to get items from this memory process
@@ -2161,7 +2036,7 @@ if __name__ == "__main__":
        }
 
       void executeTransaction(Register Index, Register...Value)                 // Execute the requested memory update request
-       {R(); index.copy(Index);
+       {R(); zz(); index.copy(Index);
         if      (Value.length == memoryBlockSize)                               // Values to be loaded into memory are being supplied as an array of unarrayed registers
          {for (int i = 0; i < memoryBlockSize; i++) value.copy(i, Value[i]);
          }
@@ -2173,7 +2048,7 @@ if __name__ == "__main__":
        }
 
       void executeTransaction(Verilog v, Register Index, Register...Value)      // Execute the requested memory update in Verilog
-       {index.copy(v, Index);
+       {zz(); index.copy(v, Index);
         if      (Value.length == memoryBlockSize)                               // Values to be loaded into memory are being supplied as an array of unarrayed registers
          {for (int i = 0; i < memoryBlockSize; i++) value.copy(v, i, Value[i]);
          }
@@ -2185,14 +2060,14 @@ if __name__ == "__main__":
        }
 
       void ExecuteTransaction(Register Index, Register...Value)                 // Execute the requested memory update instruction
-       {process.new Instruction()
+       {zz(); process.new Instruction()
          {void action ()          {executeTransaction(   Index, Value);}
           void verilog(Verilog v) {executeTransaction(v, Index, Value);}
          };
        }
 
       void waitResultOfTransaction()                                            // Wait for the update request to finish
-       {process.new Instruction(true)
+       {zz(); process.new Instruction(true)
          {void action()
            {if (transactionFinished()) process.Continue();
            }
@@ -2206,14 +2081,15 @@ if __name__ == "__main__":
      } // Set
 
     Memory.Set memorySetIntoProcess(Process Caller)                             // Reuse the existing transaction if it exists else create a new one
-     {if (memorySetIntoProcess.containsKey(Caller.processName))
+     {zz();
+      if (memorySetIntoProcess.containsKey(Caller.processName))
        {return memorySetIntoProcess.get(Caller.processName);                    // Return existing transaction
        }
       return new Set(Caller);                                                   // Create a transaction to allow the caller to set items into this memory process
      }
 
     void memoryProcessGenerate()                                                // Generate the code needed to support the transactions against this memory process
-     {new Instruction(true)                                                     // Loop on this single instruction processing memory requests
+     {zz(); new Instruction(true)                                               // Loop on this single instruction processing memory requests
        {void action()                                                           // Process memory requests in Java
          {for (var t : transactions)                                            // All transactions
            {if (t.transactionExecutable())                                      // Executable transactions
@@ -2284,23 +2160,11 @@ if __name__ == "__main__":
     var ri = r.register("index",  B);
     var rt = m.new Get(r);
 
-    r.new Instruction()                                                         // Preload memory
-     {void action()
-       {for   (int i = 0; i < N; i++)
-         {for (int j = 0; j < S; j++)
-           {m.memorySet(S*i+j+1, i, j);
-           }
-         }
-       }
-
-      void verilog(Verilog v)
-       {for   (int i = 0; i < N; i++)
-         {for (int j = 0; j < S; j++)
-           {m.memorySet(v, S*i+j+1, i, j);
-           }
-         }
-       }
-     };
+    for   (int i = 0; i < N; i++)                                               // Preload memory
+     {final int[]I = new int[S];
+      for (int j = 0; j < S; j++) I[j] = S*i+j+1;
+      m.memorySet(i, I);
+     }
 
     ri.RegisterSet(1);                                                          // Request the value of an indexed element of memory
 
@@ -2314,7 +2178,7 @@ if __name__ == "__main__":
     ok(rt.transactionOutputRegisters.firstElement().registerGet(1), 4);
     //stop(c);
     ok(""+c, """
-Chip: Test             step: 5, maxSteps: 10, running: 0
+Chip: Test             step: 4, maxSteps: 10, running: 0
   Processes:
     Process: 0 - Memory                instructions: 1, pc: 0, rc: 0
       Memory: size: 8, width: 8, block: 2
@@ -2323,13 +2187,13 @@ Chip: Test             step: 5, maxSteps: 10, running: 0
         Memory_Memory_1_result_0                    [   0] = 3
         Memory_Memory_1_result_0                    [   1] = 4
       Transactions:
-        Transaction   : get      - Memory_1          requested at: 2, finished at: 3, returnCode: 0, executable: 0, finished: 1
+        Transaction   : get      - Memory_1          requested at: 1, finished at: 2, returnCode: 0, executable: 0, finished: 1
           Inputs      :
             Requests_Memory_1_index_1                      = 1
           Outputs     :
             Memory_Memory_1_result_0                [   0] = 3
             Memory_Memory_1_result_0                [   1] = 4
-    Process: 1 - Requests              instructions: 4, pc: 4, rc: 0
+    Process: 1 - Requests              instructions: 3, pc: 3, rc: 0
       Registers :
         Requests_index_0                                   = 1
         Requests_Memory_1_index_1                          = 1
@@ -2353,23 +2217,11 @@ Chip: Test             step: 5, maxSteps: 10, running: 0
     var t2 = r.register("value",  B);
     var tt = m.new Set(r);
 
-    r.new Instruction()                                                         // Preload memory
-     {void action()
-       {for   (int i = 0; i < N; i++)
-         {for (int j = 0; j < S; j++)
-           {m.memorySet(S*i+j+1, i, j);
-           }
-         }
-       }
-
-      void verilog(Verilog v)
-       {for   (int i = 0; i < N; i++)
-         {for (int j = 0; j < S; j++)
-           {m.memorySet(v, S*i+j+1, i, j);
-           }
-         }
-       }
-     };
+    for(int i = 0; i < N; i++)
+     {final int[]I = new int[S];
+      for (int j = 0; j < S; j++) I[j] = S*i+j+1;
+      m.memorySet(i, I);
+     }
 
     ri.RegisterSet(1);                                                          // Index of memory requested
 
@@ -2397,7 +2249,7 @@ Chip: Test             step: 5, maxSteps: 10, running: 0
     ok(st.transactionOutputRegisters.firstElement().registerGet(0), 5);
     //stop(c);
     ok(""+c, """
-Chip: Test             step: 12, maxSteps: 100, running: 0
+Chip: Test             step: 11, maxSteps: 100, running: 0
   Processes:
     Process: 0 - Memory                instructions: 1, pc: 0, rc: 0
       Memory: size: 8, width: 8, block: 2
@@ -2408,24 +2260,24 @@ Chip: Test             step: 12, maxSteps: 100, running: 0
         Memory_Memory_2_result_1                    [   0] = 5
         Memory_Memory_2_result_1                    [   1] = 6
       Transactions:
-        Transaction   : get      - Memory_1          requested at: 2, finished at: 3, returnCode: 0, executable: 0, finished: 1
+        Transaction   : get      - Memory_1          requested at: 1, finished at: 2, returnCode: 0, executable: 0, finished: 1
           Inputs      :
             Requests_Memory_1_index_1                      = 1
           Outputs     :
             Memory_Memory_1_result_0                [   0] = 3
             Memory_Memory_1_result_0                [   1] = 4
-        Transaction   : get      - Memory_2          requested at: 4, finished at: 5, returnCode: 0, executable: 0, finished: 1
+        Transaction   : get      - Memory_2          requested at: 3, finished at: 4, returnCode: 0, executable: 0, finished: 1
           Inputs      :
             Requests_Memory_2_index_3                      = 2
           Outputs     :
             Memory_Memory_2_result_1                [   0] = 5
             Memory_Memory_2_result_1                [   1] = 6
-        Transaction   : set      - Memory_3          requested at: 9, finished at: 10, returnCode: 0, executable: 0, finished: 1
+        Transaction   : set      - Memory_3          requested at: 8, finished at: 9, returnCode: 0, executable: 0, finished: 1
           Inputs      :
             Requests_Memory_3_index_6                      = 2
             Requests_Memory_3_value_7               [   0] = 11
             Requests_Memory_3_value_7               [   1] = 22
-    Process: 1 - Requests              instructions: 12, pc: 12, rc: 1
+    Process: 1 - Requests              instructions: 11, pc: 11, rc: 1
       Registers :
         Requests_index_0                                   = 1
         Requests_Memory_1_index_1                          = 1
@@ -2656,7 +2508,7 @@ Chip: Test             step: 9, maxSteps: 20, running: 0
     var c = chip("Test");
     var m = c.new Memory("Memory", N, B);
     for (int i = 0; i < N; i++)
-     {m.memorySet(i+1, i);
+     {m.memorySetValue(i+1, i);
      }
 
     m.processLoad(m.processSave());
@@ -2958,13 +2810,12 @@ Chip: Test             step: 6, maxSteps: 10, running: 0
 
   static void newTests()                                                        // Tests being worked on
    {oldTests();
-    //test_arithmeticFibonacci();
    }
 
   public static void main(String[] args)                                        // Test if called as a program
    {try                                                                         // Get a traceback in a format clickable in Geany if something goes wrong to speed up debugging.
      {if (github_actions) oldTests(); else newTests();                          // Tests to run
-      if (github_actions)                                                       // Coverage analysis
+      if (true || github_actions)                                                       // Coverage analysis
        {coverageAnalysis(sourceFileName(), 12);
        }
       testSummary();                                                            // Summarize test results
