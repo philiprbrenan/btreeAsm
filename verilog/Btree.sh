@@ -2,7 +2,7 @@ REMOTE=s                                                                       #
 FOLDER=btreeAsm                                                                       # Folder containing project under user's home folder
 DESIGN=Btree                                                                       # The name of the chip being designed
 WORKSP=verilog                                                                       # Verilog workspace folder
-rsync -r ~/$FOLDER $REMOTE:~/$FOLDER                                            # Copy local project files to remote system
+rsync -r ~/$FOLDER/* $REMOTE:~/$FOLDER                                            # Copy local project files to remote system
 ssh -S none $REMOTE << EOF                                                      # Execute the following commands on the remote system using a non shared ssh connection
 cd $FOLDER                                                                      # Project folder
 mkdir -p results/Btree_1024_16_32_32                                                                     # Results folder where the summary of the OpenRoad run will be saved
