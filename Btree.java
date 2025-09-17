@@ -7107,7 +7107,7 @@ Merge     : 0
    {sayCurrentTestName();
 // 10, 4  1072
 // 10,10  1126
-    final Btree            b = new Btree(powerTwo(10), powerTwo(10), 32, 32);
+    final Btree            b = new Btree(powerTwo(16), powerTwo(4), 32, 32);
     final Process          P = b.P;
     final Process.Register k = P.register("k", b.bitsPerKey);   k.input();
     final Find             f = b.new Find(P);
@@ -7232,9 +7232,9 @@ Merge     : 0
    }
 
   static void newTests()                                                        // Tests being worked on
-   {oldTests();
+   {//oldTests();
     //test_verilog_delete();
-    //test_verilog_find();
+    test_verilog_find();
     //test_verilog_put();
    }
 
