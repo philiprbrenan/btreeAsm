@@ -7107,7 +7107,7 @@ Merge     : 0
    {sayCurrentTestName();
 // 10, 4  1072
 // 10,10  1126
-    final Btree            b = new Btree(powerTwo(10), powerTwo(4), 32, 32);
+    final Btree            b = new Btree(powerTwo(10), powerTwo(10), 32, 32);
     final Process          P = b.P;
     final Process.Register k = P.register("k", b.bitsPerKey);   k.input();
     final Find             f = b.new Find(P);
@@ -7121,11 +7121,11 @@ Merge     : 0
 //  ok(S.e.err, "");
     final Chip.SiliconCompiler S = b.new SiliconCompiler()                      // Create silicon compiler files
      {String description()
-       {return String.format("%s_%d_%d_%d_%d",
+       {return String.format("find_%s_%d_%d_%d_%d",
           b.chipName, logTwo(b.size), logTwo(b.maxStuckSize), b.bitsPerKey, b.bitsPerData);
        }
      };
-    say(S.launchFile);
+    say("cd ~/btreeAsm; bash -x "+S.launchFile);
     say(readFile(S.sourceFile).size());
    }
 
@@ -7233,9 +7233,9 @@ Merge     : 0
 
   static void newTests()                                                        // Tests being worked on
    {oldTests();
-    test_verilog_delete();
-    test_verilog_find();
-    test_verilog_put();
+    //test_verilog_delete();
+    //test_verilog_find();
+    //test_verilog_put();
    }
 
   public static void main(String[] args)                                        // Test if called as a program
