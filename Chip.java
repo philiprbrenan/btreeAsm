@@ -836,14 +836,18 @@ if __name__ == "__main__":
        (String RegisterName,    int RegisterBits,
         boolean RegisterSingle, int RegisterSize)
        {this(RegisterName, RegisterBits, RegisterSingle, RegisterSize, false);
+        if (!RegisterSingle) stop("Not a single register");
+        zz();
        }
 
       Register(String RegisterName, int RegisterBits)                           // Create a register
        {this(RegisterName, RegisterBits, true, 0, false);
+        zz();
        }
 
       Register(String RegisterName, int RegisterBits, int RegisterSize)         // Create a register
        {this(RegisterName, RegisterBits, false, RegisterSize, false);
+        zz();
        }
 
       boolean registerSingle()  {return  registerSingle;}                       // Whether the register is a single element or an array of elements
@@ -1551,7 +1555,7 @@ if __name__ == "__main__":
 
       v.i(processPcName(), processStopName(), processRCName(),                  // Declare control variables
         processMemoryIndexName());
-      v.A(String.format("reg[%d-1:0] %s;", 1+memoryWidth, processMemoryValueName())); // Value to be loaded into a memory element
+      v.A(String.format("reg[%d-1:0] %s;", memoryWidth, processMemoryValueName())); // Value to be loaded into a memory element
 
       v.new Always()                                                            // Always block for this process
        {void Body()
@@ -2789,6 +2793,35 @@ Chip: Test             step: 6, maxSteps: 10, running: 0
 """);
    }
 
+  static void test_copyArrayToSingle()
+   {var C = chip("Test");
+    var p = C.new Process("main");
+    p.processTrace = true;
+    var a = p.new Register("a", 4, 2);
+    var b = p.new Register("b", 8);
+
+    a.RegisterSet(1, 0);
+    a.RegisterSet(2, 0);
+    //b.registerCopyArrayToSingle();
+
+    C.chipRun();
+    //stop(C);
+    ok(""+C, """
+Chip: Test             step: 6, maxSteps: 10, running: 0
+  Processes:
+    Process: 0 - process               instructions: 5, pc: 5, rc: 0
+      Registers :
+        process_a_0                                 [   0] = 0
+        process_a_0                                 [   1] = 0
+        process_a_0                                 [   2] = 0
+        process_a_0                                 [   3] = 0
+        process_b_1                                 [   0] = 0
+        process_b_1                                 [   1] = 1
+        process_b_1                                 [   2] = 0
+        process_b_1                                 [   3] = 1
+""");
+   }
+
   static void oldTests()                                                        // Tests thought to be in good shape
    {test_stop();
     test_memoryProcessReuse();
@@ -2806,16 +2839,18 @@ Chip: Test             step: 6, maxSteps: 10, running: 0
     test_sum();
     test_register_array();
     test_register_array_one();
+    test_copyArrayToSingle();
    }
 
   static void newTests()                                                        // Tests being worked on
    {oldTests();
+    //test_copyArrayToSingle();
    }
 
   public static void main(String[] args)                                        // Test if called as a program
    {try                                                                         // Get a traceback in a format clickable in Geany if something goes wrong to speed up debugging.
      {if (github_actions) oldTests(); else newTests();                          // Tests to run
-      if (github_actions)                                                       // Coverage analysis
+      if (true || github_actions)                                                       // Coverage analysis
        {coverageAnalysis(sourceFileName(), 12);
        }
       testSummary();                                                            // Summarize test results
