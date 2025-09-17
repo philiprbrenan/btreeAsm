@@ -7232,9 +7232,9 @@ Merge     : 0
    }
 
   static void newTests()                                                        // Tests being worked on
-   {//oldTests();
+   {oldTests();
     //test_verilog_delete();
-    test_verilog_find();
+    //test_verilog_find();
     //test_verilog_put();
    }
 
