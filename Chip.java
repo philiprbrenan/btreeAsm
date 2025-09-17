@@ -832,14 +832,6 @@ if __name__ == "__main__":
         registers.put(n, this);                                                 // Save registers associated with each process
        }
 
-      Register                                                                  // Create a register
-       (String RegisterName,    int RegisterBits,
-        boolean RegisterSingle, int RegisterSize)
-       {this(RegisterName, RegisterBits, RegisterSingle, RegisterSize, false);
-        if (!RegisterSingle) stop("Not a single register");
-        zz();
-       }
-
       Register(String RegisterName, int RegisterBits)                           // Create a register
        {this(RegisterName, RegisterBits, true, 0, false);
         zz();
@@ -1444,11 +1436,11 @@ if __name__ == "__main__":
        }
      } // Register
 
-    Register register(String RegisterName, int RegisterBits)                    // Create the register
-     {N(); zz(); return new Register(RegisterName, RegisterBits, true, 0);
+    Register register(String RegisterName, int RegisterBits)                    // Create a single, non nullable register
+     {N(); zz(); return new Register(RegisterName, RegisterBits, true, 0, false);
      }
 
-    Register register(String RegisterName, int RegisterBits, int RegisterSize)  // Create the register
+    Register register(String RegisterName, int RegisterBits, int RegisterSize)  // Create an arrayed nullable register
      {N(); zz(); return new Register(RegisterName, RegisterBits, RegisterSize);
      }
 
@@ -2807,18 +2799,13 @@ Chip: Test             step: 6, maxSteps: 10, running: 0
     C.chipRun();
     //stop(C);
     ok(""+C, """
-Chip: Test             step: 6, maxSteps: 10, running: 0
+Chip: Test             step: 3, maxSteps: 10, running: 0
   Processes:
-    Process: 0 - process               instructions: 5, pc: 5, rc: 0
+    Process: 0 - main                  instructions: 2, pc: 2, rc: 0
       Registers :
-        process_a_0                                 [   0] = 0
-        process_a_0                                 [   1] = 0
-        process_a_0                                 [   2] = 0
-        process_a_0                                 [   3] = 0
-        process_b_1                                 [   0] = 0
-        process_b_1                                 [   1] = 1
-        process_b_1                                 [   2] = 0
-        process_b_1                                 [   3] = 1
+        main_a_0                                    [   0] = 2
+        main_a_0                                    [   1] = 0
+        main_b_1                                           = 0
 """);
    }
 
@@ -2850,7 +2837,7 @@ Chip: Test             step: 6, maxSteps: 10, running: 0
   public static void main(String[] args)                                        // Test if called as a program
    {try                                                                         // Get a traceback in a format clickable in Geany if something goes wrong to speed up debugging.
      {if (github_actions) oldTests(); else newTests();                          // Tests to run
-      if (true || github_actions)                                                       // Coverage analysis
+      if (github_actions)                                                       // Coverage analysis
        {coverageAnalysis(sourceFileName(), 12);
        }
       testSummary();                                                            // Summarize test results
