@@ -651,6 +651,7 @@ if __name__ == "__main__":
     final boolean[]          memorySet;                                         // Whether the corresponding memory elementh has been set
     final BitSet[]           memoryBackUp;                                      // Before a Java run starts we back up the memory for this process so that we can start in the same state with the equivalent Verilog run allowing us to confirm that memory evolves in the same way for both Java and Verilog
     final boolean[]          memoryBackUpSet;                                   // Whether the corresponding memory element has beens set so far by memory set.  This is used to record the memory set up before the java traced run is started so that the verilog memory can be set up in the same way at the start of its run
+    final Register           memoryValue;                                       // A value retrieved from memory or one about to be loaded into memory
     final Children<Transaction> transactions = new Children<>();                // Transactions representing work requests to this process
     final Children<Register> registers       = new Children<>();                // Registers used in this process
     final Stack<Instruction> code            = new Stack<>();                   // A fixed set of instructions for this process
@@ -1171,26 +1172,33 @@ if __name__ == "__main__":
       void registerCopySingleFromArray(Process.Register Array)                  // Copy an arrayed register to a single register
        {       registerCheckSingle();                                           // Check target is a single register
         Array .registerCheckArrayed();                                          // Check source is an array register
+
         Process.Register s = this,    a = Array;                                // Shorten names
         final int A = a.registerBits, S = a.registerSize, B = s.registerBits;   // Sizes
         if (A * S != B)                                                         // Check source and target register sizes are compatible
          {stop("Register:", a.registerName(), "is", A, "*", S,
           "==", A*S, "but", s.registerName(), "is", B, "bits");
          }
-        new Instruction()
-         {void action()
-           {final BitSet r = s.value = new BitSet(B);
-            for   (int i = 0, p = 0; i < S; i++)                                // Each element of the arrayed register
-             {for (int j = 0;        j < A; j++, p++)                           // Each bit of each element
-               {r.set(p, a.values[i].get(j));                                   // Set corresponding target bit
-               }
-             }
+
+        value = new BitSet(registerBits);                                       // Size of target single register
+        for   (int i = 0, p = 0; i < S; i++)                                    // Each element of the arrayed register
+         {for (int j = 0;        j < A; j++, p++)                               // Each bit of each element
+           {value.set(p, Array.values[i].get(j));                               // Set corresponding target bit
            }
-          void verilog(Verilog v)
-           {final StringJoiner j = new StringJoiner(", ", "{", "}");            // Concatenate the source register elements
-            for (int i = S-1; i >= 0;  i--) j.add(a.registerName()+"["+i+"]");  // Concatenate the elements of the source register from high to low
-            v.assign(s.registerName(), ""+j);                                   // Assign concatenated source to target
-           }
+         }
+       }
+
+      void registerCopySingleFromArray(Verilog v, Process.Register Array)       // Copy an arrayed register to a single register
+       {final int A = Array.registerBits, S = Array.registerSize;               // Sizes
+        final StringJoiner j = new StringJoiner(", ", "{", "}");                // Concatenate the source register elements
+        for (int i = S-1; i >= 0;  i--) j.add(Array.registerName()+"["+i+"]");  // Concatenate the elements of the source register from high to low
+        v.assign(registerName(), ""+j);                                         // Assign concatenated source to target
+       }
+
+      void RegisterCopySingleFromArray(Process.Register Array)                  // Copy an arrayed register to a single register
+       {new Instruction()
+         {void action()           {registerCopySingleFromArray(   Array);}
+          void verilog(Verilog v) {registerCopySingleFromArray(v, Array);}
          };
        }
 
@@ -1203,21 +1211,27 @@ if __name__ == "__main__":
          {stop("Register:", a.registerName(), "is", A, "*", S,
           "==", A*S, "but", s.registerName(), "is", B, "bits");
          }
-        Single.registerProcess().new Instruction()
-         {void action()
-           {final BitSet r = s.value;
-            for   (int i = 0, p = 0; i < S; i++)                                // Each element of the arrayed register
-             {for (int j = 0;        j < A; j++, p++)                           // Each bit of each element
-               {a.values[i].set(j, s.value.get(p));                             // Set corresponding target bit from source bit
-               }
-             }
+
+        final BitSet r = s.value;
+        for   (int i = 0, p = 0; i < S; i++)                                    // Each element of the arrayed register
+         {for (int j = 0;        j < A; j++, p++)                               // Each bit of each element
+           {a.values[i].set(j, s.value.get(p));                                 // Set corresponding target bit from source bit
            }
-          void verilog(Verilog v)
-           {for (int i = 0; i < S; ++i)                                         // Each element of the arrayed register
-             {v.assign(a.registerName()+"["+i+"]",                              // Copy corresponding bits from the single register into the corresponding element of the target register
-                       s.registerName()+"["+(A*i)+"+:"+A+"];");
-             }
-           }
+         }
+       }
+
+      void registerCopyArrayFromSingle(Verilog v, Process.Register Single)      // Copy a single register to an arrayed register
+       {final int A = registerBits, S = registerSize;                           // Sizes
+        for (int i = 0; i < S; ++i)                                             // Each element of the arrayed register
+         {v.assign(       registerName()+"["+i+"]",                             // Copy corresponding bits from the single register into the corresponding element of the target register
+                   Single.registerName()+"["+(A*i)+"+:"+A+"];");
+         }
+       }
+
+      void RegisterCopyArrayFromSingle(Process.Register Single)                 // Copy a single register to an arrayed register
+       {new Instruction()
+         {void action()           {registerCopyArrayFromSingle(   Single);}
+          void verilog(Verilog v) {registerCopyArrayFromSingle(v, Single);}
          };
        }
 
@@ -1513,6 +1527,8 @@ if __name__ == "__main__":
 
       memorySize      = MemorySize;                                             // Create memory
       memoryWidth     = MemoryWidth;
+      memoryValue     = new Register("value", memoryWidth * memoryBlockSize,    // Single nullable register to hold the value of a memory element
+                                     true, 1, true);
 
       final int M     = processMemorySize();                                    // Actual size of memory
       memory          = new BitSet [M];
@@ -1571,6 +1587,19 @@ if __name__ == "__main__":
           void verilog(Verilog v) {processStop(v, ReturnCode);};
          };
        }
+
+    String processNameAndNumber()                                               // Used to generate skip to comments
+     {return String.format("process_%s_%04d", processName, processNumber);
+     }
+
+    String processPcName         () {return processName+"_pc";}                 // Program counter
+    String processMemoryName     () {return processName+"_memory";}             // Name of the memory block used by this process
+    String processStopName       () {return processName+"_stop";}               // Name of the stop field in verilog for this process
+    String processRCName         () {return processName+"_returnCode";}         // Name of the return code in verilog for this process
+    String processMemoryIndexName() {return processName+"_memory_index";}       // Index variable to initialize memory
+    String processMemoryValueName() {return processName+"_memory_value";}       // Value variable to initialize memory
+
+    boolean hasMemory()             {return memoryWidth > 0 && memorySize > 0;} // Whether this process has any memory attached directly to it
 
 //D3 Verilog                                                                    // Generate a Verilog always block to implement this process
 
@@ -1730,19 +1759,6 @@ if __name__ == "__main__":
         v.assign(processMemoryName()+"["+i+"]", ""+a);                          // First run and seq
        }
      }
-
-    String processNameAndNumber()                                               // Used to generate skip to comments
-     {return String.format("process_%s_%04d", processName, processNumber);
-     }
-
-    String processPcName         () {return processName+"_pc";}                 // Program counter
-    String processMemoryName     () {return processName+"_memory";}             // Name of the memory block used by this process
-    String processStopName       () {return processName+"_stop";}               // Name of the stop field in verilog for this process
-    String processRCName         () {return processName+"_returnCode";}         // Name of the return code in verilog for this process
-    String processMemoryIndexName() {return processName+"_memory_index";}       // Index variable to initialize memory
-    String processMemoryValueName() {return processName+"_memory_value";}       // Value variable to initialize memory
-
-    boolean hasMemory()             {return memoryWidth > 0 && memorySize > 0;} // Whether this process has any memory attached directly to it
 
 //D3 Memory                                                                     // Process operations on memory
 
@@ -2235,19 +2251,21 @@ Chip: Test             step: 4, maxSteps: 10, running: 0
       Memory: size: 8, width: 8, block: 2
          1,  2,  3,  4,  5,  6,  7,  8,  9, 10, 11, 12, 13, 14, 15, 16
       Registers :
-        Memory_Memory_1_result_0                    [   0] = 3
-        Memory_Memory_1_result_0                    [   1] = 4
+        Memory_value_0                                     = 0
+        Memory_Memory_1_result_1                    [   0] = 3
+        Memory_Memory_1_result_1                    [   1] = 4
       Transactions:
         Transaction   : get      - Memory_1          requested at: 1, finished at: 2, returnCode: 0, executable: 0, finished: 1
           Inputs      :
-            Requests_Memory_1_index_1                      = 1
+            Requests_Memory_1_index_2                      = 1
           Outputs     :
-            Memory_Memory_1_result_0                [   0] = 3
-            Memory_Memory_1_result_0                [   1] = 4
+            Memory_Memory_1_result_1                [   0] = 3
+            Memory_Memory_1_result_1                [   1] = 4
     Process: 1 - Requests              instructions: 3, pc: 3, rc: 0
       Registers :
-        Requests_index_0                                   = 1
-        Requests_Memory_1_index_1                          = 1
+        Requests_value_0                                   = 0
+        Requests_index_1                                   = 1
+        Requests_Memory_1_index_2                          = 1
 """);
     c.chipRunVerilog();
    }
@@ -2306,39 +2324,41 @@ Chip: Test             step: 11, maxSteps: 100, running: 0
       Memory: size: 8, width: 8, block: 2
          1,  2,  3,  4, 11, 22,  7,  8,  9, 10, 11, 12, 13, 14, 15, 16
       Registers :
-        Memory_Memory_1_result_0                    [   0] = 3
-        Memory_Memory_1_result_0                    [   1] = 4
-        Memory_Memory_2_result_1                    [   0] = 5
-        Memory_Memory_2_result_1                    [   1] = 6
+        Memory_value_0                                     = 0
+        Memory_Memory_1_result_1                    [   0] = 3
+        Memory_Memory_1_result_1                    [   1] = 4
+        Memory_Memory_2_result_2                    [   0] = 5
+        Memory_Memory_2_result_2                    [   1] = 6
       Transactions:
         Transaction   : get      - Memory_1          requested at: 1, finished at: 2, returnCode: 0, executable: 0, finished: 1
           Inputs      :
-            Requests_Memory_1_index_1                      = 1
+            Requests_Memory_1_index_2                      = 1
           Outputs     :
-            Memory_Memory_1_result_0                [   0] = 3
-            Memory_Memory_1_result_0                [   1] = 4
+            Memory_Memory_1_result_1                [   0] = 3
+            Memory_Memory_1_result_1                [   1] = 4
         Transaction   : get      - Memory_2          requested at: 3, finished at: 4, returnCode: 0, executable: 0, finished: 1
           Inputs      :
-            Requests_Memory_2_index_3                      = 2
+            Requests_Memory_2_index_4                      = 2
           Outputs     :
-            Memory_Memory_2_result_1                [   0] = 5
-            Memory_Memory_2_result_1                [   1] = 6
+            Memory_Memory_2_result_2                [   0] = 5
+            Memory_Memory_2_result_2                [   1] = 6
         Transaction   : set      - Memory_3          requested at: 8, finished at: 9, returnCode: 0, executable: 0, finished: 1
           Inputs      :
-            Requests_Memory_3_index_6                      = 2
-            Requests_Memory_3_value_7               [   0] = 11
-            Requests_Memory_3_value_7               [   1] = 22
+            Requests_Memory_3_index_7                      = 2
+            Requests_Memory_3_value_8               [   0] = 11
+            Requests_Memory_3_value_8               [   1] = 22
     Process: 1 - Requests              instructions: 11, pc: 11, rc: 1
       Registers :
-        Requests_index_0                                   = 1
-        Requests_Memory_1_index_1                          = 1
-        Requests_index_2                                   = 2
-        Requests_Memory_2_index_3                          = 2
-        Requests_value_4                                   = 11
-        Requests_value_5                                   = 22
-        Requests_Memory_3_index_6                          = 2
-        Requests_Memory_3_value_7                   [   0] = 11
-        Requests_Memory_3_value_7                   [   1] = 22
+        Requests_value_0                                   = 0
+        Requests_index_1                                   = 1
+        Requests_Memory_1_index_2                          = 1
+        Requests_index_3                                   = 2
+        Requests_Memory_2_index_4                          = 2
+        Requests_value_5                                   = 11
+        Requests_value_6                                   = 22
+        Requests_Memory_3_index_7                          = 2
+        Requests_Memory_3_value_8                   [   0] = 11
+        Requests_Memory_3_value_8                   [   1] = 22
 """);
    }
 
@@ -2401,21 +2421,23 @@ Chip: Test             step: 82, maxSteps: 100, running: 0
   Processes:
     Process: 0 - Main                  instructions: 82, pc: 82, rc: 1
       Registers :
-        Main_a_0                                           = 987
-        Main_b_1                                           = 1597
-        Main_c_2                                           = 1597
-        Main_i_3                                           = 0
-        Main_Memory_1_index_4                              = 15
-        Main_Memory_1_value_5                       [   0] = 1597
+        Main_value_0                                       = 0
+        Main_a_1                                           = 987
+        Main_b_2                                           = 1597
+        Main_c_3                                           = 1597
+        Main_i_4                                           = 0
+        Main_Memory_1_index_5                              = 15
+        Main_Memory_1_value_6                       [   0] = 1597
     Process: 1 - Memory                instructions: 1, pc: 0, rc: 0
       Memory: size: 16, width: 16, block: 1
          1,  2,  3,  5,  8, 13, 21, 34, 55, 89, 144, 233, 377, 610, 987, 1597
       Registers :
+        Memory_value_0                                     = 0
       Transactions:
         Transaction   : set      - Memory_1          requested at: 78, finished at: 79, returnCode: 0, executable: 0, finished: 1
           Inputs      :
-            Main_Memory_1_index_4                          = 15
-            Main_Memory_1_value_5                   [   0] = 1597
+            Main_Memory_1_index_5                          = 15
+            Main_Memory_1_value_6                   [   0] = 1597
 """);
 
     //stop(C.chipPrintMemory());
@@ -2546,11 +2568,12 @@ Chip: Test             step: 9, maxSteps: 20, running: 0
   Processes:
     Process: 0 - Main                  instructions: 11, pc: 11, rc: 0
       Registers :
-        Main_a_0                                           = 1
-        Main_b_1                                           = 1
-        Main_B_2                                           = 1
-        Main_c_3                                           = 0
-        Main_C_4                                           = 4
+        Main_value_0                                       = 0
+        Main_a_1                                           = 1
+        Main_b_2                                           = 1
+        Main_B_3                                           = 1
+        Main_c_4                                           = 0
+        Main_C_5                                           = 4
 """);
    }
 
@@ -2788,23 +2811,24 @@ Chip: Test             step: 15, maxSteps: 100, running: 0
   Processes:
     Process: 0 - process               instructions: 14, pc: 14, rc: 0
       Registers :
-        process_a_0                                 [   0] = 0
-        process_a_0                                 [   1] = 0
-        process_a_0                                 [   2] = 0
-        process_a_0                                 [   3] = 8
-        process_b_1                                 [   0] = 1
-        process_b_1                                 [   1] = 4
-        process_b_1                                 [   2] = 5
-        process_b_1                                 [   3] = 8
-        process_c_2                                        = 5
-        process_d_3                                 [   0] = 0
-        process_d_3                                 [   1] = 4
-        process_d_3                                 [   2] = 0
-        process_d_3                                 [   3] = 8
-        process_e_4                                 [   0] = 0
-        process_e_4                                 [   1] = 0
-        process_e_4                                 [   2] = 0
-        process_e_4                                 [   3] = 0
+        process_value_0                                    = 0
+        process_a_1                                 [   0] = 0
+        process_a_1                                 [   1] = 0
+        process_a_1                                 [   2] = 0
+        process_a_1                                 [   3] = 8
+        process_b_2                                 [   0] = 1
+        process_b_2                                 [   1] = 4
+        process_b_2                                 [   2] = 5
+        process_b_2                                 [   3] = 8
+        process_c_3                                        = 5
+        process_d_4                                 [   0] = 0
+        process_d_4                                 [   1] = 4
+        process_d_4                                 [   2] = 0
+        process_d_4                                 [   3] = 8
+        process_e_5                                 [   0] = 0
+        process_e_5                                 [   1] = 0
+        process_e_5                                 [   2] = 0
+        process_e_5                                 [   3] = 0
 """);
    }
 
@@ -2822,21 +2846,22 @@ Chip: Test             step: 15, maxSteps: 100, running: 0
     a.Zero();
     C.chipRun();
     //stop(b);
-    ok(b, "process_b_1 =   0  1  0  1");
+    ok(b, "process_b_2 =   0  1  0  1");
     //stop(C);
     ok(""+C, """
 Chip: Test             step: 6, maxSteps: 10, running: 0
   Processes:
     Process: 0 - process               instructions: 5, pc: 5, rc: 0
       Registers :
-        process_a_0                                 [   0] = 0
-        process_a_0                                 [   1] = 0
-        process_a_0                                 [   2] = 0
-        process_a_0                                 [   3] = 0
-        process_b_1                                 [   0] = 0
-        process_b_1                                 [   1] = 1
-        process_b_1                                 [   2] = 0
-        process_b_1                                 [   3] = 1
+        process_value_0                                    = 0
+        process_a_1                                 [   0] = 0
+        process_a_1                                 [   1] = 0
+        process_a_1                                 [   2] = 0
+        process_a_1                                 [   3] = 0
+        process_b_2                                 [   0] = 0
+        process_b_2                                 [   1] = 1
+        process_b_2                                 [   2] = 0
+        process_b_2                                 [   3] = 1
 """);
    }
 
@@ -2850,8 +2875,8 @@ Chip: Test             step: 6, maxSteps: 10, running: 0
 
     a.RegisterSet(1, 0);
     a.RegisterSet(2, 1);
-    b.registerCopySingleFromArray(a);
-    c.registerCopyArrayFromSingle(b);
+    b.RegisterCopySingleFromArray(a);
+    c.RegisterCopyArrayFromSingle(b);
 
     C.chipRun();
     //stop(C);
@@ -2860,17 +2885,18 @@ Chip: Test             step: 5, maxSteps: 10, running: 0
   Processes:
     Process: 0 - main                  instructions: 4, pc: 4, rc: 0
       Registers :
-        main_a_0                                    [   0] = 1
-        main_a_0                                    [   1] = 2
-        main_b_1                                           = 33
-        main_c_2                                    [   0] = 1
-        main_c_2                                    [   1] = 0
-        main_c_2                                    [   2] = 0
-        main_c_2                                    [   3] = 0
-        main_c_2                                    [   4] = 0
-        main_c_2                                    [   5] = 1
-        main_c_2                                    [   6] = 0
-        main_c_2                                    [   7] = 0
+        main_value_0                                       = 0
+        main_a_1                                    [   0] = 1
+        main_a_1                                    [   1] = 2
+        main_b_2                                           = 33
+        main_c_3                                    [   0] = 1
+        main_c_3                                    [   1] = 0
+        main_c_3                                    [   2] = 0
+        main_c_3                                    [   3] = 0
+        main_c_3                                    [   4] = 0
+        main_c_3                                    [   5] = 1
+        main_c_3                                    [   6] = 0
+        main_c_3                                    [   7] = 0
 """);
    }
 
