@@ -1549,9 +1549,9 @@ if __name__ == "__main__":
         v.i(t.transactionRcName());
        }
 
-      v.i(processPcName(), processStopName(), processRCName(),                  // Declare temporary variables
-          processMemoryIndexName());
-      v.A(String.format("reg[%d-1:0] %s;", memoryWidth, processMemoryValueName())); // Value to be loaded into memory
+      v.i(processPcName(), processStopName(), processRCName(),                  // Declare control variables
+        processMemoryIndexName());
+      v.A(String.format("reg[%d-1:0] %s;", 1+memoryWidth, processMemoryValueName())); // Value to be loaded into a memory element
 
       v.new Always()                                                            // Always block for this process
        {void Body()
