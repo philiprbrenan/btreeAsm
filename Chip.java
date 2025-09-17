@@ -1166,6 +1166,61 @@ if __name__ == "__main__":
          };
        }
 
+//D3 Single to and from Arrayed                                                 // Copy an arrayed register into a single register and vice versa
+
+      void registerCopySingleFromArray(Process.Register Array)                  // Copy an arrayed register to a single register
+       {       registerCheckSingle();                                           // Check target is a single register
+        Array .registerCheckArrayed();                                          // Check source is an array register
+        Process.Register s = this,    a = Array;                                // Shorten names
+        final int A = a.registerBits, S = a.registerSize, B = s.registerBits;   // Sizes
+        if (A * S != B)                                                         // Check source and target register sizes are compatible
+         {stop("Register:", a.registerName(), "is", A, "*", S,
+          "==", A*S, "but", s.registerName(), "is", B, "bits");
+         }
+        new Instruction()
+         {void action()
+           {final BitSet r = s.value = new BitSet(B);
+            for   (int i = 0, p = 0; i < S; i++)                                // Each element of the arrayed register
+             {for (int j = 0;        j < A; j++, p++)                           // Each bit of each element
+               {r.set(p, a.values[i].get(j));                                   // Set corresponding target bit
+               }
+             }
+           }
+          void verilog(Verilog v)
+           {final StringJoiner j = new StringJoiner(", ", "{", "}");            // Concatenate the source register elements
+            for (int i = S-1; i >= 0;  i--) j.add(a.registerName()+"["+i+"]");  // Concatenate the elements of the source register from high to low
+            v.assign(s.registerName(), ""+j);                                   // Assign concatenated source to target
+           }
+         };
+       }
+
+      void registerCopyArrayFromSingle(Process.Register Single)                 // Copy a single register to an arrayed register
+       {Single.registerCheckSingle();                                           // Check target is a single register
+               registerCheckArrayed();                                          // Check source is an array register
+        Process.Register s = Single,  a = this;                                 // Shorten names
+        final int A = a.registerBits, S = a.registerSize, B = s.registerBits;   // Sizes
+        if (A * S != B)                                                         // Check source and target register sizes are compatible
+         {stop("Register:", a.registerName(), "is", A, "*", S,
+          "==", A*S, "but", s.registerName(), "is", B, "bits");
+         }
+        Single.registerProcess().new Instruction()
+         {void action()
+           {final BitSet r = s.value;
+            for   (int i = 0, p = 0; i < S; i++)                                // Each element of the arrayed register
+             {for (int j = 0;        j < A; j++, p++)                           // Each bit of each element
+               {a.values[i].set(j, s.value.get(p));                             // Set corresponding target bit from source bit
+               }
+             }
+           }
+          void verilog(Verilog v)
+           {for (int i = 0; i < S; ++i)                                         // Each element of the arrayed register
+             {v.assign(a.registerName()+"["+i+"]",                              // Copy corresponding bits from the single register into the corresponding element of the target register
+                       s.registerName()+"["+(A*i)+"+:"+A+"];");
+             }
+           }
+         };
+       }
+
 //D3 Combine                                                                    // Or two registers together
 
       void combine(Register Source)                                             // Copy the source register into the target if the source is not zero
@@ -2791,21 +2846,31 @@ Chip: Test             step: 6, maxSteps: 10, running: 0
     p.processTrace = true;
     var a = p.new Register("a", 4, 2);
     var b = p.new Register("b", 8);
+    var c = p.new Register("c", 1, 8);
 
     a.RegisterSet(1, 0);
-    a.RegisterSet(2, 0);
-    //b.registerCopyArrayToSingle();
+    a.RegisterSet(2, 1);
+    b.registerCopySingleFromArray(a);
+    c.registerCopyArrayFromSingle(b);
 
     C.chipRun();
     //stop(C);
     ok(""+C, """
-Chip: Test             step: 3, maxSteps: 10, running: 0
+Chip: Test             step: 5, maxSteps: 10, running: 0
   Processes:
-    Process: 0 - main                  instructions: 2, pc: 2, rc: 0
+    Process: 0 - main                  instructions: 4, pc: 4, rc: 0
       Registers :
-        main_a_0                                    [   0] = 2
-        main_a_0                                    [   1] = 0
-        main_b_1                                           = 0
+        main_a_0                                    [   0] = 1
+        main_a_0                                    [   1] = 2
+        main_b_1                                           = 33
+        main_c_2                                    [   0] = 1
+        main_c_2                                    [   1] = 0
+        main_c_2                                    [   2] = 0
+        main_c_2                                    [   3] = 0
+        main_c_2                                    [   4] = 0
+        main_c_2                                    [   5] = 1
+        main_c_2                                    [   6] = 0
+        main_c_2                                    [   7] = 0
 """);
    }
 
