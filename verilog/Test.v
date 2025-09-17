@@ -34,7 +34,7 @@ module Test;                                                                    
   integer process_stop;
   integer process_returnCode;
   integer process_memory_index;
-  reg[0-1:0] process_memory_value;
+  reg[1-1:0] process_memory_value;
   always @ (posedge clock) begin
     if (reset) begin
       process_pc       <= 0;
