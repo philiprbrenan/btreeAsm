@@ -87,10 +87,8 @@ jobs:
       with:
         ref: 'main'
 
-    - name: 'JDK 24'
+    - name: 'JDK'
       uses: oracle-actions/setup-java\@v1
-      with:
-        website: jdk.java.net
 
     - name: Verilog install
       run: |
