@@ -60,6 +60,34 @@ Registers can contain just a single element in a [register](https://en.wikipedia
 number of elements in an arrayed [register](https://en.wikipedia.org/wiki/Processor_register). Single and arrayed [registers](https://en.wikipedia.org/wiki/Processor_register) can be
 copied into other single and arrayed [registers](https://en.wikipedia.org/wiki/Processor_register), with either the whole [register](https://en.wikipedia.org/wiki/Processor_register) being copied or with specific elements being selected from arrayed [registers](https://en.wikipedia.org/wiki/Processor_register) with either integer and/or single [register](https://en.wikipedia.org/wiki/Processor_register) indices.
 
+## Unknown values
+
+When the chip is powered on, the values of bits in [memory](https://en.wikipedia.org/wiki/Computer_memory) are unknown. I
+considered these possibilities:
+
+1. Track the unknown status of each [bit](https://en.wikipedia.org/wiki/Bit) in [memory](https://en.wikipedia.org/wiki/Computer_memory). 
+2. Track the unknown status of each [word](https://en.wikipedia.org/wiki/Doc_(computing)) in [memory](https://en.wikipedia.org/wiki/Computer_memory). 
+3. Set [memory](https://en.wikipedia.org/wiki/Computer_memory) to a known value so that there are no unknown values after power
+on.
+
+I chose to set [memory](https://en.wikipedia.org/wiki/Computer_memory) to known values on power on because:
+
+- Verilog does track whether each [bit](https://en.wikipedia.org/wiki/Bit) in [memory](https://en.wikipedia.org/wiki/Computer_memory) has a known value or not so
+there seems to be no point in reinventing the wheel by duplicating work already
+being done by Verilog.
+
+- The Java execution [speed](https://en.wikipedia.org/wiki/Speed) which is already slow enough enough would be slowed
+even further, yet any bugs it might catch would be caught a few seconds later
+by the Verilog simulation  so the extra execution time buys very little
+compared to its cost.
+
+- Memory is copied into [registers](https://en.wikipedia.org/wiki/Processor_register) and so [registers](https://en.wikipedia.org/wiki/Processor_register) would also have to track
+whether their values were known or not leading to more complexity in the Java [code](https://en.wikipedia.org/wiki/Computer_program), which should, instead, be focussed on the algorithms used rather then
+their bitwise implementation.
+
+
+
+
 ## Program Execution
 
 Each [process](https://en.wikipedia.org/wiki/Process_management_(computing)) executes a single [program](https://en.wikipedia.org/wiki/Computer_program) composed of sequential [instructions](https://en.wikipedia.org/wiki/Instruction_set_architecture). A [chip](https://en.wikipedia.org/wiki/Integrated_circuit) may contain multiple [processes](https://en.wikipedia.org/wiki/Process_management_(computing)). 
