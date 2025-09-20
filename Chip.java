@@ -4,8 +4,8 @@
 //------------------------------------------------------------------------------
 package com.AppaApps.Silicon;                                                   // B-tree implemented in a memory block on a silicon chip.
 // Try eliminating .clone() in case they are used excessively
-// Tests for copyIs and copyIt if they are still bein used
-// Make sure all method names start with the name of their class
+// Tests for copy* methods  and check that they are actually needed
+// Try to make all method and variable names start with the name of their class where this is feasible
 import java.util.*;
 
 class Chip extends Test                                                         // A chip designed to manipulate a B-tree stored in a memory block
@@ -27,7 +27,7 @@ class Chip extends Test                                                         
 //D1 Chip                                                                       // A chip is constructed from a fixed number of communicating processes that execute code on the chip to produce the desired outputs from the inputs to the chip
 
   Chip(String Name)             {zz(); chipName = Name;}                        // Create a new chip
-  Chip chip()                   {zz(); return this;}                            // This chip
+  Chip chip()                   {zz(); err("Deprecated"); return this;}         // This chip
   static Chip chip(String Name) {zz(); return new Chip(Name);}                  // Create a new chip
 
   void chipRunJava()                                                            // Run the processes == ograms defined on this chip using the Java implementation
@@ -81,20 +81,19 @@ class Chip extends Test                                                         
     for (Process p: processes)                                                  // Each process
      {if (p.hasMemory())                                                        // Print memory if this process has memory attached to it
        {s.append(String.format("    %s\n", p.processName));
-        s.append(String.format(
-         "      Memory: size: %2d, width: %2d, block: %2d\n",
+
+        s.append(String.format("      Memory: size: %1d, width: %1d, block: %1d\n",
           p.memorySize, p.memoryWidth, p.memoryBlockSize));
 
-        s.append("      ");
-        for (int i = 0; i < 25; i++)
-         {s.append(String.format(" %2d", i));
+        s.append(String.format("        %2d", p.memoryGet(0, 0)));
+        for(int j = 1; j < p.memoryBlockSize; j++)
+         {s.append(String.format(", %2d", p.memoryGet(0, j)));
          }
-        s.append("\n");
 
-        s.append(String.format("       %2d", p.memoryGet(0)));
-
-        for (int i = 1; i < p.memory.length; i++)
-         {s.append(String.format(" %2d", p.memoryGet(i)));
+        for  (int i = 1; i < p.memorySize;      i++)
+         {for(int j = 0; j < p.memoryBlockSize; j++)
+           {s.append(String.format(", %2d", p.memoryGet(i, j)));
+           }
          }
         s.append("\n");
        }
@@ -138,14 +137,18 @@ class Chip extends Test                                                         
         s.append("      Registers :\n");
 
       for (Process.Register r: p.registers)                                     // Print registers associated with this process
-       {if (!r.registerArrayed())                                               // Single register
-         {s.append(String.format("        %-50s = %1d\n",
-            r.registerName(), r.registerGet()));
+       {final String name = r.registerName();
+        if (r.registerSingle())                                                 // Single register
+         {if (r.registerTooWideForInt())
+           {s.append(String.format("        %-50s = %s\n",  name, r.registerGetHex()));
+           }
+          else
+           {s.append(String.format("        %-50s = %1d\n", name, r.registerGet()));
+           }
          }
         else                                                                    // Array of registers
          {for (int i = 0; i < r.registerSize; i++)
-           {s.append(String.format("        %-44s[%4d] = %1d\n",
-              r.registerName(), i, r.registerGet(i)));
+           {s.append(String.format("        %-44s[%4d] = %1d\n", name, i, r.registerGet(i)));
            }
          }
        }
@@ -163,9 +166,15 @@ class Chip extends Test                                                         
           if (t.transactionInputRegisters.size() > 0)                           // Transaction inputs
            {s.append(in+"  Inputs      :\n");
             for (Process.Register r : t.transactionInputRegisters)
-             {if (!r.registerArrayed())
-               {s.append(String.format("%s    %-46s = %1d\n",
-                  in, r.registerName(), r.registerGet()));
+             {if (r.registerSingle())
+               {if (r.registerTooWideForInt())
+                 {s.append(String.format("%s    %-46s = %s\n",
+                    in, r.registerName(), r.registerGetHex()));
+                 }
+                else
+                 {s.append(String.format("%s    %-46s = %1d\n",
+                    in, r.registerName(), r.registerGet()));
+                 }
                }
               else
                {for (int i = 0; i < r.registerSize; i++)
@@ -179,9 +188,15 @@ class Chip extends Test                                                         
           if (t.transactionOutputRegisters.size() > 0)                          // Transaction outputs
            {s.append(in+"  Outputs     :\n");
             for (Process.Register r : t.transactionOutputRegisters)
-             {if (!r.registerArrayed())
-               {s.append(String.format("%s    %-46s = %1d\n",
-                 in, r.registerName(), r.registerGet()));
+             {if (r.registerSingle())
+               {if (r.registerTooWideForInt())
+                 {s.append(String.format("%s    %-46s = %s\n",
+                    in, r.registerName(), r.registerGetHex()));
+                 }
+                else
+                 {s.append(String.format("%s    %-46s = %1d\n",
+                    in, r.registerName(), r.registerGet()));
+                 }
                }
               else
                {for (int i = 0; i < r.registerSize; i++)
@@ -223,7 +238,7 @@ class Chip extends Test                                                         
           if (p.memory.length > 0)                                              // Print memory
            {final int s = p.memorySize,  b = p.memoryBlockSize,
                       w = p.memoryWidth;
-say("CCCC", w);
+
             final String n = p.processMemoryName();
 //          v.A("$fwrite(o, \"      Memory: %b\\n\", "+n+"[0]);");
             v.A("$fwrite(o, \"      Memory: size: %1d, width: %1d, block: %1d\\n\", "+
@@ -243,9 +258,15 @@ say("CCCC", w);
 
           v.A("$fwrite(o, \"      Registers :\\n\");");
           for (Process.Register r: p.registers)                                 // Registers
-           {if (!r.registerArrayed())
-             {v.A("$fwrite(o, \"        %-50s = %1d\\n\", "+
-               " \""+r.registerName()+"\", "+r.registerName()+");");
+           {if (r.registerSingle())
+             {if (r.registerTooWideForInt())
+               {v.A("$fwrite(o, \"        %-50s = %hx\\n\", "+
+                    " \""+r.registerName()+"\", "+r.registerName()+");");
+               }
+              else
+               {v.A("$fwrite(o, \"        %-50s = %1d\\n\", "+
+                    " \""+r.registerName()+"\", "+r.registerName()+");");
+               }
              }
             else
              {for (int i = 0; i < r.registerSize; i++)
@@ -268,9 +289,15 @@ say("CCCC", w);
               if (t.transactionInputRegisters.size() > 0)                       // Transaction inputs
                {v.A("$fwrite(o, \"          Inputs      :\\n\");");
                 for (Process.Register r: t.transactionInputRegisters)           // Registers
-                 {if (!r.registerArrayed())
-                   {v.A("$fwrite(o, \"            %-46s = %1d\\n\", "+
-                     " \""+r.registerName()+"\", "+r.registerName()+");");
+                 {if (r.registerSingle())
+                   {if (r.registerTooWideForInt())
+                     {v.A("$fwrite(o, \"            %-46s = %hx\\n\", "+
+                       " \""+r.registerName()+"\", "+r.registerName()+");");
+                     }
+                    else
+                     {v.A("$fwrite(o, \"            %-46s = %1d\\n\", "+
+                       " \""+r.registerName()+"\", "+r.registerName()+");");
+                     }
                    }
                   else
                    {for (int i = 0; i < r.registerSize; i++)
@@ -284,9 +311,15 @@ say("CCCC", w);
               if (t.transactionOutputRegisters.size() > 0)                      // Transaction outputs
                {v.A("$fwrite(o, \"          Outputs     :\\n\");\n");
                 for (Process.Register r : t.transactionOutputRegisters)
-                 {if (!r.registerArrayed())
-                   {v.A("$fwrite(o, \"            %-46s = %1d\\n\", "+
-                     " \""+r.registerName()+"\", "+r.registerName()+");");
+                 {if (r.registerSingle())
+                   {if (r.registerTooWideForInt())
+                     {v.A("$fwrite(o, \"            %-46s = %hx\\n\", "+
+                       " \""+r.registerName()+"\", "+r.registerName()+");");
+                     }
+                    else
+                     {v.A("$fwrite(o, \"            %-46s = %1d\\n\", "+
+                       " \""+r.registerName()+"\", "+r.registerName()+");");
+                     }
                    }
                   else
                    {for (int i = 0; i < r.registerSize; i++)
@@ -627,9 +660,6 @@ if __name__ == "__main__":
       memoryWidth     = MemoryWidth;
 
       memory          = new BitSet [memorySize];
-      for (int i = 0; i < memorySize; i++)
-       {memory[i] = new BitSet(memoryWidth * memoryBlockSize);
-       }
      }
 
     void processInit()                                                          // Get ready to execute the program
@@ -639,6 +669,9 @@ if __name__ == "__main__":
        {t.transactionRc          =  0;
         t.transactionFinishedAt  = -1;
         t.transactionRequestedAt = -1;
+       }
+      for (int i = 0; i < memorySize; i++)                                      // Clear memory associated with the process
+       {memory[i] = new BitSet(memoryWidth * memoryBlockSize);
        }
      }
 
@@ -657,7 +690,7 @@ if __name__ == "__main__":
        }
      }
 
-    void processClear() {zz(); code.clear();}                                   // Clear current process code. This facilitates testing by allowing a program to be written and executed incrementally.
+    void processClear() {zz(); err("deprecated"); code.clear();}                // Clear current process code. This facilitates testing by allowing a program to be written and executed incrementally.
 
     void processStop(int ReturnCode)                                            // Stop the chip
      {zz(); processRC = ReturnCode;
@@ -921,9 +954,17 @@ if __name__ == "__main__":
       private void   rs  (int v)        {registerSet(v);}
       private void   rs  (int v, int i) {registerSet(v, i);}
 
-      int registerGet()                                                         // Return the registerâs value as an integer. If the register is nullable check whether the register is currently set
+      boolean registerTooWideForInt()  {return registerBits >= Integer.SIZE;}   // Whether the reister can be represented as an integer
+
+      int registerGet()                                                         // Return the registerâs value as an integer.
        {zz(); registerCheckSingle();
+        if (registerTooWideForInt()) stop("Register too big to be an int");
         return value.length() == 0 ? 0 : (int) value.toLongArray()[0];          // Relies on the fact that this Java code is only used for testing, unlike the Verilog version
+       }
+
+      String registerGetHex()                                                   // Return the registerâs value as a hex string.
+       {zz(); registerCheckSingle();
+        return bitSetToHex(value, registerBits)+"x";
        }
 
       int registerGet(int Index)                                                // Return the value at the specified index in an arrayed set of registers
@@ -1267,8 +1308,12 @@ if __name__ == "__main__":
        }
 
       public String toString()                                                  // Print the register
-       {if (registerSingle) return registerName()+" = "+registerGet();          // Single register value
-
+       {if (registerSingle)                                                     // Single register value
+         {if (registerTooWideForInt())
+           {return registerName()+" = "+registerGetHex();
+           }
+          return registerName()+" = "+registerGet();
+         }
         final StringBuilder s = new StringBuilder(registerName()+" = ");        // Arrayed register values
         for (int i = 0; i < registerSize; i++)
          {s.append(String.format(" %2d", registerGet(i)));
@@ -1291,29 +1336,29 @@ if __name__ == "__main__":
 
 //D3 Arithmetic                                                                 // Operations on registers
 
-      void one () {R(); zz(); rs(1);}                                           // One a register in Java
-      void inc () {R(); zz(); rs(rg()+1);           }                           // Increment a register in Java
-      void dec () {R(); zz(); rs(rg()-1);           }                           // Decrement a register in Java
-      void not () {R(); zz(); rs(rg() != 0 ? 0 : 1);}                           // Not a register in Java
-      void half() {R(); zz(); rs(rg() >> 1);        }                           // Halve a register
-      void add (Register S) {R(); zz(); rs(rg()+S.rg());  }                     // Add the source register to the current register in Java
-      void add1(Register S) {R(); zz(); rs(rg()+S.rg()+1);}                     // Add the source register to the current register plus one in Java
-      void add (int      S) {R(); zz(); rs(rg()+S);       }                     // Add the source register to the current register in Java
-      void average(Register S1, Register S2) {R(); zz(); rs((S1.rg()+S2.rg())/2);}  // Average of two registers
+      void one () {R(); rs(1);}                                                 // One a register in Java
+      void inc () {R(); rs(rg()+1);           }                                 // Increment a register in Java
+      void dec () {R(); rs(rg()-1);           }                                 // Decrement a register in Java
+      void not () {R(); rs(rg() != 0 ? 0 : 1);}                                 // Not a register in Java
+      void half() {R(); rs(rg() >> 1);        }                                 // Halve a register
+      void add (Register S) {R(); rs(rg()+S.rg());  }                           // Add the source register to the current register in Java
+      void add1(Register S) {R(); rs(rg()+S.rg()+1);}                           // Add the source register to the current register plus one in Java
+      void add (int      S) {R(); rs(rg()+S);       }                           // Add the source register to the current register in Java
+      void average(Register S1, Register S2) {R(); rs((S1.rg()+S2.rg())/2);}    // Average of two registers
 
-      void gt (Register a, Register b) {R(); zz(); rs(a.rg() >  b.rg() ? 1 : 0);} // Set the target register to one if the test between the 'a' and 'b' register is true else 0
-      void ge (Register a, Register b) {R(); zz(); rs(a.rg() >= b.rg() ? 1 : 0);} // Set the target register to one if the test between the 'a' and 'b' register is true else 0
-      void eq (Register a, Register b) {R(); zz(); rs(a.rg() == b.rg() ? 1 : 0);} // Set the target register to one if the test between the 'a' and 'b' register is true else 0
-      void ne (Register a, Register b) {R(); zz(); rs(a.rg() != b.rg() ? 1 : 0);} // Set the target register to one if the test between the 'a' and 'b' register is true else 0
-      void le (Register a, Register b) {R(); zz(); rs(a.rg() <= b.rg() ? 1 : 0);} // Set the target register to one if the test between the 'a' and 'b' register is true else 0
-      void lt (Register a, Register b) {R(); zz(); rs(a.rg() <  b.rg() ? 1 : 0);} // Set the target register to one if the test between the 'a' and 'b' register is true else 0
+      void gt (Register a, Register b) {R(); rs(a.rg() >  b.rg() ? 1 : 0);}     // Set the target register to one if the test between the 'a' and 'b' register is true else 0
+      void ge (Register a, Register b) {R(); rs(a.rg() >= b.rg() ? 1 : 0);}     // Set the target register to one if the test between the 'a' and 'b' register is true else 0
+      void eq (Register a, Register b) {R(); rs(a.rg() == b.rg() ? 1 : 0);}     // Set the target register to one if the test between the 'a' and 'b' register is true else 0
+      void ne (Register a, Register b) {R(); rs(a.rg() != b.rg() ? 1 : 0);}     // Set the target register to one if the test between the 'a' and 'b' register is true else 0
+      void le (Register a, Register b) {R(); rs(a.rg() <= b.rg() ? 1 : 0);}     // Set the target register to one if the test between the 'a' and 'b' register is true else 0
+      void lt (Register a, Register b) {R(); rs(a.rg() <  b.rg() ? 1 : 0);}     // Set the target register to one if the test between the 'a' and 'b' register is true else 0
 
-      void gt (Register a, int b) {R(); zz(); rs(a.rg() >  b ? 1 : 0);}         // Set the target register to one if the test between the 'a' and 'b' register is true else 0
-      void ge (Register a, int b) {R(); zz(); rs(a.rg() >= b ? 1 : 0);}         // Set the target register to one if the test between the 'a' and 'b' register is true else 0
-      void eq (Register a, int b) {R(); zz(); rs(a.rg() == b ? 1 : 0);}         // Set the target register to one if the test between the 'a' and 'b' register is true else 0
-      void ne (Register a, int b) {R(); zz(); rs(a.rg() != b ? 1 : 0);}         // Set the target register to one if the test between the 'a' and 'b' register is true else 0
-      void le (Register a, int b) {R(); zz(); rs(a.rg() <= b ? 1 : 0);}         // Set the target register to one if the test between the 'a' and 'b' register is true else 0
-      void lt (Register a, int b) {R(); zz(); rs(a.rg() <  b ? 1 : 0);}         // Set the target register to one if the test between the 'a' and 'b' register is true else 0
+      void gt (Register a, int b) {R(); rs(a.rg() >  b ? 1 : 0);}               // Set the target register to one if the test between the 'a' and 'b' register is true else 0
+      void ge (Register a, int b) {R(); rs(a.rg() >= b ? 1 : 0);}               // Set the target register to one if the test between the 'a' and 'b' register is true else 0
+      void eq (Register a, int b) {R(); rs(a.rg() == b ? 1 : 0);}               // Set the target register to one if the test between the 'a' and 'b' register is true else 0
+      void ne (Register a, int b) {R(); rs(a.rg() != b ? 1 : 0);}               // Set the target register to one if the test between the 'a' and 'b' register is true else 0
+      void le (Register a, int b) {R(); rs(a.rg() <= b ? 1 : 0);}               // Set the target register to one if the test between the 'a' and 'b' register is true else 0
+      void lt (Register a, int b) {R(); rs(a.rg() <  b ? 1 : 0);}               // Set the target register to one if the test between the 'a' and 'b' register is true else 0
 
       void one (Verilog v)        {v.assign(rn(),         "1");}                // One a register in Verilog
       void inc (Verilog v)        {v.assign(rn(), rn()+" + 1");}                // Increment a register in Verilog
@@ -1346,19 +1391,19 @@ if __name__ == "__main__":
       void le(Verilog v, Register a, int b) {v.assign(rn(), a.rn() +" <= "+ b +" ? 1 : 0");} // Set the target register to one if the test between the 'a' and 'b' register is true else 0
       void lt(Verilog v, Register a, int b) {v.assign(rn(), a.rn() +" <  "+ b +" ? 1 : 0");} // Set the target register to one if the test between the 'a' and 'b' register is true else 0
 
-      void Gt(Register a, Register b) {zz(); new Instruction() {void action() {gt(a, b);} void verilog(Verilog v) {gt(v, a, b);}};} // Set the target register to one if the test between the 'a' and 'b' register is true else 0 as an instruction
-      void Ge(Register a, Register b) {zz(); new Instruction() {void action() {ge(a, b);} void verilog(Verilog v) {ge(v, a, b);}};} // Set the target register to one if the test between the 'a' and 'b' register is true else 0 as an instruction
-      void Eq(Register a, Register b) {zz(); new Instruction() {void action() {eq(a, b);} void verilog(Verilog v) {eq(v, a, b);}};} // Set the target register to one if the test between the 'a' and 'b' register is true else 0 as an instruction
-      void Ne(Register a, Register b) {zz(); new Instruction() {void action() {ne(a, b);} void verilog(Verilog v) {ne(v, a, b);}};} // Set the target register to one if the test between the 'a' and 'b' register is true else 0 as an instruction
-      void Le(Register a, Register b) {zz(); new Instruction() {void action() {le(a, b);} void verilog(Verilog v) {le(v, a, b);}};} // Set the target register to one if the test between the 'a' and 'b' register is true else 0 as an instruction
-      void Lt(Register a, Register b) {zz(); new Instruction() {void action() {lt(a, b);} void verilog(Verilog v) {lt(v, a, b);}};} // Set the target register to one if the test between the 'a' and 'b' register is true else 0 as an instruction
+      void Gt(Register a, Register b) {new Instruction() {void action() {gt(a, b);} void verilog(Verilog v) {gt(v, a, b);}};} // Set the target register to one if the test between the 'a' and 'b' register is true else 0 as an instruction
+      void Ge(Register a, Register b) {new Instruction() {void action() {ge(a, b);} void verilog(Verilog v) {ge(v, a, b);}};} // Set the target register to one if the test between the 'a' and 'b' register is true else 0 as an instruction
+      void Eq(Register a, Register b) {new Instruction() {void action() {eq(a, b);} void verilog(Verilog v) {eq(v, a, b);}};} // Set the target register to one if the test between the 'a' and 'b' register is true else 0 as an instruction
+      void Ne(Register a, Register b) {new Instruction() {void action() {ne(a, b);} void verilog(Verilog v) {ne(v, a, b);}};} // Set the target register to one if the test between the 'a' and 'b' register is true else 0 as an instruction
+      void Le(Register a, Register b) {new Instruction() {void action() {le(a, b);} void verilog(Verilog v) {le(v, a, b);}};} // Set the target register to one if the test between the 'a' and 'b' register is true else 0 as an instruction
+      void Lt(Register a, Register b) {new Instruction() {void action() {lt(a, b);} void verilog(Verilog v) {lt(v, a, b);}};} // Set the target register to one if the test between the 'a' and 'b' register is true else 0 as an instruction
 
-      void Gt(Register a, int b)      {zz(); new Instruction() {void action() {gt(a, b);} void verilog(Verilog v) {gt(v, a, b);}};} // Set the target register to one if the test between the 'a' and 'b' register is true else 0 as an instruction
-      void Ge(Register a, int b)      {zz(); new Instruction() {void action() {ge(a, b);} void verilog(Verilog v) {ge(v, a, b);}};} // Set the target register to one if the test between the 'a' and 'b' register is true else 0 as an instruction
-      void Eq(Register a, int b)      {zz(); new Instruction() {void action() {eq(a, b);} void verilog(Verilog v) {eq(v, a, b);}};} // Set the target register to one if the test between the 'a' and 'b' register is true else 0 as an instruction
-      void Ne(Register a, int b)      {zz(); new Instruction() {void action() {ne(a, b);} void verilog(Verilog v) {ne(v, a, b);}};} // Set the target register to one if the test between the 'a' and 'b' register is true else 0 as an instruction
-      void Le(Register a, int b)      {zz(); new Instruction() {void action() {le(a, b);} void verilog(Verilog v) {le(v, a, b);}};} // Set the target register to one if the test between the 'a' and 'b' register is true else 0 as an instruction
-      void Lt(Register a, int b)      {zz(); new Instruction() {void action() {lt(a, b);} void verilog(Verilog v) {lt(v, a, b);}};} // Set the target register to one if the test between the 'a' and 'b' register is true else 0 as an instruction
+      void Gt(Register a, int b)      {new Instruction() {void action() {gt(a, b);} void verilog(Verilog v) {gt(v, a, b);}};} // Set the target register to one if the test between the 'a' and 'b' register is true else 0 as an instruction
+      void Ge(Register a, int b)      {new Instruction() {void action() {ge(a, b);} void verilog(Verilog v) {ge(v, a, b);}};} // Set the target register to one if the test between the 'a' and 'b' register is true else 0 as an instruction
+      void Eq(Register a, int b)      {new Instruction() {void action() {eq(a, b);} void verilog(Verilog v) {eq(v, a, b);}};} // Set the target register to one if the test between the 'a' and 'b' register is true else 0 as an instruction
+      void Ne(Register a, int b)      {new Instruction() {void action() {ne(a, b);} void verilog(Verilog v) {ne(v, a, b);}};} // Set the target register to one if the test between the 'a' and 'b' register is true else 0 as an instruction
+      void Le(Register a, int b)      {new Instruction() {void action() {le(a, b);} void verilog(Verilog v) {le(v, a, b);}};} // Set the target register to one if the test between the 'a' and 'b' register is true else 0 as an instruction
+      void Lt(Register a, int b)      {new Instruction() {void action() {lt(a, b);} void verilog(Verilog v) {lt(v, a, b);}};} // Set the target register to one if the test between the 'a' and 'b' register is true else 0 as an instruction
 
       void zero()                                                               // Zero a register in Java
        {R(); zz();
@@ -1427,7 +1472,7 @@ if __name__ == "__main__":
        }
 
       void Dec()                                                                // Decrement a register instruction
-       {zz(); new Instruction()
+       {new Instruction()
          {void action()           {dec();};
           void verilog(Verilog v) {dec(v);};
          };
@@ -1670,7 +1715,8 @@ if __name__ == "__main__":
      }
 
     void memorySet(Register Value, Register Index)                              // Set a memory element indexed by a register
-     {zz(); if (Value.registerArrayed())                                        // Single register from memory
+     {R(); zz();
+      if (Value.registerArrayed())                                        // Single register from memory
        {stop("Single register required for interactions with memory");
        }
       if (Value.registerBits != memoryBlockSize * memoryWidth)                  // Confirm the size of the register being read into
@@ -1679,28 +1725,35 @@ if __name__ == "__main__":
       memory[Index.registerGet()] = (BitSet)Value.value.clone();                // Read memory at index
      }
 
-    void memorySet(Verilog v, Register Value, Register Index)                   // Set a memory element indexed by a register
+    void memorySet(Verilog v, Register Value, Register Index)                   // Set a memory element indexed by a register.
      {zz();
       v.assign(processMemoryName()+"["+Index.registerName()+"]",
                Value.registerName());
      }
 
-    void memorySetValue(int Value, int Index)                                   // Set a memory element
-     {final int l = min(memoryWidth, Integer.SIZE-1);                           // The most bits we can hope to represent
-      final BitSet v = memory   [Index];                                        // Memory element
-      zz(); v.clear();                                                          // Zero the memory
-      for (int i = 0; i < l; i++) if (((Value >> i) & 1) != 0) v.set(i);        // Set each bit in the bitset if the corresponding bit in the value is set
-     }
+    void MemorySet(Register Value, Register Index)                              // Set a memory element indexed by a register as an instruction
+     {zz(); new Instruction()
+       {void action ()          {memorySet(   Value, Index);}
+        void verilog(Verilog v) {memorySet(v, Value, Index);}
+       };
+     };
 
-    void memorySet(int Index, int...Values)                                     // Set a memory block to the specified values
-     {zz(); if (Values.length != memoryBlockSize)
-       {stop("Wrong number of values supplied:", memoryBlockSize,
-             "expected", Values.length, "supplied");
-       }
-      for (int i = 0; i < Values.length; i++)                                   // Load each element of the block
-       {memorySetValue(Values[i], Index*memoryBlockSize + i);
-       }
-     }
+//    void memorySetValue(int Value, int Index)                                   // Set a memory element
+//     {final int l = min(memoryWidth, Integer.SIZE-1);                           // The most bits we can hope to represent
+//      final BitSet v = memory   [Index];                                        // Memory element
+//      zz(); v.clear();                                                          // Zero the memory
+//      for (int i = 0; i < l; i++) if (((Value >> i) & 1) != 0) v.set(i);        // Set each bit in the bitset if the corresponding bit in the value is set
+//     }
+//
+//    void memorySet(int Index, int...Values)                                     // Set a memory block to the specified values
+//     {zz(); if (Values.length != memoryBlockSize)
+//       {stop("Wrong number of values supplied:", memoryBlockSize,
+//             "expected", Values.length, "supplied");
+//       }
+//      for (int i = 0; i < Values.length; i++)                                   // Load each element of the block
+//       {memorySetValue(Values[i], Index*memoryBlockSize + i);
+//       }
+//     }
 
 //D3 Transaction                                                                // A transaction allows other processes on the chip to request services from this process
 
@@ -1798,31 +1851,7 @@ if __name__ == "__main__":
      } // Transaction
 
     Transaction transaction(String Name, Process CallingProcess, String OpCode) // Transactions allow one process to request services from another process by supplying the service name and the input and output registers
-     {zz(); return new Transaction(Name, CallingProcess, OpCode);
-     }
-
-//D3 Store and Retrieve                                                         // Save memory to a string or reload memory from a string
-
-    String processSave()                                                        // Save memory
-     {final StringBuilder s = new StringBuilder();
-      s.append(" "+memoryWidth);
-      s.append(" "+memorySize);
-      s.append(" "+memoryBlockSize);
-      for (int i = 0; i < memory.length; i++)
-       {s.append(" "+memoryGet(i));
-       }
-      return (""+s).trim()+"\n";
-     }
-
-    void processLoad(String line)                                               // Load memory from a string
-     {final String[]w = line.trim().split("\\s+");
-      final int   []n = new int[w.length];
-      for (int i = 0; i < w.length; i++) n[i] = Integer.parseInt(w[i]);
-
-      if (memoryWidth     != n[0]) stop("Wrong width:",     memoryWidth,     n[0]);
-      if (memorySize      != n[1]) stop("Wrong size",       memorySize,      n[1]);
-      if (memoryBlockSize != n[2]) stop("Wrong block size", memoryBlockSize, n[2]);
-      for (int i = 0; i < memory.length; i++) memorySetValue(n[i+3], i);
+     {zz(); err("Deprecated"); return new Transaction(Name, CallingProcess, OpCode);
      }
    } // Process
 
@@ -1840,13 +1869,79 @@ if __name__ == "__main__":
   class Memory extends Process                                                  // A process whose main purpose is to maintain memory
    {final Map<String, Get> memoryGetFromProcess = new TreeMap<>();              // Locate a get transaction associated with this memory by name
     final Map<String, Set> memorySetIntoProcess = new TreeMap<>();              // Locate a set transaction associated with this memory by name
+
     Memory(String ProcessName, int MemorySize, int MemoryWidth, int BlockSize)  // Create a memory process
      {super(ProcessName, MemorySize, MemoryWidth, BlockSize);
       memoryProcessGenerate();                                                  // Generate the code to execute this process
      }
+
     Memory(String ProcessName, int MemorySize, int MemoryWidth)                 // Create a memory process to read a single element at a time
      {this(ProcessName, MemorySize, MemoryWidth, 1);
      }
+
+//D3 Store and Retrieve                                                         // Save memory to a string or reload memory from a string
+
+    String memorySave()                                                         // Save memory to a string
+     {final int     S = memorySize, W = memoryWidth, B = memoryBlockSize; zz(); // Shorten names
+      final StringBuilder s = new StringBuilder();
+      s.append(" "+W+" "+S+" "+B);                                              // Save dimensions so they can be checked on reload
+      for(int i = 0; i < S; i++)                                                // Transform memory blocks into bits
+       {final BitSet b = memory[i];
+        for (int j = 0; j < W * B; j++) s.append(" "+(b.get(j) ? "1" : "0"));   // Save each bit
+       }
+      return (""+s).trim()+"\n";                                                // String of bits representing memory
+     }
+
+    void memoryLoad(Process P, String line)                                     // Load memory from a string
+     {final int     S = memorySize, W = memoryWidth, B = memoryBlockSize; zz(); // Shorten names
+      final String[]w = line.trim().split("\\s+");                              // Input line as words
+      final int   []n = new int[w.length];                                      // Input line as numbers
+      for (int i = 0; i < w.length; i++) n[i] = Integer.parseInt(w[i]);         // Parse words in input string into numbers
+
+      if (W != n[0]) stop("Wrong width:",     W, n[0]);
+      if (S != n[1]) stop("Wrong size",       S, n[1]);
+      if (B != n[2]) stop("Wrong block size", B, n[2]);
+
+      final int N = W * B;                                                      // The width of each memory element
+      if (3 + memorySize * N != n.length) stop("Wrong number of bits");
+
+      if (W >= Integer.SIZE)                                                    // Check that we can load the memory into an integer array.  Real implementations are likely to use much bigger memeory elements but integers are sufficient for initial testing.
+       {stop("Memory elements too big to be held in integers");
+       }
+
+      final int[][]M = new int[S][B];                                           // Array of values to load into memeory reconstructed from string input
+
+      for(int i = 0; i < memorySize; i++)                                       // Convert bits to integers
+       {for (int j = 0; j < N; j++)
+         {if (n[3+i*N+j] > 0) M [i] [j / W] |= (1 << (j % W));                  // Or each bit into the corresponding integer
+         }
+
+        for(int j = 0; j < B; j++)  M[i][j] &= (1 << W)-1;                      // Mask integers to match memory size so that they wrap in a way that matches verilog
+       }
+      memoryLoad(P, M);                                                         // Reload memory from the array of integers.
+     }
+
+    void memoryLoad(Process r, int [][]Load)                                    // Load memory from the specified process
+     {final int B = memoryWidth, N = memorySize, S = memoryBlockSize; zz();
+      Register n  = r.register("n",  1+logTwo(N));                              // A register wide enough to address the memory elements
+
+      Register ss = r.register("ss",  B*S);                                     // The single array to be loaded into memeory. Using a single array makes memory updates more efficient.
+      Register sa = r.register("sa",  B, S);                                    // An arrayed register into which the user supplied values will be loaded before being copied into the single register
+      Set      st = new Set(r);                                                 // The set transaction used to request updates to memory
+
+      for   (int i = 0; i < memorySize;      i++)                               // Load arrayed register
+       {for (int j = 0; j < memoryBlockSize; j++)
+         {sa.RegisterSet((i < Load.length && j < Load[i].length ? Load[i][j] : 0), j);
+         }
+        n.RegisterSet(i);
+        ss.RegisterCopySingleFromArray(sa);                                     // Linearize the arrayed register into the single register
+        st.ExecuteTransaction(n, ss);                                           // Pass the single register to memeory through a transaction
+        st.WaitResultOfTransaction();                                           // Wait for the update to complete
+       }
+     }
+
+//D3 Get transaction                                                            // A transaction to read memory thus insuring that memory is only ever read from one always block
+
     class Get extends Process.Transaction                                       // Get a value from the memory controlled by this process
      {final Process  process;                                                   // The calling process
       final Register index;                                                     // The index of the element whose value is required
@@ -1881,7 +1976,7 @@ if __name__ == "__main__":
          };
        }
 
-      void waitResultOfTransaction()                                            // Wait for the request to finish
+      void WaitResultOfTransaction()                                            // Wait for the request to finish
        {zz(); process.new Instruction(true)
          {void action()
            {if (transactionFinished()) process.Continue();
@@ -1896,11 +1991,14 @@ if __name__ == "__main__":
      } // Get
 
     Memory.Get memoryGetFromProcess(Process Caller)                             // Reuse the existing transaction if it exists else create a new one
-     {zz(); if (memoryGetFromProcess.containsKey(Caller.processName))
+     {zz();
+      if (memoryGetFromProcess.containsKey(Caller.processName))
        {return memoryGetFromProcess.get(Caller.processName);                    // Return existing transaction
        }
       return new Get(Caller);                                                   // Create a transaction to allow the caller to get items from this memory process
      }
+
+//D3 Set transaction                                                            // A transaction to write memory thus insuring that memory is only ever written from one always block
 
     class Set extends Process.Transaction                                       // Set an indexed memory element to a specified value
      {final Process  process;                                                   // The calling process
@@ -1941,7 +2039,7 @@ if __name__ == "__main__":
          };
        }
 
-      void waitResultOfTransaction()                                            // Wait for the update request to finish
+      void WaitResultOfTransaction()                                            // Wait for the update request to finish
        {zz(); process.new Instruction(true)
          {void action()
            {if (transactionFinished()) process.Continue();
@@ -1962,6 +2060,8 @@ if __name__ == "__main__":
        }
       return new Set(Caller);                                                   // Create a transaction to allow the caller to set items into this memory process
      }
+
+//D3 Get/Set memeory                                                            // Perform a read from memory or a write into memory using a single always block to control each memory
 
     void memoryProcessGenerate()                                                // Generate the code needed to support the transactions against this memory process
      {zz(); new Instruction(true)                                               // Loop on this single instruction processing memory requests
@@ -2040,31 +2140,19 @@ if __name__ == "__main__":
     var ra = r.register("ra",  B, S);
     var rt = m.new Get(r);
 
-    var ss = r.register("ss",  B*S);
-    var sa = r.register("sa",  B, S);
-    var st = m.new Set(r);
+    final int[][]l = new int[N][S];
+    for   (int i = 0; i < N; i++)
+      for (int j = 0; j < S; j++) l[i][j] = S*i+j+1;
+    m.memoryLoad(r, l);
 
-    for   (int i = 0; i < N; i++)                                               // Preload memory
-     {for (int j = 0; j < S; j++) sa.RegisterSet(S*i+j+1, j);
-      n.RegisterSet(i);
-      ss.RegisterCopySingleFromArray(sa);
-r.new Instruction()
- {void action()
-   {say("AAAA", sa, ss);
-   }
-};
-      st.ExecuteTransaction(n, ss);
-      st.waitResultOfTransaction();
-     }
-
-    c.maxSteps = 100;
+    c.maxSteps = 1000;
     c.chipRun();
     //stop(c);
     ok(""+c, """
-Chip: Test             step: 49, maxSteps: 100, running: 0
+Chip: Test             step: 49, maxSteps: 1000, running: 0
   Processes:
     Process: 0 - Memory                instructions: 1, pc: 0, rc: 0
-      Memory: size: 8, width: 8, block: 2
+      Memory: size: 8, width: 4, block: 2
          1,  2,  3,  4,  5,  6,  7,  8,  9, 10, 11, 12, 13, 14, 15,  0
       Registers :
         Memory_Memory_1_result_0                           = 0
@@ -2076,127 +2164,65 @@ Chip: Test             step: 49, maxSteps: 100, running: 0
             Memory_Memory_1_result_0                       = 0
         Transaction   : set      - Memory_2          requested at: 46, finished at: 47, returnCode: 0, executable: 0, finished: 1
           Inputs      :
-            Requests_Memory_2_index_7                      = 7
-            Requests_Memory_2_value_8                      = 15
+            Requests_Memory_2_index_8                      = 7
+            Requests_Memory_2_value_9                      = 15
     Process: 1 - Requests              instructions: 48, pc: 48, rc: 0
       Registers :
-        Requests_n_0                                       = 7
+        Requests_n_0                                       = 0
         Requests_o_1                                [   0] = 0
         Requests_o_1                                [   1] = 0
         Requests_rs_2                                      = 0
         Requests_ra_3                               [   0] = 0
         Requests_ra_3                               [   1] = 0
         Requests_Memory_1_index_4                          = 0
-        Requests_ss_5                                      = 15
-        Requests_sa_6                               [   0] = 15
-        Requests_sa_6                               [   1] = 0
-        Requests_Memory_2_index_7                          = 7
-        Requests_Memory_2_value_8                          = 15
+        Requests_n_5                                       = 7
+        Requests_ss_6                                      = 15
+        Requests_sa_7                               [   0] = 15
+        Requests_sa_7                               [   1] = 0
+        Requests_Memory_2_index_8                          = 7
+        Requests_Memory_2_value_9                          = 15
 """);
 
     n.RegisterSet(1);                                                           // Request the value of an indexed element of memory
     rt.ExecuteTransaction(n);                                                   // Request value of memory at the index
-    rt.waitResultOfTransaction();                                               // Request value of memory at the index
+    rt.WaitResultOfTransaction();                                               // Request value of memory at the index
     o.RegisterCopyArrayFromSingle(rt.transactionOutputRegisters.firstElement());// Unpack results from memory
 
     c.chipRun();
-    stop(c);
+    //stop(c);
     ok(""+c, """
-""");
-   }
-
-  static void test_memoryParallel()
-   {final int B = 8, N = 8, S = 2;
-    var c  = chip("Test");
-    var m  = c.new Memory("Memory", N, B, S);
-    var r  = c.process("Requests");
-        r.processTrace = true;
-    var ri = r.register("index",  B);
-    var rt = m.new Get(r);
-
-    var si = r.register("index",  B);
-    var st = m.new Get(r);
-
-    var t1 = r.register("t1",  B);
-    var t2 = r.register("t2",  B);
-    var t  = r.register("t",   B, S);
-    var tt = m.new Set(r);
-
-    for(int i = 0; i < N; i++)
-     {final int[]I = new int[S];
-      for (int j = 0; j < S; j++) I[j] = S*i+j+1;
-      m.memorySet(i, I);
-     }
-
-    ri.RegisterSet(1);                                                          // Index of memory requested
-
-    rt.ExecuteTransaction(ri);                                                  // Request value of memory at the index
-
-    si.RegisterSet(2);                                                          // Index of memory requested
-
-    st.ExecuteTransaction(si);                                                  // Request value of memory at the index
-    st.waitResultOfTransaction();                                               // Request value of memory at the index
-    rt.waitResultOfTransaction();                                               // Request value of memory at the index
-
-    t1.RegisterSet(11);                                                         // Value to set into memory
-    t2.RegisterSet(22);                                                         // Value to set into memory
-    t.Copy(0, t1);
-    t.Copy(1, t1);
-
-    tt.ExecuteTransaction(si, t);                                               // Request value of memory at the index
-    tt.waitResultOfTransaction();                                               // Request value of memory at the index
-
-    r.ProcessStop(1);                                                           // Halt the run - not necessary but here just to test that it can be done
-
-    c.maxSteps = 100;
-    c.chipRun();
-
-    ok(rt.transactionOutputRegisters.firstElement().registerGet(0), 3);
-    ok(rt.transactionOutputRegisters.firstElement().registerGet(1), 4);
-    ok(st.transactionOutputRegisters.firstElement().registerGet(0), 5);
-    stop(c);
-    ok(""+c, """
-Chip: Test             step: 11, maxSteps: 100, running: 0
+Chip: Test             step: 53, maxSteps: 1000, running: 0
   Processes:
     Process: 0 - Memory                instructions: 1, pc: 0, rc: 0
-      Memory: size: 8, width: 8, block: 2
-         1,  2,  3,  4, 11, 22,  7,  8,  9, 10, 11, 12, 13, 14, 15, 16
+      Memory: size: 8, width: 4, block: 2
+         1,  2,  3,  4,  5,  6,  7,  8,  9, 10, 11, 12, 13, 14, 15,  0
       Registers :
-        Memory_value_0                                     = 0
-        Memory_Memory_1_result_1                    [   0] = 3
-        Memory_Memory_1_result_1                    [   1] = 4
-        Memory_Memory_2_result_2                    [   0] = 5
-        Memory_Memory_2_result_2                    [   1] = 6
+        Memory_Memory_1_result_0                           = 67
       Transactions:
-        Transaction   : get      - Memory_1          requested at: 1, finished at: 2, returnCode: 0, executable: 0, finished: 1
+        Transaction   : get      - Memory_1          requested at: 49, finished at: 50, returnCode: 0, executable: 0, finished: 1
           Inputs      :
-            Requests_Memory_1_index_2                      = 1
+            Requests_Memory_1_index_4                      = 1
           Outputs     :
-            Memory_Memory_1_result_1                [   0] = 3
-            Memory_Memory_1_result_1                [   1] = 4
-        Transaction   : get      - Memory_2          requested at: 3, finished at: 4, returnCode: 0, executable: 0, finished: 1
+            Memory_Memory_1_result_0                       = 67
+        Transaction   : set      - Memory_2          requested at: 46, finished at: 47, returnCode: 0, executable: 0, finished: 1
           Inputs      :
-            Requests_Memory_2_index_4                      = 2
-          Outputs     :
-            Memory_Memory_2_result_2                [   0] = 5
-            Memory_Memory_2_result_2                [   1] = 6
-        Transaction   : set      - Memory_3          requested at: 8, finished at: 9, returnCode: 0, executable: 0, finished: 1
-          Inputs      :
-            Requests_Memory_3_index_7                      = 2
-            Requests_Memory_3_value_8               [   0] = 11
-            Requests_Memory_3_value_8               [   1] = 22
-    Process: 1 - Requests              instructions: 11, pc: 11, rc: 1
+            Requests_Memory_2_index_8                      = 7
+            Requests_Memory_2_value_9                      = 15
+    Process: 1 - Requests              instructions: 52, pc: 52, rc: 0
       Registers :
-        Requests_value_0                                   = 0
-        Requests_index_1                                   = 1
-        Requests_Memory_1_index_2                          = 1
-        Requests_index_3                                   = 2
-        Requests_Memory_2_index_4                          = 2
-        Requests_value_5                                   = 11
-        Requests_value_6                                   = 22
-        Requests_Memory_3_index_7                          = 2
-        Requests_Memory_3_value_8                   [   0] = 11
-        Requests_Memory_3_value_8                   [   1] = 22
+        Requests_n_0                                       = 1
+        Requests_o_1                                [   0] = 3
+        Requests_o_1                                [   1] = 4
+        Requests_rs_2                                      = 0
+        Requests_ra_3                               [   0] = 0
+        Requests_ra_3                               [   1] = 0
+        Requests_Memory_1_index_4                          = 1
+        Requests_n_5                                       = 7
+        Requests_ss_6                                      = 15
+        Requests_sa_7                               [   0] = 15
+        Requests_sa_7                               [   1] = 0
+        Requests_Memory_2_index_8                          = 7
+        Requests_Memory_2_value_9                          = 15
 """);
    }
 
@@ -2246,7 +2272,7 @@ Chip: Test             step: 11, maxSteps: 100, running: 0
 
       i.Inc();
 
-      t.waitResultOfTransaction();                                              // Request value of memory at the index
+      t.WaitResultOfTransaction();                                              // Request value of memory at the index
      }
 
     p.ProcessStop(1);                                                           // Halt the run
@@ -2278,13 +2304,13 @@ Chip: Test             step: 82, maxSteps: 100, running: 0
 
     //stop(C.chipPrintMemory());
 
+    //stop(C.chipPrintMemory());
     ok(C.chipPrintMemory(), """
 Chip: Test             step: 82, maxSteps: 100, running: 0
   Processes:
     Memory
-      Memory: size: 16, width: 16, block:  1
-        0  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24
-        1  2  3  5  8 13 21 34 55 89 144 233 377 610 987 1597
+      Memory: size: 16, width: 16, block: 1
+         1,  2,  3,  5,  8, 13, 21, 34, 55, 89, 144, 233, 377, 610, 987, 1597
 """);
 
     ok(a.registerGet(), 987);
@@ -2398,38 +2424,66 @@ Chip: Test             step: 82, maxSteps: 100, running: 0
     Z.maxSteps = 20;
     Z.chipRun();
     //stop(Z);
-    ok(Z, """
+    ok(""+Z, """
 Chip: Test             step: 9, maxSteps: 20, running: 0
   Processes:
     Process: 0 - Main                  instructions: 11, pc: 11, rc: 0
       Registers :
-        Main_value_0                                       = 0
-        Main_a_1                                           = 1
-        Main_b_2                                           = 1
-        Main_B_3                                           = 1
-        Main_c_4                                           = 0
-        Main_C_5                                           = 4
+        Main_a_0                                           = 1
+        Main_b_1                                           = 1
+        Main_B_2                                           = 1
+        Main_c_3                                           = 0
+        Main_C_4                                           = 4
 """);
    }
 
   static void test_saveLoad()
    {final int B = 8, N = 16;
     var c = chip("Test");
-    var m = c.new Memory("Memory", N, B);
-    for (int i = 0; i < N; i++)
-     {m.memorySetValue(i+1, i);
-     }
+    var p = c.new Process("main");
+    var m = c.new Memory("Memory1", N, B);
+    var n = c.new Memory("Memory2", N, B);
 
-    m.processLoad(m.processSave());
+    final int[][]a = new int[N][1];
+
+    for (int i = 0; i < N; i++) a[i][0] = i+1;
+    m.memoryLoad(p, a);
+
+    c.maxSteps = 100;
+    c.chipRun();
     //stop(c.chipPrintMemory());
     ok(c.chipPrintMemory(), """
-Chip: Test             step: 0, maxSteps: 10, running: 0
+Chip: Test             step: 97, maxSteps: 100, running: 0
   Processes:
-    Memory
-      Memory: size: 16, width:  8, block:  1
-        0  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24
-        1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16
+    Memory1
+      Memory: size: 16, width: 8, block: 1
+         1,  2,  3,  4,  5,  6,  7,  8,  9, 10, 11, 12, 13, 14, 15, 16
+    Memory2
+      Memory: size: 16, width: 8, block: 1
+         0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0
 """);
+
+    final String memory = """
+8 16 1 1 0 0 0 0 0 0 0 0 1 0 0 0 0 0 0 1 1 0 0 0 0 0 0 0 0 1 0 0 0 0 0 1 0 1 0 0 0 0 0 0 1 1 0 0 0 0 0 1 1 1 0 0 0 0 0 0 0 0 1 0 0 0 0 1 0 0 1 0 0 0 0 0 1 0 1 0 0 0 0 1 1 0 1 0 0 0 0 0 0 1 1 0 0 0 0 1 0 1 1 0 0 0 0 0 1 1 1 0 0 0 0 1 1 1 1 0 0 0 0 0 0 0 0 1 0 0 0
+""";
+    //stop(m.memorySave());                                                      // Save the memory associated with this process so it can be reloaded later
+    ok(m.memorySave(), memory);
+
+    n.memoryLoad(p, memory);
+    c.maxSteps = 1000;
+    c.chipRun();
+    //stop(c.chipPrintMemory());
+    ok(c.chipPrintMemory(), """
+Chip: Test             step: 193, maxSteps: 1000, running: 0
+  Processes:
+    Memory1
+      Memory: size: 16, width: 8, block: 1
+         1,  2,  3,  4,  5,  6,  7,  8,  9, 10, 11, 12, 13, 14, 15, 16
+    Memory2
+      Memory: size: 16, width: 8, block: 1
+         1,  2,  3,  4,  5,  6,  7,  8,  9, 10, 11, 12, 13, 14, 15, 16
+""");
+
    }
 
   static void test_trace()
@@ -2641,29 +2695,28 @@ Chip: Test             step: 0, maxSteps: 10, running: 0
     C.maxSteps = 100;
     C.chipRun();
     //stop(C);
-    ok(""+C, """
+    ok(C, """
 Chip: Test             step: 15, maxSteps: 100, running: 0
   Processes:
     Process: 0 - process               instructions: 14, pc: 14, rc: 0
       Registers :
-        process_value_0                                    = 0
-        process_a_1                                 [   0] = 0
-        process_a_1                                 [   1] = 0
-        process_a_1                                 [   2] = 0
-        process_a_1                                 [   3] = 8
-        process_b_2                                 [   0] = 1
-        process_b_2                                 [   1] = 4
-        process_b_2                                 [   2] = 5
-        process_b_2                                 [   3] = 8
-        process_c_3                                        = 5
-        process_d_4                                 [   0] = 0
-        process_d_4                                 [   1] = 4
-        process_d_4                                 [   2] = 0
-        process_d_4                                 [   3] = 8
-        process_e_5                                 [   0] = 0
-        process_e_5                                 [   1] = 0
-        process_e_5                                 [   2] = 0
-        process_e_5                                 [   3] = 0
+        process_a_0                                 [   0] = 0
+        process_a_0                                 [   1] = 0
+        process_a_0                                 [   2] = 0
+        process_a_0                                 [   3] = 8
+        process_b_1                                 [   0] = 1
+        process_b_1                                 [   1] = 4
+        process_b_1                                 [   2] = 5
+        process_b_1                                 [   3] = 8
+        process_c_2                                        = 5
+        process_d_3                                 [   0] = 0
+        process_d_3                                 [   1] = 4
+        process_d_3                                 [   2] = 0
+        process_d_3                                 [   3] = 8
+        process_e_4                                 [   0] = 0
+        process_e_4                                 [   1] = 0
+        process_e_4                                 [   2] = 0
+        process_e_4                                 [   3] = 0
 """);
    }
 
@@ -2681,29 +2734,28 @@ Chip: Test             step: 15, maxSteps: 100, running: 0
     a.Zero();
     C.chipRun();
     //stop(b);
-    ok(b, "process_b_2 =   0  1  0  1");
+    ok(b, "process_b_1 =   0  1  0  1");
     //stop(C);
-    ok(""+C, """
+    ok(C, """
 Chip: Test             step: 6, maxSteps: 10, running: 0
   Processes:
     Process: 0 - process               instructions: 5, pc: 5, rc: 0
       Registers :
-        process_value_0                                    = 0
-        process_a_1                                 [   0] = 0
-        process_a_1                                 [   1] = 0
-        process_a_1                                 [   2] = 0
-        process_a_1                                 [   3] = 0
-        process_b_2                                 [   0] = 0
-        process_b_2                                 [   1] = 1
-        process_b_2                                 [   2] = 0
-        process_b_2                                 [   3] = 1
+        process_a_0                                 [   0] = 0
+        process_a_0                                 [   1] = 0
+        process_a_0                                 [   2] = 0
+        process_a_0                                 [   3] = 0
+        process_b_1                                 [   0] = 0
+        process_b_1                                 [   1] = 1
+        process_b_1                                 [   2] = 0
+        process_b_1                                 [   3] = 1
 """);
    }
 
   static void test_copyArrayToSingle()
    {var C = chip("Test");
     var p = C.new Process("main");
-    p.processTrace = true;
+        p.processTrace = true;
     var a = p.new Register("a", 4, 2);
     var b = p.new Register("b", 8);
     var c = p.new Register("c", 1, 8);
@@ -2714,31 +2766,49 @@ Chip: Test             step: 6, maxSteps: 10, running: 0
     c.RegisterCopyArrayFromSingle(b);
 
     C.chipRun();
-    stop(C);
+    //stop(C);
     ok(""+C, """
 Chip: Test             step: 5, maxSteps: 10, running: 0
   Processes:
     Process: 0 - main                  instructions: 4, pc: 4, rc: 0
       Registers :
-        main_value_0                                       = 0
-        main_a_1                                    [   0] = 1
-        main_a_1                                    [   1] = 2
-        main_b_2                                           = 33
-        main_c_3                                    [   0] = 1
-        main_c_3                                    [   1] = 0
-        main_c_3                                    [   2] = 0
-        main_c_3                                    [   3] = 0
-        main_c_3                                    [   4] = 0
-        main_c_3                                    [   5] = 1
-        main_c_3                                    [   6] = 0
-        main_c_3                                    [   7] = 0
+        main_a_0                                    [   0] = 1
+        main_a_0                                    [   1] = 2
+        main_b_1                                           = 33
+        main_c_2                                    [   0] = 1
+        main_c_2                                    [   1] = 0
+        main_c_2                                    [   2] = 0
+        main_c_2                                    [   3] = 0
+        main_c_2                                    [   4] = 0
+        main_c_2                                    [   5] = 1
+        main_c_2                                    [   6] = 0
+        main_c_2                                    [   7] = 0
+""");
+   }
+
+  static void test_register_hex()
+   {var C = chip("Test");
+    var p = C.new Process("main");
+        p.processTrace = true;
+    var a = p.new Register("a", 64);
+
+    a.RegisterSet(17);
+    C.chipRun();
+    //stop(a.registerGetHex());
+    ok(a.registerGetHex(), "0000000000000011x");
+    //stop(C);
+    ok(""+C, """
+Chip: Test             step: 2, maxSteps: 10, running: 0
+  Processes:
+    Process: 0 - main                  instructions: 1, pc: 1, rc: 0
+      Registers :
+        main_a_0                                           = 0000000000000011x
 """);
    }
 
   static void oldTests()                                                        // Tests thought to be in good shape
    {test_stop();
     test_memory();
-    test_memoryParallel();
     test_arithmeticFibonacci();
     test_block();
     test_if();
@@ -2753,11 +2823,11 @@ Chip: Test             step: 5, maxSteps: 10, running: 0
     test_register_array();
     test_register_array_one();
     test_copyArrayToSingle();
+    test_register_hex();
    }
 
   static void newTests()                                                        // Tests being worked on
-   {//oldTests();
-    test_memory();
+   {oldTests();
    }
 
   public static void main(String[] args)                                        // Test if called as a program
