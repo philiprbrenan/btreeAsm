@@ -653,12 +653,12 @@ chipStop = true;
      }
 
     void combine(Verilog v, Stuck Source)                                       // Combine a stuck from the specified source to this stuck
-     {keys.combine(v, Source.keys); zz();
+     {keys.combine(v, Source.keys);
       data.combine(v, Source.data);
      }
 
     void Combine(Stuck Source)                                                  // Combine a stuck from the specified source to this stuck as an instruction
-     {zz(); P.new Instruction()
+     {P.new Instruction()
        {void action()           {combine(   Source);}
         void verilog(Verilog v) {combine(v, Source);}
        };
@@ -671,7 +671,7 @@ chipStop = true;
      }
 
     void clear(Verilog v)                                                       // Set the size of the stuck to zero to clear it
-     {if (coverageAnalysis) zz(); size.zero(v);
+     {size.zero(v);
      }
 
     void Clear()                                                                // Set the size of the stuck to zero to clear as a single instruction
@@ -925,7 +925,8 @@ chipStop = true;
 
     void setElementAt(Verilog v,                                                // Set the indexed key, data pair
       Process.Register Index, Process.Register Key, Process.Register Data)
-     {zz(); v.new If (Index.registerFullName+" == "+size.registerFullName)
+     {if (coverageAnalysis) zz();
+      v.new If (Index.registerFullName+" == "+size.registerFullName)
        {void Then()
          {size.inc(v);
          }
