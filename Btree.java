@@ -43,9 +43,10 @@ class Btree extends Chip                                                        
   final Process.Register splitIr;                                               // Index in memory of the right stuck
   final Process.Register splitMk;                                               // Mid key when merging two stucks
 
-  boolean suppressMerge = false;                                                // Suppress merges during put to allow merge steps to be tested individually.  If this is on the trees built for testing are already merged so there is nothing to test.
-  static boolean createTestTrees = false;                                       // Create trees to assist testing
-  static boolean debug  = false;                                                // Debug if enabled
+  boolean              suppressMerge    = false;                                // Suppress merges during put to allow merge steps to be tested individually.  If this is on the trees built for testing are already merged so there is nothing to test.
+  static       boolean createTestTrees  = false;                                // Create trees to assist testing
+  static       boolean debug            = false;                                // Debug if enabled
+  final static boolean coverageAnalysis = false;                                // Enables coverage checks
 
 //D1 Construction                                                               // Construct and layout a btree
 
@@ -505,7 +506,8 @@ chipStop = true;
 //D3 Copy                                                                       // Copy a stuck into itself or another stuck shifting the elements in the stuck by a predetermined amount
 
     void copy(Stuck Source)                                                     // Copy a stuck from the specified source to this stuck
-     {keys  .copy(Source.keys); zz();
+     {if (coverageAnalysis) zz();
+      keys  .copy(Source.keys);
       data  .copy(Source.data);
       size  .copy(Source.size);
       isLeaf.copy(Source.isLeaf);
@@ -519,7 +521,8 @@ chipStop = true;
      }
 
     void Copy(Stuck Source)                                                     // Copy a stuck from the specified source to this stuck as an instruction
-     {zz(); P.new Instruction()
+     {if (coverageAnalysis) zz();
+      P.new Instruction()
        {void action()           {copy(   Source);}
         void verilog(Verilog v) {copy(v, Source);}
        };
@@ -583,7 +586,8 @@ chipStop = true;
      }
 
     void copyUp(Stuck Source, int Power)                                        // Copy a stuck into itself or another stuck shifting the elements up in the stuck by a predetermined amount
-     {final int delta = powerTwo(Power); zz();
+     {if (coverageAnalysis) zz();
+      final int delta = powerTwo(Power);
       for (int i = maxStuckSize-1; i >= delta; i--)
        {keys.copy(i, Source.keys, i-delta);
         data.copy(i, Source.data, i-delta);
@@ -595,7 +599,8 @@ chipStop = true;
      }
 
     void copyUp(Verilog v, Stuck Source, int Power)                             // Copy a stuck into itself or another stuck shifting the elements up in the stuck by a predetermined amount
-     {final int delta = powerTwo(Power); zz();
+     {if (coverageAnalysis) zz();
+      final int delta = powerTwo(Power);
       final String i = P.processMemoryIndexName();
       v.A("for ("+i+" = "+maxStuckSize+"-1; "+i+" >= "+delta+"; "+i+" = "+i+" -1) begin");
       v.indent();
@@ -619,7 +624,8 @@ chipStop = true;
      }
 
     void CopyUp(Process.Register Delta)                                         // Copy a stuck up into itself a variable number of places
-     {zz(); for (int i = logTwo(prevPowerOfTwo(maxStuckSize)); i >= 0; i--)
+     {if (coverageAnalysis) zz();
+      for (int i = logTwo(prevPowerOfTwo(maxStuckSize)); i >= 0; i--)
        {final Stuck source = this;
         final int I = 1<<i, II = i;
         P.new Instruction()
@@ -642,7 +648,7 @@ chipStop = true;
 //D4 Combine                                                                    // Combine stucks by "or"ing their elements
 
     void combine(Stuck Source)                                                  // Combine a stuck from the specified source to this stuck
-     {keys.combine(Source.keys); zz();
+     {keys.combine(Source.keys);
       data.combine(Source.data);
      }
 
@@ -661,22 +667,24 @@ chipStop = true;
 //D3 Actions                                                                    // Just the actions needed on a stuck to support a btree
 
     void clear()                                                                // Set the size of the stuck to zero to clear it
-     {R(); zz(); size.zero();
+     {R(); if (coverageAnalysis) zz(); size.zero();
      }
 
     void clear(Verilog v)                                                       // Set the size of the stuck to zero to clear it
-     {zz(); size.zero(v);
+     {if (coverageAnalysis) zz(); size.zero(v);
      }
 
     void Clear()                                                                // Set the size of the stuck to zero to clear as a single instruction
-     {zz(); P.new Instruction()
+     {if (coverageAnalysis) zz();
+      P.new Instruction()
        {void action()           {clear(); }
         void verilog(Verilog v) {clear(v);}
        };
      }
 
     void push(Process.Register Key, Process.Register Data)                      // Push a key, data pair to the local copy of the stuck
-     {R(); zz(); final int N = size.registerGet();
+     {R(); if (coverageAnalysis) zz();
+      final int N = size.registerGet();
       if (N >= maxStuckSize)
        {P.processStop(1);
        }
@@ -688,13 +696,15 @@ chipStop = true;
      }
 
     void push(Verilog v, Process.Register Key, Process.Register Data)           // Push a key, data pair to the local copy of the stuck
-     {keys.copyIt(v, size, Key); zz();
+     {if (coverageAnalysis) zz();
+      keys.copyIt(v, size, Key);
       data.copyIt(v, size, Data);
       size.inc(v);
      }
 
     void Push(Process.Register Key, Process.Register Data)                      // Push a key, data pair to the local copy of the stuck as a single instruction
-     {zz(); P.new Instruction()
+     {if (coverageAnalysis) zz();
+      P.new Instruction()
        {void action()           {push(   Key, Data); }
         void verilog(Verilog v) {push(v, Key, Data);}
        };
@@ -713,7 +723,7 @@ chipStop = true;
      }
 
     void pop(Verilog v)                                                         // Pop a key, data pair from the local copy of the stuck
-     {Key .copyIs(v, keys, size, -1); zz();
+     {Key .copyIs(v, keys, size, -1);
       Data.copyIs(v, data, size, -1);
       size.dec(v);
      }
@@ -726,7 +736,8 @@ chipStop = true;
      }
 
     void setPastLastKey(Process.Register Key)                                   // Set the  key past the top of the stuck
-     {R(); zz(); final int N = size.registerGet();
+     {R(); if (coverageAnalysis) zz();
+      final int N = size.registerGet();
       if (N >= maxStuckSize)
        {P.processStop(3);
        }
@@ -737,11 +748,13 @@ chipStop = true;
 
     void setPastLastKey                                                         // Set the key past the top of the stuck
      (Verilog v, Process.Register Key)
-     {zz(); keys.copyIt(v, size, Key);
+     {if (coverageAnalysis) zz();
+      keys.copyIt(v, size, Key);
      }
 
     void SetPastLastKey(Process.Register Key)                                   // Set the key past the top of the stuck as an instruction
-     {zz(); P.new Instruction()
+     {if (coverageAnalysis) zz();
+      P.new Instruction()
        {void action()           {setPastLastKey(   Key); }
         void verilog(Verilog v) {setPastLastKey(v, Key);}
        };
@@ -769,7 +782,8 @@ chipStop = true;
      }
 
     void setPastLastElement(Process.Register Key, Process.Register Data)        // Push a key, data pair to the local copy of the stuck without changing the size
-     {R(); zz(); final int N = size.registerGet();
+     {R(); if (coverageAnalysis) zz();
+      final int N = size.registerGet();
       if (N >= maxStuckSize)
        {P.processStop(3);
        }
@@ -781,19 +795,21 @@ chipStop = true;
 
     void setPastLastElement                                                     // Push a key, data pair to the local copy of the stuck without changing the size
      (Verilog v, Process.Register Key, Process.Register Data)
-     {keys.copyIt(v, size, Key); zz();
+     {keys.copyIt(v, size, Key);
       data.copyIt(v, size, Data);
      }
 
     void SetPastLastElement(Process.Register Key, Process.Register Data)        // Push a key, data pair to the local copy of the stuck without changing the size as a single instruction
-     {zz(); P.new Instruction()
+     {if (coverageAnalysis) zz();
+      P.new Instruction()
        {void action()           {setPastLastElement(   Key, Data); }
         void verilog(Verilog v) {setPastLastElement(v, Key, Data);}
        };
      }
 
     void firstElement()                                                         // Get the first key, data pair
-     {R(); zz(); final int N = size.registerGet();
+     {R(); if (coverageAnalysis) zz();
+      final int N = size.registerGet();
       if (N == 0)
        {P.processStop(4);
        }
@@ -804,19 +820,21 @@ chipStop = true;
      }
 
     void firstElement(Verilog v)                                                // Get the first key, data pair
-     {Key .copy(v, keys, 0); zz();
+     {Key .copy(v, keys, 0);
       Data.copy(v, data, 0);
      }
 
     void FirstElement()                                                         // Get the first key, data pair as a single instruction
-     {zz(); P.new Instruction()
+     {if (coverageAnalysis) zz();
+      P.new Instruction()
        {void action()           {firstElement(); }
         void verilog(Verilog v) {firstElement(v);}
        };
      }
 
     void lastElement()                                                          // Get the last key, data pair
-     {R(); zz(); final int N = size.registerGet();
+     {R(); if (coverageAnalysis) zz();
+      final int N = size.registerGet();
       if (N >= maxStuckSize)
        {P.processStop(5);
        }
@@ -827,19 +845,21 @@ chipStop = true;
      }
 
     void lastElement(Verilog v)                                                 // Get the last key, data pair
-     {Key .copyIs(v, keys, size, -1); zz();
+     {Key .copyIs(v, keys, size, -1);
       Data.copyIs(v, data, size, -1);
      }
 
     void LastElement()                                                          // Get the last key, data pair as a single instruction
-     {zz(); P.new Instruction()
+     {if (coverageAnalysis) zz();
+      P.new Instruction()
        {void action()           {lastElement(); }
         void verilog(Verilog v) {lastElement(v);}
        };
      }
 
     void pastLastElement()                                                      // Get the past last key, data pair
-     {R(); zz(); final int N = size.registerGet();
+     {R(); if (coverageAnalysis) zz();
+      final int N = size.registerGet();
       if (N >= maxStuckSize-1)
        {P.processStop(6);
        }
@@ -850,7 +870,7 @@ chipStop = true;
      }
 
     void pastLastElement(Verilog v)                                             // Get the past last key, data pair
-     {Key .copyIs(v, keys, size); zz();
+     {Key .copyIs(v, keys, size);
       Data.copyIs(v, data, size);
      }
 
@@ -872,12 +892,13 @@ chipStop = true;
      }
 
     void elementAt(Verilog v, Process.Register Index)                           // Get the indexed key, data pair
-     {Key .copyIs(v, keys, Index); zz();
+     {Key .copyIs(v, keys, Index);
       Data.copyIs(v, data, Index);
      }
 
     void ElementAt(Process.Register Index)                                      // Get the indexed key, data pair as a single instruction
-     {zz(); P.new Instruction()
+     {if (coverageAnalysis) zz();
+      P.new Instruction()
        {void action()           {elementAt(   Index);}
         void verilog(Verilog v) {elementAt(v, Index);}
        };
@@ -915,7 +936,8 @@ chipStop = true;
 
     void SetElementAt                                                           // Set the indexed key, data pair as a single instruction
      (Process.Register Index, Process.Register Key, Process.Register Data)
-     {zz(); P.new Instruction()
+     {if (coverageAnalysis) zz();
+      P.new Instruction()
        {void action()           {setElementAt(   Index, Key, Data);}
         void verilog(Verilog v) {setElementAt(v, Index, Key, Data);}
        };
@@ -945,7 +967,8 @@ chipStop = true;
     void insertElementAt                                                        // Set the indexed key, data pair
      (Verilog v, Process.Register Index,
       Process.Register Key, Process.Register Data)
-     {zz(); size.inc(v);                                                        // Increase number of elements
+     {if (coverageAnalysis) zz();
+      size.inc(v);                                                              // Increase number of elements
       final String i = P.processMemoryIndexName();
       v.A("for("+i+" = "+maxStuckSize+"-1; "+i+" > 0; "+i+" = "+i+"-1) begin");
       v.indent();
@@ -962,7 +985,8 @@ chipStop = true;
 
     void InsertElementAt                                                        // Set the indexed key, data pair as a single instruction
      (Process.Register Index, Process.Register Key, Process.Register Data)
-     {zz(); P.new Instruction()
+     {if (coverageAnalysis) zz();
+      P.new Instruction()
        {void action()           {insertElementAt(   Index, Key, Data);}
         void verilog(Verilog v) {insertElementAt(v, Index, Key, Data);}
        };
@@ -985,7 +1009,8 @@ chipStop = true;
      }
 
     void removeElementAt(Verilog v, Process.Register Index)                     // Remove the indexed key, data pair from the stuck as a single instruction
-     {zz(); size.dec(v);
+     {if (coverageAnalysis) zz();
+      size.dec(v);
       Key .copyIs(v, keys, Index);
       Data.copyIs(v, data, Index);
 
@@ -1003,7 +1028,8 @@ chipStop = true;
      }
 
     void RemoveElementAt(Process.Register Index)                                // Remove the indexed key, data pair from the stuck as a single instruction
-     {zz(); P.new Instruction()
+     {if (coverageAnalysis) zz();
+      P.new Instruction()
        {void action()           {removeElementAt(   Index);}
         void verilog(Verilog v) {removeElementAt(v, Index);}
        };
@@ -1012,8 +1038,9 @@ chipStop = true;
 //D3 Search                                                                     // Search the stuck
 
     void search_eq_parallel(Process.Register Key)                               // Find the specified key if possible in the stuck
-     {if (!compareable) stop("Stuck "+stuckName+" was not declared compareable");
-      zz(); P.new Instruction()
+     {if (coverageAnalysis) zz();
+      if (!compareable) stop("Stuck "+stuckName+" was not declared compareable");
+      P.new Instruction()
        {void action()
          {final int N = size.registerGet();
           for (int i = 0; i < maxStuckSize; ++i)                                // Compare each key
@@ -1090,8 +1117,9 @@ chipStop = true;
      }
 
     void search_le_parallel(Process.Register Key)                               // Find the specified key if possible in the stuck
-     {if (!compareable) stop("Stuck "+stuckName+" was not declared compareable");
-      zz(); P.new Instruction()
+     {if (coverageAnalysis) zz();
+      if (!compareable) stop("Stuck "+stuckName+" was not declared compareable");
+      P.new Instruction()
        {void action()
          {final int N = size.registerGet();
           if (true)                                                             // Compare first key
@@ -1190,7 +1218,8 @@ chipStop = true;
 //D3 Split                                                                      // Split stucks in many and various ways
 
     void splitIntoTwo(Stuck Left, Stuck Right)                                  // Copy the first half key, data pairs into the left stuck, the remainder into the right stuck.  The original source stuck is not modifiedr
-     {zz(); final int C = maxStuckSize / 2;                                     // Split the stuck in half
+     {if (coverageAnalysis) zz();
+      final int C = maxStuckSize / 2;                                           // Split the stuck in half
       P.new Instruction()
        {void action()
          {final int N = size.registerGet();                                     // Current size of stuck
@@ -1228,7 +1257,8 @@ chipStop = true;
      }
 
     void splitIntoThree(Stuck Left, Stuck Right, int Copy)                      // Copy the specified number of key, data pairs into the left stuck, skip one pair, then copy the specified number onto into the right stuck
-     {zz(); P.new Instruction()
+     {if (coverageAnalysis) zz();
+      P.new Instruction()
        {void action()
          {final int N = size.registerGet();
           if (Copy >= N)
@@ -1270,7 +1300,8 @@ chipStop = true;
      }
 
     void splitLow(Stuck Left)                                                   // Split a full stuck with an even number of elements so that the first half is moved into the left stuck leaving the remainder moved down in the current stuck
-     {zz(); P.new Instruction()
+     {if (coverageAnalysis) zz();
+      P.new Instruction()
        {void action()
          {if (maxStuckSize % 2 == 1)
            {P.processStop(16);
@@ -1312,7 +1343,8 @@ chipStop = true;
      }
 
     void splitLowButOne(Stuck Left, Process.Register Key)                       // Split an almost full stuck with an odd number of elements so that the first half is moved into the left stuck extended by the data of the central element, while the remainder beyond the central element are moved down.  The central key is returned as it would otherwise be lost.
-     {zz(); P.new Instruction()
+     {if (coverageAnalysis) zz();
+      P.new Instruction()
        {void action()
          {if (maxStuckSize % 2 == 1)
            {P.processStop(18);
@@ -1365,7 +1397,8 @@ chipStop = true;
 //D3 Merge                                                                      // Merge stucks in various ways
 
     void merge(Stuck Source)                                                    // Concatenate the indicated stuck onto the end of the current one
-     {zz(); final Process.Register sum = mergeSum;                              // Sum of the lengths of the two stucks
+     {if (coverageAnalysis) zz();
+      final Process.Register sum = mergeSum;                                    // Sum of the lengths of the two stucks
       final Process.Register can = mergeCan;                                    // Can merge
       sum.Sum(Source.size, size);
       can.Le (sum, maxStuckSize);
@@ -1385,9 +1418,10 @@ chipStop = true;
      }
 
     void merge(Stuck Left, Stuck Right)                                         // Replace the current stuck with the concatenation of the two stucks indicated
-     {final Process.Register sum = mergeSum;                                    // Sum of the lengths of the two stucks
+     {if (coverageAnalysis) zz();
+      final Process.Register sum = mergeSum;                                    // Sum of the lengths of the two stucks
       final Process.Register can = mergeCan;                                    // Can merge
-      zz(); sum.Sum(Left.size, Right.size);
+      sum.Sum(Left.size, Right.size);
       can.Le (sum, maxStuckSize);
       P.new If (can)
        {void Then()
@@ -1403,9 +1437,10 @@ chipStop = true;
      }
 
     void mergeButOne(Process.Register Key, Stuck Source)                        // Concatenate the indicated stuck with a past last data element onto the end of the current stuck with a past last data element with the specified key inserted over the central past last data element separating the two.
-     {final Process.Register sum = mergeSum;                                    // Sum of the lengths of the two stucks
+     {if (coverageAnalysis) zz();
+      final Process.Register sum = mergeSum;                                    // Sum of the lengths of the two stucks
       final Process.Register can = mergeCan;                                    // Can merge
-      zz(); sum.Sum(Source.size, size);
+      sum.Sum(Source.size, size);
       sum.Inc();
       can.Lt (sum, maxStuckSize);
       P.new If (can)
@@ -1426,10 +1461,11 @@ chipStop = true;
      }
 
     void mergeButOne(Stuck Left, Process.Register Key, Stuck Right)             // Concatenate the past last left and right stucks separated by the key over the past last data element of the left stuck into the target
-     {final Process.Register sum = mergeSum;                                    // Sum of the lengths of the two stucks
+     {if (coverageAnalysis) zz();
+      final Process.Register sum = mergeSum;                                    // Sum of the lengths of the two stucks
       final Process.Register can = mergeCan;                                    // Can merge
       sum.Sum(Left.size, Right.size);
-      zz(); sum.Inc();
+      sum.Inc();
       can.Lt (sum, maxStuckSize);
       P.new If (can)
        {void Then()
@@ -1584,14 +1620,15 @@ chipStop = true;
 //D2 Split                                                                      // Split nodes in half to increase the number of nodes in the tree
 
   private void splitRootLeaf()                                                  // Split a full root leaf
-   {final Stuck p = ParentStuck;                                                // Parent stuck
+   {if (coverageAnalysis) zz();
+    final Stuck p = ParentStuck;                                                // Parent stuck
     final Stuck l = LeftSplitStuck;                                             // Left split stuck
     final Stuck r = RightSplitStuck;                                            // Right split stuck
     final Process.Register il = splitIl;                                        // Index in memory of the left stuck
     final Process.Register ir = splitIr;                                        // Index in memory of the right stuck
     final Process.Register mk = splitMk;                                        // Mid key
 
-    zz(); p.stuckGetRoot();                                                     // Load parent
+    p.stuckGetRoot();                                                           // Load parent
 
     P.new Block()
      {void code()
@@ -1631,7 +1668,8 @@ chipStop = true;
    }
 
   private void splitRootBranch(Process P)                                       // Split a full root branch
-   {final Stuck p = ParentStuck;                                                // Parent stuck
+   {if (coverageAnalysis) zz();
+    final Stuck p = ParentStuck;                                                // Parent stuck
     final Stuck l = LeftSplitStuck;                                             // Left split stuck
     final Stuck r = RightSplitStuck;                                            // Right split stuck
     final Process.Register il = splitIl;                                        // Index in memory of the left stuck
@@ -1639,7 +1677,7 @@ chipStop = true;
     final Process.Register mk = splitMk;                                        // Mid key
     final int              midPoint = (maxStuckSize-1) / 2;                     // Mid point in parent
 
-    zz(); p.stuckGetRoot();                                                     // Load branch root stuck from btree
+    p.stuckGetRoot();                                                           // Load branch root stuck from btree
 
     P.new Instruction()
      {void action()
@@ -1660,7 +1698,8 @@ chipStop = true;
 
   private void splitLeafNotTop                                                  // Split a full leaf that is not the root and is not the last child of its parent branch which is not full
    (Process.Register ParentIndex, Process.Register StuckIndex)
-   {Process     P = ParentIndex.registerProcess();
+   {if (coverageAnalysis) zz();
+    Process     P = ParentIndex.registerProcess();
     final Stuck p = ParentStuck;                                                // Parent stuck
     final Stuck l = LeftSplitStuck;                                             // Left stuck split from leaf
     final Stuck c = SplitStuck;                                                 // Leaf to be split
@@ -1669,7 +1708,7 @@ chipStop = true;
     final Process.Register il = splitIl;                                        // Index in memory of the left stuck
     final Process.Register mk = splitMk;                                        // Mid key
 
-    zz(); p.stuckGet(ParentIndex);                                              // Load parent stuck from btree
+    p.stuckGet(ParentIndex);                                                    // Load parent stuck from btree
 
     P.new Instruction()
      {void action()
@@ -1704,7 +1743,8 @@ chipStop = true;
    }
 
   private void splitLeafAtTop(Process.Register ParentIndex)                     // Split a full leaf that is not the root and is the last child of its parent branch which is not full
-   {Process     P = ParentIndex.registerProcess();
+   {if (coverageAnalysis) zz();
+    Process     P = ParentIndex.registerProcess();
     final Stuck p = ParentStuck;                                                // Parent stuck
     final Stuck l = LeftSplitStuck;                                             // Left split stuck
     final Stuck c = SplitStuck;                                                 // Child at index which must be a full leaf
@@ -1712,7 +1752,7 @@ chipStop = true;
     final Process.Register cl  = btreeIndex(P, "leftIndex" );                   // Btree index of left child of child
     final Process.Register mk = splitMk;                                        // Mid key
 
-    zz(); p.stuckGet(ParentIndex);                                              // Load parent stuck from btree
+    p.stuckGet(ParentIndex);                                                    // Load parent stuck from btree
     p.PastLastElement();                                                        // Get index of child
     ci.Copy(p.Data);                                                            // Index of child
     c.stuckGet(ci);                                                             // Load child from btree
@@ -1740,7 +1780,8 @@ chipStop = true;
 
   private void splitBranchNotTop                                                // Split a full branch that is not the root and is not the last child of its parent branch which is not full
    (Process.Register ParentIndex, Process.Register StuckIndex)
-   {Process     P = ParentIndex.registerProcess();
+   {if (coverageAnalysis) zz();
+    Process     P = ParentIndex.registerProcess();
     final Stuck p = ParentStuck;                                                // Parent stuck
     final Stuck l = LeftSplitStuck;                                             // Left split stuck
     final Stuck c = RightSplitStuck;                                            // Right split stuck
@@ -1749,7 +1790,7 @@ chipStop = true;
     final Process.Register il = btreeIndex(P, "indexLeft");                     // Index in memory of the left stuck
 
     p.stuckGet(ParentIndex);                                                    // Load parent stuck from btree
-    zz(); P.new Instruction()
+    P.new Instruction()
      {void action()
        {ck.copy(p.keys, StuckIndex.registerGet());                              // Key of child
         cd.copy(p.data, StuckIndex.registerGet());                              // Data of child
@@ -1780,7 +1821,8 @@ chipStop = true;
    }
 
   private void splitBranchAtTop(Process.Register ParentIndex)                   // Split a full branch that is not the root and is the last child of its parent branch which is not full
-   {Process     P = ParentIndex.registerProcess();
+   {if (coverageAnalysis) zz();
+    Process     P = ParentIndex.registerProcess();
     final Stuck p = ParentStuck;                                                // Parent stuck
     final Stuck l = LeftSplitStuck;                                             // Left split stuck
     final Stuck c = RightSplitStuck;                                            // Right split stuck
@@ -1795,7 +1837,7 @@ chipStop = true;
     cd.Copy(p.Data);                                                            // Reference to child in btree
     c.stuckGet(cd);                                                             // Load child from btree
 
-    zz(); P.new Instruction()
+    P.new Instruction()
      {void action()
        {if (p.isLeaf.registerGet() >  0) stop("Parent must be a branch");
         if (p.size.registerGet()   >= maxStuckSize-1) stop("Parent must not be full");
@@ -1818,7 +1860,8 @@ chipStop = true;
 
   private void mergePermitted                                                   // Whether a  merge is permitted or not.
    (Process P, Process.Register ParentIndex, Stuck p, Process.Label end)        // Merge two leaves into the root
-   {zz(); P.new Instruction(true)
+   {if (coverageAnalysis) zz();
+    P.new Instruction(true)
      {void action()
        {final int s = ParentIndex.registerGet();
         final int r = p.size.registerGet();                                     // Size of parent stuck
@@ -1850,7 +1893,8 @@ chipStop = true;
    }
 
   private Process.Register mergeLeavesIntoRoot()                                // Merge two leaves into the root
-   {final Stuck p = ParentStuck;                                                // Parent stuck two of whose children might be merged
+   {if (coverageAnalysis) zz();
+    final Stuck p = ParentStuck;                                                // Parent stuck two of whose children might be merged
     final Stuck l = LeftMergeStuck;                                             // Left split stuck
     final Stuck r = RightMergeStuck;                                            // Right split stuck    final Process.Register ck = P.new Register("childKey",   bitsPerKey);       // Index in memory of the left stuck
     final Process.Register cd = btreeIndex(P, "childData");                     // Index in memory of the left stuck
@@ -1861,7 +1905,7 @@ chipStop = true;
     final Process.Register test    = P.new Register("test",    1);              // A generic test
     //P.new Instruction() {void action() {say("AAAA 11 mergeLeavesIntoRoot");}};
 
-    zz(); P.new Block()
+    P.new Block()
      {void code()
        {success.Zero();                                                         // Assume failure
         p.stuckGetRoot();                                                       // Load root
@@ -1908,7 +1952,8 @@ chipStop = true;
 
   private Process.Register mergeLeavesNotTop                                    // Merge the two consecutive leaves of a branch that is not the root. Neither of the leaves is the topmost leaf.
    (Stuck Stuck, Process.Register ParentIndex, Process.Register LeftLeaf)
-   {final Stuck   p = Stuck;
+   {if (coverageAnalysis) zz();
+    final Stuck   p = Stuck;
     final Stuck   l = LeftMergeStuck;                                           // Left split stuck
     final Stuck   r = RightMergeStuck;                                          // Right split stuckfinal Process.Register ck = P.new Register("childKey",   bitsPerKey);       // Index in memory of the left stuck
     final Process.Register il = btreeIndex(P, "indexLeft");                     // Index in memory of the left stuck
@@ -1918,7 +1963,7 @@ chipStop = true;
     //P.new Instruction() {void action() {say("AAAA 22 mergeLeavesNotTop", ParentIndex, LeftLeaf);}};
 
     //p.stuckGet(ParentIndex);                                                  // Load parent
-    zz(); P.new Block()
+    P.new Block()
      {void code()
        {mergePermitted(P, ParentIndex, p, end);
 
@@ -1965,7 +2010,8 @@ chipStop = true;
 
   private Process.Register mergeLeavesAtTop                                     // Merge the top most two leaves of a branch that is not the root
    (Stuck Stuck, Process.Register ParentIndex)
-   {final Stuck   p = Stuck;
+   {if (coverageAnalysis) zz();
+    final Stuck   p = Stuck;
     final Stuck   l = LeftMergeStuck;                                           // Left split stuck
     final Stuck   r = RightMergeStuck;                                          // Right split stuckfinal Process.Register ck = P.new Register("childKey",   bitsPerKey);       // Index in memory of the left stuck
     final Process.Register sz = stuckIndex(P, "size");                          // Index in memory of the left stuck
@@ -1977,7 +2023,7 @@ chipStop = true;
     final Process.Register test    = P.new Register("test",    1);              // A generic test
 
     //P.new Instruction() {void action() {say("AAAA 33 mergeLeavesAtTop", ParentIndex);}};
-    zz(); success.Zero();                                                       // Assume we cannot merge
+    success.Zero();                                                             // Assume we cannot merge
 
     //p.stuckGet(ParentIndex);                                                  // Load parent
 
@@ -2033,7 +2079,8 @@ chipStop = true;
    }
 
   private Process.Register mergeBranchesIntoRoot(Process P)                     // Merge two branches into the root
-   {final Stuck   p = ParentStuck;                                              // Parent stuck
+   {if (coverageAnalysis) zz();
+    final Stuck   p = ParentStuck;                                              // Parent stuck
     final Stuck   l = LeftMergeBranchesIntoRoot;                                // Left split stuck
     final Stuck   r = RightMergeBranchesIntoRoot;                               // Right split stuck
     final Process.Register il = btreeIndex(P, "indexLeft");                     // Index in memory of the left stuck
@@ -2043,7 +2090,7 @@ chipStop = true;
 
     //P.new Instruction() {void action() {say("AAAA 44 mergeLeavesIntoRoot");}};
 
-    zz(); p.stuckGetRoot();                                                     // Load parent
+    p.stuckGetRoot();                                                           // Load parent
 
     P.new Block()
      {void code()
@@ -2104,7 +2151,8 @@ chipStop = true;
 
   private Process.Register mergeBranchesNotTop                                  // Merge the two consecutive child branches of a branch that is not the root. Neither of the child branches is the topmost leaf.
    (Stuck Stuck, Process.Register ParentIndex, Process.Register LeftBranch)
-   {final Process P = ParentIndex.registerProcess();
+   {if (coverageAnalysis) zz();
+    final Process P = ParentIndex.registerProcess();
     //final Stuck p = new Stuck(P, "mergeBranchesNotTopParent");                // Parent stuck
     final Stuck   p = Stuck;                                                    // Parent stuck
     final Stuck   l = LeftMergeStuck;                                           // Left split stuck
@@ -2118,7 +2166,7 @@ chipStop = true;
 
     //p.stuckGet(ParentIndex);                                                  // Load parent
 
-    zz(); P.new Block()
+    P.new Block()
      {void code()
        {mergePermitted(P, ParentIndex, p, end);
         success.Zero();                                                         // Assume failure
@@ -2175,7 +2223,8 @@ chipStop = true;
 
   private Process.Register mergeBranchesAtTop                                   // Merge the top most two child branches of a branch that is not the root
    (Stuck Stuck, Process.Register ParentIndex)
-   {final Process P = ParentIndex.registerProcess();
+   {if (coverageAnalysis) zz();
+    final Process P = ParentIndex.registerProcess();
     //final Stuck   p = new Stuck(P, "mergeLeavesIntoRootParent");              // Parent stuck
     final Stuck   p = Stuck;                                                    // Parent stuck
     final Stuck   l = LeftMergeStuck;                                           // Left split stuck
@@ -2189,7 +2238,7 @@ chipStop = true;
 
     //p.stuckGet(ParentIndex);                                                  // Load parent
 
-    zz(); P.new Block()
+    P.new Block()
      {void code()
        {mergePermitted(P, ParentIndex, p, end);
         success.Zero();                                                         // Assume failure
@@ -2254,9 +2303,10 @@ chipStop = true;
     Stuck stuck() {return (Stuck)this;}                                         // Stuck found
 
     void findSearch(Process.Register Key)
-     {BtreeIndex.Zero();                                                        // Start at the root
+     {if (coverageAnalysis) zz();
+      BtreeIndex.Zero();                                                        // Start at the root
 
-      zz(); P.new Block()
+      P.new Block()
        {void code()
          {stuckGet(BtreeIndex);                                                 // Load current stuck
           new IsLeaf()
@@ -2288,10 +2338,11 @@ chipStop = true;
     Stuck stuck() {return (Stuck)this;}
 
     void findAndInsert(Process.Register Key, Process.Register Data)             // Find the leaf stuck that should contain this key and insert or update it if possible
-     {final Process.Register i       = stuckIndex(P, "i");
+     {if (coverageAnalysis) zz();
+      final Process.Register i       = stuckIndex(P, "i");
       final Process.Register notFull = P.new Register("notFull", 1);            // The leaf is not full
 
-      zz(); P.new Block()
+      P.new Block()
        {void code()
          {findSearch(Key);                                                      // Find the leaf that should contain the key and possibly the key.
 
@@ -2323,7 +2374,8 @@ chipStop = true;
    } // FindAndInsert
 
   public void put(Process.Register Key, Process.Register Data)                  // Insert a key, data pair into the tree or update and existing key with a new datum
-   {final Process          P     = Key.registerProcess();                       // Process in which to write code
+   {if (coverageAnalysis) zz();
+    final Process          P     = Key.registerProcess();                       // Process in which to write code
     final Stuck            S     = PutParentStuck;                              // Parent stuck
     final Stuck            s     = PutChildStuck;                               // Child stuck
     final FindAndInsert    f     = new FindAndInsert(P);                        // Find and insert
@@ -2335,7 +2387,7 @@ chipStop = true;
 
     f.findAndInsert(Key, Data);                                                 // Try direct insertion with no modifications to the shape of the tree
 
-    zz(); P.new Block()                                                         // The block is left as soon as possible
+    P.new Block()                                                               // The block is left as soon as possible
      {void code()
        {final Process.Label oStart = start, oEnd = end;
         P.GONotZero(oEnd, f.Found);                                             // Direct insertion succeeded so nothing more to do
@@ -2428,7 +2480,8 @@ chipStop = true;
    }
 
   public void merge(Process.Register Key)                                       // Merge stucks on either side of the path to the key
-   {final Process          P           = Key.registerProcess();
+   {if (coverageAnalysis) zz();
+    final Process          P           = Key.registerProcess();
     final Stuck            S           = MergeStuck;                            // Parent stuck during merge
     final Process.Register s           = btreeIndex(P, "position");             // Current position in the btree
     final Process.Register stuckIndex  = stuckIndex(P, "index");                // Position within current stuck
@@ -2436,7 +2489,7 @@ chipStop = true;
     final Process.Register within      = P.new Register("within",   1);         // Success of merge - the result of this operation
     final Process.Register isLeaf      = P.new Register("isLeaf",   1);         // Success of merge - the result of this operation
 
-    zz(); P.new Block()                                                         // The block is left as soon as possible
+    P.new Block()                                                               // The block is left as soon as possible
      {void code()
        {s.Zero();                                                               // Position in btree
 
@@ -2542,10 +2595,11 @@ chipStop = true;
 //D1 Deletion                                                                   // Delete a key data pair from the btree returning the data associated with the key
 
   private Find delete(Process.Register Key)                                     // Find the leaf that contains this key and delete it
-   {final Process P = Key.registerProcess();
+   {if (coverageAnalysis) zz();
+    final Process P = Key.registerProcess();
     final Find    f = new Find(P);
 
-    zz(); P.new Block()
+    P.new Block()
      {void code()
        {f.findSearch(Key);                                                      // Find the leaf that should contain the key
         P.new If (f.Found)                                                      // Found the key in the leaf so remove it
@@ -5693,16 +5747,8 @@ Merge     : 0
     final Process.Register k = s.Key;
     final Process.Register d = s.Data;
     P.processTrace = true;
-    P.processClear();
     s.stuckGetRoot();
-    P.new Instruction()
-     {void action()
-       {s.pop();
-       }
-      void verilog(Verilog v)
-       {s.pop(v);
-       }
-     };
+    s.Pop();
 
     b.chipRun(1_000);
    }
@@ -6780,9 +6826,7 @@ Merge     : 0
   public static void main(String[] args)                                        // Test if called as a program
    {try                                                                         // Get a traceback in a format clickable in Geany if something goes wrong to speed up debugging.
      {if (github_actions) oldTests(); else newTests();                          // Tests to run
-      if (true || github_actions)                                                       // Coverage analysis
-       {coverageAnalysis(sourceFileName(), 12);
-       }
+      if (coverageAnalysis) coverageAnalysis(12);                               // Coverage analysis
       testSummary();                                                            // Summarize test results
       System.exit(testsFailed);
      }
