@@ -14,7 +14,6 @@ class Chip extends Test                                                         
   final String         javaTraceFile = fn(Verilog.folder, "trace_java.txt");    // Java trace file for comparison with verilog
   final String      verilogTraceFile = fn(Verilog.folder, "trace_verilog.txt"); // Verilog trace file
   final String         resultsFolder = fn("results/");                          // Results of each synthesis
-  final int          memoryInitDelay = 1;                                       // Extra steps needed to complete initialization of memory
   static boolean            chipStop = true;                                    // False when the chip is running, true when it is not
   int memoryProcessTransactionNumber = 0;                                       // Make transaction names unique
   int                           step;                                           // Current simulation step being executed
@@ -43,10 +42,13 @@ class Chip extends Test                                                         
      }
    }
 
-  void chipRun()                                                                // Run the Java version followed by the Verilog version. The output of the Verilog version is compared with the expected output of the definitive Java version
-   {chipRunJava();
+  void chipRun(int MaxSteps)                                                    // Run the Java version followed by the Verilog version. The output of the Verilog version is compared with the expected output of the definitive Java version
+   {maxSteps = MaxSteps;
+    chipRunJava();
     chipRunVerilog();
    }
+
+  void chipRun() {chipRun(maxSteps);}                                           // Run the Java version followed by the Verilog version. The output of the Verilog version is compared with the expected output of the definitive Java version
 
   void R() {if ( chipStop) stop("Not running");}                                // Confirm that the simulation of the chip is running
   void N() {if (!chipStop) stop("Running");}                                    // Confirm that the simulation of the chip is not running
@@ -2147,8 +2149,7 @@ if __name__ == "__main__":
       for (int j = 0; j < S; j++) l[i][j] = S*i+j+1;
     m.memoryLoad(r, l);
 
-    c.maxSteps = 1000;
-    c.chipRun();
+    c.chipRun(1000);
     //stop(c);
     ok(""+c, """
 Chip: Test             step: 49, maxSteps: 1000, running: 0
@@ -2190,7 +2191,7 @@ Chip: Test             step: 49, maxSteps: 1000, running: 0
     rt.WaitResultOfTransaction();                                               // Request value of memory at the index
     o.RegisterCopyArrayFromSingle(rt.transactionOutputRegisters.firstElement());// Unpack results from memory
 
-    c.chipRun();
+    c.chipRun(1000);
     //stop(c);
     ok(""+c, """
 Chip: Test             step: 53, maxSteps: 1000, running: 0
@@ -2279,8 +2280,7 @@ Chip: Test             step: 53, maxSteps: 1000, running: 0
 
     p.ProcessStop(1);                                                           // Halt the run
 
-    C.maxSteps = 100;
-    C.chipRun();
+    C.chipRun(100);
     //stop(C);
     ok(""+C, """
 Chip: Test             step: 82, maxSteps: 100, running: 0
@@ -2392,10 +2392,8 @@ Chip: Test             step: 82, maxSteps: 100, running: 0
        }
      };
 
-    C.maxSteps = 100;
-    C.chipRunJava();
+    C.chipRun(100);
     ok(s, " 1=>1 2=>2 3=>3 4=>5 5=>8 6=>13 7=>21");
-    C.chipRunVerilog();
    }
 
   static void test_if()
@@ -2423,8 +2421,8 @@ Chip: Test             step: 82, maxSteps: 100, running: 0
      {void Then() {C.RegisterSet(3);}
       void Else() {C.RegisterSet(4);}
      };
-    Z.maxSteps = 20;
-    Z.chipRun();
+
+    Z.chipRun(20);
     //stop(Z);
     ok(""+Z, """
 Chip: Test             step: 9, maxSteps: 20, running: 0
@@ -2451,8 +2449,7 @@ Chip: Test             step: 9, maxSteps: 20, running: 0
     for (int i = 0; i < N; i++) a[i][0] = i+1;
     m.memoryLoad(p, a);
 
-    c.maxSteps = 100;
-    c.chipRun();
+    c.chipRun(100);
     //stop(c.chipPrintMemory());
     ok(c.chipPrintMemory(), """
 Chip: Test             step: 97, maxSteps: 100, running: 0
@@ -2472,8 +2469,7 @@ Chip: Test             step: 97, maxSteps: 100, running: 0
     ok(m.memorySave(), memory);
 
     n.memoryLoad(p, memory);
-    c.maxSteps = 1000;
-    c.chipRun();
+    c.chipRun(1000);
     //stop(c.chipPrintMemory());
     ok(c.chipPrintMemory(), """
 Chip: Test             step: 193, maxSteps: 1000, running: 0
@@ -2608,8 +2604,7 @@ Chip: Test             step: 193, maxSteps: 1000, running: 0
     ne1.Ne(a, b);
     eq1.Eq(b, b);
 
-    C.maxSteps = 100;
-    C.chipRun();
+    C.chipRun(100);
     ok(ge0.registerGet(), 0);
     ok(gt0.registerGet(), 0);
     ok(le0.registerGet(), 0);
@@ -2694,8 +2689,7 @@ Chip: Test             step: 193, maxSteps: 1000, running: 0
     e.Copy(d);
     e.Zero();
 
-    C.maxSteps = 100;
-    C.chipRun();
+    C.chipRun(100);
     //stop(C);
     ok(C, """
 Chip: Test             step: 15, maxSteps: 100, running: 0
