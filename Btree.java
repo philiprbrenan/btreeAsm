@@ -2776,8 +2776,7 @@ chipStop = true;
     s.stuckGetRoot();
     t.CopyDown(s, 0);
 
-    b.maxSteps = 200;
-    b.chipRun();
+    b.chipRun(200);
     //stop(s.dump());
     ok(s.dump(), """
 Stuck: Source size: 4, leaf: 1, root
@@ -2964,8 +2963,7 @@ Merge     : 0
     index.RegisterSet(1);
     s.stuckGet(index);
 
-    b.maxSteps = 200;
-    b.chipRun();
+    b.chipRun(200);
 
     //stop(t.dump());
     ok(t.dump(), """
@@ -3039,6 +3037,7 @@ Merge     : 1
    {sayCurrentTestName();
     final Btree   b = new Btree(1, 4, 8, 8);
     final Process P = b.P; //b.new Process("test");
+                  P.processTrace = true;
     b.stuckIsLeaf.memoryLoad(P, new int[][]{{1}});
     b.stuckSize  .memoryLoad(P, new int[][]{{2}});
     b.stuckKeys  .memoryLoad(P, new int[][]{{2, 4, 0, 0}});
@@ -3046,36 +3045,33 @@ Merge     : 1
 
     Stuck s = b.new Stuck(P, "Stuck");
     s.stuckGetRoot();
-    b.maxSteps = 200;
-    b.chipRunJava();                                                            // We are creating the tree not testing it
-    //stop(b.chipPrintMemory());
-    //stop(s.dump());
-    //stop(b.chipPrintMemory());
-    //stop(s);
-    ok(s, """
+    P.new Instruction()
+     {void action()
+       {//stop(s);
+        ok(s, """
 Stuck: Stuck size: 2, leaf: 1, root
  0     2 =>    3
  1     4 =>    5
 """);
-
-    s.stuckGetRoot();
-    P.new Instruction()
-     {void action()
-       {s.isLeaf.registerSet(0);
-        s.size  .registerSet(1);
-        s.keys  .registerSet(3, 0);
-        s.data  .registerSet(4, 0);
        }
      };
+
+    s.isLeaf.RegisterSet(0);
+    s.size  .RegisterSet(1);
+    s.keys  .RegisterSet(3, 0);
+    s.data  .RegisterSet(4, 0);
+
     s.stuckPut(true);
 
-    //stop(b.chipPrintMemory());
-    ok(b.chipPrintMemory(), """
-Chip: Btree            step: 55, maxSteps: 200, running: 0
+    P.new Instruction()
+     {void action()
+       {//stop(b.chipPrintMemory());
+        ok(b.chipPrintMemory(), """
+Chip: Btree            step: 65, maxSteps: 100, running: 1
   Processes:
     stuckIsLeaf
       Memory: size: 1, width: 1, block: 1
-         1
+         0
     stuckIsFree
       Memory: size: 1, width: 1, block: 1
          0
@@ -3084,23 +3080,25 @@ Chip: Btree            step: 55, maxSteps: 200, running: 0
          0
     stuckSize
       Memory: size: 1, width: 3, block: 1
-         2
+         1
     stuckKeys
       Memory: size: 1, width: 8, block: 4
-         2,  4,  0,  0
+         3,  4,  0,  0
     stuckData
       Memory: size: 1, width: 8, block: 4
-         3,  5,  0,  0
+         4,  5,  0,  0
     stucksUsed
       Memory: size: 1, width: 1, block: 1
          1
 """);
+       }
+     };
 
-    b.chipRunJava();
+    b.chipRun(100);
 
     //stop(b.chipPrintMemory());
     ok(b.chipPrintMemory(), """
-Chip: Btree            step: 70, maxSteps: 200, running: 0
+Chip: Btree            step: 67, maxSteps: 100, running: 0
   Processes:
     stuckIsLeaf
       Memory: size: 1, width: 1, block: 1
@@ -3130,8 +3128,7 @@ Chip: Btree            step: 70, maxSteps: 200, running: 0
    {sayCurrentTestName();
     final Btree b = new Btree(2, 4, 8, 8);
 
-    b.maxSteps = 100;
-    b.chipRun();
+    b.chipRun(100);
     //stop(b.chipPrintMemory());
     ok(b.chipPrintMemory(), """
 Chip: Btree            step: 17, maxSteps: 100, running: 0
@@ -3192,8 +3189,7 @@ Chip: Btree            step: 17, maxSteps: 100, running: 0
 
   static void test_push_and_check()
    {final Btree b = test_push();
-    b.maxSteps = 100;
-    b.chipRun();
+    b.chipRun(100);
     //stop(b.chipPrintMemory());
     ok(b.chipPrintMemory(), """
 Chip: Btree            step: 80, maxSteps: 100, running: 0
@@ -3230,8 +3226,7 @@ Chip: Btree            step: 80, maxSteps: 100, running: 0
     P.processTrace = true;
 
     s.stuckGetRoot();
-    b.maxSteps = 100;
-    b.chipRun();
+    b.chipRun(100);
     //stop(s);
     ok(s, """
 Stuck: root size: 4, leaf: 1, root
@@ -3262,8 +3257,7 @@ Stuck: root size: 0, leaf: 1, root
     s.stuckGetRoot();
     s.Pop();
 
-    b.maxSteps = 100;
-    b.chipRun();
+    b.chipRun(100);
 
     //stop(s.dump());
     ok(s.dump(), """
@@ -3454,8 +3448,7 @@ Merge     : 0
      };
 
     s.PastLastElement();
-    b.maxSteps = 100;
-    b.chipRun();
+    b.chipRun(100);
 
     ok(k.registerGet(),  5);
     ok(d.registerGet(), 55);
@@ -3483,8 +3476,7 @@ Merge     : 0
        };
      }
 
-    b.maxSteps = 1000;
-    b.chipRun();
+    b.chipRun(1000);
 
     ok(S, """
 Stuck: stuck size: 4, leaf: 1, root
@@ -3574,8 +3566,7 @@ Merge     : 0
       s.SetElementAt(i, k, d);
      }
 
-    b.maxSteps = 1000;
-    b.chipRun();
+    b.chipRun(1000);
     ok(s, """
 Stuck: stuck size: 5, leaf: 1, root
  0     1 =>    2
@@ -3605,8 +3596,7 @@ Stuck: stuck size: 5, leaf: 1, root
       s.SetDataAt(i, d);
      }
 
-    b.maxSteps = 1000;
-    b.chipRun();
+    b.chipRun(1000);
     ok(s, """
 Stuck: stuck size: 4, leaf: 1, root
  0     0 =>    2
@@ -3658,7 +3648,8 @@ Merge     : 0
     d.RegisterSet(77);
     s.SetPastLastKey (k);
     s.SetPastLastData(d);
-    b.chipRun();
+
+    b.chipRun(100);
     //stop(s.dump());
     ok(""+s.dump(), """
 Stuck: stuck size: 4, leaf: 1, root
@@ -3697,8 +3688,7 @@ Merge     : 0
 
     s.InsertElementAt(i, k, d);
 
-    b.maxSteps = 100;
-    b.chipRun();
+    b.chipRun(100);
     //stop(s);
     ok(s, """
 Stuck: stuck size: 5, leaf: 1, root
@@ -3724,8 +3714,7 @@ Stuck: stuck size: 5, leaf: 1, root
     i.RegisterSet(1);
     s.RemoveElementAt(i);
 
-    b.maxSteps = 100;
-    b.chipRun();
+    b.chipRun(100);
     //stop(s);
     ok(s, """
 Stuck: stuck size: 3, leaf: 1, root
@@ -3775,8 +3764,7 @@ Stuck: stuck size: 3, leaf: 1, root
          }
        };
      }
-    b.maxSteps = 1000;
-    b.chipRun();
+    b.chipRun(1000);
    }
 
   static void test_search_eq_partial()
@@ -3796,8 +3784,7 @@ Stuck: stuck size: 3, leaf: 1, root
     k.RegisterSet(4);
     s.search_eq_parallel(k);
 
-    b.maxSteps = 1000;
-    b.chipRun();
+    b.chipRun(1000);
     //stop(s.dump());
     ok(s.dump(), """
 Stuck: stuck size: 2, leaf: 0, root
@@ -3836,8 +3823,8 @@ Merge     : 0
      }
     s.isLeaf.One();
     s.stuckPutRoot(true);
-    b.maxSteps = 300;
-    b.chipRun();
+
+    b.chipRun(300);
     ok(s, """
 Stuck: stuck size: 4, leaf: 1, root
  0     0 =>    1
@@ -3918,8 +3905,7 @@ Merge     : 0
     r.stuckGet(R);
     s.splitIntoTwo(l, r);
 
-    b.maxSteps = 1000;
-    b.chipRun();
+    b.chipRun(1000);
     //stop(s);
     ok(s, """
 Stuck: stuck size: 4, leaf: 1, root
@@ -3963,8 +3949,7 @@ Stuck: right size: 2, leaf: 1, index: 2
 
     s.splitIntoThree(l, r, 1);
 
-    b.maxSteps = 1000;
-    b.chipRun();
+    b.chipRun(1000);
     //stop(s.dump());
     ok(s.dump(), """
 Stuck: stuck size: 3, leaf: 1, root
@@ -4042,9 +4027,7 @@ Merge     : 0
 
     s.splitLow(l);
 
-    b.maxSteps = 1000;
-
-    b.chipRun();
+    b.chipRun(1000);
     //stop(s);
     ok(s, """
 Stuck: stuck size: 2, leaf: 1, root
@@ -4087,8 +4070,7 @@ Stuck: left size: 2, leaf: 1, index: 1
 
     s.splitLowButOne(l, k);
 
-    b.maxSteps = 1000;
-    b.chipRun();
+    b.chipRun(1000);
     //stop(s.dump());
     ok(s.dump(), """
 Stuck: stuck size: 1, leaf: 1, root
@@ -4139,8 +4121,7 @@ Merge     : 0
 
     s.merge(S);
 
-    b.maxSteps = 1000;
-    b.chipRun();
+    b.chipRun(1000);
     //stop(s);
     ok(s, """
 Stuck: stuck size: 8, leaf: 1, root
@@ -4176,8 +4157,7 @@ Stuck: stuck size: 8, leaf: 1, root
 
     s.merge(l, r);
 
-    b.maxSteps = 1000;
-    b.chipRun();
+    b.chipRun(1000);
     //stop(s);
     ok(s, """
 Stuck: stuck size: 8, leaf: 1, root
@@ -4212,9 +4192,7 @@ Stuck: stuck size: 8, leaf: 1, root
 
     s.mergeButOne(k, S);
 
-    b.maxSteps = 1000;
-
-    b.chipRunJava();
+    b.chipRun(1000);
     //stop(s.dump());
     ok(s.dump(), """
 Stuck: stuck size: 7, leaf: 1, root
@@ -4260,8 +4238,7 @@ Merge     : 1
 
     s.mergeButOne(l, k, r);
 
-    b.maxSteps = 1000;
-    b.chipRun();
+    b.chipRun(1000);
     //stop(s.dump());
     ok(s.dump(), """
 Stuck: stuck size: 7, leaf: 1, root
@@ -4362,8 +4339,7 @@ Chip: Btree            step: 63, maxSteps: 1000, running: 1
     j.RegisterSet(2);
     b.free(i);
     b.free(j);
-    b.maxSteps = 1000;
-    b.chipRun();
+    b.chipRun(1000);
     //stop(b.chipPrintMemory());
     ok(b.chipPrintMemory(), """
 Chip: Btree            step: 89, maxSteps: 1000, running: 0
@@ -4404,7 +4380,6 @@ Chip: Btree            step: 89, maxSteps: 1000, running: 0
 
 
     final FindAndInsert f = b.new FindAndInsert(P);
-    b.maxSteps = 2000;
     P.processTrace = true;
 
     k.RegisterSet(1); d.RegisterSet(2); f.findAndInsert(k, d);
@@ -4427,7 +4402,7 @@ Chip: Btree            step: 89, maxSteps: 1000, running: 0
      };
 
     Process.Register r = b.mergeLeavesIntoRoot();
-    b.chipRun();
+    b.chipRun(2000);
     //stop(b.chipPrintMemory());
     //stop(b.btreePrint());
     ok(r.registerGet(), 1);
@@ -4448,7 +4423,6 @@ Chip: Btree            step: 89, maxSteps: 1000, running: 0
     P.processTrace = true;
 
     final FindAndInsert f = b.new FindAndInsert(P);
-    b.maxSteps = 2000;
 
     k.RegisterSet(10); d.RegisterSet(20); f.findAndInsert(k, d);
     k.RegisterSet(20); d.RegisterSet(30); f.findAndInsert(k, d);
@@ -4466,7 +4440,7 @@ Chip: Btree            step: 89, maxSteps: 1000, running: 0
     i.RegisterSet(0); j.RegisterSet(0);
     s.stuckGet(i);
     final Process.Register r = b.mergeLeavesNotTop(s, i, j);
-    b.chipRun();
+    b.chipRun(2000);
     //stop(b.btreePrint());
     ok(b.btreePrint(), """
               45        |
@@ -4492,8 +4466,7 @@ Chip: Btree            step: 89, maxSteps: 1000, running: 0
     p.stuckGet(i);
     p.Pop();
     p.stuckPut();
-    b.maxSteps = 10000;
-    b.chipRun();
+    b.chipRun(10_000);
 
     P.new Instruction()
      {void action()
@@ -4557,7 +4530,6 @@ Chip: Btree            step: 89, maxSteps: 1000, running: 0
     P.processTrace = true;
 
     final FindAndInsert f = b.new FindAndInsert(P);
-    b.maxSteps = 2000;
 
     k.RegisterSet(10); d.RegisterSet(20); f.findAndInsert(k, d);
     k.RegisterSet(20); d.RegisterSet(30); f.findAndInsert(k, d);
@@ -4595,7 +4567,7 @@ Chip: Btree            step: 89, maxSteps: 1000, running: 0
      };
 
     final Process.Register r = b.mergeBranchesIntoRoot(P);
-    b.chipRun();
+    b.chipRun(2000);
     //stop(b.btreePrint());
     ok(b.btreePrint(), """
         25        45         65         |
@@ -4639,8 +4611,7 @@ Chip: Btree            step: 89, maxSteps: 1000, running: 0
     i.RegisterSet(0); j.RegisterSet(0);
     s.stuckGet(i);
     b.mergeBranchesNotTop(s, i, j);
-    b.maxSteps = 10000;
-    b.chipRun();
+    b.chipRun(10_000);
     //stop(b.btreePrint());
     ok(b.btreePrint(), """
                                                       16                                                                   |
@@ -4666,8 +4637,7 @@ Chip: Btree            step: 89, maxSteps: 1000, running: 0
 
     i.RegisterSet(0);
     b.splitBranchAtTop(i);
-    b.maxSteps = 10000;
-    b.chipRun();
+    b.chipRun(10_000);
 
     P.new Instruction()
      {void action()
@@ -4689,8 +4659,7 @@ Chip: Btree            step: 89, maxSteps: 1000, running: 0
     i.RegisterSet(0);
     s.stuckGet(i);
     b.mergeBranchesAtTop(s, i);
-    b.maxSteps = 10000;
-    b.chipRun();
+    b.chipRun(10_000);
     //stop(b.btreePrint());
     ok(b.btreePrint(), """
                                                       16                                                                 |
@@ -4742,8 +4711,7 @@ Chip: Btree            step: 89, maxSteps: 1000, running: 0
 
     final Find f = b.new Find(P);
     f.findSearch(k);
-    b.maxSteps = 1000;
-    b.chipRun();
+    b.chipRun(1000);
 
     //stop(f.dump());
     ok(f.dump(), """
@@ -5960,8 +5928,7 @@ Merge     : 0
        }
      };
 
-    b.maxSteps = 1000;
-    b.chipRun();
+    b.chipRun(1000);
    }
 
   static void test_put_ascending()
@@ -6275,8 +6242,7 @@ Merge     : 0
 
   static void test_put_reload_and_check()
    {final Btree b = test_put_reload();
-    b.maxSteps = 10000;
-    b.chipRunJava();
+    b.chipRun(10_000);
     //stop(b.btreePrint());
     ok(b.btreePrint(), test_put_print());
    }
@@ -6916,8 +6882,7 @@ Merge     : 0
     final Find             f = b.new Find(P);
 
     k.RegisterSet(1);
-    b.maxSteps = 1000;
-    b.chipRunJava();                                                            // Set memory
+    b.chipRunJava(1_000);                                                       // Set memory
     f.findSearch(k);
 //  final Chip.Synthesize S = b.new Synthesize();
 //  ok(S.e.out, "");
@@ -6941,8 +6906,7 @@ Merge     : 0
     final Process.Register k = P.register("k", b.bitsPerKey);   k.input();
 
     k.RegisterSet(1);
-    b.maxSteps = 1000;
-    b.chipRunJava();                                                            // Set memory
+    b.chipRunJava(1_000);
     b.delete(k);
 //  final Chip.Synthesize S = b.new Synthesize();
 //  ok(S.e.out, "");
@@ -7045,6 +7009,7 @@ Merge     : 0
     //test_verilog_delete();
     //test_verilog_find();
     //test_verilog_put();
+    test_setPastLastElement();
    }
 
   public static void main(String[] args)                                        // Test if called as a program
