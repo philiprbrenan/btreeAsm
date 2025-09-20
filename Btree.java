@@ -3476,7 +3476,7 @@ Merge     : 0
        };
      }
 
-    b.chipRun(1000);
+    b.chipRun(1_000);
 
     ok(S, """
 Stuck: stuck size: 4, leaf: 1, root
@@ -3566,7 +3566,7 @@ Merge     : 0
       s.SetElementAt(i, k, d);
      }
 
-    b.chipRun(1000);
+    b.chipRun(1_000);
     ok(s, """
 Stuck: stuck size: 5, leaf: 1, root
  0     1 =>    2
@@ -3596,7 +3596,7 @@ Stuck: stuck size: 5, leaf: 1, root
       s.SetDataAt(i, d);
      }
 
-    b.chipRun(1000);
+    b.chipRun(1_000);
     ok(s, """
 Stuck: stuck size: 4, leaf: 1, root
  0     0 =>    2
@@ -3764,7 +3764,7 @@ Stuck: stuck size: 3, leaf: 1, root
          }
        };
      }
-    b.chipRun(1000);
+    b.chipRun(1_000);
    }
 
   static void test_search_eq_partial()
@@ -3784,7 +3784,7 @@ Stuck: stuck size: 3, leaf: 1, root
     k.RegisterSet(4);
     s.search_eq_parallel(k);
 
-    b.chipRun(1000);
+    b.chipRun(1_000);
     //stop(s.dump());
     ok(s.dump(), """
 Stuck: stuck size: 2, leaf: 0, root
@@ -3905,7 +3905,7 @@ Merge     : 0
     r.stuckGet(R);
     s.splitIntoTwo(l, r);
 
-    b.chipRun(1000);
+    b.chipRun(1_000);
     //stop(s);
     ok(s, """
 Stuck: stuck size: 4, leaf: 1, root
@@ -3949,7 +3949,7 @@ Stuck: right size: 2, leaf: 1, index: 2
 
     s.splitIntoThree(l, r, 1);
 
-    b.chipRun(1000);
+    b.chipRun(1_000);
     //stop(s.dump());
     ok(s.dump(), """
 Stuck: stuck size: 3, leaf: 1, root
@@ -4027,7 +4027,7 @@ Merge     : 0
 
     s.splitLow(l);
 
-    b.chipRun(1000);
+    b.chipRun(1_000);
     //stop(s);
     ok(s, """
 Stuck: stuck size: 2, leaf: 1, root
@@ -4070,7 +4070,7 @@ Stuck: left size: 2, leaf: 1, index: 1
 
     s.splitLowButOne(l, k);
 
-    b.chipRun(1000);
+    b.chipRun(1_000);
     //stop(s.dump());
     ok(s.dump(), """
 Stuck: stuck size: 1, leaf: 1, root
@@ -4121,7 +4121,7 @@ Merge     : 0
 
     s.merge(S);
 
-    b.chipRun(1000);
+    b.chipRun(1_000);
     //stop(s);
     ok(s, """
 Stuck: stuck size: 8, leaf: 1, root
@@ -4157,7 +4157,7 @@ Stuck: stuck size: 8, leaf: 1, root
 
     s.merge(l, r);
 
-    b.chipRun(1000);
+    b.chipRun(1_000);
     //stop(s);
     ok(s, """
 Stuck: stuck size: 8, leaf: 1, root
@@ -4192,7 +4192,7 @@ Stuck: stuck size: 8, leaf: 1, root
 
     s.mergeButOne(k, S);
 
-    b.chipRun(1000);
+    b.chipRun(1_000);
     //stop(s.dump());
     ok(s.dump(), """
 Stuck: stuck size: 7, leaf: 1, root
@@ -4238,7 +4238,7 @@ Merge     : 1
 
     s.mergeButOne(l, k, r);
 
-    b.chipRun(1000);
+    b.chipRun(1_000);
     //stop(s.dump());
     ok(s.dump(), """
 Stuck: stuck size: 7, leaf: 1, root
@@ -4339,7 +4339,7 @@ Chip: Btree            step: 63, maxSteps: 1000, running: 1
     j.RegisterSet(2);
     b.free(i);
     b.free(j);
-    b.chipRun(1000);
+    b.chipRun(1_000);
     //stop(b.chipPrintMemory());
     ok(b.chipPrintMemory(), """
 Chip: Btree            step: 89, maxSteps: 1000, running: 0
@@ -4402,7 +4402,7 @@ Chip: Btree            step: 89, maxSteps: 1000, running: 0
      };
 
     Process.Register r = b.mergeLeavesIntoRoot();
-    b.chipRun(2000);
+    b.chipRun(2_000);
     //stop(b.chipPrintMemory());
     //stop(b.btreePrint());
     ok(r.registerGet(), 1);
@@ -4440,7 +4440,7 @@ Chip: Btree            step: 89, maxSteps: 1000, running: 0
     i.RegisterSet(0); j.RegisterSet(0);
     s.stuckGet(i);
     final Process.Register r = b.mergeLeavesNotTop(s, i, j);
-    b.chipRun(2000);
+    b.chipRun(2_000);
     //stop(b.btreePrint());
     ok(b.btreePrint(), """
               45        |
@@ -4567,7 +4567,7 @@ Chip: Btree            step: 89, maxSteps: 1000, running: 0
      };
 
     final Process.Register r = b.mergeBranchesIntoRoot(P);
-    b.chipRun(2000);
+    b.chipRun(2_000);
     //stop(b.btreePrint());
     ok(b.btreePrint(), """
         25        45         65         |
@@ -4711,7 +4711,7 @@ Chip: Btree            step: 89, maxSteps: 1000, running: 0
 
     final Find f = b.new Find(P);
     f.findSearch(k);
-    b.chipRun(1000);
+    b.chipRun(1_000);
 
     //stop(f.dump());
     ok(f.dump(), """
@@ -4740,7 +4740,6 @@ Merge     : 0
     final Process.Register j = P.register("j", b.stuckAddressSize);
 
     final FindAndInsert f = b.new FindAndInsert(P);
-    b.maxSteps = 2000;
     P.processTrace = true;
 
     k.RegisterSet(10); d.RegisterSet(20); f.findAndInsert(k, d);
@@ -4791,7 +4790,7 @@ Merge     : 0
 
     i.RegisterSet(0); j.RegisterSet(0);
     b.splitBranchNotTop(i, j);
-    b.chipRun();
+    b.chipRun(2_000);
     //stop(b.btreePrint());
     ok(b.btreePrint(), """
                     20                  45                   65                    |
@@ -4817,7 +4816,6 @@ Merge     : 0
     final Process.Register j = b.stuckIndex(P, "j");
     P.processTrace = true;
 
-    b.maxSteps = 2000;
     s.stuckGetRoot();
     k.RegisterSet(10); d.RegisterSet(20); s.Push(k, d);
     k.RegisterSet(20); d.RegisterSet(30); s.Push(k, d);
@@ -4826,7 +4824,7 @@ Merge     : 0
     s.stuckPut();
 
     b.splitRootLeaf();
-    b.chipRun();
+    b.chipRun(2_000);
     //stop(b.chipPrintMemory());
     //stop(b.btreePrint());
     ok(b.btreePrint(), """
@@ -4872,8 +4870,7 @@ Merge     : 0
        }
      };
 
-    b.maxSteps = 30000;
-    b.chipRun();
+    b.chipRun(30_000);
 
     //stop(t);
     ok(""+t, """
@@ -5109,7 +5106,6 @@ Merge     : 0
     final Process.Register k = P.register("k", b.bitsPerKey);
     final Process.Register l = P.register("l", 1);
     final StringBuilder    t = new StringBuilder();
-    b.maxSteps = 30000;
     P.processTrace = true;
     final int N = 32;
 
@@ -5145,7 +5141,7 @@ Merge     : 0
         P.GONotZero(start, l);
        }
      };
-    b.chipRun();
+    b.chipRun(30_000);
 
     //stop(t);
     ok(t, """
@@ -5365,7 +5361,6 @@ Merge     : 0
     final Process.Register k = P.register("k", b.bitsPerKey);
     final Process.Register l = P.register("l", 1);
     final StringBuilder    t = new StringBuilder();
-    b.maxSteps = 40000;
     P.processTrace = true;
     final int N = 32;
 
@@ -5402,7 +5397,7 @@ Merge     : 0
         P.GONotZero(start, l);
        }
      };
-    b.chipRun();
+    b.chipRun(40_000);
 
     //stop(t);
     ok(t, """
@@ -5638,7 +5633,6 @@ Merge     : 0
     final Process.Register k = P.register("k", b.bitsPerKey);
     final Process.Register l = P.register("l", 1);
     final StringBuilder    t = new StringBuilder();
-    b.maxSteps = 30000;
     P.processTrace = true;
 
     final int N = 32;
@@ -5675,7 +5669,7 @@ Merge     : 0
         P.GONotZero(start, l);
        }
      };
-    b.chipRun();
+    b.chipRun(30_000);
 
     //stop(t);
     ok(t, """
@@ -5928,7 +5922,7 @@ Merge     : 0
        }
      };
 
-    b.chipRun(1000);
+    b.chipRun(1_000);
    }
 
   static void test_put_ascending()
@@ -5940,7 +5934,6 @@ Merge     : 0
     final Process.Register i = P.register("i", 8);
     final Process.Register l = P.register("l", 1);
     P.processTrace  = true;
-    b.maxSteps      = 40000;
     b.suppressMerge = true;                                                     // Suppress merges as they have not been developed yet
 
     final int N = 32;
@@ -5954,7 +5947,7 @@ Merge     : 0
         P.GONotZero(start, l);
        }
      };
-    b.chipRun();
+    b.chipRun(40_000);
     //stop(b.btreePrint());
     ok(b.btreePrint(), """
                             8                                         16                                                                                    |
@@ -5983,7 +5976,6 @@ Merge     : 0
     final Process.Register l = P.register("l", 1);
     final StringBuilder    s = new StringBuilder();
     P.processTrace = true;
-    b.maxSteps     = 200000;
     b.suppressMerge = false;
 
     final int N = 32;
@@ -6012,7 +6004,7 @@ Merge     : 0
         P.GONotZero(start, l);
        }
      };
-    b.chipRun();
+    b.chipRun(200_000);
     //stop(s);
     ok(s, """
 1=0 |
@@ -6782,7 +6774,6 @@ Merge     : 0
     final Process.Register d = P.register("d", b.bitsPerData);
     final Process.Register l = P.register("l", 1);
     P.processTrace = true;
-    b.maxSteps     = 20000;
     b.suppressMerge = true;                                                     // Suppress merges as they have not been developed yet
 
     final int N = 32;
@@ -6797,7 +6788,7 @@ Merge     : 0
         P.GONotZero(start, l);
        }
      };
-    b.chipRun();
+    b.chipRun(20_000);
     //stop(b.btreePrint());
     ok(b.btreePrint(), """
                                                                             16                                        24                                       |
@@ -6825,7 +6816,6 @@ Merge     : 0
     final Process.Register d = P.register("d", b.bitsPerData);
     final Process.Register l = P.register("l", 1);
     P.processTrace  = true;
-    b.maxSteps      = 30000;
     b.suppressMerge = true;                                                     // Suppress merges as they have not been developed yet
 
     i.RegisterSet(random_32.length);
@@ -6852,7 +6842,7 @@ Merge     : 0
         P.GONotZero(start, l);
        }
      };
-    b.chipRun();
+    b.chipRun(30_000);
 
     //stop(b.btreePrint());
     ok(b.btreePrint(), """
@@ -6881,8 +6871,6 @@ Merge     : 0
     final Process.Register k = P.register("k", b.bitsPerKey);   k.input();
     final Find             f = b.new Find(P);
 
-    k.RegisterSet(1);
-    b.chipRunJava(1_000);                                                       // Set memory
     f.findSearch(k);
 //  final Chip.Synthesize S = b.new Synthesize();
 //  ok(S.e.out, "");
@@ -6905,8 +6893,6 @@ Merge     : 0
     final Process          P = b.P;
     final Process.Register k = P.register("k", b.bitsPerKey);   k.input();
 
-    k.RegisterSet(1);
-    b.chipRunJava(1_000);
     b.delete(k);
 //  final Chip.Synthesize S = b.new Synthesize();
 //  ok(S.e.out, "");
@@ -6929,10 +6915,7 @@ Merge     : 0
     final Process          P = b.P; //b.new Process("verilogPut");
     final Process.Register k = P.register("k", b.bitsPerKey);   k.input();
     final Process.Register d = P.register("d", b.bitsPerData);  d.input();
-    b.maxSteps = 1000;
-    k.RegisterSet(1);
-    d.RegisterSet(11);
-    b.chipRunJava();                                                            // Set memory
+
     b.put(k, d);
 //  final Chip.Synthesize S = b.new Synthesize();
 //  ok(S.e.out, "");
