@@ -274,12 +274,12 @@ chipStop = true;
     s.append(""+bitsPerData       +"\n");
     s.append(""+btreeAddressSize  +"\n");
     s.append(""+stuckAddressSize  +"\n");
-    s.append(""+stuckIsLeaf.processSave());
-    s.append(""+stuckIsFree.processSave());
-    s.append(""+freeNext   .processSave());
-    s.append(""+stuckSize  .processSave());
-    s.append(""+stuckKeys  .processSave());
-    s.append(""+stuckData  .processSave());
+    s.append(""+stuckIsLeaf.memorySave());
+    s.append(""+stuckIsFree.memorySave());
+    s.append(""+freeNext   .memorySave());
+    s.append(""+stuckSize  .memorySave());
+    s.append(""+stuckKeys  .memorySave());
+    s.append(""+stuckData  .memorySave());
     return ""+s;
    }
 
@@ -294,12 +294,12 @@ chipStop = true;
     if (bitsPerData       != n[j++]) stop("Wrong bitsPerData");
     if (btreeAddressSize  != n[j++]) stop("Wrong btreeAddressSize");
     if (stuckAddressSize  != n[j++]) stop("Wrong stuckAddressSize");
-    stuckIsLeaf.processLoad (l[j++]);
-    stuckIsFree.processLoad (l[j++]);
-    freeNext   .processLoad (l[j++]);
-    stuckSize  .processLoad (l[j++]);
-    stuckKeys  .processLoad (l[j++]);
-    stuckData  .processLoad (l[j++]);
+    stuckIsLeaf.memoryLoad(P, l[j++]);
+    stuckIsFree.memoryLoad(P, l[j++]);
+    freeNext   .memoryLoad(P, l[j++]);
+    stuckSize  .memoryLoad(P, l[j++]);
+    stuckKeys  .memoryLoad(P, l[j++]);
+    stuckData  .memoryLoad(P, l[j++]);
    }
 
 //D2 Stuck                                                                      // Get and set stucks within btree
@@ -3126,7 +3126,7 @@ Chip: Btree            step: 70, maxSteps: 200, running: 0
 """);
    }
 
-  static Btree test_create2()
+  static void test_create2()
    {sayCurrentTestName();
     final Btree b = new Btree(2, 4, 8, 8);
 
@@ -3158,7 +3158,6 @@ Chip: Btree            step: 17, maxSteps: 100, running: 0
       Memory: size: 1, width: 2, block: 1
          1
 """);
-    return b;
    }
 
   static Btree test_push() {return test_push(4, 8);}
@@ -3561,7 +3560,7 @@ Stuck: stuck size: 5, leaf: 1, root
 
   static void test_setDataAt()
    {sayCurrentTestName();
-    final Btree b = test_push();
+    final Btree   b = test_push();
     final Process P = b.P; // b.processes.get("Stuck");
     final Stuck   s = b.new Stuck(P, "stuck");
     final Process.Register k = P.register("k", b.bitsPerKey);
@@ -4211,7 +4210,7 @@ Merge     : 1
 
   static void test_mergeButOne2()
    {sayCurrentTestName();
-    final Btree b = test_push();
+    final Btree   b = test_push();
     final Process P = b.P; // b.processes.get("Stuck");
     final Stuck   s = b.new Stuck(P, "stuck");
     final Stuck   l = b.new Stuck(P, "left");
@@ -4459,29 +4458,28 @@ Chip: Btree            step: 89, maxSteps: 1000, running: 0
     final Process.Register i = b.btreeIndex(P, "i");
     P.processTrace = true;
 
-    P.new Instruction()
-     {void action()
-       {b.btreeLoad(test_put_save_9());
-       }
-    };
+    b.btreeLoad(test_put_save_9());
 
     i.RegisterSet(2);
     p.stuckGet(i);
     p.Pop();
     p.stuckPut();
-    b.maxSteps = 100;
+    b.maxSteps = 10000;
     b.chipRun();
 
-    //stop(b.btreePrint());
-    ok(b.btreePrint(), """
+    P.new Instruction()
+     {void action()
+       {//stop(b.btreePrint());
+        ok(b.btreePrint(), """
           4      6        |
           0      0.1      |
           1      3        |
                  2        |
 1,2,3,4=1  5,6=3    7,8=2 |
 """);
+       }
+     };
 
-    P.processClear();
     i.RegisterSet(0);
     p.stuckGet(i);
     final Process.Register r = b.mergeLeavesAtTop(p, i);
@@ -4551,9 +4549,10 @@ Chip: Btree            step: 89, maxSteps: 1000, running: 0
     b.splitLeafAtTop(i);
 
     b.splitRootBranch(P);
-    b.chipRun();
-    //stop(b.btreePrint());
-    ok(b.btreePrint(), """
+    P.new Instruction()
+     {void action()
+       {//stop(b.btreePrint());
+        ok(b.btreePrint(), """
                   45                  |
                   0                   |
                   5                   |
@@ -4564,8 +4563,9 @@ Chip: Btree            step: 89, maxSteps: 1000, running: 0
         3                   2         |
 10,20=1   30,40=3   50,60=4   70,80=2 |
 """);
+       }
+     };
 
-    P.processClear();
     final Process.Register r = b.mergeBranchesIntoRoot(P);
     b.chipRun();
     //stop(b.btreePrint());
@@ -4590,11 +4590,11 @@ Chip: Btree            step: 89, maxSteps: 1000, running: 0
 
     i.RegisterSet(0); j.RegisterSet(0);
     b.splitBranchNotTop(i, j);
-    b.maxSteps = 2000;
-    b.chipRun();
 
-    //stop(b.btreePrint());
-    ok(b.btreePrint(), """
+    P.new Instruction()
+     {void action()
+       {//stop(b.btreePrint());
+        ok(b.btreePrint(), """
                      8                             16                                                                    |
                      0                             0.1                                                                   |
                      6                             5                                                                     |
@@ -4605,12 +4605,13 @@ Chip: Btree            step: 89, maxSteps: 1000, running: 0
           3                        7                                                                   2                 |
 1,2,3,4=1  5,6,7,8=3  9,10,11,12=4   13,14,15,16=7    17,18,19,20=8   21,22,23,24=10     25,26,27,28=9     29,30,31,32=2 |
 """);
+       }
+     };
 
-    P.processClear();
     i.RegisterSet(0); j.RegisterSet(0);
     s.stuckGet(i);
     b.mergeBranchesNotTop(s, i, j);
-    b.maxSteps = 2000;
+    b.maxSteps = 10000;
     b.chipRun();
     //stop(b.btreePrint());
     ok(b.btreePrint(), """
@@ -4637,11 +4638,13 @@ Chip: Btree            step: 89, maxSteps: 1000, running: 0
 
     i.RegisterSet(0);
     b.splitBranchAtTop(i);
-    b.maxSteps = 2000;
+    b.maxSteps = 10000;
     b.chipRun();
 
-    //stop(b.btreePrint());
-    ok(b.btreePrint(), """
+    P.new Instruction()
+     {void action()
+       {//stop(b.btreePrint());
+        ok(b.btreePrint(), """
                                                       16                               24                               |
                                                       0                                0.1                              |
                                                       5                                6                                |
@@ -4652,12 +4655,13 @@ Chip: Btree            step: 89, maxSteps: 1000, running: 0
                                      7                                10                                2               |
 1,2,3,4=1  5,6,7,8=3    9,10,11,12=4    13,14,15,16=7   17,18,19,20=8   21,22,23,24=10    25,26,27,28=9   29,30,31,32=2 |
 """);
+       }
+     };
 
-    P.processClear();
     i.RegisterSet(0);
     s.stuckGet(i);
     b.mergeBranchesAtTop(s, i);
-    b.maxSteps = 2000;
+    b.maxSteps = 10000;
     b.chipRun();
     //stop(b.btreePrint());
     ok(b.btreePrint(), """
@@ -4851,11 +4855,7 @@ Merge     : 0
 
     P.processTrace = true;
 
-    P.new Instruction()
-     {void action()
-       {b.btreeLoad(test_put_save_32());
-       }
-     };
+    b.btreeLoad(test_put_save_32());
 
     k.RegisterSet(0);
 
@@ -6242,17 +6242,16 @@ Merge     : 0
 
   static Btree test_put_reload()
    {final Btree b = new Btree(32, 4, 8, 8);
-
-    b.P.new Instruction()
-     {void action()
-       {b.btreeLoad(test_put_save_32());
-       }
-     };
-    b.maxSteps = 100;
-    b.chipRunJava();
-    //stop(b.btreePrint());                                                     // Create test_put_print
-    ok(b.btreePrint(), test_put_print());
+   b.btreeLoad(test_put_save_32());
     return b;
+   }
+
+  static void test_put_reload_and_check()
+   {final Btree b = test_put_reload();
+    b.maxSteps = 10000;
+    b.chipRunJava();
+    //stop(b.btreePrint());
+    ok(b.btreePrint(), test_put_print());
    }
 
   static String test_put_print()
@@ -6964,66 +6963,61 @@ Merge     : 0
       return;
      }
 
-    //test_copy();
-    //test_merge_two();
-    //test_create1();
-    //test_create2();
-    //test_push();
-    //test_clear();
-    //test_pop();
-    //test_pop_4();
-    //test_firstLastPast();
-    //test_elementAt();
-    //test_setElementAt();
-    //test_setDataAt();
-    //test_setPastLastElement();
-    //test_insertElementAt();
-    //test_removeElementAt();
-    //test_search_eq();
-    //test_search_eq_partial();
-    //test_search_le();
-    //test_splitIntoTwo();
-    //test_splitIntoThree();
-    //test_splitLow();
-    //test_splitLowButOne();
-    //test_merge();
-    //test_merge2();
-    //test_mergeButOne();
-    //test_mergeButOne2();
-    //test_allocate();
-    //test_splitRootLeaf();
-    //test_mergeLeavesIntoRoot();
-    //test_mergeLeavesNotTop();
+    test_copy();
+    test_merge_two();
+    test_create1();
+    test_create2();
+    test_push();
+    test_clear();
+    test_pop();
+    test_pop_4();
+    test_firstLastPast();
+    test_elementAt();
+    test_setElementAt();
+    test_setDataAt();
+    test_setPastLastElement();
+    test_insertElementAt();
+    test_removeElementAt();
+    test_search_eq();
+    test_search_eq_partial();
+    test_search_le();
+    test_splitIntoTwo();
+    test_splitIntoThree();
+    test_splitLow();
+    test_splitLowButOne();
+    test_merge();
+    test_merge2();
+    test_mergeButOne();
+    test_mergeButOne2();
+    test_allocate();
+    test_splitRootLeaf();
+    test_mergeLeavesIntoRoot();
+    test_mergeLeavesNotTop();
     test_mergeLeavesAtTop();
-stop();
     test_mergeBranchesIntoRoot();
     test_mergeBranchesNotTop();
     test_mergeBranchesAtTop();
-    test_find();                    ///
-    test_findAndInsert();           ///
+    test_find();
+    test_findAndInsert();
     test_delete_ascending();
     test_delete_random();
     test_delete_descending();
     test_delete_random_descending();
-    test_put_ascending();  //P
-    test_put_merge();      //P
-    test_put_reload();     //P
-    test_put_descending(); //P
-    test_put_random();     //P
+    test_put_ascending();
+    test_put_merge();
+    test_put_reload_and_check();
+    test_put_descending();
+    test_put_random();
     test_verilog_delete();
     test_verilog_find();
     test_verilog_put();
    }
 
   static void newTests()                                                        // Tests being worked on
-   {//oldTests();
+   {oldTests();
     //test_verilog_delete();
     //test_verilog_find();
     //test_verilog_put();
-    test_delete_ascending();
-    //F test_delete_random();
-    //F test_delete_descending();
-    //F test_delete_random_descending();
    }
 
   public static void main(String[] args)                                        // Test if called as a program
