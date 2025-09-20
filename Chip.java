@@ -19,19 +19,20 @@ class Chip extends Test                                                         
   int                           step;                                           // Current simulation step being executed
   int                       maxSteps = 10;                                      // Maximum number of steps to execute in the simulation
   static       boolean         debug = false;                                   // Debug when true
-  final static boolean registerChecks= false;                                   // Checks whether a register should single or arrayed - as this checking occurs frequently it is useful to disable it to speed up development
   final String         projectFolder = "btreeAsm";                              // Folder containing this project under home folder
   final String   openRoadDockerImage = "appaapps/openroad:latest";              // Docker image used to run OpenRoad
   String           remoteMachineName = "s";                                     // Remote machine name as defined in .ssh/config where the OpenRoad build should be run
+  final static boolean registerChecks   = false;                                // Checks whether a register should single or arrayed - as this checking occurs frequently it is useful to disable it to speed up development
+  final static boolean coverageAnalysis = true;                                // Enables coverage checks
 
 //D1 Chip                                                                       // A chip is constructed from a fixed number of communicating processes that execute code on the chip to produce the desired outputs from the inputs to the chip
 
-  Chip(String Name)             {zz(); chipName = Name;}                        // Create a new chip
-  Chip chip()                   {zz(); err("Deprecated"); return this;}         // This chip
-  static Chip chip(String Name) {zz(); return new Chip(Name);}                  // Create a new chip
+  Chip(String Name)             {if (coverageAnalysis) zz(); chipName = Name;}        // Create a new chip
+  static Chip chip(String Name) {if (coverageAnalysis) zz(); return new Chip(Name);}  // Create a new chip
 
   void chipRunJava()                                                            // Run the processes == ograms defined on this chip using the Java implementation
-   {zz(); for(Process p : processes) p.processInit();                           // Initialize each process == program. Capture the memory set as up by Java so that it can be used to initialize memory in Verilog. Capture the Java execution trace so that the Verilog execution trace can be compared to it to ensure that the Verilog executes along the same path as the Java did.
+   {if (coverageAnalysis) zz();
+    for(Process p : processes) p.processInit();                                 // Initialize each process == program. Capture the memory set as up by Java so that it can be used to initialize memory in Verilog. Capture the Java execution trace so that the Verilog execution trace can be compared to it to ensure that the Verilog executes along the same path as the Java did.
     chipStop = false;                                                           // Show the program as running
     deleteFile(javaTraceFile);                                                  // Remove Java trace file
     for(step = 0; !chipStop && step < maxSteps; ++step)                         // Run each program
@@ -55,7 +56,8 @@ class Chip extends Test                                                         
   void N() {if (!chipStop) stop("Running");}                                    // Confirm that the simulation of the chip is not running
 
   String chipStopExpression()                                                   // The or of all the process stop fields as a process can only write directly to its own variables not to global ones.
-   {zz(); final StringBuilder s = new StringBuilder();
+   {if (coverageAnalysis) zz();
+    final StringBuilder s = new StringBuilder();
     for (Process p: processes)                                                  // Each process
      {s.append("("+p.processStopName()+" != 0 ? 1 : 0) || ");
      }
@@ -63,9 +65,10 @@ class Chip extends Test                                                         
     return ""+s;
    }
 
-  int chipMaxMemory()
-   {zz(); int m = 0;
-    for(Process p: processes)                                                   // Maximum memory used
+  int chipMaxMemory()                                                           // Maximum memory used over all processes
+   {if (coverageAnalysis) zz();
+    int m = 0;
+    for(Process p: processes)
      {if (m < p.memorySize) m = p.memorySize;
      }
     return m;
@@ -648,11 +651,14 @@ if __name__ == "__main__":
 
 //D2 Process                                                                    // Start, step and stop a process while modifying its memory
 
-    Process(String ProcessName) {this(ProcessName, 0, 0, 1); zz();}             // Create a process without any memory attached to it
+    Process(String ProcessName)                                                 // Create a process without any memory attached to it
+     {this(ProcessName, 0, 0, 1);
+      if (coverageAnalysis) zz();
+     }
 
     Process                                                                     // Create a process with the specified memory attached to it
      (String ProcessName, int MemorySize, int MemoryWidth, int MemoryBlockSize)
-     {N(); zz();
+     {N(); if (coverageAnalysis) zz();
       processName     = ProcessName;
       processNumber   = processes.size();
       processes.put(processName, this);
@@ -666,7 +672,8 @@ if __name__ == "__main__":
      }
 
     void processInit()                                                          // Get ready to execute the program
-     {N(); zz(); processPc = 0;                                                 // Program always starts at the first instruction
+     {N(); if (coverageAnalysis) zz();
+      processPc = 0;                                                            // Program always starts at the first instruction
       for (Register r: registers) r.registerSet(0);                             // Clear all registers so we start in a known state
       for (Transaction t: transactions)                                         // Initialize transactions
        {t.transactionRc          =  0;
@@ -679,7 +686,8 @@ if __name__ == "__main__":
      }
 
     void processStep()                                                          // Execute one step in the program
-     {zz(); if (code.size() == 0) return;                                       // No code to run
+     {if (coverageAnalysis) zz();
+      if (code.size() == 0) return;                                             // No code to run
       if (processPc >= code.size())                                             // Stop the run if we go off the end of the code
        {//err("Stopped by process", processName);
         processStop = chipStop = true;
@@ -693,24 +701,25 @@ if __name__ == "__main__":
        }
      }
 
-    void processClear() {zz(); err("deprecated"); code.clear();}                // Clear current process code. This facilitates testing by allowing a program to be written and executed incrementally.
-
     void processStop(int ReturnCode)                                            // Stop the chip
-     {zz(); processRC = ReturnCode;
+     {if (coverageAnalysis) zz();
+      processRC = ReturnCode;
       processStop = chipStop = true;
      }
 
     void processStop(Verilog v, int ReturnCode)                                 // Stop the chip in Verilog
-     {v.assign(processRCName(), ReturnCode); zz();
+     {if (coverageAnalysis) zz();
+      v.assign(processRCName(), ReturnCode);
       v.assign(processStopName(),       1);
      }
 
     void ProcessStop(int ReturnCode)                                            // Process stop instruction
-       {zz(); new Instruction()
-         {void action()           {processStop(ReturnCode);};
-          void verilog(Verilog v) {processStop(v, ReturnCode);};
-         };
-       }
+     {if (coverageAnalysis) zz();
+      new Instruction()
+       {void action()           {processStop(ReturnCode);};
+        void verilog(Verilog v) {processStop(v, ReturnCode);};
+       };
+     }
 
     String processNameAndNumber()                                               // Used to generate skip to comments
      {return String.format("process_%s_%04d", processName, processNumber);
@@ -896,25 +905,27 @@ if __name__ == "__main__":
 
       Register(String RegisterName, int RegisterBits)                           // Create a single register
        {this(RegisterName, RegisterBits, true, 0);
-        zz();
+        if (coverageAnalysis) zz();
        }
 
       Register(String RegisterName, int RegisterBits, int RegisterSize)         // Create an arrayed register
        {this(RegisterName, RegisterBits, false, RegisterSize);
-        zz();
+        if (coverageAnalysis) zz();
        }
 
       boolean registerSingle()  {return  registerSingle;}                       // Whether the register is a single element or an array of elements
       boolean registerArrayed() {return !registerSingle;}                       // Whether the register is an array of elements or a single element
 
       void registerCheckSingle()                                                // Confirm that the register is not an array
-       {zz(); if (!registerSingle())
+       {if (coverageAnalysis) zz();
+        if (!registerSingle())
          {stop("Register:", registerName, "is arrayed, not single as required");
          }
        }
 
       void registerCheckArrayed()                                               // Confirm that the register is an array
-       {zz(); if (registerSingle())
+       {if (coverageAnalysis) zz();
+        if (registerSingle())
          {stop("Register:", registerName, "is single, not arrayed as required");
          }
        }
@@ -930,25 +941,29 @@ if __name__ == "__main__":
        }
 
       String registerName(int Index)                                            // The name of an element of an arrayed register
-       {zz(); if (registerChecks) registerCheckArrayed();
+       {if (coverageAnalysis) zz();
+        if (registerChecks) registerCheckArrayed();
         return processName + "_" + registerName+"["+Index+"]";
        }
 
       String registerName(String Index)                                         // The name of an element of an arrayed register
-       {zz(); if (registerChecks) registerCheckArrayed();
+       {if (coverageAnalysis) zz();
+        if (registerChecks) registerCheckArrayed();
         return processName + "_" + registerName+"["+Index+"]";
        }
 
       void input()                                                              // Mark a register a being connected to input pins
-       {zz(); if (output) stop("Already used for output");
+       {if (coverageAnalysis) zz();
+        if (output) stop("Already used for output");
         input = true;
        }
       void output()                                                             // Mark a register a being connected to output pins
-       {zz(); if (input) stop("Already used for input");
+       {if (coverageAnalysis) zz();
+        if (input) stop("Already used for input");
         output = true;
        }
 
-      Process registerProcess()         {zz(); return Process.this;}            // Process associated with this register
+      Process registerProcess()         {return Process.this;}                  // Process associated with this register
 
       private String rn  ()             {return registerFullName;}              // Shorten names
       private String rn  (int i)        {return registerName(i);}
@@ -960,7 +975,8 @@ if __name__ == "__main__":
       boolean registerTooWideForInt()   {return registerBits >= Integer.SIZE;}  // Whether the reister can be represented as an integer
 
       int registerGet()                                                         // Return the registerâs value as an integer.
-       {zz(); if (registerChecks) registerCheckSingle();
+       {if (coverageAnalysis) zz();
+        if (registerChecks) registerCheckSingle();
         if (registerChecks && registerTooWideForInt())
          {stop("Register too big to be an int");
          }
@@ -968,18 +984,21 @@ if __name__ == "__main__":
        }
 
       String registerGetHex()                                                   // Return the registerâs value as a hex string.
-       {zz(); if (registerChecks) registerCheckSingle();
+       {if (coverageAnalysis) zz();
+        if (registerChecks) registerCheckSingle();
         return bitSetToHex(value, registerBits)+"x";
        }
 
       int registerGet(int Index)                                                // Return the value at the specified index in an arrayed set of registers
-       {zz(); if (registerChecks) registerCheckArrayed();
+       {if (coverageAnalysis) zz();
+        if (registerChecks) registerCheckArrayed();
         final BitSet value = values[Index];                                     // Indexed value
         return value.length() == 0 ? 0 : (int) value.toLongArray()[0];          // Convert to integer
        }
 
       void registerSetBitSet(BitSet value, int Value)                           // Set the value of a bit set
-       {zz(); final int l = min(registerBits, Integer.SIZE-1);                  // The most bits we can hope to represent
+       {if (coverageAnalysis) zz();
+        final int l = min(registerBits, Integer.SIZE-1);                        // The most bits we can hope to represent
         value.clear();                                                          // Zero the bit set
         for (int i = 0; i < l; i++)                                             // Set each bit in the bitset if the corresponding bit in the value is set
          {if (((Value >> i) & 1) != 0) value.set(i);
@@ -987,7 +1006,8 @@ if __name__ == "__main__":
        }
 
       void registerSet(int Value)                                               // Set the value of the register from an integer
-       {zz(); if (registerSingle())                                             // Set value of single register
+       {if (coverageAnalysis) zz();
+        if (registerSingle())                                                   // Set value of single register
          {registerSetBitSet(value, Value);
          }
         else
@@ -998,7 +1018,8 @@ if __name__ == "__main__":
        }
 
       void registerSet(Verilog v, int Value)                                    // Set the value of the register from an integer
-       {zz(); if (registerSingle())                                             // Set value of single register
+       {if (coverageAnalysis) zz();
+        if (registerSingle())                                                   // Set value of single register
          {v.assign(registerFullName, Value);
          }
         else
@@ -1016,12 +1037,14 @@ if __name__ == "__main__":
        }
 
       void registerSet(int Value, int Index)                                    // Set the value of an element of a register array from an integer
-       {zz(); if (registerChecks) registerCheckArrayed();
+       {if (coverageAnalysis) zz();
+        if (registerChecks) registerCheckArrayed();
         registerSetBitSet(values[Index], Value);
        }
 
       void registerSet(Verilog v, int Value, int Index)                         // Set the value of an element of a register array from an integer
-       {zz(); v.assign(registerName(Index), Value);
+       {if (coverageAnalysis) zz();
+        v.assign(registerName(Index), Value);
        }
 
       void RegisterSet(int Value, int Index)                                    // Set the value of an element of a register array from an integer as an instruction
@@ -1036,7 +1059,8 @@ if __name__ == "__main__":
 //D4 Register to Register                                                       // Register to register copy
 
       void copy(Register Source)                                                // Copy a source register into the target register.
-       {R(); zz(); registerCheckSize(Source);                                   // Make sure the target register is big enough
+       {R(); if (coverageAnalysis) zz();
+        registerCheckSize(Source);                                              // Make sure the target register is big enough
 
         if (registerSingle())
          {if (registerChecks) Source.registerCheckSingle();
@@ -1051,7 +1075,8 @@ if __name__ == "__main__":
        }
 
       void copy(Verilog v, Register Source)                                     // Copy a source register into this register.
-       {zz(); if (registerSingle())
+       {if (coverageAnalysis) zz();
+        if (registerSingle())
          {v.assign(registerFullName, Source.registerFullName);
          }
         else
@@ -1065,7 +1090,8 @@ if __name__ == "__main__":
        }
 
       void Copy(Register Source)                                                // Copy instruction
-       {zz(); new Instruction()
+       {if (coverageAnalysis) zz();
+        new Instruction()
          {void action()           {copy(Source);};
           void verilog(Verilog v) {copy(v, Source);};
          };
@@ -1074,17 +1100,20 @@ if __name__ == "__main__":
 //D4 Integer Indexed Register to Register                                       // Copy an integer indexed element of an arrayed source register to a target register
 
       void copy(Register Source, int RegisterIndex)                             // Copy an integer indexed source register into this target register.
-       {R(); zz(); registerCheckSize(Source);                                   // Make sure the target register is big enough
+       {R(); if (coverageAnalysis) zz();
+        registerCheckSize(Source);                                              // Make sure the target register is big enough
         if (registerChecks) Source.registerCheckArrayed();
         value     = (BitSet)Source.values[RegisterIndex].clone();               // Copy the source value into the target
        }
 
       void copy(Verilog v, Register Source, int RegisterIndex)                  // Copy a source register into this register which we can do because each and only each process can write to its own registers
-       {zz(); v.assign(registerFullName, Source.registerName(RegisterIndex));
+       {if (coverageAnalysis) zz();
+        v.assign(registerFullName, Source.registerName(RegisterIndex));
        }
 
       void Copy(Register Source, int RegisterIndex)                             // Copy instruction
-       {zz(); new Instruction()
+       {if (coverageAnalysis) zz();
+        new Instruction()
          {void action()           {copy(   Source, RegisterIndex);};
           void verilog(Verilog v) {copy(v, Source, RegisterIndex);};
          };
@@ -1093,7 +1122,8 @@ if __name__ == "__main__":
 //D4 Register Indexed Register to Register                                      // Copy a register indexed element of an arrayed source register to a target register
 
       void copyIs(Register Source, Register Index)                              // Copy a register indexed source register into this target register.
-       {R(); zz(); registerCheckSize(Source);                                   // Make sure the target register is big enough
+       {R(); if (coverageAnalysis) zz();
+        if (registerChecks) registerCheckSize(Source);                          // Make sure the target register is big enough
         if (registerChecks) Source.registerCheckArrayed();
         if (registerChecks) Index .registerCheckSingle();
         final int i = Index.registerGet();
@@ -1101,12 +1131,13 @@ if __name__ == "__main__":
        }
 
       void copyIs(Verilog v, Register Source, Register Index)                   // Copy a register indexed element of an arrayed source register into this target register
-       {zz();
+       {if (coverageAnalysis) zz();
         v.assign(registerFullName, Source.registerName(Index.registerFullName));
        }
 
       void CopyIs(Register Source, Register Index)                              // Copy instruction
-       {zz(); new Instruction()
+       {if (coverageAnalysis) zz();
+        new Instruction()
          {void action()           {copyIs(   Source, Index);};
           void verilog(Verilog v) {copyIs(v, Source, Index);};
          };
@@ -1115,7 +1146,8 @@ if __name__ == "__main__":
 //D4 Source Register Indexed by Register and Offset to Register
 
       void copyIs(Register Source, Register Index, int Offset)                  // Copy an element of an arrayed register indexed by a register and an offset to a target register
-       {R(); zz(); registerCheckSize(Source);                                   // Make sure the target register is big enough
+       {R(); if (coverageAnalysis) zz();
+        registerCheckSize(Source);                                              // Make sure the target register is big enough
         if (registerChecks) Source.registerCheckArrayed();
         if (registerChecks) Index .registerCheckSingle();
         final int i = Index.registerGet()+Offset;                               // Index in source
@@ -1123,13 +1155,14 @@ if __name__ == "__main__":
        }
 
       void copyIs(Verilog v, Register Source, Register Index, int Offset)       // Copy a register indexed element of an arrayed source register into this target register
-       {zz();
+       {if (coverageAnalysis) zz();
         v.assign(registerFullName,
           Source.registerName(Index.registerFullName+"+"+Offset));
        }
 
       void CopyIs(Register Source, Register Index, int Offset)                  // Copy instruction
-       {zz(); new Instruction()
+       {if (coverageAnalysis) zz();
+        new Instruction()
          {void action()           {copyIs(   Source, Index, Offset);};
           void verilog(Verilog v) {copyIs(v, Source, Index, Offset);};
          };
@@ -1138,18 +1171,21 @@ if __name__ == "__main__":
 //D4 Register to Integer Indexed Register                                       // Copy a source register to an integer indexed element of an arrayed target register
 
       void copy(int RegisterIndex, Register Source)                             // Copy the source register into the specified indexed register
-       {R(); zz(); registerCheckSize(Source);                                   // Make sure the target register is big enough
+       {R(); if (coverageAnalysis) zz();
+        registerCheckSize(Source);                                              // Make sure the target register is big enough
         if (registerChecks) Source.registerCheckSingle();
         if (registerChecks)        registerCheckArrayed();
         values[RegisterIndex] = (BitSet)Source.value.clone();                   // Copy the source value into the target
        }
 
       void copy(Verilog v, int RegisterIndex, Register Source)                  // Copy a source register into this register which we can do because each and only each process can write to its own registers
-       {zz(); v.assign(registerName(RegisterIndex), Source.registerFullName);
+       {if (coverageAnalysis) zz();
+        v.assign(registerName(RegisterIndex), Source.registerFullName);
        }
 
       void Copy(int RegisterIndex, Register Source)                             // Copy instruction
-       {zz(); new Instruction()
+       {if (coverageAnalysis) zz();
+        new Instruction()
          {void action()           {copy(   RegisterIndex, Source);};
           void verilog(Verilog v) {copy(v, RegisterIndex, Source);};
          };
@@ -1158,7 +1194,8 @@ if __name__ == "__main__":
 //D4 Register to register indexed Register                                      // Copy a source register to a register indexed element of this target register
 
       void copyIt(Register Index, Register Source)                              // Copy a source register to a register indexed element of this target register
-       {R(); zz(); registerCheckSize(Source);                                   // Make sure the target register is big enough
+       {R(); if (coverageAnalysis) zz();
+        registerCheckSize(Source);                                              // Make sure the target register is big enough
         if (registerChecks) Index .registerCheckSingle();
         if (registerChecks) Source.registerCheckSingle();
         if (registerChecks)        registerCheckArrayed();
@@ -1167,12 +1204,13 @@ if __name__ == "__main__":
        }
 
       void copyIt(Verilog v, Register Index, Register Source)                   // Copy a source register into this register which we can do because each and only each process can write to its own registers
-       {zz();
+       {if (coverageAnalysis) zz();
         v.assign(registerName(Index.registerFullName), Source.registerFullName);
        }
 
       void CopyIt(Register Index, Register Source)                              // Copy instruction
-       {zz(); new Instruction()
+       {if (coverageAnalysis) zz();
+        new Instruction()
          {void action()           {copyIt(   Index, Source);};
           void verilog(Verilog v) {copyIt(v, Index, Source);};
          };
@@ -1181,19 +1219,21 @@ if __name__ == "__main__":
 //D4 Integer Indexed Register to Integer Indexed Register                       // Copy an element of an integer indexed source register to an integer indexed element of an arrayed target register
 
       void copy(int TargetIndex, Register Source, int SourceIndex)              // Copy an element from an arrayed source to an element of an arrayed target register
-       {R(); zz(); registerCheckSize(Source);                                   // Make sure the target register is big enough
+       {R(); if (coverageAnalysis) zz();
+        registerCheckSize(Source);                                              // Make sure the target register is big enough
         if (registerChecks) Source.registerCheckArrayed();
         if (registerChecks)        registerCheckArrayed();
         values      [TargetIndex] = (BitSet)Source.values[SourceIndex].clone(); // Copy the source value into the target
        }
 
       void copy(Verilog v, int TargetIndex, Register Source, int SourceIndex)   // Copy an elemen of an arrayed source register into an element of an arrayed target register
-       {zz();
+       {if (coverageAnalysis) zz();
         v.assign(registerName(TargetIndex), Source.registerName(SourceIndex));
        }
 
       void Copy(int TargetIndex, Register Source, int SourceIndex)              // Copy instruction
-       {zz(); new Instruction()
+       {if (coverageAnalysis) zz();
+        new Instruction()
          {void action()           {copy(   TargetIndex, Source, SourceIndex);};
           void verilog(Verilog v) {copy(v, TargetIndex, Source, SourceIndex);};
          };
@@ -1202,7 +1242,7 @@ if __name__ == "__main__":
 //D3 Single to and from Arrayed                                                 // Copy an arrayed register into a single register and vice versa
 
       void registerCopySingleFromArray(Process.Register Array)                  // Copy an arrayed register to a single register
-       {R(); zz();
+       {R(); if (coverageAnalysis) zz();
         if (registerChecks)       registerCheckSingle ();                       // Check target is a single register
         if (registerChecks) Array.registerCheckArrayed();                       // Check source is an array register
 
@@ -1236,7 +1276,7 @@ if __name__ == "__main__":
        }
 
       void registerCopyArrayFromSingle(Process.Register Single)                 // Copy a single register to an arrayed register
-       {R(); zz();
+       {R(); if (coverageAnalysis) zz();
         if (registerChecks)  Single.registerCheckSingle();                      // Check target is a single register
         if (registerChecks)         registerCheckArrayed();                     // Check source is an array register
         Process.Register s = Single,  a = this;                                 // Shorten names
@@ -1272,7 +1312,8 @@ if __name__ == "__main__":
 //D3 Combine                                                                    // Or two registers together
 
       void combine(Register Source)                                             // Copy the source register into the target if the source is not zero
-       {R(); zz(); registerCheckSize(Source);                                   // Make sure the target register is big enough
+       {R(); if (coverageAnalysis) zz();
+        registerCheckSize(Source);                                              // Make sure the target register is big enough
 
         if (registerSingle())                                                   // Single register
          {if (!Source.value.isEmpty()) value = (BitSet)Source.value.clone();    // Combine the source value into the target
@@ -1287,7 +1328,8 @@ if __name__ == "__main__":
        }
 
       void combine(Verilog v, Register Source)                                  // Combine a source register into this register
-       {zz(); if (registerSingle())                                             // Single register
+       {if (coverageAnalysis) zz();
+        if (registerSingle())                                             // Single register
          {v.new If(Source.registerFullName)
            {void Then()
              {v.assign(rn(), Source.rn());
@@ -1309,7 +1351,8 @@ if __name__ == "__main__":
        }
 
       void Combine(Register Source)                                             // Combine instruction
-       {zz(); new Instruction()
+       {if (coverageAnalysis) zz();
+        new Instruction()
          {void action()           {combine(Source);};
           void verilog(Verilog v) {combine(v, Source);};
          };
@@ -1330,7 +1373,8 @@ if __name__ == "__main__":
        }
 
       String registerDeclareModuleParameter()                                   // Declare a register in Verilog
-       {zz(); if (input)
+       {if (coverageAnalysis) zz();
+        if (input)
          {return "input wire ["+registerBits+"-1:0] "+registerBaseName;
          }
         else if (output)
@@ -1414,7 +1458,7 @@ if __name__ == "__main__":
       void Lt(Register a, int b)      {new Instruction() {void action() {lt(a, b);} void verilog(Verilog v) {lt(v, a, b);}};} // Set the target register to one if the test between the 'a' and 'b' register is true else 0 as an instruction
 
       void zero()                                                               // Zero a register in Java
-       {R(); zz();
+       {R(); if (coverageAnalysis) zz();
         if (registerSingle())
          {rs(0);
          }
@@ -1426,7 +1470,8 @@ if __name__ == "__main__":
        }
 
       void zero(Verilog v)                                                      // Zero a register in Verilog
-       {zz(); if (registerSingle()) v.assign(rn(),  "0");
+       {if (coverageAnalysis) zz();
+        if (registerSingle()) v.assign(rn(),  "0");
         else
          {final String i = processMemoryIndexName();
           v.new For(i, ""+registerSize)
@@ -1438,21 +1483,27 @@ if __name__ == "__main__":
        }
 
       void Zero()                                                               // Zero a register instruction
-       {zz(); new Instruction()
+       {if (coverageAnalysis) zz();
+        new Instruction()
          {void action()           {zero();};
           void verilog(Verilog v) {zero(v);};
          };
        }
 
       void zero(int i)                                                          // Zero an element of a register array in Java
-       {R(); zz();
+       {R(); if (coverageAnalysis) zz();
         if (registerChecks) registerCheckArrayed();
         rs(0, i);
        }
-      void zero(Verilog v, int i) {zz(); v.assign(rn(i), "0");}                 // Zero an element of a register array in Verilog
+
+      void zero(Verilog v, int i)                                               // Zero an element of a register array in Verilog
+       {if (coverageAnalysis) zz();
+        v.assign(rn(i), "0");
+       }
 
       void Zero(int Index)                                                      // Zero a register instruction
-       {zz(); if (registerChecks) registerCheckArrayed();
+       {if (coverageAnalysis) zz();
+        if (registerChecks) registerCheckArrayed();
         new Instruction()
          {void action()           {zero(   Index);};
           void verilog(Verilog v) {zero(v, Index);};
@@ -1460,28 +1511,34 @@ if __name__ == "__main__":
        }
 
       void One()                                                                // One a register instruction
-       {zz(); new Instruction()
+       {if (coverageAnalysis) zz();
+        new Instruction()
          {void action()           {one();};
           void verilog(Verilog v) {one(v);};
          };
        }
 
       void one(int i)                                                           // One an element of a register array in Java
-       {R(); zz();
+       {R(); if (coverageAnalysis) zz();
         if (registerChecks) registerCheckArrayed();
         rs(1, i);
        }
-      void one(Verilog v, int i) {zz(); v.assign(rn(i), "1");}                  // One an element of a register array in Verilog
+      void one(Verilog v, int i)                                                // One an element of a register array in Verilog
+       {if (coverageAnalysis) zz();
+        v.assign(rn(i), "1");
+       }
 
       void One(int Index)                                                       // One as an instruction
-       {zz(); new Instruction()
+       {if (coverageAnalysis) zz();
+        new Instruction()
          {void action()           {one(   Index);};
           void verilog(Verilog v) {one(v, Index);};
          };
        }
 
       void Inc()                                                                // Increment a register instruction
-       {zz(); new Instruction()
+       {if (coverageAnalysis) zz();
+        new Instruction()
          {void action()           {inc();};
           void verilog(Verilog v) {inc(v);};
          };
@@ -1495,35 +1552,39 @@ if __name__ == "__main__":
        }
 
       void Add(Register Source)                                                 // Add the value of a register to the specified register as an instruction
-       {zz(); new Instruction()
+       {if (coverageAnalysis) zz();
+        new Instruction()
          {void action()           {add(   Source);};
           void verilog(Verilog v) {add(v, Source);};
          };
        }
 
       void Add1(Register Source)                                                // Add the value of a register plus one to the specified register as an instruction
-       {zz(); new Instruction()
+       {if (coverageAnalysis) zz();
+        new Instruction()
          {void action()           {add1(   Source);};
           void verilog(Verilog v) {add1(v, Source);};
          };
        }
 
       void Average(Register Source1, Register Source2)                          // Average of two registers as an instruction
-       {zz(); new Instruction()
+       {if (coverageAnalysis) zz();
+        new Instruction()
          {void action()           {average(   Source1, Source2);};
           void verilog(Verilog v) {average(v, Source1, Source2);};
          };
        }
 
       void sum(Process.Register...Source)                                       // Sum the source registers in Java
-       {R(); zz();
+       {R(); if (coverageAnalysis) zz();
         int sum = 0;
         for (int i = 0; i < Source.length; i++) sum += Source[i].registerGet();
         registerSet(sum);
        }
 
       void sum(Verilog v, Process.Register...Source)                            // Sum the source registers in Verilog
-       {zz(); if (Source.length == 0)  return;
+       {if (coverageAnalysis) zz();
+        if (Source.length == 0) return;
         final StringBuilder s = new StringBuilder();
         s.append(Source[0].registerFullName);
         for (int i = 1; i < Source.length; i++)
@@ -1533,7 +1594,8 @@ if __name__ == "__main__":
        }
 
       void Sum(Register...Source)                                               // Sum the source registers as an instruction
-       {zz(); new Instruction()
+       {if (coverageAnalysis) zz();
+        new Instruction()
          {void action()           {sum(   Source);};
           void verilog(Verilog v) {sum(v, Source);};
          };
@@ -1541,17 +1603,19 @@ if __name__ == "__main__":
      } // Register
 
     Register register(String RegisterName, int RegisterBits)                    // Create a single register
-     {N(); zz(); return new Register(RegisterName, RegisterBits);
+     {N(); if (coverageAnalysis) zz();
+      return new Register(RegisterName, RegisterBits);
      }
 
     Register register(String RegisterName, int RegisterBits, int RegisterSize)  // Create an arrayed register
-     {N(); zz(); return new Register(RegisterName, RegisterBits, RegisterSize);
+     {N(); if (coverageAnalysis) zz();
+      return new Register(RegisterName, RegisterBits, RegisterSize);
      }
 
 //D3 Verilog                                                                    // Generate a Verilog always block to implement this process
 
     String processVerilog(Verilog v)                                            // Generate Verilog code for this process
-     {N(); zz();
+     {N(); if (coverageAnalysis) zz();
       v.comment("Process: "+processName+"  "+processNameAndNumber());
       if (hasMemory())                                                          // Declare memory for processes that have memeory attached to them
        {v.A("(* ram_style = \"block\" *)");
@@ -1713,7 +1777,7 @@ if __name__ == "__main__":
      }
 
     void memoryGet(Register Value, Register Index)                              // Get a memory element indexed by a register as an integer setting the memory cache register to the value of the element retrieved
-     {zz(); R();
+     {R(); if (coverageAnalysis) zz();
       if (Value.registerArrayed())                                              // Single register from memory
        {stop("Single register required for interactions with memory");
        }
@@ -1724,14 +1788,14 @@ if __name__ == "__main__":
      }
 
     void memoryGet(Verilog v, Register Value, Register Index)                   // Get a memory element indexed by a register as an integer setting the memory cache register to the value of the element retrieved
-     {final String n = processMemoryIndexName();                                // Memory index name
+     {if (coverageAnalysis) zz();
+      final String n = processMemoryIndexName();                                // Memory index name
       final String i = Index.registerFullName;                                    // Index register
-      zz();
       v.assign(Value.registerFullName, processMemoryName(i));                     // Get indexed element
      }
 
     void memorySet(Register Value, Register Index)                              // Set a memory element indexed by a register
-     {R(); zz();
+     {R(); if (coverageAnalysis) zz();
       if (Value.registerArrayed())                                              // Single register from memory
        {stop("Single register required for interactions with memory");
        }
@@ -1742,34 +1806,17 @@ if __name__ == "__main__":
      }
 
     void memorySet(Verilog v, Register Value, Register Index)                   // Set a memory element indexed by a register.
-     {zz();
-      v.assign(processMemoryName(Index.registerFullName),
+     {v.assign(processMemoryName(Index.registerFullName),
                Value.registerFullName);
      }
 
     void MemorySet(Register Value, Register Index)                              // Set a memory element indexed by a register as an instruction
-     {zz(); new Instruction()
+     {if (coverageAnalysis) zz();
+      new Instruction()
        {void action ()          {memorySet(   Value, Index);}
         void verilog(Verilog v) {memorySet(v, Value, Index);}
        };
      };
-
-//    void memorySetValue(int Value, int Index)                                   // Set a memory element
-//     {final int l = min(memoryWidth, Integer.SIZE-1);                           // The most bits we can hope to represent
-//      final BitSet v = memory   [Index];                                        // Memory element
-//      zz(); v.clear();                                                          // Zero the memory
-//      for (int i = 0; i < l; i++) if (((Value >> i) & 1) != 0) v.set(i);        // Set each bit in the bitset if the corresponding bit in the value is set
-//     }
-//
-//    void memorySet(int Index, int...Values)                                     // Set a memory block to the specified values
-//     {zz(); if (Values.length != memoryBlockSize)
-//       {stop("Wrong number of values supplied:", memoryBlockSize,
-//             "expected", Values.length, "supplied");
-//       }
-//      for (int i = 0; i < Values.length; i++)                                   // Load each element of the block
-//       {memorySetValue(Values[i], Index*memoryBlockSize + i);
-//       }
-//     }
 
 //D3 Transaction                                                                // A transaction allows other processes on the chip to request services from this process
 
@@ -1784,7 +1831,7 @@ if __name__ == "__main__":
       final String  transactionOpCode;                                          // The service requested by the caller
 
       Transaction(String Name, Process CallingProcess, String OpCode)           // Transactions allow one process to request services from another process
-       {N(); zz();
+       {N(); if (coverageAnalysis) zz();
         transactionName = Name;
         transactionCallingProcess = CallingProcess;
         transactionOpCode = OpCode;
@@ -1792,14 +1839,14 @@ if __name__ == "__main__":
        }
 
       void transactionInputRegisters(Process.Register...InputRegisters)         // The registers used to provide inputs to this transaction. As they are only going to be read during the transaction they can be owned by any process
-       {N(); zz();
+       {N(); if (coverageAnalysis) zz();
         for(Process.Register r : InputRegisters)                                // Save input registers
          {transactionInputRegisters.put(r.registerFullName, r);
          }
        }
 
       void transactionOutputRegisters(Process.Register...OutputRegisters)       // The registers used as outputs by this transaction. As they are going to be written into by the transaction they have to be owned by the process executing the transaction
-       {N(); zz();
+       {N(); if (coverageAnalysis) zz();
         for(Process.Register r : OutputRegisters)                               // Save output registers
          {if (r.registerProcess() != transactionProcess())                      // Check that the output registers are owned by the target process of the transaction as that process is the only process that can write into them
            {stop("Output transaction register:",
@@ -1822,11 +1869,11 @@ if __name__ == "__main__":
         return r < f;                                                           // The transaction has finished and is not currently executing
        }
 
-      int transactionExecutableAsInt() {zz(); return transactionExecutable() ? 1 : 0;}// Whether the transaction is executable or not as an integer
-      int transactionFinishedAsInt  () {zz(); return transactionFinished  () ? 1 : 0;}// Whether the transaction has finished or not as an integer
+      int transactionExecutableAsInt() {return transactionExecutable() ? 1 : 0;}// Whether the transaction is executable or not as an integer
+      int transactionFinishedAsInt  () {return transactionFinished  () ? 1 : 0;}// Whether the transaction has finished or not as an integer
 
-      String transactionRequestedAt() {N(); zz(); return transactionName+"_requestedAt";} // Name of the requested at field for a transaction
-      String transactionFinishedAt()  {N(); zz(); return transactionName+"_finishedAt";}  // Name of the finished at field for a transaction
+      String transactionRequestedAt() {N(); return transactionName+"_requestedAt";} // Name of the requested at field for a transaction
+      String transactionFinishedAt()  {N(); return transactionName+"_finishedAt";}  // Name of the finished at field for a transaction
 
       String transactionExecutableV()                                           // Whether the transaction is executable or not in verilog
        {final String r = transactionRequestedAt();
@@ -1835,13 +1882,14 @@ if __name__ == "__main__":
        }
 
       String transactionFinishedV()                                             // Whether the transaction has finished or not in verilog
-       {final String r = transactionRequestedAt();
+       {N(); if (coverageAnalysis) zz();
+        final String r = transactionRequestedAt();
         final String f = transactionFinishedAt();
-        N(); zz(); return "("+r+" < "+f+")";
+        return "("+r+" < "+f+")";
        }
 
       void transactionSetExecutable()                                           // Mark a transaction as executable
-       {R(); zz();
+       {R(); if (coverageAnalysis) zz();
         if (transactionRequestedAt > transactionFinishedAt)
          {stop("Transaction already running");
          }
@@ -1863,12 +1911,8 @@ if __name__ == "__main__":
          transactionName+"_returnCode";
        }
 
-      Process transactionProcess() {zz(); return Process.this;}                 // Process associated with this transaction
+      Process transactionProcess() {return Process.this;}                       // Process associated with this transaction
      } // Transaction
-
-    Transaction transaction(String Name, Process CallingProcess, String OpCode) // Transactions allow one process to request services from another process by supplying the service name and the input and output registers
-     {zz(); err("Deprecated"); return new Transaction(Name, CallingProcess, OpCode);
-     }
    } // Process
 
   Process process                                                               // Create a process with attached memory
@@ -1898,7 +1942,8 @@ if __name__ == "__main__":
 //D3 Store and Retrieve                                                         // Save memory to a string or reload memory from a string
 
     String memorySave()                                                         // Save memory to a string
-     {final int S = memorySize, W = memoryWidth, B = memoryBlockSize; zz();     // Shorten names
+     {if (coverageAnalysis) zz();
+      final int S = memorySize, W = memoryWidth, B = memoryBlockSize;           // Shorten names
       final StringBuilder s = new StringBuilder();
       s.append(" "+W+" "+S+" "+B);                                              // Save dimensions so they can be checked on reload
       for(int i = 0; i < S; i++)                                                // Transform memory blocks into bits
@@ -1909,7 +1954,7 @@ if __name__ == "__main__":
      }
 
     void memoryLoad(Process P, String line)                                     // Load memory from a string
-     {N(); zz();
+     {N(); if (coverageAnalysis) zz();
       final int     S = memorySize, W = memoryWidth, B = memoryBlockSize;       // Shorten names
       final String[]w = line.trim().split("\\s+");                              // Input line as words
       final int   []n = new int[w.length];                                      // Input line as numbers
@@ -1939,7 +1984,7 @@ if __name__ == "__main__":
      }
 
     void memoryLoad(Process r, int [][]Load)                                    // Load memory from the specified process
-     {N(); zz();
+     {N(); if (coverageAnalysis) zz();
       final int B = memoryWidth, N = memorySize, S = memoryBlockSize;           // Shorten names
       Register n  = r.register("n",  1+logTwo(N));                              // A register wide enough to address the memory elements
 
@@ -1978,24 +2023,28 @@ if __name__ == "__main__":
        }
 
       void executeTransaction(Register Index)                                   // Execute the request in Java
-       {R(); zz(); index.copy(Index);
+       {R(); if (coverageAnalysis) zz();
+        index.copy(Index);
         transactionSetExecutable();
        }
 
       void executeTransaction(Verilog v, Register Index)                        // Execute the request in verilog
-       {zz(); index.copy(v, Index);
+       {if (coverageAnalysis) zz();
+        index.copy(v, Index);
         transactionSetExecutable(v);
        }
 
       void ExecuteTransaction(Register Index)                                   // Execute the requested memory read instruction
-       {zz(); process.new Instruction()
+       {if (coverageAnalysis) zz();
+        process.new Instruction()
          {void action ()          {executeTransaction(   Index);}
           void verilog(Verilog v) {executeTransaction(v, Index);}
          };
        }
 
       void WaitResultOfTransaction()                                            // Wait for the request to finish
-       {zz(); process.new Instruction(true)
+       {if (coverageAnalysis) zz();
+        process.new Instruction(true)
          {void action()
            {if (transactionFinished()) process.Continue();
            }
@@ -2009,7 +2058,7 @@ if __name__ == "__main__":
      } // Get
 
     Memory.Get memoryGetFromProcess(Process Caller)                             // Reuse the existing transaction if it exists else create a new one
-     {zz();
+     {if (coverageAnalysis) zz();
       if (memoryGetFromProcess.containsKey(Caller.processName))
        {return memoryGetFromProcess.get(Caller.processName);                    // Return existing transaction
        }
@@ -2037,28 +2086,32 @@ if __name__ == "__main__":
        }
 
       void executeTransaction(Register Index, Register Value)                   // Execute the requested memory update request
-       {R(); zz(); index.copy(Index);
+       {R(); if (coverageAnalysis) zz();
+        index.copy(Index);
         if (Value.registerSingle()) value.copy(Value);
         else value.registerCopySingleFromArray(Value);
         transactionSetExecutable();
        }
 
       void executeTransaction(Verilog v, Register Index, Register Value)        // Execute the requested memory update in Verilog
-       {zz(); index.copy(v, Index);
+       {if (coverageAnalysis) zz();
+        index.copy(v, Index);
         if (Value.registerSingle()) value.copy(v, Value);
         else value.registerCopySingleFromArray(v, Value);
         transactionSetExecutable(v);
        }
 
       void ExecuteTransaction(Register Index, Register Value)                   // Execute the requested memory update instruction
-       {zz(); process.new Instruction()
+       {if (coverageAnalysis) zz();
+        process.new Instruction()
          {void action ()          {executeTransaction(   Index, Value);}
           void verilog(Verilog v) {executeTransaction(v, Index, Value);}
          };
        }
 
       void WaitResultOfTransaction()                                            // Wait for the update request to finish
-       {zz(); process.new Instruction(true)
+       {if (coverageAnalysis) zz();
+        process.new Instruction(true)
          {void action()
            {if (transactionFinished()) process.Continue();
            }
@@ -2072,7 +2125,7 @@ if __name__ == "__main__":
      } // Set
 
     Memory.Set memorySetIntoProcess(Process Caller)                             // Reuse the existing transaction if it exists else create a new one
-     {zz();
+     {if (coverageAnalysis) zz();
       if (memorySetIntoProcess.containsKey(Caller.processName))
        {return memorySetIntoProcess.get(Caller.processName);                    // Return existing transaction
        }
@@ -2082,7 +2135,8 @@ if __name__ == "__main__":
 //D3 Get/Set memeory                                                            // Perform a read from memory or a write into memory using a single always block to control each memory
 
     void memoryProcessGenerate()                                                // Generate the code needed to support the transactions against this memory process
-     {zz(); new Instruction(true)                                               // Loop on this single instruction processing memory requests
+     {if (coverageAnalysis) zz();
+      new Instruction(true)                                               // Loop on this single instruction processing memory requests
        {void action()                                                           // Process memory requests in Java
          {for (var t : transactions)                                            // All transactions
            {if (t.transactionExecutable())                                      // Executable transactions
@@ -2843,9 +2897,7 @@ Chip: Test             step: 2, maxSteps: 10, running: 0
   public static void main(String[] args)                                        // Test if called as a program
    {try                                                                         // Get a traceback in a format clickable in Geany if something goes wrong to speed up debugging.
      {if (github_actions) oldTests(); else newTests();                          // Tests to run
-      if (github_actions)                                                       // Coverage analysis
-       {coverageAnalysis(sourceFileName(), 12);
-       }
+      if (coverageAnalysis) coverageAnalysis(12);                               // Coverage analysis
       testSummary();                                                            // Summarize test results
       System.exit(testsFailed);
      }
