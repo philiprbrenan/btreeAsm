@@ -483,7 +483,7 @@ module %s(                                                                      
         v.assign("memoryReset", 1);
         v.end();
 
-        v.A("else if (memoryReset) begin"); v.indent();                         // Clear memory after reset
+        v.A("else if (memoryReset > 0) begin"); v.indent();                     // Clear memory after reset
         v.assign("memoryStep",  "memoryStep + 1");
         v.assign("memoryReset", "memoryStep < "+chipMaxMemory());               // Memory is still being cleared
         v.end();
