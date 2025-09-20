@@ -137,7 +137,7 @@ public class Test                                                               
     return null;
    }
 
-  String ref(Object obj)                                                        // Print the address of an object
+  static String ref(Object obj)                                                 // Print the address of an object
    {return Integer.toHexString(System.identityHashCode(obj));
    }
 
@@ -150,9 +150,26 @@ public class Test                                                               
      }
    }
 
-  String dateTimeStamp()                                                        // Date and time stamp
+  static String dateTimeStamp()                                                 // Date and time stamp
    {return ZonedDateTime.now(ZoneOffset.UTC).
       format(DateTimeFormatter.ISO_INSTANT).replace(":", "-");
+   }
+
+  static String bitSetToHex(BitSet B)                                           // Print a bitset as a hex string
+   {final int  L = modZero(B.length(), 4), N = L / 4;
+    final int[]b = new int[N];
+    for (int i = 0; i < L; i++)                                                 // Load bits into integers
+     {if (B.get(i)) b[i / 4] |= (1 << (i % 4));
+     }
+    final StringBuilder s = new StringBuilder();
+    for (int i = 0; i < N; i++) s.append("0123456789abcdef".charAt(b[N-i-1]));  // Print integers
+    return ""+s;
+   }
+
+  static String bitSetToHex(BitSet B, int Width)                                // Print a bitset as a hex string with enough leading zeros to fill the field to match icarus verilog
+   {final String s = bitSetToHex(B);
+    //if (s.equals("0")) return s;
+    return "0".repeat(modZero(Width, 4)/4-s.length())+s;
    }
 
 //D2 Numeric routines                                                           // Numeric routines
@@ -236,9 +253,12 @@ public class Test                                                               
    }
 
   static int powerTwo(int n) {return 1 << n;}                                   // Power of 2
+
   static int powerOf (int a, int b)                                             // Raise a to the power b
    {int v = 1; for (int i = 0; i < b; ++i) v *= a; return v;
    }
+
+  static int modZero(int i, int m) {return i % m  == 0 ? i : i + m - (i % m);}  // Next integer conguent to zero modulus the specified base
 
 //D2 Array routines                                                             // Routines operating on arrays
 
@@ -1381,6 +1401,35 @@ a   aa    AAA
 """);
    }
 
+  static void test_modZero()
+   {ok(modZero(0, 4), 0);
+    ok(modZero(1, 4), 4);
+    ok(modZero(2, 4), 4);
+    ok(modZero(3, 4), 4);
+    ok(modZero(4, 4), 4);
+    ok(modZero(5, 4), 8);
+   }
+
+  static void test_bitSetToHex()
+   {if (true)
+     {final BitSet b = new BitSet();
+      b.set(5, true);
+      b.set(3, true);
+      b.set(1, true);
+      ok(bitSetToHex(b),       "2a");
+      ok(bitSetToHex(b, 9),   "02a");
+      ok(bitSetToHex(b, 12),  "02a");
+      ok(bitSetToHex(b, 13), "002a");
+     }
+    if (true)
+     {final BitSet b = new BitSet();
+      b.set(4, true);
+      b.set(3, true);
+      b.set(1, true);
+      ok(bitSetToHex(b), "1a");
+     }
+   }
+
   static void oldTests()                                                        // Tests thought to be in good shape
    {test_log_two();
     test_power_two();
@@ -1398,11 +1447,13 @@ a   aa    AAA
     test_fileNames();
     test_executed();
     test_squeezeVerticalSpaces();
-    test_replaceAll();
+    test_modZero();
+    test_bitSetToHex();
    }
 
   static void newTests()                                                        // Tests being worked on
-   {oldTests();
+   {//oldTests();
+    test_bitSetToHex();
    }
 
   public static void main(String[] args)                                        // Test if called as a program
