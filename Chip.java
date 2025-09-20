@@ -1882,7 +1882,7 @@ if __name__ == "__main__":
 //D3 Store and Retrieve                                                         // Save memory to a string or reload memory from a string
 
     String memorySave()                                                         // Save memory to a string
-     {final int     S = memorySize, W = memoryWidth, B = memoryBlockSize; zz(); // Shorten names
+     {final int S = memorySize, W = memoryWidth, B = memoryBlockSize; zz();     // Shorten names
       final StringBuilder s = new StringBuilder();
       s.append(" "+W+" "+S+" "+B);                                              // Save dimensions so they can be checked on reload
       for(int i = 0; i < S; i++)                                                // Transform memory blocks into bits
@@ -1893,7 +1893,8 @@ if __name__ == "__main__":
      }
 
     void memoryLoad(Process P, String line)                                     // Load memory from a string
-     {final int     S = memorySize, W = memoryWidth, B = memoryBlockSize; zz(); // Shorten names
+     {N(); zz();
+      final int     S = memorySize, W = memoryWidth, B = memoryBlockSize;       // Shorten names
       final String[]w = line.trim().split("\\s+");                              // Input line as words
       final int   []n = new int[w.length];                                      // Input line as numbers
       for (int i = 0; i < w.length; i++) n[i] = Integer.parseInt(w[i]);         // Parse words in input string into numbers
@@ -1922,7 +1923,8 @@ if __name__ == "__main__":
      }
 
     void memoryLoad(Process r, int [][]Load)                                    // Load memory from the specified process
-     {final int B = memoryWidth, N = memorySize, S = memoryBlockSize; zz();
+     {N(); zz();
+      final int B = memoryWidth, N = memorySize, S = memoryBlockSize;           // Shorten names
       Register n  = r.register("n",  1+logTwo(N));                              // A register wide enough to address the memory elements
 
       Register ss = r.register("ss",  B*S);                                     // The single array to be loaded into memeory. Using a single array makes memory updates more efficient.
