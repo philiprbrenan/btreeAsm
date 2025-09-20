@@ -572,7 +572,7 @@ chipStop = true;
              };
            }
           void verilog(Verilog v)
-           {v.new If(Delta.registerName()+" & " + I)
+           {v.new If(Delta.registerFullName+" & " + I)
              {void Then()
                {copyDown(v, source, II);
                }
@@ -629,7 +629,7 @@ chipStop = true;
              };
            }
           void verilog(Verilog v)
-           {v.new If(Delta.registerName()+" & " + I)
+           {v.new If(Delta.registerFullName+" & " + I)
              {void Then()
                {copyUp(v, source, II);
                }
@@ -904,7 +904,7 @@ chipStop = true;
 
     void setElementAt(Verilog v,                                                // Set the indexed key, data pair
       Process.Register Index, Process.Register Key, Process.Register Data)
-     {zz(); v.new If (Index.registerName()+" == "+size.registerName())
+     {zz(); v.new If (Index.registerFullName+" == "+size.registerFullName)
        {void Then()
          {size.inc(v);
          }
@@ -949,7 +949,7 @@ chipStop = true;
       final String i = P.processMemoryIndexName();
       v.A("for("+i+" = "+maxStuckSize+"-1; "+i+" > 0; "+i+" = "+i+"-1) begin");
       v.indent();
-      v.new If(i+" > "+Index.registerName())
+      v.new If(i+" > "+Index.registerFullName)
        {void Then()
          {v.A(keys.registerName(i)+" <= "+keys.registerName(i+"-1")+";");
           v.A(data.registerName(i)+" <= "+data.registerName(i+"-1")+";");
@@ -992,7 +992,7 @@ chipStop = true;
       final String i = P.processMemoryIndexName();
       v.new For(i, ""+(maxStuckSize-1))
        {void body()
-         {v.new If (i + ">= "+Index.registerName())
+         {v.new If (i + ">= "+Index.registerFullName)
            {void Then()
              {v.assign(keys.registerName(i), keys.registerName(i+"+1"));
               v.assign(data.registerName(i), data.registerName(i+"+1"));
@@ -1023,11 +1023,11 @@ chipStop = true;
            }
          }
         void verilog(Verilog v)
-         {final String N = size.registerName();
+         {final String N = size.registerFullName;
           final String i = P.processMemoryIndexName();
           v.new For(i, ""+maxStuckSize)
            {void body()
-             {final String eq = Key.registerName()+" == "+keys.registerName(i)+
+             {final String eq = Key.registerFullName+" == "+keys.registerName(i)+
                   " && "+i+" < "+N;
               v.assign(compares.registerName(i), eq);
               v.assign(collapse.registerName(i), i);
@@ -1050,7 +1050,7 @@ chipStop = true;
            {final String j = P.processMemoryIndexName();
             v.A("for("+j+" = 0; "+j+" < "+(maxStuckSize-I)+"; "+j+" = "+j+"+"+2*I+") begin");
             v.indent();
-            v.new If (compares.registerName()+"["+j+"+"+I+"]")
+            v.new If (compares.registerName(j+"+"+I))
              {void Then()
                {v.A("  "+compares.registerName(j)+" <= 1;");
                 v.A("  "+collapse.registerName(j)+" <= "+collapse.registerName(j+"+"+I)+";");
@@ -1078,8 +1078,8 @@ chipStop = true;
            {void Then()
              {Found.one(v);
               StuckIndex.copy(v, collapse, 0);
-              v.assign(Stuck.this.Key .registerName(), keys.registerName(collapse.registerName(0)));
-              v.assign(Stuck.this.Data.registerName(), data.registerName(collapse.registerName(0)));
+              v.assign(Stuck.this.Key .registerFullName, keys.registerName(collapse.registerName(0)));
+              v.assign(Stuck.this.Data.registerFullName, data.registerName(collapse.registerName(0)));
              }
             void Else()
              {Found.zero(v);
@@ -1108,9 +1108,9 @@ chipStop = true;
            }
          }
         void verilog(Verilog v)
-         {final String N = size.registerName();
+         {final String N = size.registerFullName;
           if (true)                                                             // Compare first key
-           {final String le = Key.registerName()+" <= "+keys.registerName(0)+
+           {final String le = Key.registerFullName+" <= "+keys.registerName(0)+
               " && 0 < "+N;
             v.assign(compares.registerName(0), le);
             collapse.registerSet(v, 0, 0);
@@ -1118,7 +1118,7 @@ chipStop = true;
           final String i = P.processMemoryIndexName();
           v.new For(i, "1", ""+maxStuckSize)
            {void body()
-             {final String K = Key.registerName();
+             {final String K = Key.registerFullName;
               final String in =
                 K + " >  " + keys.registerName(i+"-1") + " && " +
                 K + " <= " + keys.registerName(i)      + " && " +i+ " < "+N;
@@ -1174,8 +1174,8 @@ chipStop = true;
            {void Then()
              {Found.one(v);
               StuckIndex.copy(v, collapse, 0);
-              v.assign(Stuck.this.FoundKey.registerName(), keys.registerName(collapse.registerName(0)));
-              v.assign(Stuck.this.Data    .registerName(), data.registerName(collapse.registerName(0)));
+              v.assign(Stuck.this.FoundKey.registerFullName, keys.registerName(collapse.registerName(0)));
+              v.assign(Stuck.this.Data    .registerFullName, data.registerName(collapse.registerName(0)));
              }
             void Else()
              {Found.zero(v);
@@ -1263,7 +1263,7 @@ chipStop = true;
           Left.size.registerSet(v, Copy);
           Left.data.copy       (v, Copy, data, Copy);
 
-          v.assign(Right.size.registerName(), size.registerName()+"-"+(Copy+1));
+          v.assign(Right.size.registerFullName, size.registerFullName+"-"+(Copy+1));
           Right.data.copy(v, Copy, data, 2*Copy+1);
          }
        };
@@ -1465,7 +1465,7 @@ chipStop = true;
                     else P.Continue();
                    }
                   void verilog(Verilog v)                                       // Not a leaf so go to code for branch
-                   {v.new If (isLeaf.registerName() + " == 0")
+                   {v.new If (isLeaf.registerFullName + " == 0")
                      {void Then()
                        {P.Goto(v, lEnd);
                        }
@@ -1602,7 +1602,7 @@ chipStop = true;
             else P.Continue();
            }
           void verilog(Verilog v)
-           {v.new If (p.size.registerName() + " < " + maxStuckSize)
+           {v.new If (p.size.registerFullName + " < " + maxStuckSize)
              {void Then()
                {P.Goto(v, end);
                }
@@ -1828,8 +1828,8 @@ chipStop = true;
        }
 
       void verilog(Verilog v)                                                   // Whether a  merge is permitted or not.
-       {final String  s = ParentIndex.registerName();
-        final String  r = p.size.registerName();
+       {final String  s = ParentIndex.registerFullName;
+        final String  r = p.size.registerFullName;
         v    .new If (s + " == 0 && " + r + " > 1")                             // Can be used on root if there is more than one entry
          {void Then()
            {P.Continue(v);
@@ -2054,7 +2054,7 @@ chipStop = true;
            };
           void verilog(Verilog v)
            {success.zero(v);                                                    // Assume failure
-            v.new If (p.size.registerName() + " != 1")
+            v.new If (p.size.registerFullName + " != 1")
              {void Then()
                {P.Goto(v, end);
                }
@@ -4901,7 +4901,7 @@ Merge     : 0
             i.inc();
            }
           void verilog(Verilog v)
-           {v.new Case(random_32.length, i.registerName())
+           {v.new Case(random_32.length, i.registerFullName)
              {void Choice(int I)
                {k.registerSet(v, random_32[I]);
                }
@@ -5156,7 +5156,7 @@ Merge     : 0
             i.inc();
            }
           void verilog(Verilog v)
-           {v.new Case(random_32.length, i.registerName())
+           {v.new Case(random_32.length, i.registerFullName)
              {void Choice(int I)
                {k.registerSet(v, N-I);
                }
@@ -5429,7 +5429,7 @@ Merge     : 0
             i.inc();
            }
           void verilog(Verilog v)
-           {v.new Case(random_32.length, i.registerName())
+           {v.new Case(random_32.length, i.registerFullName)
              {void Choice(int I)
                {k.registerSet(v, random_32[N-1-I]);
                }
@@ -6610,7 +6610,7 @@ Merge     : 0
             i.dec();
            }
           void verilog(Verilog v)
-           {v.new Case(1, random_32.length+1, i.registerName())
+           {v.new Case(1, random_32.length+1, i.registerFullName)
              {void Choice(int I)
                {k.registerSet(v, random_32[I-1]);
                }
