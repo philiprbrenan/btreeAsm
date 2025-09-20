@@ -62,7 +62,7 @@ module Test;                                                                    
                 begin
                   integer f;
                   f = $fopen("verilog/trace_verilog.txt", "a");
-                  $fdisplay(f, "Location: Chip.java:0747:<init>|  Chip.java:1010:<init>|  Chip.java:1009:RegisterSet|  Chip.java:2792:test_register_hex|  Chip.java:2823:oldTests|  Chip.java:2827:newTests|  Chip.java:2832:main|");
+                  $fdisplay(f, "Location: Chip.java:0750:<init>|  Chip.java:1013:<init>|  Chip.java:1012:RegisterSet|  Chip.java:2805:test_register_hex|  Chip.java:2836:oldTests|  Chip.java:2840:newTests|  Chip.java:2845:main|");
                   $fclose(f);
                 end
               end
