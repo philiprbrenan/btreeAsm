@@ -526,7 +526,7 @@ chipStop = true;
      }
 
     void copyDown(Stuck Source, int Power)                                      // Copy a stuck into itself or another stuck shifting the elements down in the stuck by a predetermined amount
-     {final int delta = powerTwo(Power); zz();
+     {final int delta = powerTwo(Power);
       for (int i = 0; i < maxStuckSize-delta; i++)
        {keys.copy(i, Source.keys, i+delta);
         data.copy(i, Source.data, i+delta);
@@ -537,20 +537,8 @@ chipStop = true;
        }
      }
 
-    void copyDownUnrolled(Verilog v, Stuck Source, int Power)                   // Copy a stuck into itself or another stuck shifting the elements down in the stuck by a predetermined amount
-     {final int delta = powerTwo(Power);
-      for (int i = 0; i < maxStuckSize - delta; i++)
-       {keys.copy(v, i, Source.keys, i+delta);
-        data.copy(v, i, Source.data, i+delta);
-       }
-      for (int i = maxStuckSize - delta; i < maxStuckSize; i++)
-       {keys.zero(v, i);
-        data.zero(v, i);
-       }
-     }
-
     void copyDown(Verilog v, Stuck Source, int Power)                           // Copy a stuck into itself or another stuck shifting the elements down in the stuck by a predetermined amount
-     {final int delta = powerTwo(Power); zz();
+     {final int delta = powerTwo(Power);
       final String i = P.processMemoryIndexName();
       v.new For(i, ""+(maxStuckSize - delta))
        {void body()
@@ -567,14 +555,14 @@ chipStop = true;
      }
 
     void CopyDown(Stuck Source, int Power)                                      // Copy a stuck into itself or another stuck shifting the elements down in the stuck by a predetermined amount as an instruction
-     {zz(); P.new Instruction()
+     {P.new Instruction()
        {void action()           {copyDown(   Source, Power);}
         void verilog(Verilog v) {copyDown(v, Source, Power);}
        };
      }
 
     void CopyDown(Process.Register Delta)                                       // Copy a stuck down into itself a variable number of places
-     {zz(); for (int i = logTwo(prevPowerOfTwo(maxStuckSize)); i >= 0; i--)
+     {for (int i = logTwo(prevPowerOfTwo(maxStuckSize)); i >= 0; i--)
        {final Stuck source = this;
         final int I = 1<<i, II = i;
         P.new Instruction()
@@ -606,18 +594,6 @@ chipStop = true;
        }
      }
 
-    void copyUpUnrolled(Verilog v, Stuck Source, int Power)                     // Copy a stuck into itself or another stuck shifting the elements up in the stuck by a predetermined amount
-     {final int delta = powerTwo(Power);
-      for (int i = maxStuckSize-1; i >= delta; i--)
-       {keys.copy(v, i, Source.keys, i-delta);
-        data.copy(v, i, Source.data, i-delta);
-       }
-      for (int i = 0; i < delta; i++)
-       {keys.zero(v, i);
-        data.zero(v, i);
-       }
-     }
-
     void copyUp(Verilog v, Stuck Source, int Power)                             // Copy a stuck into itself or another stuck shifting the elements up in the stuck by a predetermined amount
      {final int delta = powerTwo(Power); zz();
       final String i = P.processMemoryIndexName();
@@ -636,7 +612,7 @@ chipStop = true;
      }
 
     void CopyUp(Stuck Source, int Power)                                        // Copy a stuck into itself or another stuck shifting the elements up in the stuck by a predetermined amount as an instruction
-     {zz(); P.new Instruction()
+     {P.new Instruction()
        {void action()           {copyUp(   Source, Power);}
         void verilog(Verilog v) {copyUp(v, Source, Power);}
        };
@@ -725,7 +701,7 @@ chipStop = true;
      }
 
     void pop()                                                                  // Pop a key, data pair from the local copy of the stuck
-     {R(); zz(); final int N = size.registerGet();
+     {R(); final int N = size.registerGet();
       if (N == 0)
        {P.processStop(2);
        }
@@ -743,7 +719,7 @@ chipStop = true;
      }
 
     void Pop()                                                                  // Pop a key, data pair from the local copy of the stuck as a single instruction
-     {zz(); P.new Instruction()
+     {P.new Instruction()
        {void action()           {pop( ); }
         void verilog(Verilog v) {pop(v);}
        };
@@ -772,7 +748,7 @@ chipStop = true;
      }
 
     void setPastLastData(Process.Register Data)                                 // Set the data element past the top of the stuck
-     {R(); zz(); final int N = size.registerGet();
+     {R(); final int N = size.registerGet();
       if (N >= maxStuckSize)
        {P.processStop(3);
        }
@@ -782,11 +758,11 @@ chipStop = true;
      }
 
     void setPastLastData (Verilog v, Process.Register Data)                     // Set the data past the top of the stuck
-     {zz(); data.copyIt(v, size, Data);
+     {data.copyIt(v, size, Data);
      }
 
     void SetPastLastData(Process.Register Data)                                 // Set the data element past the top of the stuck as an instruction
-     {zz(); P.new Instruction()
+     {P.new Instruction()
        {void action()           {setPastLastData(   Data); }
         void verilog(Verilog v) {setPastLastData(v, Data);}
        };
@@ -886,7 +862,7 @@ chipStop = true;
      }
 
     void elementAt(Process.Register Index)                                      // Get the indexed key, data pair
-     {R(); zz(); final int N = Index.registerGet();
+     {R(); final int N = Index.registerGet();
       if (N >= maxStuckSize)
        {P.processStop(7);
         return;
@@ -909,7 +885,7 @@ chipStop = true;
 
     void setElementAt                                                           // Set the indexed key, data pair
      (Process.Register Index, Process.Register Key, Process.Register Data)
-     {R(); zz(); final int N = Index.registerGet();
+     {R(); final int N = Index.registerGet();
       final int M = size.registerGet();
       if (N >= maxStuckSize)
        {P.processStop(8);
@@ -945,30 +921,9 @@ chipStop = true;
        };
      }
 
-    void setDataAt(Process.Register Index, Process.Register Data)               // Set the indexed data pair
-     {R(); zz(); final int N = Index.registerGet();
-      final int M = size.registerGet();
-      if (N >= M)
-       {P.processStop(10);
-        return;
-       }
-      data.copy(N, Data);
-     }
-
-    void setDataAt(Verilog v, Process.Register Index, Process.Register Data)    // Set the indexed data pair
-     {zz(); data.copyIt(v, Index, Data);
-     }
-
-    void SetDataAt(Process.Register Index, Process.Register Data)               // Set the indexed data pair  as a single instruction
-     {zz(); P.new Instruction()
-       {void action()           {setDataAt(   Index, Data);}
-        void verilog(Verilog v) {setDataAt(v, Index, Data);}
-       };
-     }
-
     void insertElementAt                                                        // Set the indexed key, data pair
      (Process.Register Index, Process.Register Key, Process.Register Data)
-     {R(); zz(); final int N = Index.registerGet();
+     {R(); final int N = Index.registerGet();
       final int S = size.registerGet();
       if (N >= maxStuckSize)                                                    // No reason left in stuck
        {P.processStop(11);
@@ -985,23 +940,6 @@ chipStop = true;
        }
       keys.copy(N, Key);
       data.copy(N, Data);
-     }
-
-    void insertElementAtUnrolled                                                // Set the indexed key, data pair
-     (Verilog v, Process.Register Index,
-      Process.Register Key, Process.Register Data)
-     {size.inc(v);                                                              // Increase number of elements
-      for (int i = maxStuckSize-1; i > 0; i--)
-       {final int I = i;
-         v.new If(""+i+" > "+Index.registerName())
-         {void Then()
-           {keys.copy(v, I, keys, I-1);
-            data.copy(v, I, data, I-1);
-           }
-         };
-       }
-      keys.copyIt(v, Index, Key);
-      data.copyIt(v, Index, Data);
      }
 
     void insertElementAt                                                        // Set the indexed key, data pair
@@ -1031,7 +969,7 @@ chipStop = true;
      }
 
     void removeElementAt(Process.Register Index)                                // Remove the indexed key, data pair from the stuck as a single instruction
-     {R(); zz(); final int N = Index.registerGet();
+     {R(); final int N = Index.registerGet();
       if (N >= size.registerGet())
        {P.processStop(13);
         return;
@@ -1043,22 +981,6 @@ chipStop = true;
       for (int i = N; i < M; i++)
        {keys.copy(i, keys, i+1);
         data.copy(i, data, i+1);
-       }
-     }
-
-    void removeElementAtUnrolled(Verilog v, Process.Register Index)             // Remove the indexed key, data pair from the stuck as a single instruction
-     {size.dec(v);
-      Key .copyIs(v, keys, Index);
-      Data.copyIs(v, data, Index);
-
-      for (int i = 0; i < maxStuckSize-1; i++)
-       {final int I = i;
-        v.new If (""+i + ">= "+Index.registerName())
-         {void Then()
-           {keys.copy(v, I, keys, I+1);
-            data.copy(v, I, data, I+1);
-           }
-         };
        }
      }
 
@@ -1100,15 +1022,6 @@ chipStop = true;
             collapse.registerSet(i, i);                                         // The number of the test being collapsed
            }
          }
-        void verilogUnRolled(Verilog v)
-         {final String N = size.registerName();
-          for (int i = 0; i < maxStuckSize; ++i)                                // Compare each key
-           {final String eq = Key.registerName()+" == "+keys.registerName(i)+
-              " && "+i+" < "+N;
-            v.assign(compares.registerName(i), eq);
-            collapse.registerSet(v, i, i);
-           }
-         }
         void verilog(Verilog v)
          {final String N = size.registerName();
           final String i = P.processMemoryIndexName();
@@ -1131,17 +1044,6 @@ chipStop = true;
                {compares.one(j);
                 collapse.copy(j, collapse, j+I);
                }
-             }
-           }
-          void verilogUnrolled(Verilog v)                                       // Produces slightly longer code than the method below by unrolling the loop in Java
-           {for (int j = 0; j < maxStuckSize-I; j += I+I)
-             {final int J = j;
-               v.new If (compares.registerName(J+I))
-               {void Then()
-                 {compares.one (v, J);
-                  collapse.copy(v, J, collapse, J+I);
-                 }
-               };
              }
            }
           void verilog(Verilog v)
@@ -1205,23 +1107,6 @@ chipStop = true;
             collapse.registerSet(i, i);
            }
          }
-        void verilogUnrolled(Verilog v)
-         {final String N = size.registerName();
-          if (true)                                                             // Compare first key
-           {final String le = Key.registerName()+" <= "+keys.registerName(0)+
-              " && 0 < "+N;
-            v.assign(compares.registerName(0), le);
-            collapse.registerSet(v, 0, 0);
-           }
-          for (int i = 1; i < maxStuckSize; ++i)                                // Compare each key
-           {final String K = Key.registerName();
-             final String in =
-              K + " >  " + keys.registerName(i-1) + " && " +
-              K + " <= " + keys.registerName(i)   + " && " +i+ " < "+N;
-            v.assign(compares.registerName(i), in);
-            collapse.registerSet(v, i, i);
-           }
-         }
         void verilog(Verilog v)
          {final String N = size.registerName();
           if (true)                                                             // Compare first key
@@ -1252,17 +1137,6 @@ chipStop = true;
                {compares.one(j);
                 collapse.copy(j, collapse, j+I);
                }
-             }
-           }
-          void verilogUnrolled(Verilog v)                                       // Unrolled version
-           {for (int j = 0; j < maxStuckSize-I; j += I+I)
-             {final int J = j;
-               v.new If (compares.registerName(J+I))
-               {void Then()
-                 {compares.one (v, J);
-                  collapse.copy(v, J, collapse, J+I);
-                 }
-               };
              }
            }
           void verilog(Verilog v)
@@ -1337,20 +1211,6 @@ chipStop = true;
           Right.size.registerSet(C);                                            // Right size
          }
 
-        void verilogUnrolled(Verilog v)
-         {for (int i = 0; i < C; ++i)
-           {Left.keys.copy(v, i, keys, i);
-            Left.data.copy(v, i, data, i);
-           }
-          Left  .size.registerSet(v, C);
-
-          for (int i = 0; i < C; ++i)
-           {Right.keys.copy(v, i, keys, C+i);
-            Right.data.copy(v, i, data, C+i);
-            }
-          Right.size.registerSet(v, C);
-         }
-
         void verilog(Verilog v)
          {final String i = P.processMemoryIndexName();
           v.new For(i, ""+C)
@@ -1388,27 +1248,6 @@ chipStop = true;
            }
           Right.size.registerSet(N - Copy-1);
           Right.data.copy(Copy, data, 2*Copy+1);
-         }
-
-        void verilogUnrolled(Verilog v)
-         {for (int i = 0; i < Copy; ++i)
-           {Left.keys.copy(v, i, keys, i);
-            Left.data.copy(v, i, data, i);
-           }
-          Left.size.registerSet(v, Copy);
-          Left.data.copy       (v, Copy, data, Copy);
-
-          for (int i = 0; i < Copy; ++i)
-           {Right.keys.copy(v, i, keys, Copy+i+1);
-            Right.data.copy(v, i, data, Copy+i+1);
-           }
-
-          v.new Case(maxStuckSize, size.registerName())
-           {void Choice(int N)
-             {Right.size.registerSet(v, N - Copy-1);
-             }
-           };
-          Right.data.copy(v, Copy, data, 2*Copy+1);
          }
 
         void verilog(Verilog v)
@@ -1454,20 +1293,7 @@ chipStop = true;
            }
           size.registerSet(N);
          }
-        void verilogUnrolled(Verilog v)
-         {final int N = maxStuckSize / 2;
-          for (int i = 0; i < N; ++i)
-           {Left.keys.copy(v, i, keys, i);
-            Left.data.copy(v, i, data, i);
-           }
-          Left.size.registerSet(v, N);
 
-          for (int i = 0; i < N; ++i)
-           {keys.copy(v, i, keys, N+i);
-            data.copy(v, i, data, N+i);
-           }
-          size.registerSet(v, N);
-         }
         void verilog(Verilog v)
          {final int N = maxStuckSize / 2;
           final String i = P.processMemoryIndexName();
@@ -1511,22 +1337,7 @@ chipStop = true;
            }
           size.registerSet(N);
          }
-        void verilogUnrolled(Verilog v)
-         {final int N = (maxStuckSize-1) / 2;
-          for (int i = 0; i < N; ++i)
-           {Left.keys.copy(v, i, keys, i);
-            Left.data.copy(v, i, data, i);
-           }
-          Left.size.registerSet(v, N);
-          Left.data.       copy(v, N, data, N);
-          Key.copy(v, keys, N);
 
-          for (int i = 0; i <= N; ++i)                                          // Move the top element element down as well
-           {keys.copy(v, i, keys, N+i+1);
-            data.copy(v, i, data, N+i+1);
-           }
-          size.registerSet(v, N);
-         }
         void verilog(Verilog v)
          {final int N = (maxStuckSize-1) / 2;
           final String i = P.processMemoryIndexName();
@@ -3574,35 +3385,6 @@ Stuck: stuck size: 5, leaf: 1, root
  2     3 =>    6
  3     4 =>    8
  4     5 =>   10
-""");
-   }
-
-  static void test_setDataAt()
-   {sayCurrentTestName();
-    final Btree   b = test_push();
-    final Process P = b.P; // b.processes.get("Stuck");
-    final Stuck   s = b.new Stuck(P, "stuck");
-    final Process.Register k = P.register("k", b.bitsPerKey);
-    final Process.Register d = P.register("d", b.bitsPerData);
-    final Process.Register i = b.stuckIndex(P, "i");
-    P.processTrace = true;
-
-    s.stuckGetRoot();
-    final int N = 4;
-    for (int j = 0; j < N; j++)
-     {final int J = j;
-      i.RegisterSet(J);
-      d.RegisterSet((J+1)*2);
-      s.SetDataAt(i, d);
-     }
-
-    b.chipRun(1_000);
-    ok(s, """
-Stuck: stuck size: 4, leaf: 1, root
- 0     0 =>    2
- 1     1 =>    4
- 2     2 =>    6
- 3     3 =>    8
 """);
    }
 
@@ -6948,7 +6730,6 @@ Merge     : 0
     test_firstLastPast();
     test_elementAt();
     test_setElementAt();
-    test_setDataAt();
     test_setPastLastElement();
     test_insertElementAt();
     test_removeElementAt();
@@ -6992,13 +6773,14 @@ Merge     : 0
     //test_verilog_delete();
     //test_verilog_find();
     //test_verilog_put();
-    test_setPastLastElement();
+    test_delete_random();
+    test_put_random();
    }
 
   public static void main(String[] args)                                        // Test if called as a program
    {try                                                                         // Get a traceback in a format clickable in Geany if something goes wrong to speed up debugging.
      {if (github_actions) oldTests(); else newTests();                          // Tests to run
-      if (github_actions)                                                       // Coverage analysis
+      if (true || github_actions)                                                       // Coverage analysis
        {coverageAnalysis(sourceFileName(), 12);
        }
       testSummary();                                                            // Summarize test results
