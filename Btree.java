@@ -18,7 +18,7 @@ class Btree extends Chip                                                        
   final Memory stuckIsLeaf;                                                     // Whether the current stuck is acting as a leaf or a branch in the btree.
   final Memory stuckIsFree;                                                     // Whether the stuck is on the free chain
   final Memory freeNext;                                                        // Next stuck on the free chain. If this stuck is not on the free chain then this field is zero to show that this stuck in use. If the stuck is the root stuck which is never freed, then its next pointer points to the first free stuck on the free chain.
-  final Memory stuckSize;                                                       // Current size of stuck up to the maximum size
+  final Memory stuckSize;                                                       // Current size of each stuck
   final Memory stuckKeys;                                                       // Keys field
   final Memory stuckData;                                                       // Data field
   final Memory stuckUsed;                                                       // Maximum number of stucks used at any one time so far - this allows us to avoid initializing all the stucks at the start
@@ -117,7 +117,7 @@ chipStop = true;
     final Process.Register    sz = stuckIndex(P, "rootSize");                   // Size of root
     final Process.Register  True = P.register("true",   1);                     // True
     final Process.Register False = P.register("false",  1);                     // False
-    final Process.Register  used = btreeIndex(P, "rootUsed");                   // False
+    final Process.Register  used = btreeIndex(P, "rootUsed");                   // Maximum number of stucks used at any one time
 
     P.new Instruction()
      {void action()
@@ -131,22 +131,21 @@ chipStop = true;
     sFreeNext.ExecuteTransaction(root, root);                                   // Next free stuck is now first on free chain from root
     sFreeNext.WaitResultOfTransaction();
 
-    sSize.ExecuteTransaction(root, sz);                                         // Next free stuck is now first on free chain from root
+    sSize.ExecuteTransaction(root, sz);                                         // Size of root stuck
     sSize.WaitResultOfTransaction();
 
-    sIsLeaf.ExecuteTransaction(root, True);                                     // Next free stuck is now first on free chain from root
+    sIsLeaf.ExecuteTransaction(root, True);                                     // The root starts as a leaf
     sIsLeaf.WaitResultOfTransaction();
 
-    sIsFree.ExecuteTransaction(root, False);                                    // Next free stuck is now first on free chain from root
+    sIsFree.ExecuteTransaction(root, False);                                    // The root is allocated
     sIsFree.WaitResultOfTransaction();
 
-    sUsed.ExecuteTransaction(root, used);                                       // Next free stuck is now first on free chain from root
+    sUsed.ExecuteTransaction(root, used);                                       // Maxumum number of stucks in use at any one time
     sUsed.WaitResultOfTransaction();
    }
 
   private void allocate(Process.Register ref, boolean leaf)                     // Allocate a stuck and set a ref to the allocated node
-   {final Process       P         = ref.registerProcess();
-    final Memory.Get    gFreeNext = freeNext   .memoryGetFromProcess(P);        // Get next free stuck
+   {final Memory.Get    gFreeNext = freeNext   .memoryGetFromProcess(P);        // Get next free stuck
     final Memory.Set    sFreeNext = freeNext   .memorySetIntoProcess(P);        // Set next free stuck
     final Memory.Set    sIsLeaf   = stuckIsLeaf.memorySetIntoProcess(P);        // Set leaf or branch
     final Memory.Set    sIsFree   = stuckIsFree.memorySetIntoProcess(P);        // Set stuck is free field
@@ -220,8 +219,7 @@ chipStop = true;
    }
 
   private void free(Process.Register ref)                                       // Free the referenced stuck and put it on the free chain
-   {//final Process             P   = ref.registerProcess();
-    final Process.Register next   = btreeIndex(P, "next");                      // Index of the second free stuck in the btree
+   {final Process.Register next   = btreeIndex(P, "next");                      // Index of the second free stuck in the btree
     final Memory.Get  gFreeNext   = freeNext.memoryGetFromProcess(P);           // Get next free stuck
     final Memory.Set  sFreeRoot   = freeNext.memorySetIntoProcess(P);           // Set next free stuck
     final Memory.Set  sFreeNext   = freeNext.memorySetIntoProcess(P);           // Set next free stuck
