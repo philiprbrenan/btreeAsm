@@ -6813,10 +6813,8 @@ Merge     : 0
   static void newTests()                                                        // Tests being worked on
    {//oldTests();
     //test_verilog_delete();
-    //test_verilog_find();
+      test_verilog_find();
     //test_verilog_put();
-    test_delete_random();
-    test_put_random();
    }
 
   public static void main(String[] args)                                        // Test if called as a program
