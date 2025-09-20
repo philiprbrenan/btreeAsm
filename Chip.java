@@ -1055,7 +1055,7 @@ if __name__ == "__main__":
          {final String i = processMemoryIndexName();
           v.new For(i, ""+registerSize)
            {void body()
-             {v.assign(registerName()+"["+i+"]", Source.registerName()+"["+i+"]");
+             {v.assign(registerName(i), Source.registerName(i));
              }
            };
          }
@@ -1098,8 +1098,8 @@ if __name__ == "__main__":
        }
 
       void copyIs(Verilog v, Register Source, Register Index)                   // Copy a register indexed element of an arrayed source register into this target register
-       {zz(); v.assign(registerName(), Source.registerName()+
-         "["+Index.registerName()+"]");
+       {zz();
+        v.assign(registerName(), Source.registerName(Index.registerName()));
        }
 
       void CopyIs(Register Source, Register Index)                              // Copy instruction
@@ -1120,8 +1120,9 @@ if __name__ == "__main__":
        }
 
       void copyIs(Verilog v, Register Source, Register Index, int Offset)       // Copy a register indexed element of an arrayed source register into this target register
-       {zz(); v.assign(registerName(), Source.registerName()+
-         "["+Index.registerName()+"+"+Offset+"]");
+       {zz();
+        v.assign(registerName(),
+          Source.registerName(Index.registerName()+"+"+Offset));
        }
 
       void CopyIs(Register Source, Register Index, int Offset)                  // Copy instruction
@@ -1163,8 +1164,8 @@ if __name__ == "__main__":
        }
 
       void copyIt(Verilog v, Register Index, Register Source)                   // Copy a source register into this register which we can do because each and only each process can write to its own registers
-       {zz(); v.assign(registerName()+"["+Index.registerName()+"]",
-                 Source.registerName());
+       {zz();
+        v.assign(registerName(Index.registerName()), Source.registerName());
        }
 
       void CopyIt(Register Index, Register Source)                              // Copy instruction
@@ -1218,7 +1219,7 @@ if __name__ == "__main__":
       void registerCopySingleFromArray(Verilog v, Process.Register Array)       // Copy an arrayed register to a single register
        {final int A = Array.registerBits, S = Array.registerSize;               // Sizes
         final StringJoiner j = new StringJoiner(", ", "{", "}");                // Concatenate the source register elements
-        for (int i = S-1; i >= 0;  i--) j.add(Array.registerName()+"["+i+"]");  // Concatenate the elements of the source register from high to low
+        for (int i = S-1; i >= 0;  i--) j.add(Array.registerName(i));           // Concatenate the elements of the source register from high to low
         v.assign(registerName(), ""+j);                                         // Assign concatenated source to target
        }
 
@@ -1251,7 +1252,7 @@ if __name__ == "__main__":
       void registerCopyArrayFromSingle(Verilog v, Process.Register Single)      // Copy a single register to an arrayed register
        {final int A = registerBits, S = registerSize;                           // Sizes
         for (int i = 0; i < S; ++i)                                             // Each element of the arrayed register
-         {v.assign(       registerName()+"["+i+"]",                             // Copy corresponding bits from the single register into the corresponding element of the target register
+         {v.assign(       registerName(i),                                      // Copy corresponding bits from the single register into the corresponding element of the target register
                    Single.registerName()+"["+(A*i)+"+:"+A+"];");
          }
        }
