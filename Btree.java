@@ -3,7 +3,6 @@
 // Philip R Brenan at appaapps dot com, Appa Apps Ltd Inc., 2025
 //------------------------------------------------------------------------------
 package com.AppaApps.Silicon;                                                   // Btree in a block on the surface of a silicon chip.
-// Squeeze out all redundant variables and check all code paths are being tested
 // Improve chipPrintMemory to make the output more compact and readable
 import java.util.*;
 
@@ -54,6 +53,7 @@ class Btree extends Chip                                                        
    {super("Btree"); N();
     if (MaxStuckSize % 2 == 1) stop("The stuck size must be even, not:", MaxStuckSize);
     if (MaxStuckSize < 4)      stop("The stuck size must be greater than equal to 4, not:", MaxStuckSize);
+
     size         = Size;                                                        // The maximum number of entries in the btree.
     maxStuckSize = MaxStuckSize;                                                // The maximum number of entries in the stuck.
     bitsPerKey   = BitsPerKey;                                                  // The number of bits needed to define a key
@@ -107,12 +107,7 @@ chipStop = true;
 //D2 Allocation                                                                 // Allocate stucks from the free chain
 
   void createRootStuck()                                                        // Initialize the root stuck
-   {//for (int i = 0; i < size-1; i++)
-    // {freeNext   .memorySet(i+1, i);                                          // Free chain hangs from root
-    //  stuckIsFree.memorySet(1, i+1);                                          // Start with the root as a leaf
-    // }
-
-    final Memory.Set   sFreeNext = freeNext   .memorySetIntoProcess(P);         // Set next free stuck
+   {final Memory.Set   sFreeNext = freeNext   .memorySetIntoProcess(P);         // Set next free stuck
     final Memory.Set       sSize = stuckSize  .memorySetIntoProcess(P);         // Size of root stuck
     final Memory.Set     sIsLeaf = stuckIsLeaf.memorySetIntoProcess(P);         // Set leaf or branch
     final Memory.Set     sIsFree = stuckIsFree.memorySetIntoProcess(P);         // Set stuck is free field
@@ -132,6 +127,7 @@ chipStop = true;
        {root.zero(v); sz.zero(v); True.one(v); False.zero(v); used.one(v);
        }
      };
+
     sFreeNext.ExecuteTransaction(root, root);                                   // Next free stuck is now first on free chain from root
     sFreeNext.WaitResultOfTransaction();
 
@@ -163,6 +159,7 @@ chipStop = true;
     final Process.Register  avail = P.register("notUsedAvailable", 1);          // Next non used stuck available
     final Process.Register isLeaf = P.register("isLeaf", 1);                    // Indicate whether the allocated stuck is a leaf or a branch
     final Process.Register isFree = P.register("isFree", 1);                    // Indicate that the allocated stuck is not free but in use
+
     root.Zero();
     gFreeNext.ExecuteTransaction(root);                                         // Get next free stuck from the free chain
     gFreeNext.WaitResultOfTransaction();
@@ -223,7 +220,7 @@ chipStop = true;
    }
 
   private void free(Process.Register ref)                                       // Free the referenced stuck and put it on the free chain
-   {final Process     P           = ref.registerProcess();
+   {//final Process             P   = ref.registerProcess();
     final Process.Register next   = btreeIndex(P, "next");                      // Index of the second free stuck in the btree
     final Memory.Get  gFreeNext   = freeNext.memoryGetFromProcess(P);           // Get next free stuck
     final Memory.Set  sFreeRoot   = freeNext.memorySetIntoProcess(P);           // Set next free stuck
