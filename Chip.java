@@ -1684,7 +1684,7 @@ if __name__ == "__main__":
            }
           v.end();
 
-          v.A("else if (memoryReset) begin"); v.indent();                       // Clear all memory associated with this process
+          v.A("else if (memoryReset > 0) begin"); v.indent();                   // Clear all memory associated with this process
           if (hasMemory())
            {v.A("if (memoryStep < "+memorySize+") begin"); v.indent();
             v.assign(processMemoryName("memoryStep"), "0");                     // Clear memory
