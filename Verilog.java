@@ -97,7 +97,10 @@ class Verilog extends Test                                                      
   String assignOp() {return synthesis || parallel ? "<=" : "=";}                // Assignment operator in use
 
   void assign(String a, String b)                                               // Assign
-   {A(String.format("%s %s %s;",     pad(a), assignOp(), b));
+   {if (b.charAt(b.length() - 1) == ';')
+     {stop("Unnecessary semicolon at end of assignment");
+     }
+    A(String.format("%s %s %s;",     pad(a), assignOp(), b));
    }
 
   void assign(String a, int b)                                                  // Assign
