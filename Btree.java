@@ -6690,7 +6690,7 @@ Merge     : 0
    {sayCurrentTestName();
 // 10, 4  1072
 // 10,10  1126
-    final Btree            b = new Btree(powerTwo(8), powerTwo(8), 8, 8);
+    final Btree            b = new Btree(powerTwo(10), powerTwo(16), 16, 16);
     final Process          P = b.P;
     final Process.Register k = P.register("k", b.bitsPerKey);   k.input();
     final Find             f = b.new Find(P);
