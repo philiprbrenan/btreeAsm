@@ -1298,7 +1298,7 @@ if __name__ == "__main__":
        {final int A = registerBits, S = registerSize;                           // Sizes
         for (int i = 0; i < S; ++i)                                             // Each element of the arrayed register
          {v.assign(       registerName(i),                                      // Copy corresponding bits from the single register into the corresponding element of the target register
-                   Single.registerFullName+"["+(A*i)+"+:"+A+"];");
+                   Single.registerFullName+"["+(A*i)+"+:"+A+"]");
          }
        }
 
