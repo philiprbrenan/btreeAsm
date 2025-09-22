@@ -49,7 +49,7 @@ module Test;                                                                    
       main_memory_value                <= 0;
       main_a_0         <= 0;
     end
-    else if (memoryReset) begin
+    else if (memoryReset > 0) begin
     end
     else begin
       if (processCurrent == 0) begin
