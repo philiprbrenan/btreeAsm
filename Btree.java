@@ -1958,7 +1958,6 @@ chipStop = true;
 
     //P.new Instruction() {void action() {say("AAAA 22 mergeLeavesNotTop", ParentIndex, LeftLeaf);}};
 
-    //p.stuckGet(ParentIndex);                                                  // Load parent
     P.new Block()
      {void code()
        {mergePermitted(P, ParentIndex, p, end);
@@ -2020,8 +2019,6 @@ chipStop = true;
 
     //P.new Instruction() {void action() {say("AAAA 33 mergeLeavesAtTop", ParentIndex);}};
     success.Zero();                                                             // Assume we cannot merge
-
-    //p.stuckGet(ParentIndex);                                                  // Load parent
 
     P.new Block()
      {void code()
@@ -2149,7 +2146,6 @@ chipStop = true;
    (Stuck Parent, Process.Register ParentIndex, Process.Register LeftBranch)
    {if (coverageAnalysis) zz();
     final Process P = ParentIndex.registerProcess();
-    //final Stuck p = new Stuck(P, "mergeBranchesNotTopParent");                // Parent stuck
     final Stuck   p = Parent;                                                   // Parent stuck
     final Stuck   l = LeftMergeStuck;                                           // Left split stuck
     final Stuck   r = RightMergeStuck;                                          // Right split stuck
@@ -2159,8 +2155,6 @@ chipStop = true;
     final Process.Register success = P.new Register("success", 1);              // Success of merge - the result of this operation
 
     //P.new Instruction() {void action() {say("AAAA 55 mergeBranchesNotTop", ParentIndex, LeftBranch);}};
-
-    //p.stuckGet(ParentIndex);                                                  // Load parent
 
     P.new Block()
      {void code()
@@ -2221,7 +2215,6 @@ chipStop = true;
    (Stuck Parent, Process.Register ParentIndex)
    {if (coverageAnalysis) zz();
     final Process P = ParentIndex.registerProcess();
-    //final Stuck   p = new Stuck(P, "mergeLeavesIntoRootParent");              // Parent stuck
     final Stuck   p = Parent;                                                   // Parent stuck
     final Stuck   l = LeftMergeStuck;                                           // Left split stuck
     final Stuck   r = RightMergeStuck;                                          // Right split stuck
@@ -2231,8 +2224,6 @@ chipStop = true;
     final Process.Register success = P.new Register("success", 1);              // Success of merge - the result of this operation
 
     //P.new Instruction() {void action() {say("AAAA 66 mergeBranchesAtTop", ParentIndex);}};
-
-    //p.stuckGet(ParentIndex);                                                  // Load parent
 
     P.new Block()
      {void code()
@@ -2552,9 +2543,6 @@ chipStop = true;
                  {void Then()
                    {stuckIndex1.Copy(S.size);
                     stuckIndex1.Dec();
-
-                    //mergeLeavesNotTop  (S, s, stuckIndex1);                   // Try merging last leleaves not at top into parent
-                    //mergeBranchesNotTop(S, s, stuckIndex1);                   // Try merging branches not at top into parent
 
                     P.new If(stuckIndex1)
                      {void Then()
