@@ -78,7 +78,9 @@ class Verilog extends Test                                                      
   void begin(String...ints) {A("begin"); indent(); i(ints);}                    // Begin with some optional integer declarations
   void end()                {dedent(); A("end");}                               // End
   void endCase()            {dedent(); A("endcase");}                           // End
-  void endModule()          {dedent(); A("endmodule");}                         // End
+
+  void module(String name)  {A("module "+name); indent();}                      // Module
+  void endModule()          {dedent(); A("endmodule");}                         // Module end
 
   class Initial
    {Initial()
@@ -526,6 +528,23 @@ b                = b - 1;
     ok(pad("abcdefghijklmmopq"), "abcdefghijklmmopq               ");
    }
 
+  static void test_module()
+   {final Verilog v = new Verilog();
+    v.module("MMM");
+    v.A("(input clock,");
+    v.A(" output stop);");
+    v.A(" assign output = input;");
+    v.endModule();
+    //stop(v);
+ok(v, """
+module MMM
+  (input clock,
+   output stop);
+   assign output = input;
+endmodule
+""");
+   }
+
   static void oldTests()                                                        // Tests thought to be in good shape
    {test_ext();
     test_A();
@@ -544,6 +563,7 @@ b                = b - 1;
     test_always();
     test_inc();
     test_pad();
+    test_module();
    }
 
   static void newTests()                                                        // Tests being worked on
