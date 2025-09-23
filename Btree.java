@@ -140,7 +140,7 @@ chipStop = true;
     sIsFree.ExecuteTransaction(root, False);                                    // The root is allocated
     sIsFree.WaitResultOfTransaction();
 
-    sUsed.ExecuteTransaction(root, used);                                       // Maxumum number of stucks in use at any one time
+    sUsed.ExecuteTransaction(root, used);                                       // Maximum number of stucks in use at any one time
     sUsed.WaitResultOfTransaction();
    }
 
@@ -6688,9 +6688,7 @@ Merge     : 0
 
   static void test_verilog_find()
    {sayCurrentTestName();
-// 10, 4  1072
-// 10,10  1126
-    final Btree            b = new Btree(powerTwo(10), powerTwo(16), 16, 16);
+    final Btree            b = new Btree(powerTwo(20), powerTwo(10), 32, 32);
     final Process          P = b.P;
     final Process.Register k = P.register("k", b.bitsPerKey);   k.input();
     final Find             f = b.new Find(P);
@@ -6711,8 +6709,6 @@ Merge     : 0
 
   static void test_verilog_delete()
    {sayCurrentTestName();
-// 10,4    4,160
-// 10,10   4,448
     final Btree            b = new Btree(powerTwo(10), powerTwo(4), 32, 32);
     final Process          P = b.P;
     final Process.Register k = P.register("k", b.bitsPerKey);   k.input();
@@ -6733,8 +6729,6 @@ Merge     : 0
 
   static void test_verilog_put()
    {sayCurrentTestName();
-// 10,4    5,256
-// 10,10   5,544
     final Btree            b = new Btree(powerTwo(10), powerTwo(4), 32, 32);
     final Process          P = b.P; //b.new Process("verilogPut");
     final Process.Register k = P.register("k", b.bitsPerKey);   k.input();
