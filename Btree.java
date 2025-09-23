@@ -1947,9 +1947,9 @@ chipStop = true;
    }
 
   private Process.Register mergeLeavesNotTop                                    // Merge the two consecutive leaves of a branch that is not the root. Neither of the leaves is the topmost leaf.
-   (Stuck Stuck, Process.Register ParentIndex, Process.Register LeftLeaf)
+   (Stuck Parent, Process.Register ParentIndex, Process.Register LeftLeaf)
    {if (coverageAnalysis) zz();
-    final Stuck   p = Stuck;
+    final Stuck   p = Parent;
     final Stuck   l = LeftMergeStuck;                                           // Left split stuck
     final Stuck   r = RightMergeStuck;                                          // Right split stuckfinal Process.Register ck = P.new Register("childKey",   bitsPerKey);       // Index in memory of the left stuck
     final Process.Register il = btreeIndex(P, "indexLeft");                     // Index in memory of the left stuck
@@ -2005,9 +2005,9 @@ chipStop = true;
    }
 
   private Process.Register mergeLeavesAtTop                                     // Merge the top most two leaves of a branch that is not the root
-   (Stuck Stuck, Process.Register ParentIndex)
+   (Stuck Parent, Process.Register ParentIndex)
    {if (coverageAnalysis) zz();
-    final Stuck   p = Stuck;
+    final Stuck   p = Parent;
     final Stuck   l = LeftMergeStuck;                                           // Left split stuck
     final Stuck   r = RightMergeStuck;                                          // Right split stuckfinal Process.Register ck = P.new Register("childKey",   bitsPerKey);       // Index in memory of the left stuck
     final Process.Register sz = stuckIndex(P, "size");                          // Index in memory of the left stuck
@@ -2146,11 +2146,11 @@ chipStop = true;
    }
 
   private Process.Register mergeBranchesNotTop                                  // Merge the two consecutive child branches of a branch that is not the root. Neither of the child branches is the topmost leaf.
-   (Stuck Stuck, Process.Register ParentIndex, Process.Register LeftBranch)
+   (Stuck Parent, Process.Register ParentIndex, Process.Register LeftBranch)
    {if (coverageAnalysis) zz();
     final Process P = ParentIndex.registerProcess();
     //final Stuck p = new Stuck(P, "mergeBranchesNotTopParent");                // Parent stuck
-    final Stuck   p = Stuck;                                                    // Parent stuck
+    final Stuck   p = Parent;                                                   // Parent stuck
     final Stuck   l = LeftMergeStuck;                                           // Left split stuck
     final Stuck   r = RightMergeStuck;                                          // Right split stuck
     final Process.Register il = btreeIndex(P, "indexLeft");                     // Index in memory of the left stuck
@@ -2218,11 +2218,11 @@ chipStop = true;
    }
 
   private Process.Register mergeBranchesAtTop                                   // Merge the top most two child branches of a branch that is not the root
-   (Stuck Stuck, Process.Register ParentIndex)
+   (Stuck Parent, Process.Register ParentIndex)
    {if (coverageAnalysis) zz();
     final Process P = ParentIndex.registerProcess();
     //final Stuck   p = new Stuck(P, "mergeLeavesIntoRootParent");              // Parent stuck
-    final Stuck   p = Stuck;                                                    // Parent stuck
+    final Stuck   p = Parent;                                                   // Parent stuck
     final Stuck   l = LeftMergeStuck;                                           // Left split stuck
     final Stuck   r = RightMergeStuck;                                          // Right split stuck
     final Process.Register sz = stuckIndex(P, "size");                          // Index in memory of the left stuck
