@@ -22,8 +22,9 @@ class Chip extends Test                                                         
   final String         projectFolder = "btreeAsm";                              // Folder containing this project under home folder
   final String   openRoadDockerImage = "appaapps/openroad:latest";              // Docker image used to run OpenRoad
   String           remoteMachineName = "s";                                     // Remote machine name as defined in .ssh/config where the OpenRoad build should be run
-  final static boolean registerChecks   = false;                                // Checks whether a register should single or arrayed - as this checking occurs frequently it is useful to disable it to speed up development
-  final static boolean coverageAnalysis = true;                                // Enables coverage checks
+  final static boolean   registerChecks = false;                                // Checks whether a register should single or arrayed - as this checking occurs frequently it is useful to disable it to speed up development
+  final static boolean coverageAnalysis = false;                                // Enables coverage checks
+  final static int   verilogIntegersize = 32;                                   // Enables coverage checks
 
 //D1 Chip                                                                       // A chip is constructed from a fixed number of communicating processes that execute code on the chip to produce the desired outputs from the inputs to the chip
 
@@ -59,7 +60,9 @@ class Chip extends Test                                                         
    {if (coverageAnalysis) zz();
     final StringBuilder s = new StringBuilder();
     for (Process p: processes)                                                  // Each process
-     {s.append("("+p.processStopName()+" != 0 ? 1 : 0) || ");
+     {if (!p.hasMemory())
+       {s.append("("+p.processStopName()+" != 0 ? 1 : 0) || ");
+       }
      }
     if (s.length() > 0) s.setLength(s.length()-4);
     return ""+s;
@@ -356,6 +359,7 @@ class Chip extends Test                                                         
 // Philip R Brenan at appaapps dot com, Appa Apps Ltd Inc., 2025
 //------------------------------------------------------------------------------
 `timescale 10ps/1ps
+`default_nettype none
 module %s;                                                                      // Test bench for database on a chip
   reg                    stop;                                                  // Program has stopped when this goes high
   reg                   clock;                                                  // Clock
@@ -457,6 +461,7 @@ n, verilogTraceFile, n, source, n, n);
 // Philip R Brenan at appaapps dot com, Appa Apps Ltd Inc., 2025
 //------------------------------------------------------------------------------
 `timescale 10ps/1ps
+`default_nettype none
 module %s(                                                                      // Test bench for database on a chip
   input                 clock,                                                  // Clock
   input                 reset,                                                  // Reset chip
@@ -477,7 +482,6 @@ module %s(                                                                      
     v.new Always()                                                              // Execute next step in program
      {void Body()
        {v.A("if (reset) begin"); v.indent();                                    // Reset if requested
-        v.indent();
         v.assign("step",        0);
         v.assign("memoryStep",  0);
         v.assign("memoryReset", 1);
@@ -496,9 +500,73 @@ module %s(                                                                      
 
     for(Process p: processes) v.comment(p.processNameAndNumber());              // List processes
 
-    for(Process p: processes) p.processVerilog(v);                              // Generate verilog
+    for(Process p: processes)                                                   // Generate verilog for processes that do not have memory
+     {if (!p.hasMemory())                                                       // Declare memory for processes that have memeory attached to them
+       {p.processVerilog(v);
+       }
+      else                                                                      // Mmeory process in a separate black box module
+       {v.comment("Process: "+p.processName+"  "+p.processNameAndNumber());
 
-    v.endModule();
+        for (Process.Register r: p.registers)                                   // Transactions associated with this process
+         {v.A("reg ["+r.registerBits+"-1:0] "+r.registerFullName+";");
+         }
+
+        for (Process.Transaction t: p.transactions)                             // Transactions associated with this process
+         {final String n = t.transactionName;
+          v.i(t.transactionRequestedAt());
+          v.i(t.transactionFinishedAt());
+          v.i(t.transactionRcName());
+
+          for (Process.Register r : t.transactionInputRegisters)                // Inputs driving registers registers
+           {//v.A("reg ["+r.registerBits+"-1:0] "+r.registerFullName+";");
+           }
+          for (Process.Register r : t.transactionOutputRegisters)               // Outputs driven by registers
+           {//v.A("reg ["+r.registerBits+"-1:0] "+r.registerFullName+";");
+           }
+         }
+
+        v.A(p.processName+" "+p.processName);
+        v.A("(.clock(clock),");
+        for (Process.Transaction t: p.transactions)                             // Transactions associated with this process
+         {final String n = t.transactionName;
+          for (Process.Register r : t.transactionInputRegisters)                // Inputs driving registers registers
+           {v.A(" ."+r.registerName+"("+r.registerFullName+"),");
+           }
+          for (Process.Register r : t.transactionOutputRegisters)               // Outputs driven by registers
+           {v.A(" ."+r.registerName+"("+r.registerFullName+"),");
+           }
+          v.A(" ."+t.transactionRequestedAt()+"("+t.transactionRequestedAt()+"),");
+          v.A(" ."+t.transactionFinishedAt() +"("+t.transactionFinishedAt() +"),");
+          v.A(" ."+t.transactionRcName()     +"("+t.transactionRcName()     +"),");
+         }
+        v.A(" .reset(reset));");
+       }
+     }
+
+    v.endModule();                                                              // End non memory modules
+
+    for(Process p: processes)                                                   // Generate verilog for processes that do have memory as separate modules
+     {if (p.hasMemory())                                                        // Declare memory for processes that have memeory attached to them
+       {v.module(p.processName+"(");
+        v.A("input clock,");
+        for (Process.Transaction t: p.transactions)                             // Transactions associated with this process
+         {for (Process.Register r : t.transactionInputRegisters)                // Inputs driving registers registers
+           {v.A("input wire["+r.registerBits+"-1:0] "+r.registerName+",");
+           }
+          for (Process.Register r : t.transactionOutputRegisters)               // Outputs driven by registers
+           {v.A(" output reg["+r.registerBits+"-1:0] "+r.registerName+",");
+           }
+
+          final String n = t.transactionName;                                   // Transaction name
+          final int    W = verilogIntegersize;                                  // Size of an integer in verilog
+          v.A("input wire ["+W+"-1:0] "+t.transactionRequestedAt()+",");
+          v.A("output reg ["+W+"-1:0] "+t.transactionFinishedAt() +",");
+          v.A("output reg ["+W+"-1:0] "+t.transactionRcName()     +",");
+         }
+        v.A("input reset);");
+        v.endModule();
+       }
+     }
 
     final String source = fne(Verilog.folder, chipName, Verilog.ext);           // Source code in Verilog
     writeFile(source,  ""+v);
@@ -1635,8 +1703,8 @@ if __name__ == "__main__":
 
       for (Transaction t: transactions)                                         // Transactions associated with this process
        {final String n = t.transactionName;
-        v.i(n+"_requestedAt");
-        v.i(n+"_finishedAt");
+        v.i(t.transactionRequestedAt());
+        v.i(t.transactionFinishedAt());
         v.i(t.transactionRcName());
        }
 
@@ -1670,7 +1738,7 @@ if __name__ == "__main__":
            }
 
           for (Transaction t: transactions)                                     // Initialize transactions
-           {v.assign(t.transactionName+"_finishedAt", "-1");
+           {v.assign(t.transactionFinishedAt(), "-1");
             v.assign(t.transactionRcName(),  "0");
            }
 
@@ -1678,7 +1746,7 @@ if __name__ == "__main__":
            {for (Transaction t: p.transactions)
              {if (t.transactionCallingProcess == Process.this)                  // This transaction is a source of requests against this process
                {final String n = t.transactionName;
-                v.assign(t.transactionName+"_requestedAt", "-1");               // Clear step at which the transaction was requested
+                v.assign(t.transactionRequestedAt(), "-1");                     // Clear step at which the transaction was requested
                }
              }
            }
@@ -2385,13 +2453,13 @@ Chip: Test             step: 82, maxSteps: 100, running: 0
 
     ok(a.registerGet(), 987);
 
-//    final Chip.SiliconCompiler S = C.new SiliconCompiler()                      // Create silicon compiler files
-//     {String description()
-//       {return C.chipName;
-//       }
-//     };
-//    say(S.launchFile);
-//    say(readFile(S.sourceFile).size());
+    final Chip.SiliconCompiler S = C.new SiliconCompiler()                      // Create silicon compiler files
+     {String description()
+       {return C.chipName;
+       }
+     };
+    say(S.launchFile);
+    say(readFile(S.sourceFile).size());
    }
 
   static void test_block()
@@ -2891,7 +2959,8 @@ Chip: Test             step: 2, maxSteps: 10, running: 0
    }
 
   static void newTests()                                                        // Tests being worked on
-   {oldTests();
+   {//oldTests();
+    test_arithmeticFibonacci();
    }
 
   public static void main(String[] args)                                        // Test if called as a program
