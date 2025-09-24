@@ -53,10 +53,11 @@ writeFileUsingSavedToken($user, $repo, q(.config/MakeWithPerl.pm),              
                   readFile(q(/home/phil/perl/cpan/MakeWithPerl/lib/MakeWithPerl.pm)));
 
 if (@java)                                                                      # Write workflow to test java files
- {my @j = grep {!m(Dt.java)} map {fn $_} @java;                                 # Java files ignoring stuff under initial development
+ {my @j = grep {!m(Dt)} map {fn $_} @java;                                      # Java files ignoring stuff under initial development
   my $d = dateTimeStamp;
   my $c = q(com/AppaApps/Silicon);                                              # Package to classes folder
-  my $j = join ', ', @j;                                                        # Java files
+  my $j = join ', ', @j;                                                        # Java files without extension
+  my $J = join ', ', map {"$_.java"} @j;                                        # Java files with extension
   my $y = <<"END";
 # Test $d
 
@@ -97,7 +98,7 @@ jobs:
     - name: Position files in package
       run: |
         mkdir -p $c
-        cp *.java $c
+        cp $J $c
 
     - name: Java
       run: |
