@@ -1854,12 +1854,9 @@ chipStop = true;
 
 //D1 Merge                                                                      // Merge two nodes
 
-  private void mergePermitted                                                   // Whether a  merge is permitted or not.
-   (Process P, Stuck Parent, Process.Register ParentIndex, Process.Label end)   // Merge two leaves into the root
-   {if (coverageAnalysis) zz();
-    P.new Instruction(true)
-     {void action()
-       {final int s = ParentIndex.registerGet();                                // Position of child being merged in the parent
+  private void mergePermitted (Stuck Parent, int ParentIndex)                   // Whether a  merge is permitted or not.
+   {final int first = Parent.map.firstKey();
+    final int s = ParentIndex.registerGet();                                // Position of child being merged in the parent
         final int r = Parent.size.registerGet();                                // Size of parent stuck
         if      (s == 0 && r > 1) P.Continue();                                 // Can be used on root if there is more than one entry
         else if (s == 0 || r < 1) P.Goto(end);                                  // Cannot be used on root or on empty branches
