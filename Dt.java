@@ -384,7 +384,11 @@ class Dt extends Chip                                                           
 
   private boolean mergePermitted                                                   // Whether a  merge is permitted or not.
    (int ParentIndex, Stuck Parent, Process.Label end)        // Merge two leaves into the root
-   {
+   {final int s = ParentIndex.registerGet();
+    final int r = p.size.registerGet();                                     // Size of parent stuck
+    if      (s == 0 && r > 1) P.Continue();                                 // Can be used on root if there is more than one entry
+    else if (s == 0 || r < 1) P.Goto(end);                                  // Cannot be used on root or on empty branches
+    else P.Continue();
    }
 
    (Process P, Process.Register ParentIndex, Stuck p, Process.Label end)        // Merge two leaves into the root
