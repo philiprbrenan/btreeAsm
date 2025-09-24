@@ -382,10 +382,10 @@ class Dt extends Chip                                                           
 
 //D1 Merge                                                                      // Merge two nodes
 
-  private boolean mergePermitted                                                   // Whether a  merge is permitted or not.
-   (Stuck Parent, int ParentIndex, Process.Label end)                           // Merge two leaves into the root
-   {final int s = ParentIndex.registerGet();
-    final int r = p.size.registerGet();                                     // Size of parent stuck
+  private boolean mergePermitted (Stuck Parent, int ParentIndex)                // Whether a  merge is permitted or not.
+   {final int first = Parent.map.firstKey();
+    final boolean s = ParentIndex == first;                                         // Are we dealing with the first child
+    final int r = Parent.map.size();                                            // Size of parent
     if      (s == 0 && r > 1) P.Continue();                                 // Can be used on root if there is more than one entry
     else if (s == 0 || r < 1) P.Goto(end);                                  // Cannot be used on root or on empty branches
     else P.Continue();
