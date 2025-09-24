@@ -1,4 +1,4 @@
-# Test 2025-09-24 at 17:00:01
+# Test 2025-09-24 at 17:03:26
 
 name: Test
 run-name: btreeAsm
@@ -32,11 +32,12 @@ jobs:
 
     - name: Verilog install
       run: |
-        sudo apt install iverilog yosys
+        sudo apt install iverilog yosys tree
 
     - name: Position files in package
       run: |
         mkdir -p com/AppaApps/Silicon
+        tree
         cp Btree.java, Children.java, Chip.java, StringToNumbers.java, Test.java, Verilog.java com/AppaApps/Silicon
 
     - name: Java
