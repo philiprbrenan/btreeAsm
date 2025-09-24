@@ -93,11 +93,12 @@ jobs:
 
     - name: Verilog install
       run: |
-        sudo apt install iverilog yosys
+        sudo apt install iverilog yosys tree
 
     - name: Position files in package
       run: |
         mkdir -p $c
+        tree
         cp $J $c
 
     - name: Java
