@@ -1855,7 +1855,7 @@ chipStop = true;
 //D1 Merge                                                                      // Merge two nodes
 
   private void mergePermitted                                                   // Whether a  merge is permitted or not.
-   (Process P, Process.Register ParentIndex, Stuck Parent, Process.Label end)   // Merge two leaves into the root
+   (Process P, Stuck Parent, Process.Register ParentIndex, Process.Label end)   // Merge two leaves into the root
    {if (coverageAnalysis) zz();
     P.new Instruction(true)
      {void action()
@@ -1960,7 +1960,7 @@ chipStop = true;
 
     P.new Block()
      {void code()
-       {mergePermitted(P, ParentIndex, p, end);
+       {mergePermitted(P, p, ParentIndex, end);
 
         P.new Instruction()                                                     // Indexes of left and right leaves with the indicated child being the left leaf
          {void action()
@@ -2022,7 +2022,7 @@ chipStop = true;
 
     P.new Block()
      {void code()
-       {mergePermitted(P, ParentIndex, p, end);
+       {mergePermitted(P, p, ParentIndex, end);
         sz.Copy(p.size);                                                        // Index of left leaf known to be valid as the parent contains at least one entry resulting in two children
 
         P.new Instruction()
@@ -2158,7 +2158,7 @@ chipStop = true;
 
     P.new Block()
      {void code()
-       {mergePermitted(P, ParentIndex, p, end);
+       {mergePermitted(P, p, ParentIndex, end);
         success.Zero();                                                         // Assume failure
 
         P.new Instruction()                                                     // Check that the parent has a child at the specified index
@@ -2227,7 +2227,7 @@ chipStop = true;
 
     P.new Block()
      {void code()
-       {mergePermitted(P, ParentIndex, p, end);
+       {mergePermitted(P, p, ParentIndex, end);
         success.Zero();                                                         // Assume failure
         sz.Copy(p.size);                                                        // Index of left branch known to be valid as the parent contains at least one entry resulting in two children
 
