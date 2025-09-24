@@ -1,4 +1,4 @@
-# Test 2025-09-24 at 17:09:43
+# Test 2025-09-24 at 17:12:56
 
 name: Test
 run-name: btreeAsm
@@ -38,7 +38,7 @@ jobs:
       run: |
         mkdir -p com/AppaApps/Silicon
         tree
-        cp Btree.java, Children.java, Chip.java, StringToNumbers.java, Test.java, Verilog.java com/AppaApps/Silicon
+        cp Btree.java Children.java Chip.java StringToNumbers.java Test.java Verilog.java com/AppaApps/Silicon
 
     - name: Java
       run: |
