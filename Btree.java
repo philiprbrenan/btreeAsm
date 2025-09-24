@@ -328,7 +328,7 @@ chipStop = true;
     final Process.Register StuckIndex;                                          // Index of stuck in Btree in which the key should reside
     final Process.Register MergeSuccess;                                        // Whether a merge was completed successfully or not
 
-    final boolean compareable;                                                  // If true allocateregisters to premit keys to be located in log time
+    final boolean compareable;                                                  // If true allocate registers to permit keys to be located in log time
 
     Stuck(Process Process, String Name)                                         // Mirror a stuck in memory with one in registers.  No comparisons will be performed on this stuck
      {this(Process, Name, false);
@@ -1855,12 +1855,12 @@ chipStop = true;
 //D1 Merge                                                                      // Merge two nodes
 
   private void mergePermitted                                                   // Whether a  merge is permitted or not.
-   (Process P, Process.Register ParentIndex, Stuck p, Process.Label end)        // Merge two leaves into the root
+   (Process P, Process.Register ParentIndex, Stuck Parent, Process.Label end)   // Merge two leaves into the root
    {if (coverageAnalysis) zz();
     P.new Instruction(true)
      {void action()
-       {final int s = ParentIndex.registerGet();
-        final int r = p.size.registerGet();                                     // Size of parent stuck
+       {final int s = ParentIndex.registerGet();                                // Position of child being merged in the parent
+        final int r = Parent.size.registerGet();                                // Size of parent stuck
         if      (s == 0 && r > 1) P.Continue();                                 // Can be used on root if there is more than one entry
         else if (s == 0 || r < 1) P.Goto(end);                                  // Cannot be used on root or on empty branches
         else P.Continue();
@@ -1868,7 +1868,7 @@ chipStop = true;
 
       void verilog(Verilog v)                                                   // Whether a  merge is permitted or not.
        {final String  s = ParentIndex.registerFullName;
-        final String  r = p.size.registerFullName;
+        final String  r = Parent.size.registerFullName;
         v    .new If (s + " == 0 && " + r + " > 1")                             // Can be used on root if there is more than one entry
          {void Then()
            {P.Continue(v);
