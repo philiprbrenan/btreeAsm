@@ -56,8 +56,8 @@ if (@java)                                                                      
  {my @j = grep {!m(Dt)} map {fn $_} @java;                                      # Java files ignoring stuff under initial development
   my $d = dateTimeStamp;
   my $c = q(com/AppaApps/Silicon);                                              # Package to classes folder
-  my $j = join ', ', @j;                                                        # Java files without extension
-  my $J = join ', ', map {"$_.java"} @j;                                        # Java files with extension
+  my $j = join ', ', @j;                                                        # Java files without extension with separating commas
+  my $J = join ' ', map {"$_.java"} @j;                                         # Java files with extension without separating commas
   my $y = <<"END";
 # Test $d
 
