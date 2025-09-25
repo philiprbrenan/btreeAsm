@@ -1862,7 +1862,6 @@ chipStop = true;
        {final int s = ParentIndex.registerGet();                                // Position of child being merged in the parent
         final int r = Parent.size.registerGet();                                // Size of parent stuck
 
-        //if      (          r > 1) P.Continue();                                 // Can be used on root if there is more than one entry
         if (r == 0 || (r == 1 && s == 0)) P.Goto(end);                                  // Cannot be used on root or on empty branches
         else P.Continue();
        }
@@ -1870,19 +1869,12 @@ chipStop = true;
       void verilog(Verilog v)                                                   // Whether a  merge is permitted or not.
        {final String  s = ParentIndex.registerFullName;
         final String  r = Parent.size.registerFullName;
-        v    .new If (                  r + " > 1")                             // Can be used on root if there is more than one entry
+        v.new If (r +" == 0 || ("+r + " == 1 && " + s + " == 0)")           // Cannot be used on root or on empty branches
          {void Then()
-           {P.Continue(v);
+           {P.Goto(v, end);
            }
           void Else()
-           {v.new If (s + " == 0 || " + r + " < 1")                             // Cannot be used on root or on empty branches
-             {void Then()
-               {P.Goto(v, end);
-               }
-              void Else()
-               {P.Continue(v);
-               }
-             };
+           {P.Continue(v);
            }
          };
        }
