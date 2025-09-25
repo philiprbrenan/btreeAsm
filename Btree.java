@@ -1863,7 +1863,8 @@ chipStop = true;
         final int r = Parent.size.registerGet();                                // Size of parent stuck
 //      if      (s == 0 && r > 1) P.Continue();    // Delete_random             // Can be used on root if there is more than one entry
         if      (s == 0 && r > 0) P.Continue();                                 // Can be used on root if there is more than one entry
-        else if (s == 0 || r < 1) P.Goto(end);                                  // Cannot be used on root or on empty branches
+//      else if (s == 0 || r < 1) P.Goto(end);                                  // Cannot be used on root or on empty branches
+        else if (          r < 1) P.Goto(end);                                  // Cannot be used on root or on empty branches
         else P.Continue();
        }
 
@@ -6799,7 +6800,7 @@ Merge     : 0
     //test_verilog_delete();
     ///test_verilog_find();
     //test_verilog_put();
-    test_put_random();
+    test_delete_random();
    }
 
   public static void main(String[] args)                                        // Test if called as a program
