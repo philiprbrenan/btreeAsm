@@ -160,7 +160,7 @@ chipStop = true;
     final Process.Register isFree = P.register("isFree", 1);                    // Indicate that the allocated stuck is not free but in use
 
     root.Zero();
-    gFreeNext.ExecuteTransaction(root);                                         // Get next free stuck from the free chain
+    gFreeNext.ExecuteTransaction(root);                                         // Get next free stuck from the free chain which starts at the root which is never freed.
     gFreeNext.WaitResultOfTransaction();
     ref.Copy(gFreeNext.transactionOutputRegisters.firstElement());              // Save reference to allocated stuck
 
@@ -1861,8 +1861,10 @@ chipStop = true;
      {void action()
        {final int s = ParentIndex.registerGet();                                // Position of child being merged in the parent
         final int r = Parent.size.registerGet();                                // Size of parent stuck
-        if      (s == 0 && r > 1) P.Continue();                                 // Can be used on root if there is more than one entry
-        else if (s == 0 || r < 1) P.Goto(end);                                  // Cannot be used on root or on empty branches
+// put_random
+        //if      (s == 0 && r > 1) P.Continue();                                 // Can be used on root if there is more than one entry
+        //else
+        if (s == 0 || r < 1) P.Goto(end);                                  // Cannot be used on root or on empty branches
         else P.Continue();
        }
 
@@ -1928,9 +1930,9 @@ chipStop = true;
            {r.new IsLeaf()                                                      // Check that the children are leaves
              {void Leaf()
                {p.merge(l, r);                                                  // Merge leaves into root
-                P.new If (p.MergeSuccess)                                       // Check that the root has one entry and thus two children
+                P.new If (p.MergeSuccess)                                       // Successful merge
                  {void Then()
-                   {p.isLeaf.One();
+                   {p.isLeaf.One();                                             // Mark the root as a leaf
                     p.stuckPut(true);                                           // Save the modified root back into the tree
                     free(il); free(ir);                                         // Free left and right leaves as they are no longer needed
                     success.One();                                              // Success
@@ -6795,8 +6797,9 @@ Merge     : 0
   static void newTests()                                                        // Tests being worked on
    {//oldTests();
     //test_verilog_delete();
-      test_verilog_find();
+    ///test_verilog_find();
     //test_verilog_put();
+    test_put_random();
    }
 
   public static void main(String[] args)                                        // Test if called as a program
