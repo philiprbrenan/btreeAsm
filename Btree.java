@@ -1861,17 +1861,17 @@ chipStop = true;
      {void action()
        {final int s = ParentIndex.registerGet();                                // Position of child being merged in the parent
         final int r = Parent.size.registerGet();                                // Size of parent stuck
-// put_random
-        //if      (s == 0 && r > 1) P.Continue();                                 // Can be used on root if there is more than one entry
-        //else
-        if (s == 0 || r < 1) P.Goto(end);                                  // Cannot be used on root or on empty branches
+//      if      (s == 0 && r > 1) P.Continue();    // Delete_random             // Can be used on root if there is more than one entry
+        if      (s == 0 && r > 0) P.Continue();                                 // Can be used on root if there is more than one entry
+        else if (s == 0 || r < 1) P.Goto(end);                                  // Cannot be used on root or on empty branches
         else P.Continue();
        }
 
       void verilog(Verilog v)                                                   // Whether a  merge is permitted or not.
        {final String  s = ParentIndex.registerFullName;
         final String  r = Parent.size.registerFullName;
-        v    .new If (s + " == 0 && " + r + " > 1")                             // Can be used on root if there is more than one entry
+//      v    .new If (s + " == 0 && " + r + " > 1")                             // Can be used on root if there is more than one entry
+        v    .new If (s + " == 0 && " + r + " > 0")                             // Can be used on root if there is more than one entry
          {void Then()
            {P.Continue(v);
            }
