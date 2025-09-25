@@ -1,5 +1,6 @@
+
 //------------------------------------------------------------------------------
-// A double tree - a Dt made of Btrees
+// A double btree - a Btree made of Btrees
 // Philip R Brenan at appaapps dot com, Appa Apps Ltd Inc., 2025
 //------------------------------------------------------------------------------
 package com.AppaApps.Silicon;                                                   // Btree in a block on the surface of a silicon chip.
@@ -12,6 +13,9 @@ class Dt extends Chip                                                           
   final int bitsPerKey;                                                         // The number of bits needed to define a key
   final int bitsPerData;                                                        // The number of bits needed to define a data field
 
+  final Stuck[]stucks;                                                          // The stucks used to construct the double tree
+  int          used;                                                            // Number of stucks used by allocation
+
   boolean              suppressMerge    = false;                                // Suppress merges during put to allow merge steps to be tested individually.  If this is on the trees built for testing are already merged so there is nothing to test.
   static       boolean createTestTrees  = false;                                // Create trees to assist testing
   static       boolean debug            = false;                                // Debug if enabled
@@ -19,7 +23,7 @@ class Dt extends Chip                                                           
 
 //D1 Construction                                                               // Construct and layout a btree
 
-  Dt(int Size, int MaxStuckSize, int BitsPerKey, int BitsPerData)            // Create the Btree
+  Dt(int Size, int MaxStuckSize, int BitsPerKey, int BitsPerData)               // Create the double tree
    {super("Dt"); N();
     if (MaxStuckSize % 2 == 1) stop("The stuck size must be even, not:", MaxStuckSize);
     if (MaxStuckSize < 4)      stop("The stuck size must be greater than equal to 4, not:", MaxStuckSize);
@@ -29,6 +33,7 @@ class Dt extends Chip                                                           
     bitsPerKey   = BitsPerKey;                                                  // The number of bits needed to define a key
     bitsPerData  = BitsPerData;                                                 // The number of bits needed to define a data field
 
+    stucks = new Stuck[Size];                                                   // Stucks forming the double btree
     createRootStuck();                                                          // Create the free chain
    }
 
@@ -37,15 +42,35 @@ class Dt extends Chip                                                           
 //D2 Allocation                                                                 // Allocate stucks from the free chain
 
   void createRootStuck()                                                        // Initialize the root stuck
-   {
+   {final Stuck r = stucks[0] = new Stuck("root");                              // Stuck zero is always the root
+    r.number = 0;
+    used = 1;                                                                   // We have used one stuck for the root
+    r.setLeaf();                                                                // The root starts as a leaf
    }
 
-  private void allocate(boolean leaf)                                           // Allocate a stuck and set a ref to the allocated node
-   {
+  private Stuck allocate(boolean leaf)                                          // Allocate a stuck and set a ref to the allocated node
+   {final Stuck r = stucks[0];
+    final int   n = r.freeNext;
+    if (n != 0)                                                                 // Reuse a stuck from the free chain
+     {final Stuck N = stucks[n];
+      r.freeNext = N.freeNext;
+      N.clear();
+      return N;
+     }
+    if (used < size)                                                            // Allocate a new stuck
+     {final Stuck N = stucks[used] = new Stuck("Stuck_"+used);
+      N.clear();
+      N.number = used;
+      return N;
+     }
+    stop("No more memory available");
+    return null;
    }
 
-  private void free(int ref)                                       // Free the referenced stuck and put it on the free chain
-   {
+  private void free(Stuck S)                                                    // Free the referenced stuck and put it on the free chain
+   {final Stuck r = stucks[0];
+    S.freeNext = r.freeNext;
+    r.freeNext = S.number;
    }
 
   private void allocateLeaf  (int ref) {allocate(true);}      // Allocate a stuck, set a ref to the allocated node and mark it a leaf
@@ -76,25 +101,44 @@ class Dt extends Chip                                                           
 //D2 Stuck                                                                      // Get and set stucks within btree
 
   class Stuck                                                                   // A reference to a stuck in the memory of the btree plus a copy of its size, keys and data
-   {final String  stuckName;                                                    // Name of stuck
-    final TreeMap<Integer,Integer> map = new TreeMap<>();                       // Keys to data map
+   {final String    stuckName;                                                  // Name of stuck
+    private final   TreeMap<Integer,Integer> map = new TreeMap<>();             // Keys to data map
+    private int     top;                                                        // Every branch has a top data element, no leaf does, that is it's tragedy
+    private int     freeNext;                                                   // Next element on the free chain
+    private boolean leaf;                                                       // Whether this is a leaf or a branch
+    int             number;                                                     // Number of this stuck
+    boolean Found;                                                              // Whether the key was found
+    int Key;                                                                    // Data associated with the key if found
+    int FoundKey;                                                               // Data associated with the key if found
+    int Data;                                                                   // Data associated with the key if found
+    int BtreeIndex;                                                             // Index of stuck in Btree in which the key should reside
+    int StuckIndex;                                                             // Index of stuck in Btree in which the key should reside
+    boolean MergeSuccess;                                                       // Whether a merge was completed successfully or not
 
-    Stuck(String StuckName)                                                          // Mirror a stuck in memory with one in registers.  No comparisons will be performed on this stuck
+    Stuck(String StuckName)                                                     // Create a named stuck
      {stuckName = StuckName;
      }
 
+    int  size  ()      {return map.size();}
+    int  first ()      {return map.firstKey();}
+    int  last  ()      {return map.lastKey();}
+    int  top   ()      {return top;}
+    int  get   (int k) {return map.get(k);}
+    void put   (int k, int d) {map.put(k, d);}
+    void setTop(int d) {top = d;}
+    boolean isLeaf()   {return  leaf;};
+    void setLeaf  ()   {leaf = true;}
+    void setBranch()   {leaf = false;}
+    void clear()       {map.clear();}
+
 //D3 Memory                                                                     // Get a stuck from memory or return it to memory
 
-    void stuckGet(int Index)                                       // Copy a stuck indexed by a register out of memory into a set of registers. Currently this is done sequentially, but multiple stuck loads could be overlapped if this method was fragmented into smaller steps.  Most stuck methods do not actually require the retrieval of a full stuck from memory but doing so makes it easier to write an initial version of the btree algorithm at the cost of considerable inefficiency.
-     {stuckGet();
+    Stuck stuckGet(int Index)                                                   // Copy a stuck indexed by a register out of memory into a set of registers. Currently this is done sequentially, but multiple stuck loads could be overlapped if this method was fragmented into smaller steps.  Most stuck methods do not actually require the retrieval of a full stuck from memory but doing so makes it easier to write an initial version of the btree algorithm at the cost of considerable inefficiency.
+     {return stucks[Index];
      }
 
     void stuckGetRoot()                                                         // Copy the root stuck out of memory into a set of registers. Currently this is done sequentially, but multiple stuck loads could be overlapped if this method was fragmented into smaller steps.  Most stuck methods do not actually require the retrieval of a full stuck from memory but doing so makes it easier to write an initial version of the btree algorithm at the cost of considerable inefficiency.
-     {stuckGet();
-     }
-
-    void stuckGet()                                                             // Copy the indexed stuck out of memory into a set of registers. Currently this is done sequentially, but multiple stuck loads could be overlapped if this method was fragmented into smaller steps.  Most stuck methods do not actually require the retrieval of a full stuck from memory but doing so makes it easier to write an initial version of the btree algorithm at the cost of considerable inefficiency.
-     {
+     {stuckGet(0);
      }
 
     void stuckPut(int Index, boolean SetLeaf)                                   // Update a stuck in memory from the registers describing this stuck optionally updating the isLeaf field.
@@ -115,11 +159,19 @@ class Dt extends Chip                                                           
 //D3 Print                                                                      // Print the stuck
 
     public String toString()
-     {final StringBuilder s = new StringBuilder();
-      s.append(stuckName+": ");
+     {final StringBuilder S = new StringBuilder();
+      S.append("Stuck: "+stuckName+"\n");
       for(Integer k : map.keySet())
-       {s.append(String.format("  %2d: %2d", k, map.get(k)));                                                                                //
+       {S.append(String.format("  %2d: %2d\n", k, map.get(k)));
        }
+      final boolean f = Found       ; S.append("Found     : "+(f ? 1 : 0)+"\n");// Whether the key was found
+      final int     k = Key         ; S.append("Key       : "+k+"\n");          // Data associated with the key if found
+      final int     K = FoundKey    ; S.append("FoundKey  : "+K+"\n");          // Data associated with the key if found
+      final int     d = Data        ; S.append("Data      : "+d+"\n");          // Data associated with the key if found
+      final int     b = BtreeIndex  ; S.append("BtreeIndex: "+b+"\n");          // Index of stuck in Btree in which the key should reside
+      final int     s = StuckIndex  ; S.append("StuckIndex: "+s+"\n");          // Index of stuck in Btree in which the key should reside
+      final boolean m = MergeSuccess; S.append("Merge     : "+(m ? 1 : 0)+"\n");// Whether a merge was completed successfully or not
+
       return ""+s;
      }
 
@@ -154,7 +206,7 @@ class Dt extends Chip                                                           
      {
      }
 
-    void CopyDown(int Delta)                                       // Copy a stuck down into itself a variable number of places
+    void CopyDown(int Delta)                                                    // Copy a stuck down into itself a variable number of places
      {
      }
 
@@ -190,76 +242,77 @@ class Dt extends Chip                                                           
 
 //D3 Actions                                                                    // Just the actions needed on a stuck to support a btree
 
-    void clear()                                                                // Set the size of the stuck to zero to clear it
-     {
+    void push(int Key, int Data)                                                // Push a key, data pair to the local copy of the stuck
+     {final int f = first();
+      if (size() >= maxStuckSize) stop("Stuck overflow");
+      if (Key > f) put(Key, Data);
+      else stop("Cannot push:", Key);
      }
-
-    void push(int Key, int Data)                      // Push a key, data pair to the local copy of the stuck
-     {
-     }
-
 
     void pop()                                                                  // Pop a key, data pair from the local copy of the stuck
+     {if (size() == 0) stop("Cannot apply pop to an empty stuck");
+      Key  = last();
+      Data = map.get(Key);
+      map.remove(Key);
+     }
+
+    void setPastLastKey(int Key)                                                // Set the  key past the top of the stuck
      {
      }
 
-    void setPastLastKey(int Key)                                   // Set the  key past the top of the stuck
+    void setPastLastData(int Data)                                              // Set the data element past the top of the stuck
      {
      }
 
-    void setPastLastData(int Data)                                 // Set the data element past the top of the stuck
-     {
-     }
-
-    void setPastLastElement(int Key, int Data)        // Push a key, data pair to the local copy of the stuck without changing the size
+    void setPastLastElement(int Key, int Data)                                  // Push a key, data pair to the local copy of the stuck without changing the size
      {
      }
 
     void firstElement()                                                         // Get the first key, data pair
-     {
+     {Key = first();
+      Data = map.get(Key);
      }
 
     void lastElement()                                                          // Get the last key, data pair
-     {
-     }
-
-    void lastElement(Verilog v)                                                 // Get the last key, data pair
-     {
-     }
-
-    void LastElement()                                                          // Get the last key, data pair as a single instruction
-     {
+     {Key = last();
+      Data = map.get(Key);
      }
 
     void pastLastElement()                                                      // Get the past last key, data pair
      {
      }
 
-    void elementAt(int Index)                                      // Get the indexed key, data pair
-     {
+    void elementAt(int Index)                                                   // Get the indexed key, data pair.. The index is the key of the item requested so this behaves like get.
+     {Key = Index;
+      Data = map.get(Key);
      }
 
-    void setElementAt                                                           // Set the indexed key, data pair
-     (int Index, int Key, int Data)
-     {
+    void setElementAt(int Key, int Data)                                        // Set the data of the indexed key
+     {put(Key, Data);
      }
 
-    void insertElementAt                                                        // Set the indexed key, data pair
-     (int Index, int Key, int Data)
-     {
+    void insertElementAt(int Key, int Data)                                     // Set the indexed key, data pair
+     {put(Key, Data);
      }
 
-    void removeElementAt(int Index)                                // Remove the indexed key, data pair from the stuck as a single instruction
-     {
+    void removeElementAt(int Index)                                             // Remove the indexed key, data pair
+     {Key  = Index;
+      Data = get(Index);
+      map.remove(Index);
      }
 
 //D3 Search                                                                     // Search the stuck
 
-    void search_eq_parallel(int Key)                               // Find the specified key if possible in the stuck
-     {
+    void search_eq_parallel(int Key)                                            // Find the specified key if possible in the stuck
+     {if (map.containsKey(Key))
+       {Found = true;
+        this.Key  = Key;
+        this.Data = get(Key);
+       }
+      else Found = false;
      }
 
-    void search_le_parallel(int Key)                               // Find the specified key if possible in the stuck
+    void search_le_parallel(int Key)                                            // Find the specified key if possible in the stuck
      {
      }
 
@@ -277,25 +330,33 @@ class Dt extends Chip                                                           
      {
      }
 
-    void splitLowButOne(Stuck Left, int Key)                       // Split an almost full stuck with an odd number of elements so that the first half is moved into the left stuck extended by the data of the central element, while the remainder beyond the central element are moved down.  The central key is returned as it would otherwise be lost.
+    void splitLowButOne(Stuck Left, int Key)                                    // Split an almost full stuck with an odd number of elements so that the first half is moved into the left stuck extended by the data of the central element, while the remainder beyond the central element are moved down.  The central key is returned as it would otherwise be lost.
      {
      }
 
 //D3 Merge                                                                      // Merge stucks in various ways
 
     void merge(Stuck Source)                                                    // Concatenate the indicated stuck onto the end of the current one
-     {
+     {if (size() + Source.size() <= maxStuckSize)
+       {map.putAll(Source.map);
+        MergeSuccess = true;
+       }
+      else MergeSuccess = false;
      }
 
     void merge(Stuck Left, Stuck Right)                                         // Replace the current stuck with the concatenation of the two stucks indicated
+     {if (Left.size() + Right.size() <= maxStuckSize)
+       {clear();
+        map.putAll(Left.map);
+        map.putAll(Right.map);
+       }
+     }
+
+    void mergeButOne(int Key, Stuck Source)                                     // Concatenate the indicated stuck with a past last data element onto the end of the current stuck with a past last data element with the specified key inserted over the central past last data element separating the two.
      {
      }
 
-    void mergeButOne(int Key, Stuck Source)                        // Concatenate the indicated stuck with a past last data element onto the end of the current stuck with a past last data element with the specified key inserted over the central past last data element separating the two.
-     {
-     }
-
-    void mergeButOne(Stuck Left, int Key, Stuck Right)             // Concatenate the past last left and right stucks separated by the key over the past last data element of the left stuck into the target
+    void mergeButOne(Stuck Left, int Key, Stuck Right)                          // Concatenate the past last left and right stucks separated by the key over the past last data element of the left stuck into the target
      {
      }
 
@@ -313,7 +374,16 @@ class Dt extends Chip                                                           
     final int maxPrintLevels      =  3;                                         // The maximum number of levels to print `- this avoids endless print loops when something goes wrong
 
     void printLeaf(int BtreeIndex, Stack<StringBuilder>P, int level)            // Print leaf horizontally
-     {
+     {padStrings(P, level);
+
+      final StringBuilder s = new StringBuilder();                              // String builder
+      final Stuck l = stuckGet(BtreeIndex);
+      for  (Integer i : l.map.keySet()) s.append(""+i+",");
+
+      if (s.length() > 0) s.setLength(s.length()-1);                            // Remove trailing comma if present
+      s.append("="+BtreeIndex+" ");
+      P.elementAt(level*linesToPrintABranch).append(s.toString());
+      padStrings(P, level);
      }
 
     void printBranch(int BtreeIndex, Stack<StringBuilder>P, int level)          // Print branch horizontally
@@ -384,26 +454,38 @@ class Dt extends Chip                                                           
 
   private boolean mergePermitted (Stuck Parent, int ParentIndex)                // Whether a  merge is permitted or not.
    {final int first = Parent.map.firstKey();
-    final boolean s = ParentIndex == first;                                         // Are we dealing with the first child
+    final boolean f = ParentIndex == first;                                     // Are we dealing with the first child
     final int r = Parent.map.size();                                            // Size of parent
-    if      (s == 0 && r > 1) P.Continue();                                 // Can be used on root if there is more than one entry
-    else if (s == 0 || r < 1) P.Goto(end);                                  // Cannot be used on root or on empty branches
-    else P.Continue();
+    return ((f && r > 1) || (!f && r >= 1));
    }
 
-   (Process P, Process.Register ParentIndex, Stuck p, Process.Label end)        // Merge two leaves into the root
-   {if (coverageAnalysis) zz();
-    P.new Instruction(true)
-     {void action()
-       {final int s = ParentIndex.registerGet();
-        final int r = p.size.registerGet();                                     // Size of parent stuck
-        if      (s == 0 && r > 1) P.Continue();                                 // Can be used on root if there is more than one entry
-        else if (s == 0 || r < 1) P.Goto(end);                                  // Cannot be used on root or on empty branches
-        else P.Continue();
-       }
+  private boolean mergeLeavesIntoRoot()                                         // Merge two leaves into the root
+   {final Stuck p = new Stuck("Parent");                                        // Parent stuck two of whose children might be merged
+    final Stuck l = new Stuck("Left");                                          // Left split stuck
+    final Stuck r = new Stuck("Right");                                         // Right split stuck    final Process.Register ck = P.new Register("childKey",   bitsPerKey);       // Index in memory of the left stuck
 
-  private int mergeLeavesIntoRoot()                                // Merge two leaves into the root
-   {return 1;
+    p.stuckGetRoot();                                                           // Load root
+
+    if (p.size() != 1) return false;                                            // Number of entries in root
+
+    final int il = p.map.get(0);                                                // Index of left leaf
+    final int ir = p.top();                                                     // Index of right leaf
+
+    l.stuckGet(il);                                                             // Load left  leaf from btree
+    r.stuckGet(ir);                                                             // Load right leaf from btree
+
+    if (l.isLeaf())                                                             // Check that the children are leaves
+     {if (r.isLeaf())
+       {p.merge(l, r);                                                          // Merge leaves into root
+        if (p.MergeSuccess)                                                     // Merge was successful
+         {p.setLeaf();                                                          // Mark the root as a leaf
+          p.stuckPut(true);                                                     // Save the modified root back into the tree
+          free(l); free(r);                                                     // Free left and right leaves as they are no longer needed
+          return true;                                                          // Success
+         }
+       }
+     }
+    return false;
    }
 
   private int mergeLeavesNotTop                                    // Merge the two consecutive leaves of a branch that is not the root. Neither of the leaves is the topmost leaf.
@@ -467,6 +549,28 @@ class Dt extends Chip                                                           
 //D1 Tests                                                                      // Test the btree
 
   final static int[]random_32 = {12, 3, 27, 1, 23, 20, 8, 18, 2, 31, 25, 16, 13, 32, 11, 21, 5, 24, 4, 10, 26, 30, 9, 6, 29, 17, 28, 15, 14, 19, 7, 22};
+
+  static void test_merge()
+   {sayCurrentTestName();
+    final Dt    D = new Dt(1, 8, 8, 8);
+    final Stuck a = D.new Stuck("a");
+    final Stuck b = D.new Stuck("b");
+    b.put(1,1);
+    b.put(2,2);
+    final Stuck c = D.new Stuck("c");
+    c.put(3,3);
+    c.put(4,4);
+    a.merge(b, c);
+    say(a);
+    ok(a, """
+Stuck: a
+   1:  1
+   2:  2
+   3:  3
+   4:  4
+""");
+   }
+
 /*
   static void test_copy()
    {sayCurrentTestName();
@@ -4653,9 +4757,7 @@ Merge     : 0
 */
   static void newTests()                                                        // Tests being worked on
    {//oldTests();
-    //test_verilog_delete();
-    //  test_verilog_find();
-    //test_verilog_put();
+    test_merge();
    }
 
   public static void main(String[] args)                                        // Test if called as a program
