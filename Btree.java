@@ -1862,8 +1862,8 @@ chipStop = true;
        {final int s = ParentIndex.registerGet();                                // Position of child being merged in the parent
         final int r = Parent.size.registerGet();                                // Size of parent stuck
 
-        if      (          r > 1) P.Continue();                                 // Can be used on root if there is more than one entry
-        else if (s == 0 || r < 1) P.Goto(end);                                  // Cannot be used on root or on empty branches
+        //if      (          r > 1) P.Continue();                                 // Can be used on root if there is more than one entry
+        if (r <= 1 && (s == 0 || r < 1)) P.Goto(end);                                  // Cannot be used on root or on empty branches
         else P.Continue();
        }
 
