@@ -1858,21 +1858,21 @@ chipStop = true;
    (Process P, Stuck Parent, Process.Register ParentIndex, Process.Label end)   // Merge two leaves into the root
    {if (coverageAnalysis) zz();
     P.new Instruction(true)
-     {void action()
+     {void action2()
        {final int s = ParentIndex.registerGet();                                // Position of child being merged in the parent
         final int r = Parent.size.registerGet();                                // Size of parent stuck
-//      if      (s == 0 && r > 1) P.Continue();    // Delete_random             // Can be used on root if there is more than one entry
-        if      (s == 0 && r > 0) P.Continue();                                 // Can be used on root if there is more than one entry
-//      else if (s == 0 || r < 1) P.Goto(end);                                  // Cannot be used on root or on empty branches
-        else if (          r < 1) P.Goto(end);                                  // Cannot be used on root or on empty branches
+        if      (s == 0 && r > 1) P.Continue();                                 // Can be used on root if there is more than one entry
+        else if (s == 0 || r < 1) P.Goto(end);                                  // Cannot be used on root or on empty branches
         else P.Continue();
        }
+      void action()
+       {if (Parent.size.registerGet() == 0) P.Goto(end); else P.Continue();
+       }
 
-      void verilog(Verilog v)                                                   // Whether a  merge is permitted or not.
+      void verilog2(Verilog v)                                                   // Whether a  merge is permitted or not.
        {final String  s = ParentIndex.registerFullName;
         final String  r = Parent.size.registerFullName;
-//      v    .new If (s + " == 0 && " + r + " > 1")                             // Can be used on root if there is more than one entry
-        v    .new If (s + " == 0 && " + r + " > 0")                             // Can be used on root if there is more than one entry
+        v    .new If (s + " == 0 && " + r + " > 1")                             // Can be used on root if there is more than one entry
          {void Then()
            {P.Continue(v);
            }
@@ -1885,6 +1885,18 @@ chipStop = true;
                {P.Continue(v);
                }
              };
+           }
+         };
+       }
+
+      void verilog(Verilog v)                                                   // Whether a  merge is permitted or not.
+       {final String  r = Parent.size.registerFullName;
+        v    .new If (r)
+         {void Then()
+           {P.Continue(v);
+           }
+          void Else()
+           {P.Goto(v, end);
            }
          };
        }
@@ -6800,6 +6812,7 @@ Merge     : 0
     //test_verilog_delete();
     ///test_verilog_find();
     //test_verilog_put();
+    test_put_random();
     test_delete_random();
    }
 
