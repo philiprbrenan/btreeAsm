@@ -1,4 +1,3 @@
-
 //------------------------------------------------------------------------------
 // A double btree - a Btree made of Btrees
 // Philip R Brenan at appaapps dot com, Appa Apps Ltd Inc., 2025
@@ -8,18 +7,18 @@ package com.AppaApps.Silicon;                                                   
 import java.util.*;
 
 class Dt extends Chip                                                           // A double tree - a btree made of btrees
- {final int size;                                                               // The maximum number of nodes == branches or leaves in the btree
-  final int maxStuckSize;                                                       // The maximum number of entries in the stuck.
-  final int bitsPerKey;                                                         // The number of bits needed to define a key
-  final int bitsPerData;                                                        // The number of bits needed to define a data field
+ {final int dtSize;                                                             // The maximum number of nodes == branches or leaves in the btree
+  final int dtMaxStuckSize;                                                     // The maximum number of entries in the stuck.
+  final int dtBitsPerKey;                                                       // The number of bits needed to define a key
+  final int dtBitsPerData;                                                      // The number of bits needed to define a data field
 
-  final Stuck[]stucks;                                                          // The stucks used to construct the double tree
-  int          used;                                                            // Number of stucks used by allocation
+  final Stuck[]dtStucks;                                                        // The stucks used to construct the double tree
+  int          dtUsed;                                                          // Number of stucks used by allocation
 
-  boolean              suppressMerge    = false;                                // Suppress merges during put to allow merge steps to be tested individually.  If this is on the trees built for testing are already merged so there is nothing to test.
-  static       boolean createTestTrees  = false;                                // Create trees to assist testing
-  static       boolean debug            = false;                                // Debug if enabled
-  final static boolean coverageAnalysis = false;                                // Enables coverage checks
+  boolean              dtSuppressMerge    = false;                              // Suppress dtMerges during put to allow dtMerge steps to be tested individually.  If this is on the trees built for testing are already dtMerged so there is nothing to test.
+  static       boolean dtCreateTestTrees  = false;                              // Create trees to assist testing
+  static       boolean dtDebug            = false;                              // Debug if enabled
+  final static boolean dtCoverageAnalysis = false;                              // Enables coverage checks
 
 //D1 Construction                                                               // Construct and layout a btree
 
@@ -28,131 +27,144 @@ class Dt extends Chip                                                           
     if (MaxStuckSize % 2 == 1) stop("The stuck size must be even, not:", MaxStuckSize);
     if (MaxStuckSize < 4)      stop("The stuck size must be greater than equal to 4, not:", MaxStuckSize);
 
-    size         = Size;                                                        // The maximum number of entries in the btree.
-    maxStuckSize = MaxStuckSize;                                                // The maximum number of entries in the stuck.
-    bitsPerKey   = BitsPerKey;                                                  // The number of bits needed to define a key
-    bitsPerData  = BitsPerData;                                                 // The number of bits needed to define a data field
+    dtSize         = Size;                                                      // The maximum number of entries in the btree.
+    dtMaxStuckSize = MaxStuckSize;                                              // The maximum number of entries in the stuck.
+    dtBitsPerKey   = BitsPerKey;                                                // The number of bits needed to define a key
+    dtBitsPerData  = BitsPerData;                                               // The number of bits needed to define a data field
 
-    stucks = new Stuck[Size];                                                   // Stucks forming the double btree
-    createRootStuck();                                                          // Create the free chain
+    dtStucks       = new Stuck[Size];                                           // Stucks forming the double btree
+    dtCreateRootStuck();                                                        // Create the free chain
    }
 
   Dt Dt() {return this;}
 
 //D2 Allocation                                                                 // Allocate stucks from the free chain
 
-  void createRootStuck()                                                        // Initialize the root stuck
-   {final Stuck r = stucks[0] = new Stuck("root");                              // Stuck zero is always the root
-    r.number = 0;
-    used = 1;                                                                   // We have used one stuck for the root
-    r.setLeaf();                                                                // The root starts as a leaf
+  void dtCreateRootStuck()                                                      // Initialize the root stuck
+   {final Stuck r = dtStucks[0] = new Stuck(0);                                 // Stuck zero is always the root
+    dtUsed = 1;                                                                   // We have used one stuck for the root
+    r.stuckSetLeaf();                                                                // The root starts as a stuckLeaf
    }
 
-  private Stuck allocate(boolean leaf)                                          // Allocate a stuck and set a ref to the allocated node
-   {final Stuck r = stucks[0];
-    final int   n = r.freeNext;
+  Stuck dtGetStuck(int Index) {return dtStucks[Index];}                         // Get a stuck
+
+  private Stuck dtAllocate(boolean stuckLeaf)                                          // Allocate a stuck and set a ref to the allocated node
+   {final Stuck r = dtStucks[0];
+    final int   n = r.stuckFreeNext;
     if (n != 0)                                                                 // Reuse a stuck from the free chain
-     {final Stuck N = stucks[n];
-      r.freeNext = N.freeNext;
-      N.clear();
+     {final Stuck N = dtStucks[n];
+      r.stuckFreeNext = N.stuckFreeNext;
+      N.stuckClear();
+      N.stuckSetFree(false);
+      if (stuckLeaf) N.stuckSetLeaf(); else N.stuckSetBranch();
       return N;
      }
-    if (used < size)                                                            // Allocate a new stuck
-     {final Stuck N = stucks[used] = new Stuck("Stuck_"+used);
-      N.clear();
-      N.number = used;
+    if (dtUsed < dtSize)                                                            // Allocate a new stuck
+     {final Stuck N = dtStucks[dtUsed] = new Stuck(dtUsed);
+      N.stuckClear();
+      N.stuckSetFree(false);
+      if (stuckLeaf) N.stuckSetLeaf(); else N.stuckSetBranch();
+      dtUsed++;
       return N;
      }
     stop("No more memory available");
     return null;
    }
 
-  private void free(Stuck S)                                                    // Free the referenced stuck and put it on the free chain
-   {final Stuck r = stucks[0];
-    S.freeNext = r.freeNext;
-    r.freeNext = S.number;
+  private void dtFree(Stuck S)                                                    // Free the referenced stuck and put it on the free chain
+   {final Stuck r = dtStucks[0];
+    S.stuckFreeNext = r.stuckFreeNext;
+    r.stuckFreeNext = S.stuckNumber;
+    S.stuckSetFree(true);
    }
 
-  private void allocateLeaf  (int ref) {allocate(true);}      // Allocate a stuck, set a ref to the allocated node and mark it a leaf
-  private void allocateBranch(int ref) {allocate(false);}     // Allocate a stuck, set a ref to the allocated node and mark it a branch
+  private Stuck dtAllocateLeaf  () {return dtAllocate(true);}                       // Allocate a stuck, set a ref to the allocated node and mark it a stuckLeaf
+  private Stuck dtAllocateBranch() {return dtAllocate(false);}                  // Allocate a stuck, set a ref to the allocated node and mark it a branch
 
 //D2 Save and Load                                                              // Save a btree to a string and reload it from a string
 
-  String btreeSave()                                                            // Save a btree to a string
+  String dtSave()                                                            // Save a btree to a string
    {final StringBuilder s = new StringBuilder();
-    s.append(""+size              +"\n");
-    s.append(""+maxStuckSize      +"\n");
-    s.append(""+bitsPerKey        +"\n");
-    s.append(""+bitsPerData       +"\n");
+    s.append(""+dtSize              +"\n");
+    s.append(""+dtMaxStuckSize      +"\n");
+    s.append(""+dtBitsPerKey        +"\n");
+    s.append(""+dtBitsPerData       +"\n");
     return ""+s;
    }
 
-  void btreeLoad(String data)                                                   // Load a btree from a string
+  void dtLoad(String data)                                                      // Load a btree from a string
    {final String[]l = data.split("\\n");
     final int   []n = new int[6];
     for (int i = 0; i < n.length; i++) n[i] = Integer.parseInt(l[i]);
     int j = 0;
-    if (Dt.this.size   != n[j++]) stop("Wrong size");
-    if (maxStuckSize      != n[j++]) stop("Wrong maxStuckSize");
-    if (bitsPerKey        != n[j++]) stop("Wrong bitsPerKey");
-    if (bitsPerData       != n[j++]) stop("Wrong bitsPerData");
+    if (dtSize         != n[j++]) stop("Wrong size");
+    if (dtMaxStuckSize != n[j++]) stop("Wrong maxStuckSize");
+    if (dtBitsPerKey   != n[j++]) stop("Wrong bitsPerKey");
+    if (dtBitsPerData  != n[j++]) stop("Wrong bitsPerData");
    }
 
 //D2 Stuck                                                                      // Get and set stucks within btree
 
   class Stuck                                                                   // A reference to a stuck in the memory of the btree plus a copy of its size, keys and data
-   {final String    stuckName;                                                  // Name of stuck
-    private final   TreeMap<Integer,Integer> map = new TreeMap<>();             // Keys to data map
-    private int     top;                                                        // Every branch has a top data element, no leaf does, that is it's tragedy
-    private int     freeNext;                                                   // Next element on the free chain
-    private boolean leaf;                                                       // Whether this is a leaf or a branch
-    int             number;                                                     // Number of this stuck
-    boolean Found;                                                              // Whether the key was found
-    int Key;                                                                    // Data associated with the key if found
-    int FoundKey;                                                               // Data associated with the key if found
-    int Data;                                                                   // Data associated with the key if found
-    int BtreeIndex;                                                             // Index of stuck in Btree in which the key should reside
-    int StuckIndex;                                                             // Index of stuck in Btree in which the key should reside
-    boolean MergeSuccess;                                                       // Whether a merge was completed successfully or not
+   {final   int     stuckNumber;                                                // Number of this stuck
+    private final   TreeMap<Integer,Integer> stuckMap = new TreeMap<>();        // Keys to data map
+    private int     stuckTop;                                                   // Every branch has a top data element, no stuckLeaf does, that is it's tragedy
+    private int     stuckFreeNext;                                              // Next element on the free chain
+    private boolean stuckLeaf;                                                  // Whether this is a stuckLeaf or a branch
+    private boolean stuckFree;                                                  // Whether this stuck is free or in use
+    boolean         stuckFound;                                                 // Whether the key was found
+    int             stuckKey;                                                   // Data associated with the key if found
+    int             stuckFoundKey;                                              // Data associated with the key if found
+    int             stuckData;                                                  // Data associated with the key if found
+    int             stuckDtIndex;                                               // Index of stuck in Btree in which the key should reside
+    int             stuckIndex;                                                 // Index of stuck in Btree in which the key should reside
+    boolean         stuckMergeSuccess;                                          // Whether a dtMerge was completed successfully or not
 
-    Stuck(String StuckName)                                                     // Create a named stuck
-     {stuckName = StuckName;
+    Stuck(int Index)                                                            // Create a stuck recording its position in memory
+     {stuckNumber = Index;
      }
 
-    int  size  ()      {return map.size();}
-    int  first ()      {return map.firstKey();}
-    int  last  ()      {return map.lastKey();}
-    int  top   ()      {return top;}
-    int  get   (int k) {return map.get(k);}
-    void put   (int k, int d) {map.put(k, d);}
-    void setTop(int d) {top = d;}
-    boolean isLeaf()   {return  leaf;};
-    void setLeaf  ()   {leaf = true;}
-    void setBranch()   {leaf = false;}
-    void clear()       {map.clear();}
+    int     stuckSize     ()             {return stuckMap.size();}
+    int     stuckFirst    ()             {return stuckMap.firstKey();}
+    int     stuckNext     (int k)        {return stuckMap.higherKey(k);}
+    int     stuckLast     ()             {return stuckMap.lastKey();}
+    int     stuckTop      ()             {return stuckTop;}
+    void    stuckTop      (int d)        {stuckTop = d;}
+    int     stuckGet      (int k)        {return stuckMap.get(k);}
+    void    stuckPut      (int k, int d) {stuckMap.put(k, d);}
+    int     stuckRemove   (int k)        {final int d = stuckGet(k); stuckMap.remove(k); return d;}
+    boolean stuckIsLeaf   ()             {return  stuckLeaf;};
+    void    stuckSetLeaf  ()             {stuckLeaf = true;}
+    void    stuckSetBranch()             {stuckLeaf = false;}
+    void    stuckClear    ()             {stuckMap.clear();}
+    void    stuckSetFree  (boolean Free) {stuckFree = Free;}
 
 //D3 Memory                                                                     // Get a stuck from memory or return it to memory
 
-    Stuck stuckGet(int Index)                                                   // Copy a stuck indexed by a register out of memory into a set of registers. Currently this is done sequentially, but multiple stuck loads could be overlapped if this method was fragmented into smaller steps.  Most stuck methods do not actually require the retrieval of a full stuck from memory but doing so makes it easier to write an initial version of the btree algorithm at the cost of considerable inefficiency.
-     {return stucks[Index];
+    Stuck stuckGetFromMemory(int Index)                                         // Copy a stuck indexed by a register out of memory into a set of registers. Currently this is done sequentially, but multiple stuck loads could be overlapped if this method was fragmented into smaller steps.  Most stuck methods do not actually require the retrieval of a full stuck from memory but doing so makes it easier to write an initial version of the btree algorithm at the cost of considerable inefficiency.
+     {return dtStucks[Index];
      }
 
-    void stuckGetRoot()                                                         // Copy the root stuck out of memory into a set of registers. Currently this is done sequentially, but multiple stuck loads could be overlapped if this method was fragmented into smaller steps.  Most stuck methods do not actually require the retrieval of a full stuck from memory but doing so makes it easier to write an initial version of the btree algorithm at the cost of considerable inefficiency.
-     {stuckGet(0);
+    void stuckGetFromMemoryRoot()                                               // Copy the root stuck out of memory into a set of registers. Currently this is done sequentially, but multiple stuck loads could be overlapped if this method was fragmented into smaller steps.  Most stuck methods do not actually require the retrieval of a full stuck from memory but doing so makes it easier to write an initial version of the btree algorithm at the cost of considerable inefficiency.
+     {stuckGetFromMemory(0);
      }
 
-    void stuckPut(int Index, boolean SetLeaf)                                   // Update a stuck in memory from the registers describing this stuck optionally updating the isLeaf field.
+    void stuckPutIntoMemory()                                                   // Update a stuck in memory from the registers describing this stuck optionally updating the isLeaf field.
      {
      }
 
-    void stuckPut(int Index)              {}                                    // Update a stuck in memory from the registers describing his stuck
-    void stuckPut(boolean SetLeaf)        {}                                    // Update a stuck in memory from the registers describing his stuck
-
-    void stuckPutRoot()                                                         // Update the root stuck in memory
+    void stuckPutIntoMemory(int Index, boolean SetLeaf)                         // Update a stuck in memory from the registers describing this stuck optionally updating the isLeaf field.
      {
      }
 
-    void stuckPutRoot(boolean SetLeaf)                                          // Update the root stuck in memory setting it as a leaf or a branch
+    void stuckPutIntoMemory(int Index)              {}                          // Update a stuck in memory from the registers describing his stuck
+    void stuckPutIntoMemory(boolean SetLeaf)        {}                          // Update a stuck in memory from the registers describing his stuck
+
+    void stuckPutIntoMemoryRoot()                                               // Update the root stuck in memory
+     {
+     }
+
+    void stuckPutIntoMemoryRoot(boolean SetLeaf)                                // Update the root stuck in memory setting it as a stuckLeaf or a branch
      {
      }
 
@@ -160,209 +172,178 @@ class Dt extends Chip                                                           
 
     public String toString()
      {final StringBuilder S = new StringBuilder();
-      S.append("Stuck: "+stuckName+"\n");
-      for(Integer k : map.keySet())
-       {S.append(String.format("  %2d: %2d\n", k, map.get(k)));
+      S.append("Stuck: "+stuckNumber+", size: "+stuckSize()+", leaf: "+(stuckIsLeaf() ? 1 : 0)+", top: "+stuckTop+"\n");
+      for(Integer k : stuckMap.keySet())
+       {S.append(String.format("  %2d: %2d\n", k, stuckMap.get(k)));
        }
-      final boolean f = Found       ; S.append("Found     : "+(f ? 1 : 0)+"\n");// Whether the key was found
-      final int     k = Key         ; S.append("Key       : "+k+"\n");          // Data associated with the key if found
-      final int     K = FoundKey    ; S.append("FoundKey  : "+K+"\n");          // Data associated with the key if found
-      final int     d = Data        ; S.append("Data      : "+d+"\n");          // Data associated with the key if found
-      final int     b = BtreeIndex  ; S.append("BtreeIndex: "+b+"\n");          // Index of stuck in Btree in which the key should reside
-      final int     s = StuckIndex  ; S.append("StuckIndex: "+s+"\n");          // Index of stuck in Btree in which the key should reside
-      final boolean m = MergeSuccess; S.append("Merge     : "+(m ? 1 : 0)+"\n");// Whether a merge was completed successfully or not
+      final boolean f = stuckFound       ; S.append("Found     : "+(f ? 1 : 0)+"\n"); // Whether the key was found
+      final int     k = stuckKey         ; S.append("Key       : "+k+"\n");           // Data associated with the key if found
+      final int     K = stuckFoundKey    ; S.append("FoundKey  : "+K+"\n");           // Data associated with the key if found
+      final int     d = stuckData        ; S.append("Data      : "+d+"\n");           // Data associated with the key if found
+      final int     b = stuckDtIndex     ; S.append("DtIndex   : "+b+"\n");           // Index of stuck in Btree in which the key should reside
+      final int     s = stuckIndex       ; S.append("StuckIndex: "+s+"\n");           // Index of stuck in Btree in which the key should reside
+      final boolean m = stuckMergeSuccess; S.append("Merge     : "+(m ? 1 : 0)+"\n"); // Whether a dtMerge was completed successfully or not
 
-      return ""+s;
+      return ""+S;
      }
 
-    String dump()                                                               // Print all the entries in the stuck
+    String stuckDump()                                                          // Print all the entries in the stuck
      {final StringBuilder S = new StringBuilder();
       return ""+S;
      }
 
 //D3 Copy                                                                       // Copy a stuck into itself or another stuck shifting the elements in the stuck by a predetermined amount
 
-    void copy(Stuck Source)                                                     // Copy a stuck from the specified source to this stuck
+    void stuckCopy(Stuck Source)                                                     // Copy a stuck from the specified source to this stuck
      {
      }
 
-    void copy(Verilog v, Stuck Source)                                          // Copy a stuck from the specified source to this stuck
+    void stuckCopyDown(Stuck Source, int Power)                                      // Copy a stuck into itself or another stuck shifting the elements down in the stuck by a predetermined amount
      {
      }
 
-    void Copy(Stuck Source)                                                     // Copy a stuck from the specified source to this stuck as an instruction
+    void stuckCopyDown(int Delta)                                                    // Copy a stuck down into itself a variable number of places
      {
      }
 
-    void copyDown(Stuck Source, int Power)                                      // Copy a stuck into itself or another stuck shifting the elements down in the stuck by a predetermined amount
+    void stuckCopyUp(Stuck Source, int Power)                                        // Copy a stuck into itself or another stuck shifting the elements up in the stuck by a predetermined amount
      {
      }
 
-    void copyDown(Verilog v, Stuck Source, int Power)                           // Copy a stuck into itself or another stuck shifting the elements down in the stuck by a predetermined amount
-     {
-     }
-
-    void CopyDown(Stuck Source, int Power)                                      // Copy a stuck into itself or another stuck shifting the elements down in the stuck by a predetermined amount as an instruction
-     {
-     }
-
-    void CopyDown(int Delta)                                                    // Copy a stuck down into itself a variable number of places
-     {
-     }
-
-    void copyUp(Stuck Source, int Power)                                        // Copy a stuck into itself or another stuck shifting the elements up in the stuck by a predetermined amount
-     {
-     }
-
-    void copyUp(Verilog v, Stuck Source, int Power)                             // Copy a stuck into itself or another stuck shifting the elements up in the stuck by a predetermined amount
-     {
-     }
-
-    void CopyUp(Stuck Source, int Power)                                        // Copy a stuck into itself or another stuck shifting the elements up in the stuck by a predetermined amount as an instruction
-     {
-     }
-
-    void CopyUp(int Delta)                                         // Copy a stuck up into itself a variable number of places
+    void stuckCopyUp(int Delta)                                         // Copy a stuck up into itself a variable number of places
      {
      }
 
 //D4 Combine                                                                    // Combine stucks by "or"ing their elements
 
-    void combine(Stuck Source)                                                  // Combine a stuck from the specified source to this stuck
-     {
-     }
-
-    void combine(Verilog v, Stuck Source)                                       // Combine a stuck from the specified source to this stuck
-     {
-     }
-
-    void Combine(Stuck Source)                                                  // Combine a stuck from the specified source to this stuck as an instruction
+    void stuckCombine(Stuck Source)                                                  // Combine a stuck from the specified source to this stuck
      {
      }
 
 //D3 Actions                                                                    // Just the actions needed on a stuck to support a btree
 
-    void push(int Key, int Data)                                                // Push a key, data pair to the local copy of the stuck
-     {final int f = first();
-      if (size() >= maxStuckSize) stop("Stuck overflow");
-      if (Key > f) put(Key, Data);
-      else stop("Cannot push:", Key);
+    void stuckPush(int Key, int Data)                                                // Push a key, data pair to the local copy of the stuck
+     {if (stuckSize() >= dtMaxStuckSize) stop("Stuck overflow");
+      if (stuckSize() > 0 && Key <= stuckFirst()) stop("Cannot push:", Key);
+      stuckPut(Key, Data);
      }
 
-    void pop()                                                                  // Pop a key, data pair from the local copy of the stuck
-     {if (size() == 0) stop("Cannot apply pop to an empty stuck");
-      Key  = last();
-      Data = map.get(Key);
-      map.remove(Key);
+    void stuckPop()                                                                  // Pop a key, data pair from the local copy of the stuck
+     {if (stuckSize() == 0) stop("Cannot apply pop to an empty stuck");
+      stuckKey  = stuckLast();
+      stuckData = stuckMap.get(stuckKey);
+      stuckMap.remove(stuckKey);
      }
 
-    void setPastLastKey(int Key)                                                // Set the  key past the top of the stuck
+    void stuckSetPastLastKey(int Key)                                                // Set the  key past the top of the stuck
      {
      }
 
-    void setPastLastData(int Data)                                              // Set the data element past the top of the stuck
+    void stuckSetPastLastData(int Data)                                              // Set the data element past the top of the stuck
      {
      }
 
-    void setPastLastElement(int Key, int Data)                                  // Push a key, data pair to the local copy of the stuck without changing the size
+    void stuckSetPastLastElement(int Key, int Data)                                  // Push a key, data pair to the local copy of the stuck without changing the size
      {
      }
 
-    void firstElement()                                                         // Get the first key, data pair
-     {Key = first();
-      Data = map.get(Key);
+    void stuckFirstElement()                                                         // Get the first key, data pair
+     {stuckKey = stuckFirst();
+      stuckData = stuckMap.get(stuckKey);
      }
 
-    void lastElement()                                                          // Get the last key, data pair
-     {Key = last();
-      Data = map.get(Key);
+    void stuckLastElement()                                                          // Get the last key, data pair
+     {stuckKey = stuckLast();
+      stuckData = stuckMap.get(stuckKey);
      }
 
-    void pastLastElement()                                                      // Get the past last key, data pair
+    void stuckPastLastElement()                                                      // Get the past last key, data pair
      {
      }
 
-    void elementAt(int Index)                                                   // Get the indexed key, data pair.. The index is the key of the item requested so this behaves like get.
-     {Key = Index;
-      Data = map.get(Key);
+    void stuckElementAt(int Index)                                                   // Get the indexed key, data pair.. The index is the key of the item requested so this behaves like get.
+     {stuckKey = Index;
+      stuckData = stuckMap.get(stuckKey);
      }
 
-    void setElementAt(int Key, int Data)                                        // Set the data of the indexed key
-     {put(Key, Data);
+    void stuckSetElementAt(int Key, int Data)                                        // Set the data of the indexed key
+     {dtPut(Key, Data);
      }
 
-    void insertElementAt(int Key, int Data)                                     // Set the indexed key, data pair
-     {put(Key, Data);
+    void stuckInsertElementAt(int Key, int Data)                                     // Set the indexed key, data pair
+     {dtPut(Key, Data);
      }
 
-    void removeElementAt(int Index)                                             // Remove the indexed key, data pair
-     {Key  = Index;
-      Data = get(Index);
-      map.remove(Index);
+    void stuckRemoveElementAt(int Index)                                             // Remove the indexed key, data pair
+     {stuckKey  = Index;
+      stuckData = stuckGet(Index);
+      stuckMap.remove(Index);
      }
 
 //D3 Search                                                                     // Search the stuck
 
-    void search_eq_parallel(int Key)                                            // Find the specified key if possible in the stuck
-     {if (map.containsKey(Key))
-       {Found = true;
-        this.Key  = Key;
-        this.Data = get(Key);
+    void stuckSearch_eq_parallel(int Key)                                            // Find the specified key if possible in the stuck
+     {if (stuckMap.containsKey(Key))
+       {stuckFound = true;
+        stuckKey  = Key;
+        stuckData = stuckGet(Key);
        }
-      else Found = false;
+      else stuckFound = false;
      }
 
-    void search_le_parallel(int Key)                                            // Find the specified key if possible in the stuck
+    void stuckSearch_le_parallel(int Key)                                            // Find the specified key if possible in the stuck
      {
      }
 
 //D3 Split                                                                      // Split stucks in many and various ways
 
-    void splitIntoTwo(Stuck Left, Stuck Right)                                  // Copy the first half key, data pairs into the left stuck, the remainder into the right stuck.  The original source stuck is not modifiedr
+    void stuckSplitIntoTwo(Stuck Left, Stuck Right)                                  // Copy the first half key, data pairs into the left stuck, the remainder into the right stuck.  The original source stuck is not modifiedr
      {
      }
 
-    void splitIntoThree(Stuck Left, Stuck Right, int Copy)                      // Copy the specified number of key, data pairs into the left stuck, skip one pair, then copy the specified number onto into the right stuck
+    void stuckSplitIntoThree(Stuck Left, Stuck Right, int Copy)                      // Copy the specified number of key, data pairs into the left stuck, skip one pair, then copy the specified number onto into the right stuck
      {
      }
 
-    void splitLow(Stuck Left)                                                   // Split a full stuck with an even number of elements so that the first half is moved into the left stuck leaving the remainder moved down in the current stuck
+    void stuckSplitLow(Stuck Left)                                                   // Split a full stuck with an even number of elements so that the first half is moved into the left stuck leaving the remainder moved down in the current stuck
      {
      }
 
-    void splitLowButOne(Stuck Left, int Key)                                    // Split an almost full stuck with an odd number of elements so that the first half is moved into the left stuck extended by the data of the central element, while the remainder beyond the central element are moved down.  The central key is returned as it would otherwise be lost.
+    void stuckSplitLowButOne(Stuck Left, int Key)                                    // Split an almost full stuck with an odd number of elements so that the first half is moved into the left stuck extended by the data of the central element, while the remainder beyond the central element are moved down.  The central key is returned as it would otherwise be lost.
      {
      }
 
 //D3 Merge                                                                      // Merge stucks in various ways
 
-    void merge(Stuck Source)                                                    // Concatenate the indicated stuck onto the end of the current one
-     {if (size() + Source.size() <= maxStuckSize)
-       {map.putAll(Source.map);
-        MergeSuccess = true;
+    void stuckMerge(Stuck Source)                                                    // Concatenate the indicated stuck onto the end of the current one
+     {if (stuckSize() + Source.stuckSize() <= dtMaxStuckSize)
+       {stuckMap.putAll(Source.stuckMap);
+        stuckMergeSuccess = true;
        }
-      else MergeSuccess = false;
+      else stuckMergeSuccess = false;
      }
 
-    void merge(Stuck Left, Stuck Right)                                         // Replace the current stuck with the concatenation of the two stucks indicated
-     {if (Left.size() + Right.size() <= maxStuckSize)
-       {clear();
-        map.putAll(Left.map);
-        map.putAll(Right.map);
+    void stuckMerge(Stuck Left, Stuck Right)                                         // Replace the current stuck with the concatenation of the two stucks indicated
+     {if (Left.stuckSize() + Right.stuckSize() <= dtMaxStuckSize)
+       {stuckClear();
+        stuckMap.putAll(Left.stuckMap);
+        stuckMap.putAll(Right.stuckMap);
+        stuckMergeSuccess = true;
        }
+      else stuckMergeSuccess = false;
      }
 
-    void mergeButOne(int Key, Stuck Source)                                     // Concatenate the indicated stuck with a past last data element onto the end of the current stuck with a past last data element with the specified key inserted over the central past last data element separating the two.
+    void stuckMergeButOne(int Key, Stuck Source)                                     // Concatenate the indicated stuck with a past last data element onto the end of the current stuck with a past last data element with the specified key inserted over the central past last data element separating the two.
      {
      }
 
-    void mergeButOne(Stuck Left, int Key, Stuck Right)                          // Concatenate the past last left and right stucks separated by the key over the past last data element of the left stuck into the target
+    void stuckMergeButOne(Stuck Left, int Key, Stuck Right)                          // Concatenate the past last left and right stucks separated by the key over the past last data element of the left stuck into the target
      {
      }
 
-//D3 Is a Leaf                                                                  // Determine whether a stuck contains a leaf or a branch of a btree
+//D3 Is a Leaf                                                                  // Determine whether a stuck contains a stuckLeaf or a branch of a btree
 
-    class IsLeaf                                                                // Process a stuck depending on whether it is a leaf or a branch
+    class IsLeaf                                                                // Process a stuck depending on whether it is a stuckLeaf or a branch
      {void Leaf()   {}
       void Branch() {}
      }
@@ -370,27 +351,65 @@ class Dt extends Chip                                                           
 
 //D2 Horizontally                                                               // Print the tree horizontally
 
-    final int linesToPrintABranch =  4;                                         // The number of lines required to print a branch
-    final int maxPrintLevels      =  3;                                         // The maximum number of levels to print `- this avoids endless print loops when something goes wrong
+    final int dtLinesToPrintABranch =  4;                                       // The number of lines required to print a branch
+    final int dtMaxPrintLevels      =  3;                                       // The maximum number of levels to print stuck- this avoids endless print loops when something goes wrong
 
-    void printLeaf(int BtreeIndex, Stack<StringBuilder>P, int level)            // Print leaf horizontally
-     {padStrings(P, level);
+    void dtPrintLeaf(int DtIndex, Stack<StringBuilder>P, int level)             // Print stuckLeaf horizontally
+     {dtPadStrings(P, level);
 
       final StringBuilder s = new StringBuilder();                              // String builder
-      final Stuck l = stuckGet(BtreeIndex);
-      for  (Integer i : l.map.keySet()) s.append(""+i+",");
+      final Stuck l = dtGetStuck(DtIndex);
+      for  (Integer k : l.stuckMap.keySet()) s.append(""+k+",");
 
       if (s.length() > 0) s.setLength(s.length()-1);                            // Remove trailing comma if present
-      s.append("="+BtreeIndex+" ");
-      P.elementAt(level*linesToPrintABranch).append(s.toString());
-      padStrings(P, level);
+      s.append("="+DtIndex+" ");
+      P.elementAt(level*dtLinesToPrintABranch).append(s.toString());
+      dtPadStrings(P, level);
      }
 
-    void printBranch(int BtreeIndex, Stack<StringBuilder>P, int level)          // Print branch horizontally
-     {
+    void dtPrintBranch(int DtIndex, Stack<StringBuilder>P, int level)           // Print branch horizontally
+     {if (level > dtMaxPrintLevels) return;
+      dtPadStrings(P, level);
+      final int L = level * dtLinesToPrintABranch;                              // Start line at which to print branch
+      final Stuck b = dtGetStuck(DtIndex);                                      // Load branch
+      final int K = b.stuckSize();                                              // Size of branch
+
+      if (K > 0)                                                                // Branch has key, next pairs
+       {int i = 0;
+        for  (Integer k : b.stuckMap.keySet())
+         {final int key  = k;
+          final int data = b.stuckGet(k);
+          if (dtGetStuck(data).stuckIsLeaf())
+           {dtPrintLeaf  (data, P, level+1);
+           }
+          else
+           {dtPrintBranch(data, P, level+1);
+           }
+
+          P.elementAt(L+0).append(""+key);                                      // Key
+          P.elementAt(L+1).append(""+DtIndex+(i > 0 ?  "."+i : ""));         // Branch,key, next pair
+          P.elementAt(L+2).append(""+data);
+          ++i;
+         }
+       }
+      else                                                                      // Branch is empty so print just the index of the branch
+       {P.elementAt(L+0).append(""+DtIndex+"Empty");
+       }
+      final int top = b.stuckTop();                                                  // Top next will always be present
+      P.elementAt(L+3).append(top);                                             // Append top next
+
+      final Stuck t = dtGetStuck(top);                                          // Load top
+      if (t.stuckIsLeaf())                                                           // Print stuckLeaf
+       {dtPrintLeaf  (top, P, level+1);
+       }
+      else                                                                      // Print branch
+       {dtPrintBranch(top, P, level+1);
+       }
+
+      dtPadStrings(P, level);
      }
 
-   String printBoxed()                                                          // Print a tree in a box
+   String dtPrintBoxed()                                                          // Print a tree in a box
     {final String  s = toString();
      final int     n = longestLine(s)-1;
      final String[]L = s.split("\n");
@@ -401,8 +420,8 @@ class Dt extends Chip                                                           
      return t.toString();
     }
 
-  void padStrings(Stack<StringBuilder> S, int level)                            // Pad the strings at each level of the tree so we have a vertical face to continue with - a bit like Marc Brunel's tunneling shield
-   {final int N = level * linesToPrintABranch + maxStuckSize;                   // Number of lines we might want
+  void dtPadStrings(Stack<StringBuilder> S, int level)                          // Pad the strings at each level of the tree so we have a vertical face to continue with - a bit like Marc Brunel's tunneling shield
+   {final int N = level * dtLinesToPrintABranch + dtMaxStuckSize;               // Number of lines we might want
     for (int i = S.size(); i <= N; ++i) S.push(new StringBuilder());            // Make sure we have a full deck of strings
     int m = 0;                                                                  // Maximum length
     for (StringBuilder s : S) m = m < s.length() ? s.length() : m;              // Find maximum length
@@ -411,7 +430,7 @@ class Dt extends Chip                                                           
      }
    }
 
-  String printCollapsed(Stack<StringBuilder> S)                                 // Collapse horizontal representation into a string
+  String dtPrintCollapsed(Stack<StringBuilder> S)                                 // Collapse horizontal representation into a string
    {final StringBuilder t = new StringBuilder();                                // Print the lines of the tree that are not blank
     for  (StringBuilder s : S)
      {final String l = s.toString();
@@ -421,66 +440,69 @@ class Dt extends Chip                                                           
     return t.toString();
    }
 
-  String btreePrint()                                                           // Print a tree horizontally
+  String dtPrint()                                                              // Print a tree horizontally
    {final Stack<StringBuilder> P = new Stack<>();
-    return printCollapsed(P);
+    final Stuck r = dtGetStuck(0);
+    if (r.stuckIsLeaf()) dtPrintLeaf(0, P, 0); else dtPrintBranch(0, P, 0);
+
+    return dtPrintCollapsed(P);
    }
+
+  public String toString() {return dtPrint();}                                  // Print the double btree
 
 //D2 Split                                                                      // Split nodes in half to increase the number of nodes in the tree
 
-  private void splitRootLeaf()                                                  // Split a full root leaf
+  private void dtSplitRootLeaf()                                                // Split a full root stuckLeaf
    {
    }
 
-  private void splitRootBranch(Process P)                                       // Split a full root branch
-   {                                                             // Save the root stuck back into the btree whence it came
+  private void dtSplitRootBranch(Process P)                                     // Split a full root branch
+   {                                                                            // Save the root stuck back into the btree whence it came
    }
 
-  private void splitLeafNotTop                                                  // Split a full leaf that is not the root and is not the last child of its parent branch which is not full
+  private void dtSplitLeafNotTop                                                // Split a full stuckLeaf that is not the root and is not the last child of its parent branch which is not full
    (int ParentIndex, int StuckIndex)
    {
    }
 
-  private void splitLeafAtTop(int ParentIndex)                     // Split a full leaf that is not the root and is the last child of its parent branch which is not full
+  private void dtSplitLeafAtTop(int ParentIndex)                                // Split a full stuckLeaf that is not the root and is the last child of its parent branch which is not full
    {
    }
 
-  private void splitBranchNotTop                                                // Split a full branch that is not the root and is not the last child of its parent branch which is not full
+  private void dtSplitBranchNotTop                                              // Split a full branch that is not the root and is not the last child of its parent branch which is not full
    (int ParentIndex, int StuckIndex)
    {
    }
 
 //D1 Merge                                                                      // Merge two nodes
 
-  private boolean mergePermitted (Stuck Parent, int ParentIndex)                // Whether a  merge is permitted or not.
-   {final int first = Parent.map.firstKey();
+  private boolean dtSkipMerge(Stuck Parent, int ParentIndex)                    // Whether a  dtMerge is permitted or not.
+   {final int first = Parent.stuckMap.firstKey();
     final boolean f = ParentIndex == first;                                     // Are we dealing with the first child
-    final int r = Parent.map.size();                                            // Size of parent
-    return ((f && r > 1) || (!f && r >= 1));
+    final int r = Parent.stuckSize();                                           // Size of parent
+    return r == 0 || (r == 1 && f);                                             // Conditions on which to skip the dtMerge.  dtMerge is not possible if there are no children to dtMerge, or in the case of one child, it will be handled by the dtMerge into top
    }
 
-  private boolean mergeLeavesIntoRoot()                                         // Merge two leaves into the root
-   {final Stuck p = new Stuck("Parent");                                        // Parent stuck two of whose children might be merged
-    final Stuck l = new Stuck("Left");                                          // Left split stuck
-    final Stuck r = new Stuck("Right");                                         // Right split stuck    final Process.Register ck = P.new Register("childKey",   bitsPerKey);       // Index in memory of the left stuck
+  private boolean dtMergeLeavesIntoRoot()                                       // Merge two leaves into the root
+   {final Stuck p = dtGetStuck(0);                                              // Parent stuck two of whose children might be dtMerged
 
-    p.stuckGetRoot();                                                           // Load root
+    p.stuckGetFromMemoryRoot();                                                 // Load root
 
-    if (p.size() != 1) return false;                                            // Number of entries in root
+    if (p.stuckSize() != 1) return false;                                       // Number of entries in root
 
-    final int il = p.map.get(0);                                                // Index of left leaf
-    final int ir = p.top();                                                     // Index of right leaf
+    final int il = p.stuckGet(p.stuckFirst());                                  // Index of left stuckLeaf
+    final int ir = p.stuckTop();                                                // Index of right stuckLeaf
 
-    l.stuckGet(il);                                                             // Load left  leaf from btree
-    r.stuckGet(ir);                                                             // Load right leaf from btree
+    final Stuck l = dtGetStuck(il);                                             // Left split stuck
+    final Stuck r = dtGetStuck(ir);                                             // Right split stuck    final Process.Register ck = P.new Register("childKey",   bitsPerKey);       // Index in memory of the left stuck
 
-    if (l.isLeaf())                                                             // Check that the children are leaves
-     {if (r.isLeaf())
-       {p.merge(l, r);                                                          // Merge leaves into root
-        if (p.MergeSuccess)                                                     // Merge was successful
-         {p.setLeaf();                                                          // Mark the root as a leaf
-          p.stuckPut(true);                                                     // Save the modified root back into the tree
-          free(l); free(r);                                                     // Free left and right leaves as they are no longer needed
+    if (l.stuckIsLeaf())                                                        // Check that the children are leaves
+     {if (r.stuckIsLeaf())
+       {p.stuckMerge(l, r);                                                     // Merge leaves into root
+        if (p.stuckMergeSuccess)                                                // Merge was successful
+         {p.stuckSetLeaf();                                                     // Mark the root as a stuckLeaf
+          p.stuckPutIntoMemory(true);                                           // Save the modified root back into the tree
+          dtFree(l); dtFree(r);                                                 // Free left and right leaves as they are no longer needed
           return true;                                                          // Success
          }
        }
@@ -488,26 +510,45 @@ class Dt extends Chip                                                           
     return false;
    }
 
-  private int mergeLeavesNotTop                                    // Merge the two consecutive leaves of a branch that is not the root. Neither of the leaves is the topmost leaf.
-   (Stuck Parent, int ParentIndex, int LeftLeaf)
-   {return 1;
+  private boolean dtMergeLeavesNotTop(Stuck Parent, int LeftLeaf)               // Merge the two consecutive leaves of a branch that is not the root. Neither of the leaves is the topmost stuckLeaf.
+   {if (dtSkipMerge(Parent, LeftLeaf)) return false;
+    final int il = Parent.stuckGet(LeftLeaf);                                   // Index of left leaf
+    final int rk = Parent.stuckNext(LeftLeaf);                                  // Right leaf key
+    final int ir = Parent.stuckGet(rk);                                         // Indexes of right leaf
+
+    final Stuck p = Parent;
+    final Stuck l = dtGetStuck(il);
+    final Stuck r = dtGetStuck(ir);
+
+    if (!l.stuckIsLeaf() || !r.stuckIsLeaf()) return false;                     // Check that the children are leaves
+    l.stuckMerge(r);                                                            // Merge leaves into left child
+    if (l.stuckMergeSuccess)                                                    // Modify the parent only if the merge succeeded
+     {p.stuckRemove(LeftLeaf);                                                  // Remove the left child moving the right child down into its space
+      p.stuckPut(rk, il);                                                       // Replace the right child with the left child
+      l.stuckPutIntoMemory();                                                   // Save the merge into left child back into the tree
+      p.stuckPutIntoMemory();                                                   // Save the parent back into the tree
+      dtFree(r);                                                                // Free right leaf as it is no longer in use
+      return true;
+     }
+
+    return false;
    }
 
-  private int mergeLeavesAtTop                                     // Merge the top most two leaves of a branch that is not the root
+  private int dtMergeLeavesAtTop                                                // Merge the top most two leaves of a branch that is not the root
    (Stuck Parent, int ParentIndex)
    {return 1;
    }
 
-  private int mergeBranchesIntoRoot(Process P)                     // Merge two branches into the root
+  private int dtMergeBranchesIntoRoot(Process P)                     // Merge two branches into the root
    {return 1;
    }
 
-  private int mergeBranchesNotTop                                  // Merge the two consecutive child branches of a branch that is not the root. Neither of the child branches is the topmost leaf.
+  private int dtMergeBranchesNotTop                                  // Merge the two consecutive child branches of a branch that is not the root. Neither of the child branches is the topmost stuckLeaf.
    (Stuck Parent, int ParentIndex, int LeftBranch)
    {return 1;
    }
 
-  private int mergeBranchesAtTop                                   // Merge the top most two child branches of a branch that is not the root
+  private int dtMergeBranchesAtTop                                   // Merge the top most two child branches of a branch that is not the root
    (Stuck Parent, int ParentIndex)
    {
     return 1;
@@ -515,9 +556,9 @@ class Dt extends Chip                                                           
 
 //D1 Find                                                                       // Find a key in a btree
 
-  class Find extends Stuck                                                      // Find the leaf stuck associated with a key in the tree
+  class Find extends Stuck                                                      // Find the stuckLeaf stuck associated with a key in the tree
    {Find()
-     {super("");                                                                                //
+     {super(-1);                                                                                //
      }
     void findSearch(int Key)
      {
@@ -526,23 +567,23 @@ class Dt extends Chip                                                           
 
 //D1 Insertion                                                                  // Insert a key, data pair into the tree if there is room for it or update and existing key with a new datum
 
-  class FindAndInsert extends Find                                              // Find the leaf stuck that should contain this key and insert or update it if possible
-   {void findAndInsert(int Key, int Data)             // Find the leaf stuck that should contain this key and insert or update it if possible
+  class FindAndInsert extends Find                                              // Find the stuckLeaf stuck that should contain this key and insert or update it if possible
+   {void findAndInsert(int Key, int Data)                                       // Find the stuckLeaf stuck that should contain this key and insert or update it if possible
      {
      }
    } // FindAndInsert
 
-  public void put(int Key, int Data)                  // Insert a key, data pair into the tree or update and existing key with a new datum
+  public void dtPut(int Key, int Data)                                          // Insert a key, data pair into the tree or update and existing key with a new datum
    {
    }
 
-  public void merge(int Key)                                       // Merge stucks on either side of the path to the key
+  public void dtMerge(int Key)                                                  // Merge stucks on either side of the path to the key
    {
    }
 
 //D1 Deletion                                                                   // Delete a key data pair from the btree returning the data associated with the key
 
-  private Find delete(int Key)                                     // Find the leaf that contains this key and delete it
+  private Find delete(int Key)                                                  // Find the stuckLeaf that contains this key and delete it
    {return null;
    }
 
@@ -552,23 +593,97 @@ class Dt extends Chip                                                           
 
   static void test_merge()
    {sayCurrentTestName();
-    final Dt    D = new Dt(1, 8, 8, 8);
-    final Stuck a = D.new Stuck("a");
-    final Stuck b = D.new Stuck("b");
-    b.put(1,1);
-    b.put(2,2);
-    final Stuck c = D.new Stuck("c");
-    c.put(3,3);
-    c.put(4,4);
-    a.merge(b, c);
-    say(a);
+    final Dt    D = new Dt(4, 8, 8, 8);
+    final Stuck a = D.dtAllocateLeaf();
+    final Stuck b = D.dtAllocateLeaf();
+    b.stuckPush(1,1);
+    b.stuckPush(2,2);
+    final Stuck c = D.dtAllocateLeaf();
+    c.stuckPush(3,3);
+    c.stuckPush(4,4);
+    a.stuckMerge(b, c);
     ok(a, """
-Stuck: a
+Stuck: 1, size: 4, leaf: 1, top: 0
    1:  1
    2:  2
    3:  3
    4:  4
+Found     : 0
+Key       : 0
+FoundKey  : 0
+Data      : 0
+DtIndex   : 0
+StuckIndex: 0
+Merge     : 1
 """);
+   }
+
+  static void test_mergeLeavesIntoRoot()
+   {sayCurrentTestName();
+    final Dt    D = new Dt(4, 4, 8, 8);
+
+    final Stuck r = D.dtGetStuck(0);
+                r.stuckSetBranch();
+    final Stuck a = D.dtAllocateLeaf();
+    final Stuck b = D.dtAllocateLeaf();
+
+    a.stuckPush(1, 1); a.stuckPush(2, 2);
+    b.stuckPush(3, 3); b.stuckPush(4, 4);
+
+    r.stuckPush(2, a.stuckNumber); r.stuckTop(b.stuckNumber);
+    //stop(D);
+    ok (D, """
+      2      |
+      0      |
+      1      |
+      2      |
+1,2=1  3,4=2 |
+""");
+
+    D.dtMergeLeavesIntoRoot();
+    //stop(D);
+    ok (D, """
+1,2,3,4=0 |
+""");
+   }
+
+  static void test_mergeLeavesNotTop()
+   {sayCurrentTestName();
+    final Dt    D = new Dt(32, 4, 8, 8);
+
+    final Stuck s = D.dtGetStuck(0);
+                s.stuckSetBranch();
+    final Stuck a = D.dtAllocateLeaf();
+    final Stuck b = D.dtAllocateLeaf();
+    final Stuck c = D.dtAllocateLeaf();
+
+    a.stuckPush(1, 1); a.stuckPush(2, 2);
+    b.stuckPush(3, 3); b.stuckPush(4, 4);
+    c.stuckPush(5, 5); c.stuckPush(6, 6);
+
+    s.stuckPush(2, a.stuckNumber);
+    s.stuckPush(4, b.stuckNumber);
+    s.stuckTop(    c.stuckNumber);
+
+    //stop(D);
+    ok(D, """
+      2      4        |
+      0      0.1      |
+      1      2        |
+             3        |
+1,2=1  3,4=2    5,6=3 |
+""");
+
+    final boolean m = D.dtMergeLeavesNotTop(s, s.stuckFirst());
+    //stop(D);
+    ok(D, """
+          4      |
+          0      |
+          1      |
+          3      |
+1,2,3,4=1  5,6=3 |
+""");
+    ok(m, true);
    }
 
 /*
@@ -585,13 +700,13 @@ Stuck: a
     b.stuckKeys   .memoryLoad(P, new int[][]{{2, 4, 6, 8, 10, 12, 14, 16}});
     b.stuckData   .memoryLoad(P, new int[][]{{3, 5, 7, 9, 11, 13, 15, 17}});
 
-    s.stuckGetRoot();
+    s.stuckGetFromMemoryRoot();
     t.CopyDown(s, 0);
 
     b.chipRun(200);
     //stop(s.dump());
     ok(s.dump(), """
-Stuck: Source size: 4, leaf: 1, root
+Stuck: Source size: 4, stuckLeaf: 1, root
  0     2 =>    3
  1     4 =>    5
  2     6 =>    7
@@ -604,14 +719,14 @@ Found     : 0
 Key       : 0
 FoundKey  : 0
 Data      : 0
-BtreeIndex: 0
+DtIndex: 0
 StuckIndex: 0
 Merge     : 0
 """);
 
     //stop(t.dump());
     ok(t.dump(), """
-Stuck: Target size: 0, leaf: 0, root
+Stuck: Target size: 0, stuckLeaf: 0, root
  0     4 =>    5
  1     6 =>    7
  2     8 =>    9
@@ -624,19 +739,19 @@ Found     : 0
 Key       : 0
 FoundKey  : 0
 Data      : 0
-BtreeIndex: 0
+DtIndex: 0
 StuckIndex: 0
 Merge     : 0
 """);
 
-    s.stuckGetRoot();
+    s.stuckGetFromMemoryRoot();
     t.CopyDown(s, 1);
     b.chipRun();
     //stop(b);
     //stop(s.dump());
     //stop(t.dump());
     ok(t.dump(), """
-Stuck: Target size: 0, leaf: 0, root
+Stuck: Target size: 0, stuckLeaf: 0, root
  0     6 =>    7
  1     8 =>    9
  2    10 =>   11
@@ -649,18 +764,18 @@ Found     : 0
 Key       : 0
 FoundKey  : 0
 Data      : 0
-BtreeIndex: 0
+DtIndex: 0
 StuckIndex: 0
 Merge     : 0
 """);
 
-    s.stuckGetRoot();
+    s.stuckGetFromMemoryRoot();
     t.CopyUp(s, 0);
     b.chipRun();
 
     //stop(t.dump());
     ok(t.dump(), """
-Stuck: Target size: 0, leaf: 0, root
+Stuck: Target size: 0, stuckLeaf: 0, root
  0     0 =>    0
  1     2 =>    3
  2     4 =>    5
@@ -673,18 +788,18 @@ Found     : 0
 Key       : 0
 FoundKey  : 0
 Data      : 0
-BtreeIndex: 0
+DtIndex: 0
 StuckIndex: 0
 Merge     : 0
 """);
 
-    s.stuckGetRoot();
+    s.stuckGetFromMemoryRoot();
     t.CopyUp(s, 1);
     b.chipRun();
 
     //stop(t.dump());
     ok(t.dump(), """
-Stuck: Target size: 0, leaf: 0, root
+Stuck: Target size: 0, stuckLeaf: 0, root
  0     0 =>    0
  1     0 =>    0
  2     2 =>    3
@@ -697,21 +812,21 @@ Found     : 0
 Key       : 0
 FoundKey  : 0
 Data      : 0
-BtreeIndex: 0
+DtIndex: 0
 StuckIndex: 0
 Merge     : 0
 """);
 
     final int d = P.new Register("delta", 4);
     d.RegisterSet(5);
-    s.stuckGetRoot();
+    s.stuckGetFromMemoryRoot();
     t.Copy(s);
     t.CopyDown(d);
     b.chipRun();
 
     //stop(t.dump());
     ok(t.dump(), """
-Stuck: Target size: 4, leaf: 1, root
+Stuck: Target size: 4, stuckLeaf: 1, root
  0    12 =>   13
  1    14 =>   15
  2    16 =>   17
@@ -724,20 +839,20 @@ Found     : 0
 Key       : 0
 FoundKey  : 0
 Data      : 0
-BtreeIndex: 0
+DtIndex: 0
 StuckIndex: 0
 Merge     : 0
 """);
 
     d.RegisterSet(3);
-    s.stuckGetRoot();
+    s.stuckGetFromMemoryRoot();
     t.Copy(s);
     t.CopyUp(d);
     b.chipRun();
 
     //stop(t.dump());
     ok(t.dump(), """
-Stuck: Target size: 4, leaf: 1, root
+Stuck: Target size: 4, stuckLeaf: 1, root
  0     0 =>    0
  1     0 =>    0
  2     0 =>    0
@@ -750,7 +865,7 @@ Found     : 0
 Key       : 0
 FoundKey  : 0
 Data      : 0
-BtreeIndex: 0
+DtIndex: 0
 StuckIndex: 0
 Merge     : 0
 """);
@@ -763,7 +878,7 @@ Merge     : 0
     final Process P = b.P; //b.new Process("copy");
     final Stuck   s = b.new Stuck(P, "Source");
     final Stuck   t = b.new Stuck(P, "Target");
-    final int index = b.btreeIndex(P, "Index");
+    final int index = b.dtIndex(P, "Index");
     P.processTrace = true;
     b.stuckIsLeaf .memoryLoad(P, new int[][]{{1}, {1}});
     b.stuckSize   .memoryLoad(P, new int[][]{{4}, {4}});
@@ -771,15 +886,15 @@ Merge     : 0
     b.stuckKeys.memoryLoad(P, new int[][]{{2, 4, 6, 8, 10, 12, 14, 16}, {3, 5, 7, 9, 11, 13, 15, 17}});
     b.stuckData.memoryLoad(P, new int[][]{{3, 5, 7, 9, 11, 13, 15, 17}, {2, 4, 6, 8, 10, 12, 14, 16}});
 
-    t.stuckGetRoot();
+    t.stuckGetFromMemoryRoot();
     index.RegisterSet(1);
-    s.stuckGet(index);
+    s.stuckGetFromMemory(index);
 
     b.chipRun(200);
 
     //stop(t.dump());
     ok(t.dump(), """
-Stuck: Target size: 4, leaf: 1, root
+Stuck: Target size: 4, stuckLeaf: 1, root
  0     2 =>    3
  1     4 =>    5
  2     6 =>    7
@@ -792,14 +907,14 @@ Found     : 0
 Key       : 0
 FoundKey  : 0
 Data      : 0
-BtreeIndex: 0
+DtIndex: 0
 StuckIndex: 0
 Merge     : 0
 """);
 
     //stop(s.dump());
     ok(s.dump(), """
-Stuck: Source size: 4, leaf: 1, index: 1
+Stuck: Source size: 4, stuckLeaf: 1, index: 1
  0     3 =>    2
  1     5 =>    4
  2     7 =>    6
@@ -812,21 +927,21 @@ Found     : 0
 Key       : 0
 FoundKey  : 0
 Data      : 0
-BtreeIndex: 0
+DtIndex: 0
 StuckIndex: 0
 Merge     : 0
 """);
 
-    t.stuckGetRoot();
+    t.stuckGetFromMemoryRoot();
     t.Pop();
     index.RegisterSet(1);
-    s.stuckGet(index);
-    t.merge(s);
+    s.stuckGetFromMemory(index);
+    t.dtMerge(s);
     b.chipRun();
 
     //stop(t.dump());
     ok(t.dump(), """
-Stuck: Target size: 7, leaf: 1, root
+Stuck: Target size: 7, stuckLeaf: 1, root
  0     2 =>    3
  1     4 =>    5
  2     6 =>    7
@@ -839,7 +954,7 @@ Found     : 0
 Key       : 8
 FoundKey  : 0
 Data      : 9
-BtreeIndex: 0
+DtIndex: 0
 StuckIndex: 0
 Merge     : 1
 """);
@@ -856,12 +971,12 @@ Merge     : 1
     b.stuckData  .memoryLoad(P, new int[][]{{3, 5, 0, 0}});
 
     Stuck s = b.new Stuck(P, "Stuck");
-    s.stuckGetRoot();
+    s.stuckGetFromMemoryRoot();
     P.new Instruction()
      {void action()
        {//stop(s);
         ok(s, """
-Stuck: Stuck size: 2, leaf: 1, root
+Stuck: Stuck size: 2, stuckLeaf: 1, root
  0     2 =>    3
  1     4 =>    5
 """);
@@ -873,7 +988,7 @@ Stuck: Stuck size: 2, leaf: 1, root
     s.keys  .RegisterSet(3, 0);
     s.data  .RegisterSet(4, 0);
 
-    s.stuckPut(true);
+    s.stuckPutIntoMemory(true);
 
     P.new Instruction()
      {void action()
@@ -983,7 +1098,7 @@ Chip: Dt            step: 17, maxSteps: 100, running: 0
       final Stuck s = b.new Stuck(P, names[j]);
       final int k = s.Key;
       final int d = P.register("d", D);
-      final int n = b.btreeIndex(P, "n");
+      final int n = b.dtIndex(P, "n");
 
       s.Clear();
       for (int i = 0; i < S; i++)
@@ -994,7 +1109,7 @@ Chip: Dt            step: 17, maxSteps: 100, running: 0
 
       n.RegisterSet(J);
       s.isLeaf.One();
-      s.stuckPut(n, true);
+      s.stuckPutIntoMemory(n, true);
      }
     return b;
    }
@@ -1037,11 +1152,11 @@ Chip: Dt            step: 80, maxSteps: 100, running: 0
     final Stuck   s = b.new Stuck(P, "root");
     P.processTrace = true;
 
-    s.stuckGetRoot();
+    s.stuckGetFromMemoryRoot();
     b.chipRun(100);
     //stop(s);
     ok(s, """
-Stuck: root size: 4, leaf: 1, root
+Stuck: root size: 4, stuckLeaf: 1, root
  0     0 =>    1
  1     1 =>    2
  2     2 =>    3
@@ -1053,7 +1168,7 @@ Stuck: root size: 4, leaf: 1, root
 
     //stop(s);
     ok(s, """
-Stuck: root size: 0, leaf: 1, root
+Stuck: root size: 0, stuckLeaf: 1, root
 """);
    }
 
@@ -1066,14 +1181,14 @@ Stuck: root size: 0, leaf: 1, root
     final int k = s.Key;
     final int d = s.Data;
 
-    s.stuckGetRoot();
+    s.stuckGetFromMemoryRoot();
     s.Pop();
 
     b.chipRun(100);
 
     //stop(s.dump());
     ok(s.dump(), """
-Stuck: Stuck size: 3, leaf: 1, root
+Stuck: Stuck size: 3, stuckLeaf: 1, root
  0     0 =>    1
  1     1 =>    2
  2     2 =>    3
@@ -1086,7 +1201,7 @@ Found     : 0
 Key       : 3
 FoundKey  : 0
 Data      : 4
-BtreeIndex: 0
+DtIndex: 0
 StuckIndex: 0
 Merge     : 0
 """);
@@ -1101,13 +1216,13 @@ Merge     : 0
     final int d = s.Data;
     P.processTrace = true;
 
-    s.stuckGetRoot();
+    s.stuckGetFromMemoryRoot();
     s.Pop();
 
     P.new Instruction()
      {void action()
        {ok(s.dump(), """
-Stuck: Stuck size: 3, leaf: 1, root
+Stuck: Stuck size: 3, stuckLeaf: 1, root
  0     0 =>    1
  1     1 =>    2
  2     2 =>    3
@@ -1116,7 +1231,7 @@ Found     : 0
 Key       : 3
 FoundKey  : 0
 Data      : 4
-BtreeIndex: 0
+DtIndex: 0
 StuckIndex: 0
 Merge     : 0
 """);
@@ -1127,7 +1242,7 @@ Merge     : 0
     P.new Instruction()
      {void action()
        {ok(s.dump(), """
-Stuck: Stuck size: 2, leaf: 1, root
+Stuck: Stuck size: 2, stuckLeaf: 1, root
  0     0 =>    1
  1     1 =>    2
  2     2 =>    3
@@ -1136,7 +1251,7 @@ Found     : 0
 Key       : 2
 FoundKey  : 0
 Data      : 3
-BtreeIndex: 0
+DtIndex: 0
 StuckIndex: 0
 Merge     : 0
 """);
@@ -1148,7 +1263,7 @@ Merge     : 0
     P.new Instruction()
      {void action()
        {ok(s.dump(), """
-Stuck: Stuck size: 1, leaf: 1, root
+Stuck: Stuck size: 1, stuckLeaf: 1, root
  0     0 =>    1
  1     1 =>    2
  2     2 =>    3
@@ -1157,7 +1272,7 @@ Found     : 0
 Key       : 1
 FoundKey  : 0
 Data      : 2
-BtreeIndex: 0
+DtIndex: 0
 StuckIndex: 0
 Merge     : 0
 """);
@@ -1169,7 +1284,7 @@ Merge     : 0
     P.new Instruction()
      {void action()
        {ok(s.dump(), """
-Stuck: Stuck size: 0, leaf: 1, root
+Stuck: Stuck size: 0, stuckLeaf: 1, root
  0     0 =>    1
  1     1 =>    2
  2     2 =>    3
@@ -1178,7 +1293,7 @@ Found     : 0
 Key       : 0
 FoundKey  : 0
 Data      : 1
-BtreeIndex: 0
+DtIndex: 0
 StuckIndex: 0
 Merge     : 0
 """);
@@ -1195,13 +1310,13 @@ Merge     : 0
     final int d = s.Data;
     P.processTrace = true;
 
-    s.stuckGetRoot();
+    s.stuckGetFromMemoryRoot();
     s.FirstElement();
 
     P.new Instruction()
      {void action()
        {ok(s.dump(), """
-Stuck: stuck size: 4, leaf: 1, root
+Stuck: stuck size: 4, stuckLeaf: 1, root
  0     0 =>    1
  1     1 =>    2
  2     2 =>    3
@@ -1214,7 +1329,7 @@ Found     : 0
 Key       : 0
 FoundKey  : 0
 Data      : 1
-BtreeIndex: 0
+DtIndex: 0
 StuckIndex: 0
 Merge     : 0
 """);
@@ -1239,7 +1354,7 @@ Merge     : 0
     P.new Instruction()
      {void action()
        {ok(s.dump(), """
-Stuck: stuck size: 3, leaf: 1, root
+Stuck: stuck size: 3, stuckLeaf: 1, root
  0     0 =>    1
  1     1 =>    2
  2     2 =>    3
@@ -1252,7 +1367,7 @@ Found     : 0
 Key       : 5
 FoundKey  : 0
 Data      : 55
-BtreeIndex: 0
+DtIndex: 0
 StuckIndex: 0
 Merge     : 0
 """);
@@ -1278,7 +1393,7 @@ Merge     : 0
     final int N = 4;
     for (int j = 0; j < N; j++)
      {final int J = j;
-      s.stuckGetRoot();
+      s.stuckGetFromMemoryRoot();
       i.RegisterSet(J);
       s.ElementAt(i);
       P.new Instruction()
@@ -1291,7 +1406,7 @@ Merge     : 0
     b.chipRun(1_000);
 
     ok(S, """
-Stuck: stuck size: 4, leaf: 1, root
+Stuck: stuck size: 4, stuckLeaf: 1, root
  0     0 =>    1
  1     1 =>    2
  2     2 =>    3
@@ -1304,10 +1419,10 @@ Found     : 0
 Key       : 0
 FoundKey  : 0
 Data      : 1
-BtreeIndex: 0
+DtIndex: 0
 StuckIndex: 0
 Merge     : 0
-Stuck: stuck size: 4, leaf: 1, root
+Stuck: stuck size: 4, stuckLeaf: 1, root
  0     0 =>    1
  1     1 =>    2
  2     2 =>    3
@@ -1320,10 +1435,10 @@ Found     : 0
 Key       : 1
 FoundKey  : 0
 Data      : 2
-BtreeIndex: 0
+DtIndex: 0
 StuckIndex: 0
 Merge     : 0
-Stuck: stuck size: 4, leaf: 1, root
+Stuck: stuck size: 4, stuckLeaf: 1, root
  0     0 =>    1
  1     1 =>    2
  2     2 =>    3
@@ -1336,10 +1451,10 @@ Found     : 0
 Key       : 2
 FoundKey  : 0
 Data      : 3
-BtreeIndex: 0
+DtIndex: 0
 StuckIndex: 0
 Merge     : 0
-Stuck: stuck size: 4, leaf: 1, root
+Stuck: stuck size: 4, stuckLeaf: 1, root
  0     0 =>    1
  1     1 =>    2
  2     2 =>    3
@@ -1352,7 +1467,7 @@ Found     : 0
 Key       : 3
 FoundKey  : 0
 Data      : 4
-BtreeIndex: 0
+DtIndex: 0
 StuckIndex: 0
 Merge     : 0
 """);
@@ -1368,7 +1483,7 @@ Merge     : 0
     final int i = b.stuckIndex(P, "i");
     P.processTrace = true;
 
-    s.stuckGetRoot();
+    s.stuckGetFromMemoryRoot();
     final int N = 4;
     for (int j = 0; j <= N; j++)
      {final int J = j;
@@ -1380,7 +1495,7 @@ Merge     : 0
 
     b.chipRun(1_000);
     ok(s, """
-Stuck: stuck size: 5, leaf: 1, root
+Stuck: stuck size: 5, stuckLeaf: 1, root
  0     1 =>    2
  1     2 =>    4
  2     3 =>    6
@@ -1398,7 +1513,7 @@ Stuck: stuck size: 5, leaf: 1, root
     final int d = P.register("d", b.bitsPerData);
     P.processTrace = true;
 
-    s.stuckGetRoot();
+    s.stuckGetFromMemoryRoot();
     k.RegisterSet(5);
     d.RegisterSet(55);
     s.SetPastLastElement(k, d);
@@ -1407,7 +1522,7 @@ Stuck: stuck size: 5, leaf: 1, root
      {void action()
        {//stop(s.dump());
         ok(""+s.dump(), """
-Stuck: stuck size: 4, leaf: 1, root
+Stuck: stuck size: 4, stuckLeaf: 1, root
  0     0 =>    1
  1     1 =>    2
  2     2 =>    3
@@ -1420,7 +1535,7 @@ Found     : 0
 Key       : 0
 FoundKey  : 0
 Data      : 0
-BtreeIndex: 0
+DtIndex: 0
 StuckIndex: 0
 Merge     : 0
 """);
@@ -1435,7 +1550,7 @@ Merge     : 0
     b.chipRun(100);
     //stop(s.dump());
     ok(""+s.dump(), """
-Stuck: stuck size: 4, leaf: 1, root
+Stuck: stuck size: 4, stuckLeaf: 1, root
  0     0 =>    1
  1     1 =>    2
  2     2 =>    3
@@ -1448,7 +1563,7 @@ Found     : 0
 Key       : 0
 FoundKey  : 0
 Data      : 0
-BtreeIndex: 0
+DtIndex: 0
 StuckIndex: 0
 Merge     : 0
 """);
@@ -1464,7 +1579,7 @@ Merge     : 0
     final int i = b.stuckIndex(P, "i");
     P.processTrace = true;
 
-    s.stuckGetRoot();
+    s.stuckGetFromMemoryRoot();
     i.RegisterSet(1);
     k.RegisterSet(5);
     d.RegisterSet(55);
@@ -1474,7 +1589,7 @@ Merge     : 0
     b.chipRun(100);
     //stop(s);
     ok(s, """
-Stuck: stuck size: 5, leaf: 1, root
+Stuck: stuck size: 5, stuckLeaf: 1, root
  0     0 =>    1
  1     5 =>   55
  2     1 =>    2
@@ -1493,14 +1608,14 @@ Stuck: stuck size: 5, leaf: 1, root
     final int i = b.stuckIndex(P, "i");
     P.processTrace = true;
 
-    s.stuckGetRoot();
+    s.stuckGetFromMemoryRoot();
     i.RegisterSet(1);
     s.RemoveElementAt(i);
 
     b.chipRun(100);
     //stop(s);
     ok(s, """
-Stuck: stuck size: 3, leaf: 1, root
+Stuck: stuck size: 3, stuckLeaf: 1, root
  0     0 =>    1
  1     2 =>    3
  2     3 =>    4
@@ -1520,7 +1635,7 @@ Stuck: stuck size: 3, leaf: 1, root
     final int f = s.Found;
     P.processTrace = true;
 
-    s.stuckGetRoot();
+    s.stuckGetFromMemoryRoot();
 
     k.RegisterSet(11);
 
@@ -1570,7 +1685,7 @@ Stuck: stuck size: 3, leaf: 1, root
     b.chipRun(1_000);
     //stop(s.dump());
     ok(s.dump(), """
-Stuck: stuck size: 2, leaf: 0, root
+Stuck: stuck size: 2, stuckLeaf: 0, root
  0     2 =>   22
  1     4 =>   44
  2     0 =>    0
@@ -1579,7 +1694,7 @@ Found     : 1
 Key       : 4
 FoundKey  : 0
 Data      : 44
-BtreeIndex: 0
+DtIndex: 0
 StuckIndex: 1
 Merge     : 0
 """);
@@ -1605,18 +1720,18 @@ Merge     : 0
       s.Push(k, d);
      }
     s.isLeaf.One();
-    s.stuckPutRoot(true);
+    s.stuckPutIntoMemoryRoot(true);
 
     b.chipRun(300);
     ok(s, """
-Stuck: stuck size: 4, leaf: 1, root
+Stuck: stuck size: 4, stuckLeaf: 1, root
  0     0 =>    1
  1    10 =>   11
  2    20 =>   21
  3    30 =>   31
 """);
 
-    s.stuckGetRoot();
+    s.stuckGetFromMemoryRoot();
     k.RegisterSet(11);
     s.search_le_parallel(k);
 
@@ -1624,7 +1739,7 @@ Stuck: stuck size: 4, leaf: 1, root
      {void action()
        {//stop(s.dump());
         ok(s.dump(), """
-Stuck: stuck size: 4, leaf: 1, root
+Stuck: stuck size: 4, stuckLeaf: 1, root
  0     0 =>    1
  1    10 =>   11
  2    20 =>   21
@@ -1637,7 +1752,7 @@ Found     : 1
 Key       : 11
 FoundKey  : 20
 Data      : 21
-BtreeIndex: 0
+DtIndex: 0
 StuckIndex: 2
 Merge     : 0
 """);
@@ -1652,7 +1767,7 @@ Merge     : 0
 
     //stop(s.dump());
     ok(s.dump(), """
-Stuck: stuck size: 3, leaf: 1, root
+Stuck: stuck size: 3, stuckLeaf: 1, root
  0     0 =>    1
  1    10 =>   11
  2    20 =>   21
@@ -1665,7 +1780,7 @@ Found     : 0
 Key       : 30
 FoundKey  : 20
 Data      : 31
-BtreeIndex: 0
+DtIndex: 0
 StuckIndex: 3
 Merge     : 0
 """);
@@ -1681,17 +1796,17 @@ Merge     : 0
     final Stuck            l = b.new Stuck(P, "left");
     final Stuck            r = b.new Stuck(P, "right");
 
-    s.stuckGetRoot();
+    s.stuckGetFromMemoryRoot();
     L.RegisterSet(1);
     R.RegisterSet(2);
-    l.stuckGet(L);
-    r.stuckGet(R);
+    l.stuckGetFromMemory(L);
+    r.stuckGetFromMemory(R);
     s.splitIntoTwo(l, r);
 
     b.chipRun(1_000);
     //stop(s);
     ok(s, """
-Stuck: stuck size: 4, leaf: 1, root
+Stuck: stuck size: 4, stuckLeaf: 1, root
  0     0 =>    1
  1     1 =>    2
  2     2 =>    3
@@ -1699,13 +1814,13 @@ Stuck: stuck size: 4, leaf: 1, root
 """);
     //stop(l);
     ok(l, """
-Stuck: left size: 2, leaf: 1, index: 1
+Stuck: left size: 2, stuckLeaf: 1, index: 1
  0     0 =>    1
  1     1 =>    2
 """);
     //stop(r);
     ok(r, """
-Stuck: right size: 2, leaf: 1, index: 2
+Stuck: right size: 2, stuckLeaf: 1, index: 2
  0     2 =>    3
  1     3 =>    4
 """);
@@ -1722,20 +1837,20 @@ Stuck: right size: 2, leaf: 1, index: 2
     final Stuck            r = b.new Stuck(P, "right");
     P.processTrace = true;
 
-    s.stuckGetRoot();
+    s.stuckGetFromMemoryRoot();
     L.RegisterSet(1);
     R.RegisterSet(2);
-    l.stuckGet(L);
-    r.stuckGet(R);
+    l.stuckGetFromMemory(L);
+    r.stuckGetFromMemory(R);
 
     s.size.Dec();
 
-    s.splitIntoThree(l, r, 1);
+    s.dtSplitIntoThree(l, r, 1);
 
     b.chipRun(1_000);
     //stop(s.dump());
     ok(s.dump(), """
-Stuck: stuck size: 3, leaf: 1, root
+Stuck: stuck size: 3, stuckLeaf: 1, root
  0     0 =>    1
  1     1 =>    2
  2     2 =>    3
@@ -1744,13 +1859,13 @@ Found     : 0
 Key       : 0
 FoundKey  : 0
 Data      : 0
-BtreeIndex: 0
+DtIndex: 0
 StuckIndex: 0
 Merge     : 0
 """);
     //stop(l.dump());
     ok(l.dump(), """
-Stuck: left size: 1, leaf: 1, index: 1
+Stuck: left size: 1, stuckLeaf: 1, index: 1
  0     0 =>    1
  1     1 =>    2
  2     2 =>    3
@@ -1759,13 +1874,13 @@ Found     : 0
 Key       : 0
 FoundKey  : 0
 Data      : 0
-BtreeIndex: 0
+DtIndex: 0
 StuckIndex: 0
 Merge     : 0
 """);
     //stop(r.dump());
     ok(r.dump(), """
-Stuck: right size: 1, leaf: 1, index: 2
+Stuck: right size: 1, stuckLeaf: 1, index: 2
  0     2 =>    3
  1     1 =>    4
  2     2 =>    3
@@ -1774,7 +1889,7 @@ Found     : 0
 Key       : 0
 FoundKey  : 0
 Data      : 0
-BtreeIndex: 0
+DtIndex: 0
 StuckIndex: 0
 Merge     : 0
 """);
@@ -1793,7 +1908,7 @@ Merge     : 0
     final int d = P.register("d", b.bitsPerData);
     P.processTrace = true;
 
-    s.stuckGetRoot();
+    s.stuckGetFromMemoryRoot();
     s.size.Zero();
 
     for (int i = 0; i < b.maxStuckSize; i++)
@@ -1805,21 +1920,21 @@ Merge     : 0
     L.RegisterSet(1);
     R.RegisterSet(2);
 
-    l.stuckGet(L);
-    r.stuckGet(R);
+    l.stuckGetFromMemory(L);
+    r.stuckGetFromMemory(R);
 
-    s.splitLow(l);
+    s.dtSplitLow(l);
 
     b.chipRun(1_000);
     //stop(s);
     ok(s, """
-Stuck: stuck size: 2, leaf: 1, root
+Stuck: stuck size: 2, stuckLeaf: 1, root
  0     2 =>    3
  1     3 =>    4
 """);
     //stop(l);
     ok(l, """
-Stuck: left size: 2, leaf: 1, index: 1
+Stuck: left size: 2, stuckLeaf: 1, index: 1
  0     0 =>    1
  1     1 =>    2
 """);
@@ -1838,7 +1953,7 @@ Stuck: left size: 2, leaf: 1, index: 1
     final int d = P.register("d", b.bitsPerData);
     P.processTrace = true;
 
-    s.stuckGetRoot();
+    s.stuckGetFromMemoryRoot();
     s.size.Zero();
 
     for (int i = 0; i < b.maxStuckSize; i++)
@@ -1848,15 +1963,15 @@ Stuck: left size: 2, leaf: 1, index: 1
 
     L.RegisterSet(1); R.RegisterSet(2); s.Pop();
 
-    l.stuckGet(L);
-    r.stuckGet(R);
+    l.stuckGetFromMemory(L);
+    r.stuckGetFromMemory(R);
 
-    s.splitLowButOne(l, k);
+    s.dtSplitLowButOne(l, k);
 
     b.chipRun(1_000);
     //stop(s.dump());
     ok(s.dump(), """
-Stuck: stuck size: 1, leaf: 1, root
+Stuck: stuck size: 1, stuckLeaf: 1, root
  0     2 =>    3
  1     3 =>    4
  2     2 =>    3
@@ -1865,14 +1980,14 @@ Found     : 0
 Key       : 3
 FoundKey  : 0
 Data      : 4
-BtreeIndex: 0
+DtIndex: 0
 StuckIndex: 0
 Merge     : 0
 """);
 
     //stop(l.dump());
     ok(l.dump(), """
-Stuck: left size: 1, leaf: 1, index: 1
+Stuck: left size: 1, stuckLeaf: 1, index: 1
  0     0 =>    1
  1     1 =>    2
  2     2 =>    3
@@ -1881,7 +1996,7 @@ Found     : 0
 Key       : 0
 FoundKey  : 0
 Data      : 0
-BtreeIndex: 0
+DtIndex: 0
 StuckIndex: 0
 Merge     : 0
 """);
@@ -1897,17 +2012,17 @@ Merge     : 0
     final int O = P.new Register("One",  8);
     final int o = P.register("o", 8);
 
-    s.stuckGetRoot();
+    s.stuckGetFromMemoryRoot();
 
     O.RegisterSet(1);
-    S.stuckGet(O);
+    S.stuckGetFromMemory(O);
 
-    s.merge(S);
+    s.dtMerge(S);
 
     b.chipRun(1_000);
     //stop(s);
     ok(s, """
-Stuck: stuck size: 8, leaf: 1, root
+Stuck: stuck size: 8, stuckLeaf: 1, root
  0     0 =>    1
  1     1 =>    2
  2     2 =>    3
@@ -1930,20 +2045,20 @@ Stuck: stuck size: 8, leaf: 1, root
     final int R = P.register("r", 8);
     P.processTrace = true;
 
-    s.stuckGetRoot();
+    s.stuckGetFromMemoryRoot();
 
     L.RegisterSet(1);
     R.RegisterSet(2);
-    s.stuckGetRoot();
-    l.stuckGet(L);
-    r.stuckGet(R);
+    s.stuckGetFromMemoryRoot();
+    l.stuckGetFromMemory(L);
+    r.stuckGetFromMemory(R);
 
-    s.merge(l, r);
+    s.dtMerge(l, r);
 
     b.chipRun(1_000);
     //stop(s);
     ok(s, """
-Stuck: stuck size: 8, leaf: 1, root
+Stuck: stuck size: 8, stuckLeaf: 1, root
  0     0 =>    1
  1     1 =>    2
  2     2 =>    3
@@ -1965,20 +2080,20 @@ Stuck: stuck size: 8, leaf: 1, root
     final int o = P.register("o", 8);
     P.processTrace = true;
 
-    s.stuckGetRoot();
+    s.stuckGetFromMemoryRoot();
     o.RegisterSet(1);
-    S.stuckGet(o);
+    S.stuckGetFromMemory(o);
 
     k.RegisterSet(11);
     s.size.Dec();
     S.size.Dec();
 
-    s.mergeButOne(k, S);
+    s.dtMergeButOne(k, S);
 
     b.chipRun(1_000);
     //stop(s.dump());
     ok(s.dump(), """
-Stuck: stuck size: 7, leaf: 1, root
+Stuck: stuck size: 7, stuckLeaf: 1, root
  0     0 =>    1
  1     1 =>    2
  2     2 =>    3
@@ -1991,7 +2106,7 @@ Found     : 0
 Key       : 3
 FoundKey  : 0
 Data      : 4
-BtreeIndex: 0
+DtIndex: 0
 StuckIndex: 0
 Merge     : 1
 """);
@@ -2010,21 +2125,21 @@ Merge     : 1
 
     L.RegisterSet(1);
     R.RegisterSet(2);
-    s.stuckGetRoot();
-    l.stuckGet(L);
-    r.stuckGet(R);
+    s.stuckGetFromMemoryRoot();
+    l.stuckGetFromMemory(L);
+    r.stuckGetFromMemory(R);
 
     s.Clear();
     l.size.Dec();
     r.size.Dec();
     k.RegisterSet(11);
 
-    s.mergeButOne(l, k, r);
+    s.dtMergeButOne(l, k, r);
 
     b.chipRun(1_000);
     //stop(s.dump());
     ok(s.dump(), """
-Stuck: stuck size: 7, leaf: 1, root
+Stuck: stuck size: 7, stuckLeaf: 1, root
  0     0 =>    1
  1     1 =>    2
  2     2 =>    3
@@ -2037,7 +2152,7 @@ Found     : 0
 Key       : 0
 FoundKey  : 0
 Data      : 0
-BtreeIndex: 0
+DtIndex: 0
 StuckIndex: 0
 Merge     : 1
 """);
@@ -2047,8 +2162,8 @@ Merge     : 1
    {sayCurrentTestName();
     final Dt            b = new Dt(4, 4, 8, 8);
     final Process          p = b.P; // b.process("alloc");
-    final int i = b.btreeIndex(p, "index1");
-    final int j = b.btreeIndex(p, "index2");
+    final int i = b.dtIndex(p, "index1");
+    final int j = b.dtIndex(p, "index2");
     p.processTrace = true;
 
      p.new Instruction()
@@ -2082,8 +2197,8 @@ Chip: Dt            step: 16, maxSteps: 1000, running: 1
        }
      };
 
-    b.allocate(i, true);
-    b.allocate(j, false);
+    b.dtAllocate(i, true);
+    b.dtAllocate(j, false);
 
     p.new Instruction()
      {void action()
@@ -2158,7 +2273,7 @@ Chip: Dt            step: 89, maxSteps: 1000, running: 0
     final Process          P = b.P; //b.new Process("findAndInsert");
     final int k = P.register("k", b.bitsPerKey);
     final int d = P.register("d", b.bitsPerData);
-    final int i = b.btreeIndex(P, "i");
+    final int i = b.dtIndex(P, "i");
     final int j = b.stuckIndex(P, "j");
 
 
@@ -2170,7 +2285,7 @@ Chip: Dt            step: 89, maxSteps: 1000, running: 0
     k.RegisterSet(4); d.RegisterSet(5); f.findAndInsert(k, d);
     k.RegisterSet(3); d.RegisterSet(4); f.findAndInsert(k, d);
 
-    b.splitRootLeaf();
+    b.dtSplitRootLeaf();
     P.new Instruction()
      {void action()
        {//stop(b.btreePrint());
@@ -2184,7 +2299,7 @@ Chip: Dt            step: 89, maxSteps: 1000, running: 0
        }
      };
 
-    int r = b.mergeLeavesIntoRoot();
+    int r = b.dtMergeLeavesIntoRoot();
     b.chipRun(2_000);
     //stop(b.chipPrintMemory());
     //stop(b.btreePrint());
@@ -2201,7 +2316,7 @@ Chip: Dt            step: 89, maxSteps: 1000, running: 0
     final Stuck            s = b.new Stuck(P, "findAndInsert");
     final int k = P.register("k", b.bitsPerKey);
     final int d = P.register("d", b.bitsPerData);
-    final int i = b.btreeIndex(P, "i");
+    final int i = b.dtIndex(P, "i");
     final int j = b.stuckIndex(P, "j");
     P.processTrace = true;
 
@@ -2212,17 +2327,17 @@ Chip: Dt            step: 89, maxSteps: 1000, running: 0
     k.RegisterSet(40); d.RegisterSet(50); f.findAndInsert(k, d);
     k.RegisterSet(30); d.RegisterSet(40); f.findAndInsert(k, d);
 
-    b.splitRootLeaf();
+    b.dtSplitRootLeaf();
 
     k.RegisterSet(50); d.RegisterSet(60); f.findAndInsert(k, d);
     k.RegisterSet(60); d.RegisterSet(70); f.findAndInsert(k, d);
 
     i.RegisterSet(0);
-    b.splitLeafAtTop(i);
+    b.dtSplitLeafAtTop(i);
 
     i.RegisterSet(0); j.RegisterSet(0);
-    s.stuckGet(i);
-    final int r = b.mergeLeavesNotTop(s, i, j);
+    s.stuckGetFromMemory(i);
+    final int r = b.dtMergeLeavesNotTop(s, i, j);
     b.chipRun(2_000);
     //stop(b.btreePrint());
     ok(b.btreePrint(), """
@@ -2240,15 +2355,15 @@ Chip: Dt            step: 89, maxSteps: 1000, running: 0
     final Dt            b = new Dt(32, 4, 8, 8);
     final Process          P = b.P; //b.new Process("findAndInsert");
     final Stuck            p = b.new Stuck(P, "findAndInsert");
-    final int i = b.btreeIndex(P, "i");
+    final int i = b.dtIndex(P, "i");
     P.processTrace = true;
 
-    b.btreeLoad(test_put_save_9());
+    b.dtLoad(test_put_save_9());
 
     i.RegisterSet(2);
-    p.stuckGet(i);
+    p.stuckGetFromMemory(i);
     p.Pop();
-    p.stuckPut();
+    p.stuckPutIntoMemory();
     b.chipRun(10_000);
 
     P.new Instruction()
@@ -2265,8 +2380,8 @@ Chip: Dt            step: 89, maxSteps: 1000, running: 0
      };
 
     i.RegisterSet(0);
-    p.stuckGet(i);
-    final int r = b.mergeLeavesAtTop(p, i);
+    p.stuckGetFromMemory(i);
+    final int r = b.dtMergeLeavesAtTop(p, i);
     b.chipRun();
     //stop(b.btreePrint());
     ok(b.btreePrint(), """
@@ -2308,7 +2423,7 @@ Chip: Dt            step: 89, maxSteps: 1000, running: 0
     final Process          P = b.P; //b.new Process("findAndInsert");
     final int k = P.register("k", b.bitsPerKey);
     final int d = P.register("d", b.bitsPerData);
-    final int i = b.btreeIndex(P, "i");
+    final int i = b.dtIndex(P, "i");
     final int j = b.stuckIndex(P, "j");
     P.processTrace = true;
 
@@ -2319,19 +2434,19 @@ Chip: Dt            step: 89, maxSteps: 1000, running: 0
     k.RegisterSet(40); d.RegisterSet(50); f.findAndInsert(k, d);
     k.RegisterSet(30); d.RegisterSet(40); f.findAndInsert(k, d);
 
-    b.splitRootLeaf();
+    b.dtSplitRootLeaf();
 
     k.RegisterSet(50); d.RegisterSet(60); f.findAndInsert(k, d);
     k.RegisterSet(60); d.RegisterSet(70); f.findAndInsert(k, d);
     i.RegisterSet(0);
-    b.splitLeafAtTop(i);
+    b.dtSplitLeafAtTop(i);
 
     k.RegisterSet(70); d.RegisterSet(80); f.findAndInsert(k, d);
     k.RegisterSet(80); d.RegisterSet(90); f.findAndInsert(k, d);
 
-    b.splitLeafAtTop(i);
+    b.dtSplitLeafAtTop(i);
 
-    b.splitRootBranch(P);
+    b.dtSplitRootBranch(P);
     P.new Instruction()
      {void action()
        {//stop(b.btreePrint());
@@ -2349,7 +2464,7 @@ Chip: Dt            step: 89, maxSteps: 1000, running: 0
        }
      };
 
-    final int r = b.mergeBranchesIntoRoot(P);
+    final int r = b.dtMergeBranchesIntoRoot(P);
     b.chipRun(2_000);
     //stop(b.btreePrint());
     ok(b.btreePrint(), """
@@ -2367,12 +2482,12 @@ Chip: Dt            step: 89, maxSteps: 1000, running: 0
     final Dt            b = test_put_reload();
     final Process          P = b.P; //b.new Process("findAndInsert");
     final Stuck            s = b.new Stuck(P, "findAndInsert");
-    final int i = b.btreeIndex(P, "i");
+    final int i = b.dtIndex(P, "i");
     final int j = b.stuckIndex(P, "j");
     P.processTrace = true;
 
     i.RegisterSet(0); j.RegisterSet(0);
-    b.splitBranchNotTop(i, j);
+    b.dtSplitBranchNotTop(i, j);
 
     P.new Instruction()
      {void action()
@@ -2392,8 +2507,8 @@ Chip: Dt            step: 89, maxSteps: 1000, running: 0
      };
 
     i.RegisterSet(0); j.RegisterSet(0);
-    s.stuckGet(i);
-    b.mergeBranchesNotTop(s, i, j);
+    s.stuckGetFromMemory(i);
+    b.dtMergeBranchesNotTop(s, i, j);
     b.chipRun(10_000);
     //stop(b.btreePrint());
     ok(b.btreePrint(), """
@@ -2414,12 +2529,12 @@ Chip: Dt            step: 89, maxSteps: 1000, running: 0
     final Dt            b = test_put_reload();
     final Process          P = b.P; //b.new Process("findAndInsert");
     final Stuck            s = b.new Stuck(P, "stuck");
-    final int i = b.btreeIndex(P, "i");
+    final int i = b.dtIndex(P, "i");
     final int j = P.register("j", b.stuckAddressSize);
     P.processTrace = true;
 
     i.RegisterSet(0);
-    b.splitBranchAtTop(i);
+    b.dtSplitBranchAtTop(i);
     b.chipRun(10_000);
 
     P.new Instruction()
@@ -2440,8 +2555,8 @@ Chip: Dt            step: 89, maxSteps: 1000, running: 0
      };
 
     i.RegisterSet(0);
-    s.stuckGet(i);
-    b.mergeBranchesAtTop(s, i);
+    s.stuckGetFromMemory(i);
+    b.dtMergeBranchesAtTop(s, i);
     b.chipRun(10_000);
     //stop(b.btreePrint());
     ok(b.btreePrint(), """
@@ -2498,7 +2613,7 @@ Chip: Dt            step: 89, maxSteps: 1000, running: 0
 
     //stop(f.dump());
     ok(f.dump(), """
-Stuck: stuck size: 3, leaf: 1, index: 1
+Stuck: stuck size: 3, stuckLeaf: 1, index: 1
  0     1 =>   11
  1     3 =>   33
  2     5 =>   55
@@ -2507,7 +2622,7 @@ Found     : 1
 Key       : 3
 FoundKey  : 10
 Data      : 33
-BtreeIndex: 1
+DtIndex: 1
 StuckIndex: 1
 Merge     : 0
 """);
@@ -2519,7 +2634,7 @@ Merge     : 0
     final Process          P = b.P; //b.new Process("findAndInsert");
     final int k = P.register("k", b.bitsPerKey);
     final int d = P.register("d", b.bitsPerData);
-    final int i = b.btreeIndex(P, "i");
+    final int i = b.dtIndex(P, "i");
     final int j = P.register("j", b.stuckAddressSize);
 
     final FindAndInsert f = b.new FindAndInsert(P);
@@ -2530,49 +2645,49 @@ Merge     : 0
     k.RegisterSet(40); d.RegisterSet(50); f.findAndInsert(k, d);
     k.RegisterSet(30); d.RegisterSet(40); f.findAndInsert(k, d);
 
-    b.splitRootLeaf();
+    b.dtSplitRootLeaf();
     k.RegisterSet(50); d.RegisterSet(60); f.findAndInsert(k, d);
     k.RegisterSet(60); d.RegisterSet(70); f.findAndInsert(k, d);
 
     i.RegisterSet(0);
-    b.splitLeafAtTop(i);
+    b.dtSplitLeafAtTop(i);
 
     k.RegisterSet(70); d.RegisterSet(80); f.findAndInsert(k, d);
     k.RegisterSet(80); d.RegisterSet(90); f.findAndInsert(k, d);
 
     i.RegisterSet(0);
-    b.splitLeafAtTop(i);
-    b.splitRootBranch(P);
+    b.dtSplitLeafAtTop(i);
+    b.dtSplitRootBranch(P);
 
     k.RegisterSet(62); d.RegisterSet(63); f.findAndInsert(k, d);
     k.RegisterSet(64); d.RegisterSet(65); f.findAndInsert(k, d);
 
     i.RegisterSet(6); j.RegisterSet(0);
-    b.splitLeafNotTop(i, j);
+    b.dtSplitLeafNotTop(i, j);
 
     k.RegisterSet( 90); d.RegisterSet(100); f.findAndInsert(k, d);
     k.RegisterSet(100); d.RegisterSet(110); f.findAndInsert(k, d);
 
     i.RegisterSet(6);
-    b.splitLeafAtTop(i);
+    b.dtSplitLeafAtTop(i);
 
     i.RegisterSet(0);
-    b.splitBranchAtTop(i);
+    b.dtSplitBranchAtTop(i);
 
     k.RegisterSet(21); d.RegisterSet(22); f.findAndInsert(k, d);
     k.RegisterSet(22); d.RegisterSet(23); f.findAndInsert(k, d);
 
     i.RegisterSet(5);  j.RegisterSet(0);
-    b.splitLeafNotTop(i, j);
+    b.dtSplitLeafNotTop(i, j);
 
     k.RegisterSet(12); d.RegisterSet(13); f.findAndInsert(k, d);
     k.RegisterSet(14); d.RegisterSet(15); f.findAndInsert(k, d);
 
     i.RegisterSet(5);  j.RegisterSet(0);
-    b.splitLeafNotTop(i, j);
+    b.dtSplitLeafNotTop(i, j);
 
     i.RegisterSet(0); j.RegisterSet(0);
-    b.splitBranchNotTop(i, j);
+    b.dtSplitBranchNotTop(i, j);
     b.chipRun(2_000);
     //stop(b.btreePrint());
     ok(b.btreePrint(), """
@@ -2588,25 +2703,25 @@ Merge     : 0
 """);
    }
 
-  static void test_splitRootLeaf()
+  static void test_dtSplitRootLeaf()
    {sayCurrentTestName();
     final Dt            b = new Dt(4, 4, 8, 8);
-    final Process          P = b.P; //b.new Process("splitRootLeaf");
+    final Process          P = b.P; //b.new Process("dtSplitRootLeaf");
     final Stuck            s = b.new Stuck(P, "stuck");
     final int k = P.register("k", b.bitsPerKey);
     final int d = P.register("d", b.bitsPerData);
-    final int i = b.btreeIndex(P, "i");
+    final int i = b.dtIndex(P, "i");
     final int j = b.stuckIndex(P, "j");
     P.processTrace = true;
 
-    s.stuckGetRoot();
+    s.stuckGetFromMemoryRoot();
     k.RegisterSet(10); d.RegisterSet(20); s.Push(k, d);
     k.RegisterSet(20); d.RegisterSet(30); s.Push(k, d);
     k.RegisterSet(30); d.RegisterSet(40); s.Push(k, d);
     k.RegisterSet(40); d.RegisterSet(50); s.Push(k, d);
-    s.stuckPut();
+    s.stuckPutIntoMemory();
 
-    b.splitRootLeaf();
+    b.dtSplitRootLeaf();
     b.chipRun(2_000);
     //stop(b.chipPrintMemory());
     //stop(b.btreePrint());
@@ -2631,7 +2746,7 @@ Merge     : 0
 
     P.processTrace = true;
 
-    b.btreeLoad(test_put_save_32());
+    b.dtLoad(test_put_save_32());
 
     k.RegisterSet(0);
 
@@ -2885,7 +3000,7 @@ Merge     : 0
     final Dt            b = test_put_reload();
     final Process          P = b.P; //b.new Process("delete");
     final Stuck            s = b.new Stuck(P, "stuck");
-    final int i = b.btreeIndex(P, "i");
+    final int i = b.dtIndex(P, "i");
     final int k = P.register("k", b.bitsPerKey);
     final int l = P.register("l", 1);
     final StringBuilder    t = new StringBuilder();
@@ -3140,7 +3255,7 @@ Merge     : 0
     final Dt            b = test_put_reload();
     final Process          P = b.P; //b.new Process("delete");
     final Stuck            s = b.new Stuck(P, "stuck");
-    final int i = b.btreeIndex(P, "i");
+    final int i = b.dtIndex(P, "i");
     final int k = P.register("k", b.bitsPerKey);
     final int l = P.register("l", 1);
     final StringBuilder    t = new StringBuilder();
@@ -3412,7 +3527,7 @@ Merge     : 0
     final Dt            b = test_put_reload();
     final Process          P = b.P; //b.new Process("delete");
     final Stuck            s = b.new Stuck(P, "stuck");
-    final int i = b.btreeIndex(P, "i");
+    final int i = b.dtIndex(P, "i");
     final int k = P.register("k", b.bitsPerKey);
     final int l = P.register("l", 1);
     final StringBuilder    t = new StringBuilder();
@@ -3694,7 +3809,7 @@ Merge     : 0
     final int k = s.Key;
     final int d = s.Data;
     P.processTrace = true;
-    s.stuckGetRoot();
+    s.stuckGetFromMemoryRoot();
     s.Pop();
 
     b.chipRun(1_000);
@@ -3709,7 +3824,7 @@ Merge     : 0
     final int i = P.register("i", 8);
     final int l = P.register("l", 1);
     P.processTrace  = true;
-    b.suppressMerge = true;                                                     // Suppress merges as they have not been developed yet
+    b.suppressMerge = true;                                                     // Suppress dtMerges as they have not been developed yet
 
     final int N = 32;
     k.RegisterSet(0);
@@ -3763,7 +3878,7 @@ Merge     : 0
         if (createTestTrees)
          {P.new Instruction()
            {void action()
-             {say("  static String test_put_save_"+k.registerGet()+"()\n   {return \"\"\"", b.btreeSave() + "\"\"\";\n   }\n");
+             {say("  static String test_put_save_"+k.registerGet()+"()\n   {return \"\"\"", b.dtSave() + "\"\"\";\n   }\n");
              }
            };
          }
@@ -4003,7 +4118,7 @@ Merge     : 0
 
   static Dt test_put_reload()
    {final Dt b = new Dt(32, 4, 8, 8);
-   b.btreeLoad(test_put_save_32());
+   b.dtLoad(test_put_save_32());
     return b;
    }
 
@@ -4549,7 +4664,7 @@ Merge     : 0
     final int d = P.register("d", b.bitsPerData);
     final int l = P.register("l", 1);
     P.processTrace = true;
-    b.suppressMerge = true;                                                     // Suppress merges as they have not been developed yet
+    b.suppressMerge = true;                                                     // Suppress dtMerges as they have not been developed yet
 
     final int N = 32;
     k.RegisterSet(N);
@@ -4586,12 +4701,12 @@ Merge     : 0
    {sayCurrentTestName();
     final Btree            b = new Btree(32, 4, 8, 8);
     final Process          P = b.P; //b.new Process("putReverse");
-    final int i = b.btreeIndex(P, "i");
+    final int i = b.dtIndex(P, "i");
     final int k = P.register("k", b.bitsPerKey);
     final int d = P.register("d", b.bitsPerData);
     final int l = P.register("l", 1);
     P.processTrace  = true;
-    b.suppressMerge = true;                                                     // Suppress merges as they have not been developed yet
+    b.suppressMerge = true;                                                     // Suppress dtMerges as they have not been developed yet
 
     i.RegisterSet(random_32.length);
 
@@ -4732,7 +4847,7 @@ Merge     : 0
     test_mergeButOne();
     test_mergeButOne2();
     test_allocate();
-    test_splitRootLeaf();
+    test_dtSplitRootLeaf();
     test_mergeLeavesIntoRoot();
     test_mergeLeavesNotTop();
     test_mergeLeavesAtTop();
@@ -4757,7 +4872,9 @@ Merge     : 0
 */
   static void newTests()                                                        // Tests being worked on
    {//oldTests();
-    test_merge();
+    //test_merge();
+    //test_mergeLeavesIntoRoot();
+    test_mergeLeavesNotTop();
    }
 
   public static void main(String[] args)                                        // Test if called as a program
