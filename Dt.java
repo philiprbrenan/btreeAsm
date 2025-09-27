@@ -605,10 +605,10 @@ class Dt extends Chip                                                           
     final Stuck l = dtStuckGet(il);                                             // Load left  branch from btree
     final Stuck r = dtStuckGet(ir);                                             // Load right branch from btree
 
-    if (l.stuckIsLeaf() || r.stuckIsLeaf()) return false;
+    if (l.stuckIsLeaf() || r.stuckIsLeaf()) return false;                       // Both children must be branches
     final int mk = p.stuckGetData(Left);                                        // Key associated with left child branch
 
-    l.stuckMergeButOne(Left, r);                                                  // Merge branches into left child
+    l.stuckMergeButOne(Left, r);                                                // Merge branches into left child
 
     if (l.stuckMergeSuccess)                                                    // Modify the parent only if the merge succeeded
      {p.stuckRemoveKey(Left);                                                   // Remove the left child
@@ -622,9 +622,30 @@ class Dt extends Chip                                                           
     return false;
    }
 
-  private boolean dtMergeBranchesAtTop                                              // Merge the top most two child branches of a branch that is not the root
-   (Stuck Parent, int ParentIndex)
-   {
+  private boolean dtMergeBranchesAtTop(Stuck Parent)                            // Merge the top most two child branches of a branch that is not the root
+   {final Stuck   p = Parent;                                                   // Parent stuck
+
+    final int sz = p.stuckSize();                                               // Index of left branch known to be valid as the parent contains at least one entry resulting in two children
+    if (dtSkipMerge(p, sz-1)) return false;
+
+    final int il = p.stuckGetData(p.stuckLastKey());                                        // Get the btree index of the left branch branch
+    final int ir = p.stuckTop();                                                // Get the btree index of the right branch branch
+
+    final Stuck l = dtStuckGet(il);                                             // Load left  branch from btree
+    final Stuck r = dtStuckGet(ir);                                             // Load right branch from btree
+
+    if (l.stuckIsLeaf() || r.stuckIsLeaf()) return false;                       // Both children must be branches
+
+    p.stuckPop();
+    l.stuckMergeButOne(p.stuckKey, r);                                          // Merge leaves into left child
+    if (l.stuckMergeSuccess)                                                    // Modify the parent only if the merge succeeded
+     {p.stuckSetTop(il);                                                        // Make newly combined left branch top most
+      l.stuckPutIntoMemory();                                                   // Save the modified left child back into the tree
+      p.stuckPutIntoMemory();                                                   // Save the modified root back into the tree
+      dtFree(r);                                                                // Free right branch as it is no longer in use
+      return true;
+     }
+
     return false;
    }
 
@@ -960,27 +981,31 @@ Merge     : 1
     s.stuckPush(200, a.stuckNumber);
     s.stuckPush(400, b.stuckNumber);
     s.stuckSetTop(   c.stuckNumber);
-    stop(D);
+    //stop(D);
     ok(D, """
                                                         200                                       400                                         |
                                                         0                                         0.1                                         |
                                                         1                                         2                                           |
                                                                                                   3                                           |
-              100                  200                                       300                                        500                   |
+              100                  150                                       300                                        500                   |
               1                    1.1                                       2                                          3                     |
               4                    5                                         7                                          10                    |
                                    6                                         8                                          11                    |
-11,12,13,14=4    121,122,123,124=5    231,232,233,234=6    291,292,293,294=7    321,322,323,324=8    491,492,493,494=10    511,512,513,514=11 |
+11,12,13,14=4    121,122,123,124=5    151,152,153,154=6    291,292,293,294=7    321,322,323,324=8    491,492,493,494=10    511,512,513,514=11 |
 """);
 
-    final boolean m = D.dtMergeBranchesIntoRoot();
-    stop(D);
+    final boolean m = D.dtMergeBranchesAtTop(s);
+    //stop(D);
     ok(D, """
-          4      |
-          0      |
-          1      |
-          3      |
-1,2,3,4=1  5,6=3 |
+                                                        200                                                                                   |
+                                                        0                                                                                     |
+                                                        1                                                                                     |
+                                                        2                                                                                     |
+              100                  150                                       300                  400                   500                   |
+              1                    1.1                                       2                    2.1                   2.2                   |
+              4                    5                                         7                    8                     10                    |
+                                   6                                                                                    11                    |
+11,12,13,14=4    121,122,123,124=5    151,152,153,154=6    291,292,293,294=7    321,322,323,324=8    491,492,493,494=10    511,512,513,514=11 |
 """);
     ok(m, true);
    }
@@ -5171,13 +5196,13 @@ Merge     : 0
 */
   static void newTests()                                                        // Tests being worked on
    {//oldTests();
-    //test_merge();
-    //test_mergeLeavesIntoRoot();
-    //test_mergeLeavesNotTop();
-    //test_mergeLeavesAtTop();
-    //test_mergeBranchesIntoRoot();
-     test_mergeBranchesNotTop();
-    //test_mergeBranchesAtTop();
+    test_merge();
+    test_mergeLeavesIntoRoot();
+    test_mergeLeavesNotTop();
+    test_mergeLeavesAtTop();
+    test_mergeBranchesIntoRoot();
+    test_mergeBranchesNotTop();
+    test_mergeBranchesAtTop();
    }
 
   public static void main(String[] args)                                        // Test if called as a program
