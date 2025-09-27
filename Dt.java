@@ -1,5 +1,4 @@
 //------------------------------------------------------------------------------
-//------------------------------------------------------------------------------
 // A double btree - a Btree made of Btrees
 // Philip R Brenan at appaapps dot com, Appa Apps Ltd Inc., 2025
 //------------------------------------------------------------------------------
@@ -136,6 +135,7 @@ class Dt extends Chip                                                           
     void    stuckPut      (Stuck Source) {stuckMap.putAll(Source.stuckMap);}
     int     stuckRemoveKey(int k)        {final int d = stuckGetData(k); stuckMap.remove(k); return d;}
     boolean stuckIsLeaf   ()             {return  stuckLeaf;};
+    boolean stuckIsBranch ()             {return !stuckLeaf;};
     void    stuckSetLeaf  ()             {stuckLeaf = true;}
     void    stuckSetBranch()             {stuckLeaf = false;}
     void    stuckClear    ()             {stuckMap.clear();}
@@ -300,7 +300,18 @@ class Dt extends Chip                                                           
 //D3 Split                                                                      // Split stucks in many and various ways
 
     void stuckSplitIntoTwo(Stuck Left, Stuck Right)                             // Copy the first half key, data pairs into the left stuck, the remainder into the right stuck.  The original source stuck is not modifiedr
-     {
+     {for (int i = 0; i < dtMaxStuckSize / 2; i++)
+       {final int k = stuckFirstKey();
+        final int d = stuckGetData(k);
+        Left.stuckPush(k, d);
+        stuckRemoveKey(k);
+       }
+      for (int i = 0; i < dtMaxStuckSize / 2; i++)
+       {final int k = stuckFirstKey();
+        final int d = stuckGetData(k);
+        Right.stuckPush(k, d);
+        stuckRemoveKey(k);
+       }
      }
 
     void stuckSplitIntoThree(Stuck Left, Stuck Right, int Copy)                 // Copy the specified number of key, data pairs into the left stuck, skip one pair, then copy the specified number onto into the right stuck
@@ -463,11 +474,40 @@ class Dt extends Chip                                                           
 //D2 Split                                                                      // Split nodes in half to increase the number of nodes in the double btree
 
   private void dtSplitRootLeaf()                                                // Split a full root stuckLeaf
-   {
+   {final Stuck p = dtStuckGet(0);                                              // Load root as parent
+    if (!p.stuckIsLeaf()) stop("Root must be a leaf");
+
+    final Stuck l = dtAllocateLeaf();                                           // Allocate left leaf
+    final Stuck r = dtAllocateLeaf();                                           // Allocate right leaf
+
+    p.stuckSplitIntoTwo(l, r);                                                  // Split the leaf root in two down the middle
+
+    final int mk = (l.stuckLastKey() + r.stuckFirstKey()) / 2;                  // Mid key is the average of the largest left and smalles right keys
+    p.stuckClear();
+    p.stuckPush(mk, l.stuckNumber);
+    p.stuckSetTop(  r.stuckNumber);
+    p.stuckSetBranch();
+    p.stuckPutIntoMemory();
    }
 
-  private void dtSplitRootBranch(Process P)                                     // Split a full root branch
-   {                                                                            // Save the root stuck back into the btree whence it came
+  private void dtSplitRootBranch()                                              // Split a full root branch
+   {final Stuck p = dtStuckGet(0);                                              // Load root as parent
+    if (p.stuckIsBranch()) stop("Root must be a branch");
+
+    final Stuck l = dtAllocateBranch();                                         // Allocate left leaf
+    final Stuck r = dtAllocateBranch();                                         // Allocate right leaf
+    final int   m = (dtMaxStuckSize-1) / 2;
+    if (p.stuckSize() < dtMaxStuckSize-1) stop("Root must be full");
+    p.stuckSplitIntoThree(l, r, m);                                             // Split the branch root in two down the middle
+    l.stuckPutIntoMemory();                                                     // Save left branch
+    r.stuckPutIntoMemory();                                                     // Save right branch
+                                                                                // Update root with new children
+//  final int mk = p.stuckK.Copy(p.keys, midPoint);                                                  // Get splitting key
+//  p.Clear();                                                                  // Clear the root so we can add the left and right children to it.
+//  p.Push(mk, il);                                                             // Add reference to left child
+//  p.SetPastLastElement(mk, ir);                                               // Add reference to right child as top element past the end of the stuck
+//  p.stuckPut();                                                               // Save the root stuck back into the btree whence it came
+                                                                            // Save the root stuck back into the btree whence it came
    }
 
   private void dtSplitLeafNotTop                                                // Split a full stuckLeaf that is not the root and is not the last child of its parent branch which is not full
@@ -500,21 +540,19 @@ class Dt extends Chip                                                           
 
     if (p.stuckSize() != 1) return false;                                       // Number of entries in root
 
-    final int il = p.stuckGetData(p.stuckFirstKey());                                  // Index of left stuckLeaf
+    final int il = p.stuckGetData(p.stuckFirstKey());                           // Index of left stuckLeaf
     final int ir = p.stuckTop();                                                // Index of right stuckLeaf
 
     final Stuck l = dtStuckGet(il);                                             // Left split stuck
     final Stuck r = dtStuckGet(ir);                                             // Right split stuck    final Process.Register ck = P.new Register("childKey",   bitsPerKey);       // Index in memory of the left stuck
 
-    if (l.stuckIsLeaf())                                                        // Check that the children are leaves
-     {if (r.stuckIsLeaf())
-       {p.stuckMerge(l, r);                                                     // Merge leaves into root
-        if (p.stuckMergeSuccess)                                                // Merge was successful
-         {p.stuckSetLeaf();                                                     // Mark the root as a stuckLeaf
-          p.stuckPutIntoMemory(true);                                           // Save the modified root back into the double btree
-          dtFree(l); dtFree(r);                                                 // Free left and right leaves as they are no longer needed
-          return true;                                                          // Success
-         }
+    if (l.stuckIsLeaf() && r.stuckIsLeaf())                                     // Check that the children are leaves
+     {p.stuckMerge(l, r);                                                       // Merge leaves into root
+      if (p.stuckMergeSuccess)                                                  // Merge was successful
+       {p.stuckSetLeaf();                                                       // Mark the root as a stuckLeaf
+        p.stuckPutIntoMemory(true);                                             // Save the modified root back into the double btree
+        dtFree(l); dtFree(r);                                                   // Free left and right leaves as they are no longer needed
+        return true;                                                            // Success
        }
      }
     return false;
@@ -530,10 +568,10 @@ class Dt extends Chip                                                           
     final Stuck l = dtStuckGet(il);
     final Stuck r = dtStuckGet(ir);
 
-    if (!l.stuckIsLeaf() || !r.stuckIsLeaf()) return false;                     // Check that the children are leaves
+    if (l.stuckIsBranch() || r.stuckIsBranch()) return false;                   // Check that the children are leaves
     l.stuckMerge(r);                                                            // Merge leaves into left child
     if (l.stuckMergeSuccess)                                                    // Modify the parent only if the merge succeeded
-     {p.stuckRemoveKey(LeftLeaf);                                                  // Remove the left child moving the right child down into its space
+     {p.stuckRemoveKey(LeftLeaf);                                               // Remove the left child moving the right child down into its space
       p.stuckPut(rk, il);                                                       // Replace the right child with the left child
       l.stuckPutIntoMemory();                                                   // Save the merge into left child back into the double btree
       p.stuckPutIntoMemory();                                                   // Save the parent back into the double btree
@@ -1008,6 +1046,29 @@ Merge     : 1
 11,12,13,14=4    121,122,123,124=5    151,152,153,154=6    291,292,293,294=7    321,322,323,324=8    491,492,493,494=10    511,512,513,514=11 |
 """);
     ok(m, true);
+   }
+
+  static void test_splitIntoTwo()
+   {sayCurrentTestName();
+    final Dt    D = new Dt(32, 4, 8, 8);
+
+    final Stuck s = D.dtStuckGet(0);
+
+    s.stuckPush(1, 1); s.stuckPush(2, 2); s.stuckPush(3, 3); s.stuckPush(4, 4);
+    //stop(D);
+    ok(D, """
+1,2,3,4=0 |
+""");
+
+    D.dtSplitRootLeaf();
+    //stop(D);
+    ok(D, """
+      2      |
+      0      |
+      1      |
+      2      |
+1,2=1  3,4=2 |
+""");
    }
 
 /*
@@ -5196,13 +5257,14 @@ Merge     : 0
 */
   static void newTests()                                                        // Tests being worked on
    {//oldTests();
-    test_merge();
-    test_mergeLeavesIntoRoot();
-    test_mergeLeavesNotTop();
-    test_mergeLeavesAtTop();
-    test_mergeBranchesIntoRoot();
-    test_mergeBranchesNotTop();
-    test_mergeBranchesAtTop();
+    //test_merge();
+    //test_mergeLeavesIntoRoot();
+    //test_mergeLeavesNotTop();
+    //test_mergeLeavesAtTop();
+    //test_mergeBranchesIntoRoot();
+    //test_mergeBranchesNotTop();
+    //test_mergeBranchesAtTop();
+    test_splitIntoTwo();
    }
 
   public static void main(String[] args)                                        // Test if called as a program
