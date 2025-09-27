@@ -1781,9 +1781,9 @@ chipStop = true;
     final Stuck p = ParentStuck;                                                // Parent stuck
     final Stuck l = LeftSplitStuck;                                             // Left split stuck
     final Stuck c = RightSplitStuck;                                            // Right split stuck
-    final Process.Register ck = P.new Register("childKey",   bitsPerKey);       // Index in memory of the left stuck
-    final Process.Register cd = btreeIndex(P, "childData");                     // Index in memory of the left stuck
-    final Process.Register il = btreeIndex(P, "indexLeft");                     // Index in memory of the left stuck
+    final Process.Register ck = P.new Register("childKey",   bitsPerKey);       // Key of child stuck to be split
+    final Process.Register cd = btreeIndex(P, "childData");                     // Indx of child stuck to be split
+    final Process.Register il = btreeIndex(P, "indexLeft");                     // Index in memory of the split out left stuck
 
     p.stuckGet(ParentIndex);                                                    // Load parent stuck from btree
     P.new Instruction()
@@ -1801,7 +1801,7 @@ chipStop = true;
     P.new Instruction()
      {void action()
        {if (p.isLeaf.registerGet() >  0) stop("Parent must be a branch");
-        if (p.size  .registerGet() >= maxStuckSize-1) stop("Parent must mot be full");
+        if (p.size  .registerGet() >= maxStuckSize-1) stop("Parent must not be full");
         if (c.isLeaf.registerGet() >  0) stop("Child must be a branch");
         if (c.size  .registerGet() <  maxStuckSize-1) stop("Child must not full");
        }
@@ -1809,10 +1809,10 @@ chipStop = true;
      };
 
     c.splitLowButOne(l, ck);                                                    // Split the leaf in two down the middle copying out the lower half
-    allocateBranch(il); l.stuckPut(il);                                         // Allocate and save left leaf
-                        c.stuckPut(cd);                                         // Allocate and save left leaf
+    allocateBranch(il); l.stuckPut(il);                                         // Allocate and save left child branch
+                        c.stuckPut(cd);                                         // Save modified right child branch
                                                                                 // Update root with new children
-    p.InsertElementAt(StuckIndex, ck, il);                                      // Add reference to left child
+    p.InsertElementAt(StuckIndex, ck, il);                                      // Add reference to new left child
     p.stuckPut();                                                               // Save the parent stuck back into the btree
    }
 
@@ -1844,8 +1844,8 @@ chipStop = true;
      };
 
     c.splitLowButOne(l, mk);                                                    // Split the leaf in two down the middle copying out the lower half
-    allocateBranch(il); l.stuckPut(il);                                         // Allocate and save left leaf
-                        c.stuckPut(cd);                                         // Allocate and save left leaf
+    allocateBranch(il); l.stuckPut(il);                                         // Allocate and save left branch
+                        c.stuckPut(cd);                                         // Save modified right branch
                                                                                 // Update root with new children
     p.Push(mk, il);                                                             // Add reference to left child
     p.SetPastLastElement(mk, cd);                                               // Add reference to not split top child on the right
