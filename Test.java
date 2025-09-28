@@ -52,7 +52,7 @@ public class Test                                                               
   static String joinStrings(Stack<String> S, String join)                       // Perl join
    {final StringJoiner s = new StringJoiner(join);
     final int N = S.size();
-    for  (int i = 0; i < N; i++) s.add(S.elementAt(i));
+    for  (String i : S) s.add(i);
     return ""+s;
    }
 
