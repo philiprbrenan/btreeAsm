@@ -661,6 +661,16 @@ class Dt extends Chip                                                           
     return true;
    }
 
+  private boolean dtMergeNotTop(Stuck Parent, int Child)                        // Merge two consecutive leaves or branches of a branch
+   {if    (dtMergeLeavesNotTop  (Parent, Child)) return true;
+    return dtMergeBranchesNotTop(Parent, Child);
+   }
+
+  private boolean dtMergeAtTop(Stuck Parent)                                    // Merge two consecutive leaves or branches at the top of a branch
+   {if    (dtMergeLeavesAtTop  (Parent)) return true;                           // Try merging leaves at top into parent -  this forces non top siblings into top
+    return dtMergeBranchesAtTop(Parent);                                        // Try merging branches at top into parent -  this forces non top siblings into top
+   }
+
 //D1 Find                                                                       // Find a key in a double btree
 
   class Find                                                                    // Find the leaf stuck associated with a key in the double btree
@@ -780,43 +790,35 @@ class Dt extends Chip                                                           
 
     for (int i = 0; i < dtMaxTreeDepth; i++)                                    // Step down through tree
      {if (S.stuckSize() == 0) continue;                                         // Nothing to merge
-      dtMergeLeavesAtTop  (S);                                                  // Try merging leaves at top into parent -  this forces non top siblings into top
-      dtMergeBranchesAtTop(S);                                                  // Try merging branches at top into parent -  this forces non top siblings into top
+      dtMergeAtTop  (S);                                                        // Try merging leaves at top into parent -  this forces non top siblings into top
 
       if (S.stuckHas(Key))                                                      // The stuck contains the key.  We try merging on the left, right and in the middle
        {if (Key != S.stuckLastKey())                                            // Try merge on right
          {final int k = S.stuckNextKey(Key);
-          dtMergeLeavesNotTop  (S, k);
-          dtMergeBranchesNotTop(S, k);
+          dtMergeNotTop  (S, k);
          }
         if (S.stuckSize() > 0 && Key != S.stuckFirstKey())                      // Try merge on left
          {final int k = S.stuckPrevKey(Key);
-          dtMergeLeavesNotTop  (S, k);
-          dtMergeBranchesNotTop(S, k);
+          dtMergeNotTop  (S, k);
          }
-        dtMergeLeavesNotTop  (S, Key);                                          // Try merge with current key
-        dtMergeBranchesNotTop(S, Key);
+        dtMergeNotTop    (S, Key);                                              // Try merge with current key
         continue;
        }
 
       if (S.stuckSize() > 0 && Key > S.stuckFirstKey())                         // In the body but no matching key
        {final int k = S.stuckPrevKey(Key);                                      // Merge previous child
-        dtMergeLeavesNotTop  (S, k);
-        dtMergeBranchesNotTop(S, k);
+        dtMergeNotTop  (S, k);
         if (S.stuckSize() > 0 && k > S.stuckFirstKey())                         // Merge second previous child
          {final int K = S.stuckPrevKey(k);
-          dtMergeLeavesNotTop  (S, K);
-          dtMergeBranchesNotTop(S, K);
+          dtMergeNotTop(S, K);
          }
        }
       if (S.stuckSize() > 0 && Key < S.stuckLastKey())                          // In the body but no matching key
        {final int k = S.stuckNextKey(Key);                                      // Merge next child
-        dtMergeLeavesNotTop  (S, k);
-        dtMergeBranchesNotTop(S, k);
+        dtMergeNotTop  (S, k);
         if (S.stuckSize() > 0 && k < S.stuckLastKey())                          // Merge second next child
          {final int K = S.stuckNextKey(k);
-          dtMergeLeavesNotTop  (S, K);
-          dtMergeBranchesNotTop(S, K);
+          dtMergeNotTop(S, K);
          }
        }
 
