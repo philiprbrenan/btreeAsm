@@ -98,7 +98,7 @@ class Dt extends Chip                                                           
     int     stuckPrevKey  (int k)         {return stuckMap.lowerKey(k);}        // Previous key to the specified key in the stuck
     int     stuckNextKey  (int k)         {return stuckMap.higherKey(k);}       // Next key to the specified key in the stuck
     int     stuckLastKey  ()              {return stuckMap.lastKey();}          // Last key in the stuck
-    int     stuckTop      ()              {return stuckTop;}                    // The top element of a branch which locates the child leaf or branch that contains all the entries with a key greater then any key in the stuck
+    int     stuckTop      ()              {return stuckTop;}                    // The top element of a branch which locates the child leaf or branch that contains all the entries with a key greater than any key in the stuck
     void    stuckSetTop   (int d)         {stuckTop = d;}                       // Set the top element
     void    stuckSetTop   (Stuck d)       {stuckTop = d.stuckNumber;}           // Set the top element to reference a specified stuck
     boolean stuckHas      (int k)         {return stuckMap.containsKey(k);}     // Whether the stuck contains the specified key
@@ -211,8 +211,8 @@ class Dt extends Chip                                                           
      }
 
     int stuckSplitLowButOne(Stuck Left)                                         // Split an almost full stuck with an odd number of elements so that the first half is moved into the left stuck extended by the data of the central element, while the remainder beyond the central element are moved down.  The central key is returned as it would otherwise be lost.
-     {if (stuckSize() != dtMaxStuckSize-1) stop("Branch must be full");
-      final int N = (dtMaxStuckSize-1) / 2;
+     {if (stuckSize() != dtMaxStuckSize - 1) stop("Branch must be full");
+      final int N = (dtMaxStuckSize - 1) / 2;
       for (int i = 0; i < N; ++i)
        {final int k = stuckFirstKey();
         final int d = stuckGetData(k);
@@ -251,7 +251,9 @@ class Dt extends Chip                                                           
      }
 
     boolean stuckMergeButOne(Stuck Left, int Key, Stuck Right)                  // Concatenate the past last left and right stucks separated by the key over the past last data element of the left stuck into the target
-     {if (Left.stuckSize() + 1 + Right.stuckSize() >= dtMaxStuckSize) return false;
+     {if (Left.stuckSize() + 1 + Right.stuckSize() >= dtMaxStuckSize)
+       {return false;
+       }
       stuckClear();
       stuckPut(Left);
       stuckPush(Key, Left.stuckTop());
@@ -264,26 +266,20 @@ class Dt extends Chip                                                           
 //D2 Print                                                                      // Print the double btree horizontally
 
     void dtPrintLeaf(int DtIndex, Stack<StringBuilder>P, int level)             // Print stuckLeaf horizontally
-     {dtPadStrings(P, level);
-
-      final StringBuilder s = new StringBuilder();                              // String builder
-      final Stuck l = dtStuckGet(DtIndex);
-      for  (Integer k : l.stuckMap.keySet()) s.append(""+k+",");
-
-      if (s.length() > 0) s.setLength(s.length()-1);                            // Remove trailing comma if present
-      s.append("="+DtIndex+" ");
-      P.elementAt(level*dtLinesToPrintABranch).append(s.toString());
-      dtPadStrings(P, level);
+     {dtPadStrings(P, level);                                                   // Level up the right hand edge
+      final StringJoiner  j = new StringJoiner(",");                            // Join the keys in the leaf
+      final Stuck l = dtStuckGet(DtIndex);                                      // The current leaf stuck being printed
+      for  (Integer k : l.stuckMap.keySet()) j.add(""+k);                       // Each key in the leaf
+      P.elementAt(level*dtLinesToPrintABranch).append(""+j+"="+DtIndex+" ");    // Place in diagram
+      dtPadStrings(P, level);                                                   // Level up the right hand edge
      }
 
     void dtPrintBranch(int DtIndex, Stack<StringBuilder>P, int level)           // Print branch horizontally
-     {if (level > dtMaxPrintLevels) return;
-      dtPadStrings(P, level);
-      final int L = level * dtLinesToPrintABranch;                              // Start line at which to print branch
+     {if (level > dtMaxPrintLevels) return;                                     // Avoid deep recursion in incorrectly constructed trees
+      dtPadStrings(P, level);                                                   // Level up the right hand edge
+      final int   L = level * dtLinesToPrintABranch;                            // Start line at which to print branch
       final Stuck b = dtStuckGet(DtIndex);                                      // Load branch
-      final int K = b.stuckSize();                                              // Size of branch
-
-      if (K > 0)                                                                // Branch has key, next pairs
+      if (b.stuckSize() > 0)                                                    // Branch has key, next pairs
        {int i = 0;
         for  (Integer k : b.stuckMap.keySet())
          {final int key  = k;
@@ -385,8 +381,8 @@ class Dt extends Chip                                                           
 
     final Stuck l = dtAllocateBranch();                                         // Allocate left leaf
     final Stuck r = dtAllocateBranch();                                         // Allocate right leaf
-    final int   m = (dtMaxStuckSize-1) / 2;
-    if (p.stuckSize() < dtMaxStuckSize-1) stop("Root must be full");
+    final int   m =    (dtMaxStuckSize - 1) / 2;
+    if (p.stuckSize() < dtMaxStuckSize - 1) stop("Root must be full");
     if (dtDebug) say("SSSS 1111 branchRoot", this);
     final int   K = p.stuckSplitIntoThree(l, r, m);                             // Split the branch root in two down the middle returning the central key
     l.stuckPutIntoMemory();                                                     // Save left branch
@@ -403,10 +399,10 @@ class Dt extends Chip                                                           
    {final Stuck p = Parent;
     final Stuck r = p.stuckGetFromMemory(p.stuckGetData(Index));                // The indexed child will be on the right
 
-    if ( p.stuckIsLeaf())                     stop("Parent must be a branch");
-    if ( p.stuckSize  () >= dtMaxStuckSize-1) stop("Parent must not be full");
-    if (!r.stuckIsLeaf())                     stop("Child must be a leaf");
-    if ( r.stuckSize  () <  dtMaxStuckSize)   stop("Child must be full");
+    if ( p.stuckIsLeaf())                       stop("Parent must be a branch");
+    if ( p.stuckSize  () >= dtMaxStuckSize - 1) stop("Parent must not be full");
+    if (!r.stuckIsLeaf())                       stop("Child must be a leaf");
+    if ( r.stuckSize  () <  dtMaxStuckSize)     stop("Child must be full");
 
     final Stuck l = dtAllocateLeaf();
     if (dtDebug) say("SSSS 1111 leafNotTop", this);
@@ -426,10 +422,10 @@ class Dt extends Chip                                                           
    {final Stuck p = Parent;
     final Stuck r = dtStuckGet(p.stuckTop());                                   // Top child stuck that is going to be split
 
-    if (p.stuckIsLeaf ())                    stop("Parent must be a branch");
-    if (p.stuckSize   () > dtMaxStuckSize-1) stop("Parent must not be full");   // Branches are one less in size than leaves but they have the top element to compensate
-    if (!r.stuckIsLeaf())                    stop("Child must be a leaf");
-    if ( r.stuckSize  () != dtMaxStuckSize)  stop("Child must be full");        // Leaves fill the stuck completely
+    if (p.stuckIsLeaf ())                     stop("Parent must be a branch");
+    if (p.stuckSize   () >  dtMaxStuckSize-1) stop("Parent must not be full");  // Branches are one less in size than leaves but they have the top element to compensate
+    if (!r.stuckIsLeaf())                     stop("Child must be a leaf");
+    if ( r.stuckSize  () != dtMaxStuckSize)   stop("Child must be full");       // Leaves fill the stuck completely
 
     final Stuck l = dtAllocateLeaf();
     if (dtDebug) say("SSSS 1111 leafAtTop", this);
@@ -485,7 +481,7 @@ class Dt extends Chip                                                           
 //D2 Merge                                                                      // Merge two nodes
 
   private boolean dtMergeLeavesIntoRoot()                                       // Merge two leaves into the root
-   {final Stuck p = dtStuckGet(0);                                              // Parent stuck two of whose children might be dtMerged
+   {final Stuck p = dtStuckGet(0);                                              // Parent stuck two of whose children might be merged
 
     p.stuckGetFromMemoryRoot();                                                 // Load root
 
@@ -726,9 +722,9 @@ class Dt extends Chip                                                           
       return;                                                                   // Direct insertion succeeded so nothing more to do
      }
 
-    Stuck S = dtStuckGet(0);                                                    // Start at the root now known to be a split branch
-    if (S.stuckSize() >= dtMaxStuckSize-1) dtSplitBranchRoot();                 // Split the root if it full - we already know it is a branch
-    for (int i = 0; i < dtMaxTreeDepth; i++)                                    // Step down through the tree splitting full branches as we go
+    Stuck S = dtStuckGet(0);                                                    // Start at the root
+    if (S.stuckSize() >= dtMaxStuckSize - 1) dtSplitBranchRoot();               // Split the root if it full - we already know it is a branch
+    for (int i = 0; i <  dtMaxTreeDepth; i++)                                   // Step down through the tree splitting full branches as we go
      {final Integer k = S.stuckGe(Key);                                         // Known to be a not full branch
       final Stuck s = dtStuckGet(k == null ? S.stuckTop() : S.stuckGetData(k)); // Step down
       if (s.stuckIsLeaf())                                                      // Stepped to a leaf that is known to be full otherwise the first find and insert would have worked
@@ -747,15 +743,14 @@ class Dt extends Chip                                                           
    }
 
   public void dtMerge(int Key)                                                  // Merge stucks on either side of the path to the key
-   {Stuck S = dtStuckGet(0);                                                    // Load current stuck
+   {Stuck S = dtStuckGet(0);                                                    // Start at the root
     if (S.stuckIsLeaf()) return;                                                // Root is a leaf - nothing to merge
-    if (dtMergeLeavesIntoRoot()) return;                                        // Try merging leaves into root
+    if (dtMergeLeavesIntoRoot()) return;                                        // Try merging leaves into root - return if successful as the tree will be just a single leaf
 
     dtMergeBranchesIntoRoot();                                                  // Try merging branches into root
 
     for (int i = 0; i < dtMaxTreeDepth; i++)                                    // Step down through tree
-     {if (S.stuckSize() == 0) continue;                                         // Nothing to merge
-      dtMergeAtTop  (S);                                                        // Try merging leaves at top into parent -  this forces non top siblings into top
+     {dtMergeAtTop     (S);                                                     // Try merging into top - this forces non top siblings into top
 
       if (S.stuckHas(Key))                                                      // The stuck contains the key.  We try merging on the left, right and in the middle
        {if (Key != S.stuckLastKey())                                            // Try merge on right
@@ -807,7 +802,9 @@ class Dt extends Chip                                                           
 
 //D1 Tests                                                                      // Test the double btree
 
-  final static int[]random_32 = {12, 3, 27, 1, 23, 20, 8, 18, 2, 31, 25, 16, 13, 32, 11, 21, 5, 24, 4, 10, 26, 30, 9, 6, 29, 17, 28, 15, 14, 19, 7, 22};
+  final static int[]random_32 =
+   {12,  3, 27,  1, 23, 20, 8, 18,  2, 31, 25, 16, 13, 32, 11, 21,
+     5, 24,  4, 10, 26, 30, 9,  6, 29, 17, 28, 15, 14, 19,  7, 22};
 
   static void test_leafRoot()
    {sayCurrentTestName();
