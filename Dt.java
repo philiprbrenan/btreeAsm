@@ -161,35 +161,6 @@ class Dt extends Chip                                                           
       stuckMap.remove(stuckKey);
      }
 
-    void stuckFirstElement()                                                    // Get the first key, data pair
-     {stuckKey = stuckFirstKey();
-      stuckData = stuckMap.get(stuckKey);
-     }
-
-    void stuckLastElement()                                                     // Get the last key, data pair
-     {stuckKey = stuckLastKey();
-      stuckData = stuckMap.get(stuckKey);
-     }
-
-    void stuckElementAt(int Index)                                              // Get the indexed key, data pair.. The index is the key of the item requested so this behaves like get.
-     {stuckKey = Index;
-      stuckData = stuckMap.get(stuckKey);
-     }
-
-    void stuckSetElementAt(int Key, int Data)                                   // Set the data of the indexed key
-     {dtPut(Key, Data);
-     }
-
-    void stuckInsertElementAt(int Key, int Data)                                // Set the indexed key, data pair
-     {dtPut(Key, Data);
-     }
-
-    void stuckRemoveElementAt(int Index)                                        // Remove the indexed key, data pair
-     {stuckKey  = Index;
-      stuckData = stuckGetData(Index);
-      stuckMap.remove(Index);
-     }
-
 //D3 Split                                                                      // Split stucks in many and various ways
 
     void stuckSplitIntoTwo(Stuck Left, Stuck Right)                             // Copy the first half of the key, data pairs into the left stuck, the remainder into the right stuck.  The original source stuck is not modified
