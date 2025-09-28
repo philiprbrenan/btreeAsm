@@ -339,8 +339,7 @@ class Dt extends Chip                                                           
    {final StringBuilder t = new StringBuilder();                                // Print the lines of the double btree that are not blank
     for  (StringBuilder s : S)
      {final String l = s.toString();
-      if (l.isBlank()) continue;
-      t.append(l+"|\n");
+      if (!l.isBlank()) t.append(l+"|\n");
      }
     return t.toString();
    }
