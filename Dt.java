@@ -121,7 +121,6 @@ class Dt extends Chip                                                           
     int             stuckData;                                                  // Data associated with the key if found
     int             stuckDtIndex;                                               // Index of stuck in Btree in which the key should reside
     int             stuckIndex;                                                 // Index of stuck in Btree in which the key should reside
-    boolean         stuckMergeSuccess;                                          // Whether a dtMerge was completed successfully or not
 
     Stuck(int Index)                                                            // Create a stuck recording its position in memory
      {stuckNumber = Index;
@@ -193,7 +192,6 @@ class Dt extends Chip                                                           
       final int     d = stuckData        ; S.append("Data      : "+d+"\n");           // Data associated with the key if found
       final int     b = stuckDtIndex     ; S.append("DtIndex   : "+b+"\n");           // Index of stuck in Btree in which the key should reside
       final int     s = stuckIndex       ; S.append("StuckIndex: "+s+"\n");           // Index of stuck in Btree in which the key should reside
-      final boolean m = stuckMergeSuccess; S.append("Merge     : "+(m ? 1 : 0)+"\n"); // Whether a dtMerge was completed successfully or not
 
       return ""+S;
      }
@@ -325,7 +323,7 @@ class Dt extends Chip                                                           
        }
      }
 
-    void stuckSplitIntoThree(Stuck Left, Stuck Right, int Copy)                 // Copy the specified number of key, data pairs into the left stuck, skip one pair, then copy the specified number onto into the right stuck
+    int stuckSplitIntoThree(Stuck Left, Stuck Right, int Copy)                  // Copy the specified number of key, data pairs into the left stuck. Place the data of the  next pair as teh top of the left stuck.  Return the key of this pair after copying the remainder to the right stuck.  make the top of teh parent the top of the right stuck.
      {final int N = stuckSize() / 2;
       if (Copy > N) stop("Copy:", Copy, "must be less than or equal to:", N);
       for (int i = 0; i < Copy; ++i)
@@ -345,6 +343,7 @@ class Dt extends Chip                                                           
         stuckRemove(k);
        }
       Right.stuckSetTop(stuckTop());
+      return K;
      }
 
     void stuckSplitLow(Stuck Left)                                              // Split a full stuck with an even number of elements so that the first half is moved into the left stuck leaving the remainder in the current stuck
@@ -374,38 +373,36 @@ class Dt extends Chip                                                           
 
 //D3 Merge                                                                      // Merge stucks in various ways
 
-    void stuckMerge(Stuck Source)                                               // Concatenate the indicated stuck onto the end of the current one
-     {if (stuckSize() + Source.stuckSize() <= dtMaxStuckSize)
-       {stuckMap.putAll(Source.stuckMap);
-        stuckMergeSuccess = true;
-       }
-      else stuckMergeSuccess = false;
+    boolean stuckMerge(Stuck Source)                                            // Concatenate the indicated stuck onto the end of the current one
+     {if (stuckSize() + Source.stuckSize() > dtMaxStuckSize) return false;
+      stuckMap.putAll(Source.stuckMap);
+      return true;
      }
 
-    void stuckMerge(Stuck Left, Stuck Right)                                    // Replace the current stuck with the concatenation of the two stucks indicated
-     {if (stuckMergeSuccess = Left.stuckSize() + Right.stuckSize() <= dtMaxStuckSize)
-       {stuckClear();
-        stuckMap.putAll(Left.stuckMap);
-        stuckMap.putAll(Right.stuckMap);
-       }
+    boolean stuckMerge(Stuck Left, Stuck Right)                                 // Replace the current stuck with the concatenation of the two stucks indicated
+     {if (Left.stuckSize() + Right.stuckSize() > dtMaxStuckSize) return false;
+      stuckClear();
+      stuckMap.putAll(Left.stuckMap);
+      stuckMap.putAll(Right.stuckMap);
+      return true;
      }
 
-    void stuckMergeButOne(int Key, Stuck Source)                                // Concatenate the indicated stuck with a past last data element onto the end of the current stuck with a past last data element with the specified key inserted over the central past last data element separating the two.
-     {if (stuckMergeSuccess = Source.stuckSize() + 1 + stuckSize() < dtMaxStuckSize)
-       {stuckPush(Key, stuckTop());
-        stuckPut(Source);
-        stuckSetTop(Source.stuckTop());
-       }
+    boolean stuckMergeButOne(int Key, Stuck Source)                             // Concatenate the indicated stuck with a past last data element onto the end of the current stuck with a past last data element with the specified key inserted over the central past last data element separating the two.
+     {if (Source.stuckSize() + 1 + stuckSize() >= dtMaxStuckSize) return false;
+      stuckPush(Key, stuckTop());
+      stuckPut(Source);
+      stuckSetTop(Source.stuckTop());
+      return true;
      }
 
-    void stuckMergeButOne(Stuck Left, int Key, Stuck Right)                     // Concatenate the past last left and right stucks separated by the key over the past last data element of the left stuck into the target
-     {if (stuckMergeSuccess = Left.stuckSize() + 1 + Right.stuckSize() < dtMaxStuckSize)
-       {stuckClear();
-        stuckPut(Left);
-        stuckPush(Key, Left.stuckTop());
-        stuckPut(Right);
-        stuckSetTop(Right.stuckTop());
-       }
+    boolean stuckMergeButOne(Stuck Left, int Key, Stuck Right)                  // Concatenate the past last left and right stucks separated by the key over the past last data element of the left stuck into the target
+     {if (Left.stuckSize() + 1 + Right.stuckSize() >= dtMaxStuckSize) return false;
+      stuckClear();
+      stuckPut(Left);
+      stuckPush(Key, Left.stuckTop());
+      stuckPut(Right);
+      stuckSetTop(Right.stuckTop());
+      return true;
      }
 
 //D3 Is a Leaf                                                                  // Determine whether a stuck contains a stuckLeaf or a branch of a double btree
@@ -522,7 +519,7 @@ class Dt extends Chip                                                           
 
     final Stuck l = dtAllocateLeaf();                                           // Allocate left leaf
     final Stuck r = dtAllocateLeaf();                                           // Allocate right leaf
-
+if (dtDebug) say("SSSS 1111 leafRoot", this);
     p.stuckSplitIntoTwo(l, r);                                                  // Split the leaf root in two down the middle
 
     final int mk = (l.stuckLastKey() + r.stuckFirstKey()) / 2;                  // Mid key is the average of the largest left and smalles right keys
@@ -531,6 +528,7 @@ class Dt extends Chip                                                           
     p.stuckSetTop(  r);
     p.stuckSetBranch();
     p.stuckPutIntoMemory();
+if (dtDebug) say("SSSS 2222 leafRoot", this);
    }
 
   private void dtSplitBranchRoot()                                              // Split a full root branch
@@ -541,15 +539,16 @@ class Dt extends Chip                                                           
     final Stuck r = dtAllocateBranch();                                         // Allocate right leaf
     final int   m = (dtMaxStuckSize-1) / 2;
     if (p.stuckSize() < dtMaxStuckSize-1) stop("Root must be full");
-    p.stuckSplitIntoThree(l, r, m);                                             // Split the branch root in two down the middle
+if (dtDebug) say("SSSS 1111 branchRoot", this);
+    final int   K = p.stuckSplitIntoThree(l, r, m);                            // Split the branch root in two down the middle returning the central key
     l.stuckPutIntoMemory();                                                     // Save left branch
     r.stuckPutIntoMemory();                                                     // Save right branch
-                                                                             // Update root with new children
-    final int mk = (l.stuckLastKey() + r.stuckFirstKey()) / 2;                                                  // Get splitting key
+                                                                                // Update root with new children
     p.stuckClear();                                                             // Clear the root so we can add the left and right children to it.
-    p.stuckPush(mk, l);                                                         // Add reference to left child
+    p.stuckPush(K, l);                                                          // Add reference to left child
     p.stuckSetTop(r);                                                           // Add reference to right child as top element past the end of the stuck
-    p.stuckPutIntoMemory();                                                               // Save the root stuck back into the btree whence it came
+    p.stuckPutIntoMemory();                                                     // Save the root stuck back into the btree whence it came
+if (dtDebug) say("SSSS 2222 branchRoot", this);
    }
 
   private void dtSplitLeafNotTop(Stuck Parent, int Index)                       // Split a full leaf that is not the root and is not the last child of its parent branch.  The parent branch must not be full
@@ -565,6 +564,7 @@ class Dt extends Chip                                                           
     if ( r.stuckSize  () <  dtMaxStuckSize)   stop("Child must be full");
 
     final Stuck l = dtAllocateLeaf();
+if (dtDebug) say("SSSS 1111 leafNotTop", this);
     r.stuckSplitLow(l);                                                         // Split the leaf in two down the middle copying out the lower half
     r.stuckPutIntoMemory();                                                     // Allocate and save split out left of leaf
     l.stuckPutIntoMemory();                                                     // Save remainder of leaf
@@ -572,8 +572,9 @@ class Dt extends Chip                                                           
     final int ll = l.stuckLastKey();                                            // Last key of left child
     final int rf = r.stuckFirstKey();                                           // First key of right child
     final int mk = (ll  + rf) / 2;                                              // Mid key is average of surrounding keys
-    p.stuckPut(mk, l); //// number                                                         // Add reference to left child
+    p.stuckPut(mk, l);                                                          // Add reference to left child
     p.stuckPutIntoMemory();                                                     // Save the parent stuck back into the btree
+if (dtDebug) say("SSSS 2222 leafNotTop", this);
    }
 
   private void dtSplitLeafAtTop(Stuck Parent)                                   // Split a full leaf that is not the root and is the last child of its parent branch which is not full
@@ -586,12 +587,14 @@ class Dt extends Chip                                                           
     if ( r.stuckSize  () != dtMaxStuckSize)  stop("Child must be a full");      // Leaves fill the stuck completely
 
     final Stuck l = dtAllocateLeaf();
+if (dtDebug) say("SSSS 1111 leafAtTop", this);
     r.stuckSplitLow(l);                                                         // Split the leaf in two down the middle copying out the lower half
 
     final int ll = l.stuckLastKey();                                            // Last key of left child
     final int rf = r.stuckFirstKey();                                           // First key of right child
     final int mk = (ll  + rf) / 2;                                              // Mid key is average of surrounding keys
     p.stuckPut(mk, l);                                                          // Add reference to left child
+if (dtDebug) say("SSSS 2222 leafAtTop", this);
    }
 
   private void dtSplitBranchNotTop(Stuck Parent, int Index)                     // Split a full branch that is not the root and is not the last child of its parent branch which is not full
@@ -604,12 +607,14 @@ class Dt extends Chip                                                           
     if ( r.stuckSize    () <  dtMaxStuckSize-1) stop("Child must not full");
 
     final Stuck l = dtAllocateBranch();
+if (dtDebug) say("SSSS 1111 branchNotTop", this);
     final int Key = r.stuckSplitLowButOne(l);                                   // Split the branch into two branches and retain the splitting key
     l.stuckPutIntoMemory();                                                     // Allocate and save left branch
     r.stuckPutIntoMemory();                                                     // SSave modified right branch
                                                                                 // Update root with new children
     p.stuckPut(Key, l);                                                         // Add reference to left child
     p.stuckPutIntoMemory();                                                     // Save the parent stuck back into the btree
+if (dtDebug) say("SSSS 2222 branchNotTop", this);
    }
 
   private void dtSplitBranchAtTop(Stuck Parent)                                 // Split a full branch that is not the root and is the last child of its parent branch which is not full
@@ -623,12 +628,14 @@ class Dt extends Chip                                                           
     if ( r.stuckSize()   <  dtMaxStuckSize-1) stop("Child branch must be full");
 
     final Stuck l = dtAllocateBranch();                                         // New left branch
+if (dtDebug) say("SSSS 1111 branchAtTop", this);
     final int  mk = r.stuckSplitLowButOne(l);                                        // Split the leaf in two down the middle copying out the lower half
     l.stuckPutIntoMemory();                                                     // Save left branch
     r.stuckPutIntoMemory();                                                     // Save modified right branch
                                                                                 // Update root with new children
     p.stuckPut(mk, l);                                                          // Add reference to left child
     p.stuckPutIntoMemory();                                                     // Save the parent stuck back into the btree
+if (dtDebug) say("SSSS 2222 branchAtTop", this);
    }
 
 //D1 Merge                                                                      // Merge two nodes
@@ -637,7 +644,7 @@ class Dt extends Chip                                                           
    {if (Parent.stuckSize() == 0) return false;
     final int first = Parent.stuckMap.firstKey();
     final boolean f = ParentIndex == first;                                     // Are we dealing with the first child
-    final int r = Parent.stuckSize();                                           // Size of parent
+    final int     r = Parent.stuckSize();                                       // Size of parent
     return r == 0 || (r == 1 && f);                                             // Conditions on which to skip the dtMerge.  dtMerge is not possible if there are no children to dtMerge, or in the case of one child, it will be handled by the dtMerge into top
    }
 
@@ -648,24 +655,18 @@ class Dt extends Chip                                                           
 
     if (p.stuckSize() != 1) return false;                                       // Number of entries in root
 
-    final int il = p.stuckGetData(p.stuckFirstKey());                           // Index of left stuckLeaf
-    final int ir = p.stuckTop();                                                // Index of right stuckLeaf
+    final Stuck l = dtStuckGet(p.stuckGetData(p.stuckFirstKey()));              // Left split stuck
+    final Stuck r = dtStuckGet(p.stuckTop());                                   // Right split stuck
 
-    final Stuck l = dtStuckGet(il);                                             // Left split stuck
-    final Stuck r = dtStuckGet(ir);                                             // Right split stuck    final Process.Register ck = P.new Register("childKey",   bitsPerKey);       // Index in memory of the left stuck
+    if (!l.stuckIsLeaf() || !r.stuckIsLeaf()) return false;                     // Check that the children are leaves
+    if (dtDebug) say("MMMM LeavesIntoRoot 1111", this);
 
-    if (l.stuckIsLeaf() && r.stuckIsLeaf())                                     // Check that the children are leaves
-     {//say("MMMM LeavesIntoRoot 1111", this);
-      p.stuckMerge(l, r);                                                       // Merge leaves into root
-      if (p.stuckMergeSuccess)                                                  // Merge was successful
-       {p.stuckSetLeaf();                                                       // Mark the root as a stuckLeaf
-        p.stuckPutIntoMemory(true);                                             // Save the modified root back into the double btree
-        dtFree(l); dtFree(r);                                                   // Free left and right leaves as they are no longer needed
-//say("MMMM LeavesIntoRoot 2222", this);
-        return true;                                                            // Success
-       }
-     }
-    return false;
+    if (!p.stuckMerge(l, r)) return false;                                      // Merge leaves into root
+    p.stuckSetLeaf();                                                           // Mark the root as a stuckLeaf
+    p.stuckPutIntoMemory(true);                                                 // Save the modified root back into the double btree
+    dtFree(l); dtFree(r);                                                       // Free left and right leaves as they are no longer needed
+    if (dtDebug) say("MMMM LeavesIntoRoot 2222", this);
+    return true;                                                                // Success
    }
 
   private boolean dtMergeLeavesNotTop(Stuck Parent, int Left)                   // Merge the two consecutive leaves of a branch that is not the root. Neither of the leaves is the topmost stuckLeaf.
@@ -681,25 +682,22 @@ class Dt extends Chip                                                           
     final Stuck l = dtStuckGet(il);
     final Stuck r = dtStuckGet(ir);
 
-    if (l.stuckIsBranch() || r.stuckIsBranch()) return false;                   // Check that the children are leaves
-//say("MMMM LeavesNotTop 1111", this);
-    l.stuckMerge(r);                                                            // Merge leaves into left child
-    if (l.stuckMergeSuccess)                                                    // Modify the parent only if the merge succeeded
-     {p.stuckRemove(Left);                                                      // Remove the left child moving the right child down into its space
-      p.stuckPut(rk, il);                                                       // Replace the right child with the left child
-      l.stuckPutIntoMemory();                                                   // Save the merge into left child back into the double btree
-      p.stuckPutIntoMemory();                                                   // Save the parent back into the double btree
-      dtFree(r);                                                                // Free right leaf as it is no longer in use
-//say("MMMM LeavesNotTop 2222", this);
-      return true;
-     }
+    if (!l.stuckIsLeaf() || !r.stuckIsLeaf()) return false;                     // Check that the children are leaves
+    if (dtDebug) say("MMMM LeavesNotTop 1111", this);
 
-    return false;
+    if (!l.stuckMerge(r)) return false;                                         // Merge leaves into left child
+    p.stuckRemove(Left);                                                        // Remove the left child moving the right child down into its space
+    p.stuckPut(rk, il);                                                         // Replace the right child with the left child
+    l.stuckPutIntoMemory();                                                     // Save the merge into left child back into the double btree
+    p.stuckPutIntoMemory();                                                     // Save the parent back into the double btree
+    dtFree(r);                                                                  // Free right leaf as it is no longer in use
+if (dtDebug) say("MMMM LeavesNotTop 2222", this);
+    return true;
    }
 
   private boolean dtMergeLeavesAtTop(Stuck Parent)                              // Merge the top most two leaves of a branch that is not the root
    {final Stuck p = Parent;
-    if (p.stuckNumber == 0) return false;                                       // Cannot perform this merge on the root
+    //if (p.stuckNumber == 0) return false;                                     // Cannot perform this merge on the root
     final int sz = p.stuckSize();                                               // Size of parent stuck
     if (sz == 0) return false;                                                  // Nothing to merge
 
@@ -710,20 +708,16 @@ class Dt extends Chip                                                           
     final Stuck l = dtStuckGet(il);
     final Stuck r = dtStuckGet(ir);
 
-    if (l.stuckIsLeaf() && r.stuckIsLeaf())                                     // Check that the children are leaves
-     {//say("MMMM LeavesAtTop 1111", this);
-      l.stuckMerge(r);                                                          // Merge leaves into left child
-      if (l.stuckMergeSuccess)
-       {p.stuckRemove(p.stuckLastKey());                                     // The left child is now topmost - we know this is ok because the parent has at elast one entry
-        p.stuckSetTop(il);
-        l.stuckPutIntoMemory();                                                 // Save the modified left child back into the tree
-        p.stuckPutIntoMemory();                                                 // Save the modified root back into the tree
-        dtFree(r);                                                              // Free right leaf as it is no longer in use
-//say("MMMM LeavesAtTop 2222", this);
-        return true;
-       }
-     }
-    return false;
+    if (!l.stuckIsLeaf() || !r.stuckIsLeaf()) return false;                     // Check that the children are leaves
+    if (dtDebug) say("MMMM LeavesAtTop 1111", this);
+    if (!l.stuckMerge(r)) return false;                                         // Merge leaves into left child
+    p.stuckRemove(p.stuckLastKey());                                            // The left child is now topmost - we know this is ok because the parent has at elast one entry
+    p.stuckSetTop(il);
+    l.stuckPutIntoMemory();                                                     // Save the modified left child back into the tree
+    p.stuckPutIntoMemory();                                                     // Save the modified root back into the tree
+    dtFree(r);                                                                  // Free right leaf as it is no longer in use
+if (dtDebug) say("MMMM LeavesAtTop 2222", this);
+    return true;
    }
 
   private boolean dtMergeBranchesIntoRoot()                                     // Merge two branches into the root
@@ -739,21 +733,16 @@ class Dt extends Chip                                                           
     final Stuck r = dtStuckGet(ir);                                             // Index of right branch
 
     if (l.stuckIsLeaf() || r.stuckIsLeaf()) return false;                       // Check that the children are leaves
-//say("MMMM BranchesntoRoot 1111", this);
-    p.stuckMergeButOne(l, mk, r);                                                    // Merge left branch, splitting key, right branch into root
-    if (p.stuckMergeSuccess)
-     {p.stuckPutIntoMemory();                                                   // Save the modified root back into the tree
-      dtFree(l); dtFree(r);                                                     // Free left and right leaves as they are no longer needed
-//say("MMMM BranchesntoRoot 2222", this);
-      return true;
-     }
-    return false;
+    if (!p.stuckMergeButOne(l, mk, r)) return false;                            // Merge left branch, splitting key, right branch into root
+    p.stuckPutIntoMemory();                                                   // Save the modified root back into the tree
+    dtFree(l); dtFree(r);                                                     // Free left and right leaves as they are no longer needed
+    return true;
    }
 
   private boolean dtMergeBranchesNotTop(Stuck Parent, int Left)                 // Merge the two consecutive child branches of a branch that is not the root. Neither of the child branches is the topmost stuckLeaf.
    {final Stuck   p = Parent;                                                   // Parent stuck
 
-    //if (p.stuckNumber == 0)       return false;                                 // Cannot perform this merge on the root
+    if (p.stuckNumber == 0 && p.stuckSize() == 1) return false;                 // Cannot perform this merge on the root when it contains only one key, data pair.
     if (p.stuckSize() == 0)       return false;                                 // Cannot perform this merge on an empty stuck
     if (!p.stuckHas(Left))        return false;                                 // Key must be in stuck
     if (p.stuckLastKey() == Left) return false;                                 // Key cannot be the last key in the body
@@ -769,25 +758,21 @@ class Dt extends Chip                                                           
     if (l.stuckIsLeaf() || r.stuckIsLeaf()) return false;                       // Both children must be branches
     final int mk = p.stuckGetData(Left);                                        // Key associated with left child branch
 
-//say("MMMM BranchesNotTop 1111", this);
-    l.stuckMergeButOne(Left, r);                                                // Merge branches into left child
+if (dtDebug) say("MMMM BranchesNotTop 1111", this);
+    if (!l.stuckMergeButOne(Left, r)) return false;                             // Merge branches into left child
 
-    if (l.stuckMergeSuccess)                                                    // Modify the parent only if the merge succeeded
-     {p.stuckRemove(Left);                                                      // Remove the left child
-      p.stuckPut(rk, il);                                                       // Update left child position with key of right child and index of left child
-      l.stuckPutIntoMemory();                                                   // Save the modified left child back into the tree
-      p.stuckPutIntoMemory();                                                   // Save the modified root back into the tree
-      dtFree(r);                                                                // Free right branch as it is no longer in use
-//say("MMMM BranchesNotTop 2222", this);
-      return true;
-     }
-
-    return false;
+    p.stuckRemove(Left);                                                      // Remove the left child
+    p.stuckPut(rk, il);                                                       // Update left child position with key of right child and index of left child
+    l.stuckPutIntoMemory();                                                   // Save the modified left child back into the tree
+    p.stuckPutIntoMemory();                                                   // Save the modified root back into the tree
+    dtFree(r);                                                                // Free right branch as it is no longer in use
+if (dtDebug) say("MMMM BranchesNotTop 2222", this);
+    return true;
    }
 
   private boolean dtMergeBranchesAtTop(Stuck Parent)                            // Merge the top most two child branches of a branch that is not the root
-   {final Stuck   p = Parent;                                                   // Parent stuck
-    if (p.stuckNumber == 0)   return false;                                     // Cannot perform this merge on the root
+   {final Stuck p = Parent;                                                     // Parent stuck
+    if (p.stuckNumber == 0 && p.stuckSize() == 1) return false;                 // Cannot perform this merge on the root ifi it only has one key, data pait in the body of the stuck
     final int sz = p.stuckSize();                                               // Index of left branch known to be valid as the parent contains at least one entry resulting in two children
     if (sz == 0)              return false;                                     // Cannot perform this merge on an empty stuck
     if (dtSkipMerge(p, sz-1)) return false;
@@ -799,18 +784,15 @@ class Dt extends Chip                                                           
     final Stuck r = dtStuckGet(ir);                                             // Load right branch from btree
 
     if (l.stuckIsLeaf() || r.stuckIsLeaf()) return false;                       // Both children must be branches
+    if (l.stuckSize() + 1 + r.stuckSize() >= dtMaxStuckSize) return false;      // Too big to merge
 
     p.stuckPop();
-    l.stuckMergeButOne(p.stuckKey, r);                                          // Merge leaves into left child
-    if (l.stuckMergeSuccess)                                                    // Modify the parent only if the merge succeeded
-     {p.stuckSetTop(il);                                                        // Make newly combined left branch top most
-      l.stuckPutIntoMemory();                                                   // Save the modified left child back into the tree
-      p.stuckPutIntoMemory();                                                   // Save the modified root back into the tree
-      dtFree(r);                                                                // Free right branch as it is no longer in use
-      return true;
-     }
-
-    return false;
+    if (!l.stuckMergeButOne(p.stuckKey, r)) return false;                        // Merge leaves into left child
+    p.stuckSetTop(il);                                                        // Make newly combined left branch top most
+    l.stuckPutIntoMemory();                                                   // Save the modified left child back into the tree
+    p.stuckPutIntoMemory();                                                   // Save the modified root back into the tree
+    dtFree(r);                                                                // Free right branch as it is no longer in use
+    return true;
    }
 
 //D1 Find                                                                       // Find a key in a double btree
@@ -905,7 +887,6 @@ class Dt extends Chip                                                           
 
     Stuck S = dtStuckGet(0);                                                    // Start at the root now known to be a split branch
     if (S.stuckSize() >= dtMaxStuckSize-1) dtSplitBranchRoot();                 // Split the root if it full - we already know it is a branch
-
     for (int i = 0; i < dtMaxTreeDepth; i++)                                    // Step down through the tree splitting full branches as we go
      {final Integer k = S.stuckGe(Key);                                         // Known to be a not full branch
       final Stuck s = dtStuckGet(k == null ? S.stuckTop() : S.stuckGetData(k)); // Step down
@@ -931,11 +912,15 @@ class Dt extends Chip                                                           
     if (dtMergeLeavesIntoRoot()) return;                                        // Try merging leaves into root
 
     dtMergeBranchesIntoRoot();                                                  // Try merging branches into root
+if (dtDebug)  say("DDDD 00 Merge", Key, this);
 
     for (int i = 0; i < dtMaxTreeDepth; i++)                                    // Step down through tree
      {if (S.stuckSize() == 0) continue;                                         // Nothing to merge
+if (dtDebug)  say("DDDD 11 Merge", Key, this);
       dtMergeLeavesAtTop  (S);                                                  // Try merging leaves at top into parent -  this forces non top siblings into top
+if (dtDebug)  say("DDDD 22 Merge", Key, this);
       dtMergeBranchesAtTop(S);                                                  // Try merging branches at top into parent -  this forces non top siblings into top
+if (dtDebug)  say("DDDD 33 Merge", Key, this);
 
       if (S.stuckHas(Key))                                                      // The stuck contains the key.  We try merging on the left, right and in the middle
        {if (Key != S.stuckLastKey())                                            // Try merge on right
@@ -983,8 +968,17 @@ class Dt extends Chip                                                           
 
 //D1 Deletion                                                                   // Delete a key data pair from the btree returning the data associated with the key
 
-  private Find delete(int Key)                                                  // Find the stuckLeaf that contains this key and delete it
-   {return null;
+  Find dtDelete(int Key)                                                        // Find the leaf that contains this key, delete it and return the data asociated with the key.
+   {final Find f = new Find(Key);
+
+    if (f.findFound)                                                            // Found the key in the tree
+     {final Stuck s = dtStuckGet(f.findIndex);                                 // Stuck containing key
+      s.stuckRemove(Key);                                                       // Remove the key
+      s.stuckPutIntoMemory();                                                   // Save modified stuck back into btree
+      dtMerge(Key);                                                             // Merge along key path
+     }
+
+    return f;
    }
 
 //D1 Tests                                                                      // Test the btree
@@ -1505,7 +1499,7 @@ Success : false
                                                       0                                0.1                              |
                                                       5                                11                               |
                                                                                        6                                |
-          4          7               12                               20                                28              |
+          4          8               12                               20                                28              |
           5          5.1             5.2                              11                                6               |
           1          3               4                                8                                 9               |
                                      7                                10                                2               |
@@ -1521,15 +1515,15 @@ Success : false
     for (int i = N; i > 0; i--) D.dtPut(i, i+1);
     //stop(D);
     ok(D, """
-                                    10                                                                27                         |
-                                    0                                                                 0.1                        |
-                                    12                                                                9                          |
-                                                                                                      6                          |
-           4        6                               14              18               22                                30        |
-           12       12.1                            9               9.1              9.2                               6         |
-           11       13                              8               7                4                                 3         |
-                    10                                                               1                                 2         |
-1,2,3,4=11   5,6=13     7,8,9,10=10   11,12,13,14=8   15,16,17,18=7    19,20,21,22=4    23,24,25,26=1    27,28,29,30=3   31,32=2 |
+                        8                              16                                                                 |
+                        0                              0.1                                                                |
+                        11                             9                                                                  |
+                                                       5                                                                  |
+           4                           12                               20              24               28               |
+           11                          9                                5               5.1              5.2              |
+           12                          8                                4               3                2                |
+           10                          7                                                                 1                |
+1,2,3,4=12   5,6,7,8=10   9,10,11,12=8   13,14,15,16=7    17,18,19,20=4   21,22,23,24=3    25,26,27,28=2    29,30,31,32=1 |
 """);
    }
 
@@ -1541,59 +1535,715 @@ Success : false
     for (int i = 0; i < N; ++i) D.dtPut(random_32[i], i);
     //stop(D);
     ok(D, """
-                                                      16                                                  |
-                                                      0                                                   |
-                                                      16                                                  |
-                                                      17                                                  |
-                           7                                                   19                         |
-                           16                                                  17                         |
-                           14                                                  18                         |
-                           5                                                   6                          |
-      2        4                         11                      16                             30        |
-      14       14.1                      5                       18                             6         |
-      8        15                        9                       13                             10        |
-               1                         4                       12                             2         |
-1,2=8   3,4=15     5,6,7=1   8,9,10,11=9   12,13,14=4   15,16=13   17,18,19=12   27,28,29,30=10   31,32=2 |
+                           7                             15                                                      26                          |
+                           0                             0.1                                                     0.2                         |
+                           13                            5                                                       11                          |
+                                                                                                                 6                           |
+      2        4                         11                                19        21              24                            30        |
+      13       13.1                      5                                 11        11.1            11.2                          6         |
+      8        14                        9                                 12        3               17                            10        |
+               1                         4                                                           7                             2         |
+1,2=8   3,4=14     5,6,7=1   8,9,10,11=9   12,13,14,15=4    16,17,18,19=12   20,21=3     22,23,24=17     25,26=7    27,28,29,30=10   31,32=2 |
 """);
    }
 
-/*
-  static void oldTests()                                                        // Tests thought to be in good shape
-   {if (createTestTrees)
-     {say("Create test trees");
-      test_put_merge();
-      return;
+  static void test_delete_ascending()
+   {sayCurrentTestName();
+    final int N = 32;
+    final Dt  D = new Dt(N, 4, 8, 8);
+    for (int i = 1; i <= N; i++) D.dtPut(i, i+1);
+
+    final StringBuilder s = new StringBuilder();
+    for (int i = 1; i <= N; i++)
+     {D.dtDelete(i);
+      s.append(D);
      }
 
-    test_copy();
+    //stop(s);
+    ok(s, """
+                                                    16                                                                   |
+                                                    0                                                                    |
+                                                    5                                                                    |
+                                                    11                                                                   |
+        4          8               12                               20               24                28                |
+        5          5.1             5.2                              11               11.1              11.2              |
+        1          3               4                                8                10                9                 |
+                                   7                                                                   2                 |
+2,3,4=1  5,6,7,8=3    9,10,11,12=4    13,14,15,16=7   17,18,19,20=8   21,22,23,24=10     25,26,27,28=9     29,30,31,32=2 |
+                                                  16                                                                   |
+                                                  0                                                                    |
+                                                  5                                                                    |
+                                                  11                                                                   |
+      4          8               12                               20               24                28                |
+      5          5.1             5.2                              11               11.1              11.2              |
+      1          3               4                                8                10                9                 |
+                                 7                                                                   2                 |
+3,4=1  5,6,7,8=3    9,10,11,12=4    13,14,15,16=7   17,18,19,20=8   21,22,23,24=10     25,26,27,28=9     29,30,31,32=2 |
+                                                16                                                                   |
+                                                0                                                                    |
+                                                5                                                                    |
+                                                11                                                                   |
+    4          8               12                               20               24                28                |
+    5          5.1             5.2                              11               11.1              11.2              |
+    1          3               4                                8                10                9                 |
+                               7                                                                   2                 |
+4=1  5,6,7,8=3    9,10,11,12=4    13,14,15,16=7   17,18,19,20=8   21,22,23,24=10     25,26,27,28=9     29,30,31,32=2 |
+                                         16                                                                   |
+                                         0                                                                    |
+                                         5                                                                    |
+                                         11                                                                   |
+          8             12                               20               24                28                |
+          5             5.1                              11               11.1              11.2              |
+          1             4                                8                10                9                 |
+                        7                                                                   2                 |
+5,6,7,8=1  9,10,11,12=4    13,14,15,16=7   17,18,19,20=8   21,22,23,24=10     25,26,27,28=9     29,30,31,32=2 |
+                                       16                                                                   |
+                                       0                                                                    |
+                                       5                                                                    |
+                                       11                                                                   |
+        8             12                               20               24                28                |
+        5             5.1                              11               11.1              11.2              |
+        1             4                                8                10                9                 |
+                      7                                                                   2                 |
+6,7,8=1  9,10,11,12=4    13,14,15,16=7   17,18,19,20=8   21,22,23,24=10     25,26,27,28=9     29,30,31,32=2 |
+                                     16                                                                   |
+                                     0                                                                    |
+                                     5                                                                    |
+                                     11                                                                   |
+      8             12                               20               24                28                |
+      5             5.1                              11               11.1              11.2              |
+      1             4                                8                10                9                 |
+                    7                                                                   2                 |
+7,8=1  9,10,11,12=4    13,14,15,16=7   17,18,19,20=8   21,22,23,24=10     25,26,27,28=9     29,30,31,32=2 |
+                                   16                                                                   |
+                                   0                                                                    |
+                                   5                                                                    |
+                                   11                                                                   |
+    8             12                               20               24                28                |
+    5             5.1                              11               11.1              11.2              |
+    1             4                                8                10                9                 |
+                  7                                                                   2                 |
+8=1  9,10,11,12=4    13,14,15,16=7   17,18,19,20=8   21,22,23,24=10     25,26,27,28=9     29,30,31,32=2 |
+                             16                                                                   |
+                             0                                                                    |
+                             5                                                                    |
+                             11                                                                   |
+             12                              20               24                28                |
+             5                               11               11.1              11.2              |
+             1                               8                10                9                 |
+             7                                                                  2                 |
+9,10,11,12=1   13,14,15,16=7   17,18,19,20=8   21,22,23,24=10     25,26,27,28=9     29,30,31,32=2 |
+                           16                                                                   |
+                           0                                                                    |
+                           5                                                                    |
+                           11                                                                   |
+           12                              20               24                28                |
+           5                               11               11.1              11.2              |
+           1                               8                10                9                 |
+           7                                                                  2                 |
+10,11,12=1   13,14,15,16=7   17,18,19,20=8   21,22,23,24=10     25,26,27,28=9     29,30,31,32=2 |
+                        16                                                                   |
+                        0                                                                    |
+                        5                                                                    |
+                        11                                                                   |
+        12                              20               24                28                |
+        5                               11               11.1              11.2              |
+        1                               8                10                9                 |
+        7                                                                  2                 |
+11,12=1   13,14,15,16=7   17,18,19,20=8   21,22,23,24=10     25,26,27,28=9     29,30,31,32=2 |
+                     16                                                                   |
+                     0                                                                    |
+                     5                                                                    |
+                     11                                                                   |
+     12                              20               24                28                |
+     5                               11               11.1              11.2              |
+     1                               8                10                9                 |
+     7                                                                  2                 |
+12=1   13,14,15,16=7   17,18,19,20=8   21,22,23,24=10     25,26,27,28=9     29,30,31,32=2 |
+                    16                                                                   |
+                    0                                                                    |
+                    5                                                                    |
+                    11                                                                   |
+5Empty                              20               24                28                |
+                                    11               11.1              11.2              |
+                                    8                10                9                 |
+1                                                                      2                 |
+      13,14,15,16=1   17,18,19,20=8   21,22,23,24=10     25,26,27,28=9     29,30,31,32=2 |
+                 16                                                                   |
+                 0                                                                    |
+                 5                                                                    |
+                 11                                                                   |
+5Empty                           20               24                28                |
+                                 11               11.1              11.2              |
+                                 8                10                9                 |
+1                                                                   2                 |
+      14,15,16=1   17,18,19,20=8   21,22,23,24=10     25,26,27,28=9     29,30,31,32=2 |
+              16                                                                   |
+              0                                                                    |
+              5                                                                    |
+              11                                                                   |
+5Empty                        20               24                28                |
+                              11               11.1              11.2              |
+                              8                10                9                 |
+1                                                                2                 |
+      15,16=1   17,18,19,20=8   21,22,23,24=10     25,26,27,28=9     29,30,31,32=2 |
+           16                                                                   |
+           0                                                                    |
+           5                                                                    |
+           11                                                                   |
+5Empty                     20               24                28                |
+                           11               11.1              11.2              |
+                           8                10                9                 |
+1                                                             2                 |
+      16=1   17,18,19,20=8   21,22,23,24=10     25,26,27,28=9     29,30,31,32=2 |
+         16                                                                   |
+         0                                                                    |
+         5                                                                    |
+         11                                                                   |
+5Empty                   20               24                28                |
+                         11               11.1              11.2              |
+                         8                10                9                 |
+1                                                           2                 |
+      =1   17,18,19,20=8   21,22,23,24=10     25,26,27,28=9     29,30,31,32=2 |
+         16                                                                |
+         0                                                                 |
+         5                                                                 |
+         11                                                                |
+5Empty                20               24                28                |
+                      11               11.1              11.2              |
+                      8                10                9                 |
+1                                                        2                 |
+      =1   18,19,20=8   21,22,23,24=10     25,26,27,28=9     29,30,31,32=2 |
+         16                                                             |
+         0                                                              |
+         5                                                              |
+         11                                                             |
+5Empty             20               24                28                |
+                   11               11.1              11.2              |
+                   8                10                9                 |
+1                                                     2                 |
+      =1   19,20=8   21,22,23,24=10     25,26,27,28=9     29,30,31,32=2 |
+         16                                                          |
+         0                                                           |
+         5                                                           |
+         11                                                          |
+5Empty          20               24                28                |
+                11               11.1              11.2              |
+                8                10                9                 |
+1                                                  2                 |
+      =1   20=8   21,22,23,24=10     25,26,27,28=9     29,30,31,32=2 |
+         16                                                |
+         0                                                 |
+         5                                                 |
+         11                                                |
+5Empty                   24              28                |
+                         11              11.1              |
+                         8               9                 |
+1                                        2                 |
+      =1   21,22,23,24=8   25,26,27,28=9     29,30,31,32=2 |
+           24              28               |
+           0               0.1              |
+           1               9                |
+                           2                |
+22,23,24=1   25,26,27,28=9    29,30,31,32=2 |
+        24              28               |
+        0               0.1              |
+        1               9                |
+                        2                |
+23,24=1   25,26,27,28=9    29,30,31,32=2 |
+     24              28               |
+     0               0.1              |
+     1               9                |
+                     2                |
+24=1   25,26,27,28=9    29,30,31,32=2 |
+              28              |
+              0               |
+              1               |
+              2               |
+25,26,27,28=1   29,30,31,32=2 |
+           28              |
+           0               |
+           1               |
+           2               |
+26,27,28=1   29,30,31,32=2 |
+        28              |
+        0               |
+        1               |
+        2               |
+27,28=1   29,30,31,32=2 |
+     28              |
+     0               |
+     1               |
+     2               |
+28=1   29,30,31,32=2 |
+29,30,31,32=0 |
+30,31,32=0 |
+31,32=0 |
+32=0 |
+=0 |
+""");
+   }
 
-    test_merge_two();
-    test_create1();
-    test_create2();
-    test_push_and_check();
-    test_clear();
-    test_pop();
-    test_pop_4();
-    test_firstLastPast();
-    test_elementAt();
-    test_setElementAt();
-    test_setPastLastElement();
-    test_insertElementAt();
-    test_removeElementAt();
-    test_search_eq();
-    test_search_eq_partial();
-    test_search_le();
-    test_splitIntoTwo();
-    test_splitIntoThree();
-    test_splitLow();
-    test_splitLowButOne();
-    test_merge();
-    test_merge2();
-    test_mergeButOne();
-    test_mergeButOne2();
-    test_allocate();
-    test_dtSplitLeafRoot();
-    test_leafRoot();
+  static void test_delete_descending()
+   {sayCurrentTestName();
+    final int N = 32;
+    final Dt  D = new Dt(N, 4, 8, 8);
+    for (int i = 1; i <= N; i++) D.dtPut(i, i+1);
+
+    final StringBuilder s = new StringBuilder();
+    for (int i = N; i > 0; --i)
+     {D.dtDelete(i);
+      s.append(D);
+     }
+
+    //stop(s);
+    ok(s, """
+                                                      16                                                                |
+                                                      0                                                                 |
+                                                      5                                                                 |
+                                                      11                                                                |
+          4          8               12                               20               24                28             |
+          5          5.1             5.2                              11               11.1              11.2           |
+          1          3               4                                8                10                9              |
+                                     7                                                                   2              |
+1,2,3,4=1  5,6,7,8=3    9,10,11,12=4    13,14,15,16=7   17,18,19,20=8   21,22,23,24=10     25,26,27,28=9     29,30,31=2 |
+                                                      16                                                             |
+                                                      0                                                              |
+                                                      5                                                              |
+                                                      11                                                             |
+          4          8               12                               20               24                28          |
+          5          5.1             5.2                              11               11.1              11.2        |
+          1          3               4                                8                10                9           |
+                                     7                                                                   2           |
+1,2,3,4=1  5,6,7,8=3    9,10,11,12=4    13,14,15,16=7   17,18,19,20=8   21,22,23,24=10     25,26,27,28=9     29,30=2 |
+                                                      16                                                          |
+                                                      0                                                           |
+                                                      5                                                           |
+                                                      11                                                          |
+          4          8               12                               20               24                28       |
+          5          5.1             5.2                              11               11.1              11.2     |
+          1          3               4                                8                10                9        |
+                                     7                                                                   2        |
+1,2,3,4=1  5,6,7,8=3    9,10,11,12=4    13,14,15,16=7   17,18,19,20=8   21,22,23,24=10     25,26,27,28=9     29=2 |
+                                                      16                                                 |
+                                                      0                                                  |
+                                                      5                                                  |
+                                                      11                                                 |
+          4          8               12                               20               24                |
+          5          5.1             5.2                              11               11.1              |
+          1          3               4                                8                10                |
+                                     7                                                 9                 |
+1,2,3,4=1  5,6,7,8=3    9,10,11,12=4    13,14,15,16=7   17,18,19,20=8   21,22,23,24=10     25,26,27,28=9 |
+                                                      16                                              |
+                                                      0                                               |
+                                                      5                                               |
+                                                      11                                              |
+          4          8               12                               20               24             |
+          5          5.1             5.2                              11               11.1           |
+          1          3               4                                8                10             |
+                                     7                                                 9              |
+1,2,3,4=1  5,6,7,8=3    9,10,11,12=4    13,14,15,16=7   17,18,19,20=8   21,22,23,24=10     25,26,27=9 |
+                                                      16                                           |
+                                                      0                                            |
+                                                      5                                            |
+                                                      11                                           |
+          4          8               12                               20               24          |
+          5          5.1             5.2                              11               11.1        |
+          1          3               4                                8                10          |
+                                     7                                                 9           |
+1,2,3,4=1  5,6,7,8=3    9,10,11,12=4    13,14,15,16=7   17,18,19,20=8   21,22,23,24=10     25,26=9 |
+                                                      16                                        |
+                                                      0                                         |
+                                                      5                                         |
+                                                      11                                        |
+          4          8               12                               20               24       |
+          5          5.1             5.2                              11               11.1     |
+          1          3               4                                8                10       |
+                                     7                                                 9        |
+1,2,3,4=1  5,6,7,8=3    9,10,11,12=4    13,14,15,16=7   17,18,19,20=8   21,22,23,24=10     25=9 |
+                                                      16                               |
+                                                      0                                |
+                                                      5                                |
+                                                      11                               |
+          4          8               12                               20               |
+          5          5.1             5.2                              11               |
+          1          3               4                                8                |
+                                     7                                10               |
+1,2,3,4=1  5,6,7,8=3    9,10,11,12=4    13,14,15,16=7   17,18,19,20=8   21,22,23,24=10 |
+                                                      16                            |
+                                                      0                             |
+                                                      5                             |
+                                                      11                            |
+          4          8               12                               20            |
+          5          5.1             5.2                              11            |
+          1          3               4                                8             |
+                                     7                                10            |
+1,2,3,4=1  5,6,7,8=3    9,10,11,12=4    13,14,15,16=7   17,18,19,20=8   21,22,23=10 |
+                                                      16                         |
+                                                      0                          |
+                                                      5                          |
+                                                      11                         |
+          4          8               12                               20         |
+          5          5.1             5.2                              11         |
+          1          3               4                                8          |
+                                     7                                10         |
+1,2,3,4=1  5,6,7,8=3    9,10,11,12=4    13,14,15,16=7   17,18,19,20=8   21,22=10 |
+                                                      16                      |
+                                                      0                       |
+                                                      5                       |
+                                                      11                      |
+          4          8               12                               20      |
+          5          5.1             5.2                              11      |
+          1          3               4                                8       |
+                                     7                                10      |
+1,2,3,4=1  5,6,7,8=3    9,10,11,12=4    13,14,15,16=7   17,18,19,20=8   21=10 |
+                                                      16                     |
+                                                      0                      |
+                                                      5                      |
+                                                      11                     |
+          4          8               12                 11Empty              |
+          5          5.1             5.2                                     |
+          1          3               4                                       |
+                                     7                  8                    |
+1,2,3,4=1  5,6,7,8=3    9,10,11,12=4    13,14,15,16=7          17,18,19,20=8 |
+                                                      16                  |
+                                                      0                   |
+                                                      5                   |
+                                                      11                  |
+          4          8               12                 11Empty           |
+          5          5.1             5.2                                  |
+          1          3               4                                    |
+                                     7                  8                 |
+1,2,3,4=1  5,6,7,8=3    9,10,11,12=4    13,14,15,16=7          17,18,19=8 |
+                                                      16               |
+                                                      0                |
+                                                      5                |
+                                                      11               |
+          4          8               12                 11Empty        |
+          5          5.1             5.2                               |
+          1          3               4                                 |
+                                     7                  8              |
+1,2,3,4=1  5,6,7,8=3    9,10,11,12=4    13,14,15,16=7          17,18=8 |
+                                                      16            |
+                                                      0             |
+                                                      5             |
+                                                      11            |
+          4          8               12                 11Empty     |
+          5          5.1             5.2                            |
+          1          3               4                              |
+                                     7                  8           |
+1,2,3,4=1  5,6,7,8=3    9,10,11,12=4    13,14,15,16=7          17=8 |
+                                                      16          |
+                                                      0           |
+                                                      5           |
+                                                      11          |
+          4          8               12                 11Empty   |
+          5          5.1             5.2                          |
+          1          3               4                            |
+                                     7                  8         |
+1,2,3,4=1  5,6,7,8=3    9,10,11,12=4    13,14,15,16=7          =8 |
+                                                   16          |
+                                                   0           |
+                                                   5           |
+                                                   11          |
+          4          8               12              11Empty   |
+          5          5.1             5.2                       |
+          1          3               4                         |
+                                     7               8         |
+1,2,3,4=1  5,6,7,8=3    9,10,11,12=4    13,14,15=7          =8 |
+                                                16          |
+                                                0           |
+                                                5           |
+                                                11          |
+          4          8               12           11Empty   |
+          5          5.1             5.2                    |
+          1          3               4                      |
+                                     7            8         |
+1,2,3,4=1  5,6,7,8=3    9,10,11,12=4    13,14=7          =8 |
+                                             16          |
+                                             0           |
+                                             5           |
+                                             11          |
+          4          8               12        11Empty   |
+          5          5.1             5.2                 |
+          1          3               4                   |
+                                     7         8         |
+1,2,3,4=1  5,6,7,8=3    9,10,11,12=4    13=7          =8 |
+                                     16          |
+                                     0           |
+                                     5           |
+                                     11          |
+          4          8                 11Empty   |
+          5          5.1                         |
+          1          3                           |
+                     4                 8         |
+1,2,3,4=1  5,6,7,8=3    9,10,11,12=4          =8 |
+          4          8            |
+          0          0.1          |
+          1          3            |
+                     4            |
+1,2,3,4=1  5,6,7,8=3    9,10,11=4 |
+          4          8         |
+          0          0.1       |
+          1          3         |
+                     4         |
+1,2,3,4=1  5,6,7,8=3    9,10=4 |
+          4          8      |
+          0          0.1    |
+          1          3      |
+                     4      |
+1,2,3,4=1  5,6,7,8=3    9=4 |
+          4          |
+          0          |
+          1          |
+          3          |
+1,2,3,4=1  5,6,7,8=3 |
+          4        |
+          0        |
+          1        |
+          3        |
+1,2,3,4=1  5,6,7=3 |
+          4      |
+          0      |
+          1      |
+          3      |
+1,2,3,4=1  5,6=3 |
+          4    |
+          0    |
+          1    |
+          3    |
+1,2,3,4=1  5=3 |
+1,2,3,4=0 |
+1,2,3=0 |
+1,2=0 |
+1=0 |
+=0 |
+""");
+   }
+
+  static void test_delete_random()
+   {sayCurrentTestName();
+    final int N = 32;
+    final Dt  D = new Dt(N, 4, 8, 8);
+    for (int i = 1; i <= N; i++) D.dtPut(i, i+1);
+
+    final StringBuilder s = new StringBuilder();
+    for (int i = N; i > 0; --i)
+     {D.dtDelete(random_32[i-1]);
+      s.append(D);
+     }
+
+    //stop(s);
+    ok(s, """
+                                                      16                                                                |
+                                                      0                                                                 |
+                                                      5                                                                 |
+                                                      11                                                                |
+          4          8               12                               20            24                28                |
+          5          5.1             5.2                              11            11.1              11.2              |
+          1          3               4                                8             10                9                 |
+                                     7                                                                2                 |
+1,2,3,4=1  5,6,7,8=3    9,10,11,12=4    13,14,15,16=7   17,18,19,20=8   21,23,24=10     25,26,27,28=9     29,30,31,32=2 |
+                                                    16                                                                |
+                                                    0                                                                 |
+                                                    5                                                                 |
+                                                    11                                                                |
+          4        8               12                               20            24                28                |
+          5        5.1             5.2                              11            11.1              11.2              |
+          1        3               4                                8             10                9                 |
+                                   7                                                                2                 |
+1,2,3,4=1  5,6,8=3    9,10,11,12=4    13,14,15,16=7   17,18,19,20=8   21,23,24=10     25,26,27,28=9     29,30,31,32=2 |
+                                                    16                                                             |
+                                                    0                                                              |
+                                                    5                                                              |
+                                                    11                                                             |
+          4        8               12                            20            24                28                |
+          5        5.1             5.2                           11            11.1              11.2              |
+          1        3               4                             8             10                9                 |
+                                   7                                                             2                 |
+1,2,3,4=1  5,6,8=3    9,10,11,12=4    13,14,15,16=7   17,18,20=8   21,23,24=10     25,26,27,28=9     29,30,31,32=2 |
+                                                 16                                                             |
+                                                 0                                                              |
+                                                 5                                                              |
+                                                 11                                                             |
+          4        8               12                         20            24                28                |
+          5        5.1             5.2                        11            11.1              11.2              |
+          1        3               4                          8             10                9                 |
+                                   7                                                          2                 |
+1,2,3,4=1  5,6,8=3    9,10,11,12=4    13,15,16=7   17,18,20=8   21,23,24=10     25,26,27,28=9     29,30,31,32=2 |
+                                              16                                                             |
+                                              0                                                              |
+                                              5                                                              |
+                                              11                                                             |
+          4        8               12                      20            24                28                |
+          5        5.1             5.2                     11            11.1              11.2              |
+          1        3               4                       8             10                9                 |
+                                   7                                                       2                 |
+1,2,3,4=1  5,6,8=3    9,10,11,12=4    13,16=7   17,18,20=8   21,23,24=10     25,26,27,28=9     29,30,31,32=2 |
+                                              16                                                          |
+                                              0                                                           |
+                                              5                                                           |
+                                              11                                                          |
+          4        8               12                      20            24             28                |
+          5        5.1             5.2                     11            11.1           11.2              |
+          1        3               4                       8             10             9                 |
+                                   7                                                    2                 |
+1,2,3,4=1  5,6,8=3    9,10,11,12=4    13,16=7   17,18,20=8   21,23,24=10     25,26,27=9     29,30,31,32=2 |
+                                              16                                                       |
+                                              0                                                        |
+                                              5                                                        |
+                                              11                                                       |
+          4        8               12                   20            24             28                |
+          5        5.1             5.2                  11            11.1           11.2              |
+          1        3               4                    8             10             9                 |
+                                   7                                                 2                 |
+1,2,3,4=1  5,6,8=3    9,10,11,12=4    13,16=7   18,20=8   21,23,24=10     25,26,27=9     29,30,31,32=2 |
+                                              16                                                    |
+                                              0                                                     |
+                                              5                                                     |
+                                              11                                                    |
+          4        8               12                   20            24             28             |
+          5        5.1             5.2                  11            11.1           11.2           |
+          1        3               4                    8             10             9              |
+                                   7                                                 2              |
+1,2,3,4=1  5,6,8=3    9,10,11,12=4    13,16=7   18,20=8   21,23,24=10     25,26,27=9     30,31,32=2 |
+                                            16                                                    |
+                                            0                                                     |
+                                            5                                                     |
+                                            11                                                    |
+          4      8               12                   20            24             28             |
+          5      5.1             5.2                  11            11.1           11.2           |
+          1      3               4                    8             10             9              |
+                                 7                                                 2              |
+1,2,3,4=1  5,8=3    9,10,11,12=4    13,16=7   18,20=8   21,23,24=10     25,26,27=9     30,31,32=2 |
+                                          16                                                    |
+                                          0                                                     |
+                                          5                                                     |
+                                          11                                                    |
+          4      8             12                   20            24             28             |
+          5      5.1           5.2                  11            11.1           11.2           |
+          1      3             4                    8             10             9              |
+                               7                                                 2              |
+1,2,3,4=1  5,8=3    10,11,12=4    13,16=7   18,20=8   21,23,24=10     25,26,27=9     30,31,32=2 |
+                                          16                                                 |
+                                          0                                                  |
+                                          5                                                  |
+                                          11                                                 |
+          4      8             12                   20            24             28          |
+          5      5.1           5.2                  11            11.1           11.2        |
+          1      3             4                    8             10             9           |
+                               7                                                 2           |
+1,2,3,4=1  5,8=3    10,11,12=4    13,16=7   18,20=8   21,23,24=10     25,26,27=9     31,32=2 |
+                                          16                                        |
+                                          0                                         |
+                                          5                                         |
+                                          11                                        |
+          4      8             12                   20            24                |
+          5      5.1           5.2                  11            11.1              |
+          1      3             4                    8             10                |
+                               7                                  9                 |
+1,2,3,4=1  5,8=3    10,11,12=4    13,16=7   18,20=8   21,23,24=10     25,27,31,32=9 |
+                                  16                                        |
+                                  0                                         |
+                                  5                                         |
+                                  11                                        |
+          4      8                          20            24                |
+          5      5.1                        11            11.1              |
+          1      3                          8             10                |
+                 4                                        9                 |
+1,2,3,4=1  5,8=3    11,12,13,16=4   18,20=8   21,23,24=10     25,27,31,32=9 |
+                                16                                        |
+                                0                                         |
+                                5                                         |
+                                11                                        |
+        4      8                          20            24                |
+        5      5.1                        11            11.1              |
+        1      3                          8             10                |
+               4                                        9                 |
+1,2,3=1  5,8=3    11,12,13,16=4   18,20=8   21,23,24=10     25,27,31,32=9 |
+                                16                              |
+                                0                               |
+                                5                               |
+                                11                              |
+        4      8                                24              |
+        5      5.1                              11              |
+        1      3                                8               |
+               4                                9               |
+1,2,3=1  5,8=3    11,12,13,16=4   18,20,21,23=8   25,27,31,32=9 |
+                         16                              |
+                         0                               |
+                         5                               |
+                         11                              |
+          8                              24              |
+          5                              11              |
+          1                              8               |
+          4                              9               |
+1,2,3,8=1  11,12,13,16=4   18,20,21,23=8   25,27,31,32=9 |
+          8              16            24               |
+          0              0.1           0.2              |
+          1              4             8                |
+                                       9                |
+1,2,3,8=1  11,12,13,16=4    18,20,23=8    25,27,31,32=9 |
+          8           16            24               |
+          0           0.1           0.2              |
+          1           4             8                |
+                                    9                |
+1,2,3,8=1  12,13,16=4    18,20,23=8    25,27,31,32=9 |
+          8           16            24            |
+          0           0.1           0.2           |
+          1           4             8             |
+                                    9             |
+1,2,3,8=1  12,13,16=4    18,20,23=8    25,27,31=9 |
+          8        16            24            |
+          0        0.1           0.2           |
+          1        4             8             |
+                                 9             |
+1,2,3,8=1  12,16=4    18,20,23=8    25,27,31=9 |
+          8              24            |
+          0              0.1           |
+          1              4             |
+                         9             |
+1,2,3,8=1  12,18,20,23=4    25,27,31=9 |
+          8              24         |
+          0              0.1        |
+          1              4          |
+                         9          |
+1,2,3,8=1  12,18,20,23=4    27,31=9 |
+          8              24      |
+          0              0.1     |
+          1              4       |
+                         9       |
+1,2,3,8=1  12,18,20,23=4    27=9 |
+        8              24      |
+        0              0.1     |
+        1              4       |
+                       9       |
+1,3,8=1  12,18,20,23=4    27=9 |
+        8              |
+        0              |
+        1              |
+        4              |
+1,3,8=1  12,20,23,27=4 |
+      8              |
+      0              |
+      1              |
+      4              |
+1,3=1  12,20,23,27=4 |
+      8           |
+      0           |
+      1           |
+      4           |
+1,3=1  12,23,27=4 |
+1,3,12,27=0 |
+3,12,27=0 |
+3,12=0 |
+12=0 |
+=0 |
+""");
+   }
+
+  static void oldTests()                                                        // Tests thought to be in good shape
+   {test_leafRoot();
     test_leavesNotTop();
     test_leafAtTop();
     test_branchRoot();
@@ -1601,35 +2251,17 @@ Success : false
     test_branchesAtTop();
     test_find();
     test_findAndInsert();
-    test_delete_ascending();
-    test_delete_random();
-    test_delete_descending();
-    test_delete_random_descending();
     test_put_ascending();
     test_put_merge();
-    test_put_reload_and_check();
     test_put_descending();
     test_put_random();
-    test_verilog_delete();
-    test_verilog_find();
-    test_verilog_put();
-   }
-*/
-  static void newTests()                                                        // Tests being worked on
-   {//oldTests();
-    //test_leafRoot();
-    //test_leavesNotTop();
-    //test_leafAtTop();
-    //test_branchRoot();
-    //test_branchesNotTop();
-    //test_branchesAtTop();
-    //test_find();
-    //test_findAndInsert();
-    //test_put_ascending();
-    //test_put_merge();
-    //test_put_descending();
-    //test_put_random();
     test_delete_ascending();
+    test_delete_descending();
+    test_delete_random();
+   }
+
+  static void newTests()                                                        // Tests being worked on
+   {oldTests();
    }
 
   public static void main(String[] args)                                        // Test if called as a program
