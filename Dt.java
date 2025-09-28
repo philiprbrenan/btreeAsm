@@ -86,11 +86,8 @@ class Dt extends Chip                                                           
     private int     stuckFreeNext;                                              // Next element on the free chain
     private boolean stuckLeaf;                                                  // Whether this is a stuckLeaf or a branch
     private boolean stuckFree;                                                  // Whether this stuck is free or in use
-    boolean         stuckFound;                                                 // Whether the key was found on the last search of the stuck
     int             stuckKey;                                                   // Last key used to search the stuck
-    int             stuckFoundKey;                                              // Key found on the last search for a key greater than or equal to a specified key was requested
     int             stuckData;                                                  // Data associated with the last search
-    int             stuckIndex;                                                 // Index of stuck in double btree in which the last key searched with should reside
 
     Stuck(int Index)                                                            // Create a stuck recording its position in memory
      {stuckNumber = Index;
@@ -141,11 +138,8 @@ class Dt extends Chip                                                           
       for(Integer k : stuckMap.keySet())
        {S.append(String.format("  %2d: %2d\n", k, stuckMap.get(k)));
        }
-      final boolean f = stuckFound   ; S.append("Found     : "+(f ? 1:0)+"\n"); // Whether the key was found
       final int     k = stuckKey     ; S.append("Key       : "+k+"\n");         // Data associated with the key if found
-      final int     K = stuckFoundKey; S.append("FoundKey  : "+K+"\n");         // Data associated with the key if found
       final int     d = stuckData    ; S.append("Data      : "+d+"\n");         // Data associated with the key if found
-      final int     s = stuckIndex   ; S.append("StuckIndex: "+s+"\n");         // Index of stuck in the double btree in which the key should reside
 
       return ""+S;
      }
@@ -296,7 +290,7 @@ class Dt extends Chip                                                           
      }
    } // Stuck
 
-//D2 Horizontally                                                               // Print the double btree horizontally
+//D2 Print                                                                      // Print the double btree horizontally
 
     void dtPrintLeaf(int DtIndex, Stack<StringBuilder>P, int level)             // Print stuckLeaf horizontally
      {dtPadStrings(P, level);
@@ -517,7 +511,7 @@ class Dt extends Chip                                                           
     if (dtDebug) say("SSSS 2222 branchAtTop", this);
    }
 
-//D1 Merge                                                                      // Merge two nodes
+//D2 Merge                                                                      // Merge two nodes
 
   private boolean dtMergeLeavesIntoRoot()                                       // Merge two leaves into the root
    {final Stuck p = dtStuckGet(0);                                              // Parent stuck two of whose children might be dtMerged
