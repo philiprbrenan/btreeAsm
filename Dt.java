@@ -760,13 +760,13 @@ class Dt extends Chip                                                           
       if (S.stuckHas(Key))                                                      // The stuck contains the key.  We try merging on the left, right and in the middle
        {if (Key != S.stuckLastKey())                                            // Try merge on right
          {final int k = S.stuckNextKey(Key);
-          dtMergeNotTop  (S, k);
+          dtMergeNotTop(S, k);
          }
         if (S.stuckSize() > 0 && Key != S.stuckFirstKey())                      // Try merge on left
          {final int k = S.stuckPrevKey(Key);
-          dtMergeNotTop  (S, k);
+          dtMergeNotTop(S, k);
          }
-        dtMergeNotTop    (S, Key);                                              // Try merge with current key
+        dtMergeNotTop  (S, Key);                                                // Try merge with current key
         continue;
        }
 
@@ -790,7 +790,7 @@ class Dt extends Chip                                                           
       final Integer k = S.stuckGe(Key);                                         // Known to be a branch
       final Stuck s = dtStuckGet(k == null ? S.stuckTop() : S.stuckGetData(k)); // Step down
       if (s.stuckIsLeaf()) return;                                              // Stepped to a leaf so merge is finished
-      S = s;                                                                    // Continue to next branch
+      S = s;                                                                    // Continue to next level of branches or leaves
      }
    }
 
