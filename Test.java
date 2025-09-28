@@ -50,12 +50,10 @@ public class Test                                                               
    }
 
   static String joinStrings(Stack<String> S, String join)                       // Perl join
-   {final StringBuilder s = new StringBuilder();
+   {final StringJoiner s = new StringJoiner(join);
     final int N = S.size();
-    if (N == 0) return "";
-    for (int i = 0; i < N-1; i++) s.append(S.elementAt(i)+join);
-                                  s.append(S.elementAt(N-1));
-    return s.toString();
+    for  (int i = 0; i < N; i++) s.add(S.elementAt(i));
+    return ""+s;
    }
 
   static String joinStringBuilders(Stack<StringBuilder> S, String join)         // Perl join
@@ -65,11 +63,9 @@ public class Test                                                               
    }
 
   static String joinStrings(Set<String> S, String join)                         // Perl join
-   {final StringBuilder t = new StringBuilder();
-    final int N = S.size();
-    if (N == 0) return "";
-    for (String s: S) t.append(s+join);
-    return t.toString().substring(0, t.length() - join.length());
+   {final StringJoiner t = new StringJoiner(join);
+    for (String s: S) t.add(s);
+    return ""+t;
    }
 
   static String joinLines(Stack<String> S) {return joinStrings(S, "\n");}       // Perl join lines
@@ -1452,8 +1448,7 @@ a   aa    AAA
    }
 
   static void newTests()                                                        // Tests being worked on
-   {//oldTests();
-    test_bitSetToHex();
+   {oldTests();
    }
 
   public static void main(String[] args)                                        // Test if called as a program
