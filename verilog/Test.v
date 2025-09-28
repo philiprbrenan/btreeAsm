@@ -3,6 +3,7 @@
 // Philip R Brenan at appaapps dot com, Appa Apps Ltd Inc., 2025
 //------------------------------------------------------------------------------
 `timescale 10ps/1ps
+`default_nettype none
 module Test(                                                                      // Test bench for database on a chip
   input                 clock,                                                  // Clock
   input                 reset,                                                  // Reset chip
