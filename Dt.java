@@ -509,9 +509,9 @@ class Dt extends Chip                                                           
    {final Stuck p = Parent;
     if (!p.stuckHas(Left))        return false;                                 // Key must be in stuck
     if (p.stuckLastKey() == Left) return false;                                 // Key cannot be the last key in the body
-    final int il = p.stuckGetData(Left);                                        // Index of left leaf
-    final int rk = p.stuckNextKey(Left);                                        // Right leaf key
-    final int ir = p.stuckGetData(rk);                                          // Indexes of right leaf
+    final int  il = p.stuckGetData(Left);                                       // Index of left leaf
+    final int  rk = p.stuckNextKey(Left);                                       // Right leaf key
+    final int  ir = p.stuckGetData(rk);                                         // Indexes of right leaf
 
     final Stuck l = dtStuckGet(il);
     final Stuck r = dtStuckGet(ir);
@@ -531,11 +531,11 @@ class Dt extends Chip                                                           
 
   private boolean dtMergeLeavesAtTop(Stuck Parent)                              // Merge the top most two leaves of a branch that is not the root
    {final Stuck p = Parent;
-    final int sz = p.stuckSize();                                               // Size of parent stuck
+    final int  sz = p.stuckSize();                                              // Size of parent stuck
     if (sz == 0) return false;                                                  // Nothing to merge
 
-    final int il = p.stuckGetData(p.stuckLastKey());
-    final int ir = p.stuckTop;
+    final int  il = p.stuckGetData(p.stuckLastKey());
+    final int  ir = p.stuckTop;
 
     final Stuck l = dtStuckGet(il);
     final Stuck r = dtStuckGet(ir);
@@ -579,9 +579,9 @@ class Dt extends Chip                                                           
     if (!p.stuckHas(Left))        return false;                                 // Key must be in stuck
     if (p.stuckLastKey() == Left) return false;                                 // Key cannot be the last key in the body
 
-    final int il = p.stuckGetData(Left);                                        // Get the double btree index of the left child branch
-    final int rk = p.stuckNextKey(Left);                                        // Get the double btree index of the right child branch
-    final int ir = p.stuckGetData(rk);                                          // Get the double btree index of the right child branch
+    final int  il = p.stuckGetData(Left);                                       // Get the double btree index of the left child branch
+    final int  rk = p.stuckNextKey(Left);                                       // Get the double btree index of the right child branch
+    final int  ir = p.stuckGetData(rk);                                         // Get the double btree index of the right child branch
 
     final Stuck l = dtStuckGet(il);                                             // Load left  branch from the double btree
     final Stuck r = dtStuckGet(ir);                                             // Load right branch from the double btree
@@ -607,8 +607,8 @@ class Dt extends Chip                                                           
     final int sz = p.stuckSize();                                               // Index of left branch known to be valid as the parent contains at least one entry resulting in two children
     if (sz == 0)              return false;                                     // Cannot perform this merge on an empty stuck
 
-    final int il = p.stuckGetData(p.stuckLastKey());                            // Get the double btree index of the left branch branch
-    final int ir = p.stuckTop();                                                // Get the double btree index of the right branch branch
+    final int  il = p.stuckGetData(p.stuckLastKey());                           // Get the double btree index of the left branch branch
+    final int  ir = p.stuckTop();                                               // Get the double btree index of the right branch branch
 
     final Stuck l = dtStuckGet(il);                                             // Load left  branch from the double btree
     final Stuck r = dtStuckGet(ir);                                             // Load right branch from the double btree
@@ -639,13 +639,13 @@ class Dt extends Chip                                                           
 //D1 Find                                                                       // Find a key in a double btree
 
   class Find                                                                    // Find the leaf stuck associated with a key in the double btree
-   {final int findKey;
+   {final int findKey;                                                          // Key being searched for
     boolean   findFound;                                                        // Whether the key being searched for was found
-    int       findIndex;                                                        // Index of the stuck in which the key was found or would have been found if it was in the double tree
+    int       findIndex;                                                        // Index of the stuck in which the key was found or would have been found if it was present in the double tree
     int       findData;                                                         // Data associated with the key if the key was found
 
     Find(int Key)                                                               // Find the specified key
-     {findKey = Key;
+     {findKey = Key;                                                            // Save key
       int p = 0;                                                                // Start at the root
 
       for (int i = 0; i < dtMaxTreeDepth; i++)                                  // Step down through the tree
@@ -699,7 +699,7 @@ class Dt extends Chip                                                           
         fiaSuccess  = true;
         return;
        }
-      fiaInserted  = false;                                                     // Not inserted or updated
+      fiaInserted   = false;                                                    // Not inserted or updated
      }
 
     public String toString()                                                    // Print status of find result
@@ -759,12 +759,10 @@ class Dt extends Chip                                                           
 
       if (S.stuckHas(Key))                                                      // The stuck contains the key.  We try merging on the left, right and in the middle
        {if (Key != S.stuckLastKey())                                            // Try merge on right
-         {final int k = S.stuckNextKey(Key);
-          dtMergeNotTop(S, k);
+         {dtMergeNotTop(S, S.stuckNextKey(Key));
          }
         if (S.stuckSize() > 0 && Key != S.stuckFirstKey())                      // Try merge on left
-         {final int k = S.stuckPrevKey(Key);
-          dtMergeNotTop(S, k);
+         {dtMergeNotTop(S, S.stuckPrevKey(Key));
          }
         dtMergeNotTop  (S, Key);                                                // Try merge with current key
         continue;
@@ -774,16 +772,14 @@ class Dt extends Chip                                                           
        {final int k = S.stuckPrevKey(Key);                                      // Merge previous child
         dtMergeNotTop  (S, k);
         if (S.stuckSize() > 0 && k > S.stuckFirstKey())                         // Merge second previous child
-         {final int K = S.stuckPrevKey(k);
-          dtMergeNotTop(S, K);
+         {dtMergeNotTop(S, S.stuckPrevKey(k));
          }
        }
       if (S.stuckSize() > 0 && Key < S.stuckLastKey())                          // In the body but no matching key
        {final int k = S.stuckNextKey(Key);                                      // Merge next child
         dtMergeNotTop  (S, k);
         if (S.stuckSize() > 0 && k < S.stuckLastKey())                          // Merge second next child
-         {final int K = S.stuckNextKey(k);
-          dtMergeNotTop(S, K);
+         {dtMergeNotTop(S, S.stuckNextKey(k));
          }
        }
 
@@ -952,13 +948,13 @@ class Dt extends Chip                                                           
 
   static void test_branchRoot()
    {sayCurrentTestName();
-    final Dt    D = new Dt(32, 4);
+    final Dt     D = new Dt(32, 4);
 
-    final Stuck s = D.dtStuckGet(0);
-                s.stuckSetBranch();
-    final Stuck a = D.dtAllocateBranch();
-    final Stuck b = D.dtAllocateBranch();
-    final Stuck c = D.dtAllocateBranch();
+    final Stuck  s = D.dtStuckGet(0);
+                 s.stuckSetBranch();
+    final Stuck  a = D.dtAllocateBranch();
+    final Stuck  b = D.dtAllocateBranch();
+    final Stuck  c = D.dtAllocateBranch();
 
     final Stuck a1 = D.dtAllocateLeaf();
     final Stuck a2 = D.dtAllocateLeaf();
@@ -1020,11 +1016,11 @@ class Dt extends Chip                                                           
    {sayCurrentTestName();
     final Dt    D = new Dt(32, 4);
 
-    final Stuck s = D.dtStuckGet(0);
-                s.stuckSetBranch();
-    final Stuck a = D.dtAllocateBranch();
-    final Stuck b = D.dtAllocateBranch();
-    final Stuck c = D.dtAllocateBranch();
+    final Stuck  s = D.dtStuckGet(0);
+                 s.stuckSetBranch();
+    final Stuck  a = D.dtAllocateBranch();
+    final Stuck  b = D.dtAllocateBranch();
+    final Stuck  c = D.dtAllocateBranch();
 
     final Stuck a1 = D.dtAllocateLeaf();
     final Stuck a2 = D.dtAllocateLeaf();
@@ -1318,9 +1314,7 @@ Success : false
     final int N = 32;
     final Dt  D = new Dt(N, 4);
 
-    for (int i = 1; i <= N; i++)
-     {D.dtPut(i, i+1);
-     }
+    for (int i = 1; i <= N; i++) D.dtPut(i, i+1);
     //stop(D);
     ok(D, """
                                                       16                               24                               |
