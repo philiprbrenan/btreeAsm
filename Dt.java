@@ -121,15 +121,15 @@ class Dt extends Chip                                                           
 
 //D3 Memory                                                                     // Get a stuck from memory or return it to memory
 
-    Stuck stuckGetFromMemory(int Index)                                         // Copy a stuck indexed by a register out of memory into a set of registers. Currently this is done sequentially, but multiple stuck loads could be overlapped if this method was fragmented into smaller steps.  Most stuck methods do not actually require the retrieval of a full stuck from memory but doing so makes it easier to write an initial version of the double btree algorithm at the cost of considerable inefficiency.
+    Stuck stuckGetFromMemory(int Index)                                         // Copy an indexed stuck out of memory
      {return dtStucks[Index];
      }
 
-    void stuckGetFromMemoryRoot()                                               // Copy the root stuck out of memory into a set of registers. Currently this is done sequentially, but multiple stuck loads could be overlapped if this method was fragmented into smaller steps.  Most stuck methods do not actually require the retrieval of a full stuck from memory but doing so makes it easier to write an initial version of the double btree algorithm at the cost of considerable inefficiency.
+    void stuckGetFromMemoryRoot()                                               // Copy the root stuck out of memory
      {stuckGetFromMemory(0);
      }
 
-    void stuckPutIntoMemory()                                                   // Update a stuck in memory from the registers describing this stuck optionally updating the leaf field.
+    void stuckPutIntoMemory()                                                   // Update a stuck in memory
      {
      }
 
