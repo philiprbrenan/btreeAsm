@@ -6,7 +6,7 @@ package com.AppaApps.Silicon;                                                   
 
 import java.util.*;
 
-class Dt extends Chip                                                           // A double btree - a double btree made of btrees
+class Dt extends Test                                                           // A double btree - a double btree made of btrees
  {final int dtSize;                                                             // The maximum number of nodes == branches or leaves in the double btree
   final int dtMaxStuckSize;                                                     // The maximum number of entries in each stuck.
   final int dtMaxTreeDepth        = 99;                                         // Maximum tree height
@@ -23,7 +23,7 @@ class Dt extends Chip                                                           
 //D1 Construction                                                               // Construct and layout the double btree
 
   Dt(int Size, int MaxStuckSize)                                                // Create the double btree
-   {super("Dt"); N();
+   {super();
     if (MaxStuckSize % 2 == 1)
      {stop("The stuck size must be even, not:", MaxStuckSize);
      }
