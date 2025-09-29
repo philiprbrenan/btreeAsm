@@ -58,13 +58,10 @@ class Chip extends Test                                                         
 
   String chipStopExpression()                                                   // The or of all the process stop fields as a process can only write directly to its own variables not to global ones.
    {if (coverageAnalysis) zz();
-    final StringBuilder s = new StringBuilder();
+    final StringJoiner s = new StringJoiner(" || ");
     for (Process p: processes)                                                  // Each process
-     {if (!p.hasMemory())
-       {s.append("("+p.processStopName()+" != 0 ? 1 : 0) || ");
-       }
+     {if (!p.hasMemory()) s.add("("+p.processStopName()+" != 0 ? 1 : 0)");
      }
-    if (s.length() > 0) s.setLength(s.length()-4);
     return ""+s;
    }
 
@@ -1433,7 +1430,7 @@ if __name__ == "__main__":
            }
           return registerFullName+" = "+registerGet();
          }
-        final StringBuilder s = new StringBuilder(registerFullName+" = ");        // Arrayed register values
+        final StringBuilder s = new StringBuilder(registerFullName+" = ");      // Arrayed register values
         for (int i = 0; i < registerSize; i++)
          {s.append(String.format(" %2d", registerGet(i)));
          }
@@ -1442,16 +1439,11 @@ if __name__ == "__main__":
 
       String registerDeclareModuleParameter()                                   // Declare a register in Verilog
        {if (coverageAnalysis) zz();
-        if (input)
-         {return "input wire ["+registerBits+"-1:0] "+registerBaseName;
-         }
-        else if (output)
-         {return "output reg ["+registerBits+"-1:0] "+registerBaseName;
-         }
-        else                                                                    // The caller has not told us whether the parameter is for input or output
-         {stop("Module parameter:", registerBaseName, "must be input or output");
-          return null;
-         }
+        final String n = registerBaseName;
+        if (input)  return "input wire ["+registerBits+"-1:0] "+n;
+        if (output) return "output reg ["+registerBits+"-1:0] "+n;
+        stop("Module parameter:", n, "must be input or output");                // The caller has not told us whether the parameter is for input or output
+        return null;
        }
 
 //D3 Arithmetic                                                                 // Operations on registers
@@ -1653,11 +1645,9 @@ if __name__ == "__main__":
       void sum(Verilog v, Process.Register...Source)                            // Sum the source registers in Verilog
        {if (coverageAnalysis) zz();
         if (Source.length == 0) return;
-        final StringBuilder s = new StringBuilder();
-        s.append(Source[0].registerFullName);
-        for (int i = 1; i < Source.length; i++)
-         {s.append(" + " + Source[i].registerFullName);
-         }
+
+        final StringJoiner s = new StringJoiner(" + ");
+        for (Process.Register r: Source) s.add(r.registerFullName);
         v.assign(registerFullName, ""+s);
        }
 
@@ -2012,13 +2002,12 @@ if __name__ == "__main__":
     String memorySave()                                                         // Save memory to a string
      {if (coverageAnalysis) zz();
       final int S = memorySize, W = memoryWidth, B = memoryBlockSize;           // Shorten names
-      final StringBuilder s = new StringBuilder();
-      s.append(" "+W+" "+S+" "+B);                                              // Save dimensions so they can be checked on reload
+      final StringJoiner s = new StringJoiner(" "+W+" "+S+" "+B, " ", "\n");    // Save dimensions so they can be checked on reload
       for(int i = 0; i < S; i++)                                                // Transform memory blocks into bits
        {final BitSet b = memory[i];
-        for (int j = 0; j < W * B; j++) s.append(" "+(b.get(j) ? "1" : "0"));   // Save each bit
+        for (int j = 0; j < W * B; j++) s.add(b.get(j) ? "1" : "0");            // Save each bit
        }
-      return (""+s).trim()+"\n";                                                // String of bits representing memory
+      return ""+s;                                                              // String of bits representing memory
      }
 
     void memoryLoad(Process P, String line)                                     // Load memory from a string
