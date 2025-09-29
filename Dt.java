@@ -1,5 +1,5 @@
 //------------------------------------------------------------------------------
-// A double btree - a Btree made of Btrees
+// A double btree - a btree whose stucks are btrees
 // Philip R Brenan at appaapps dot com, Appa Apps Ltd Inc., 2025
 //------------------------------------------------------------------------------
 package com.AppaApps.Silicon;                                                   // Double Btree
@@ -24,9 +24,12 @@ class Dt extends Chip                                                           
 
   Dt(int Size, int MaxStuckSize)                                                // Create the double btree
    {super("Dt"); N();
-    if (MaxStuckSize % 2 == 1) stop("The stuck size must be even, not:", MaxStuckSize);
-    if (MaxStuckSize < 4)      stop("The stuck size must be greater than equal to 4, not:", MaxStuckSize);
-
+    if (MaxStuckSize % 2 == 1)
+     {stop("The stuck size must be even, not:", MaxStuckSize);
+     }
+    if (MaxStuckSize < 4)
+     {stop("The stuck size must be greater than equal to 4, not:",MaxStuckSize);
+     }
     dtSize         = Size;                                                      // The maximum number of entries in the double btree
     dtMaxStuckSize = MaxStuckSize;                                              // The maximum number of entries in the stuck.
 
@@ -89,9 +92,7 @@ class Dt extends Chip                                                           
     int             stuckKey;                                                   // Last key used to search the stuck
     int             stuckData;                                                  // Data associated with the last search
 
-    Stuck(int Index)                                                            // Create a stuck recording its position in memory
-     {stuckNumber = Index;
-     }
+    Stuck(int Index) {stuckNumber = Index;}                                     // Create a stuck recording its position in memory
 
     int     stuckSize     ()              {return stuckMap.size();}             // Size of a stuck not counting the top element in branches
     int     stuckFirstKey ()              {return stuckMap.firstKey();}         // First key in a stuck
@@ -118,17 +119,9 @@ class Dt extends Chip                                                           
 
 //D3 Memory                                                                     // Get a stuck from memory or return it to memory
 
-    Stuck stuckGetFromMemory(int Index)                                         // Copy an indexed stuck out of memory
-     {return dtStucks[Index];
-     }
-
-    void stuckGetFromMemoryRoot()                                               // Copy the root stuck out of memory
-     {stuckGetFromMemory(0);
-     }
-
-    void stuckPutIntoMemory()                                                   // Update a stuck in memory
-     {
-     }
+    Stuck stuckGetFromMemory    (int Index) {return dtStucks[Index];}           // Copy an indexed stuck out of memory
+    void  stuckGetFromMemoryRoot()          {stuckGetFromMemory(0);}            // Copy the root stuck out of memory
+    void  stuckPutIntoMemory    ()          {}                                  // Update a stuck in memory
 
 //D3 Print                                                                      // Print the stuck
 
@@ -138,8 +131,8 @@ class Dt extends Chip                                                           
       for(Integer k : stuckMap.keySet())
        {S.append(String.format("  %2d: %2d\n", k, stuckMap.get(k)));
        }
-      final int     k = stuckKey     ; S.append("Key       : "+k+"\n");         // Data associated with the key if found
-      final int     d = stuckData    ; S.append("Data      : "+d+"\n");         // Data associated with the key if found
+      final int k = stuckKey ; S.append("Key       : "+k+"\n");                 // Latest key searched for
+      final int d = stuckData; S.append("Data      : "+d+"\n");                 // Data associated with the key if found
 
       return ""+S;
      }
@@ -230,7 +223,7 @@ class Dt extends Chip                                                           
     boolean stuckMerge(Stuck Left, Stuck Right)                                 // Replace the current stuck with the concatenation of the two stucks indicated
      {if (Left.stuckSize() + Right.stuckSize() > dtMaxStuckSize) return false;
       stuckClear();
-      stuckMap.putAll(Left.stuckMap);
+      stuckMap.putAll(Left .stuckMap);
       stuckMap.putAll(Right.stuckMap);
       return true;
      }
@@ -651,11 +644,11 @@ class Dt extends Chip                                                           
      }
 
     public String toString()                                                    // Print status of find result
-     {final StringBuilder s = new StringBuilder();
-      s.append("Key  : "+findKey  +"\n");                                       // Key being searched for
-      s.append("Found: "+findFound+"\n");                                       // Whether the key being searched for was found
-      s.append("Data : "+findData +"\n");                                       // Data associated with the key if the key was found in the double tree
-      s.append("Index: "+findIndex+"\n");                                       // Index of the stuck in which the key was found or would have been found if it was in the double tree
+     {final StringJoiner s = new StringJoiner("\n", "", "\n");
+      s.add("Key  : "+findKey  );                                               // Key being searched for
+      s.add("Found: "+findFound);                                               // Whether the key being searched for was found
+      s.add("Data : "+findData );                                               // Data associated with the key if the key was found in the double tree
+      s.add("Index: "+findIndex);                                               // Index of the stuck in which the key was found or would have been found if it was in the double tree
       return ""+s;
      }
    } // Find
@@ -663,42 +656,42 @@ class Dt extends Chip                                                           
 //D1 Insertion                                                                  // Insert a key, data pair into the double btree if there is room for it or update and existing key with a new datum
 
   class FindAndInsert extends Find                                              // Find the leaf stuck that should contain this key and insert or update it if possible
-   {final int fiaKey;                                                           // The key to be added
-    final int fiaData;                                                          // The data to be added
-    boolean   fiaUpdated;                                                       // The key was updated
-    boolean   fiaInserted;                                                      // The key was inserted
-    boolean   fiaSuccess;                                                       // The key was inserted or updated so that the data has been successfully stored under the key
+   {final int findAndInsertKey;                                                 // The key to be added
+    final int findAndInsertData;                                                // The data to be added
+    boolean   findAndInsertUpdated;                                             // The key was updated
+    boolean   findAndInsertInserted;                                            // The key was inserted
+    boolean   findAndInsertSuccess;                                             // The key was inserted or updated so that the data has been successfully stored under the key
 
     FindAndInsert(int Key, int Data)                                            // Find the leaf stuck that should contain this key and insert or update it if possible
      {super(Key);                                                               // Find the leaf that should contain the key and possibly the key.
-      fiaKey = Key; fiaData = Data;                                             // Save key and data to be added
+      findAndInsertKey = Key; findAndInsertData = Data;                                             // Save key and data to be added
       final Stuck l = dtStuckGet(findIndex);                                    // The stuck that should contain the key
 
       if (findFound)                                                            // Found the key in the leaf so update it with the new data
        {l.stuckPut(Key, Data);
-        fiaUpdated  = true;
-        fiaSuccess  = true;
+        findAndInsertUpdated  = true;
+        findAndInsertSuccess  = true;
         return;
        }
 
       if (l.stuckSize() < dtMaxStuckSize)                                       // Key does not exist in leaf but there is room to insert
        {l.stuckPut(Key, Data);
-        fiaInserted = true;
-        fiaSuccess  = true;
+        findAndInsertInserted = true;
+        findAndInsertSuccess  = true;
         return;
        }
-      fiaInserted   = false;                                                    // Not inserted or updated
+      findAndInsertInserted   = false;                                          // Not inserted or updated
      }
 
     public String toString()                                                    // Print status of find result
-     {final StringBuilder s = new StringBuilder();
-      s.append("Found   : "+findFound  +"\n");                                  // Whether the key being searched for was found
-      s.append("Index   : "+findIndex  +"\n");                                  // Index of the stuck in which the key was found or would have been found if it was in the double tree
-      s.append("Key     : "+fiaKey     +"\n");                                  // The key to be added
-      s.append("Data    : "+fiaData    +"\n");                                  // The data to be added
-      s.append("Updated : "+fiaUpdated +"\n");                                  // The key was updated
-      s.append("Inserted: "+fiaInserted+"\n");                                  // The key was inserted
-      s.append("Success : "+fiaSuccess +"\n");                                  // The key was inserted or updated so that the data has been successfully stored under the key
+     {final StringJoiner s = new StringJoiner("\n", "", "\n");
+      s.add("Found   : "+findFound            );                                // Whether the key being searched for was found
+      s.add("Index   : "+findIndex            );                                // Index of the stuck in which the key was found or would have been found if it was in the double tree
+      s.add("Key     : "+findAndInsertKey     );                                // The key to be added
+      s.add("Data    : "+findAndInsertData    );                                // The data to be added
+      s.add("Updated : "+findAndInsertUpdated );                                // The key was updated
+      s.add("Inserted: "+findAndInsertInserted);                                // The key was inserted
+      s.add("Success : "+findAndInsertSuccess );                                // The key was inserted or updated so that the data has been successfully stored under the key
       return ""+s;
      }
    } // FindAndInsert
@@ -706,7 +699,7 @@ class Dt extends Chip                                                           
   public void dtPut(int Key, int Data)                                          // Insert a key, data pair into the double btree or update and existing key with a new datum
    {final FindAndInsert f = new FindAndInsert(Key, Data);                       // Find and insert
 
-    if (f.fiaSuccess) return;                                                   // Direct insertion succeeded so nothing more to do
+    if (f.findAndInsertSuccess) return;                                         // Direct insertion succeeded so nothing more to do
 
     if (f.findIndex == 0)                                                       // Failed to insert because the root is a leaf which must be full else the operation would have succeeded
      {dtSplitLeafRoot();                                                        // Split the leaf root to make room
@@ -1362,7 +1355,7 @@ Success : false
    {sayCurrentTestName();
     final int N = 32;
     final Dt  D = new Dt(N, 4);
-    for (int i = 1; i <= N; i++) D.dtPut(i, i+1);
+    for  (int i = 1; i <= N; i++) D.dtPut(i, i+1);
 
     final StringBuilder s = new StringBuilder();
     for (int i = 1; i <= N; i++)
@@ -1599,7 +1592,7 @@ Success : false
    {sayCurrentTestName();
     final int N = 32;
     final Dt  D = new Dt(N, 4);
-    for (int i = 1; i <= N; i++) D.dtPut(i, i+1);
+    for  (int i = 1; i <= N; i++) D.dtPut(i, i+1);
 
     final StringBuilder s = new StringBuilder();
     for (int i = N; i > 0; --i)
@@ -1836,7 +1829,7 @@ Success : false
    {sayCurrentTestName();
     final int N = 32;
     final Dt  D = new Dt(N, 4);
-    for (int i = 1; i <= N; i++) D.dtPut(i, i+1);
+    for  (int i = 1; i <= N; i++) D.dtPut(i, i+1);
 
     final StringBuilder s = new StringBuilder();
     for (int i = N; i > 0; --i)
