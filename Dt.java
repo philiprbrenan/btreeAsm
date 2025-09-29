@@ -165,14 +165,12 @@ class Dt extends Chip                                                           
 
     void stuckSplitIntoTwo(Stuck Left, Stuck Right)                             // Copy the first half of the key, data pairs into the left stuck, the remainder into the right stuck.  The original source stuck is not modified
      {for (int i = 0; i < dtMaxStuckSize / 2; i++)
-       {final int k = stuckFirstKey();
-        final int d = stuckGetData(k);
+       {final int k = stuckFirstKey(), d = stuckGetData(k);
         Left.stuckPush(k, d);
         stuckRemove(k);
        }
       for (int i = 0; i < dtMaxStuckSize / 2; i++)
-       {final int k = stuckFirstKey();
-        final int d = stuckGetData(k);
+       {final int k = stuckFirstKey(), d = stuckGetData(k);
         Right.stuckPush(k, d);
         stuckRemove(k);
        }
@@ -182,8 +180,7 @@ class Dt extends Chip                                                           
      {final int N = stuckSize() / 2;
       if (Copy > N) stop("Copy:", Copy, "must be less than or equal to:", N);
       for (int i = 0; i < Copy; ++i)
-       {final int k = stuckFirstKey();
-        final int d = stuckGetData(k);
+       {final int k = stuckFirstKey(), d = stuckGetData(k);
         Left.stuckPut(k, d);
         stuckRemove(k);
        }
@@ -192,8 +189,7 @@ class Dt extends Chip                                                           
       stuckRemove(K);
 
       for (int i = 0; i < Copy; ++i)
-       {final int k = stuckLastKey();
-        final int d = stuckGetData(k);
+       {final int k = stuckLastKey(), d = stuckGetData(k);
         Right.stuckPut(k, d);
         stuckRemove(k);
        }
@@ -203,8 +199,7 @@ class Dt extends Chip                                                           
 
     void stuckSplitLow(Stuck Left)                                              // Split a full stuck with an even number of elements so that the first half is moved into the left stuck leaving the remainder in the current stuck
      {for (int i = 0; i < dtMaxStuckSize / 2; i++)
-       {final int k = stuckFirstKey();
-        final int d = stuckGetData(k);
+       {final int k = stuckFirstKey(), d = stuckGetData(k);
         Left.stuckPush(k, d);
         stuckRemove(k);
        }
