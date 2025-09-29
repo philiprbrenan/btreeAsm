@@ -474,26 +474,26 @@ chipStop = true;
      }
 
     String dump()                                                               // Print all the entries in the stuck
-     {final StringBuilder S = new StringBuilder();
+     {final StringJoiner S = new StringJoiner("\n", "", "\n");
       final int     ns = size  .registerGet();                                  // Size of stuck
       final int     il = isLeaf.registerGet() > 0 ? 1 : 0;                      // Is a leaf
       final String  rt = index.registerGet() == 0 ? "root" : "index: "+index.registerGet();
       final String  nm = stuckName;                                             // Name of the stuck is the same as the name of the process
-      S.append("Stuck: "+nm+" size: "+ns+", leaf: "+il+", "+rt+"\n");           // Title
+      S.add("Stuck: "+nm+" size: "+ns+", leaf: "+il+", "+rt+"\n");              // Title
 
       for (int i = 0; i < maxStuckSize; i++)                                    // Each key, data pair
        {final int k = keys.registerGet(i);
         final int d = data.registerGet(i);
-        S.append(String.format("%2d  %4d => %4d\n", i, k, d));
+        S.add(String.format("%2d  %4d => %4d", i, k, d));
        }
 
-      final int f = Found       .registerGet(); S.append("Found     : "+f+"\n");// Whether the key was found
-      final int k = Key         .registerGet(); S.append("Key       : "+k+"\n");// Data associated with the key if found
-      final int K = FoundKey    .registerGet(); S.append("FoundKey  : "+K+"\n");// Data associated with the key if found
-      final int d = Data        .registerGet(); S.append("Data      : "+d+"\n");// Data associated with the key if found
-      final int b = BtreeIndex  .registerGet(); S.append("BtreeIndex: "+b+"\n");// Index of stuck in Btree in which the key should reside
-      final int s = StuckIndex  .registerGet(); S.append("StuckIndex: "+s+"\n");// Index of stuck in Btree in which the key should reside
-      final int m = MergeSuccess.registerGet(); S.append("Merge     : "+m+"\n");// Whether a merge was completed successfully or not
+      final int f = Found       .registerGet(); S.add("Found     : "+f);        // Whether the key was found
+      final int k = Key         .registerGet(); S.add("Key       : "+k);        // Data associated with the key if found
+      final int K = FoundKey    .registerGet(); S.add("FoundKey  : "+K);        // Data associated with the key if found
+      final int d = Data        .registerGet(); S.add("Data      : "+d);        // Data associated with the key if found
+      final int b = BtreeIndex  .registerGet(); S.add("BtreeIndex: "+b);        // Index of stuck in Btree in which the key should reside
+      final int s = StuckIndex  .registerGet(); S.add("StuckIndex: "+s);        // Index of stuck in Btree in which the key should reside
+      final int m = MergeSuccess.registerGet(); S.add("Merge     : "+m);        // Whether a merge was completed successfully or not
 
       return ""+S;
      }
