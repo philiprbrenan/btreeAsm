@@ -42,6 +42,13 @@ The [memory](https://en.wikipedia.org/wiki/Computer_memory) associated with a [p
 
 - Each [memory](https://en.wikipedia.org/wiki/Computer_memory) is owned by a single [process](https://en.wikipedia.org/wiki/Process_management_(computing)) .
 
+### BlackBox Synthesis
+
+Memory is an ideal candidate for geometrical layout given its regular structure
+over a large number of elements.  OpenRAM exploits this structure to
+synthesize large memories that can then be imbedded as black boxes in other
+designs which would otherwise overwhelem the place and route phases of synthesis.
+
 ## Registers
 
 Registers are local blocks of [memory](https://en.wikipedia.org/wiki/Computer_memory) that:
@@ -159,6 +166,27 @@ that the [Verilog](https://en.wikipedia.org/wiki/Verilog) version accurately rep
 If the [Verilog](https://en.wikipedia.org/wiki/Verilog) trace and the [Java](https://en.wikipedia.org/wiki/Java_(programming_language)) trace do not match, the [instruction](https://en.wikipedia.org/wiki/Instruction_set_architecture) that is
 causing the mismatch can be located by setting "processTrace" to **true** for
 the [process](https://en.wikipedia.org/wiki/Process_management_(computing)) under development to get a traceback identifying the [instruction](https://en.wikipedia.org/wiki/Instruction_set_architecture) that is executing differently in the [Java](https://en.wikipedia.org/wiki/Java_(programming_language)) version versus the [Verilog](https://en.wikipedia.org/wiki/Verilog) version.
+
+---
+
+# Double Btree Structure
+
+Each B-tree has its own dedicated [memory](https://en.wikipedia.org/wiki/Computer_memory), which can be of any reasonable size
+supported by the chip fabrication [process](https://en.wikipedia.org/wiki/Process_management_(computing)). However, as chip size increases, the
+likelihood of manufacturing defects grows and access to individual [memory](https://en.wikipedia.org/wiki/Computer_memory) elements becomes slower.
+
+To address these issues, we employ a double B-tree architecture. Each stuck of
+the double B-tree is implemented as a separate chip containing a single B-tree.
+B-trees are naturally suited to representing a stuck, as shown in **Dt.java**.
+The individual B-trees communicate through the star-topology [network](https://en.wikipedia.org/wiki/Computer_network) described
+in **StarNet.java**.
+
+Constructing a double B-tree from multiple single B-trees reduces manufacturing
+costs by improving yield (since smaller [chips](https://en.wikipedia.org/wiki/Integrated_circuit) are less prone to defects) and
+increases [memory](https://en.wikipedia.org/wiki/Computer_memory) access [speed](https://en.wikipedia.org/wiki/Speed) through parallelism, as each single B-tree
+controls its own independent block of [memory](https://en.wikipedia.org/wiki/Computer_memory). These advantages come at the
+expense of logarithmic [network](https://en.wikipedia.org/wiki/Computer_network) communication overhead between the single
+B-trees that together form the double B-tree.
 
 ---
 
