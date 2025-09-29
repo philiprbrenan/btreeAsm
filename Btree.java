@@ -1528,13 +1528,11 @@ chipStop = true;
     void printLeaf(int BtreeIndex, Stack<StringBuilder>P, int level)            // Print leaf horizontally
      {padStrings(P, level);
 
-      final StringBuilder s = new StringBuilder();                              // String builder
+      final StringJoiner s = new StringJoiner(",", "", "="+BtreeIndex+" ");
       for  (int i = 0; i < stuckSize.memoryGet(BtreeIndex); i++)
-       {s.append(""+stuckKeys.memoryGet(BtreeIndex, i)+",");
+       {s.add(""+stuckKeys.memoryGet(BtreeIndex, i));
        }
-      if (s.length() > 0) s.setLength(s.length()-1);                            // Remove trailing comma if present
-      s.append("="+BtreeIndex+" ");
-      P.elementAt(level*linesToPrintABranch).append(s.toString());
+      P.elementAt(level*linesToPrintABranch).append(s);
       padStrings(P, level);
      }
 
