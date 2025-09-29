@@ -479,7 +479,7 @@ chipStop = true;
       final int     il = isLeaf.registerGet() > 0 ? 1 : 0;                      // Is a leaf
       final String  rt = index.registerGet() == 0 ? "root" : "index: "+index.registerGet();
       final String  nm = stuckName;                                             // Name of the stuck is the same as the name of the process
-      S.add("Stuck: "+nm+" size: "+ns+", leaf: "+il+", "+rt+"\n");              // Title
+      S.add("Stuck: "+nm+" size: "+ns+", leaf: "+il+", "+rt);                   // Title
 
       for (int i = 0; i < maxStuckSize; i++)                                    // Each key, data pair
        {final int k = keys.registerGet(i);
