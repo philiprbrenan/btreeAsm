@@ -126,13 +126,14 @@ class Dt extends Chip                                                           
 //D3 Print                                                                      // Print the stuck
 
     public String toString()
-     {final StringBuilder S = new StringBuilder();
-      S.append("Stuck: "+stuckNumber+", size: "+stuckSize()+", leaf: "+(stuckIsLeaf() ? 1 : 0)+", top: "+stuckTop+"\n");
+     {final StringJoiner S = new StringJoiner("\n", "", "\n");
+      S.add("Stuck: "+stuckNumber+", size: "+stuckSize()+", leaf: "+
+           (stuckIsLeaf() ? 1 : 0)+", top: "+stuckTop);
       for(Integer k : stuckMap.keySet())
-       {S.append(String.format("  %2d: %2d\n", k, stuckMap.get(k)));
+       {S.add(String.format("  %2d: %2d", k, stuckMap.get(k)));
        }
-      final int k = stuckKey ; S.append("Key       : "+k+"\n");                 // Latest key searched for
-      final int d = stuckData; S.append("Data      : "+d+"\n");                 // Data associated with the key if found
+      final int k = stuckKey ; S.add("Key       : "+k);                         // Latest key searched for
+      final int d = stuckData; S.add("Data      : "+d);                         // Data associated with the key if found
 
       return ""+S;
      }
@@ -556,9 +557,9 @@ class Dt extends Chip                                                           
    {final Stuck   p = Parent;                                                   // Parent stuck
 
     if (p.stuckNumber == 0 && p.stuckSize() == 1) return false;                 // Cannot perform this merge on the root when it contains only one key, data pair.
-    if (p.stuckSize() == 0)       return false;                                 // Cannot perform this merge on an empty stuck
-    if (!p.stuckHas(Left))        return false;                                 // Key must be in stuck
-    if (p.stuckLastKey() == Left) return false;                                 // Key cannot be the last key in the body
+    if (p.stuckSize() == 0)                       return false;                 // Cannot perform this merge on an empty stuck
+    if (!p.stuckHas(Left))                        return false;                 // Key must be in stuck
+    if (p.stuckLastKey() == Left)                 return false;                 // Key cannot be the last key in the body
 
     final int  il = p.stuckGetData(Left);                                       // Get the double btree index of the left child branch
     final int  rk = p.stuckNextKey(Left);                                       // Get the double btree index of the right child branch
@@ -567,11 +568,11 @@ class Dt extends Chip                                                           
     final Stuck l = dtStuckGet(il);                                             // Load left  branch from the double btree
     final Stuck r = dtStuckGet(ir);                                             // Load right branch from the double btree
 
-    if (l.stuckIsLeaf() || r.stuckIsLeaf()) return false;                       // Both children must be branches
+    if (l.stuckIsLeaf() || r.stuckIsLeaf())       return false;                 // Both children must be branches
     final int mk = p.stuckGetData(Left);                                        // Key associated with left child branch
 
     if (dtDebug) say("MMMM BranchesNotTop 1111", this);
-    if (!l.stuckMergeButOne(Left, r)) return false;                             // Merge branches into left child
+    if (!l.stuckMergeButOne(Left, r))             return false;                 // Merge branches into left child
 
     p.stuckRemove(Left);                                                        // Remove the left child
     p.stuckPut(rk, il);                                                         // Update left child position with key of right child and index of left child
@@ -586,7 +587,7 @@ class Dt extends Chip                                                           
    {final Stuck p = Parent;                                                     // Parent stuck
     if (p.stuckNumber == 0 && p.stuckSize() == 1) return false;                 // Cannot perform this merge on the root if it only has one key, data pair in the body of the stuck
     final int sz = p.stuckSize();                                               // Index of left branch known to be valid as the parent contains at least one entry resulting in two children
-    if (sz == 0)              return false;                                     // Cannot perform this merge on an empty stuck
+    if (sz == 0)                                  return false;                 // Cannot perform this merge on an empty stuck
 
     final int  il = p.stuckGetData(p.stuckLastKey());                           // Get the double btree index of the left branch branch
     final int  ir = p.stuckTop();                                               // Get the double btree index of the right branch branch
@@ -594,7 +595,7 @@ class Dt extends Chip                                                           
     final Stuck l = dtStuckGet(il);                                             // Load left  branch from the double btree
     final Stuck r = dtStuckGet(ir);                                             // Load right branch from the double btree
 
-    if (l.stuckIsLeaf() || r.stuckIsLeaf()) return false;                       // Both children must be branches
+    if (l.stuckIsLeaf() || r.stuckIsLeaf())       return false;                 // Both children must be branches
 
     if (dtDebug) say("MMMM BranchesAtTop 1111", this);
     if (!l.stuckMergeButOne(p.stuckLastKey(), r)) return false;                 // Merge leaves into left child
@@ -608,12 +609,12 @@ class Dt extends Chip                                                           
    }
 
   private boolean dtMergeNotTop(Stuck Parent, int Child)                        // Merge two consecutive leaves or branches of a branch
-   {if    (dtMergeLeavesNotTop  (Parent, Child)) return true;
+   {if    (dtMergeLeavesNotTop  (Parent, Child))  return true;
     return dtMergeBranchesNotTop(Parent, Child);
    }
 
   private boolean dtMergeAtTop(Stuck Parent)                                    // Merge two consecutive leaves or branches at the top of a branch
-   {if    (dtMergeLeavesAtTop  (Parent)) return true;                           // Try merging leaves at top into parent -  this forces non top siblings into top
+   {if    (dtMergeLeavesAtTop  (Parent))          return true;                  // Try merging leaves at top into parent -  this forces non top siblings into top
     return dtMergeBranchesAtTop(Parent);                                        // Try merging branches at top into parent -  this forces non top siblings into top
    }
 
