@@ -50,10 +50,9 @@ public class Test                                                               
    }
 
   static String joinStrings(Stack<String> S, String join)                       // Perl join
-   {final StringJoiner s = new StringJoiner(join);
-    final int N = S.size();
-    for  (String i : S) s.add(i);
-    return ""+s;
+   {final StringJoiner t = new StringJoiner(join);
+    for  (String s : S) t.add(s);
+    return ""+t;
    }
 
   static String joinStringBuilders(Stack<StringBuilder> S, String join)         // Perl join
