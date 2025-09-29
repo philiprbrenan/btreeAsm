@@ -209,13 +209,11 @@ class Dt extends Chip                                                           
      {if (stuckSize() != dtMaxStuckSize - 1) stop("Branch must be full");
       final int N = (dtMaxStuckSize - 1) / 2;
       for (int i = 0; i < N; ++i)
-       {final int k = stuckFirstKey();
-        final int d = stuckGetData(k);
+       {final int k = stuckFirstKey(), d = stuckGetData(k);
         Left.stuckPut(k, d);
         stuckRemove(k);
        }
-      final int K = stuckFirstKey();
-      final int D = stuckGetData(K);
+      final int K = stuckFirstKey(), D = stuckGetData(K);
       Left.stuckSetTop(D);
       stuckRemove(K);
       return K;
