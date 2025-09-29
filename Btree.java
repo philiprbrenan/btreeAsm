@@ -1578,11 +1578,11 @@ chipStop = true;
     {final String  s = toString();
      final int     n = longestLine(s)-1;
      final String[]L = s.split("\n");
-     final StringBuilder t = new StringBuilder();
-     t.append("+"); t.append("-".repeat(n)); t.append("+\n");
-     for(String l : L) t.append("| "+l+"\n");
-     t.append("+"); t.append("-".repeat(n)); t.append("+\n");
-     return t.toString();
+     final StringJoiner t = new StringJoiner("\n",  "", "\n");
+     t.add("+"+("-".repeat(n))+"+");
+     for(String l : L) t.add("| "+l);
+     t.add("+"+("-".repeat(n))+"+");
+     return ""+t;
     }
 
   void padStrings(Stack<StringBuilder> S, int level)                            // Pad the strings at each level of the tree so we have a vertical face to continue with - a bit like Marc Brunel's tunneling shield
@@ -6784,11 +6784,10 @@ Merge     : 0
    }
 
   static void newTests()                                                        // Tests being worked on
-   {//oldTests();
+   {oldTests();
     //test_verilog_delete();
-    ///test_verilog_find();
+    //test_verilog_find();
     //test_verilog_put();
-    test_delete_descending();
    }
 
   public static void main(String[] args)                                        // Test if called as a program
