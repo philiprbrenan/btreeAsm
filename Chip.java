@@ -2002,7 +2002,7 @@ if __name__ == "__main__":
     String memorySave()                                                         // Save memory to a string
      {if (coverageAnalysis) zz();
       final int S = memorySize, W = memoryWidth, B = memoryBlockSize;           // Shorten names
-      final StringJoiner s = new StringJoiner(" "+W+" "+S+" "+B, " ", "\n");    // Save dimensions so they can be checked on reload
+      final StringJoiner s = new StringJoiner(" ", W+" "+S+" "+B+" ", "\n");    // Save dimensions so they can be checked on reload
       for(int i = 0; i < S; i++)                                                // Transform memory blocks into bits
        {final BitSet b = memory[i];
         for (int j = 0; j < W * B; j++) s.add(b.get(j) ? "1" : "0");            // Save each bit
@@ -2948,8 +2948,7 @@ Chip: Test             step: 2, maxSteps: 10, running: 0
    }
 
   static void newTests()                                                        // Tests being worked on
-   {//oldTests();
-    test_arithmeticFibonacci();
+   {oldTests();
    }
 
   public static void main(String[] args)                                        // Test if called as a program
