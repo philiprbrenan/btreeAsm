@@ -45,7 +45,6 @@ class Btree extends Chip                                                        
   boolean              suppressMerge    = false;                                // Suppress merges during put to allow merge steps to be tested individually.  If this is on the trees built for testing are already merged so there is nothing to test.
   static       boolean createTestTrees  = false;                                // Create trees to assist testing
   static       boolean debug            = false;                                // Debug if enabled
-  final static boolean coverageAnalysis = false;                                // Enables coverage checks
 
 //D1 Construction                                                               // Construct and layout a btree
 
