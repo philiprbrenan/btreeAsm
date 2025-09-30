@@ -11,7 +11,7 @@ class TreeNet extends Test                                                      
   int tnWidth;                                                                  // The data width of each junction
 
   Junction[]tnJunctions;                                                        // The junctions used to construct the tree net
-  int tnStep;                                                                  // The tree net is clocked
+  int tnStep;                                                                   // The tree net is clocked
 
 //D1 Construction                                                               // Construct a tree net
 
@@ -65,16 +65,16 @@ class TreeNet extends Test                                                      
     final Event   jEventDown;                                                   // Event controlling the transmission of a message down the tree
 
     Junction(int Number)
-     {jNumber  = Number;
-      jLevel   = logTwo(prevPowerOfTwo(1+Number));                              // Level of junction
-      jAddress = new Address(jNumber);
-      jParent  = jTop() ? 0 : (Number-1) / 2;                                   // Set Parent
-      jLeft    = Number * 2 + 1 < tnSize ? Number * 2 + 1 : 0;                  // Left child
-      jRight   = Number * 2 + 2 < tnSize ? Number * 2 + 2 : 0;                  // Right child
-      jMessageUp      = new Message();                                          // Message waiting to be sent up the tree
-      jMessageDown    = new Message();                                          // Message waiting to be sent to the left down the tree
-      jEventUp        = new Event();                                            // Event sending message up
-      jEventDown      = new Event();                                            // Event sending message down left
+     {jNumber      = Number;
+      jLevel       = logTwo(prevPowerOfTwo(1+Number));                          // Level of junction
+      jAddress     = new Address(jNumber);
+      jParent      = jTop() ? 0 : (Number-1) / 2;                               // Set Parent
+      jLeft        = Number * 2 + 1 < tnSize ? Number * 2 + 1 : 0;              // Left child
+      jRight       = Number * 2 + 2 < tnSize ? Number * 2 + 2 : 0;              // Right child
+      jMessageUp   = new Message();                                             // Message waiting to be sent up the tree
+      jMessageDown = new Message();                                             // Message waiting to be sent to the left down the tree
+      jEventUp     = new Event();                                               // Event sending message up
+      jEventDown   = new Event();                                               // Event sending message down left
      }
 
     boolean jTop() {return jNumber == 0;}                                       // The root is always at index zero
@@ -82,14 +82,22 @@ class TreeNet extends Test                                                      
 
     void jTransmit()                                                            // Transmit a message through the node
      {if (jLeft != null)                                                        // Examine left node for a message to be sent
-       {final Junction l = tnJunctions[jLeft];
+       {final Junction l = tnJunctions[jLeft];                                  // Left child
         if (!l.jEventUp.eFinished())                                            // Left wants to send us a message
          {final Address t = l.jMessageUp.mTarget;                               // Target of message from left
-          if (l.jAddress.goUp(t))                                               // Left message wants to go up
-           {if (!jAddress.goRight(t))                                           // Left message wants to go up then right
-             {jMessageUp.copy(l.jMessageUp);                                    // Move left message to up
-                jEventUp.eSetExecuting();
-              l.jEventUp.eSetFinished ();
+          if (l.jAddress.aGoUp(t))                                               // Left message wants to go up
+           {if (jAddress.aGoRight(t))                                            // Left message wants to go up then right
+             {final Junction r = tnJunctions[jRight];                           // Right child
+              if (r.jEventDown.eFinished())                                     // Right down buffer is available
+               {r.jMessageDown.copy(l.jMessageUp);                              // Move left message to right down
+                r.jEventDown.eSetExecuting();                                   // Show right as wanting to move down
+                l.jEventUp.eSetFinished ();                                     // Show left message as having been moved right
+               }
+             }
+            else if (jEventDown.eFinished())                                    // Up buffer is available for left message
+             {jMessageUp.copy(l.jMessageUp);                                    // Move left message up
+                jEventUp.eSetExecuting();                                       // Current message wants to move up
+              l.jEventUp.eSetFinished ();                                       // Show left message as having been moved up
              }
            }
          }
@@ -139,22 +147,22 @@ class TreeNet extends Test                                                      
 
     int pLevel() {return aAddress.length();}                                    // The level of this junction with the root of the tree net at level zero and the next level down plus one
 
-    boolean equal(Address Target) {return Target.aAddress.equals(aAddress);}    // Have we arrived at the specified target junction
+    boolean aEqual(Address Target) {return Target.aAddress.equals(aAddress);}   // Have we arrived at the specified target junction
 
-    boolean goLeft(Address Target)                                              // Should we go left from the current junctoin to find the specified target
+    boolean aGoLeft(Address Target)                                             // Should we go left from the current junctoin to find the specified target
      {return Target.pLevel() > pLevel() &&                                      // Level of target must be further down
              Target.aAddress.startsWith(aAddress) &&                            // Target prefix must match the current junction
              Target.aAddress.charAt(pLevel()) == '0';                           // Go left
      }
 
-    boolean goRight(Address Target)                                             // Should we go right from the current junctoin to find the specified target
+    boolean aGoRight(Address Target)                                            // Should we go right from the current junctoin to find the specified target
      {return Target.pLevel() > pLevel() &&                                      // Level of target must be further down
              Target.aAddress.startsWith(aAddress) &&                            // Target prefix must match the current junction
              Target.aAddress.charAt(pLevel()) == '1';                           // Go right
      }
 
-    boolean goUp(Address Target)                                                // Go up if we have not arrived at the target and cannot go left or right
-     {return !equal(Target) && !goLeft(Target) && !goRight(Target);
+    boolean aGoUp(Address Target)                                               // Go up if we have not arrived at the target and cannot go left or right
+     {return !aEqual(Target) && !aGoLeft(Target) && !aGoRight(Target);
      }
    }
 
@@ -216,14 +224,14 @@ class TreeNet extends Test                                                      
     final Address a13 = T.tnJunctions[13].jAddress;
     final Address a14 = T.tnJunctions[14].jAddress;
 
-    ok( a6.goLeft (a13));
-    ok(!a6.goRight(a13));
-    ok(!a6.goLeft (a14));
-    ok( a6.goRight(a14));
-    ok( a6.goUp   (a3 ));
-    ok(!a6.goUp   (a14));
-    ok( a6.equal  (a6 ));
-    ok(!a6.equal  (a13));
+    ok( a6.aGoLeft (a13));
+    ok(!a6.aGoRight(a13));
+    ok(!a6.aGoLeft (a14));
+    ok( a6.aGoRight(a14));
+    ok( a6.aGoUp   (a3 ));
+    ok(!a6.aGoUp   (a14));
+    ok( a6.aEqual  (a6 ));
+    ok(!a6.aEqual  (a13));
     ok( T.tnJunctions[ 5].jIsLeftOfParent());
     ok(!T.tnJunctions[ 6].jIsLeftOfParent());
    }
