@@ -11,7 +11,7 @@ class TreeNet extends Test                                                      
   int tnWidth;                                                                  // The data width of each junction
 
   Junction[]tnJunctions;                                                        // The junctions used to construct the tree net
-  int tnClock;                                                                  // The tree net is clocked
+  int tnStep;                                                                  // The tree net is clocked
 
 //D1 Construction                                                               // Construct a tree net
 
@@ -40,67 +40,114 @@ class TreeNet extends Test                                                      
 //D1 Event                                                                      // A network event
 
   class Event                                                                   // A network event
-   {int eStart;                                                                 // Time at which the event started as determined by the clock
-    int eFinished;                                                              // Time at which the event finished as determined by the clock
-    boolean eFinished () {return eStart < eFinished;}                           // Event has finished                                // The code with which the event finished
-    boolean eExecuting() {return eStart > eFinished;}                           // Event is in progress
+   {int eStarted;                                                               // Time at which the event started as determined by the step
+    int eFinished;                                                              // Time at which the event finished as determined by the step - but we make sure that it is never equal to the start time
+    boolean eFinished () {return eStarted < eFinished && eStarted != tnStep && eFinished != tnStep;} // Event has finished and it is not in the step that started it nor in the step that finished it
+    void eSetExecuting()  {eStarted  = tnStep;}                                 // Execution will begin on the next step
+    void eSetFinished()   {eFinished = tnStep;}                                 // The event will finish on the next step
    }
 
 //D1 Path
                                                                                 // Path to a junction
   class Address                                                                 // Level of the junction in the tree net
-   {final int    pIndex;                                                        // The number of the message
-    final int    pLevel;                                                        // The number of the message
-    final String pAddress;                                                      // Address
+   {int    pIndex;                                                              // The number of the message
+    String pAddress;                                                            // Address
 
     Address(int Index)
      {pIndex = Index;
       final StringBuilder s = new StringBuilder();
       for(int N = Index+1; N > 1; N /= 2) s.append(N % 2 == 1 ? "1" : "0");     // Path from zero to this address
-      pLevel = Index == 0 ? 0 : logTwo(prevPowerOfTwo(Index));                  // Address width
       pAddress = ""+s.reverse();
      }
 
     public String toString()
-     {return String.format("Address: %d %d %s\n", pIndex, pLevel, pAddress);
+     {return String.format("Address: %d %d %s\n", pIndex, pLevel(), pAddress);
+     }
+
+    int pLevel() {return pAddress.length();}                                    // The level of this junction with the root of the tree net at level zero and the next level down plus one
+
+    boolean equal(Address Target) {return Target.pAddress.equals(pAddress);}    // Have we arrived at the specified target junction
+
+    boolean goLeft(Address Target)                                              // Should we go left from the current junctoin to find the specified target
+     {return Target.pLevel() > pLevel() &&                                      // Level of target must be further down
+             Target.pAddress.startsWith(pAddress) &&                            // Target prefix must match the current junction
+             Target.pAddress.charAt(pLevel()) == '0';                           // Go left
+     }
+
+    boolean goRight(Address Target)                                             // Should we go right from the current junctoin to find the specified target
+     {return Target.pLevel() > pLevel() &&                                      // Level of target must be further down
+             Target.pAddress.startsWith(pAddress) &&                            // Target prefix must match the current junction
+             Target.pAddress.charAt(pLevel()) == '1';                           // Go right
+     }
+
+    boolean goUp(Address Target)                                                // Go up if we have not arrived at the target and cannot go left or right
+     {return !equal(Target) && !goLeft(Target) && !goRight(Target);
      }
    }
 
 //D1 Junction                                                                   // A junction in a tree net connects two child junctions to a parent junction.
 
   class Junction                                                                // A junction in a tree net connects two child junctions to a parent junction.
-   {final int     jNumber;                                                      // The number of the junction
-    final int     jLevel;                                                       // The level of the junction,.  teh root is a t level zero, the nbext at level one etc.
-    final Address jAddress;                                                     // The address of this junction in the tree net
-    Integer       jParent;                                                      // The index of the parent of this junction
-    Integer       jLeft;                                                        // The index of the left child junction
-    Integer       jRight;                                                       // The index of the right child junction
-    Message       jSendUp;                                                      // Message waiting to be sent up the tree
-    Message       jSendLeft;                                                    // Message waiting to be sent to the left down the tree
-    Message       jSendRight;                                                   // Message waiting to be sent to the right down the tree
-    Event         jEventUp;                                                     // Event sending message up
-    Event         jEventLeft;                                                   // Event sending message down left
-    Event         jEventRight;                                                  // Event sending message down right
+   {int     jNumber;                                                            // The number of the junction
+    int     jLevel;                                                             // The level of the junction,.  teh root is a t level zero, the nbext at level one etc.
+    Address jAddress;                                                           // The address of this junction in the tree net
+    Integer jParent;                                                            // The index of the parent of this junction
+    Integer jLeft;                                                              // The index of the left child junction
+    Integer jRight;                                                             // The index of the right child junction
+    Message jMessageArrived;                                                    // Message waiting here to be consumed
+    Message jMessageUp;                                                         // Message waiting to be sent up the tree
+    Message jMessageLeft;                                                       // Message waiting to be sent to the left down the tree
+    Message jMessageRight;                                                      // Message waiting to be sent to the right down the tree
+    Event   jEventArrived;                                                      // Event showing whether the message addressed to this junction has been consumed
+    Event   jEventUp;                                                           // Event sending message up
+    Event   jEventLeft;                                                         // Event sending message down left
+    Event   jEventRight;                                                        // Event sending message down right
 
     Junction(int Number)
      {jNumber = Number;
-      if (!jTop()) jParent = (Number-1) / 2;                                        // Set Parent
+      if (!jTop()) jParent = (Number-1) / 2;                                    // Set Parent
       if (Number * 2 + 1 < tnSize) jLeft  = Number * 2 + 1;                     // Left child
       if (Number * 2 + 2 < tnSize) jRight = Number * 2 + 2;                     // Right child
-      jLevel = logTwo(prevPowerOfTwo(1+Number));                                  // Level of junction
+      jLevel = logTwo(prevPowerOfTwo(1+Number));                                // Level of junction
       jAddress = new Address(jNumber);
      }
 
-    boolean jTop() {return jNumber == 0;}                                       // the root is always at index zero
+    boolean jTop() {return jNumber == 0;}                                       // The root is always at index zero
+    boolean jIsLeftOfParent() {return jNumber % 2 == 1;}                        // This junction is left of its parent junction
+
+    void Transmit()                                                             // Transmit a message through the node
+     {if (jLeft != null)                                                        // Examine left node for a message to be sent
+       {final Junction l = tnJunctions[jLeft];
+        if (!l.jEventUp.eFinished())                                            // Left wants to send us a message
+         {final Address t = l.jMessageUp.mTarget;                               // Target of message from left
+          if (jAddress.goUp(t) && jEventUp.eFinished())                         // Left message wants to go up and the up buffer is not busy
+           {jMessageUp.copy(l.jMessageUp);                                      // Move left message to up
+            l.jEventUp.eSetFinished();
+           }
+         }
+       }
+     }
    }
 
 //D1 Message                                                                    // A message sent from a source leaf to a target leaf
 
   class Message                                                                 // A message sent from a source leaf to a target leaf
-   {int mNumber;                                                                // The number of the message
-    Address mSource;                                                            // The key of the sending source leaf
-    Address mTarget;                                                            // The key of the recieving target leaf
+   {Address mSource;                                                            // The address of the sending source leaf
+    Address mTarget;                                                            // The address of the recieving target leaf
     int[]   mText = new int[tnWidth];                                           // The text of the message
+
+    Message(Address Source, Address Target, int...Text)
+     {mSource = Source; mTarget = Target;
+      final int M = min(mText.length, Text.length);
+      for (int i = 0; i < M; i++) mText[i] = Text[i];
+     }
+
+    void copy(Message Source)                                                   // Make a copy of the current message
+     {mSource = Source.mSource;
+      mTarget = Source.mTarget;
+      final int M = min(Source.mText.length, mText.length);
+      for (int i = 0; i < M; i++) mText[i] = Source.mText[i];
+     }
    }
 
 //D1 Tests                                                                      // Test the double btree
@@ -126,6 +173,21 @@ class TreeNet extends Test                                                      
   13       *              6            110      |
   14       *              6            111      |
 """);
+    final Address a3  = T.tnJunctions[ 3].jAddress;
+    final Address a6  = T.tnJunctions[ 6].jAddress;
+    final Address a13 = T.tnJunctions[13].jAddress;
+    final Address a14 = T.tnJunctions[14].jAddress;
+
+    ok( a6.goLeft (a13));
+    ok(!a6.goRight(a13));
+    ok(!a6.goLeft (a14));
+    ok( a6.goRight(a14));
+    ok( a6.goUp   (a3 ));
+    ok(!a6.goUp   (a14));
+    ok( a6.equal  (a6 ));
+    ok(!a6.equal  (a13));
+    ok( T.tnJunctions[ 5].jIsLeftOfParent());
+    ok(!T.tnJunctions[ 6].jIsLeftOfParent());
    }
 
   static void oldTests()                                                        // Tests thought to be in good shape
