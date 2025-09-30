@@ -18,13 +18,11 @@ class Dt extends Test                                                           
 
   boolean              dtSuppressMerge    = false;                              // Suppress merges during put to allow merge steps to be tested individually.  If this is on the double btrees built for testing are already merged so there is nothing to test.
   static       boolean dtDebug            = false;                              // Debug if enabled
-  final static boolean dtCoverageAnalysis = false;                              // Enables coverage checks
 
 //D1 Construction                                                               // Construct and layout the double btree
 
   Dt(int Size, int MaxStuckSize)                                                // Create the double btree
-   {super();
-    if (MaxStuckSize % 2 == 1)
+   {if (MaxStuckSize % 2 == 1)
      {stop("The stuck size must be even, not:", MaxStuckSize);
      }
     if (MaxStuckSize < 4)
