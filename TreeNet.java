@@ -3,7 +3,7 @@
 // Philip R Brenan at appaapps dot com, Appa Apps Ltd Inc., 2025
 //------------------------------------------------------------------------------
 package com.AppaApps.Silicon;                                                   // Btree as a silicon chip
-
+// Allow turnover to occur at any junction to shorten network path for close pairs
 import java.util.*;
 
 class TreeNet extends Test                                                      // A tree network that connects leaf nodes via branches in logarithmic time, allowing us to compose a large chip as a networked collection of smaller chips.
