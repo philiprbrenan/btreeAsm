@@ -87,14 +87,14 @@ class TreeNet extends Test                                                      
 
     void jjjCopyUp()                                                            // Transmit messages up through this junction
      {final Message  U =   jjjMessageUp;                                        // Message at this level if any
-      if (tttStep % 2 == 0 && jjjLeft != null)                                  // Examine the left child for a message to be sent up
+      if (tttStep % 2 == 0 && jjjLeft != null)                                  // Examine the left child for a message to be sent up. To avoid always giving messages on the left hand side priority over the right hand side we alternate between giving the left hand side and the right hand side priority
        {final Junction l = tttJunctions[jjjLeft];                               // Left child
         final Message  u = l.jjjMessageUp;                                      // A possible message from the left child
         if (U == null && u != null)                                             // Left might want to send a message up
          {jjjMessageUp = u;
          }
        }
-      else if (tttStep % 2 == 1 && jjjRight != null)                            // Examine the right child for a message to be sent up
+      else if (tttStep % 2 == 1 && jjjRight != null)                            // Examine the right child for a message to be sent up. To avoid always giving messages on the left hand side priority over the right hand side we alternate between giving the left hand side and the right hand side priority
        {final Junction r = tttJunctions[jjjRight];                              // Right child
         final Message  u = r.jjjMessageUp;                                      // A possible message from the right child
         if (U == null && u != null)                                             // Right might want to send a message up
@@ -125,6 +125,7 @@ class TreeNet extends Test                                                      
                                                                                 // The address of a junction is its path from the root through the tree network to this junction
   private class Address                                                         // The address of  the junction in the tree network
    {final int    aaaIndex;                                                      // The numeric representation of the address of the junction in the tree network
+    final int    aaaLevel;                                                      // The level of this address in the tree network with the root at level zero and the next level at one etc.
     final String aaaAddress;                                                    // Address in branch path steering format
 
     Address(int Index)
@@ -132,16 +133,16 @@ class TreeNet extends Test                                                      
       final StringBuilder s = new StringBuilder();
       for(int N = Index+1; N > 1; N /= 2) s.append(N % 2 == 1 ? "1" : "0");     // Path from zero to this address
       aaaAddress = ""+s.reverse();
+      aaaLevel   = aaaAddress.length();
      }
 
     public String toString()
-     {return String.format("Address: %d %d %s\n", aaaIndex, aaaLevel(), aaaAddress);
+     {return String.format("Address: %d %d %s\n",
+                            aaaIndex, aaaLevel, aaaAddress);
      }
 
-    private int aaaLevel() {return aaaAddress.length();}                        // The level of this junction with the root of the tree network at level zero and the next level down plus one
-
     private boolean aaaDown(Address Target)                                     // Is this an address that can be descended through towards the target
-     {return Target.aaaLevel() >= aaaLevel() &&                                 // Level of target must be here or further down
+     {return Target.aaaLevel >= aaaLevel &&                                     // Level of target must be here or further down
              Target.aaaAddress.startsWith(aaaAddress);                          // Target prefix must match that of the current junction
      }
    }
