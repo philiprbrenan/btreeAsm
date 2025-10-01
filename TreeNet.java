@@ -288,6 +288,36 @@ Jnct  At step:   10        Up  Left Right  Addr      Up_______________  Down____
 """);
    }
 
+  static void test_swap()
+   {sayCurrentTestName();
+    final TreeNet T = new TreeNet(2);
+    T.tttPrintCompact = false;
+    final StringBuilder s = new StringBuilder();
+
+    T.new Message(1, 2, "AAAA");
+    T.new Message(2, 1, "BBBB");
+
+    for   (T.tttStep = 0; T.tttStep < 3; ++T.tttStep)
+     {s.append(T);
+      T.tttTransmit();
+     }
+    //stop(s);
+    ok(""+s, """
+Jnct  At step:    0        Up  Left Right  Addr      Up_______________  Down____________  |
+   0  *                           1     2                                                 |
+   1    *                   0              0         1>>--2   AAAA                        |
+   2    *                   0              1         2>>--1   BBBB                        |
+Jnct  At step:    1        Up  Left Right  Addr      Up_______________  Down____________  |
+   0  *                           1     2                                                 |
+   1    *                   0              0                                              |
+   2    *                   0              1         2>>--1   BBBB      1-->>2   AAAA     |
+Jnct  At step:    2        Up  Left Right  Addr      Up_______________  Down____________  |
+   0  *                           1     2                                                 |
+   1    *                   0              0                            2-->>1   BBBB     |
+   2    *                   0              1                            1-->>2   AAAA     |
+""");
+   }
+
   static void test_reversePair()
    {sayCurrentTestName();
     final TreeNet       T = new TreeNet(4);
@@ -519,6 +549,7 @@ Jnct  At step:   18        Up  Left Right  Addr      Up_______________  Down____
   static void oldTests()                                                        // Tests thought to be in good shape
    {test_one();
     test_two();
+    test_swap();
     test_reversePair();
     test_reverse();
    }
