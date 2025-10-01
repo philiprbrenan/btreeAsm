@@ -10,7 +10,7 @@ class TreeNet extends Test                                                      
  {final int       tttSize;                                                      // The log of the number of 3-way junctions in the network
   final int       tttWidth;                                                     // The data width of each junction
   final Junction[]tttJunctions;                                                 // The junctions used to construct the tree net
-  boolean         tttPrintCompact = false;                                      // Print network trace in compact format if true
+  boolean         tttPrintCompact = true;                                       // Print network trace in compact format if true
   int             tttStep;                                                      // The tree net is clocked
 
 //D1 Construction                                                               // Construct a tree net
@@ -23,7 +23,7 @@ class TreeNet extends Test                                                      
 
   public String toString()                                                      // Print the tree net
    {final StringJoiner s = new StringJoiner("\n", "", "\n");
-    s.add(String.format("Jnct  At step: %4d     Level  Left Right  Addr      Up_______________  Down____________  |", tttStep));
+    s.add(String.format("Jnct  At step: %4d        Up  Left Right  Addr      Up_______________  Down____________  |", tttStep));
     for (int i = 0; i < tttSize; i++)
      {final Junction j = tttJunctions[i];
       if (j == null) continue;
@@ -74,12 +74,11 @@ class TreeNet extends Test                                                      
       jjjLevel       = logTwo(prevPowerOfTwo(1+Number));                        // Level of junction
       jjjAddress     = new Address(jjjNumber);
       jjjParent      = jjjTop() ? null : (Number-1) / 2;                        // Set Parent
-      jjjLeft        = Number * 2 + 1 < tttSize ? Number * 2 + 1 : 0;           // Left child
-      jjjRight       = Number * 2 + 2 < tttSize ? Number * 2 + 2 : 0;           // Right child
+      jjjLeft        = Number * 2 + 1 < tttSize ? Number * 2 + 1 : null;        // Left child
+      jjjRight       = Number * 2 + 2 < tttSize ? Number * 2 + 2 : null;        // Right child
      }
 
     boolean jjjTop() {return jjjNumber == 0;}                                   // The root is always at index zero
-    boolean jjjIsLeftOfParent() {return jjjNumber % 2 == 1;}                    // This junction is left of its parent junction
 
     void jjjClearUp()                                                           // Clear source of messages sent up
      {final Junction p = tttJunctions[jjjParent];                               // Parent
@@ -87,25 +86,19 @@ class TreeNet extends Test                                                      
      }
 
     void jjjCopyUp()                                                            // Transmit messages up through this junction
-     {final Message  U =   jjjMessageUp;                                      // Message at this level if any
+     {final Message  U =   jjjMessageUp;                                        // Message at this level if any
       if (tttStep % 3 == 0 && jjjLeft != null)                                  // Examine the left child for a message to be sent up
        {final Junction l = tttJunctions[jjjLeft];                               // Left child
         final Message  u = l.jjjMessageUp;                                      // A possible message from the left child
         if (U == null && u != null)                                             // Left might want to send a message up
-         {final Address t = l.jjjMessageUp.mmmTarget;                           // Target of message from left
-          if (l.jjjAddress.aaaGoUp(t))                                          // Left message wants to go up
-           {jjjMessageUp = u;                                                   // Move left message up
-           }
+         {jjjMessageUp = u;
          }
        }
       else if (tttStep % 3 == 1 && jjjRight != null)                            // Examine the right child for a message to be sent up
        {final Junction r = tttJunctions[jjjRight];                              // Right child
         final Message  u = r.jjjMessageUp;                                      // A possible message from the right child
         if (U == null && u != null)                                             // Right might want to send a message up
-         {final Address t = r.jjjMessageUp.mmmTarget;                           // Target of message from right
-          if (r.jjjAddress.aaaGoUp(t))                                          // Right message wants to go up
-           {jjjMessageUp = u;                                                   // Move right message up
-           }
+         {jjjMessageUp = u;
          }
        }
      }
@@ -147,29 +140,9 @@ class TreeNet extends Test                                                      
 
     int aaaLevel() {return aaaAddress.length();}                                // The level of this junction with the root of the tree net at level zero and the next level down plus one
 
-    boolean aaaEqual(Address Target)                                            // Have we arrived at the specified target junction
-     {return Target.aaaAddress.equals(aaaAddress);
-     }
-
     boolean aaaDown(Address Target)                                             // Is this address that can be ascended towards the target
      {return Target.aaaLevel() >= aaaLevel() &&                                 // Level of target must be here or further down
              Target.aaaAddress.startsWith(aaaAddress);                          // Target prefix must match that of the current junction
-     }
-
-    boolean aaaGoLeft(Address Target)                                           // Should we go left from the current junction to find the specified target
-     {return Target.aaaLevel() > aaaLevel() &&                                  // Level of target must be further down
-             Target.aaaAddress.startsWith(aaaAddress) &&                        // Target prefix must match that of the current junction
-             Target.aaaAddress.charAt(aaaLevel()) == '0';                       // Go left
-     }
-
-    boolean aaaGoRight(Address Target)                                          // Should we go right from the current junction to find the specified target
-     {return Target.aaaLevel() > aaaLevel() &&                                  // Level of target must be further down
-             Target.aaaAddress.startsWith(aaaAddress) &&                        // Target prefix must match that of the current junction
-             Target.aaaAddress.charAt(aaaLevel()) == '1';                       // Go right
-     }
-
-    boolean aaaGoUp(Address Target)                                             // Go up if we have not arrived at the target and cannot go left or right
-     {return !aaaEqual(Target) && !aaaGoLeft(Target) && !aaaGoRight(Target);
      }
    }
 
@@ -221,7 +194,7 @@ class TreeNet extends Test                                                      
   static void test_transmit()
    {sayCurrentTestName();
     final TreeNet T = new TreeNet(3, 8);
-    final StringBuilder s = new StringBuilder();
+    final StringBuilder s = new StringBuilder(); T.tttPrintCompact = false;
 
     T.new Message(5, 3, "AAAA");
 
@@ -231,38 +204,38 @@ class TreeNet extends Test                                                      
      }
     //stop(s);
     ok(s, """
-Jnct  At step:    0     Level  Left Right  Addr      Up_______________  Down____________  |
+Jnct  At step:    0        Up  Left Right  Addr      Up_______________  Down____________  |
    0  *                           1     2                                                 |
    1    *                   0     3     4  0                                              |
    2    *                   0     5     6  1                                              |
-   3      *                 1     0     0  00                                             |
-   4      *                 1     0     0  01                                             |
-   5      *                 2     0     0  10        5>>--3   AAAA                        |
-   6      *                 2     0     0  11                                             |
-Jnct  At step:    1     Level  Left Right  Addr      Up_______________  Down____________  |
+   3      *                 1              00                                             |
+   4      *                 1              01                                             |
+   5      *                 2              10        5>>--3   AAAA                        |
+   6      *                 2              11                                             |
+Jnct  At step:    1        Up  Left Right  Addr      Up_______________  Down____________  |
    0  *                           1     2                                                 |
    1    *                   0     3     4  0                                              |
    2    *                   0     5     6  1         5-2-3    AAAA                        |
-   3      *                 1     0     0  00                                             |
-   4      *                 1     0     0  01                                             |
-   5      *                 2     0     0  10                                             |
-   6      *                 2     0     0  11                                             |
-Jnct  At step:    2     Level  Left Right  Addr      Up_______________  Down____________  |
+   3      *                 1              00                                             |
+   4      *                 1              01                                             |
+   5      *                 2              10                                             |
+   6      *                 2              11                                             |
+Jnct  At step:    2        Up  Left Right  Addr      Up_______________  Down____________  |
    0  *                           1     2                                                 |
    1    *                   0     3     4  0                            5-1-3    AAAA     |
    2    *                   0     5     6  1                                              |
-   3      *                 1     0     0  00                                             |
-   4      *                 1     0     0  01                                             |
-   5      *                 2     0     0  10                                             |
-   6      *                 2     0     0  11                                             |
-Jnct  At step:    3     Level  Left Right  Addr      Up_______________  Down____________  |
+   3      *                 1              00                                             |
+   4      *                 1              01                                             |
+   5      *                 2              10                                             |
+   6      *                 2              11                                             |
+Jnct  At step:    3        Up  Left Right  Addr      Up_______________  Down____________  |
    0  *                           1     2                                                 |
    1    *                   0     3     4  0                                              |
    2    *                   0     5     6  1                                              |
-   3      *                 1     0     0  00                           5-->>3   AAAA     |
-   4      *                 1     0     0  01                                             |
-   5      *                 2     0     0  10                                             |
-   6      *                 2     0     0  11                                             |
+   3      *                 1              00                           5-->>3   AAAA     |
+   4      *                 1              01                                             |
+   5      *                 2              10                                             |
+   6      *                 2              11                                             |
 """);
    }
 
@@ -271,8 +244,8 @@ Jnct  At step:    3     Level  Left Right  Addr      Up_______________  Down____
     final TreeNet T = new TreeNet(4, 8);
     final StringBuilder s = new StringBuilder();
 
-    T.new Message(14, 8, "AAAA");
-    T.new Message(13, 7, "BBBB");
+    T.new Message(13, 7, "AAAA");
+    T.new Message(14, 8, "BBBB");
 
     for   (T.tttStep = 0; T.tttStep < 14; ++T.tttStep)
      {s.append(T);
@@ -280,240 +253,58 @@ Jnct  At step:    3     Level  Left Right  Addr      Up_______________  Down____
      }
     //stop(s);
     ok(s, """
-Jnct  At step:    0     Level  Left Right  Addr      Up_______________  Down____________  |
-   0  *                           1     2                                                 |
-   1    *                   0     3     4  0                                              |
-   2    *                   0     5     6  1                                              |
-   3      *                 1     7     8  00                                             |
-   4      *                 1     9    10  01                                             |
-   5      *                 2    11    12  10                                             |
-   6      *                 2    13    14  11                                             |
-   7        *               3     0     0  000                                            |
-   8        *               3     0     0  001                                            |
-   9        *               4     0     0  010                                            |
-  10        *               4     0     0  011                                            |
-  11        *               5     0     0  100                                            |
-  12        *               5     0     0  101                                            |
-  13        *               6     0     0  110       13>>--7  BBBB                        |
-  14        *               6     0     0  111       14>>--8  AAAA                        |
-Jnct  At step:    1     Level  Left Right  Addr      Up_______________  Down____________  |
-   0  *                           1     2                                                 |
-   1    *                   0     3     4  0                                              |
-   2    *                   0     5     6  1                                              |
-   3      *                 1     7     8  00                                             |
-   4      *                 1     9    10  01                                             |
-   5      *                 2    11    12  10                                             |
-   6      *                 2    13    14  11        13-6-7   BBBB                        |
-   7        *               3     0     0  000                                            |
-   8        *               3     0     0  001                                            |
-   9        *               4     0     0  010                                            |
-  10        *               4     0     0  011                                            |
-  11        *               5     0     0  100                                            |
-  12        *               5     0     0  101                                            |
-  13        *               6     0     0  110                                            |
-  14        *               6     0     0  111       14>>--8  AAAA                        |
-Jnct  At step:    2     Level  Left Right  Addr      Up_______________  Down____________  |
-   0  *                           1     2                                                 |
-   1    *                   0     3     4  0                                              |
-   2    *                   0     5     6  1         13-2-7   BBBB                        |
-   3      *                 1     7     8  00                                             |
-   4      *                 1     9    10  01                                             |
-   5      *                 2    11    12  10                                             |
-   6      *                 2    13    14  11                                             |
-   7        *               3     0     0  000                                            |
-   8        *               3     0     0  001                                            |
-   9        *               4     0     0  010                                            |
-  10        *               4     0     0  011                                            |
-  11        *               5     0     0  100                                            |
-  12        *               5     0     0  101                                            |
-  13        *               6     0     0  110                                            |
-  14        *               6     0     0  111       14>>--8  AAAA                        |
-Jnct  At step:    3     Level  Left Right  Addr      Up_______________  Down____________  |
-   0  *                           1     2                                                 |
-   1    *                   0     3     4  0                                              |
-   2    *                   0     5     6  1         13-2-7   BBBB                        |
-   3      *                 1     7     8  00                                             |
-   4      *                 1     9    10  01                                             |
-   5      *                 2    11    12  10                                             |
-   6      *                 2    13    14  11                                             |
-   7        *               3     0     0  000                                            |
-   8        *               3     0     0  001                                            |
-   9        *               4     0     0  010                                            |
-  10        *               4     0     0  011                                            |
-  11        *               5     0     0  100                                            |
-  12        *               5     0     0  101                                            |
-  13        *               6     0     0  110                                            |
-  14        *               6     0     0  111       14>>--8  AAAA                        |
-Jnct  At step:    4     Level  Left Right  Addr      Up_______________  Down____________  |
-   0  *                           1     2                                                 |
-   1    *                   0     3     4  0                                              |
-   2    *                   0     5     6  1         13-2-7   BBBB                        |
-   3      *                 1     7     8  00                                             |
-   4      *                 1     9    10  01                                             |
-   5      *                 2    11    12  10                                             |
-   6      *                 2    13    14  11                                             |
-   7        *               3     0     0  000                                            |
-   8        *               3     0     0  001                                            |
-   9        *               4     0     0  010                                            |
-  10        *               4     0     0  011                                            |
-  11        *               5     0     0  100                                            |
-  12        *               5     0     0  101                                            |
-  13        *               6     0     0  110                                            |
-  14        *               6     0     0  111       14>>--8  AAAA                        |
-Jnct  At step:    5     Level  Left Right  Addr      Up_______________  Down____________  |
-   0  *                           1     2                                                 |
-   1    *                   0     3     4  0                            13-1-7   BBBB     |
-   2    *                   0     5     6  1                                              |
-   3      *                 1     7     8  00                                             |
-   4      *                 1     9    10  01                                             |
-   5      *                 2    11    12  10                                             |
-   6      *                 2    13    14  11        14-6-8   AAAA                        |
-   7        *               3     0     0  000                                            |
-   8        *               3     0     0  001                                            |
-   9        *               4     0     0  010                                            |
-  10        *               4     0     0  011                                            |
-  11        *               5     0     0  100                                            |
-  12        *               5     0     0  101                                            |
-  13        *               6     0     0  110                                            |
-  14        *               6     0     0  111                                            |
-Jnct  At step:    6     Level  Left Right  Addr      Up_______________  Down____________  |
-   0  *                           1     2                                                 |
-   1    *                   0     3     4  0                                              |
-   2    *                   0     5     6  1                                              |
-   3      *                 1     7     8  00                           13-3-7   BBBB     |
-   4      *                 1     9    10  01                                             |
-   5      *                 2    11    12  10                                             |
-   6      *                 2    13    14  11        14-6-8   AAAA                        |
-   7        *               3     0     0  000                                            |
-   8        *               3     0     0  001                                            |
-   9        *               4     0     0  010                                            |
-  10        *               4     0     0  011                                            |
-  11        *               5     0     0  100                                            |
-  12        *               5     0     0  101                                            |
-  13        *               6     0     0  110                                            |
-  14        *               6     0     0  111                                            |
-Jnct  At step:    7     Level  Left Right  Addr      Up_______________  Down____________  |
-   0  *                           1     2                                                 |
-   1    *                   0     3     4  0                                              |
-   2    *                   0     5     6  1                                              |
-   3      *                 1     7     8  00                                             |
-   4      *                 1     9    10  01                                             |
-   5      *                 2    11    12  10                                             |
-   6      *                 2    13    14  11        14-6-8   AAAA                        |
-   7        *               3     0     0  000                          13-->>7  BBBB     |
-   8        *               3     0     0  001                                            |
-   9        *               4     0     0  010                                            |
-  10        *               4     0     0  011                                            |
-  11        *               5     0     0  100                                            |
-  12        *               5     0     0  101                                            |
-  13        *               6     0     0  110                                            |
-  14        *               6     0     0  111                                            |
-Jnct  At step:    8     Level  Left Right  Addr      Up_______________  Down____________  |
-   0  *                           1     2                                                 |
-   1    *                   0     3     4  0                                              |
-   2    *                   0     5     6  1         14-2-8   AAAA                        |
-   3      *                 1     7     8  00                                             |
-   4      *                 1     9    10  01                                             |
-   5      *                 2    11    12  10                                             |
-   6      *                 2    13    14  11                                             |
-   7        *               3     0     0  000                          13-->>7  BBBB     |
-   8        *               3     0     0  001                                            |
-   9        *               4     0     0  010                                            |
-  10        *               4     0     0  011                                            |
-  11        *               5     0     0  100                                            |
-  12        *               5     0     0  101                                            |
-  13        *               6     0     0  110                                            |
-  14        *               6     0     0  111                                            |
-Jnct  At step:    9     Level  Left Right  Addr      Up_______________  Down____________  |
-   0  *                           1     2                                                 |
-   1    *                   0     3     4  0                                              |
-   2    *                   0     5     6  1         14-2-8   AAAA                        |
-   3      *                 1     7     8  00                                             |
-   4      *                 1     9    10  01                                             |
-   5      *                 2    11    12  10                                             |
-   6      *                 2    13    14  11                                             |
-   7        *               3     0     0  000                          13-->>7  BBBB     |
-   8        *               3     0     0  001                                            |
-   9        *               4     0     0  010                                            |
-  10        *               4     0     0  011                                            |
-  11        *               5     0     0  100                                            |
-  12        *               5     0     0  101                                            |
-  13        *               6     0     0  110                                            |
-  14        *               6     0     0  111                                            |
-Jnct  At step:   10     Level  Left Right  Addr      Up_______________  Down____________  |
-   0  *                           1     2                                                 |
-   1    *                   0     3     4  0                                              |
-   2    *                   0     5     6  1         14-2-8   AAAA                        |
-   3      *                 1     7     8  00                                             |
-   4      *                 1     9    10  01                                             |
-   5      *                 2    11    12  10                                             |
-   6      *                 2    13    14  11                                             |
-   7        *               3     0     0  000                          13-->>7  BBBB     |
-   8        *               3     0     0  001                                            |
-   9        *               4     0     0  010                                            |
-  10        *               4     0     0  011                                            |
-  11        *               5     0     0  100                                            |
-  12        *               5     0     0  101                                            |
-  13        *               6     0     0  110                                            |
-  14        *               6     0     0  111                                            |
-Jnct  At step:   11     Level  Left Right  Addr      Up_______________  Down____________  |
-   0  *                           1     2                                                 |
-   1    *                   0     3     4  0                            14-1-8   AAAA     |
-   2    *                   0     5     6  1                                              |
-   3      *                 1     7     8  00                                             |
-   4      *                 1     9    10  01                                             |
-   5      *                 2    11    12  10                                             |
-   6      *                 2    13    14  11                                             |
-   7        *               3     0     0  000                          13-->>7  BBBB     |
-   8        *               3     0     0  001                                            |
-   9        *               4     0     0  010                                            |
-  10        *               4     0     0  011                                            |
-  11        *               5     0     0  100                                            |
-  12        *               5     0     0  101                                            |
-  13        *               6     0     0  110                                            |
-  14        *               6     0     0  111                                            |
-Jnct  At step:   12     Level  Left Right  Addr      Up_______________  Down____________  |
-   0  *                           1     2                                                 |
-   1    *                   0     3     4  0                                              |
-   2    *                   0     5     6  1                                              |
-   3      *                 1     7     8  00                           14-3-8   AAAA     |
-   4      *                 1     9    10  01                                             |
-   5      *                 2    11    12  10                                             |
-   6      *                 2    13    14  11                                             |
-   7        *               3     0     0  000                          13-->>7  BBBB     |
-   8        *               3     0     0  001                                            |
-   9        *               4     0     0  010                                            |
-  10        *               4     0     0  011                                            |
-  11        *               5     0     0  100                                            |
-  12        *               5     0     0  101                                            |
-  13        *               6     0     0  110                                            |
-  14        *               6     0     0  111                                            |
-Jnct  At step:   13     Level  Left Right  Addr      Up_______________  Down____________  |
-   0  *                           1     2                                                 |
-   1    *                   0     3     4  0                                              |
-   2    *                   0     5     6  1                                              |
-   3      *                 1     7     8  00                                             |
-   4      *                 1     9    10  01                                             |
-   5      *                 2    11    12  10                                             |
-   6      *                 2    13    14  11                                             |
-   7        *               3     0     0  000                          13-->>7  BBBB     |
-   8        *               3     0     0  001                          14-->>8  AAAA     |
-   9        *               4     0     0  010                                            |
-  10        *               4     0     0  011                                            |
-  11        *               5     0     0  100                                            |
-  12        *               5     0     0  101                                            |
-  13        *               6     0     0  110                                            |
-  14        *               6     0     0  111                                            |
+Jnct  At step:    0        Up  Left Right  Addr      Up_______________  Down____________  |
+  13        *               6              110       13>>--7  AAAA                        |
+  14        *               6              111       14>>--8  BBBB                        |
+Jnct  At step:    1        Up  Left Right  Addr      Up_______________  Down____________  |
+   6      *                 2    13    14  11        13-6-7   AAAA                        |
+  14        *               6              111       14>>--8  BBBB                        |
+Jnct  At step:    2        Up  Left Right  Addr      Up_______________  Down____________  |
+   2    *                   0     5     6  1         13-2-7   AAAA                        |
+  14        *               6              111       14>>--8  BBBB                        |
+Jnct  At step:    3        Up  Left Right  Addr      Up_______________  Down____________  |
+   2    *                   0     5     6  1         13-2-7   AAAA                        |
+  14        *               6              111       14>>--8  BBBB                        |
+Jnct  At step:    4        Up  Left Right  Addr      Up_______________  Down____________  |
+   2    *                   0     5     6  1         13-2-7   AAAA                        |
+  14        *               6              111       14>>--8  BBBB                        |
+Jnct  At step:    5        Up  Left Right  Addr      Up_______________  Down____________  |
+   1    *                   0     3     4  0                            13-1-7   AAAA     |
+   6      *                 2    13    14  11        14-6-8   BBBB                        |
+Jnct  At step:    6        Up  Left Right  Addr      Up_______________  Down____________  |
+   3      *                 1     7     8  00                           13-3-7   AAAA     |
+   6      *                 2    13    14  11        14-6-8   BBBB                        |
+Jnct  At step:    7        Up  Left Right  Addr      Up_______________  Down____________  |
+   6      *                 2    13    14  11        14-6-8   BBBB                        |
+   7        *               3              000                          13-->>7  AAAA     |
+Jnct  At step:    8        Up  Left Right  Addr      Up_______________  Down____________  |
+   2    *                   0     5     6  1         14-2-8   BBBB                        |
+   7        *               3              000                          13-->>7  AAAA     |
+Jnct  At step:    9        Up  Left Right  Addr      Up_______________  Down____________  |
+   2    *                   0     5     6  1         14-2-8   BBBB                        |
+   7        *               3              000                          13-->>7  AAAA     |
+Jnct  At step:   10        Up  Left Right  Addr      Up_______________  Down____________  |
+   2    *                   0     5     6  1         14-2-8   BBBB                        |
+   7        *               3              000                          13-->>7  AAAA     |
+Jnct  At step:   11        Up  Left Right  Addr      Up_______________  Down____________  |
+   1    *                   0     3     4  0                            14-1-8   BBBB     |
+   7        *               3              000                          13-->>7  AAAA     |
+Jnct  At step:   12        Up  Left Right  Addr      Up_______________  Down____________  |
+   3      *                 1     7     8  00                           14-3-8   BBBB     |
+   7        *               3              000                          13-->>7  AAAA     |
+Jnct  At step:   13        Up  Left Right  Addr      Up_______________  Down____________  |
+   7        *               3              000                          13-->>7  AAAA     |
+   8        *               3              001                          14-->>8  BBBB     |
 """);
    }
 
   static void test_transmit2Reverse()
    {sayCurrentTestName();
-    final TreeNet       T = new TreeNet(4, 8); T.tttPrintCompact = true;
+    final TreeNet       T = new TreeNet(4, 8);
     final StringBuilder s = new StringBuilder();
 
-    T.new Message(14, 7, "AAAA");
-    T.new Message(7, 14, "BBBB");
+    T.new Message(7, 14, "AAAA");
+    T.new Message(14, 7, "BBBB");
 
     for   (T.tttStep = 0; T.tttStep < 11; ++T.tttStep)
      {s.append(T);
@@ -521,38 +312,96 @@ Jnct  At step:   13     Level  Left Right  Addr      Up_______________  Down____
      }
     //stop(s);
     ok(s, """
-Jnct  At step:    0     Level  Left Right  Addr      Up_______________  Down____________  |
-   7        *               3     0     0  000       7>>--14  BBBB                        |
-  14        *               6     0     0  111       14>>--7  AAAA                        |
-Jnct  At step:    1     Level  Left Right  Addr      Up_______________  Down____________  |
-   3      *                 1     7     8  00        7-3-14   BBBB                        |
-  14        *               6     0     0  111       14>>--7  AAAA                        |
-Jnct  At step:    2     Level  Left Right  Addr      Up_______________  Down____________  |
-   3      *                 1     7     8  00        7-3-14   BBBB                        |
-   6      *                 2    13    14  11        14-6-7   AAAA                        |
-Jnct  At step:    3     Level  Left Right  Addr      Up_______________  Down____________  |
-   3      *                 1     7     8  00        7-3-14   BBBB                        |
-   6      *                 2    13    14  11        14-6-7   AAAA                        |
-Jnct  At step:    4     Level  Left Right  Addr      Up_______________  Down____________  |
-   1    *                   0     3     4  0         7-1-14   BBBB                        |
-   6      *                 2    13    14  11        14-6-7   AAAA                        |
-Jnct  At step:    5     Level  Left Right  Addr      Up_______________  Down____________  |
-   1    *                   0     3     4  0         7-1-14   BBBB                        |
-   2    *                   0     5     6  1         14-2-7   AAAA                        |
-Jnct  At step:    6     Level  Left Right  Addr      Up_______________  Down____________  |
-   1    *                   0     3     4  0         7-1-14   BBBB                        |
-   2    *                   0     5     6  1         14-2-7   AAAA                        |
-Jnct  At step:    7     Level  Left Right  Addr      Up_______________  Down____________  |
-   2    *                   0     5     6  1         14-2-7   AAAA      7-2-14   BBBB     |
-Jnct  At step:    8     Level  Left Right  Addr      Up_______________  Down____________  |
-   1    *                   0     3     4  0                            14-1-7   AAAA     |
-   6      *                 2    13    14  11                           7-6-14   BBBB     |
-Jnct  At step:    9     Level  Left Right  Addr      Up_______________  Down____________  |
-   3      *                 1     7     8  00                           14-3-7   AAAA     |
-  14        *               6     0     0  111                          7-->>14  BBBB     |
-Jnct  At step:   10     Level  Left Right  Addr      Up_______________  Down____________  |
-   7        *               3     0     0  000                          14-->>7  AAAA     |
-  14        *               6     0     0  111                          7-->>14  BBBB     |
+Jnct  At step:    0        Up  Left Right  Addr      Up_______________  Down____________  |
+   7        *               3              000       7>>--14  AAAA                        |
+  14        *               6              111       14>>--7  BBBB                        |
+Jnct  At step:    1        Up  Left Right  Addr      Up_______________  Down____________  |
+   3      *                 1     7     8  00        7-3-14   AAAA                        |
+  14        *               6              111       14>>--7  BBBB                        |
+Jnct  At step:    2        Up  Left Right  Addr      Up_______________  Down____________  |
+   3      *                 1     7     8  00        7-3-14   AAAA                        |
+   6      *                 2    13    14  11        14-6-7   BBBB                        |
+Jnct  At step:    3        Up  Left Right  Addr      Up_______________  Down____________  |
+   3      *                 1     7     8  00        7-3-14   AAAA                        |
+   6      *                 2    13    14  11        14-6-7   BBBB                        |
+Jnct  At step:    4        Up  Left Right  Addr      Up_______________  Down____________  |
+   1    *                   0     3     4  0         7-1-14   AAAA                        |
+   6      *                 2    13    14  11        14-6-7   BBBB                        |
+Jnct  At step:    5        Up  Left Right  Addr      Up_______________  Down____________  |
+   1    *                   0     3     4  0         7-1-14   AAAA                        |
+   2    *                   0     5     6  1         14-2-7   BBBB                        |
+Jnct  At step:    6        Up  Left Right  Addr      Up_______________  Down____________  |
+   1    *                   0     3     4  0         7-1-14   AAAA                        |
+   2    *                   0     5     6  1         14-2-7   BBBB                        |
+Jnct  At step:    7        Up  Left Right  Addr      Up_______________  Down____________  |
+   2    *                   0     5     6  1         14-2-7   BBBB      7-2-14   AAAA     |
+Jnct  At step:    8        Up  Left Right  Addr      Up_______________  Down____________  |
+   1    *                   0     3     4  0                            14-1-7   BBBB     |
+   6      *                 2    13    14  11                           7-6-14   AAAA     |
+Jnct  At step:    9        Up  Left Right  Addr      Up_______________  Down____________  |
+   3      *                 1     7     8  00                           14-3-7   BBBB     |
+  14        *               6              111                          7-->>14  AAAA     |
+Jnct  At step:   10        Up  Left Right  Addr      Up_______________  Down____________  |
+   7        *               3              000                          14-->>7  BBBB     |
+  14        *               6              111                          7-->>14  AAAA     |
+""");
+   }
+
+  static void test_swap()
+   {sayCurrentTestName();
+    final TreeNet       T = new TreeNet(4, 8);
+    final StringBuilder s = new StringBuilder();
+
+    T.new Message(13, 14, "AAAA");
+    T.new Message(14, 13, "BBBB");
+
+    for   (T.tttStep = 0; T.tttStep < 14; ++T.tttStep)
+     {s.append(T);
+      T.tttTransmit();
+     }
+    //stop(s);
+    ok(s, """
+Jnct  At step:    0        Up  Left Right  Addr      Up_______________  Down____________  |
+  13        *               6              110       13>>--14 AAAA                        |
+  14        *               6              111       14>>--13 BBBB                        |
+Jnct  At step:    1        Up  Left Right  Addr      Up_______________  Down____________  |
+   6      *                 2    13    14  11        13-6-14  AAAA                        |
+  14        *               6              111       14>>--13 BBBB                        |
+Jnct  At step:    2        Up  Left Right  Addr      Up_______________  Down____________  |
+   2    *                   0     5     6  1         13-2-14  AAAA                        |
+  14        *               6              111       14>>--13 BBBB                        |
+Jnct  At step:    3        Up  Left Right  Addr      Up_______________  Down____________  |
+   2    *                   0     5     6  1         13-2-14  AAAA                        |
+  14        *               6              111       14>>--13 BBBB                        |
+Jnct  At step:    4        Up  Left Right  Addr      Up_______________  Down____________  |
+   2    *                   0     5     6  1         13-2-14  AAAA                        |
+  14        *               6              111       14>>--13 BBBB                        |
+Jnct  At step:    5        Up  Left Right  Addr      Up_______________  Down____________  |
+   2    *                   0     5     6  1                            13-2-14  AAAA     |
+   6      *                 2    13    14  11        14-6-13  BBBB                        |
+Jnct  At step:    6        Up  Left Right  Addr      Up_______________  Down____________  |
+   6      *                 2    13    14  11        14-6-13  BBBB      13-6-14  AAAA     |
+Jnct  At step:    7        Up  Left Right  Addr      Up_______________  Down____________  |
+   6      *                 2    13    14  11        14-6-13  BBBB                        |
+  14        *               6              111                          13-->>14 AAAA     |
+Jnct  At step:    8        Up  Left Right  Addr      Up_______________  Down____________  |
+   2    *                   0     5     6  1         14-2-13  BBBB                        |
+  14        *               6              111                          13-->>14 AAAA     |
+Jnct  At step:    9        Up  Left Right  Addr      Up_______________  Down____________  |
+   2    *                   0     5     6  1         14-2-13  BBBB                        |
+  14        *               6              111                          13-->>14 AAAA     |
+Jnct  At step:   10        Up  Left Right  Addr      Up_______________  Down____________  |
+   2    *                   0     5     6  1         14-2-13  BBBB                        |
+  14        *               6              111                          13-->>14 AAAA     |
+Jnct  At step:   11        Up  Left Right  Addr      Up_______________  Down____________  |
+   2    *                   0     5     6  1                            14-2-13  BBBB     |
+  14        *               6              111                          13-->>14 AAAA     |
+Jnct  At step:   12        Up  Left Right  Addr      Up_______________  Down____________  |
+   6      *                 2    13    14  11                           14-6-13  BBBB     |
+  14        *               6              111                          13-->>14 AAAA     |
+Jnct  At step:   13        Up  Left Right  Addr      Up_______________  Down____________  |
+  13        *               6              110                          14-->>13 BBBB     |
+  14        *               6              111                          13-->>14 AAAA     |
 """);
    }
 
@@ -560,6 +409,7 @@ Jnct  At step:   10     Level  Left Right  Addr      Up_______________  Down____
    {test_transmit();
     test_transmit2();
     test_transmit2Reverse();
+    test_swap();
    }
 
   static void newTests()                                                        // Tests being worked on
