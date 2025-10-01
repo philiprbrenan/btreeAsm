@@ -1,5 +1,5 @@
 //------------------------------------------------------------------------------
-// A tree network connecting leaves along branch paths in logarithmic time
+// A tree network connecting leaves along branchs in logarithmic time
 // Philip R Brenan at appaapps dot com, Appa Apps Ltd Inc., 2025
 //------------------------------------------------------------------------------
 package com.AppaApps.Silicon;                                                   // Btree as a silicon chip
@@ -7,11 +7,11 @@ package com.AppaApps.Silicon;                                                   
 import java.util.*;
 
 class TreeNet extends Test                                                      // A tree network connecting leaves a long branches in logarithmic time
- {int tttSize;                                                                  // The log of the number of 3-way junctions in the network
-  int tttWidth;                                                                 // The data width of each junction
-
-  Junction[]tttJunctions;                                                       // The junctions used to construct the tree net
-  int tttStep;                                                                  // The tree net is clocked
+ {final int       tttSize;                                                      // The log of the number of 3-way junctions in the network
+  final int       tttWidth;                                                     // The data width of each junction
+  final Junction[]tttJunctions;                                                 // The junctions used to construct the tree net
+  boolean         tttPrintCompact = false;                                      // Print network trace in compact format if true
+  int             tttStep;                                                      // The tree net is clocked
 
 //D1 Construction                                                               // Construct a tree net
 
@@ -23,6 +23,7 @@ class TreeNet extends Test                                                      
 
   public String toString()                                                      // Print the tree net
    {final StringJoiner s = new StringJoiner("\n", "", "\n");
+    s.add(String.format("Jnct  At step: %4d     Level  Left Right  Addr      Up_______________  Down____________  |", tttStep));
     for (int i = 0; i < tttSize; i++)
      {final Junction j = tttJunctions[i];
       if (j == null) continue;
@@ -31,39 +32,42 @@ class TreeNet extends Test                                                      
       final String  P = p == null ? "    " : String.format("%4d", p);
       final String  L = l == null ? "    " : String.format("%4d", l);
       final String  R = r == null ? "    " : String.format("%4d", r);
-      final String  d = "  ".repeat(j.jjjLevel)+"*"+"  ".repeat(8-j.jjjLevel);
+      final String  n = "  ".repeat(j.jjjLevel)+"*"+"  ".repeat(8-j.jjjLevel);
 
-      final Message mu = j.jjjMessageUp;
-      final Message md = j.jjjMessageDown;
-      final String  mU = mu == null ? "" : mu.toString();
-      final String  mD = md == null ? "" : md.toString();
+      final Message u = j.jjjMessageUp;
+      final Message d = j.jjjMessageDown;
+      final String  U = u == null ? " ".repeat(17) : u.toString(i);
+      final String  D = d == null ? " ".repeat(17) : d.toString(i);
 
-      final Event eu = j.jjjEventUp;
-      final Event ed = j.jjjEventDown;
-
-      final String eU = eu == null ? "" : eu.toString();
-      final String eD = ed == null ? "" : ed.toString();
-
-      s.add(String.format("%4d %s %s %s %s  %-8s  %s-%s  %s-%s |",
-        i, d, P, L, R, j.jjjAddress.addAddress, eU, mU, eD, mD));
+      if (!tttPrintCompact || u != null || d != null)
+       {s.add(String.format("%4d  %s  %s  %s  %s  %-8s  %s  %s |",
+          i, n, P, L, R, j.jjjAddress.aaaAddress, U, D));
+       }
      }
     return ""+s;
+   }
+
+  void tttTransmit()                                                            // Transmit a message one step through the tree net
+   {for(int i = 0; i < tttJunctions.length; i++) tttJunctions[i].jjjCopyUp();   // Copy a source message up one step so that it is closer to the target
+    for(int i = 1; i < tttJunctions.length; i++) tttJunctions[i].jjjClearUp();  // Clear the source of an upward moving message - the root cannot be such a source
+    tttJunctions[0].jjjMessageDown = tttJunctions[0].jjjMessageUp;              // Peri helion
+    tttJunctions[0].jjjMessageUp   = null;                                      // Peri helion
+    for(int i = 1; i < tttJunctions.length; i++) tttJunctions[i].jjjCopyDown(); // Copy a source message down one step so that it is closer to the target
+    for(int i = 1; i < tttJunctions.length; i++) tttJunctions[i].jjjClearDown();// Clear the source of a downward moving message - the root cannot be such a source
    }
 
 //D1 Junction                                                                   // A junction in a tree net connects two child junctions to a parent junction.
 
   class Junction                                                                // A junction in a tree net connects two child junctions to a parent junction.
-   {final int     jjjNumber;
-   // The number of the junction
+   {final int     jjjNumber;                                                    // The number of the junction
     final int     jjjLevel;                                                     // The level of the junction,.  teh root is a t level zero, the nbext at level one etc.
     final Address jjjAddress;                                                   // The address of this junction in the tree net
     final Integer jjjParent;                                                    // The index of the parent of this junction
     final Integer jjjLeft;                                                      // The index of the left child junction
     final Integer jjjRight;                                                     // The index of the right child junction
-    final Message jjjMessageUp;                                                 // Message waiting to be sent up the tree
-    final Message jjjMessageDown;                                               // Message waiting to be sent down the tree
-    final Event   jjjEventUp;                                                   // Event controlling the transmission of a message up the tree
-    final Event   jjjEventDown;                                                 // Event controlling the transmission of a message down the tree
+    Message       jjjMessageUp;                                                 // Message waiting to be sent up through the tree net
+    Message       jjjMessageDown;                                               // Message waiting to be sent down through the tree net
+    Message       jjjMessageDown2;                                              // The message is forst moved here to prevent overrun
 
     Junction(int Number)
      {jjjNumber      = Number;
@@ -72,262 +76,494 @@ class TreeNet extends Test                                                      
       jjjParent      = jjjTop() ? null : (Number-1) / 2;                        // Set Parent
       jjjLeft        = Number * 2 + 1 < tttSize ? Number * 2 + 1 : 0;           // Left child
       jjjRight       = Number * 2 + 2 < tttSize ? Number * 2 + 2 : 0;           // Right child
-      jjjMessageUp   = new Message();                                           // Message waiting to be sent up the tree
-      jjjMessageDown = new Message();                                           // Message waiting to be sent to the left down the tree
-      jjjEventUp     = new Event();                                             // Event sending message up
-      jjjEventDown   = new Event();                                             // Event sending message down left
      }
 
     boolean jjjTop() {return jjjNumber == 0;}                                   // The root is always at index zero
     boolean jjjIsLeftOfParent() {return jjjNumber % 2 == 1;}                    // This junction is left of its parent junction
 
-    void jjjTransmit()                                                          // Transmit a message through the node
-     {if (tttStep % 3 == 0 && jjjLeft != null)                                  // Examine the left child for a message to be sent up
-       {final Junction l = tttJunctions[jjjLeft];                               // Left child
+    void jjjClearUp()                                                           // Clear source of messages sent up
+     {final Junction p = tttJunctions[jjjParent];                               // Parent
+      if (jjjMessageUp == p.jjjMessageUp) jjjMessageUp = null;                  // Same message in parent and child means we can remove the child message
+     }
 
-        if (!l.jjjEventUp.eveFinished())                                        // Left wants to send us a message
-         {final Address t = l.jjjMessageUp.mssTarget;                           // Target of message from left
-          if (l.jjjAddress.addGoUp(t))                                          // Left message wants to go up
-           {if (jjjAddress.addGoRight(t))                                       // Left message wants to go up then right
-             {final Junction r = tttJunctions[jjjRight];                        // Right child
-              if (r.jjjEventDown.eveFinished())                                 // Right down buffer is available
-               {r.jjjMessageDown.mssCopy(l.jjjMessageUp);                       // Move left message to right down
-                r.jjjEventDown.eveSetExecuting();                               // Show right as wanting to move down
-                l.jjjEventUp.eveSetFinished ();                                 // Show left message as having been moved right
-               }
-             }
-            else if (jjjEventDown.eveFinished())                                // Up buffer is available for left message
-             {jjjMessageUp.mssCopy(l.jjjMessageUp);                             // Move left message up
-                jjjEventUp.eveSetExecuting();                                   // Current message now wants to move up
-              l.jjjEventUp.eveSetFinished ();                                   // Show left message as having been moved up
-             }
+    void jjjCopyUp()                                                            // Transmit messages up through this junction
+     {final Message  U =   jjjMessageUp;                                      // Message at this level if any
+      if (tttStep % 3 == 0 && jjjLeft != null)                                  // Examine the left child for a message to be sent up
+       {final Junction l = tttJunctions[jjjLeft];                               // Left child
+        final Message  u = l.jjjMessageUp;                                      // A possible message from the left child
+        if (U == null && u != null)                                             // Left might want to send a message up
+         {final Address t = l.jjjMessageUp.mmmTarget;                           // Target of message from left
+          if (l.jjjAddress.aaaGoUp(t))                                          // Left message wants to go up
+           {jjjMessageUp = u;                                                   // Move left message up
            }
          }
        }
       else if (tttStep % 3 == 1 && jjjRight != null)                            // Examine the right child for a message to be sent up
        {final Junction r = tttJunctions[jjjRight];                              // Right child
-
-        if (!r.jjjEventUp.eveFinished())                                        // Right wants to send us a message
-         {final Address t = r.jjjMessageUp.mssTarget;                           // Target of message from right
-          if (r.jjjAddress.addGoUp(t))                                          // Right message wants to go up
-           {if (jjjAddress.addGoLeft(t))                                        // Right message wants to go up then left
-             {final Junction l = tttJunctions[jjjLeft];                         // Left child
-              if (l.jjjEventDown.eveFinished())                                 // Left down buffer is available
-               {l.jjjMessageDown.mssCopy(r.jjjMessageUp);                       // Move right message to left down
-                l.jjjEventDown.eveSetExecuting();                               // Show left as wanting to move down
-                r.jjjEventUp.eveSetFinished ();                                 // Show right message as having been moved left
-               }
-             }
-            else if (jjjEventDown.eveFinished())                                // Up buffer is available for right message
-             {jjjMessageUp.mssCopy(r.jjjMessageUp);                             // Move right message up
-                jjjEventUp.eveSetExecuting();                                   // Current message now wants to move up
-              r.jjjEventUp.eveSetFinished ();                                   // Show right message as having been moved up
-             }
-           }
-         }
-       }
-      else if (jjjParent != null)                                               // Examine the parent for a message to be sent down
-       {final Junction p = tttJunctions[jjjParent];                             // Parent
-
-        if (!p.jjjEventDown.eveFinished())                                      // Parent wants to send us a message
-         {final Address t = p.jjjMessageDown.mssTarget;                           // Target of message from parent
-          if (jjjAddress.addDown(t))                                            // Parent wants to go down this path
-           {  jjjMessageDown.mssCopy(p.jjjMessageDown);                         // Copy message down from parent
-              jjjEventDown.eveSetExecuting();                                   // Show this junction as wanting to send a message down
-            p.jjjEventDown.eveSetFinished ();                                     // Message transfer from parent complete
+        final Message  u = r.jjjMessageUp;                                      // A possible message from the right child
+        if (U == null && u != null)                                             // Right might want to send a message up
+         {final Address t = r.jjjMessageUp.mmmTarget;                           // Target of message from right
+          if (r.jjjAddress.aaaGoUp(t))                                          // Right message wants to go up
+           {jjjMessageUp = u;                                                   // Move right message up
            }
          }
        }
      }
-   }
 
-//D1 Event                                                                      // A network event
-
-  class Event                                                                   // A network event
-   {int eveStarted;                                                             // Time at which the event started as determined by the step
-    int eveFinished;                                                            // Time at which the event finished as determined by the step - but we make sure that it is never equal to the start time
-    boolean eveFinished ()  {return eveStarted < eveFinished && eveStarted != tttStep && eveFinished != tttStep;} // Event has finished and it is not in the step that started it nor in the step that finished it
-    Event eveSetExecuting() {eveStarted  = tttStep; return this;}               // Execution will begin on the next step
-    Event eveSetFinished()  {eveFinished = tttStep; return this;}               // The event will finish on the next step
-    Event()                                                                     // Create an event
-     {eveStarted  = -2;                                                         // Event created at the current step
-      eveFinished = -1;                                                         // Event not yet completed
+    void jjjClearDown()                                                         // Clear source of messages sent down
+     {if (jjjMessageDown2 != null)
+       {jjjMessageDown  = jjjMessageDown2;                                      // Move message into main downline
+        jjjMessageDown2 = null;                                                 // Move message from secondary downline wherw we cached it to stop overrun
+        tttJunctions[jjjParent].jjjMessageDown = null;                          // Remove messsage from parent
+       }
      }
-    public String toString()                                                    // Status of event
-     {final StringBuilder s = new StringBuilder();
-      return String.format("%d", eveFinished() ? 1 : 0);
-      //return String.format("e(%4d %4d  %d)", eStarted, eFinished, eFinished() ? 1 : 0);
+
+    void jjjCopyDown()                                                          // Transmit messages down through this junction
+     {final Junction p = tttJunctions[jjjParent];                               // Parent
+      final Message  D = p.jjjMessageDown;                                      // A possible message from the parent
+      final Message  d =   jjjMessageDown;                                      // Message at this level if any
+      if (D != null && d == null)                                               // Parent wants to send us a message
+       {if (jjjAddress.aaaDown(D.mmmTarget)) jjjMessageDown2 = D;               // Message sgould go down through this junction
+       }
      }
    }
 
 //D1 Address
                                                                                 // The address of a junction is its path from the root ot the tree net
   class Address                                                                 // Level of the junction in the tree net
-   {int    addIndex;                                                            // The number of the message
-    String addAddress;                                                          // Address
+   {final int    aaaIndex;                                                      // The numeric representation of the address
+    final String aaaAddress;                                                    // Address in branch path steering format
 
     Address(int Index)
-     {addIndex = Index;
+     {aaaIndex = Index;
       final StringBuilder s = new StringBuilder();
       for(int N = Index+1; N > 1; N /= 2) s.append(N % 2 == 1 ? "1" : "0");     // Path from zero to this address
-      addAddress = ""+s.reverse();
+      aaaAddress = ""+s.reverse();
      }
 
     public String toString()
-     {return String.format("Address: %d %d %s\n", addIndex, addLevel(), addAddress);
+     {return String.format("Address: %d %d %s\n", aaaIndex, aaaLevel(), aaaAddress);
      }
 
-    void addCopy(Address Source)                                                // Copy one address into another
-     {addIndex = Source.addIndex; addAddress = Source.addAddress;
+    int aaaLevel() {return aaaAddress.length();}                                // The level of this junction with the root of the tree net at level zero and the next level down plus one
+
+    boolean aaaEqual(Address Target)                                            // Have we arrived at the specified target junction
+     {return Target.aaaAddress.equals(aaaAddress);
      }
 
-    int addLevel() {return addAddress.length();}                                // The level of this junction with the root of the tree net at level zero and the next level down plus one
-
-    boolean addEqual(Address Target) {return Target.addAddress.equals(addAddress);}   // Have we arrived at the specified target junction
-
-    boolean addDown(Address Target)                                             // Is this address that can be ascended towards the target
-     {return Target.addLevel() >= addLevel() &&                                 // Level of target must be here or further down
-             Target.addAddress.startsWith(addAddress);                          // Target prefix must match that of the current junction
+    boolean aaaDown(Address Target)                                             // Is this address that can be ascended towards the target
+     {return Target.aaaLevel() >= aaaLevel() &&                                 // Level of target must be here or further down
+             Target.aaaAddress.startsWith(aaaAddress);                          // Target prefix must match that of the current junction
      }
 
-    boolean addGoLeft(Address Target)                                           // Should we go left from the current jjjctoin to find the specified target
-     {return Target.addLevel() > addLevel() &&                                  // Level of target must be further down
-             Target.addAddress.startsWith(addAddress) &&                        // Target prefix must match that of the current junction
-             Target.addAddress.charAt(addLevel()) == '0';                       // Go left
+    boolean aaaGoLeft(Address Target)                                           // Should we go left from the current junction to find the specified target
+     {return Target.aaaLevel() > aaaLevel() &&                                  // Level of target must be further down
+             Target.aaaAddress.startsWith(aaaAddress) &&                        // Target prefix must match that of the current junction
+             Target.aaaAddress.charAt(aaaLevel()) == '0';                       // Go left
      }
 
-    boolean addGoRight(Address Target)                                          // Should we go right from the current jjjctoin to find the specified target
-     {return Target.addLevel() > addLevel() &&                                  // Level of target must be further down
-             Target.addAddress.startsWith(addAddress) &&                        // Target prefix must match that of the current junction
-             Target.addAddress.charAt(addLevel()) == '1';                       // Go right
+    boolean aaaGoRight(Address Target)                                          // Should we go right from the current junction to find the specified target
+     {return Target.aaaLevel() > aaaLevel() &&                                  // Level of target must be further down
+             Target.aaaAddress.startsWith(aaaAddress) &&                        // Target prefix must match that of the current junction
+             Target.aaaAddress.charAt(aaaLevel()) == '1';                       // Go right
      }
 
-    boolean addGoUp(Address Target)                                             // Go up if we have not arrived at the target and cannot go left or right
-     {return !addEqual(Target) && !addGoLeft(Target) && !addGoRight(Target);
+    boolean aaaGoUp(Address Target)                                             // Go up if we have not arrived at the target and cannot go left or right
+     {return !aaaEqual(Target) && !aaaGoLeft(Target) && !aaaGoRight(Target);
      }
    }
 
 //D1 Message                                                                    // A message sent from a source leaf to a target leaf
 
   class Message                                                                 // A message sent from a source leaf to a target leaf
-   {Address mssSource;                                                          // The address of the sending source leaf
-    Address mssTarget;                                                          // The address of the recieving target leaf
-    String  mssText;                                                            // The text of the message
+   {final Address mmmSource;                                                    // The address of the sending source leaf
+    final Address mmmTarget;                                                    // The address of the recieving target leaf
+    final String  mmmText;                                                      // The text of the message
 
-    Message()
-     {mssSource = new Address(0); mssTarget = new Address(0); mssText = "";
+    Message(int Source, int Target, String Text)                                // Add a new message into the network
+     {mmmSource = new Address(Source);
+      mmmTarget = new Address(Target);
+      mmmText   = Text;
+      tttJunctions[Source].jjjMessageUp = this;                                 // The message starts at at the source junction
      }
 
-    void mssSet(int Source, int Target, String Text)
-     {mssSource.addCopy(new Address(Source));
-      mssTarget.addCopy(new Address(Target));
-      mssText = Text;
+    public String toString()                                                    // Print a message
+     {final int    s = mmmSource.aaaIndex;
+      final int    t = mmmTarget.aaaIndex;
+      final String T = mmmText;
+
+      final String r = String.format("%d->%d:%s", s, t, T);
+      return String.format("%-16s", r);
      }
 
-    void mssCopy(Message Source)
-     {mssSource = Source.mssSource; mssTarget = Source.mssTarget; mssText = Source.mssText;
-     }
+    String toString(int Position)                                               // Show the current position of the message in its path through the tree net
+     {final int    s = mmmSource.aaaIndex;
+      final int    t = mmmTarget.aaaIndex;
+      final String T = mmmText;
 
-    public String toString()
-     {final String s = mssSource == null ? "" : mssSource.addAddress != null ? mssSource.addAddress : "";
-      final String t = mssTarget == null ? "" : mssTarget.addAddress != null ? mssTarget.addAddress : "";
-      final String T = mssText   == null ? "" : mssText;
+      if (s == Position)
+       {final String r = String.format("%d>>--%d", s, t);
+        return String.format("%-8s %-8s", r, T);
+       }
 
-      return String.format("%-4s  %-4s  %-4s", s, t, T);
+      if (t == Position)
+       {final String r = String.format("%d-->>%d", s, t);
+        return String.format("%-8s %-8s", r, T);
+       }
+
+      final String r = String.format("%d-%d-%d", s, Position, t);
+      return String.format("%-8s %-8s", r, T);
      }
    }
 
 //D1 Tests                                                                      // Test the double btree
-
-  static void test_setUp()
-   {sayCurrentTestName();
-    final TreeNet T = new TreeNet(4, 8);
-    //stop(T);
-    ok(""+T, """
-   0 *                         1    2            1-                  1-                 |
-   1   *                  0    3    4  0         1-                  1-                 |
-   2   *                  0    5    6  1         1-                  1-                 |
-   3     *                1    7    8  00        1-                  1-                 |
-   4     *                1    9   10  01        1-                  1-                 |
-   5     *                2   11   12  10        1-                  1-                 |
-   6     *                2   13   14  11        1-                  1-                 |
-   7       *              3    0    0  000       1-                  1-                 |
-   8       *              3    0    0  001       1-                  1-                 |
-   9       *              4    0    0  010       1-                  1-                 |
-  10       *              4    0    0  011       1-                  1-                 |
-  11       *              5    0    0  100       1-                  1-                 |
-  12       *              5    0    0  101       1-                  1-                 |
-  13       *              6    0    0  110       1-                  1-                 |
-  14       *              6    0    0  111       1-                  1-                 |
-""");
-    final Address a3  = T.tttJunctions[ 3].jjjAddress;
-    final Address a6  = T.tttJunctions[ 6].jjjAddress;
-    final Address a13 = T.tttJunctions[13].jjjAddress;
-    final Address a14 = T.tttJunctions[14].jjjAddress;
-
-    ok( a6.addGoLeft (a13));
-    ok(!a6.addGoRight(a13));
-    ok(!a6.addGoLeft (a14));
-    ok( a6.addGoRight(a14));
-    ok( a6.addGoUp   (a3 ));
-    ok(!a6.addGoUp   (a14));
-    ok( a6.addEqual  (a6));
-    ok(!a6.addEqual  (a13));
-    ok( T.tttJunctions[ 5].jjjIsLeftOfParent());
-    ok(!T.tttJunctions[ 6].jjjIsLeftOfParent());
-   }
 
   static void test_transmit()
    {sayCurrentTestName();
     final TreeNet T = new TreeNet(3, 8);
     final StringBuilder s = new StringBuilder();
 
-    T.tttJunctions[5].jjjMessageUp.mssSet(5, 3, "AAAA");
-    T.tttJunctions[5].jjjEventUp  .eveSetExecuting();
+    T.new Message(5, 3, "AAAA");
 
-    for   (T.tttStep = 0; T.tttStep < 3; ++T.tttStep)
-     {for (int i = 0; i < T.tttJunctions.length; i++)
-       {T.tttJunctions[i].jjjTransmit();
-       }
-      s.append("Step "+T.tttStep+"\n"+T);
+    for   (T.tttStep = 0; T.tttStep < 4; ++T.tttStep)
+     {s.append(T);
+      T.tttTransmit();
      }
     //stop(s);
     ok(s, """
-Step 0
-   0 *                         1    2            1-                  1-                 |
-   1   *                  0    3    4  0         1-                  1-                 |
-   2   *                  0    5    6  1         0-10    00    AAAA  1-                 |
-   3     *                1    0    0  00        1-                  1-                 |
-   4     *                1    0    0  01        1-                  1-                 |
-   5     *                2    0    0  10        0-10    00    AAAA  1-                 |
-   6     *                2    0    0  11        1-                  1-                 |
-Step 1
-   0 *                         1    2            1-                  1-                 |
-   1   *                  0    3    4  0         1-                  0-10    00    AAAA |
-   2   *                  0    5    6  1         0-10    00    AAAA  1-                 |
-   3     *                1    0    0  00        1-                  1-                 |
-   4     *                1    0    0  01        1-                  1-                 |
-   5     *                2    0    0  10        0-10    00    AAAA  1-                 |
-   6     *                2    0    0  11        1-                  1-                 |
-Step 2
-   0 *                         1    2            1-                  1-                 |
-   1   *                  0    3    4  0         1-                  0-10    00    AAAA |
-   2   *                  0    5    6  1         1-10    00    AAAA  1-                 |
-   3     *                1    0    0  00        1-                  0-10    00    AAAA |
-   4     *                1    0    0  01        1-                  1-                 |
-   5     *                2    0    0  10        0-10    00    AAAA  1-                 |
-   6     *                2    0    0  11        1-                  1-                 |
+Jnct  At step:    0     Level  Left Right  Addr      Up_______________  Down____________  |
+   0  *                           1     2                                                 |
+   1    *                   0     3     4  0                                              |
+   2    *                   0     5     6  1                                              |
+   3      *                 1     0     0  00                                             |
+   4      *                 1     0     0  01                                             |
+   5      *                 2     0     0  10        5>>--3   AAAA                        |
+   6      *                 2     0     0  11                                             |
+Jnct  At step:    1     Level  Left Right  Addr      Up_______________  Down____________  |
+   0  *                           1     2                                                 |
+   1    *                   0     3     4  0                                              |
+   2    *                   0     5     6  1         5-2-3    AAAA                        |
+   3      *                 1     0     0  00                                             |
+   4      *                 1     0     0  01                                             |
+   5      *                 2     0     0  10                                             |
+   6      *                 2     0     0  11                                             |
+Jnct  At step:    2     Level  Left Right  Addr      Up_______________  Down____________  |
+   0  *                           1     2                                                 |
+   1    *                   0     3     4  0                            5-1-3    AAAA     |
+   2    *                   0     5     6  1                                              |
+   3      *                 1     0     0  00                                             |
+   4      *                 1     0     0  01                                             |
+   5      *                 2     0     0  10                                             |
+   6      *                 2     0     0  11                                             |
+Jnct  At step:    3     Level  Left Right  Addr      Up_______________  Down____________  |
+   0  *                           1     2                                                 |
+   1    *                   0     3     4  0                                              |
+   2    *                   0     5     6  1                                              |
+   3      *                 1     0     0  00                           5-->>3   AAAA     |
+   4      *                 1     0     0  01                                             |
+   5      *                 2     0     0  10                                             |
+   6      *                 2     0     0  11                                             |
+""");
+   }
+
+  static void test_transmit2()
+   {sayCurrentTestName();
+    final TreeNet T = new TreeNet(4, 8);
+    final StringBuilder s = new StringBuilder();
+
+    T.new Message(14, 8, "AAAA");
+    T.new Message(13, 7, "BBBB");
+
+    for   (T.tttStep = 0; T.tttStep < 14; ++T.tttStep)
+     {s.append(T);
+      T.tttTransmit();
+     }
+    //stop(s);
+    ok(s, """
+Jnct  At step:    0     Level  Left Right  Addr      Up_______________  Down____________  |
+   0  *                           1     2                                                 |
+   1    *                   0     3     4  0                                              |
+   2    *                   0     5     6  1                                              |
+   3      *                 1     7     8  00                                             |
+   4      *                 1     9    10  01                                             |
+   5      *                 2    11    12  10                                             |
+   6      *                 2    13    14  11                                             |
+   7        *               3     0     0  000                                            |
+   8        *               3     0     0  001                                            |
+   9        *               4     0     0  010                                            |
+  10        *               4     0     0  011                                            |
+  11        *               5     0     0  100                                            |
+  12        *               5     0     0  101                                            |
+  13        *               6     0     0  110       13>>--7  BBBB                        |
+  14        *               6     0     0  111       14>>--8  AAAA                        |
+Jnct  At step:    1     Level  Left Right  Addr      Up_______________  Down____________  |
+   0  *                           1     2                                                 |
+   1    *                   0     3     4  0                                              |
+   2    *                   0     5     6  1                                              |
+   3      *                 1     7     8  00                                             |
+   4      *                 1     9    10  01                                             |
+   5      *                 2    11    12  10                                             |
+   6      *                 2    13    14  11        13-6-7   BBBB                        |
+   7        *               3     0     0  000                                            |
+   8        *               3     0     0  001                                            |
+   9        *               4     0     0  010                                            |
+  10        *               4     0     0  011                                            |
+  11        *               5     0     0  100                                            |
+  12        *               5     0     0  101                                            |
+  13        *               6     0     0  110                                            |
+  14        *               6     0     0  111       14>>--8  AAAA                        |
+Jnct  At step:    2     Level  Left Right  Addr      Up_______________  Down____________  |
+   0  *                           1     2                                                 |
+   1    *                   0     3     4  0                                              |
+   2    *                   0     5     6  1         13-2-7   BBBB                        |
+   3      *                 1     7     8  00                                             |
+   4      *                 1     9    10  01                                             |
+   5      *                 2    11    12  10                                             |
+   6      *                 2    13    14  11                                             |
+   7        *               3     0     0  000                                            |
+   8        *               3     0     0  001                                            |
+   9        *               4     0     0  010                                            |
+  10        *               4     0     0  011                                            |
+  11        *               5     0     0  100                                            |
+  12        *               5     0     0  101                                            |
+  13        *               6     0     0  110                                            |
+  14        *               6     0     0  111       14>>--8  AAAA                        |
+Jnct  At step:    3     Level  Left Right  Addr      Up_______________  Down____________  |
+   0  *                           1     2                                                 |
+   1    *                   0     3     4  0                                              |
+   2    *                   0     5     6  1         13-2-7   BBBB                        |
+   3      *                 1     7     8  00                                             |
+   4      *                 1     9    10  01                                             |
+   5      *                 2    11    12  10                                             |
+   6      *                 2    13    14  11                                             |
+   7        *               3     0     0  000                                            |
+   8        *               3     0     0  001                                            |
+   9        *               4     0     0  010                                            |
+  10        *               4     0     0  011                                            |
+  11        *               5     0     0  100                                            |
+  12        *               5     0     0  101                                            |
+  13        *               6     0     0  110                                            |
+  14        *               6     0     0  111       14>>--8  AAAA                        |
+Jnct  At step:    4     Level  Left Right  Addr      Up_______________  Down____________  |
+   0  *                           1     2                                                 |
+   1    *                   0     3     4  0                                              |
+   2    *                   0     5     6  1         13-2-7   BBBB                        |
+   3      *                 1     7     8  00                                             |
+   4      *                 1     9    10  01                                             |
+   5      *                 2    11    12  10                                             |
+   6      *                 2    13    14  11                                             |
+   7        *               3     0     0  000                                            |
+   8        *               3     0     0  001                                            |
+   9        *               4     0     0  010                                            |
+  10        *               4     0     0  011                                            |
+  11        *               5     0     0  100                                            |
+  12        *               5     0     0  101                                            |
+  13        *               6     0     0  110                                            |
+  14        *               6     0     0  111       14>>--8  AAAA                        |
+Jnct  At step:    5     Level  Left Right  Addr      Up_______________  Down____________  |
+   0  *                           1     2                                                 |
+   1    *                   0     3     4  0                            13-1-7   BBBB     |
+   2    *                   0     5     6  1                                              |
+   3      *                 1     7     8  00                                             |
+   4      *                 1     9    10  01                                             |
+   5      *                 2    11    12  10                                             |
+   6      *                 2    13    14  11        14-6-8   AAAA                        |
+   7        *               3     0     0  000                                            |
+   8        *               3     0     0  001                                            |
+   9        *               4     0     0  010                                            |
+  10        *               4     0     0  011                                            |
+  11        *               5     0     0  100                                            |
+  12        *               5     0     0  101                                            |
+  13        *               6     0     0  110                                            |
+  14        *               6     0     0  111                                            |
+Jnct  At step:    6     Level  Left Right  Addr      Up_______________  Down____________  |
+   0  *                           1     2                                                 |
+   1    *                   0     3     4  0                                              |
+   2    *                   0     5     6  1                                              |
+   3      *                 1     7     8  00                           13-3-7   BBBB     |
+   4      *                 1     9    10  01                                             |
+   5      *                 2    11    12  10                                             |
+   6      *                 2    13    14  11        14-6-8   AAAA                        |
+   7        *               3     0     0  000                                            |
+   8        *               3     0     0  001                                            |
+   9        *               4     0     0  010                                            |
+  10        *               4     0     0  011                                            |
+  11        *               5     0     0  100                                            |
+  12        *               5     0     0  101                                            |
+  13        *               6     0     0  110                                            |
+  14        *               6     0     0  111                                            |
+Jnct  At step:    7     Level  Left Right  Addr      Up_______________  Down____________  |
+   0  *                           1     2                                                 |
+   1    *                   0     3     4  0                                              |
+   2    *                   0     5     6  1                                              |
+   3      *                 1     7     8  00                                             |
+   4      *                 1     9    10  01                                             |
+   5      *                 2    11    12  10                                             |
+   6      *                 2    13    14  11        14-6-8   AAAA                        |
+   7        *               3     0     0  000                          13-->>7  BBBB     |
+   8        *               3     0     0  001                                            |
+   9        *               4     0     0  010                                            |
+  10        *               4     0     0  011                                            |
+  11        *               5     0     0  100                                            |
+  12        *               5     0     0  101                                            |
+  13        *               6     0     0  110                                            |
+  14        *               6     0     0  111                                            |
+Jnct  At step:    8     Level  Left Right  Addr      Up_______________  Down____________  |
+   0  *                           1     2                                                 |
+   1    *                   0     3     4  0                                              |
+   2    *                   0     5     6  1         14-2-8   AAAA                        |
+   3      *                 1     7     8  00                                             |
+   4      *                 1     9    10  01                                             |
+   5      *                 2    11    12  10                                             |
+   6      *                 2    13    14  11                                             |
+   7        *               3     0     0  000                          13-->>7  BBBB     |
+   8        *               3     0     0  001                                            |
+   9        *               4     0     0  010                                            |
+  10        *               4     0     0  011                                            |
+  11        *               5     0     0  100                                            |
+  12        *               5     0     0  101                                            |
+  13        *               6     0     0  110                                            |
+  14        *               6     0     0  111                                            |
+Jnct  At step:    9     Level  Left Right  Addr      Up_______________  Down____________  |
+   0  *                           1     2                                                 |
+   1    *                   0     3     4  0                                              |
+   2    *                   0     5     6  1         14-2-8   AAAA                        |
+   3      *                 1     7     8  00                                             |
+   4      *                 1     9    10  01                                             |
+   5      *                 2    11    12  10                                             |
+   6      *                 2    13    14  11                                             |
+   7        *               3     0     0  000                          13-->>7  BBBB     |
+   8        *               3     0     0  001                                            |
+   9        *               4     0     0  010                                            |
+  10        *               4     0     0  011                                            |
+  11        *               5     0     0  100                                            |
+  12        *               5     0     0  101                                            |
+  13        *               6     0     0  110                                            |
+  14        *               6     0     0  111                                            |
+Jnct  At step:   10     Level  Left Right  Addr      Up_______________  Down____________  |
+   0  *                           1     2                                                 |
+   1    *                   0     3     4  0                                              |
+   2    *                   0     5     6  1         14-2-8   AAAA                        |
+   3      *                 1     7     8  00                                             |
+   4      *                 1     9    10  01                                             |
+   5      *                 2    11    12  10                                             |
+   6      *                 2    13    14  11                                             |
+   7        *               3     0     0  000                          13-->>7  BBBB     |
+   8        *               3     0     0  001                                            |
+   9        *               4     0     0  010                                            |
+  10        *               4     0     0  011                                            |
+  11        *               5     0     0  100                                            |
+  12        *               5     0     0  101                                            |
+  13        *               6     0     0  110                                            |
+  14        *               6     0     0  111                                            |
+Jnct  At step:   11     Level  Left Right  Addr      Up_______________  Down____________  |
+   0  *                           1     2                                                 |
+   1    *                   0     3     4  0                            14-1-8   AAAA     |
+   2    *                   0     5     6  1                                              |
+   3      *                 1     7     8  00                                             |
+   4      *                 1     9    10  01                                             |
+   5      *                 2    11    12  10                                             |
+   6      *                 2    13    14  11                                             |
+   7        *               3     0     0  000                          13-->>7  BBBB     |
+   8        *               3     0     0  001                                            |
+   9        *               4     0     0  010                                            |
+  10        *               4     0     0  011                                            |
+  11        *               5     0     0  100                                            |
+  12        *               5     0     0  101                                            |
+  13        *               6     0     0  110                                            |
+  14        *               6     0     0  111                                            |
+Jnct  At step:   12     Level  Left Right  Addr      Up_______________  Down____________  |
+   0  *                           1     2                                                 |
+   1    *                   0     3     4  0                                              |
+   2    *                   0     5     6  1                                              |
+   3      *                 1     7     8  00                           14-3-8   AAAA     |
+   4      *                 1     9    10  01                                             |
+   5      *                 2    11    12  10                                             |
+   6      *                 2    13    14  11                                             |
+   7        *               3     0     0  000                          13-->>7  BBBB     |
+   8        *               3     0     0  001                                            |
+   9        *               4     0     0  010                                            |
+  10        *               4     0     0  011                                            |
+  11        *               5     0     0  100                                            |
+  12        *               5     0     0  101                                            |
+  13        *               6     0     0  110                                            |
+  14        *               6     0     0  111                                            |
+Jnct  At step:   13     Level  Left Right  Addr      Up_______________  Down____________  |
+   0  *                           1     2                                                 |
+   1    *                   0     3     4  0                                              |
+   2    *                   0     5     6  1                                              |
+   3      *                 1     7     8  00                                             |
+   4      *                 1     9    10  01                                             |
+   5      *                 2    11    12  10                                             |
+   6      *                 2    13    14  11                                             |
+   7        *               3     0     0  000                          13-->>7  BBBB     |
+   8        *               3     0     0  001                          14-->>8  AAAA     |
+   9        *               4     0     0  010                                            |
+  10        *               4     0     0  011                                            |
+  11        *               5     0     0  100                                            |
+  12        *               5     0     0  101                                            |
+  13        *               6     0     0  110                                            |
+  14        *               6     0     0  111                                            |
+""");
+   }
+
+  static void test_transmit2Reverse()
+   {sayCurrentTestName();
+    final TreeNet       T = new TreeNet(4, 8); T.tttPrintCompact = true;
+    final StringBuilder s = new StringBuilder();
+
+    T.new Message(14, 7, "AAAA");
+    T.new Message(7, 14, "BBBB");
+
+    for   (T.tttStep = 0; T.tttStep < 11; ++T.tttStep)
+     {s.append(T);
+      T.tttTransmit();
+     }
+    //stop(s);
+    ok(s, """
+Jnct  At step:    0     Level  Left Right  Addr      Up_______________  Down____________  |
+   7        *               3     0     0  000       7>>--14  BBBB                        |
+  14        *               6     0     0  111       14>>--7  AAAA                        |
+Jnct  At step:    1     Level  Left Right  Addr      Up_______________  Down____________  |
+   3      *                 1     7     8  00        7-3-14   BBBB                        |
+  14        *               6     0     0  111       14>>--7  AAAA                        |
+Jnct  At step:    2     Level  Left Right  Addr      Up_______________  Down____________  |
+   3      *                 1     7     8  00        7-3-14   BBBB                        |
+   6      *                 2    13    14  11        14-6-7   AAAA                        |
+Jnct  At step:    3     Level  Left Right  Addr      Up_______________  Down____________  |
+   3      *                 1     7     8  00        7-3-14   BBBB                        |
+   6      *                 2    13    14  11        14-6-7   AAAA                        |
+Jnct  At step:    4     Level  Left Right  Addr      Up_______________  Down____________  |
+   1    *                   0     3     4  0         7-1-14   BBBB                        |
+   6      *                 2    13    14  11        14-6-7   AAAA                        |
+Jnct  At step:    5     Level  Left Right  Addr      Up_______________  Down____________  |
+   1    *                   0     3     4  0         7-1-14   BBBB                        |
+   2    *                   0     5     6  1         14-2-7   AAAA                        |
+Jnct  At step:    6     Level  Left Right  Addr      Up_______________  Down____________  |
+   1    *                   0     3     4  0         7-1-14   BBBB                        |
+   2    *                   0     5     6  1         14-2-7   AAAA                        |
+Jnct  At step:    7     Level  Left Right  Addr      Up_______________  Down____________  |
+   2    *                   0     5     6  1         14-2-7   AAAA      7-2-14   BBBB     |
+Jnct  At step:    8     Level  Left Right  Addr      Up_______________  Down____________  |
+   1    *                   0     3     4  0                            14-1-7   AAAA     |
+   6      *                 2    13    14  11                           7-6-14   BBBB     |
+Jnct  At step:    9     Level  Left Right  Addr      Up_______________  Down____________  |
+   3      *                 1     7     8  00                           14-3-7   AAAA     |
+  14        *               6     0     0  111                          7-->>14  BBBB     |
+Jnct  At step:   10     Level  Left Right  Addr      Up_______________  Down____________  |
+   7        *               3     0     0  000                          14-->>7  AAAA     |
+  14        *               6     0     0  111                          7-->>14  BBBB     |
 """);
    }
 
   static void oldTests()                                                        // Tests thought to be in good shape
-   {test_setUp();
-    test_transmit();
+   {test_transmit();
+    test_transmit2();
+    test_transmit2Reverse();
    }
 
   static void newTests()                                                        // Tests being worked on
    {oldTests();
-    test_transmit();
    }
 
   public static void main(String[] args)                                        // Test if called as a program
