@@ -7,16 +7,15 @@ package com.AppaApps.Silicon;                                                   
 import java.util.*;
 
 class TreeNet extends Test                                                      // A tree network that connects leaf nodes via branches in logarithmic time, allowing us to compose a large chip as a networked collection of smaller chips.
- {final int       tttSize;                                                      // The log of the number of 3-way junctions in the network
-  final int       tttWidth;                                                     // The data width of each junction
+ {final int       tttSize;                                                      // The number of 3-way junctions in the network
   final Junction[]tttJunctions;                                                 // The junctions used to construct the tree network
   boolean         tttPrintCompact = true;                                       // Print network trace in compact format if true
   int             tttStep;                                                      // The tree network is clocked
 
 //D1 Construction                                                               // Construct a tree network
 
-  TreeNet(int Size, int Width)                                                  // Create the tree network
-   {tttSize = powerTwo(Size)-1; tttWidth = Width;
+  TreeNet(int Size)                                                             // Create the tree network.  The number of leaves will be 2**(Size-1)
+   {tttSize = powerTwo(Size) - 1;
     tttJunctions = new Junction[tttSize];                                       // The junctions used to construct the tree network
     for (int i = 0; i < tttSize; i++) tttJunctions[i] = new Junction(i);
    }
@@ -67,7 +66,7 @@ class TreeNet extends Test                                                      
     final Integer jjjRight;                                                     // The index of the right child junction
     Message       jjjMessageUp;                                                 // Message waiting to be sent up through the tree network
     Message       jjjMessageDown;                                               // Message waiting to be sent down through the tree network
-    Message       jjjMessageDown2;                                              // The message is cached here to prevent overrun
+    Message       jjjMessageDownPending;                                        // A downward seeking message is cached here during simulation to prevent overruns
 
     Junction(int Number)
      {jjjNumber  = Number;
@@ -104,11 +103,10 @@ class TreeNet extends Test                                                      
      }
 
     void jjjClearDown()                                                         // Clear source of messages sent down through this junction
-     {if (jjjMessageDown2 != null)
-       {jjjMessageDown  = jjjMessageDown2;                                      // Move message into main downline
-        jjjMessageDown2 = null;                                                 // Move message from secondary downline where we cached it to prevent overruns
-        tttJunctions[jjjParent].jjjMessageDown = null;                          // Remove messsage from parent
-       }
+     {if (jjjMessageDownPending == null) return;                                // Skip if there is no downward seeking message pending for this junction
+      jjjMessageDown = jjjMessageDownPending;                                   // Move message into main downline
+      jjjMessageDownPending = null;                                             // Move message from pending to active now that downward simulation step is complete
+      tttJunctions[jjjParent].jjjMessageDown = null;                            // Remove messsage from parent
      }
 
     void jjjCopyDown()                                                          // Transmit messages down through this junction
@@ -116,7 +114,7 @@ class TreeNet extends Test                                                      
       final Message  D = p.jjjMessageDown;                                      // A possible message from the parent
       final Message  d =   jjjMessageDown;                                      // Message at this level if any
       if (D != null && d == null)                                               // Parent wants to send us a message
-       {if (jjjAddress.aaaDown(D.mmmTarget)) jjjMessageDown2 = D;               // Message should go down through this junction, Cache the message for the moment to prevent overruns.
+       {if (jjjAddress.aaaDown(D.mmmTarget)) jjjMessageDownPending = D;         // Message should go down through this junction, Cache the message for the moment to prevent overruns.
        }
      }
    }
@@ -194,7 +192,7 @@ class TreeNet extends Test                                                      
 
   static void test_one()
    {sayCurrentTestName();
-    final TreeNet T = new TreeNet(3, 8);
+    final TreeNet T = new TreeNet(3);
     final StringBuilder s = new StringBuilder(); T.tttPrintCompact = false;
 
     T.new Message(5, 3, "AAAA");
@@ -242,7 +240,7 @@ Jnct  At step:    3        Up  Left Right  Addr      Up_______________  Down____
 
   static void test_two()
    {sayCurrentTestName();
-    final TreeNet T = new TreeNet(4, 8);
+    final TreeNet T = new TreeNet(4);
     final StringBuilder s = new StringBuilder();
 
     T.new Message(13, 7, "AAAA");
@@ -292,7 +290,7 @@ Jnct  At step:   10        Up  Left Right  Addr      Up_______________  Down____
 
   static void test_reversePair()
    {sayCurrentTestName();
-    final TreeNet       T = new TreeNet(4, 8);
+    final TreeNet       T = new TreeNet(4);
     final StringBuilder s = new StringBuilder();
 
     T.new Message(7, 14, "AAAA");
@@ -335,7 +333,7 @@ Jnct  At step:    8        Up  Left Right  Addr      Up_______________  Down____
 
   static void test_reverse()
    {sayCurrentTestName();
-    final TreeNet       T = new TreeNet(4, 8);
+    final TreeNet       T = new TreeNet(4);
     final StringBuilder s = new StringBuilder();
 
     T.new Message( 7, 14, "AAAA");
