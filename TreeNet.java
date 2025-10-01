@@ -58,7 +58,7 @@ class TreeNet extends Test                                                      
 
 //D1 Junction                                                                   // A junction in a tree network connects two child junctions to a parent junction.
 
-  class Junction                                                                // A junction in a tree network connects two child junctions to a parent junction.
+  private class Junction                                                        // A junction in a tree network connects two child junctions to a parent junction.
    {final int     jjjNumber;                                                    // The number of the junction
     final int     jjjLevel;                                                     // The level of the junction.  The root is at level zero, the next at level one, etc.
     final Address jjjAddress;                                                   // The address of this junction in the tree network
@@ -80,7 +80,7 @@ class TreeNet extends Test                                                      
 
     boolean jjjTop() {return jjjNumber == 0;}                                   // The root is always at index zero
 
-    void jjjClearUp()                                                           // Clear source of messages sent up through this junction
+    private void jjjClearUp()                                                   // Clear source of messages sent up through this junction
      {final Junction p = tttJunctions[jjjParent];                               // Parent
       if (jjjMessageUp == p.jjjMessageUp) jjjMessageUp = null;                  // Same message in parent and child means we can remove the child message
      }
@@ -123,7 +123,7 @@ class TreeNet extends Test                                                      
 
 //D1 Address
                                                                                 // The address of a junction is its path from the root through the tree network to this junction
-  class Address                                                                 // The address of  the junction in the tree network
+  private class Address                                                         // The address of  the junction in the tree network
    {final int    aaaIndex;                                                      // The numeric representation of the address of the junction in the tree network
     final String aaaAddress;                                                    // Address in branch path steering format
 
@@ -138,9 +138,9 @@ class TreeNet extends Test                                                      
      {return String.format("Address: %d %d %s\n", aaaIndex, aaaLevel(), aaaAddress);
      }
 
-    int aaaLevel() {return aaaAddress.length();}                                // The level of this junction with the root of the tree network at level zero and the next level down plus one
+    private int aaaLevel() {return aaaAddress.length();}                        // The level of this junction with the root of the tree network at level zero and the next level down plus one
 
-    boolean aaaDown(Address Target)                                             // Is this an address that can be descended through towards the target
+    private boolean aaaDown(Address Target)                                     // Is this an address that can be descended through towards the target
      {return Target.aaaLevel() >= aaaLevel() &&                                 // Level of target must be here or further down
              Target.aaaAddress.startsWith(aaaAddress);                          // Target prefix must match that of the current junction
      }
