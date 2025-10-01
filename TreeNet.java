@@ -1,12 +1,12 @@
 //------------------------------------------------------------------------------
-// A tree network that connects leaf nodes via branches in logarithmic time
+// A tree network that connects leaf pairs via branches in logarithmic time
 // Philip R Brenan at appaapps dot com, Appa Apps Ltd Inc., 2025
 //------------------------------------------------------------------------------
 package com.AppaApps.Silicon;                                                   // Btree as a silicon chip
 // Allow turnover to occur at any junction to shorten network path for close pairs
 import java.util.*;
 
-class TreeNet extends Test                                                      // A tree network that connects leaf nodes via branches in logarithmic time, allowing us to compose a large chip as a networked collection of smaller chips.
+class TreeNet extends Test                                                      // A tree network that connects leaf pairs via branches in logarithmic time, allowing us to compose a large chip as a networked collection of smaller chips.
  {final int       tttSize;                                                      // The number of 3-way junctions in the network
   final Junction[]tttJunctions;                                                 // The junctions used to construct the tree network
   boolean         tttPrintCompact = true;                                       // Print network trace in compact format if true
@@ -111,10 +111,17 @@ class TreeNet extends Test                                                      
 
     void jjjCopyDown()                                                          // Transmit messages down through this junction
      {final Junction p = tttJunctions[jjjParent];                               // Parent
-      final Message  D = p.jjjMessageDown;                                      // A possible message from the parent
+      final Message  U = p.jjjMessageUp;                                        // A possible message from the parent going up
+      final Message  D = p.jjjMessageDown;                                      // A possible message from the parent coming down
       final Message  d =   jjjMessageDown;                                      // Message at this level if any
       if (D != null && d == null)                                               // Parent wants to send us a message
        {if (jjjAddress.aaaDown(D.mmmTarget)) jjjMessageDownPending = D;         // Message should go down through this junction, Cache the message for the moment to prevent overruns.
+       }
+      else if (U != null)                                                       // Short circuit upward seeking message if its target is on this branch
+       {if (jjjAddress.aaaDown(U.mmmTarget))
+         {jjjMessageDownPending = U;                                            // Place upward message on downward seeking path
+          p.jjjMessageUp = null;                                                // Clear message from parent upward seeking path
+         }
        }
      }
    }
@@ -546,12 +553,38 @@ Jnct  At step:   18        Up  Left Right  Addr      Up_______________  Down____
 """);
    }
 
+  static void test_short()
+   {sayCurrentTestName();
+    final TreeNet T = new TreeNet(4);
+    final StringBuilder s = new StringBuilder();
+
+    T.new Message(14, 13, "AAAA");
+    T.new Message(13, 14, "BBBB");
+
+    for   (T.tttStep = 0; T.tttStep < 3; ++T.tttStep)
+     {s.append(T);
+      T.tttTransmit();
+     }
+    //stop(s);
+    ok(""+s, """
+Jnct  At step:    0        Up  Left Right  Addr      Up_______________  Down____________  |
+  13        *               6              110       13>>--14 BBBB                        |
+  14        *               6              111       14>>--13 AAAA                        |
+Jnct  At step:    1        Up  Left Right  Addr      Up_______________  Down____________  |
+  14        *               6              111       14>>--13 AAAA      13-->>14 BBBB     |
+Jnct  At step:    2        Up  Left Right  Addr      Up_______________  Down____________  |
+  13        *               6              110                          14-->>13 AAAA     |
+  14        *               6              111                          13-->>14 BBBB     |
+""");
+   }
+
   static void oldTests()                                                        // Tests thought to be in good shape
    {test_one();
     test_two();
     test_swap();
     test_reversePair();
     test_reverse();
+    test_short();
    }
 
   static void newTests()                                                        // Tests being worked on
