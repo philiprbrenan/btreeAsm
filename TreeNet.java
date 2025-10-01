@@ -191,7 +191,7 @@ class TreeNet extends Test                                                      
 
 //D1 Tests                                                                      // Test the tree network
 
-  static void test_transmit()
+  static void test_one()
    {sayCurrentTestName();
     final TreeNet T = new TreeNet(3, 8);
     final StringBuilder s = new StringBuilder(); T.tttPrintCompact = false;
@@ -239,7 +239,7 @@ Jnct  At step:    3        Up  Left Right  Addr      Up_______________  Down____
 """);
    }
 
-  static void test_transmit2()
+  static void test_two()
    {sayCurrentTestName();
     final TreeNet T = new TreeNet(4, 8);
     final StringBuilder s = new StringBuilder();
@@ -289,7 +289,7 @@ Jnct  At step:   10        Up  Left Right  Addr      Up_______________  Down____
 """);
    }
 
-  static void test_transmit2Reverse()
+  static void test_reversePair()
    {sayCurrentTestName();
     final TreeNet       T = new TreeNet(4, 8);
     final StringBuilder s = new StringBuilder();
@@ -332,60 +332,196 @@ Jnct  At step:    8        Up  Left Right  Addr      Up_______________  Down____
 """);
    }
 
-  static void test_swap()
+  static void test_reverse()
    {sayCurrentTestName();
     final TreeNet       T = new TreeNet(4, 8);
     final StringBuilder s = new StringBuilder();
 
-    T.new Message(13, 14, "AAAA");
-    T.new Message(14, 13, "BBBB");
+    T.new Message( 7, 14, "AAAA");
+    T.new Message( 8, 13, "BBBB");
+    T.new Message( 9, 12, "CCCC");
+    T.new Message(10, 11, "DDDD");
+    T.new Message(11, 10, "EEEE");
+    T.new Message(12,  9, "FFFF");
+    T.new Message(13,  8, "GGGG");
+    T.new Message(14,  7, "HHHH");
 
-    for   (T.tttStep = 0; T.tttStep < 11; ++T.tttStep)
+    for   (T.tttStep = 0; T.tttStep < 19; ++T.tttStep)
      {s.append(T);
       T.tttTransmit();
      }
     //stop(s);
     ok(s, """
 Jnct  At step:    0        Up  Left Right  Addr      Up_______________  Down____________  |
-  13        *               6              110       13>>--14 AAAA                        |
-  14        *               6              111       14>>--13 BBBB                        |
+   7        *               3              000       7>>--14  AAAA                        |
+   8        *               3              001       8>>--13  BBBB                        |
+   9        *               4              010       9>>--12  CCCC                        |
+  10        *               4              011       10>>--11 DDDD                        |
+  11        *               5              100       11>>--10 EEEE                        |
+  12        *               5              101       12>>--9  FFFF                        |
+  13        *               6              110       13>>--8  GGGG                        |
+  14        *               6              111       14>>--7  HHHH                        |
 Jnct  At step:    1        Up  Left Right  Addr      Up_______________  Down____________  |
-   6      *                 2    13    14  11        13-6-14  AAAA                        |
-  14        *               6              111       14>>--13 BBBB                        |
+   3      *                 1     7     8  00        7-3-14   AAAA                        |
+   4      *                 1     9    10  01        9-4-12   CCCC                        |
+   5      *                 2    11    12  10        11-5-10  EEEE                        |
+   6      *                 2    13    14  11        13-6-8   GGGG                        |
+   8        *               3              001       8>>--13  BBBB                        |
+  10        *               4              011       10>>--11 DDDD                        |
+  12        *               5              101       12>>--9  FFFF                        |
+  14        *               6              111       14>>--7  HHHH                        |
 Jnct  At step:    2        Up  Left Right  Addr      Up_______________  Down____________  |
-   2    *                   0     5     6  1         13-2-14  AAAA                        |
-  14        *               6              111       14>>--13 BBBB                        |
+   1    *                   0     3     4  0         9-1-12   CCCC                        |
+   2    *                   0     5     6  1         13-2-8   GGGG                        |
+   3      *                 1     7     8  00        7-3-14   AAAA                        |
+   5      *                 2    11    12  10        11-5-10  EEEE                        |
+   8        *               3              001       8>>--13  BBBB                        |
+  10        *               4              011       10>>--11 DDDD                        |
+  12        *               5              101       12>>--9  FFFF                        |
+  14        *               6              111       14>>--7  HHHH                        |
 Jnct  At step:    3        Up  Left Right  Addr      Up_______________  Down____________  |
-   2    *                   0     5     6  1         13-2-14  AAAA                        |
-  14        *               6              111       14>>--13 BBBB                        |
+   2    *                   0     5     6  1         13-2-8   GGGG      9-2-12   CCCC     |
+   3      *                 1     7     8  00        7-3-14   AAAA                        |
+   5      *                 2    11    12  10        11-5-10  EEEE                        |
+   8        *               3              001       8>>--13  BBBB                        |
+  10        *               4              011       10>>--11 DDDD                        |
+  12        *               5              101       12>>--9  FFFF                        |
+  14        *               6              111       14>>--7  HHHH                        |
 Jnct  At step:    4        Up  Left Right  Addr      Up_______________  Down____________  |
-   2    *                   0     5     6  1                            13-2-14  AAAA     |
-   6      *                 2    13    14  11        14-6-13  BBBB                        |
+   1    *                   0     3     4  0                            13-1-8   GGGG     |
+   3      *                 1     7     8  00        7-3-14   AAAA                        |
+   4      *                 1     9    10  01        10-4-11  DDDD                        |
+   5      *                 2    11    12  10        11-5-10  EEEE      9-5-12   CCCC     |
+   6      *                 2    13    14  11        14-6-7   HHHH                        |
+   8        *               3              001       8>>--13  BBBB                        |
+  12        *               5              101       12>>--9  FFFF                        |
 Jnct  At step:    5        Up  Left Right  Addr      Up_______________  Down____________  |
-   6      *                 2    13    14  11        14-6-13  BBBB      13-6-14  AAAA     |
+   1    *                   0     3     4  0         7-1-14   AAAA                        |
+   2    *                   0     5     6  1         11-2-10  EEEE                        |
+   3      *                 1     7     8  00                           13-3-8   GGGG     |
+   4      *                 1     9    10  01        10-4-11  DDDD                        |
+   6      *                 2    13    14  11        14-6-7   HHHH                        |
+   8        *               3              001       8>>--13  BBBB                        |
+  12        *               5              101       12>>--9  FFFF      9-->>12  CCCC     |
 Jnct  At step:    6        Up  Left Right  Addr      Up_______________  Down____________  |
-   2    *                   0     5     6  1         14-2-13  BBBB                        |
-  14        *               6              111                          13-->>14 AAAA     |
+   1    *                   0     3     4  0         7-1-14   AAAA      11-1-10  EEEE     |
+   3      *                 1     7     8  00        8-3-13   BBBB                        |
+   4      *                 1     9    10  01        10-4-11  DDDD                        |
+   5      *                 2    11    12  10        12-5-9   FFFF                        |
+   6      *                 2    13    14  11        14-6-7   HHHH                        |
+   8        *               3              001                          13-->>8  GGGG     |
+  12        *               5              101                          9-->>12  CCCC     |
 Jnct  At step:    7        Up  Left Right  Addr      Up_______________  Down____________  |
-   2    *                   0     5     6  1         14-2-13  BBBB                        |
-  14        *               6              111                          13-->>14 AAAA     |
+   2    *                   0     5     6  1         12-2-9   FFFF      7-2-14   AAAA     |
+   3      *                 1     7     8  00        8-3-13   BBBB                        |
+   4      *                 1     9    10  01        10-4-11  DDDD      11-4-10  EEEE     |
+   6      *                 2    13    14  11        14-6-7   HHHH                        |
+   8        *               3              001                          13-->>8  GGGG     |
+  12        *               5              101                          9-->>12  CCCC     |
 Jnct  At step:    8        Up  Left Right  Addr      Up_______________  Down____________  |
-   2    *                   0     5     6  1                            14-2-13  BBBB     |
-  14        *               6              111                          13-->>14 AAAA     |
+   1    *                   0     3     4  0         10-1-11  DDDD      12-1-9   FFFF     |
+   3      *                 1     7     8  00        8-3-13   BBBB                        |
+   6      *                 2    13    14  11        14-6-7   HHHH      7-6-14   AAAA     |
+   8        *               3              001                          13-->>8  GGGG     |
+  10        *               4              011                          11-->>10 EEEE     |
+  12        *               5              101                          9-->>12  CCCC     |
 Jnct  At step:    9        Up  Left Right  Addr      Up_______________  Down____________  |
-   6      *                 2    13    14  11                           14-6-13  BBBB     |
-  14        *               6              111                          13-->>14 AAAA     |
+   2    *                   0     5     6  1                            10-2-11  DDDD     |
+   3      *                 1     7     8  00        8-3-13   BBBB                        |
+   4      *                 1     9    10  01                           12-4-9   FFFF     |
+   6      *                 2    13    14  11        14-6-7   HHHH                        |
+   8        *               3              001                          13-->>8  GGGG     |
+  10        *               4              011                          11-->>10 EEEE     |
+  12        *               5              101                          9-->>12  CCCC     |
+  14        *               6              111                          7-->>14  AAAA     |
 Jnct  At step:   10        Up  Left Right  Addr      Up_______________  Down____________  |
-  13        *               6              110                          14-->>13 BBBB     |
-  14        *               6              111                          13-->>14 AAAA     |
+   2    *                   0     5     6  1         14-2-7   HHHH                        |
+   3      *                 1     7     8  00        8-3-13   BBBB                        |
+   5      *                 2    11    12  10                           10-5-11  DDDD     |
+   8        *               3              001                          13-->>8  GGGG     |
+   9        *               4              010                          12-->>9  FFFF     |
+  10        *               4              011                          11-->>10 EEEE     |
+  12        *               5              101                          9-->>12  CCCC     |
+  14        *               6              111                          7-->>14  AAAA     |
+Jnct  At step:   11        Up  Left Right  Addr      Up_______________  Down____________  |
+   1    *                   0     3     4  0         8-1-13   BBBB                        |
+   2    *                   0     5     6  1         14-2-7   HHHH                        |
+   8        *               3              001                          13-->>8  GGGG     |
+   9        *               4              010                          12-->>9  FFFF     |
+  10        *               4              011                          11-->>10 EEEE     |
+  11        *               5              100                          10-->>11 DDDD     |
+  12        *               5              101                          9-->>12  CCCC     |
+  14        *               6              111                          7-->>14  AAAA     |
+Jnct  At step:   12        Up  Left Right  Addr      Up_______________  Down____________  |
+   1    *                   0     3     4  0         8-1-13   BBBB      14-1-7   HHHH     |
+   8        *               3              001                          13-->>8  GGGG     |
+   9        *               4              010                          12-->>9  FFFF     |
+  10        *               4              011                          11-->>10 EEEE     |
+  11        *               5              100                          10-->>11 DDDD     |
+  12        *               5              101                          9-->>12  CCCC     |
+  14        *               6              111                          7-->>14  AAAA     |
+Jnct  At step:   13        Up  Left Right  Addr      Up_______________  Down____________  |
+   2    *                   0     5     6  1                            8-2-13   BBBB     |
+   3      *                 1     7     8  00                           14-3-7   HHHH     |
+   8        *               3              001                          13-->>8  GGGG     |
+   9        *               4              010                          12-->>9  FFFF     |
+  10        *               4              011                          11-->>10 EEEE     |
+  11        *               5              100                          10-->>11 DDDD     |
+  12        *               5              101                          9-->>12  CCCC     |
+  14        *               6              111                          7-->>14  AAAA     |
+Jnct  At step:   14        Up  Left Right  Addr      Up_______________  Down____________  |
+   6      *                 2    13    14  11                           8-6-13   BBBB     |
+   7        *               3              000                          14-->>7  HHHH     |
+   8        *               3              001                          13-->>8  GGGG     |
+   9        *               4              010                          12-->>9  FFFF     |
+  10        *               4              011                          11-->>10 EEEE     |
+  11        *               5              100                          10-->>11 DDDD     |
+  12        *               5              101                          9-->>12  CCCC     |
+  14        *               6              111                          7-->>14  AAAA     |
+Jnct  At step:   15        Up  Left Right  Addr      Up_______________  Down____________  |
+   7        *               3              000                          14-->>7  HHHH     |
+   8        *               3              001                          13-->>8  GGGG     |
+   9        *               4              010                          12-->>9  FFFF     |
+  10        *               4              011                          11-->>10 EEEE     |
+  11        *               5              100                          10-->>11 DDDD     |
+  12        *               5              101                          9-->>12  CCCC     |
+  13        *               6              110                          8-->>13  BBBB     |
+  14        *               6              111                          7-->>14  AAAA     |
+Jnct  At step:   16        Up  Left Right  Addr      Up_______________  Down____________  |
+   7        *               3              000                          14-->>7  HHHH     |
+   8        *               3              001                          13-->>8  GGGG     |
+   9        *               4              010                          12-->>9  FFFF     |
+  10        *               4              011                          11-->>10 EEEE     |
+  11        *               5              100                          10-->>11 DDDD     |
+  12        *               5              101                          9-->>12  CCCC     |
+  13        *               6              110                          8-->>13  BBBB     |
+  14        *               6              111                          7-->>14  AAAA     |
+Jnct  At step:   17        Up  Left Right  Addr      Up_______________  Down____________  |
+   7        *               3              000                          14-->>7  HHHH     |
+   8        *               3              001                          13-->>8  GGGG     |
+   9        *               4              010                          12-->>9  FFFF     |
+  10        *               4              011                          11-->>10 EEEE     |
+  11        *               5              100                          10-->>11 DDDD     |
+  12        *               5              101                          9-->>12  CCCC     |
+  13        *               6              110                          8-->>13  BBBB     |
+  14        *               6              111                          7-->>14  AAAA     |
+Jnct  At step:   18        Up  Left Right  Addr      Up_______________  Down____________  |
+   7        *               3              000                          14-->>7  HHHH     |
+   8        *               3              001                          13-->>8  GGGG     |
+   9        *               4              010                          12-->>9  FFFF     |
+  10        *               4              011                          11-->>10 EEEE     |
+  11        *               5              100                          10-->>11 DDDD     |
+  12        *               5              101                          9-->>12  CCCC     |
+  13        *               6              110                          8-->>13  BBBB     |
+  14        *               6              111                          7-->>14  AAAA     |
 """);
    }
 
   static void oldTests()                                                        // Tests thought to be in good shape
-   {test_transmit();
-    test_transmit2();
-    test_transmit2Reverse();
-    test_swap();
+   {test_one();
+    test_two();
+    test_reversePair();
+    test_reverse();
    }
 
   static void newTests()                                                        // Tests being worked on
