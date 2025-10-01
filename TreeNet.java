@@ -1,27 +1,27 @@
 //------------------------------------------------------------------------------
-// A tree network connecting leaves along branchs in logarithmic time
+// A tree network that connects leaf nodes via branches in logarithmic time
 // Philip R Brenan at appaapps dot com, Appa Apps Ltd Inc., 2025
 //------------------------------------------------------------------------------
 package com.AppaApps.Silicon;                                                   // Btree as a silicon chip
 
 import java.util.*;
 
-class TreeNet extends Test                                                      // A tree network connecting leaves a long branches in logarithmic time
+class TreeNet extends Test                                                      // A tree network that connects leaf nodes via branches in logarithmic time, allowing us to compose a large chip as a networked collection of smaller chips.
  {final int       tttSize;                                                      // The log of the number of 3-way junctions in the network
   final int       tttWidth;                                                     // The data width of each junction
-  final Junction[]tttJunctions;                                                 // The junctions used to construct the tree net
+  final Junction[]tttJunctions;                                                 // The junctions used to construct the tree network
   boolean         tttPrintCompact = true;                                       // Print network trace in compact format if true
-  int             tttStep;                                                      // The tree net is clocked
+  int             tttStep;                                                      // The tree network is clocked
 
-//D1 Construction                                                               // Construct a tree net
+//D1 Construction                                                               // Construct a tree network
 
-  TreeNet(int Size, int Width)                                                  // Create the tree net
+  TreeNet(int Size, int Width)                                                  // Create the tree network
    {tttSize = powerTwo(Size)-1; tttWidth = Width;
-    tttJunctions = new Junction[tttSize];                                       // The junctions used to construct the tree net
+    tttJunctions = new Junction[tttSize];                                       // The junctions used to construct the tree network
     for (int i = 0; i < tttSize; i++) tttJunctions[i] = new Junction(i);
    }
 
-  public String toString()                                                      // Print the tree net
+  public String toString()                                                      // Print the tree network
    {final StringJoiner s = new StringJoiner("\n", "", "\n");
     s.add(String.format("Jnct  At step: %4d        Up  Left Right  Addr      Up_______________  Down____________  |", tttStep));
     for (int i = 0; i < tttSize; i++)
@@ -47,54 +47,54 @@ class TreeNet extends Test                                                      
     return ""+s;
    }
 
-  void tttTransmit()                                                            // Transmit a message one step through the tree net
+  void tttTransmit()                                                            // Transmit each message one step through the tree network
    {for(int i = 0; i < tttJunctions.length; i++) tttJunctions[i].jjjCopyUp();   // Copy a source message up one step so that it is closer to the target
-    for(int i = 1; i < tttJunctions.length; i++) tttJunctions[i].jjjClearUp();  // Clear the source of an upward moving message - the root cannot be such a source
-    tttJunctions[0].jjjMessageDown = tttJunctions[0].jjjMessageUp;              // Peri helion
-    tttJunctions[0].jjjMessageUp   = null;                                      // Peri helion
+    for(int i = 1; i < tttJunctions.length; i++) tttJunctions[i].jjjClearUp();  // Clear the source of an upward-moving message - the root cannot be such a source
+    tttJunctions[0].jjjMessageDown = tttJunctions[0].jjjMessageUp;              // Transfer the message from the upward seeking side of the tree to the downward seeking side
+    tttJunctions[0].jjjMessageUp   = null;                                      // Remove message from upward seeking side now that it has been transfered to the downward seeking side of the tree network
     for(int i = 1; i < tttJunctions.length; i++) tttJunctions[i].jjjCopyDown(); // Copy a source message down one step so that it is closer to the target
-    for(int i = 1; i < tttJunctions.length; i++) tttJunctions[i].jjjClearDown();// Clear the source of a downward moving message - the root cannot be such a source
+    for(int i = 1; i < tttJunctions.length; i++) tttJunctions[i].jjjClearDown();// Clear the source of a downward-moving message - the root cannot be such a source
    }
 
-//D1 Junction                                                                   // A junction in a tree net connects two child junctions to a parent junction.
+//D1 Junction                                                                   // A junction in a tree network connects two child junctions to a parent junction.
 
-  class Junction                                                                // A junction in a tree net connects two child junctions to a parent junction.
+  class Junction                                                                // A junction in a tree network connects two child junctions to a parent junction.
    {final int     jjjNumber;                                                    // The number of the junction
-    final int     jjjLevel;                                                     // The level of the junction,.  teh root is a t level zero, the nbext at level one etc.
-    final Address jjjAddress;                                                   // The address of this junction in the tree net
+    final int     jjjLevel;                                                     // The level of the junction.  The root is at level zero, the next at level one, etc.
+    final Address jjjAddress;                                                   // The address of this junction in the tree network
     final Integer jjjParent;                                                    // The index of the parent of this junction
     final Integer jjjLeft;                                                      // The index of the left child junction
     final Integer jjjRight;                                                     // The index of the right child junction
-    Message       jjjMessageUp;                                                 // Message waiting to be sent up through the tree net
-    Message       jjjMessageDown;                                               // Message waiting to be sent down through the tree net
-    Message       jjjMessageDown2;                                              // The message is forst moved here to prevent overrun
+    Message       jjjMessageUp;                                                 // Message waiting to be sent up through the tree network
+    Message       jjjMessageDown;                                               // Message waiting to be sent down through the tree network
+    Message       jjjMessageDown2;                                              // The message is cached here to prevent overrun
 
     Junction(int Number)
-     {jjjNumber      = Number;
-      jjjLevel       = logTwo(prevPowerOfTwo(1+Number));                        // Level of junction
-      jjjAddress     = new Address(jjjNumber);
-      jjjParent      = jjjTop() ? null : (Number-1) / 2;                        // Set Parent
-      jjjLeft        = Number * 2 + 1 < tttSize ? Number * 2 + 1 : null;        // Left child
-      jjjRight       = Number * 2 + 2 < tttSize ? Number * 2 + 2 : null;        // Right child
+     {jjjNumber  = Number;
+      jjjLevel   = logTwo(prevPowerOfTwo(1+Number));                            // Level of junction
+      jjjAddress = new Address(jjjNumber);
+      jjjParent  = jjjTop() ? null : (Number-1) / 2;                            // Set parent
+      jjjLeft    = Number * 2 + 1 < tttSize ? Number * 2 + 1 : null;            // Left child
+      jjjRight   = Number * 2 + 2 < tttSize ? Number * 2 + 2 : null;            // Right child
      }
 
     boolean jjjTop() {return jjjNumber == 0;}                                   // The root is always at index zero
 
-    void jjjClearUp()                                                           // Clear source of messages sent up
+    void jjjClearUp()                                                           // Clear source of messages sent up through this junction
      {final Junction p = tttJunctions[jjjParent];                               // Parent
       if (jjjMessageUp == p.jjjMessageUp) jjjMessageUp = null;                  // Same message in parent and child means we can remove the child message
      }
 
     void jjjCopyUp()                                                            // Transmit messages up through this junction
      {final Message  U =   jjjMessageUp;                                        // Message at this level if any
-      if (tttStep % 3 == 0 && jjjLeft != null)                                  // Examine the left child for a message to be sent up
+      if (tttStep % 2 == 0 && jjjLeft != null)                                  // Examine the left child for a message to be sent up
        {final Junction l = tttJunctions[jjjLeft];                               // Left child
         final Message  u = l.jjjMessageUp;                                      // A possible message from the left child
         if (U == null && u != null)                                             // Left might want to send a message up
          {jjjMessageUp = u;
          }
        }
-      else if (tttStep % 3 == 1 && jjjRight != null)                            // Examine the right child for a message to be sent up
+      else if (tttStep % 2 == 1 && jjjRight != null)                            // Examine the right child for a message to be sent up
        {final Junction r = tttJunctions[jjjRight];                              // Right child
         final Message  u = r.jjjMessageUp;                                      // A possible message from the right child
         if (U == null && u != null)                                             // Right might want to send a message up
@@ -103,10 +103,10 @@ class TreeNet extends Test                                                      
        }
      }
 
-    void jjjClearDown()                                                         // Clear source of messages sent down
+    void jjjClearDown()                                                         // Clear source of messages sent down through this junction
      {if (jjjMessageDown2 != null)
        {jjjMessageDown  = jjjMessageDown2;                                      // Move message into main downline
-        jjjMessageDown2 = null;                                                 // Move message from secondary downline wherw we cached it to stop overrun
+        jjjMessageDown2 = null;                                                 // Move message from secondary downline where we cached it to prevent overruns
         tttJunctions[jjjParent].jjjMessageDown = null;                          // Remove messsage from parent
        }
      }
@@ -116,15 +116,15 @@ class TreeNet extends Test                                                      
       final Message  D = p.jjjMessageDown;                                      // A possible message from the parent
       final Message  d =   jjjMessageDown;                                      // Message at this level if any
       if (D != null && d == null)                                               // Parent wants to send us a message
-       {if (jjjAddress.aaaDown(D.mmmTarget)) jjjMessageDown2 = D;               // Message sgould go down through this junction
+       {if (jjjAddress.aaaDown(D.mmmTarget)) jjjMessageDown2 = D;               // Message should go down through this junction, Cache the message for the moment to prevent overruns.
        }
      }
    }
 
 //D1 Address
-                                                                                // The address of a junction is its path from the root ot the tree net
-  class Address                                                                 // Level of the junction in the tree net
-   {final int    aaaIndex;                                                      // The numeric representation of the address
+                                                                                // The address of a junction is its path from the root through the tree network to this junction
+  class Address                                                                 // The address of  the junction in the tree network
+   {final int    aaaIndex;                                                      // The numeric representation of the address of the junction in the tree network
     final String aaaAddress;                                                    // Address in branch path steering format
 
     Address(int Index)
@@ -138,9 +138,9 @@ class TreeNet extends Test                                                      
      {return String.format("Address: %d %d %s\n", aaaIndex, aaaLevel(), aaaAddress);
      }
 
-    int aaaLevel() {return aaaAddress.length();}                                // The level of this junction with the root of the tree net at level zero and the next level down plus one
+    int aaaLevel() {return aaaAddress.length();}                                // The level of this junction with the root of the tree network at level zero and the next level down plus one
 
-    boolean aaaDown(Address Target)                                             // Is this address that can be ascended towards the target
+    boolean aaaDown(Address Target)                                             // Is this an address that can be descended through towards the target
      {return Target.aaaLevel() >= aaaLevel() &&                                 // Level of target must be here or further down
              Target.aaaAddress.startsWith(aaaAddress);                          // Target prefix must match that of the current junction
      }
@@ -150,14 +150,14 @@ class TreeNet extends Test                                                      
 
   class Message                                                                 // A message sent from a source leaf to a target leaf
    {final Address mmmSource;                                                    // The address of the sending source leaf
-    final Address mmmTarget;                                                    // The address of the recieving target leaf
+    final Address mmmTarget;                                                    // The address of the receiving target leaf
     final String  mmmText;                                                      // The text of the message
 
-    Message(int Source, int Target, String Text)                                // Add a new message into the network
-     {mmmSource = new Address(Source);
-      mmmTarget = new Address(Target);
-      mmmText   = Text;
-      tttJunctions[Source].jjjMessageUp = this;                                 // The message starts at at the source junction
+    Message(int Source, int Target, String Text)                                // Add a new message to be transmitted through the tree network
+     {mmmSource = new Address(Source);                                          // Source junction accepting the message
+      mmmTarget = new Address(Target);                                          // Target junction to which the message is to be sent
+      mmmText   = Text;                                                         // Text of the message
+      tttJunctions[Source].jjjMessageUp = this;                                 // The message starts its journey at the source junction
      }
 
     public String toString()                                                    // Print a message
@@ -169,7 +169,7 @@ class TreeNet extends Test                                                      
       return String.format("%-16s", r);
      }
 
-    String toString(int Position)                                               // Show the current position of the message in its path through the tree net
+    String toString(int Position)                                               // Show the current position of the message in its path through the tree network
      {final int    s = mmmSource.aaaIndex;
       final int    t = mmmTarget.aaaIndex;
       final String T = mmmText;
@@ -189,7 +189,7 @@ class TreeNet extends Test                                                      
      }
    }
 
-//D1 Tests                                                                      // Test the double btree
+//D1 Tests                                                                      // Test the tree network
 
   static void test_transmit()
    {sayCurrentTestName();
@@ -247,12 +247,12 @@ Jnct  At step:    3        Up  Left Right  Addr      Up_______________  Down____
     T.new Message(13, 7, "AAAA");
     T.new Message(14, 8, "BBBB");
 
-    for   (T.tttStep = 0; T.tttStep < 14; ++T.tttStep)
+    for   (T.tttStep = 0; T.tttStep < 11; ++T.tttStep)
      {s.append(T);
       T.tttTransmit();
      }
     //stop(s);
-    ok(s, """
+    ok(""+s, """
 Jnct  At step:    0        Up  Left Right  Addr      Up_______________  Down____________  |
   13        *               6              110       13>>--7  AAAA                        |
   14        *               6              111       14>>--8  BBBB                        |
@@ -266,33 +266,24 @@ Jnct  At step:    3        Up  Left Right  Addr      Up_______________  Down____
    2    *                   0     5     6  1         13-2-7   AAAA                        |
   14        *               6              111       14>>--8  BBBB                        |
 Jnct  At step:    4        Up  Left Right  Addr      Up_______________  Down____________  |
-   2    *                   0     5     6  1         13-2-7   AAAA                        |
-  14        *               6              111       14>>--8  BBBB                        |
-Jnct  At step:    5        Up  Left Right  Addr      Up_______________  Down____________  |
    1    *                   0     3     4  0                            13-1-7   AAAA     |
    6      *                 2    13    14  11        14-6-8   BBBB                        |
-Jnct  At step:    6        Up  Left Right  Addr      Up_______________  Down____________  |
+Jnct  At step:    5        Up  Left Right  Addr      Up_______________  Down____________  |
    3      *                 1     7     8  00                           13-3-7   AAAA     |
    6      *                 2    13    14  11        14-6-8   BBBB                        |
+Jnct  At step:    6        Up  Left Right  Addr      Up_______________  Down____________  |
+   2    *                   0     5     6  1         14-2-8   BBBB                        |
+   7        *               3              000                          13-->>7  AAAA     |
 Jnct  At step:    7        Up  Left Right  Addr      Up_______________  Down____________  |
-   6      *                 2    13    14  11        14-6-8   BBBB                        |
+   2    *                   0     5     6  1         14-2-8   BBBB                        |
    7        *               3              000                          13-->>7  AAAA     |
 Jnct  At step:    8        Up  Left Right  Addr      Up_______________  Down____________  |
-   2    *                   0     5     6  1         14-2-8   BBBB                        |
-   7        *               3              000                          13-->>7  AAAA     |
-Jnct  At step:    9        Up  Left Right  Addr      Up_______________  Down____________  |
-   2    *                   0     5     6  1         14-2-8   BBBB                        |
-   7        *               3              000                          13-->>7  AAAA     |
-Jnct  At step:   10        Up  Left Right  Addr      Up_______________  Down____________  |
-   2    *                   0     5     6  1         14-2-8   BBBB                        |
-   7        *               3              000                          13-->>7  AAAA     |
-Jnct  At step:   11        Up  Left Right  Addr      Up_______________  Down____________  |
    1    *                   0     3     4  0                            14-1-8   BBBB     |
    7        *               3              000                          13-->>7  AAAA     |
-Jnct  At step:   12        Up  Left Right  Addr      Up_______________  Down____________  |
+Jnct  At step:    9        Up  Left Right  Addr      Up_______________  Down____________  |
    3      *                 1     7     8  00                           14-3-8   BBBB     |
    7        *               3              000                          13-->>7  AAAA     |
-Jnct  At step:   13        Up  Left Right  Addr      Up_______________  Down____________  |
+Jnct  At step:   10        Up  Left Right  Addr      Up_______________  Down____________  |
    7        *               3              000                          13-->>7  AAAA     |
    8        *               3              001                          14-->>8  BBBB     |
 """);
@@ -306,7 +297,7 @@ Jnct  At step:   13        Up  Left Right  Addr      Up_______________  Down____
     T.new Message(7, 14, "AAAA");
     T.new Message(14, 7, "BBBB");
 
-    for   (T.tttStep = 0; T.tttStep < 11; ++T.tttStep)
+    for   (T.tttStep = 0; T.tttStep < 9; ++T.tttStep)
      {s.append(T);
       T.tttTransmit();
      }
@@ -322,26 +313,20 @@ Jnct  At step:    2        Up  Left Right  Addr      Up_______________  Down____
    3      *                 1     7     8  00        7-3-14   AAAA                        |
    6      *                 2    13    14  11        14-6-7   BBBB                        |
 Jnct  At step:    3        Up  Left Right  Addr      Up_______________  Down____________  |
-   3      *                 1     7     8  00        7-3-14   AAAA                        |
+   1    *                   0     3     4  0         7-1-14   AAAA                        |
    6      *                 2    13    14  11        14-6-7   BBBB                        |
 Jnct  At step:    4        Up  Left Right  Addr      Up_______________  Down____________  |
    1    *                   0     3     4  0         7-1-14   AAAA                        |
-   6      *                 2    13    14  11        14-6-7   BBBB                        |
+   2    *                   0     5     6  1         14-2-7   BBBB                        |
 Jnct  At step:    5        Up  Left Right  Addr      Up_______________  Down____________  |
-   1    *                   0     3     4  0         7-1-14   AAAA                        |
-   2    *                   0     5     6  1         14-2-7   BBBB                        |
-Jnct  At step:    6        Up  Left Right  Addr      Up_______________  Down____________  |
-   1    *                   0     3     4  0         7-1-14   AAAA                        |
-   2    *                   0     5     6  1         14-2-7   BBBB                        |
-Jnct  At step:    7        Up  Left Right  Addr      Up_______________  Down____________  |
    2    *                   0     5     6  1         14-2-7   BBBB      7-2-14   AAAA     |
-Jnct  At step:    8        Up  Left Right  Addr      Up_______________  Down____________  |
+Jnct  At step:    6        Up  Left Right  Addr      Up_______________  Down____________  |
    1    *                   0     3     4  0                            14-1-7   BBBB     |
    6      *                 2    13    14  11                           7-6-14   AAAA     |
-Jnct  At step:    9        Up  Left Right  Addr      Up_______________  Down____________  |
+Jnct  At step:    7        Up  Left Right  Addr      Up_______________  Down____________  |
    3      *                 1     7     8  00                           14-3-7   BBBB     |
   14        *               6              111                          7-->>14  AAAA     |
-Jnct  At step:   10        Up  Left Right  Addr      Up_______________  Down____________  |
+Jnct  At step:    8        Up  Left Right  Addr      Up_______________  Down____________  |
    7        *               3              000                          14-->>7  BBBB     |
   14        *               6              111                          7-->>14  AAAA     |
 """);
@@ -355,7 +340,7 @@ Jnct  At step:   10        Up  Left Right  Addr      Up_______________  Down____
     T.new Message(13, 14, "AAAA");
     T.new Message(14, 13, "BBBB");
 
-    for   (T.tttStep = 0; T.tttStep < 14; ++T.tttStep)
+    for   (T.tttStep = 0; T.tttStep < 11; ++T.tttStep)
      {s.append(T);
       T.tttTransmit();
      }
@@ -374,32 +359,23 @@ Jnct  At step:    3        Up  Left Right  Addr      Up_______________  Down____
    2    *                   0     5     6  1         13-2-14  AAAA                        |
   14        *               6              111       14>>--13 BBBB                        |
 Jnct  At step:    4        Up  Left Right  Addr      Up_______________  Down____________  |
-   2    *                   0     5     6  1         13-2-14  AAAA                        |
-  14        *               6              111       14>>--13 BBBB                        |
-Jnct  At step:    5        Up  Left Right  Addr      Up_______________  Down____________  |
    2    *                   0     5     6  1                            13-2-14  AAAA     |
    6      *                 2    13    14  11        14-6-13  BBBB                        |
-Jnct  At step:    6        Up  Left Right  Addr      Up_______________  Down____________  |
+Jnct  At step:    5        Up  Left Right  Addr      Up_______________  Down____________  |
    6      *                 2    13    14  11        14-6-13  BBBB      13-6-14  AAAA     |
+Jnct  At step:    6        Up  Left Right  Addr      Up_______________  Down____________  |
+   2    *                   0     5     6  1         14-2-13  BBBB                        |
+  14        *               6              111                          13-->>14 AAAA     |
 Jnct  At step:    7        Up  Left Right  Addr      Up_______________  Down____________  |
-   6      *                 2    13    14  11        14-6-13  BBBB                        |
+   2    *                   0     5     6  1         14-2-13  BBBB                        |
   14        *               6              111                          13-->>14 AAAA     |
 Jnct  At step:    8        Up  Left Right  Addr      Up_______________  Down____________  |
-   2    *                   0     5     6  1         14-2-13  BBBB                        |
-  14        *               6              111                          13-->>14 AAAA     |
-Jnct  At step:    9        Up  Left Right  Addr      Up_______________  Down____________  |
-   2    *                   0     5     6  1         14-2-13  BBBB                        |
-  14        *               6              111                          13-->>14 AAAA     |
-Jnct  At step:   10        Up  Left Right  Addr      Up_______________  Down____________  |
-   2    *                   0     5     6  1         14-2-13  BBBB                        |
-  14        *               6              111                          13-->>14 AAAA     |
-Jnct  At step:   11        Up  Left Right  Addr      Up_______________  Down____________  |
    2    *                   0     5     6  1                            14-2-13  BBBB     |
   14        *               6              111                          13-->>14 AAAA     |
-Jnct  At step:   12        Up  Left Right  Addr      Up_______________  Down____________  |
+Jnct  At step:    9        Up  Left Right  Addr      Up_______________  Down____________  |
    6      *                 2    13    14  11                           14-6-13  BBBB     |
   14        *               6              111                          13-->>14 AAAA     |
-Jnct  At step:   13        Up  Left Right  Addr      Up_______________  Down____________  |
+Jnct  At step:   10        Up  Left Right  Addr      Up_______________  Down____________  |
   13        *               6              110                          14-->>13 BBBB     |
   14        *               6              111                          13-->>14 AAAA     |
 """);
