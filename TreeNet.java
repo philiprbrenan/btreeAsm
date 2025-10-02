@@ -3,7 +3,7 @@
 // Philip R Brenan at appaapps dot com, Appa Apps Ltd Inc., 2025
 //------------------------------------------------------------------------------
 package com.AppaApps.Silicon;                                                   // Btree as a silicon chip
-// Allow turnover to occur at any junction to shorten network path for close pairs
+
 import java.util.*;
 
 class TreeNet extends Test                                                      // A tree network that connects leaf pairs via branches in logarithmic time, allowing us to compose a large chip as a networked collection of smaller chips.
@@ -47,12 +47,24 @@ class TreeNet extends Test                                                      
    }
 
   void tttTransmit()                                                            // Transmit each message one step through the tree network
-   {for(int i = 0; i < tttJunctions.length; i++) tttJunctions[i].jjjCopyUp();   // Copy a source message up one step so that it is closer to the target
-    for(int i = 1; i < tttJunctions.length; i++) tttJunctions[i].jjjClearUp();  // Clear the source of an upward-moving message - the root cannot be such a source
+   {for (int i = 0; i < tttJunctions.length; i++) tttJunctions[i].jjjCopyUp();  // Copy a source message up one step so that it is closer to the target
+    for (int i = 1; i < tttJunctions.length; i++) tttJunctions[i].jjjClearUp(); // Clear the source of an upward-moving message - the root cannot be such a source
     tttJunctions[0].jjjMessageDown = tttJunctions[0].jjjMessageUp;              // Transfer the message from the upward seeking side of the tree to the downward seeking side
     tttJunctions[0].jjjMessageUp   = null;                                      // Remove message from upward seeking side now that it has been transfered to the downward seeking side of the tree network
     for(int i = 1; i < tttJunctions.length; i++) tttJunctions[i].jjjCopyDown(); // Copy a source message down one step so that it is closer to the target
     for(int i = 1; i < tttJunctions.length; i++) tttJunctions[i].jjjClearDown();// Clear the source of a downward-moving message - the root cannot be such a source
+   }
+
+  Message tttGetMessage(int Leaf)                                               // Get any message that has arrived at the specified leaf
+   {final Message m = tttJunctions[Leaf].jjjMessageDown;                        // Get any message
+    tttJunctions[Leaf].jjjMessageDown = null;                                   // Remove the message
+    return m;                                                                   // Return ther message
+   }
+
+  boolean tttPutMessage(int Source, int Target, String Text)                    // Add a new message at the indicated leaf if possible and return true else false
+   {if (tttJunctions[Source].jjjMessageUp != null) return false;                // There is a message on the leaf already
+    tttJunctions[Source].jjjMessageUp = new Message(Source, Target, Text);      // Add the message
+    return true;                                                                // Success
    }
 
 //D1 Junction                                                                   // A junction in a tree network connects two child junctions to a parent junction.
@@ -136,7 +148,7 @@ class TreeNet extends Test                                                      
     Address(int Index)
      {aaaIndex = Index;
       final StringBuilder s = new StringBuilder();
-      for(int N = Index+1; N > 1; N /= 2) s.append(N % 2 == 1 ? "1" : "0");     // Path from zero to this address
+      for (int N = Index+1; N > 1; N /= 2) s.append(N % 2 == 1 ? "1" : "0");    // Path from zero to this address
       aaaAddress = ""+s.reverse();
       aaaLevel   = aaaAddress.length();
      }
@@ -204,7 +216,7 @@ class TreeNet extends Test                                                      
 
     T.new Message(5, 3, "AAAA");
 
-    for   (T.tttStep = 0; T.tttStep < 4; ++T.tttStep)
+    for (T.tttStep = 0; T.tttStep < 4; ++T.tttStep)
      {s.append(T);
       T.tttTransmit();
      }
@@ -253,7 +265,7 @@ Jnct  At step:    3        Up  Left Right  Addr      Up_______________  Down____
     T.new Message(13, 7, "AAAA");
     T.new Message(14, 8, "BBBB");
 
-    for   (T.tttStep = 0; T.tttStep < 11; ++T.tttStep)
+    for (T.tttStep = 0; T.tttStep < 11; ++T.tttStep)
      {s.append(T);
       T.tttTransmit();
      }
@@ -304,7 +316,7 @@ Jnct  At step:   10        Up  Left Right  Addr      Up_______________  Down____
     T.new Message(1, 2, "AAAA");
     T.new Message(2, 1, "BBBB");
 
-    for   (T.tttStep = 0; T.tttStep < 3; ++T.tttStep)
+    for (T.tttStep = 0; T.tttStep < 3; ++T.tttStep)
      {s.append(T);
       T.tttTransmit();
      }
@@ -333,7 +345,7 @@ Jnct  At step:    2        Up  Left Right  Addr      Up_______________  Down____
     T.new Message(7, 14, "AAAA");
     T.new Message(14, 7, "BBBB");
 
-    for   (T.tttStep = 0; T.tttStep < 9; ++T.tttStep)
+    for (T.tttStep = 0; T.tttStep < 9; ++T.tttStep)
      {s.append(T);
       T.tttTransmit();
      }
@@ -382,7 +394,7 @@ Jnct  At step:    8        Up  Left Right  Addr      Up_______________  Down____
     T.new Message(13,  8, "GGGG");
     T.new Message(14,  7, "HHHH");
 
-    for   (T.tttStep = 0; T.tttStep < 19; ++T.tttStep)
+    for (T.tttStep = 0; T.tttStep < 19; ++T.tttStep)
      {s.append(T);
       T.tttTransmit();
      }
@@ -561,7 +573,7 @@ Jnct  At step:   18        Up  Left Right  Addr      Up_______________  Down____
     T.new Message(14, 13, "AAAA");
     T.new Message(13, 14, "BBBB");
 
-    for   (T.tttStep = 0; T.tttStep < 3; ++T.tttStep)
+    for (T.tttStep = 0; T.tttStep < 3; ++T.tttStep)
      {s.append(T);
       T.tttTransmit();
      }
@@ -578,6 +590,26 @@ Jnct  At step:    2        Up  Left Right  Addr      Up_______________  Down____
 """);
    }
 
+  static void test_sequence()
+   {sayCurrentTestName();
+    final int Source = 14, Target = 7, Steps = 28;
+    final TreeNet T = new TreeNet(4);
+    final StringBuilder s = new StringBuilder();
+    final StringJoiner  t = new StringJoiner(", ");
+    final String [] words = "AAAA BBBB CCCC DDDD EEEE FFFF".split("\\s+");
+
+    int i = 0;
+    for (T.tttStep = 0; T.tttStep < Steps; ++T.tttStep)
+     {if (i < words.length && T.tttPutMessage(Source, Target, words[i])) ++i;
+      s.append(T);
+      T.tttTransmit();
+      final Message m = T.tttGetMessage(Target);
+      if (m != null) t.add(m.mmmText);
+     }
+    //stop(t);
+    ok(t, "AAAA, BBBB, CCCC, DDDD, EEEE, FFFF");
+   }
+
   static void oldTests()                                                        // Tests thought to be in good shape
    {test_one();
     test_two();
@@ -585,6 +617,7 @@ Jnct  At step:    2        Up  Left Right  Addr      Up_______________  Down____
     test_reversePair();
     test_reverse();
     test_short();
+    test_sequence();
    }
 
   static void newTests()                                                        // Tests being worked on
