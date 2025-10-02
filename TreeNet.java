@@ -50,8 +50,9 @@ class TreeNet extends Test                                                      
    {final int N = ttJunctions.length;
     for (int i = 0; i < N; i++) ttJunctions[i].jjCopyUp();                      // Copy a source message up one step so that it is closer to the target
     for (int i = 1; i < N; i++) ttJunctions[i].jjClearUp();                     // Clear the source of an upward-moving message - the root cannot be such a source
-    ttJunctions[0].jjMessageDown = ttJunctions[0].jjMessageUp;                  // Transfer the message from the upward seeking side of the tree to the downward seeking side
-    ttJunctions[0].jjMessageUp   = null;                                        // Remove message from upward seeking side now that it has been transfered to the downward seeking side of the tree network
+    final Junction root = ttJunctions[0];                                       // Turnover from upward seeking to downward seeking occurs at the root if it has not happened earlier in the journey upward part of the path
+    root.jjMessageDown = root.jjMessageUp;                                      // Transfer the message from the upward seeking side of the tree to the downward seeking side
+    root.jjMessageUp   = null;                                                  // Remove message from upward seeking side now that it has been transfered to the downward seeking side of the tree network
     for(int i = 1; i < N; i++) ttJunctions[i].jjCopyDown();                     // Copy a source message down one step so that it is closer to the target
     for(int i = 1; i < N; i++) ttJunctions[i].jjClearDown();                    // Clear the source of a downward-moving message - the root cannot be such a source
     for(int i = 1; i < N; i++) ttJunctions[i].jjClearShort();                   // Clear the source of a downward-moving message - the root cannot be such a source
