@@ -7,132 +7,132 @@ package com.AppaApps.Silicon;                                                   
 import java.util.*;
 
 class TreeNet extends Test                                                      // A tree network that connects leaf pairs via branches in logarithmic time, allowing us to compose a large chip as a networked collection of smaller chips.
- {final int       tttSize;                                                      // The number of 3-way junctions in the network
-  final Junction[]tttJunctions;                                                 // The junctions used to construct the tree network
-  boolean         tttPrintCompact = true;                                       // Print network trace in compact format if true
-  int             tttStep;                                                      // The tree network is clocked
+ {final int       ttSize;                                                       // The number of 3-way junctions in the network
+  final Junction[]ttJunctions;                                                  // The junctions used to construct the tree network
+  boolean         ttPrintCompact = true;                                        // Print network trace in compact format if true
+  int             ttStep;                                                       // The tree network is stepped
 
 //D1 Construction                                                               // Construct a tree network
 
   TreeNet(int Size)                                                             // Create the tree network.  The number of leaves will be 2**(Size-1)
-   {tttSize = powerTwo(Size) - 1;
-    tttJunctions = new Junction[tttSize];                                       // The junctions used to construct the tree network
-    for (int i = 0; i < tttSize; i++) tttJunctions[i] = new Junction(i);
+   {ttSize = powerTwo(Size) - 1;
+    ttJunctions = new Junction[ttSize];                                         // The junctions used to construct the tree network
+    for (int i = 0; i < ttSize; i++) ttJunctions[i] = new Junction(i);
    }
 
   public String toString()                                                      // Print the tree network
    {final StringJoiner s = new StringJoiner("\n", "", "\n");
-    s.add(String.format("Jnct  At step: %4d        Up  Left Right  Addr      Up_______________  Down____________  |", tttStep));
-    for (int i = 0; i < tttSize; i++)
-     {final Junction j = tttJunctions[i];
+    s.add(String.format("Jnct  At step: %4d        Up  Left Right  Addr      Up_______________  Down____________  |", ttStep));
+    for (int i = 0; i < ttSize; i++)                                            // Each junction in the tree network
+     {final Junction j = ttJunctions[i];
       if (j == null) continue;
 
-      final Integer p = j.jjjParent, l = j.jjjLeft, r = j.jjjRight;
+      final Integer p = j.jjParent, l = j.jjLeft, r = j.jjRight;                // Relationship with other junctions
       final String  P = p == null ? "    " : String.format("%4d", p);
       final String  L = l == null ? "    " : String.format("%4d", l);
       final String  R = r == null ? "    " : String.format("%4d", r);
-      final String  n = "  ".repeat(j.jjjLevel)+"*"+"  ".repeat(8-j.jjjLevel);
+      final String  n = "  ".repeat(j.jjLevel)+"*"+"  ".repeat(8-j.jjLevel);
 
-      final Message u = j.jjjMessageUp;
-      final Message d = j.jjjMessageDown;
+      final Message u = j.jjMessageUp;                                          // Message detail
+      final Message d = j.jjMessageDown;
       final String  U = u == null ? " ".repeat(17) : u.toString(i);
       final String  D = d == null ? " ".repeat(17) : d.toString(i);
 
-      if (!tttPrintCompact || u != null || d != null)
+      if (!ttPrintCompact || u != null || d != null)                            // Print if there has been activity on this junction or all junctions are being printed
        {s.add(String.format("%4d  %s  %s  %s  %s  %-8s  %s  %s |",
-          i, n, P, L, R, j.jjjAddress.aaaAddress, U, D));
+          i, n, P, L, R, j.jjAddress.aaAddress, U, D));
        }
      }
-    return ""+s;
+    return ""+s;                                                                // Printed state of tree network at this point in time
    }
 
-  void tttTransmit()                                                            // Transmit each message one step through the tree network
-   {for (int i = 0; i < tttJunctions.length; i++) tttJunctions[i].jjjCopyUp();  // Copy a source message up one step so that it is closer to the target
-    for (int i = 1; i < tttJunctions.length; i++) tttJunctions[i].jjjClearUp(); // Clear the source of an upward-moving message - the root cannot be such a source
-    tttJunctions[0].jjjMessageDown = tttJunctions[0].jjjMessageUp;              // Transfer the message from the upward seeking side of the tree to the downward seeking side
-    tttJunctions[0].jjjMessageUp   = null;                                      // Remove message from upward seeking side now that it has been transfered to the downward seeking side of the tree network
-    for(int i = 1; i < tttJunctions.length; i++) tttJunctions[i].jjjCopyDown(); // Copy a source message down one step so that it is closer to the target
-    for(int i = 1; i < tttJunctions.length; i++) tttJunctions[i].jjjClearDown();// Clear the source of a downward-moving message - the root cannot be such a source
+  void ttTransmit()                                                             // Transmit each message one step through the tree network
+   {for (int i = 0; i < ttJunctions.length; i++) ttJunctions[i].jjCopyUp();     // Copy a source message up one step so that it is closer to the target
+    for (int i = 1; i < ttJunctions.length; i++) ttJunctions[i].jjClearUp();    // Clear the source of an upward-moving message - the root cannot be such a source
+    ttJunctions[0].jjMessageDown = ttJunctions[0].jjMessageUp;                  // Transfer the message from the upward seeking side of the tree to the downward seeking side
+    ttJunctions[0].jjMessageUp   = null;                                        // Remove message from upward seeking side now that it has been transfered to the downward seeking side of the tree network
+    for(int i = 1; i < ttJunctions.length; i++) ttJunctions[i].jjCopyDown();    // Copy a source message down one step so that it is closer to the target
+    for(int i = 1; i < ttJunctions.length; i++) ttJunctions[i].jjClearDown();   // Clear the source of a downward-moving message - the root cannot be such a source
    }
 
-  Message tttGetMessage(int Leaf)                                               // Get any message that has arrived at the specified leaf
-   {final Message m = tttJunctions[Leaf].jjjMessageDown;                        // Get any message
-    tttJunctions[Leaf].jjjMessageDown = null;                                   // Remove the message
+  Message ttGetMessage(int Leaf)                                                // Get any message that has arrived at the specified leaf
+   {final Message m = ttJunctions[Leaf].jjMessageDown;                          // Get any message
+    ttJunctions[Leaf].jjMessageDown = null;                                     // Remove the message
     return m;                                                                   // Return ther message
    }
 
-  boolean tttPutMessage(int Source, int Target, String Text)                    // Add a new message at the indicated leaf if possible and return true else false
-   {if (tttJunctions[Source].jjjMessageUp != null) return false;                // There is a message on the leaf already
-    tttJunctions[Source].jjjMessageUp = new Message(Source, Target, Text);      // Add the message
+  boolean ttPutMessage(int Source, int Target, String Text)                     // Add a new message at the indicated leaf if possible and return true else false
+   {if (ttJunctions[Source].jjMessageUp != null) return false;                  // There is a message on the leaf already
+    ttJunctions[Source].jjMessageUp = new Message(Source, Target, Text);        // Add the message
     return true;                                                                // Success
    }
 
 //D1 Junction                                                                   // A junction in a tree network connects two child junctions to a parent junction.
 
   private class Junction                                                        // A junction in a tree network connects two child junctions to a parent junction.
-   {final int     jjjNumber;                                                    // The number of the junction
-    final int     jjjLevel;                                                     // The level of the junction.  The root is at level zero, the next at level one, etc.
-    final Address jjjAddress;                                                   // The address of this junction in the tree network
-    final Integer jjjParent;                                                    // The index of the parent of this junction
-    final Integer jjjLeft;                                                      // The index of the left child junction
-    final Integer jjjRight;                                                     // The index of the right child junction
-    Message       jjjMessageUp;                                                 // Message waiting to be sent up through the tree network
-    Message       jjjMessageDown;                                               // Message waiting to be sent down through the tree network
-    Message       jjjMessageDownPending;                                        // A downward seeking message is cached here during simulation to prevent overruns
+   {final int     jjNumber;                                                     // The number of the junction
+    final int     jjLevel;                                                      // The level of the junction.  The root is at level zero, the next at level one, etc.
+    final Address jjAddress;                                                    // The address of this junction in the tree network
+    final Integer jjParent;                                                     // The index of the parent of this junction
+    final Integer jjLeft;                                                       // The index of the left child junction
+    final Integer jjRight;                                                      // The index of the right child junction
+    Message       jjMessageUp;                                                  // Message waiting to be sent up through the tree network
+    Message       jjMessageDown;                                                // Message waiting to be sent down through the tree network
+    Message       jjMessageDownPending;                                         // A downward seeking message is cached here during simulation to prevent overruns
 
     Junction(int Number)
-     {jjjNumber  = Number;
-      jjjLevel   = logTwo(prevPowerOfTwo(1+Number));                            // Level of junction
-      jjjAddress = new Address(jjjNumber);
-      jjjParent  = jjjTop() ? null : (Number-1) / 2;                            // Set parent
-      jjjLeft    = Number * 2 + 1 < tttSize ? Number * 2 + 1 : null;            // Left child
-      jjjRight   = Number * 2 + 2 < tttSize ? Number * 2 + 2 : null;            // Right child
+     {jjNumber  = Number;
+      jjLevel   = logTwo(prevPowerOfTwo(1+Number));                             // Level of junction
+      jjAddress = new Address(jjNumber);
+      jjParent  = jjTop() ? null : (Number-1) / 2;                              // Set parent
+      jjLeft    = Number * 2 + 1 < ttSize ? Number * 2 + 1 : null;              // Left child
+      jjRight   = Number * 2 + 2 < ttSize ? Number * 2 + 2 : null;              // Right child
      }
 
-    boolean jjjTop() {return jjjNumber == 0;}                                   // The root is always at index zero
+    boolean jjTop() {return jjNumber == 0;}                                     // The root is always at index zero
 
-    private void jjjClearUp()                                                   // Clear source of messages sent up through this junction
-     {final Junction p = tttJunctions[jjjParent];                               // Parent
-      if (jjjMessageUp == p.jjjMessageUp) jjjMessageUp = null;                  // Same message in parent and child means we can remove the child message
+    private void jjClearUp()                                                    // Clear source of messages sent up through this junction
+     {final Junction p = ttJunctions[jjParent];                                 // Parent
+      if (jjMessageUp == p.jjMessageUp) jjMessageUp = null;                     // Same message in parent and child means we can remove the child message
      }
 
-    void jjjCopyUp()                                                            // Transmit messages up through this junction
-     {final Message  U =   jjjMessageUp;                                        // Message at this level if any
-      if (tttStep % 2 == 0 && jjjLeft != null)                                  // Examine the left child for a message to be sent up. To avoid always giving messages on the left hand side priority over the right hand side we alternate between giving the left hand side and the right hand side priority
-       {final Junction l = tttJunctions[jjjLeft];                               // Left child
-        final Message  u = l.jjjMessageUp;                                      // A possible message from the left child
+    void jjCopyUp()                                                             // Transmit messages up through this junction
+     {final Message  U =   jjMessageUp;                                         // Message at this level if any
+      if (ttStep % 2 == 0 && jjLeft != null)                                    // Examine the left child for a message to be sent up. To avoid always giving messages on the left hand side priority over the right hand side we alternate between giving the left hand side and the right hand side priority
+       {final Junction l = ttJunctions[jjLeft];                                 // Left child
+        final Message  u = l.jjMessageUp;                                       // A possible message from the left child
         if (U == null && u != null)                                             // Left might want to send a message up
-         {jjjMessageUp = u;
+         {jjMessageUp = u;
          }
        }
-      else if (tttStep % 2 == 1 && jjjRight != null)                            // Examine the right child for a message to be sent up. To avoid always giving messages on the left hand side priority over the right hand side we alternate between giving the left hand side and the right hand side priority
-       {final Junction r = tttJunctions[jjjRight];                              // Right child
-        final Message  u = r.jjjMessageUp;                                      // A possible message from the right child
+      else if (ttStep % 2 == 1 && jjRight != null)                              // Examine the right child for a message to be sent up. To avoid always giving messages on the left hand side priority over the right hand side we alternate between giving the left hand side and the right hand side priority
+       {final Junction r = ttJunctions[jjRight];                                // Right child
+        final Message  u = r.jjMessageUp;                                       // A possible message from the right child
         if (U == null && u != null)                                             // Right might want to send a message up
-         {jjjMessageUp = u;
+         {jjMessageUp = u;
          }
        }
      }
 
-    void jjjClearDown()                                                         // Clear source of messages sent down through this junction
-     {if (jjjMessageDownPending == null) return;                                // Skip if there is no downward seeking message pending for this junction
-      jjjMessageDown = jjjMessageDownPending;                                   // Move message into main downline
-      jjjMessageDownPending = null;                                             // Move message from pending to active now that downward simulation step is complete
-      tttJunctions[jjjParent].jjjMessageDown = null;                            // Remove messsage from parent
+    void jjClearDown()                                                          // Clear source of messages sent down through this junction
+     {if (jjMessageDownPending == null) return;                                 // Skip if there is no downward seeking message pending for this junction
+      jjMessageDown = jjMessageDownPending;                                     // Move message into main downline
+      jjMessageDownPending = null;                                              // Move message from pending to active now that downward simulation step is complete
+      ttJunctions[jjParent].jjMessageDown = null;                               // Remove messsage from parent
      }
 
-    void jjjCopyDown()                                                          // Transmit messages down through this junction
-     {final Junction p = tttJunctions[jjjParent];                               // Parent
-      final Message  U = p.jjjMessageUp;                                        // A possible message from the parent going up
-      final Message  D = p.jjjMessageDown;                                      // A possible message from the parent coming down
-      final Message  d =   jjjMessageDown;                                      // Message at this level if any
+    void jjCopyDown()                                                           // Transmit messages down through this junction
+     {final Junction p = ttJunctions[jjParent];                                 // Parent
+      final Message  U = p.jjMessageUp;                                         // A possible message from the parent going up
+      final Message  D = p.jjMessageDown;                                       // A possible message from the parent coming down
+      final Message  d =   jjMessageDown;                                       // Message at this level if any
       if (D != null && d == null)                                               // Parent wants to send us a message
-       {if (jjjAddress.aaaDown(D.mmmTarget)) jjjMessageDownPending = D;         // Message should go down through this junction, Cache the message for the moment to prevent overruns.
+       {if (jjAddress.aaDown(D.mmTarget)) jjMessageDownPending = D;             // Message should go down through this junction, Cache the message for the moment to prevent overruns.
        }
       else if (U != null)                                                       // Short circuit upward seeking message if its target is on this branch
-       {if (jjjAddress.aaaDown(U.mmmTarget))
-         {jjjMessageDownPending = U;                                            // Place upward message on downward seeking path
-          p.jjjMessageUp = null;                                                // Clear message from parent upward seeking path
+       {if (jjAddress.aaDown(U.mmTarget))
+         {jjMessageDownPending = U;                                             // Place upward message on downward seeking path
+          p.jjMessageUp = null;                                                 // Clear message from parent upward seeking path
          }
        }
      }
@@ -141,56 +141,56 @@ class TreeNet extends Test                                                      
 //D1 Address
                                                                                 // The address of a junction is its path from the root through the tree network to this junction
   private class Address                                                         // The address of  the junction in the tree network
-   {final int    aaaIndex;                                                      // The numeric representation of the address of the junction in the tree network
-    final int    aaaLevel;                                                      // The level of this address in the tree network with the root at level zero and the next level at one etc.
-    final String aaaAddress;                                                    // Address in branch path steering format
+   {final int    aaIndex;                                                       // The numeric representation of the address of the junction in the tree network
+    final int    aaLevel;                                                       // The level of this address in the tree network with the root at level zero and the next level at one etc.
+    final String aaAddress;                                                     // Address in branch path steering format
 
     Address(int Index)
-     {aaaIndex = Index;
+     {aaIndex = Index;
       final StringBuilder s = new StringBuilder();
       for (int N = Index+1; N > 1; N /= 2) s.append(N % 2 == 1 ? "1" : "0");    // Path from zero to this address
-      aaaAddress = ""+s.reverse();
-      aaaLevel   = aaaAddress.length();
+      aaAddress = ""+s.reverse();
+      aaLevel   = aaAddress.length();
      }
 
     public String toString()
      {return String.format("Address: %d %d %s\n",
-                            aaaIndex, aaaLevel, aaaAddress);
+                            aaIndex, aaLevel, aaAddress);
      }
 
-    private boolean aaaDown(Address Target)                                     // Is this an address that can be descended through towards the target
-     {return Target.aaaLevel >= aaaLevel &&                                     // Level of target must be here or further down
-             Target.aaaAddress.startsWith(aaaAddress);                          // Target prefix must match that of the current junction
+    private boolean aaDown(Address Target)                                      // Is this an address that can be descended through towards the target
+     {return Target.aaLevel >= aaLevel &&                                       // Level of target must be here or further down
+             Target.aaAddress.startsWith(aaAddress);                            // Target prefix must match that of the current junction
      }
    }
 
 //D1 Message                                                                    // A message sent from a source leaf to a target leaf
 
   class Message                                                                 // A message sent from a source leaf to a target leaf
-   {final Address mmmSource;                                                    // The address of the sending source leaf
-    final Address mmmTarget;                                                    // The address of the receiving target leaf
-    final String  mmmText;                                                      // The text of the message
+   {final Address mmSource;                                                     // The address of the sending source leaf
+    final Address mmTarget;                                                     // The address of the receiving target leaf
+    final String  mmText;                                                       // The text of the message
 
     Message(int Source, int Target, String Text)                                // Add a new message to be transmitted through the tree network
-     {mmmSource = new Address(Source);                                          // Source junction accepting the message
-      mmmTarget = new Address(Target);                                          // Target junction to which the message is to be sent
-      mmmText   = Text;                                                         // Text of the message
-      tttJunctions[Source].jjjMessageUp = this;                                 // The message starts its journey at the source junction
+     {mmSource = new Address(Source);                                           // Source junction accepting the message
+      mmTarget = new Address(Target);                                           // Target junction to which the message is to be sent
+      mmText   = Text;                                                          // Text of the message
+      ttJunctions[Source].jjMessageUp = this;                                   // The message starts its journey at the source junction
      }
 
     public String toString()                                                    // Print a message
-     {final int    s = mmmSource.aaaIndex;
-      final int    t = mmmTarget.aaaIndex;
-      final String T = mmmText;
+     {final int    s = mmSource.aaIndex;
+      final int    t = mmTarget.aaIndex;
+      final String T = mmText;
 
       final String r = String.format("%d->%d:%s", s, t, T);
       return String.format("%-16s", r);
      }
 
     String toString(int Position)                                               // Show the current position of the message in its path through the tree network
-     {final int    s = mmmSource.aaaIndex;
-      final int    t = mmmTarget.aaaIndex;
-      final String T = mmmText;
+     {final int    s = mmSource.aaIndex;
+      final int    t = mmTarget.aaIndex;
+      final String T = mmText;
 
       if (s == Position)
        {final String r = String.format("%d>>--%d", s, t);
@@ -212,13 +212,13 @@ class TreeNet extends Test                                                      
   static void test_one()
    {sayCurrentTestName();
     final TreeNet T = new TreeNet(3);
-    final StringBuilder s = new StringBuilder(); T.tttPrintCompact = false;
+    final StringBuilder s = new StringBuilder(); T.ttPrintCompact = false;
 
     T.new Message(5, 3, "AAAA");
 
-    for (T.tttStep = 0; T.tttStep < 4; ++T.tttStep)
+    for (T.ttStep = 0; T.ttStep < 4; ++T.ttStep)
      {s.append(T);
-      T.tttTransmit();
+      T.ttTransmit();
      }
     //stop(s);
     ok(s, """
@@ -265,9 +265,9 @@ Jnct  At step:    3        Up  Left Right  Addr      Up_______________  Down____
     T.new Message(13, 7, "AAAA");
     T.new Message(14, 8, "BBBB");
 
-    for (T.tttStep = 0; T.tttStep < 11; ++T.tttStep)
+    for (T.ttStep = 0; T.ttStep < 11; ++T.ttStep)
      {s.append(T);
-      T.tttTransmit();
+      T.ttTransmit();
      }
     //stop(s);
     ok(""+s, """
@@ -310,15 +310,15 @@ Jnct  At step:   10        Up  Left Right  Addr      Up_______________  Down____
   static void test_swap()
    {sayCurrentTestName();
     final TreeNet T = new TreeNet(2);
-    T.tttPrintCompact = false;
+    T.ttPrintCompact = false;
     final StringBuilder s = new StringBuilder();
 
     T.new Message(1, 2, "AAAA");
     T.new Message(2, 1, "BBBB");
 
-    for (T.tttStep = 0; T.tttStep < 3; ++T.tttStep)
+    for (T.ttStep = 0; T.ttStep < 3; ++T.ttStep)
      {s.append(T);
-      T.tttTransmit();
+      T.ttTransmit();
      }
     //stop(s);
     ok(""+s, """
@@ -345,9 +345,9 @@ Jnct  At step:    2        Up  Left Right  Addr      Up_______________  Down____
     T.new Message(7, 14, "AAAA");
     T.new Message(14, 7, "BBBB");
 
-    for (T.tttStep = 0; T.tttStep < 9; ++T.tttStep)
+    for (T.ttStep = 0; T.ttStep < 9; ++T.ttStep)
      {s.append(T);
-      T.tttTransmit();
+      T.ttTransmit();
      }
     //stop(s);
     ok(s, """
@@ -394,9 +394,9 @@ Jnct  At step:    8        Up  Left Right  Addr      Up_______________  Down____
     T.new Message(13,  8, "GGGG");
     T.new Message(14,  7, "HHHH");
 
-    for (T.tttStep = 0; T.tttStep < 19; ++T.tttStep)
+    for (T.ttStep = 0; T.ttStep < 19; ++T.ttStep)
      {s.append(T);
-      T.tttTransmit();
+      T.ttTransmit();
      }
     //stop(s);
     ok(s, """
@@ -573,9 +573,9 @@ Jnct  At step:   18        Up  Left Right  Addr      Up_______________  Down____
     T.new Message(14, 13, "AAAA");
     T.new Message(13, 14, "BBBB");
 
-    for (T.tttStep = 0; T.tttStep < 3; ++T.tttStep)
+    for (T.ttStep = 0; T.ttStep < 3; ++T.ttStep)
      {s.append(T);
-      T.tttTransmit();
+      T.ttTransmit();
      }
     //stop(s);
     ok(""+s, """
@@ -599,12 +599,12 @@ Jnct  At step:    2        Up  Left Right  Addr      Up_______________  Down____
     final String [] words = "AAAA BBBB CCCC DDDD EEEE FFFF".split("\\s+");
 
     int i = 0;
-    for (T.tttStep = 0; T.tttStep < Steps; ++T.tttStep)
-     {if (i < words.length && T.tttPutMessage(Source, Target, words[i])) ++i;
+    for (T.ttStep = 0; T.ttStep < Steps; ++T.ttStep)
+     {if (i < words.length && T.ttPutMessage(Source, Target, words[i])) ++i;
       s.append(T);
-      T.tttTransmit();
-      final Message m = T.tttGetMessage(Target);
-      if (m != null) t.add(m.mmmText);
+      T.ttTransmit();
+      final Message m = T.ttGetMessage(Target);
+      if (m != null) t.add(m.mmText);
      }
     //stop(t);
     ok(t, "AAAA, BBBB, CCCC, DDDD, EEEE, FFFF");
