@@ -47,12 +47,14 @@ class TreeNet extends Test                                                      
    }
 
   void ttTransmit()                                                             // Transmit each message one step through the tree network
-   {for (int i = 0; i < ttJunctions.length; i++) ttJunctions[i].jjCopyUp();     // Copy a source message up one step so that it is closer to the target
-    for (int i = 1; i < ttJunctions.length; i++) ttJunctions[i].jjClearUp();    // Clear the source of an upward-moving message - the root cannot be such a source
+   {final int N = ttJunctions.length;
+    for (int i = 0; i < N; i++) ttJunctions[i].jjCopyUp();                      // Copy a source message up one step so that it is closer to the target
+    for (int i = 1; i < N; i++) ttJunctions[i].jjClearUp();                     // Clear the source of an upward-moving message - the root cannot be such a source
     ttJunctions[0].jjMessageDown = ttJunctions[0].jjMessageUp;                  // Transfer the message from the upward seeking side of the tree to the downward seeking side
     ttJunctions[0].jjMessageUp   = null;                                        // Remove message from upward seeking side now that it has been transfered to the downward seeking side of the tree network
-    for(int i = 1; i < ttJunctions.length; i++) ttJunctions[i].jjCopyDown();    // Copy a source message down one step so that it is closer to the target
-    for(int i = 1; i < ttJunctions.length; i++) ttJunctions[i].jjClearDown();   // Clear the source of a downward-moving message - the root cannot be such a source
+    for(int i = 1; i < N; i++) ttJunctions[i].jjCopyDown();                     // Copy a source message down one step so that it is closer to the target
+    for(int i = 1; i < N; i++) ttJunctions[i].jjClearDown();                    // Clear the source of a downward-moving message - the root cannot be such a source
+    for(int i = 1; i < N; i++) ttJunctions[i].jjClearShort();                   // Clear the source of a downward-moving message - the root cannot be such a source
    }
 
   Message ttGetMessage(int Leaf)                                                // Get any message that has arrived at the specified leaf
@@ -121,18 +123,24 @@ class TreeNet extends Test                                                      
       ttJunctions[jjParent].jjMessageDown = null;                               // Remove messsage from parent
      }
 
+    void jjClearShort()                                                         // Clear short circuit source in parent
+     {final Junction l = jjLeft  != null ? ttJunctions[jjLeft]  : null;         // Left child if any
+      final Junction r = jjRight != null ? ttJunctions[jjRight] : null;         // Right child if any
+      if ((l != null && l.jjMessageDown == jjMessageUp) ||                      // Clear the upward seeking message if it was transferred to a downward seeking branch
+          (r != null && r.jjMessageDown == jjMessageUp)) jjMessageUp = null;
+     }
+
     void jjCopyDown()                                                           // Transmit messages down through this junction
-     {final Junction p = ttJunctions[jjParent];                                 // Parent
+     {final Junction p = ttJunctions[jjParent];                                 // Parent of this junction
       final Message  U = p.jjMessageUp;                                         // A possible message from the parent going up
       final Message  D = p.jjMessageDown;                                       // A possible message from the parent coming down
       final Message  d =   jjMessageDown;                                       // Message at this level if any
       if (D != null && d == null)                                               // Parent wants to send us a message
-       {if (jjAddress.aaDown(D.mmTarget)) jjMessageDownPending = D;             // Message should go down through this junction, Cache the message for the moment to prevent overruns.
+       {if (jjAddress.aaDown(D.mmTarget)) jjMessageDownPending = D;             // Message should go down through this junction. Cache the message for the moment to prevent overruns.
        }
       else if (U != null)                                                       // Short circuit upward seeking message if its target is on this branch
-       {if (jjAddress.aaDown(U.mmTarget))
+       {if (jjAddress.aaDown(U.mmTarget))                                       // Could the upward seeking message short circuit down this branch to reach its target?
          {jjMessageDownPending = U;                                             // Place upward message on downward seeking path
-          p.jjMessageUp = null;                                                 // Clear message from parent upward seeking path
          }
        }
      }
