@@ -9,16 +9,16 @@ import java.util.*;
 class TreeNet extends Test                                                      // A tree network that connects leaf pairs via branches in logarithmic time, allowing us to compose a large chip as a networked collection of smaller chips.
  {final int       size;                                                         // The number of 3-way junctions in the network plus the root and leaves
   final Junction[]junctions;                                                    // The junctions used to construct the tree network
-  final boolean []messageUp;                                                    // Message waiting to be sent up through the tree network
-  final boolean []messageDown;                                                  // Message waiting to be sent down through the tree network
-  final boolean []messageDownPending;                                           // A downward seeking message is cached here during simulation to prevent overruns
+  final boolean []messageUp;                                                    // Message waiting to be sent upward through the tree network
+  final boolean []messageDown;                                                  // Message waiting to be sent downward through the tree network
+  final boolean []messageDownPending;                                           // A downward-seeking message is cached here during simulation to prevent overruns
 
-  final int     []messageUpNumber;                                              // The unique number of the message going up
+  final int     []messageUpNumber;                                              // The unique number of the message going upward
   final int     []messageUpSource;                                              // The address of the sending source leaf
   final int     []messageUpTarget;                                              // The address of the receiving target leaf
   final int     []messageUpText;                                                // The text of the message
 
-  final int     []messageDownNumber;                                            // The unique number of the message going down
+  final int     []messageDownNumber;                                            // The unique number of the message going downward
   final int     []messageDownSource;                                            // The address of the sending source leaf
   final int     []messageDownTarget;                                            // The address of the receiving target leaf
   final int     []messageDownText;                                              // The text of the message
@@ -29,7 +29,7 @@ class TreeNet extends Test                                                      
   final int     []messageDownPendingText;                                       // The text of the message
 
   final int     []level;                                                        // The level of this address in the tree network with the root at level zero and the next level at one etc.
-  boolean         printCompact = true;                                          // Print network trace in compact format if true
+  boolean         printCompact = true;                                          // Print the network trace in compact format if true
   final String  []address;                                                      // Address in branch path steering format
   int             messageNumber;                                                // A unique number generator used to label messages
   int             step;                                                         // The tree network executes in steps
@@ -39,16 +39,16 @@ class TreeNet extends Test                                                      
   TreeNet(int Size)                                                             // Create the tree network.  The number of leaves will be 2**(Size-1)
    {size = powerTwo(Size) - 1;
     junctions = new Junction[size];                                             // The junctions used to construct the tree network
-    messageUp                = new boolean[size];                               // Message waiting to be sent up through the tree network
-    messageDown              = new boolean[size];                               // Message waiting to be sent down through the tree network
-    messageDownPending       = new boolean[size];                               // A downward seeking message is cached here during simulation to prevent overruns
+    messageUp                = new boolean[size];                               // Message waiting to be sent upward through the tree network
+    messageDown              = new boolean[size];                               // Message waiting to be sent downward through the tree network
+    messageDownPending       = new boolean[size];                               // A downward-seeking message is cached here during simulation to prevent overruns
 
-    messageUpNumber          = new int[size];                                   // The unique number of the message going up
+    messageUpNumber          = new int[size];                                   // The unique number of the message going upward
     messageUpSource          = new int[size];                                   // The address of the sending source leaf
     messageUpTarget          = new int[size];                                   // The address of the receiving target leaf
     messageUpText            = new int[size];                                   // The text of the message
 
-    messageDownNumber        = new int[size];                                   // The unique number of the message going down
+    messageDownNumber        = new int[size];                                   // The unique number of the message going downward
     messageDownSource        = new int[size];                                   // The address of the sending source leaf
     messageDownTarget        = new int[size];                                   // The address of the receiving target leaf
     messageDownText          = new int[size];                                   // The text of the message
@@ -58,8 +58,8 @@ class TreeNet extends Test                                                      
     messageDownPendingTarget = new int[size];                                   // The address of the receiving target leaf
     messageDownPendingText   = new int[size];                                   // The text of the message
 
-    level                    = new int[size];                                   // A downward seeking message is cached here during simulation to prevent overruns
-    address                  = new String[size];                                // A downward seeking message is cached here during simulation to prevent overruns
+    level                    = new int[size];                                   // The level of the junction in the tree network
+    address                  = new String[size];                                // The guidance path address of this junction
 
     for (int i = 0; i < size; i++) junctions[i] = new Junction(i);              // Create the junctions and connect them together
    }
@@ -94,26 +94,27 @@ class TreeNet extends Test                                                      
    {final int N = junctions.length;
     for (int i = 0; i < N; i++) junctions[i].copyUp();                          // Copy a source message up one step so that it is closer to the target
     for (int i = 1; i < N; i++) junctions[i].clearUp();                         // Clear the source of an upward-moving message - the root cannot be such a source
-    messageDown      [0] = messageUp      [0];                                  // Transfer the message from the upward seeking side of the tree to the downward seeking side
+
+    messageDown      [0] = messageUp      [0];                                  // Transfer the message from the upward-seeking side of the tree to the downward-seeking side
     messageDownNumber[0] = messageUpNumber[0];
     messageDownSource[0] = messageUpSource[0];
     messageDownTarget[0] = messageUpTarget[0];
     messageDownText  [0] = messageUpText  [0];
+    messageUp        [0] = false;                                               // Remove message from upward-seeking side now that it has been transferred to the downward-seeking side of the tree network
 
-    messageUp  [0] = false;                                                     // Remove message from upward seeking side now that it has been transfered to the downward seeking side of the tree network
     for(int i = 1; i < N; i++) junctions[i].copyDown();                         // Copy a source message down one step so that it is closer to the target
     for(int i = 1; i < N; i++) junctions[i].clearDown();                        // Clear the source of a downward-moving message - the root cannot be such a source
-    for(int i = 1; i < N; i++) junctions[i].clearShort();                       // Clear the source of a shiort circuited downward-moving message - the root cannot be such a source
+    for(int i = 1; i < N; i++) junctions[i].clearShort();                       // Clear the source of a short-circuited downward-moving message - the root cannot be such a source
    }
 
   boolean putMessage(int Source, int Target, int Text)                          // Add a new message at the indicated leaf if possible and return true else false
    {if (messageUp[Source]) return false;                                        // There is a message on the leaf already
-    messageUp      [Source] = true;
-    messageUpNumber[Source] = messageNumber++;                                  // Add the message
-    messageUpSource[Source] = Source;                                           // Add the message
-    messageUpTarget[Source] = Target;                                           // Add the message
-    messageUpText  [Source] = Text;                                             // Add the message
-    return true;                                                                // Success
+    messageUp      [Source] = true;                                             // Add the message
+    messageUpNumber[Source] = messageNumber++;
+    messageUpSource[Source] = Source;
+    messageUpTarget[Source] = Target;
+    messageUpText  [Source] = Text;
+    return true;                                                                // Successfully added message to tree network
    }
 
   class MessageOut                                                              // Remove a message from the tree network and record its details
@@ -130,13 +131,13 @@ class TreeNet extends Test                                                      
      }
    }
 
-//D2 Addressing                                                                 // Address of a junction in root to branch or leaf guidance path
+//D2 Addressing                                                                 // Guidance path from the root to a branch or leaf
 
-  void address(int Index)
+  void address(int Index)                                                       // Initialize the address of a junction in the tree network
    {final StringBuilder s = new StringBuilder();
-    for (int N = Index+1; N > 1; N /= 2) s.append(N % 2 == 1 ? "1" : "0");      // Path from zero to this address
-    address[Index] = ""+s.reverse();
-    level  [Index] = address[Index].length();
+    for (int N = Index+1; N > 1; N /= 2) s.append(N % 2 == 1 ? "1" : "0");
+    address[Index] = ""+s.reverse();                                            // Path from zero to this address
+    level  [Index] = address[Index].length();                                   // Level of this junction the tree network
    }
 
   private boolean addressDown(int Source, int Target)                           // Is this an address that can be descended through towards the target
@@ -162,7 +163,7 @@ class TreeNet extends Test                                                      
       right   = Number * 2 + 2 < size ? Number * 2 + 2 : null;                  // Right child
      }
 
-    private void clearUp()                                                      // Clear source of messages sent up through this junction
+    private void clearUp()                                                      // Clear source of messages sent upward through this junction
      {if (messageUp      [number] && messageUp      [parent] &&                 // Same message in parent and child means we can remove the child message
           messageUpNumber[number] == messageUpNumber[parent])
        {messageUp[number] = false;
@@ -171,7 +172,7 @@ class TreeNet extends Test                                                      
 
     void copyUp()                                                               // Transmit messages up through this junction
      {final boolean up = messageUp[number];                                     // Message at this level if any
-      if (step % 2 == 0 && left != null)                                        // Examine the left child for a message to be sent up. To avoid always giving messages on the left hand side priority over the right hand side we alternate between giving the left hand side and the right hand side priority
+      if (step % 2 == 0 && left != null)                                        // Examine the left child for a message to be sent up. To avoid always giving messages on the left-hand side priority over the right-hand side we alternate between giving the left-hand side and the right-hand side priority
        {if (!up && messageUp[left])                                             // Left might want to send a message up
          {messageUp      [number] = messageUp      [left];
           messageUpNumber[number] = messageUpNumber[left];
@@ -180,7 +181,7 @@ class TreeNet extends Test                                                      
           messageUpText  [number] = messageUpText  [left];
          }
        }
-      else if (step % 2 == 1 && right != null)                                  // Examine the right child for a message to be sent up. To avoid always giving messages on the left hand side priority over the right hand side we alternate between giving the left hand side and the right hand side priority
+      else if (step % 2 == 1 && right != null)                                  // Examine the right child for a message to be sent up. To avoid always giving messages on the left-hand side priority over the right-hand side we alternate between giving the left-hand side and the right-hand side priority
        {if (!up && messageUp[right])                                            // Right might want to send a message up
          {messageUp      [number] = messageUp      [right];
           messageUpNumber[number] = messageUpNumber[right];
@@ -191,20 +192,20 @@ class TreeNet extends Test                                                      
        }
      }
 
-    void clearDown()                                                            // Clear source of messages sent down through this junction
-     {if (!messageDownPending[number]) return;                                  // Skip if there is no downward seeking message pending for this junction
+    void clearDown()                                                            // Clear source of messages sent downward through this junction
+     {if (!messageDownPending[number]) return;                                  // Skip if there is no downward-seeking message pending for this junction
       messageDown       [number] = messageDownPending      [number];
       messageDownNumber [number] = messageDownPendingNumber[number];
       messageDownSource [number] = messageDownPendingSource[number];
       messageDownTarget [number] = messageDownPendingTarget[number];
       messageDownText   [number] = messageDownPendingText  [number];
       messageDownPending[number] = false;                                       // Move message from pending to active now that downward simulation step is complete
-      messageDown       [parent] = false;                                       // Remove messsage from parent
+      messageDown       [parent] = false;                                       // Remove message from parent
      }
 
-    void clearShort()                                                           // Clear short circuit source in parent
+    void clearShort()                                                           // Clear any short-circuit source in the parent
      {if ((left  != null &&
-           messageDown      [left]  && messageUp[number] &&                     // Clear the upward seeking message if it was transferred to a downward seeking branch
+           messageDown      [left]  && messageUp[number] &&                     // Clear the upward-seeking message if it was transferred to a downward-seeking branch
            messageDownNumber[left]  == messageUpNumber[number])   ||
           (right != null &&
            messageDown      [right] && messageUp[number] &&
@@ -214,18 +215,17 @@ class TreeNet extends Test                                                      
      }
 
     void copyDown()                                                             // Transmit messages down through this junction
-     {if (messageDown[parent] && !messageDown[number])                                                              // Parent wants to send us a message
+     {if (messageDown[parent] && !messageDown[number])                          // Parent wants to send us a message
        {if (addressDown(number, messageDownTarget[parent]))                     // Message should go down through this junction. Cache the message for the moment to prevent overruns.
          {messageDownPending      [number] = true;
           messageDownPendingNumber[number] = messageDownNumber[parent];
           messageDownPendingSource[number] = messageDownSource[parent];
           messageDownPendingTarget[number] = messageDownTarget[parent];
           messageDownPendingText  [number] = messageDownText  [parent];
-          messageDownPendingText  [number] = messageDownText  [parent];
          }
        }
-      else if (messageUp[parent])                                               // Short circuit upward seeking message if its target is on this branch
-       {if (addressDown(number, messageUpTarget[parent]))                       // Could the upward seeking message short circuit down this branch to reach its target?
+      else if (messageUp[parent])                                               // Short-circuit upward-seeking message if its target is on this branch
+       {if (addressDown(number, messageUpTarget[parent]))                       // Could the upward-seeking message short-circuit down this branch to reach its target?
          {messageDownPending      [number] = true;
           messageDownPendingNumber[number] = messageUpNumber[parent];
           messageDownPendingSource[number] = messageUpSource[parent];
@@ -366,7 +366,7 @@ Jnct  At step:    2        Up  Left Right  Addr      Up______  Down____ |
 """);
    }
 
-  static void test_reversePair()
+  static void test_reverse2()
    {sayCurrentTestName();
     final TreeNet       T = new TreeNet(4);
     final StringBuilder s = new StringBuilder();
@@ -409,7 +409,7 @@ Jnct  At step:    8        Up  Left Right  Addr      Up______  Down____ |
 """);
    }
 
-  static void test_reverse()
+  static void test_reverse8()
    {sayCurrentTestName();
     final TreeNet       T = new TreeNet(4);
     final StringBuilder s = new StringBuilder();
@@ -643,8 +643,8 @@ Jnct  At step:    2        Up  Left Right  Addr      Up______  Down____ |
    {test_one();
     test_two();
     test_swap();
-    test_reversePair();
-    test_reverse();
+    test_reverse2();
+    test_reverse8();
     test_short();
     test_sequence();
    }
