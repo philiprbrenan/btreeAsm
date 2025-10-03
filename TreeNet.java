@@ -193,8 +193,8 @@ class TreeNet extends Test                                                      
 
   void copyUp(int N)                                                            // Copy a child message upward into this junction with alternating left/right priority
    {final boolean up = messageUp[N];                                            // Message at this level if any
-    final Integer L  = left (N);
-    final Integer R  = right(N);
+    final Integer L  = left (N);                                                // Left child if any
+    final Integer R  = right(N);                                                // Right child if any
 
     if (leftRightPriority && L != null)                                         // Examine the left child for a message to be sent up. To avoid always giving messages on the left-hand side priority over the right-hand side we alternate between giving the left-hand side and the right-hand side priority
      {if (!up && messageUp[L])                                                  // Left might want to send a message up
@@ -267,7 +267,7 @@ class TreeNet extends Test                                                      
 
   static void test_one()
    {sayCurrentTestName();
-    final TreeNet T = new TreeNet(3);
+    final TreeNet       T = new TreeNet(3);
     final StringBuilder s = new StringBuilder(); T.printCompact = false;
 
     T.putMessage(5, 3, 1111);
@@ -320,11 +320,11 @@ Jnct  Level Step:    3        Up  Left Right  Addr      Up______  Down____ |
 
   static void test_two()
    {sayCurrentTestName();
-    final TreeNet T = new TreeNet(3);
+    final TreeNet       T = new TreeNet(3);
     final StringBuilder s = new StringBuilder();
 
-    T.putMessage(5, 3, 1111);
-    T.putMessage(6, 4, 2222);
+    T.putMessage(T.lastLeaf()-1, T.firstLeaf(),   1111);
+    T.putMessage(T.lastLeaf(),   T.firstLeaf()+1, 2222);
 
     for (T.step = 0; T.step < 8; ++T.step)
      {s.append(T);
@@ -362,11 +362,11 @@ Jnct  Level Step:    7        Up  Left Right  Addr      Up______  Down____ |
   static void test_swap()
    {sayCurrentTestName();
     final TreeNet T = new TreeNet(2);
-    T.printCompact = false;
+    T.printCompact  = false;
     final StringBuilder s = new StringBuilder();
 
-    T.putMessage(1, 2, 1111);
-    T.putMessage(2, 1, 2222);
+    T.putMessage(T.firstLeaf(), T.lastLeaf(),  1111);
+    T.putMessage(T.lastLeaf(),  T.firstLeaf(), 2222);
 
     for (T.step = 0; T.step < 3; ++T.step)
      {s.append(T);
@@ -394,8 +394,8 @@ Jnct  Level Step:    2        Up  Left Right  Addr      Up______  Down____ |
     final TreeNet       T = new TreeNet(4);
     final StringBuilder s = new StringBuilder();
 
-    T.putMessage(7, 14, 1111);
-    T.putMessage(14, 7, 2222);
+    T.putMessage(T.firstLeaf(), T.lastLeaf(),  1111);
+    T.putMessage(T.lastLeaf(),  T.firstLeaf(), 2222);
 
     for (T.step = 0; T.step < 9; ++T.step)
      {s.append(T);
@@ -436,14 +436,8 @@ Jnct  Level Step:    8        Up  Left Right  Addr      Up______  Down____ |
    {sayCurrentTestName();
     final TreeNet       T = new TreeNet(4);
     final StringBuilder s = new StringBuilder();
-    T.putMessage( 7, 14, 1111);
-    T.putMessage( 8, 13, 2222);
-    T.putMessage( 9, 12, 3333);
-    T.putMessage(10, 11, 4444);
-    T.putMessage(11, 10, 5555);
-    T.putMessage(12,  9, 6666);
-    T.putMessage(13,  8, 7777);
-    T.putMessage(14,  7, 8888);
+    final int F = T.firstLeaf(), L = T.lastLeaf(), N = T.leaves();
+    for (int i = 1; i <= N; i++) T.putMessage(F+i-1, L-i+1, 1000*i+100*i+10*i+i);
 
     for (T.step = 0; T.step < 16; ++T.step)
      {s.append(T);
@@ -594,8 +588,8 @@ Jnct  Level Step:   15        Up  Left Right  Addr      Up______  Down____ |
     final TreeNet T = new TreeNet(4);
     final StringBuilder s = new StringBuilder();
 
-    T.putMessage(14, 13, 1111);
-    T.putMessage(13, 14, 2222);
+    T.putMessage(T.lastLeaf(),   T.lastLeaf()-1, 1111);
+    T.putMessage(T.lastLeaf()-1, T.lastLeaf(),   2222);
     for (T.step = 0; T.step < 3; ++T.step)
      {s.append(T);
       T.transmit();
@@ -615,8 +609,8 @@ Jnct  Level Step:    2        Up  Left Right  Addr      Up______  Down____ |
 
   static void test_sequence()
    {sayCurrentTestName();
-    final int Source = 14, Target = 7, Steps = 28;
-    final TreeNet T = new TreeNet(4);
+    final TreeNet T  = new TreeNet(4);
+    final int Source = T.lastLeaf(), Target = T.firstLeaf(), Steps = 28;
     final StringBuilder s = new StringBuilder();
     final StringJoiner  t = new StringJoiner(", ");
     final int []    words = {1111, 2222, 3333, 4444, 5555, 6666};
