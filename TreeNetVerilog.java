@@ -369,6 +369,12 @@ class TreeNetVerilog extends Chip                                               
         messageUpNumber[N] == messageUpNumber[parent])
      {  messageUp      [N] = false;
      }
+    if (MessageUp      .registerGet(N)      > 0 &&                              // Same message in parent and child means we can remove the child message
+        MessageUp      .registerGet(parent) > 0 &&
+        MessageUpNumber.registerGet(N) ==
+        MessageUpNumber.registerGet(parent))
+     {  MessageUp      .registerSet(0, N);
+     }
    }
 
   void copyUp(int N)                                                            // Copy a child message upward into this junction with alternating left/right priority
