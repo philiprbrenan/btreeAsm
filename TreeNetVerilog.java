@@ -12,6 +12,7 @@ class TreeNetVerilog extends Chip                                               
   final int       messageWidth = 32;                                            // The width of a network message
   final Process   P = new Process("main");                                      // Process in which the network runs
   final BitSet  []address;                                                      // Address in branch path steering format
+  final BitSet  []addressMask;                                                  // Mask for the corresponding address
   final Process.Register Address;                                               // Address in branch path steering format
 
   final boolean []messageUp;                                                    // Message waiting to be sent upward through the tree network
@@ -81,6 +82,7 @@ class TreeNetVerilog extends Chip                                               
     messageDownPendingText   = new int[size];                                   // The text of the message
 
     address                  = new BitSet[size];                                // The guidance path address to this junction
+    addressMask              = new BitSet[size];                                // The mask for the corresponding address
 
     Address                  = P.register("address",   1, size);
     MessageUp                = P.register("messageUp", 1, size);
@@ -150,10 +152,8 @@ class TreeNetVerilog extends Chip                                               
     for(int i = 1; i < size; i++) clearDown (i);                                // Clear the source of a downward-moving message - the root cannot be such a source
     for(int i = 1; i < size; i++) clearShort(i);                                // Clear the source of a short-circuited downward-moving message - the root cannot be such a source
     leftRightPriority = !leftRightPriority;                                     // Alternate left/right upward priority
-   }
 
-  void Transmit()                                                               // Transmit each message one step through the tree network
-   {P.new Instruction()
+    P.new Instruction()                                                         // Transmit each message one step through the tree network
      {void action()
        {for (int i = 0; i < size; i++) copyUp (i);                              // Copy a source message up one step so that it is closer to the target
        }
@@ -239,7 +239,7 @@ class TreeNetVerilog extends Chip                                               
      }
    }
 
-  Process.Register PutMessage                                                   // Add a new message at the indicated leaf if possible and return true else false
+  Process.Register putMessage                                                   // Add a new message at the indicated leaf if possible and return true else false
    (Process.Register Source, Process.Register Target, Process.Register Text)
    {final Process.Register r = P.register("putMessageResult", 1);
     final Process.Register m = P.register("putMessageFull",   1);
@@ -298,16 +298,36 @@ class TreeNetVerilog extends Chip                                               
     for (int N = Index+1, i = addressLevel(Index); N > 1; N /= 2, --i)
      {if (N % 2 == 1) B.set(i-1);
      }
-    address[Index] = B;                                                         // Path from zero to this address as a bit set
+    address    [Index] = B;                                                     // Path from zero to this address as a bit set
+    addressMask[Index] = intToBitSet((1<<addressLevel(Index))-1);               // Mask for this address
     Address.RegisterSet(bitSetToInt(B), Index);                                 // Path from zero to this address as am int
    }
 
   private boolean addressDown(int Source, int Target)                           // Is this an address that can be descended through towards the target
-   {final int N = addressLevel(Source);
-    for (int i = 0; i < N; i++)
-     {if (address[Source].get(i) != address[Target].get(i)) return false;
-     }
-    return true;
+   {final BitSet s = (BitSet)address[Source].clone();
+    final BitSet t = (BitSet)address[Target].clone();
+    s.and(addressMask[Source]);
+    t.and(addressMask[Source]);
+    return s.equals(t);
+   }
+
+  private Process.Register addressDown                                          // Is this an address that can be descended through towards the target
+   (Process.Register Source, Process.Register Target)
+   {final Process.Register r = P.register("addressDown", 1);
+    P.new Instruction()
+     {void action()
+       {if (addressDown(Source.registerGet(), Target.registerGet()))
+         {r.one();
+         }
+        else
+         {r.zero();
+         }
+       }
+      void verilog(Verilog v)
+       {
+       }
+     };
+    return r;
    }
 
   private String addressPrint(int Index)                                        // Print an address
