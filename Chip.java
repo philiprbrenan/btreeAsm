@@ -1059,29 +1059,25 @@ if __name__ == "__main__":
       int registerGet(int Index)                                                // Return the value at the specified index in an arrayed set of registers
        {if (coverageAnalysis) zz();
         if (registerChecks) registerCheckArrayed();
-        final BitSet value = values[Index];                                     // Indexed value
-        return value.length() == 0 ? 0 : (int) value.toLongArray()[0];          // Convert to integer
+        return bitSetToInt(values[Index]);                                      // Convert to integer
        }
 
 //D3 Set                                                                        // Set a register to a specified value
 
-      void registerSetBitSet(BitSet value, int Value)                           // Set the value of a bit set
+      BitSet registerSetBitSet(int Value)                                       // Set the value of a register
        {if (coverageAnalysis) zz();
-        final int l = min(registerBits, Integer.SIZE-1);                        // The most bits we can hope to represent
-        value.clear();                                                          // Zero the bit set
-        for (int i = 0; i < l; i++)                                             // Set each bit in the bitset if the corresponding bit in the value is set
-         {if (((Value >> i) & 1) != 0) value.set(i);
-         }
+        final int w = min(Integer.SIZE-1, registerBits);                        // Maximum number of bits to convert
+        return intToBitSet(Value % (1<<w));                                     // Bitset safe to load into register - large vlaues get wrapped around
        }
 
       void registerSet(int Value)                                               // Set the value of the register from an integer
        {if (coverageAnalysis) zz();
         if (registerSingle())                                                   // Set value of single register
-         {registerSetBitSet(value, Value);
+         {value = registerSetBitSet(Value);
          }
         else
          {for (int i = 0; i < registerSize; i++)                                // Set all the elements of the register to the specified value
-           {registerSetBitSet(values[i], Value);
+           {values[i] = registerSetBitSet(Value);
            }
          }
        }
@@ -1110,7 +1106,7 @@ if __name__ == "__main__":
       void registerSet(int Value, int Index)                                    // Set the value of an element of a register array from an integer
        {if (coverageAnalysis) zz();
         if (registerChecks) registerCheckArrayed();
-        registerSetBitSet(values[Index], Value);
+        values[Index] = registerSetBitSet(Value);
        }
 
       void registerSet(Verilog v, int Value, int Index)                         // Set the value of an element of a register array from an integer
@@ -3005,8 +3001,7 @@ Chip: Test             step: 9, maxSteps: 10, running: 0
    }
 
   static void newTests()                                                        // Tests being worked on
-   {//oldTests();
-    test_register_set();
+   {oldTests();
    }
 
   public static void main(String[] args)                                        // Test if called as a program
