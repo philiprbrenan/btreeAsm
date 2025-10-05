@@ -154,7 +154,7 @@ public class Test                                                               
   static String bitSetToHex(BitSet B)                                           // Print a bitset as a hex string
    {final int  L = modZero(B.length(), 4), N = L / 4;
     final int[]b = new int[N];
-    for (int i = 0; i < L; i++)                                                 // Load bits into integers
+    for (int i = 0; i < L; i++)                                                 // Load bits into integers in fours so that each integer gas one hex digit in it
      {if (B.get(i)) b[i / 4] |= (1 << (i % 4));
      }
     final StringBuilder s = new StringBuilder();
@@ -166,6 +166,12 @@ public class Test                                                               
    {final String s = bitSetToHex(B);
     //if (s.equals("0")) return s;
     return "0".repeat(modZero(Width, 4)/4-s.length())+s;
+   }
+
+  static BitSet intToBitSet(int N)                                              // Convert an int to a bit set
+   {final BitSet b = new BitSet();
+    for (int i = 0; i < Integer.SIZE-1; i++) if (((1<<i) & N) > 0) b.set(i);    // Transfer bits from int to bitset
+    return b;
    }
 
 //D2 Numeric routines                                                           // Numeric routines
@@ -1423,6 +1429,10 @@ a   aa    AAA
       b.set(3, true);
       b.set(1, true);
       ok(bitSetToHex(b), "1a");
+     }
+    if (true)
+     {final BitSet b = intToBitSet(11);
+      ok(bitSetToHex(b), "b");
      }
    }
 
