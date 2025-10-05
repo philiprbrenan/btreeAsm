@@ -82,8 +82,6 @@ class TreeNetVerilog extends Chip                                               
 
     address                  = new BitSet[size];                                // The guidance path address to this junction
 
-    for (int i = 0; i < size; i++) addressPath(i);                              // Create the addresses in the tree network
-
     Address                  = P.register("address",   1, size);
     MessageUp                = P.register("messageUp", 1, size);
     MessageDown              = P.register("messageUp", 1, size);
@@ -107,6 +105,8 @@ class TreeNetVerilog extends Chip                                               
     LeftRightPriority        = P.register("LeftRightPriority", 1);
     MessageNumber            = P.register("MessageNumber",    32);
     Step                     = P.register("Step",             32);
+
+    for (int i = 0; i < size; i++) addressPath(i);                              // Create the addresses in the tree network
    }
 
   public String toString()                                                      // Print the tree network
@@ -299,6 +299,7 @@ class TreeNetVerilog extends Chip                                               
      {if (N % 2 == 1) B.set(i-1);
      }
     address[Index] = B;                                                         // Path from zero to this address as a bit set
+    Address.RegisterSet(bitSetToInt(B), Index);                                 // Path from zero to this address as am int
    }
 
   private boolean addressDown(int Source, int Target)                           // Is this an address that can be descended through towards the target
