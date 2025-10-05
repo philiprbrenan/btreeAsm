@@ -56,9 +56,6 @@ class TreeNetVerilog extends Chip                                               
   final Process.Register MessageNumber;                                         // Address in branch path steering format
   final Process.Register Step;                                                  // Address in branch path steering format
 
-  final Process.Register One;                                                   // A value of one
-  final Process.Register Zero;                                                  // A value of zero
-
 //D1 Construction                                                               // Construct a tree network
 
   TreeNetVerilog(int Size)                                                      // Create the tree network.  The number of leaves will be 2**(Size-1)
@@ -110,10 +107,6 @@ class TreeNetVerilog extends Chip                                               
     LeftRightPriority        = P.register("LeftRightPriority", 1);
     MessageNumber            = P.register("MessageNumber",    32);
     Step                     = P.register("Step",             32);
-    One                      = P.register("One",               1);
-    Zero                     = P.register("Zero",              1);
-    One .One();
-    Zero.Zero();
    }
 
   public String toString()                                                      // Print the tree network
@@ -256,7 +249,7 @@ class TreeNetVerilog extends Chip                                               
        {r.Zero();                                                               // The message was not added
        }
       void Else()
-       {MessageUp      .CopyIt(Source, One);                                    // Add the message
+       {MessageUp      .RegisterSet(1, Source);                                 // Add the message
         MessageUpNumber.CopyIt(Source, MessageNumber);                          // Generate a unique message number for each message
         MessageUpSource.CopyIt(Source, Source);                                 // Source address
         MessageUpTarget.CopyIt(Source, Target);                                 // Target address
@@ -282,17 +275,17 @@ class TreeNetVerilog extends Chip                                               
      }
    }
 
-  class MessageOutV                                                              // Remove a message from the tree network and record its details
-   {final Process.Register Valid  = P.register("Valid",  1);                                                        // Whether the message is valid or not
-    final Process.Register Source = P.register("Source", 1);                                                           // Source address
-    final Process.Register Target = P.register("Target", 1);                                                           // Target address
-    final Process.Register Text   = P.register("Text",   1);                                                             // Text of message
+  class MessageOutV                                                             // Remove a message from the tree network and record its details
+   {final Process.Register Valid  = P.register("Valid",  1);                    // Whether the message is valid or not
+    final Process.Register Source = P.register("Source", 1);                    // Source address
+    final Process.Register Target = P.register("Target", 1);                    // Target address
+    final Process.Register Text   = P.register("Text",   1);                    // Text of message
     MessageOutV(Process.Register Leaf)                                          // Get a message from the specified junction
      {Valid  .CopyIs(MessageDown      , Leaf);                                  // Whether the message is valid
       Source .CopyIs(MessageDownSource, Leaf);                                  // Source address
       Target .CopyIs(MessageDownTarget, Leaf);                                  // Target address
       Text   .CopyIs(MessageDownText  , Leaf);                                  // Text of message
-                     MessageDown.copyIt(Leaf, Zero);                            // Remove the message
+                     MessageDown.RegisterSet(0, Leaf);                          // Remove the message
      }
    }
 
