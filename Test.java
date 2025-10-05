@@ -151,6 +151,17 @@ public class Test                                                               
       format(DateTimeFormatter.ISO_INSTANT).replace(":", "-");
    }
 
+// D1 BitSet                                                                    // Operations on BitSets
+
+  static int bitSetToInt(BitSet B)                                              // Convert a bitset to an integer if possible
+   {final long[]l = B.toLongArray();
+    final int   L = l.length;
+    if (L == 0) return 0;
+    if (L > 1)               stop("BitSet way too big");
+    if (l[0] > Integer.MAX_VALUE) stop("BitSet too big:", l[0]);
+    return (int)l[0];
+   }
+
   static String bitSetToHex(BitSet B)                                           // Print a bitset as a hex string
    {final int  L = modZero(B.length(), 4), N = L / 4;
     final int[]b = new int[N];
@@ -170,6 +181,7 @@ public class Test                                                               
 
   static BitSet intToBitSet(int N)                                              // Convert an int to a bit set
    {final BitSet b = new BitSet();
+    if (N < 0) stop("Positive integers only, not:", N);
     for (int i = 0; i < Integer.SIZE-1; i++) if (((1<<i) & N) > 0) b.set(i);    // Transfer bits from int to bitset
     return b;
    }
@@ -1422,6 +1434,7 @@ a   aa    AAA
       ok(bitSetToHex(b, 9),   "02a");
       ok(bitSetToHex(b, 12),  "02a");
       ok(bitSetToHex(b, 13), "002a");
+      ok(bitSetToInt(b), 42);
      }
     if (true)
      {final BitSet b = new BitSet();
