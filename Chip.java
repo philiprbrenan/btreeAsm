@@ -1047,7 +1047,7 @@ if __name__ == "__main__":
         if (registerChecks && registerTooWideForInt())
          {stop("Register too big to be an int");
          }
-        return value.length() == 0 ? 0 : (int) value.toLongArray()[0];          // Relies on the fact that this Java code is only used for testing, unlike the Verilog version
+        return bitSetToInt(value);                                              // Relies on the fact that this Java code is only used for testing, unlike the Verilog version
        }
 
       String registerGetHex()                                                   // Return the registerâs value as a hex string.
@@ -1847,17 +1847,11 @@ if __name__ == "__main__":
 
 //D3 Memory                                                                     // Process operations on memory
 
-    protected int memoryGet(int Index)                                          // Get a memory element as an integer.
-     {final BitSet b = memory[Index];                                           // Read memory as bit set
-      final long[]V = b.toLongArray();                                          // Convert bitset to long
-      return V.length > 0 ? (int)V[0] : 0;                                      // Take the first element if it exists relying on the fact that in the Java code we test with just sufficiently large numbers to test the Verilog in principle
-     }
+    protected int memoryGet(int Index) {return bitSetToInt(memory[Index]);}     // Get a memory element as an integer.
 
     protected int memoryGet(int Index, int Offset)                              // Get a memory element as an integer
      {final int i = Index, o = Offset, w = memoryWidth;                         // Index of memory to be read
-      final BitSet b = memory[i].get(o*w, (o+1)*w);                             // Read memory as bit set
-      final long[] V = b.toLongArray();                                         // Convert bitset to long
-      return V.length > 0 ? (int)V[0] : 0;                                      // Take the first element if it exists relying on the fact that in the Java code we test with just sufficiently large numbers to test the Verilog in principle
+      return bitSetToInt(memory[i].get(o*w, (o+1)*w));                          // Read memory as bit set
      }
 
     void memoryGet(Register Value, Register Index)                              // Get a memory element indexed by a register as an integer setting the memory cache register to the value of the element retrieved
