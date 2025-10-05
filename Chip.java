@@ -1037,6 +1037,8 @@ if __name__ == "__main__":
       private void   rs  (int v)        {registerSet(v);}
       private void   rs  (int v, int i) {registerSet(v, i);}
 
+//D3 Get                                                                        // Get a value from a register
+
       boolean registerTooWideForInt()   {return registerBits >= Integer.SIZE;}  // Whether the reister can be represented as an integer
 
       int registerGet()                                                         // Return the registerâs value as an integer.
@@ -1060,6 +1062,8 @@ if __name__ == "__main__":
         final BitSet value = values[Index];                                     // Indexed value
         return value.length() == 0 ? 0 : (int) value.toLongArray()[0];          // Convert to integer
        }
+
+//D3 Set                                                                        // Set a register to a specified value
 
       void registerSetBitSet(BitSet value, int Value)                           // Set the value of a bit set
        {if (coverageAnalysis) zz();
@@ -1101,6 +1105,8 @@ if __name__ == "__main__":
          };
        }
 
+//D4 Load constant to constant indexed Register                                 // Load a constant into a constant indexed element of this target register
+
       void registerSet(int Value, int Index)                                    // Set the value of an element of a register array from an integer
        {if (coverageAnalysis) zz();
         if (registerChecks) registerCheckArrayed();
@@ -1118,6 +1124,30 @@ if __name__ == "__main__":
           void verilog(Verilog v) {registerSet(v, Value, Index);};
          };
        }
+
+//D4 Load constant to register indexed Register                                 // Load a constant into a register indexed element of this target register
+
+      void registerSet(int Source, Register Index)                              // Load a constant into a register indexed element of this target register
+       {R(); if (coverageAnalysis) zz();
+        if (registerChecks) Index .registerCheckSingle();
+        if (registerChecks)        registerCheckArrayed();
+        final int i = Index.registerGet();                                      // Index of source element
+        values[i] = intToBitSet(Source);                                        // Load the constant into the target
+       }
+
+      void registerSet(Verilog v, int Source, Register Index)                   // Load a constant into this register which we can do because each and only each process can write to its own registers
+       {if (coverageAnalysis) zz();
+        v.assign(registerName(Index.registerFullName), Source);
+       }
+
+      void RegisterSet(int Source, Register Index)                              // Load instruction
+       {if (coverageAnalysis) zz();
+        new Instruction()
+         {void action()           {registerSet(   Source, Index);};
+          void verilog(Verilog v) {registerSet(v, Source, Index);};
+         };
+       }
+
 
 //D3 Copy                                                                       // Copy between registers
 
@@ -2927,6 +2957,32 @@ Chip: Test             step: 2, maxSteps: 10, running: 0
 """);
    }
 
+  static void test_register_set()
+   {var C = chip("Test");
+    var p = C.new Process("main");
+        p.processTrace = true;
+    var a = p.new Register("a", 64, 4);
+    var i = p.new Register("i",  8);
+
+    i.Zero();    a.RegisterSet(1, i);
+    i.Inc();     a.RegisterSet(2, i);
+    i.Inc();     a.RegisterSet(4, i);
+    i.Inc();     a.RegisterSet(8, i);
+    C.chipRun();
+    //stop(C);
+    ok(""+C, """
+Chip: Test             step: 9, maxSteps: 10, running: 0
+  Processes:
+    Process: 0 - main                  instructions: 8, pc: 8, rc: 0
+      Registers :
+        main_a_0                                    [   0] = 1
+        main_a_0                                    [   1] = 2
+        main_a_0                                    [   2] = 4
+        main_a_0                                    [   3] = 8
+        main_i_1                                           = 3
+""");
+   }
+
   static void oldTests()                                                        // Tests thought to be in good shape
    {test_stop();
     test_memory();
@@ -2945,10 +3001,12 @@ Chip: Test             step: 2, maxSteps: 10, running: 0
     test_register_array_one();
     test_copyArrayToSingle();
     test_register_hex();
+    test_register_set();
    }
 
   static void newTests()                                                        // Tests being worked on
-   {oldTests();
+   {//oldTests();
+    test_register_set();
    }
 
   public static void main(String[] args)                                        // Test if called as a program
