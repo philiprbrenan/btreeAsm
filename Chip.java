@@ -1675,6 +1675,13 @@ if __name__ == "__main__":
          };
        }
 
+      void Not()                                                                // Not as an instruction
+       {new Instruction()
+         {void action()           {not();};
+          void verilog(Verilog v) {not(v);};
+         };
+       }
+
       void Add(Register Source)                                                 // Add the value of a register to the specified register as an instruction
        {if (coverageAnalysis) zz();
         new Instruction()
