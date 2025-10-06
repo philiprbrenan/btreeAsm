@@ -92,17 +92,17 @@ class TreeNetVerilog extends Chip                                               
     MessageUpNumber          = P.register("MessageUpNumber", addressWidth, size);
     MessageUpSource          = P.register("MessageUpSource", addressWidth, size);
     MessageUpTarget          = P.register("MessageUpTarget", addressWidth, size);
-    MessageUpText            = P.register("MessageUpText",   addressWidth, size);
+    MessageUpText            = P.register("MessageUpText",   messageWidth, size);
 
     MessageDownNumber        = P.register("MessageDownNumber", addressWidth, size);
     MessageDownSource        = P.register("MessageDownSource", addressWidth, size);
     MessageDownTarget        = P.register("MessageDownTarget", addressWidth, size);
-    MessageDownText          = P.register("MessageDownText",   addressWidth, size);
+    MessageDownText          = P.register("MessageDownText",   messageWidth, size);
 
     MessageDownPendingNumber = P.register("MessageDownPendingNumber", addressWidth, size);
     MessageDownPendingSource = P.register("MessageDownPendingSource", addressWidth, size);
     MessageDownPendingTarget = P.register("MessageDownPendingTarget", addressWidth, size);
-    MessageDownPendingText   = P.register("MessageDownPendingText",   addressWidth, size);
+    MessageDownPendingText   = P.register("MessageDownPendingText",   messageWidth, size);
 
     LeftRightPriority        = P.register("LeftRightPriority", 1);
     MessageNumber            = P.register("MessageNumber",    32);
@@ -137,6 +137,32 @@ class TreeNetVerilog extends Chip                                               
     return ""+s;                                                                // Printed state of tree network at this point in time
    }
 
+  String toStringV()                                                            // Print the tree network
+   {final StringJoiner s = new StringJoiner("\n", "", "\n");
+
+    s.add(String.format("Jnct  Level Step: %4d        Up  Left Right  Addr      Up______  Down____ |", step));
+
+    for (int i = 0; i < size; i++)                                              // Each junction in the tree network
+     {final Integer p = parent(i), l = left(i), r = right(i);                   // Relationship with other junctions
+      final String  P = p == null ? "    " : String.format("%4d", p);
+      final String  L = l == null ? "    " : String.format("%4d", l);
+      final String  R = r == null ? "    " : String.format("%4d", r);
+      final String  n = "  ".repeat(addressLevel(i))+"*"+
+                        "  ".repeat(8-addressLevel(i));
+
+      final boolean u = MessageUp  .registerGet(i) > 0;                         // Message detail
+      final boolean d = MessageDown.registerGet(i) > 0;
+      final String  U = u ? ""+MessageUpText  .registerGet(i) : "";
+      final String  D = d ? ""+MessageDownText.registerGet(i) : "";
+
+      if (!printCompact || u || d)                                              // Print if there has been activity on this junction or if all junctions are being printed
+       {s.add(String.format("%4d  %2d %s  %s  %s  %s  %-8s  %-8s  %-8s |",
+          i, addressLevel(i), n, P, L, R, addressPrint(i), U, D));
+       }
+     }
+    return ""+s;                                                                // Printed state of tree network at this point in time
+   }
+
   void transmit()                                                               // Transmit each message one step through the tree network
    {for (int i = 0; i < size; i++) copyUp (i);                                  // Copy a source message up one step so that it is closer to the target
     for (int i = 1; i < size; i++) clearUp(i);                                  // Clear the source of an upward-moving message - the root cannot be such a source
@@ -152,10 +178,12 @@ class TreeNetVerilog extends Chip                                               
     for(int i = 1; i < size; i++) clearDown (i);                                // Clear the source of a downward-moving message - the root cannot be such a source
     for(int i = 1; i < size; i++) clearShort(i);                                // Clear the source of a short-circuited downward-moving message - the root cannot be such a source
     leftRightPriority = !leftRightPriority;                                     // Alternate left/right upward priority
+   }
 
-    P.new Instruction()                                                         // Transmit each message one step through the tree network
+  void Transmit()                                                               // Transmit each message one step through the tree network
+   {P.new Instruction()                                                         // Transmit each message one step through the tree network
      {void action()
-       {for (int i = 0; i < size; i++) copyUp (i);                              // Copy a source message up one step so that it is closer to the target
+       {for (int i = 0; i < size; i++) CopyUp (i);                              // Copy a source message up one step so that it is closer to the target
        }
       void verilog(Verilog v)
        {
@@ -163,7 +191,7 @@ class TreeNetVerilog extends Chip                                               
      };
     P.new Instruction()
      {void action()
-       {for (int i = 1; i < size; i++) clearUp(i);                              // Clear the source of an upward-moving message - the root cannot be such a source
+       {for (int i = 1; i < size; i++) ClearUp(i);                              // Clear the source of an upward-moving message - the root cannot be such a source
        }
       void verilog(Verilog v)
        {
@@ -172,7 +200,7 @@ class TreeNetVerilog extends Chip                                               
 
     P.new Instruction()
      {void action()
-       {MessageDown      .copy(0, MessageUp      , 0);                                // Transfer the message from the upward-seeking side of the tree to the downward-seeking side
+       {MessageDown      .copy(0, MessageUp      , 0);                          // Transfer the message from the upward-seeking side of the tree to the downward-seeking side
         MessageDownNumber.copy(0, MessageUpNumber, 0);
         MessageDownSource.copy(0, MessageUpSource, 0);
         MessageDownTarget.copy(0, MessageUpTarget, 0);
@@ -185,7 +213,7 @@ class TreeNetVerilog extends Chip                                               
 
     P.new Instruction()
      {void action()
-       {MessageUp.zero();                                                       // Remove the message from upward-seeking side now that it has been transferred to the downward-seeking side of the tree network
+       {MessageUp.registerSet(0, 0);                                                       // Remove the message from upward-seeking side now that it has been transferred to the downward-seeking side of the tree network
        }
       void verilog(Verilog v)
        {
@@ -194,7 +222,7 @@ class TreeNetVerilog extends Chip                                               
 
     P.new Instruction()
      {void action()
-       {for(int i = 1; i < size; i++) copyDown  (i);                            // Copy a source message down one step so that it is closer to the target
+       {for(int i = 1; i < size; i++) CopyDown  (i);                            // Copy a source message down one step so that it is closer to the target
        }
       void verilog(Verilog v)
        {
@@ -202,7 +230,7 @@ class TreeNetVerilog extends Chip                                               
      };
     P.new Instruction()
      {void action()
-       {for(int i = 1; i < size; i++) clearDown (i);                            // Clear the source of a downward-moving message - the root cannot be such a source
+       {for(int i = 1; i < size; i++) ClearDown (i);                            // Clear the source of a downward-moving message - the root cannot be such a source
        }
       void verilog(Verilog v)
        {
@@ -210,7 +238,7 @@ class TreeNetVerilog extends Chip                                               
      };
     P.new Instruction()
      {void action()
-       {for(int i = 1; i < size; i++) clearShort(i);                            // Clear the source of a short-circuited downward-moving message - the root cannot be such a source
+       {for(int i = 1; i < size; i++) ClearShort(i);                            // Clear the source of a short-circuited downward-moving message - the root cannot be such a source
        }
       void verilog(Verilog v)
        {
@@ -239,23 +267,25 @@ class TreeNetVerilog extends Chip                                               
      }
    }
 
-  Process.Register putMessage                                                   // Add a new message at the indicated leaf if possible and return true else false
-   (Process.Register Source, Process.Register Target, Process.Register Text)
+  Process.Register PutMessage(int Source, int Target, int Text)                 // Add a new message at the indicated leaf if possible and return true else false
    {final Process.Register r = P.register("putMessageResult", 1);
-    final Process.Register m = P.register("putMessageFull",   1);
-    m.CopyIs(MessageUp, Source);                                                // Whether the message slot is empty
-    P.new If (m)
-     {void Then()                                                               // There is a message on the leaf already
-       {r.Zero();                                                               // The message was not added
+    P.new Instruction()
+     {void action()
+       {if (MessageUp.registerGet(Source) > 0)
+         {r.zero();                                                             // The message was not added
+         }
+        else
+         {MessageUp      .registerSet(1,             Source);                   // Add the message
+          MessageUpNumber.copy       (Source, MessageNumber);                   // Generate a unique message number for each message
+          MessageUpSource.registerSet(Source       , Source);                   // Source address
+          MessageUpTarget.registerSet(Target       , Source);                   // Target address
+          MessageUpText  .registerSet(Text         , Source);                   // Text of message
+          MessageNumber  .inc();
+          r.one();                                                              // Successfully added message to tree network
+         }
        }
-      void Else()
-       {MessageUp      .RegisterSet(1, Source);                                 // Add the message
-        MessageUpNumber.CopyIt(Source, MessageNumber);                          // Generate a unique message number for each message
-        MessageUpSource.CopyIt(Source, Source);                                 // Source address
-        MessageUpTarget.CopyIt(Source, Target);                                 // Target address
-        MessageUpText  .CopyIt(Source, Text);                                   // Text of message
-        MessageNumber.Inc();
-        r.One();                                                                // Successfully added message to tree network
+      void verilog(Verilog v)
+       {
        }
      };
     return r;
@@ -369,6 +399,11 @@ class TreeNetVerilog extends Chip                                               
         messageUpNumber[N] == messageUpNumber[parent])
      {  messageUp      [N] = false;
      }
+   }
+
+  private void ClearUp(int N)                                                   // Clear source of messages sent upward through this junction
+   {final int parent = parent(N);
+
     if (MessageUp      .registerGet(N)      > 0 &&                              // Same message in parent and child means we can remove the child message
         MessageUp      .registerGet(parent) > 0 &&
         MessageUpNumber.registerGet(N) ==
@@ -402,6 +437,30 @@ class TreeNetVerilog extends Chip                                               
      }
    }
 
+  void CopyUp(int N)                                                            // Copy a child message upward into this junction with alternating left/right priority
+   {final boolean up = MessageUp.registerGet(N) > 0;                            // Message at this level if any
+    final Integer L  = left (N);                                                // Left child if any
+    final Integer R  = right(N);                                                // Right child if any
+    if (LeftRightPriority.registerGet() > 0 && L != null)                       // Examine the left child for a message to be sent up. To avoid always giving messages on the left-hand side priority over the right-hand side we alternate between giving the left-hand side and the right-hand side priority
+     {if (!up && MessageUp.registerGet(L) > 0)                                  // Left might want to send a message up
+       {MessageUp      .copy(N, MessageUp      , L);
+        MessageUpNumber.copy(N, MessageUpNumber, L);
+        MessageUpSource.copy(N, MessageUpSource, L);
+        MessageUpTarget.copy(N, MessageUpTarget, L);
+        MessageUpText  .copy(N, MessageUpText  , L);
+       }
+     }
+    else if (LeftRightPriority.registerGet() == 0 && R != null)                 // Examine the right child for a message to be sent up. To avoid always giving messages on the left-hand side priority over the right-hand side we alternate between giving the left-hand side and the right-hand side priority
+     {if (!up && MessageUp.registerGet(R) > 0)                                  // Right might want to send a message up
+       {MessageUp      .copy(N, MessageUp      , R);
+        MessageUpNumber.copy(N, MessageUpNumber, R);
+        MessageUpSource.copy(N, MessageUpSource, R);
+        MessageUpTarget.copy(N, MessageUpTarget, R);
+        MessageUpText  .copy(N, MessageUpText  , R);
+       }
+     }
+   }
+
   void clearDown(int N)                                                         // Copy a parent message downward into this junction, or short-circuit an upward message if target is below
    {if (!messageDownPending[N]) return;                                         // Skip if there is no downward-seeking message pending for this junction
     messageDown       [N] = messageDownPending      [N];
@@ -411,6 +470,17 @@ class TreeNetVerilog extends Chip                                               
     messageDownText   [N] = messageDownPendingText  [N];
     messageDownPending[N] = false;                                              // Move the message from pending to active now that downward simulation step is complete
     messageDown       [parent(N)] = false;                                      // Remove the message from parent
+   }
+
+  void ClearDown(int N)                                                         // Copy a parent message downward into this junction, or short-circuit an upward message if target is below
+   {if (MessageDownPending.registerGet(N) == 0) return;                         // Skip if there is no downward-seeking message pending for this junction
+    MessageDown       .copy(N, MessageDownPending      , N);
+    MessageDownNumber .copy(N, MessageDownPendingNumber, N);
+    MessageDownSource .copy(N, MessageDownPendingSource, N);
+    MessageDownTarget .copy(N, MessageDownPendingTarget, N);
+    MessageDownText   .copy(N, MessageDownPendingText  , N);
+    MessageDownPending.registerSet(0, N);                                       // Move the message from pending to active now that downward simulation step is complete
+    MessageDown       .registerSet(0, parent(N));                               // Remove the message from parent
    }
 
   void clearShort(int N)                                                        // Clear any short-circuited source message from the parent
@@ -424,6 +494,20 @@ class TreeNetVerilog extends Chip                                               
          messageDown      [R] && messageUp      [N] &&
          messageDownNumber[R] == messageUpNumber[N]))
      {messageUp[N] = false;
+     }
+   }
+
+  void ClearShort(int N)                                                        // Clear any short-circuited source message from the parent
+   {final Integer L = left (N);
+    final Integer R = right(N);
+
+    if ((L != null &&
+         MessageDown      .registerGet(L) > 0 && MessageUp      .registerGet(N) > 0 &&                          // Clear the upward-seeking message from the parent if it was transferred to a downward-seeking branch
+         MessageDownNumber.registerGet(L)     == MessageUpNumber.registerGet(N))    ||
+        (R != null &&
+         MessageDown      .registerGet(R) > 0 && MessageUp      .registerGet(N) > 0 &&
+         MessageDownNumber.registerGet(R)     == MessageUpNumber.registerGet(N)))
+     {           MessageUp.registerSet(0, N);
      }
    }
 
@@ -449,12 +533,34 @@ class TreeNetVerilog extends Chip                                               
      }
    }
 
+  void CopyDown(int N)                                                          // Transmit messages down through this junction
+   {final int P = parent(N);
+    if (MessageDown.registerGet(P) > 0 && MessageDown.registerGet(N) == 0)      // The parent wants to send us a message
+     {if (addressDown(N, MessageDownTarget.registerGet(P)))                     // The message should go down through this junction. Cache the message for the moment to prevent overruns.
+       {MessageDownPending      .registerSet(1, N);
+        MessageDownPendingNumber.copy(N, MessageDownNumber, P);
+        MessageDownPendingSource.copy(N, MessageDownSource, P);
+        MessageDownPendingTarget.copy(N, MessageDownTarget, P);
+        MessageDownPendingText  .copy(N, MessageDownText  , P);
+       }
+     }
+    else if (MessageUp.registerGet(P) > 0)                                      // Short-circuit upward-seeking message if its target is on this branch
+     {if (addressDown(N, MessageUpTarget.registerGet(P)))                       // Could the upward-seeking message short-circuit down this branch to reach its target?
+       {MessageDownPending      .registerSet(1, N);
+        MessageDownPendingNumber.copy(N, MessageUpNumber, P);
+        MessageDownPendingSource.copy(N, MessageUpSource, P);
+        MessageDownPendingTarget.copy(N, MessageUpTarget, P);
+        MessageDownPendingText  .copy(N, MessageUpText  , P);
+       }
+     }
+   }
+
 //D1 Tests                                                                      // Test the tree network
 
   static void test_one()
    {sayCurrentTestName();
-    final TreeNetVerilog       T = new TreeNetVerilog(3);
-    final StringBuilder s = new StringBuilder(); T.printCompact = false;
+    final TreeNetVerilog T = new TreeNetVerilog(3);
+    final StringBuilder  s = new StringBuilder(); T.printCompact = false;
 
     T.putMessage(5, 3, 1111);
 
@@ -489,6 +595,80 @@ Jnct  Level Step:    2        Up  Left Right  Addr      Up______  Down____ |
    5   2     *                 2              10                           |
    6   2     *                 2              11                           |
 Jnct  Level Step:    3        Up  Left Right  Addr      Up______  Down____ |
+   0   0 *                           1     2                               |
+   1   1   *                   0     3     4  0                            |
+   2   1   *                   0     5     6  1                            |
+   3   2     *                 1              00                  1111     |
+   4   2     *                 1              01                           |
+   5   2     *                 2              10                           |
+   6   2     *                 2              11                           |
+""");
+    ok(T.leaves(),    4);
+    ok(T.firstLeaf(), 3);
+    ok(T.lastLeaf(),  6);
+    ok(T.addressLeaf(1),  false);
+    ok(T.addressLeaf(5),  true);
+   }
+
+  StringBuilder test_transmission(int TransmitSteps, int ExecSteps)             // Transmit for the specified number of steps using the specified number of execution steps
+   {final StringBuilder s = new StringBuilder();
+    for (step = 0; step < TransmitSteps; ++step)
+     {P.new Instruction()
+       {void action()
+         {s.append(toStringV());
+         }
+       };
+      Transmit();
+     }
+    maxSteps = ExecSteps;
+    chipRunJava();
+    return s;
+   }
+
+  static void test_oneV()
+   {sayCurrentTestName();
+    final TreeNetVerilog T = new TreeNetVerilog(3);
+
+    T.printCompact = false;
+    T.PutMessage(5, 3, 1111);
+
+    final StringBuilder s = T.test_transmission(5, 60);
+
+    //stop(s);
+    ok(s, """
+Jnct  Level Step:    5        Up  Left Right  Addr      Up______  Down____ |
+   0   0 *                           1     2                               |
+   1   1   *                   0     3     4  0                            |
+   2   1   *                   0     5     6  1                            |
+   3   2     *                 1              00                           |
+   4   2     *                 1              01                           |
+   5   2     *                 2              10        1111               |
+   6   2     *                 2              11                           |
+Jnct  Level Step:    5        Up  Left Right  Addr      Up______  Down____ |
+   0   0 *                           1     2                               |
+   1   1   *                   0     3     4  0                            |
+   2   1   *                   0     5     6  1                            |
+   3   2     *                 1              00                           |
+   4   2     *                 1              01                           |
+   5   2     *                 2              10        1111               |
+   6   2     *                 2              11                           |
+Jnct  Level Step:    5        Up  Left Right  Addr      Up______  Down____ |
+   0   0 *                           1     2                               |
+   1   1   *                   0     3     4  0                            |
+   2   1   *                   0     5     6  1         1111               |
+   3   2     *                 1              00                           |
+   4   2     *                 1              01                           |
+   5   2     *                 2              10                           |
+   6   2     *                 2              11                           |
+Jnct  Level Step:    5        Up  Left Right  Addr      Up______  Down____ |
+   0   0 *                           1     2                               |
+   1   1   *                   0     3     4  0                   1111     |
+   2   1   *                   0     5     6  1                            |
+   3   2     *                 1              00                           |
+   4   2     *                 1              01                           |
+   5   2     *                 2              10                           |
+   6   2     *                 2              11                           |
+Jnct  Level Step:    5        Up  Left Right  Addr      Up______  Down____ |
    0   0 *                           1     2                               |
    1   1   *                   0     3     4  0                            |
    2   1   *                   0     5     6  1                            |
@@ -545,6 +725,43 @@ Jnct  Level Step:    7        Up  Left Right  Addr      Up______  Down____ |
 """);
    }
 
+  static void test_twoV()
+   {sayCurrentTestName();
+    final TreeNetVerilog T = new TreeNetVerilog(3);
+
+    T.PutMessage(T.lastLeaf()-1, T.firstLeaf(),   1111);
+    T.PutMessage(T.lastLeaf(),   T.firstLeaf()+1, 2222);
+
+    final StringBuilder s = T.test_transmission(8, 100);
+    //stop(s);
+    ok(""+s, """
+Jnct  Level Step:    8        Up  Left Right  Addr      Up______  Down____ |
+   5   2     *                 2              10        1111               |
+   6   2     *                 2              11        2222               |
+Jnct  Level Step:    8        Up  Left Right  Addr      Up______  Down____ |
+   2   1   *                   0     5     6  1         2222               |
+   5   2     *                 2              10        1111               |
+Jnct  Level Step:    8        Up  Left Right  Addr      Up______  Down____ |
+   2   1   *                   0     5     6  1         2222               |
+   5   2     *                 2              10        1111               |
+Jnct  Level Step:    8        Up  Left Right  Addr      Up______  Down____ |
+   1   1   *                   0     3     4  0                   2222     |
+   5   2     *                 2              10        1111               |
+Jnct  Level Step:    8        Up  Left Right  Addr      Up______  Down____ |
+   2   1   *                   0     5     6  1         1111               |
+   4   2     *                 1              01                  2222     |
+Jnct  Level Step:    8        Up  Left Right  Addr      Up______  Down____ |
+   1   1   *                   0     3     4  0                   1111     |
+   4   2     *                 1              01                  2222     |
+Jnct  Level Step:    8        Up  Left Right  Addr      Up______  Down____ |
+   3   2     *                 1              00                  1111     |
+   4   2     *                 1              01                  2222     |
+Jnct  Level Step:    8        Up  Left Right  Addr      Up______  Down____ |
+   3   2     *                 1              00                  1111     |
+   4   2     *                 1              01                  2222     |
+""");
+   }
+
   static void test_swap()
    {sayCurrentTestName();
     final TreeNetVerilog T = new TreeNetVerilog(2);
@@ -569,6 +786,52 @@ Jnct  Level Step:    1        Up  Left Right  Addr      Up______  Down____ |
    1   1   *                   0              0                            |
    2   1   *                   0              1         2222      1111     |
 Jnct  Level Step:    2        Up  Left Right  Addr      Up______  Down____ |
+   0   0 *                           1     2                               |
+   1   1   *                   0              0                   2222     |
+   2   1   *                   0              1                   1111     |
+""");
+   }
+
+  static void test_swapV()
+   {sayCurrentTestName();
+    final TreeNetVerilog T = new TreeNetVerilog(2);
+
+    T.printCompact  = false;
+    T.PutMessage(T.firstLeaf(), T.lastLeaf(),  1111);
+    T.PutMessage(T.lastLeaf(),  T.firstLeaf(), 2222);
+
+    final StringBuilder s = T.test_transmission(8, 100);
+    //stop(s);
+    ok(""+s, """
+Jnct  Level Step:    8        Up  Left Right  Addr      Up______  Down____ |
+   0   0 *                           1     2                               |
+   1   1   *                   0              0         1111               |
+   2   1   *                   0              1         2222               |
+Jnct  Level Step:    8        Up  Left Right  Addr      Up______  Down____ |
+   0   0 *                           1     2                               |
+   1   1   *                   0              0         1111      2222     |
+   2   1   *                   0              1                            |
+Jnct  Level Step:    8        Up  Left Right  Addr      Up______  Down____ |
+   0   0 *                           1     2                               |
+   1   1   *                   0              0                   2222     |
+   2   1   *                   0              1                   1111     |
+Jnct  Level Step:    8        Up  Left Right  Addr      Up______  Down____ |
+   0   0 *                           1     2                               |
+   1   1   *                   0              0                   2222     |
+   2   1   *                   0              1                   1111     |
+Jnct  Level Step:    8        Up  Left Right  Addr      Up______  Down____ |
+   0   0 *                           1     2                               |
+   1   1   *                   0              0                   2222     |
+   2   1   *                   0              1                   1111     |
+Jnct  Level Step:    8        Up  Left Right  Addr      Up______  Down____ |
+   0   0 *                           1     2                               |
+   1   1   *                   0              0                   2222     |
+   2   1   *                   0              1                   1111     |
+Jnct  Level Step:    8        Up  Left Right  Addr      Up______  Down____ |
+   0   0 *                           1     2                               |
+   1   1   *                   0              0                   2222     |
+   2   1   *                   0              1                   1111     |
+Jnct  Level Step:    8        Up  Left Right  Addr      Up______  Down____ |
    0   0 *                           1     2                               |
    1   1   *                   0              0                   2222     |
    2   1   *                   0              1                   1111     |
@@ -613,6 +876,45 @@ Jnct  Level Step:    7        Up  Left Right  Addr      Up______  Down____ |
    3   2     *                 1     7     8  00                  2222     |
   14   3       *               6              111                 1111     |
 Jnct  Level Step:    8        Up  Left Right  Addr      Up______  Down____ |
+   7   3       *               3              000                 2222     |
+  14   3       *               6              111                 1111     |
+""");
+   }
+
+  static void test_reverse2V()
+   {sayCurrentTestName();
+    final TreeNetVerilog       T = new TreeNetVerilog(4);
+
+    T.PutMessage(T.firstLeaf(), T.lastLeaf(),  1111);
+    T.PutMessage(T.lastLeaf(),  T.firstLeaf(), 2222);
+
+    final StringBuilder s = T.test_transmission(9, 100);
+    //stop(s);
+    ok(s, """
+Jnct  Level Step:    9        Up  Left Right  Addr      Up______  Down____ |
+   7   3       *               3              000       1111               |
+  14   3       *               6              111       2222               |
+Jnct  Level Step:    9        Up  Left Right  Addr      Up______  Down____ |
+   6   2     *                 2    13    14  11        2222               |
+   7   3       *               3              000       1111               |
+Jnct  Level Step:    9        Up  Left Right  Addr      Up______  Down____ |
+   3   2     *                 1     7     8  00        1111               |
+   6   2     *                 2    13    14  11        2222               |
+Jnct  Level Step:    9        Up  Left Right  Addr      Up______  Down____ |
+   2   1   *                   0     5     6  1         2222               |
+   3   2     *                 1     7     8  00        1111               |
+Jnct  Level Step:    9        Up  Left Right  Addr      Up______  Down____ |
+   1   1   *                   0     3     4  0         1111               |
+   2   1   *                   0     5     6  1         2222               |
+Jnct  Level Step:    9        Up  Left Right  Addr      Up______  Down____ |
+   1   1   *                   0     3     4  0         1111      2222     |
+Jnct  Level Step:    9        Up  Left Right  Addr      Up______  Down____ |
+   2   1   *                   0     5     6  1                   1111     |
+   3   2     *                 1     7     8  00                  2222     |
+Jnct  Level Step:    9        Up  Left Right  Addr      Up______  Down____ |
+   6   2     *                 2    13    14  11                  1111     |
+   7   3       *               3              000                 2222     |
+Jnct  Level Step:    9        Up  Left Right  Addr      Up______  Down____ |
    7   3       *               3              000                 2222     |
   14   3       *               6              111                 1111     |
 """);
@@ -769,6 +1071,154 @@ Jnct  Level Step:   15        Up  Left Right  Addr      Up______  Down____ |
 """);
    }
 
+  static void test_reverse8V()
+   {sayCurrentTestName();
+    final TreeNetVerilog T = new TreeNetVerilog(4);
+
+    final int F = T.firstLeaf(), L = T.lastLeaf(), N = T.leaves();
+    for (int i = 1; i <= N; i++) T.PutMessage(F+i-1, L-i+1, 1000*i+100*i+10*i+i);
+
+    final StringBuilder s = T.test_transmission(16, 200);
+    //stop(s);
+    ok(s, """
+Jnct  Level Step:   16        Up  Left Right  Addr      Up______  Down____ |
+   7   3       *               3              000       1111               |
+   8   3       *               3              001       2222               |
+   9   3       *               4              010       3333               |
+  10   3       *               4              011       4444               |
+  11   3       *               5              100       5555               |
+  12   3       *               5              101       6666               |
+  13   3       *               6              110       7777               |
+  14   3       *               6              111       8888               |
+Jnct  Level Step:   16        Up  Left Right  Addr      Up______  Down____ |
+   3   2     *                 1     7     8  00        2222               |
+   4   2     *                 1     9    10  01        4444               |
+   5   2     *                 2    11    12  10        6666               |
+   6   2     *                 2    13    14  11        8888               |
+   7   3       *               3              000       1111               |
+   9   3       *               4              010       3333               |
+  11   3       *               5              100       5555               |
+  13   3       *               6              110       7777               |
+Jnct  Level Step:   16        Up  Left Right  Addr      Up______  Down____ |
+   1   1   *                   0     3     4  0         2222               |
+   2   1   *                   0     5     6  1         6666               |
+   4   2     *                 1     9    10  01        4444               |
+   6   2     *                 2    13    14  11        8888               |
+   7   3       *               3              000       1111               |
+   9   3       *               4              010       3333               |
+  11   3       *               5              100       5555               |
+  13   3       *               6              110       7777               |
+Jnct  Level Step:   16        Up  Left Right  Addr      Up______  Down____ |
+   1   1   *                   0     3     4  0         2222      6666     |
+   4   2     *                 1     9    10  01        4444               |
+   6   2     *                 2    13    14  11        8888               |
+   7   3       *               3              000       1111               |
+   9   3       *               4              010       3333               |
+  11   3       *               5              100       5555               |
+  13   3       *               6              110       7777               |
+Jnct  Level Step:   16        Up  Left Right  Addr      Up______  Down____ |
+   2   1   *                   0     5     6  1                   2222     |
+   3   2     *                 1     7     8  00        1111               |
+   4   2     *                 1     9    10  01        4444      6666     |
+   5   2     *                 2    11    12  10        5555               |
+   6   2     *                 2    13    14  11        8888               |
+   9   3       *               4              010       3333               |
+  13   3       *               6              110       7777               |
+Jnct  Level Step:   16        Up  Left Right  Addr      Up______  Down____ |
+   1   1   *                   0     3     4  0         4444               |
+   2   1   *                   0     5     6  1         8888               |
+   3   2     *                 1     7     8  00        1111               |
+   5   2     *                 2    11    12  10        5555               |
+   6   2     *                 2    13    14  11                  2222     |
+   9   3       *               4              010       3333      6666     |
+  13   3       *               6              110       7777               |
+Jnct  Level Step:   16        Up  Left Right  Addr      Up______  Down____ |
+   2   1   *                   0     5     6  1         8888      4444     |
+   3   2     *                 1     7     8  00        1111               |
+   4   2     *                 1     9    10  01        3333               |
+   5   2     *                 2    11    12  10        5555               |
+   6   2     *                 2    13    14  11        7777               |
+   9   3       *               4              010                 6666     |
+  13   3       *               6              110                 2222     |
+Jnct  Level Step:   16        Up  Left Right  Addr      Up______  Down____ |
+   1   1   *                   0     3     4  0         3333      8888     |
+   3   2     *                 1     7     8  00        1111               |
+   5   2     *                 2    11    12  10        5555      4444     |
+   6   2     *                 2    13    14  11        7777               |
+   9   3       *               4              010                 6666     |
+  13   3       *               6              110                 2222     |
+Jnct  Level Step:   16        Up  Left Right  Addr      Up______  Down____ |
+   2   1   *                   0     5     6  1         5555      3333     |
+   3   2     *                 1     7     8  00        1111      8888     |
+   6   2     *                 2    13    14  11        7777               |
+   9   3       *               4              010                 6666     |
+  11   3       *               5              100                 4444     |
+  13   3       *               6              110                 2222     |
+Jnct  Level Step:   16        Up  Left Right  Addr      Up______  Down____ |
+   1   1   *                   0     3     4  0                   5555     |
+   3   2     *                 1     7     8  00        1111               |
+   5   2     *                 2    11    12  10                  3333     |
+   6   2     *                 2    13    14  11        7777               |
+   7   3       *               3              000                 8888     |
+   9   3       *               4              010                 6666     |
+  11   3       *               5              100                 4444     |
+  13   3       *               6              110                 2222     |
+Jnct  Level Step:   16        Up  Left Right  Addr      Up______  Down____ |
+   1   1   *                   0     3     4  0         1111               |
+   4   2     *                 1     9    10  01                  5555     |
+   6   2     *                 2    13    14  11        7777               |
+   7   3       *               3              000                 8888     |
+   9   3       *               4              010                 6666     |
+  11   3       *               5              100                 4444     |
+  12   3       *               5              101                 3333     |
+  13   3       *               6              110                 2222     |
+Jnct  Level Step:   16        Up  Left Right  Addr      Up______  Down____ |
+   1   1   *                   0     3     4  0         1111               |
+   2   1   *                   0     5     6  1         7777               |
+   7   3       *               3              000                 8888     |
+   9   3       *               4              010                 6666     |
+  10   3       *               4              011                 5555     |
+  11   3       *               5              100                 4444     |
+  12   3       *               5              101                 3333     |
+  13   3       *               6              110                 2222     |
+Jnct  Level Step:   16        Up  Left Right  Addr      Up______  Down____ |
+   2   1   *                   0     5     6  1         7777      1111     |
+   7   3       *               3              000                 8888     |
+   9   3       *               4              010                 6666     |
+  10   3       *               4              011                 5555     |
+  11   3       *               5              100                 4444     |
+  12   3       *               5              101                 3333     |
+  13   3       *               6              110                 2222     |
+Jnct  Level Step:   16        Up  Left Right  Addr      Up______  Down____ |
+   1   1   *                   0     3     4  0                   7777     |
+   6   2     *                 2    13    14  11                  1111     |
+   7   3       *               3              000                 8888     |
+   9   3       *               4              010                 6666     |
+  10   3       *               4              011                 5555     |
+  11   3       *               5              100                 4444     |
+  12   3       *               5              101                 3333     |
+  13   3       *               6              110                 2222     |
+Jnct  Level Step:   16        Up  Left Right  Addr      Up______  Down____ |
+   3   2     *                 1     7     8  00                  7777     |
+   7   3       *               3              000                 8888     |
+   9   3       *               4              010                 6666     |
+  10   3       *               4              011                 5555     |
+  11   3       *               5              100                 4444     |
+  12   3       *               5              101                 3333     |
+  13   3       *               6              110                 2222     |
+  14   3       *               6              111                 1111     |
+Jnct  Level Step:   16        Up  Left Right  Addr      Up______  Down____ |
+   7   3       *               3              000                 8888     |
+   8   3       *               3              001                 7777     |
+   9   3       *               4              010                 6666     |
+  10   3       *               4              011                 5555     |
+  11   3       *               5              100                 4444     |
+  12   3       *               5              101                 3333     |
+  13   3       *               6              110                 2222     |
+  14   3       *               6              111                 1111     |
+""");
+   }
+
   static void test_short()
    {sayCurrentTestName();
     final TreeNetVerilog T = new TreeNetVerilog(4);
@@ -788,6 +1238,54 @@ Jnct  Level Step:    0        Up  Left Right  Addr      Up______  Down____ |
 Jnct  Level Step:    1        Up  Left Right  Addr      Up______  Down____ |
   14   3       *               6              111       1111      2222     |
 Jnct  Level Step:    2        Up  Left Right  Addr      Up______  Down____ |
+  13   3       *               6              110                 1111     |
+  14   3       *               6              111                 2222     |
+""");
+   }
+
+  static void test_shortV()
+   {sayCurrentTestName();
+    final TreeNetVerilog T = new TreeNetVerilog(4);
+
+    T.PutMessage(T.lastLeaf(),   T.lastLeaf()-1, 1111);
+    T.PutMessage(T.lastLeaf()-1, T.lastLeaf(),   2222);
+
+    final StringBuilder s = T.test_transmission(12, 200);
+    //stop(s);
+    ok(""+s, """
+Jnct  Level Step:   12        Up  Left Right  Addr      Up______  Down____ |
+  13   3       *               6              110       2222               |
+  14   3       *               6              111       1111               |
+Jnct  Level Step:   12        Up  Left Right  Addr      Up______  Down____ |
+  13   3       *               6              110       2222      1111     |
+Jnct  Level Step:   12        Up  Left Right  Addr      Up______  Down____ |
+  13   3       *               6              110                 1111     |
+  14   3       *               6              111                 2222     |
+Jnct  Level Step:   12        Up  Left Right  Addr      Up______  Down____ |
+  13   3       *               6              110                 1111     |
+  14   3       *               6              111                 2222     |
+Jnct  Level Step:   12        Up  Left Right  Addr      Up______  Down____ |
+  13   3       *               6              110                 1111     |
+  14   3       *               6              111                 2222     |
+Jnct  Level Step:   12        Up  Left Right  Addr      Up______  Down____ |
+  13   3       *               6              110                 1111     |
+  14   3       *               6              111                 2222     |
+Jnct  Level Step:   12        Up  Left Right  Addr      Up______  Down____ |
+  13   3       *               6              110                 1111     |
+  14   3       *               6              111                 2222     |
+Jnct  Level Step:   12        Up  Left Right  Addr      Up______  Down____ |
+  13   3       *               6              110                 1111     |
+  14   3       *               6              111                 2222     |
+Jnct  Level Step:   12        Up  Left Right  Addr      Up______  Down____ |
+  13   3       *               6              110                 1111     |
+  14   3       *               6              111                 2222     |
+Jnct  Level Step:   12        Up  Left Right  Addr      Up______  Down____ |
+  13   3       *               6              110                 1111     |
+  14   3       *               6              111                 2222     |
+Jnct  Level Step:   12        Up  Left Right  Addr      Up______  Down____ |
+  13   3       *               6              110                 1111     |
+  14   3       *               6              111                 2222     |
+Jnct  Level Step:   12        Up  Left Right  Addr      Up______  Down____ |
   13   3       *               6              110                 1111     |
   14   3       *               6              111                 2222     |
 """);
@@ -821,10 +1319,17 @@ Jnct  Level Step:    2        Up  Left Right  Addr      Up______  Down____ |
     test_reverse8();
     test_short();
     test_sequence();
+    test_oneV();
+    test_twoV();
+    test_swapV();
+    test_reverse2V();
+    test_reverse8V();
+    test_shortV();
    }
 
   static void newTests()                                                        // Tests being worked on
    {oldTests();
+    //test_sequenceV();
    }
 
   public static void main(String[] args)                                        // Test if called as a program
