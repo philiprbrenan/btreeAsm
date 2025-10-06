@@ -56,6 +56,7 @@ class TreeNetVerilog extends Chip                                               
   final Process.Register LeftRightPriority;                                     // Address in branch path steering format
   final Process.Register MessageNumber;                                         // Address in branch path steering format
   final Process.Register Step;                                                  // Address in branch path steering format
+  final Process.Register putMessage = P.register("putMessage", 1);              // Result of putting a message
 
 //D1 Construction                                                               // Construct a tree network
 
@@ -267,28 +268,32 @@ class TreeNetVerilog extends Chip                                               
      }
    }
 
+  void PutMessage(Process.Register Result, int Source, int Target, int Text)    // Add a new message at the indicated leaf if possible and return true else false
+   {if (MessageUp.registerGet(Source) > 0)
+     {Result.zero();                                                            // The message was not added
+     }
+    else
+     {MessageUp      .registerSet(1,             Source);                       // Add the message
+      MessageUpNumber.copy       (Source, MessageNumber);                       // Generate a unique message number for each message
+      MessageUpSource.registerSet(Source       , Source);                       // Source address
+      MessageUpTarget.registerSet(Target       , Source);                       // Target address
+      MessageUpText  .registerSet(Text         , Source);                       // Text of message
+      MessageNumber  .inc();
+      Result.one();                                                             // Successfully added message to tree network
+     }
+   }
+
   Process.Register PutMessage(int Source, int Target, int Text)                 // Add a new message at the indicated leaf if possible and return true else false
-   {final Process.Register r = P.register("putMessageResult", 1);
+   {final Process.Register result = putMessage;
     P.new Instruction()
      {void action()
-       {if (MessageUp.registerGet(Source) > 0)
-         {r.zero();                                                             // The message was not added
-         }
-        else
-         {MessageUp      .registerSet(1,             Source);                   // Add the message
-          MessageUpNumber.copy       (Source, MessageNumber);                   // Generate a unique message number for each message
-          MessageUpSource.registerSet(Source       , Source);                   // Source address
-          MessageUpTarget.registerSet(Target       , Source);                   // Target address
-          MessageUpText  .registerSet(Text         , Source);                   // Text of message
-          MessageNumber  .inc();
-          r.one();                                                              // Successfully added message to tree network
-         }
+       {PutMessage(result, Source, Target, Text);
        }
       void verilog(Verilog v)
        {
        }
      };
-    return r;
+    return result;
    }
 
   class MessageOut                                                              // Remove a message from the tree network and record its details
@@ -1222,7 +1227,7 @@ Jnct  Level Step:   16        Up  Left Right  Addr      Up______  Down____ |
   static void test_short()
    {sayCurrentTestName();
     final TreeNetVerilog T = new TreeNetVerilog(4);
-    final StringBuilder s = new StringBuilder();
+    final StringBuilder  s = new StringBuilder();
 
     T.putMessage(T.lastLeaf(),   T.lastLeaf()-1, 1111);
     T.putMessage(T.lastLeaf()-1, T.lastLeaf(),   2222);
@@ -1293,11 +1298,11 @@ Jnct  Level Step:   12        Up  Left Right  Addr      Up______  Down____ |
 
   static void test_sequence()
    {sayCurrentTestName();
-    final TreeNetVerilog T  = new TreeNetVerilog(4);
-    final int Source = T.lastLeaf(), Target = T.firstLeaf(), Steps = 28;
-    final StringBuilder s = new StringBuilder();
-    final StringJoiner  t = new StringJoiner(", ");
-    final int []    words = {1111, 2222, 3333, 4444, 5555, 6666};
+    final TreeNetVerilog T = new TreeNetVerilog(4);
+    final int       Source = T.lastLeaf(), Target = T.firstLeaf(), Steps = 28;
+    final StringBuilder  s = new StringBuilder();
+    final StringJoiner   t = new StringJoiner(", ");
+    final int []     words = {1111, 2222, 3333, 4444, 5555, 6666};
 
     int i = 0;
     for (T.step = 0; T.step < Steps; ++T.step)
@@ -1307,6 +1312,60 @@ Jnct  Level Step:   12        Up  Left Right  Addr      Up______  Down____ |
       final MessageOut m = T.new MessageOut(Target);
       if (m.valid) t.add(""+m.text);
      }
+    //stop(t);
+    ok(t, "1111, 2222, 3333, 4444, 5555, 6666");
+   }
+
+  static void test_sequenceV()
+   {sayCurrentTestName();
+    final TreeNetVerilog T = new TreeNetVerilog(4);
+    final int       Source = T.lastLeaf(), Target = T.firstLeaf(), Steps = 28;
+    final StringBuilder  s = new StringBuilder();
+    final StringJoiner   t = new StringJoiner(", ");
+    final int []     words = {1111, 2222, 3333, 4444, 5555, 6666};
+    final Process.Register Result = T.P.register("result", 1);
+
+    final Process.Register i = T.P.register("i", 8);
+    for (T.step = 0; T.step < Steps; ++T.step)
+     {T.P.new Instruction()
+       {void action()
+         {final int I = i.registerGet();
+          if (I < words.length)
+           {T.PutMessage(Result, Source, Target, words[I]);
+            if (Result.registerGet() > 0)
+             {i.inc();
+             }
+           }
+//        say(T.toStringV());
+         }
+        void verilog(Verilog v)
+         {
+         }
+       };
+
+      T.P.new Instruction()
+      {void action()
+        {s.append(T.toStringV());
+        }
+        void verilog(Verilog v)
+        {
+        }
+      };
+      T.Transmit();
+      final Process.Register leaf = T.P.register("leaf", 8);
+      leaf.RegisterSet(Target);
+      final MessageOutV m = T.new MessageOutV(leaf);
+      T.P.new Instruction()
+      {void action()
+        {if (m.Valid.registerGet() > 0) t.add(""+m.Text.registerGet());
+        }
+        void verilog(Verilog v)
+        {
+        }
+      };
+     }
+    T.maxSteps = 2000;
+    T.chipRunJava();
     //stop(t);
     ok(t, "1111, 2222, 3333, 4444, 5555, 6666");
    }
@@ -1328,8 +1387,8 @@ Jnct  Level Step:   12        Up  Left Right  Addr      Up______  Down____ |
    }
 
   static void newTests()                                                        // Tests being worked on
-   {oldTests();
-    //test_sequenceV();
+   {//oldTests();
+    test_sequenceV();
    }
 
   public static void main(String[] args)                                        // Test if called as a program
