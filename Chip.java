@@ -6,6 +6,7 @@ package com.AppaApps.Silicon;                                                   
 // Try eliminating .clone() in case they are used excessively
 // Tests for copy* methods  and check that they are actually needed
 // Try to make all method and variable names start with the name of their class where this is feasible
+// Need if for element of an arrayed register to elimninate overhead of copying it into a single register first
 import java.util.*;
 
 class Chip extends Test                                                         // A chip designed to manipulate a B-tree stored in a memory block
@@ -848,14 +849,19 @@ if __name__ == "__main__":
     void Goto     (Label label)                                                 // Goto a label unconditionally
      {R(); processPc = label.offset;
      }
-    void GoNotZero(Label label, Register condition)                             // Go to a specified label if the value of a field is not zero
+    void GoNotZero(Label Label, Register Condition)                             // Go to a specified Label if the value of a field is not zero
      {R();
-      if (condition.registerGet() >  0) processPc = label.offset;
+      if (Condition.registerGet() >  0) processPc = Label.offset;
       else Continue();
      }
-    void GoZero   (Label label, Register condition)                             // Go to a specified label if the value of a field is zero
-     {R();
-      if (condition.registerGet() == 0) processPc = label.offset;
+    void GoZero   (Label Label, Register Condition)                             // Go to a specified Label if the value of a single register is zero
+     {R(); Condition.registerCheckSingle();
+      if (Condition.registerGet() == 0) processPc = Label.offset;
+      else Continue();
+     }
+    void GoZero   (Label Label, Register Condition, int Index)                  // Go to a specified Label if the value of an arrayed register is zero
+     {R(); Condition.registerCheckArrayed();
+      if (Condition.registerGet(Index) == 0) processPc = Label.offset;
       else Continue();
      }
     void Continue() {processPc++;}                                              // Continue with the next instruction
@@ -863,15 +869,21 @@ if __name__ == "__main__":
     void Goto       (Verilog v, Label label)                                    // Goto a label unconditionally
      {v.assign(processPcName(), label.offset);
      }
-    void GoNotZero  (Verilog v, Label label, Register condition)                // Go to a specified label if the value of a field is not zero
+    void GoNotZero  (Verilog v, Label label, Register condition)                // Go to a specified label if the value of a single register is not zero
      {v.new If(condition.registerFullName+" >  0")
        {void Then() {v.assign(processPcName(), label.offset);}
         void Else() {Continue(v);}
        };
      }
-    void GoZero     (Verilog v, Label label, Register condition)                // Go to a specified label if the value of a field is zero
-     {v.new If(condition.registerFullName+" == 0")
-       {void Then() {v.assign(processPcName(), label.offset);}
+    void GoZero     (Verilog v, Label Label, Register Condition)                // Go to a specified Label if the value of a single register is zero
+     {v.new If(Condition.registerFullName+" == 0")
+       {void Then() {v.assign(processPcName(), Label.offset);}
+        void Else() {Continue(v);}
+       };
+     }
+    void GoZero     (Verilog v, Label Label, Register Condition, int Index)     // Go to a specified Label if the value of an element of an arrayed register is zero
+     {v.new If(Condition.registerFullName+"["+Index+"] == 0")
+       {void Then() {v.assign(processPcName(), Label.offset);}
         void Else() {Continue(v);}
        };
      }
@@ -909,8 +921,34 @@ if __name__ == "__main__":
     abstract class If                                                           // If statement as a sequence of instructions
      {final Label Else = new Label(), End = new Label();                        // Components of an if statement
 
-      If (Process.Register Condition)                                           // If a condition
+      If (Process.Register Condition)                                           // If a condition based on a single register
        {N();
+        Condition.registerCheckSingle();
+        new Instruction(true)                                                   // Branch on the current value of condition
+         {void action()
+           {GoZero(Else, Condition);
+           }
+          void verilog(Verilog v)
+           {GoZero(v, Else, Condition);
+           }
+         };
+        Then();                                                                 // Then
+        new Instruction(true)
+         {void action()
+           {Goto(End);
+           }
+          void verilog(Verilog v)
+           {Goto(v, End);
+           }
+         };
+        Else.set();
+        Else();                                                                 // Else
+        End.set();
+       }
+
+      If (Process.Register Condition, int Index)                                // If a condition based on an element of an arrayed register
+       {N();
+        Condition.registerCheckArrayed();
         new Instruction(true)                                                   // Branch on the current value of condition
          {void action()
            {GoZero(Else, Condition);
