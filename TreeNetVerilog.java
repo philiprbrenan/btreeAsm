@@ -1384,6 +1384,7 @@ Jnct  Level Step:   12        Up  Left Right  Addr      Up______  Down____ |
     test_reverse2V();
     test_reverse8V();
     test_shortV();
+    test_sequenceV();
    }
 
   static void newTests()                                                        // Tests being worked on
