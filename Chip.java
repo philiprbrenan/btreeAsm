@@ -1043,6 +1043,12 @@ if __name__ == "__main__":
          }
        }
 
+      String registerName()                                                     // The name of a single register
+       {if (coverageAnalysis) zz();
+        if (registerChecks) registerSingle();
+        return registerFullName;
+       }
+
       String registerName(int Index)                                            // The name of an element of an arrayed register
        {if (coverageAnalysis) zz();
         if (registerChecks) registerCheckArrayed();
