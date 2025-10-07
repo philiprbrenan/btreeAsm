@@ -454,6 +454,7 @@ class TreeNetVerilog extends Chip                                               
     final boolean up = MessageUp.registerGet(N) > 0;                            // Message at this level if any
     final boolean gl = !up && MessageUp.registerGet(L) > 0;                     // Left might want to send a message up
     final boolean gr = !up && MessageUp.registerGet(R) > 0;                     // Right might want to send a message up
+
     class Left
      {Left()
        {MessageUp      .copy(N, MessageUp      , L);
@@ -472,8 +473,13 @@ class TreeNetVerilog extends Chip                                               
         MessageUpText  .copy(N, MessageUpText  , R);
        }
      }
-    if (LeftRightPriority.registerGet()  > 0 && gl) new Left();                 // Left might want to send a message up
-    else if (LeftRightPriority.registerGet() == 0 && gr) new Right();           // Right might want to send a message up
+
+    if (LeftRightPriority.registerGet() > 0)
+     {if (gl) new Left(); else if (gr) new Right();
+     }
+    else
+     {if (gr) new Right(); else if (gl) new Left();
+     }
    }
 
   void CopyUp(Verilog v, int N)                                                 // Copy a child message upward into this junction with alternating left/right priority - generated Verilog version
@@ -485,8 +491,8 @@ class TreeNetVerilog extends Chip                                               
     final String lr = LeftRightPriority.registerName();                         // Left/right priority for choosing the next message if both children can supply a message
     final String lm = MessageUp.registerName(L);                                // Left child
     final String rm = MessageUp.registerName(R);                                // Right child
-    final String gl = "(" +lr + " && !"+up +" && " + lm+")";                    // Left might want to send a message up
-    final String gr = "(!"+lr + " && !"+up +" && " + rm+")";                    // Right might want to send a message up
+    final String gl = "(!"+up +" && " + lm+")";                                 // Left might want to send a message up
+    final String gr = "(!"+up +" && " + rm+")";                                 // Right might want to send a message up
 
     class Left
      {Left()
@@ -508,14 +514,33 @@ class TreeNetVerilog extends Chip                                               
        }
      };
 
-    v.new If (gl)                                                               // Left might want to send a message up
+    v.new If (lr)                                                               // Alternate priority
      {void Then()
-       {new Left();
+       {v.new If (gl)                                                           // Left might want to send a message up
+         {void Then()
+           {new Left();
+           }
+          void Else()
+           {v.new If (gr)                                                       // Right might want to send a message up
+             {void Then()
+               {new Right();
+               }
+             };
+           }
+         };
        }
+
       void Else()
-       {v.new If (gr)                                                           // Right might want to send a message up
+       {v.new If (gr)                                                           // Left might want to send a message up
          {void Then()
            {new Right();
+           }
+          void Else()
+           {v.new If (gl)                                                       // Right might want to send a message up
+             {void Then()
+               {new Left();
+               }
+             };
            }
          };
        }
@@ -844,11 +869,11 @@ Jnct  Level Step:    3        Up  Left Right  Addr      Up______  Down____ |
     T.printCompact = false;
     T.PutMessage(5, 3, 1111);
 
-    final StringBuilder s = T.test_transmission(5, 1000);
+    final StringBuilder s = T.test_transmission(4, 1000);
 
     //stop(s);
     ok(s, """
-Jnct  Level Step:    5        Up  Left Right  Addr      Up______  Down____ |
+Jnct  Level Step:    4        Up  Left Right  Addr      Up______  Down____ |
    0   0 *                           1     2                               |
    1   1   *                   0     3     4  0                            |
    2   1   *                   0     5     6  1                            |
@@ -856,15 +881,7 @@ Jnct  Level Step:    5        Up  Left Right  Addr      Up______  Down____ |
    4   2     *                 1              01                           |
    5   2     *                 2              10        1111               |
    6   2     *                 2              11                           |
-Jnct  Level Step:    5        Up  Left Right  Addr      Up______  Down____ |
-   0   0 *                           1     2                               |
-   1   1   *                   0     3     4  0                            |
-   2   1   *                   0     5     6  1                            |
-   3   2     *                 1              00                           |
-   4   2     *                 1              01                           |
-   5   2     *                 2              10        1111               |
-   6   2     *                 2              11                           |
-Jnct  Level Step:    5        Up  Left Right  Addr      Up______  Down____ |
+Jnct  Level Step:    4        Up  Left Right  Addr      Up______  Down____ |
    0   0 *                           1     2                               |
    1   1   *                   0     3     4  0                            |
    2   1   *                   0     5     6  1         1111               |
@@ -872,7 +889,7 @@ Jnct  Level Step:    5        Up  Left Right  Addr      Up______  Down____ |
    4   2     *                 1              01                           |
    5   2     *                 2              10                           |
    6   2     *                 2              11                           |
-Jnct  Level Step:    5        Up  Left Right  Addr      Up______  Down____ |
+Jnct  Level Step:    4        Up  Left Right  Addr      Up______  Down____ |
    0   0 *                           1     2                               |
    1   1   *                   0     3     4  0                   1111     |
    2   1   *                   0     5     6  1                            |
@@ -880,7 +897,7 @@ Jnct  Level Step:    5        Up  Left Right  Addr      Up______  Down____ |
    4   2     *                 1              01                           |
    5   2     *                 2              10                           |
    6   2     *                 2              11                           |
-Jnct  Level Step:    5        Up  Left Right  Addr      Up______  Down____ |
+Jnct  Level Step:    4        Up  Left Right  Addr      Up______  Down____ |
    0   0 *                           1     2                               |
    1   1   *                   0     3     4  0                            |
    2   1   *                   0     5     6  1                            |
@@ -940,31 +957,25 @@ Jnct  Level Step:    5        Up  Left Right  Addr      Up______  Down____ |
     T.PutMessage(T.lastLeaf()-1, T.firstLeaf(),   1111);
     T.PutMessage(T.lastLeaf(),   T.firstLeaf()+1, 2222);
 
-    final StringBuilder s = T.test_transmission(8, 100);
+    final StringBuilder s = T.test_transmission(6, 100);
     //stop(s);
     ok(""+s, """
-Jnct  Level Step:    8        Up  Left Right  Addr      Up______  Down____ |
+Jnct  Level Step:    6        Up  Left Right  Addr      Up______  Down____ |
    5   2     *                 2              10        1111               |
    6   2     *                 2              11        2222               |
-Jnct  Level Step:    8        Up  Left Right  Addr      Up______  Down____ |
+Jnct  Level Step:    6        Up  Left Right  Addr      Up______  Down____ |
    2   1   *                   0     5     6  1         2222               |
    5   2     *                 2              10        1111               |
-Jnct  Level Step:    8        Up  Left Right  Addr      Up______  Down____ |
-   2   1   *                   0     5     6  1         2222               |
-   5   2     *                 2              10        1111               |
-Jnct  Level Step:    8        Up  Left Right  Addr      Up______  Down____ |
+Jnct  Level Step:    6        Up  Left Right  Addr      Up______  Down____ |
    1   1   *                   0     3     4  0                   2222     |
    5   2     *                 2              10        1111               |
-Jnct  Level Step:    8        Up  Left Right  Addr      Up______  Down____ |
+Jnct  Level Step:    6        Up  Left Right  Addr      Up______  Down____ |
    2   1   *                   0     5     6  1         1111               |
    4   2     *                 1              01                  2222     |
-Jnct  Level Step:    8        Up  Left Right  Addr      Up______  Down____ |
+Jnct  Level Step:    6        Up  Left Right  Addr      Up______  Down____ |
    1   1   *                   0     3     4  0                   1111     |
    4   2     *                 1              01                  2222     |
-Jnct  Level Step:    8        Up  Left Right  Addr      Up______  Down____ |
-   3   2     *                 1              00                  1111     |
-   4   2     *                 1              01                  2222     |
-Jnct  Level Step:    8        Up  Left Right  Addr      Up______  Down____ |
+Jnct  Level Step:    6        Up  Left Right  Addr      Up______  Down____ |
    3   2     *                 1              00                  1111     |
    4   2     *                 1              01                  2222     |
 """);
@@ -1094,33 +1105,27 @@ Jnct  Level Step:    6        Up  Left Right  Addr      Up______  Down____ |
     T.PutMessage(T.firstLeaf(), T.lastLeaf(),  1111);
     T.PutMessage(T.lastLeaf(),  T.firstLeaf(), 2222);
 
-    final StringBuilder s = T.test_transmission(9, 1000);
+    final StringBuilder s = T.test_transmission(7, 1000);
     //stop(s);
     ok(s, """
-Jnct  Level Step:    9        Up  Left Right  Addr      Up______  Down____ |
+Jnct  Level Step:    7        Up  Left Right  Addr      Up______  Down____ |
    7   3       *               3              000       1111               |
   14   3       *               6              111       2222               |
-Jnct  Level Step:    9        Up  Left Right  Addr      Up______  Down____ |
-   6   2     *                 2    13    14  11        2222               |
-   7   3       *               3              000       1111               |
-Jnct  Level Step:    9        Up  Left Right  Addr      Up______  Down____ |
+Jnct  Level Step:    7        Up  Left Right  Addr      Up______  Down____ |
    3   2     *                 1     7     8  00        1111               |
    6   2     *                 2    13    14  11        2222               |
-Jnct  Level Step:    9        Up  Left Right  Addr      Up______  Down____ |
-   2   1   *                   0     5     6  1         2222               |
-   3   2     *                 1     7     8  00        1111               |
-Jnct  Level Step:    9        Up  Left Right  Addr      Up______  Down____ |
+Jnct  Level Step:    7        Up  Left Right  Addr      Up______  Down____ |
    1   1   *                   0     3     4  0         1111               |
    2   1   *                   0     5     6  1         2222               |
-Jnct  Level Step:    9        Up  Left Right  Addr      Up______  Down____ |
+Jnct  Level Step:    7        Up  Left Right  Addr      Up______  Down____ |
    1   1   *                   0     3     4  0         1111      2222     |
-Jnct  Level Step:    9        Up  Left Right  Addr      Up______  Down____ |
+Jnct  Level Step:    7        Up  Left Right  Addr      Up______  Down____ |
    2   1   *                   0     5     6  1                   1111     |
    3   2     *                 1     7     8  00                  2222     |
-Jnct  Level Step:    9        Up  Left Right  Addr      Up______  Down____ |
+Jnct  Level Step:    7        Up  Left Right  Addr      Up______  Down____ |
    6   2     *                 2    13    14  11                  1111     |
    7   3       *               3              000                 2222     |
-Jnct  Level Step:    9        Up  Left Right  Addr      Up______  Down____ |
+Jnct  Level Step:    7        Up  Left Right  Addr      Up______  Down____ |
    7   3       *               3              000                 2222     |
   14   3       *               6              111                 1111     |
 """);
@@ -1256,10 +1261,10 @@ Jnct  Level Step:   12        Up  Left Right  Addr      Up______  Down____ |
     T.P.processTrace = true;
     for (int i = 1; i <= N; i++) T.PutMessage(F+i-1, L-i+1, 1000*i+100*i+10*i+i);
 
-    final StringBuilder s = T.test_transmission(16, 200);
+    final StringBuilder s = T.test_transmission(13, 200);
     //stop(s);
     ok(s, """
-Jnct  Level Step:   16        Up  Left Right  Addr      Up______  Down____ |
+Jnct  Level Step:   13        Up  Left Right  Addr      Up______  Down____ |
    7   3       *               3              000       1111               |
    8   3       *               3              001       2222               |
    9   3       *               4              010       3333               |
@@ -1268,7 +1273,7 @@ Jnct  Level Step:   16        Up  Left Right  Addr      Up______  Down____ |
   12   3       *               5              101       6666               |
   13   3       *               6              110       7777               |
   14   3       *               6              111       8888               |
-Jnct  Level Step:   16        Up  Left Right  Addr      Up______  Down____ |
+Jnct  Level Step:   13        Up  Left Right  Addr      Up______  Down____ |
    3   2     *                 1     7     8  00        2222               |
    4   2     *                 1     9    10  01        4444               |
    5   2     *                 2    11    12  10        6666               |
@@ -1277,7 +1282,7 @@ Jnct  Level Step:   16        Up  Left Right  Addr      Up______  Down____ |
    9   3       *               4              010       3333               |
   11   3       *               5              100       5555               |
   13   3       *               6              110       7777               |
-Jnct  Level Step:   16        Up  Left Right  Addr      Up______  Down____ |
+Jnct  Level Step:   13        Up  Left Right  Addr      Up______  Down____ |
    1   1   *                   0     3     4  0         2222               |
    2   1   *                   0     5     6  1         6666               |
    4   2     *                 1     9    10  01        4444               |
@@ -1286,97 +1291,58 @@ Jnct  Level Step:   16        Up  Left Right  Addr      Up______  Down____ |
    9   3       *               4              010       3333               |
   11   3       *               5              100       5555               |
   13   3       *               6              110       7777               |
-Jnct  Level Step:   16        Up  Left Right  Addr      Up______  Down____ |
+Jnct  Level Step:   13        Up  Left Right  Addr      Up______  Down____ |
    1   1   *                   0     3     4  0         2222      6666     |
+   3   2     *                 1     7     8  00        1111               |
    4   2     *                 1     9    10  01        4444               |
+   5   2     *                 2    11    12  10        5555               |
    6   2     *                 2    13    14  11        8888               |
-   7   3       *               3              000       1111               |
    9   3       *               4              010       3333               |
-  11   3       *               5              100       5555               |
   13   3       *               6              110       7777               |
-Jnct  Level Step:   16        Up  Left Right  Addr      Up______  Down____ |
-   2   1   *                   0     5     6  1                   2222     |
+Jnct  Level Step:   13        Up  Left Right  Addr      Up______  Down____ |
+   2   1   *                   0     5     6  1         5555      2222     |
    3   2     *                 1     7     8  00        1111               |
    4   2     *                 1     9    10  01        4444      6666     |
-   5   2     *                 2    11    12  10        5555               |
    6   2     *                 2    13    14  11        8888               |
    9   3       *               4              010       3333               |
   13   3       *               6              110       7777               |
-Jnct  Level Step:   16        Up  Left Right  Addr      Up______  Down____ |
-   1   1   *                   0     3     4  0         4444               |
-   2   1   *                   0     5     6  1         8888               |
+Jnct  Level Step:   13        Up  Left Right  Addr      Up______  Down____ |
+   1   1   *                   0     3     4  0         4444      5555     |
    3   2     *                 1     7     8  00        1111               |
-   5   2     *                 2    11    12  10        5555               |
-   6   2     *                 2    13    14  11                  2222     |
+   6   2     *                 2    13    14  11        8888      2222     |
    9   3       *               4              010       3333      6666     |
   13   3       *               6              110       7777               |
-Jnct  Level Step:   16        Up  Left Right  Addr      Up______  Down____ |
+Jnct  Level Step:   13        Up  Left Right  Addr      Up______  Down____ |
    2   1   *                   0     5     6  1         8888      4444     |
    3   2     *                 1     7     8  00        1111               |
-   4   2     *                 1     9    10  01        3333               |
-   5   2     *                 2    11    12  10        5555               |
-   6   2     *                 2    13    14  11        7777               |
+   4   2     *                 1     9    10  01        3333      5555     |
    9   3       *               4              010                 6666     |
-  13   3       *               6              110                 2222     |
-Jnct  Level Step:   16        Up  Left Right  Addr      Up______  Down____ |
+  13   3       *               6              110       7777      2222     |
+Jnct  Level Step:   13        Up  Left Right  Addr      Up______  Down____ |
    1   1   *                   0     3     4  0         3333      8888     |
    3   2     *                 1     7     8  00        1111               |
-   5   2     *                 2    11    12  10        5555      4444     |
+   5   2     *                 2    11    12  10                  4444     |
    6   2     *                 2    13    14  11        7777               |
    9   3       *               4              010                 6666     |
+  10   3       *               4              011                 5555     |
   13   3       *               6              110                 2222     |
-Jnct  Level Step:   16        Up  Left Right  Addr      Up______  Down____ |
-   2   1   *                   0     5     6  1         5555      3333     |
+Jnct  Level Step:   13        Up  Left Right  Addr      Up______  Down____ |
+   2   1   *                   0     5     6  1         7777      3333     |
    3   2     *                 1     7     8  00        1111      8888     |
-   6   2     *                 2    13    14  11        7777               |
    9   3       *               4              010                 6666     |
+  10   3       *               4              011                 5555     |
   11   3       *               5              100                 4444     |
   13   3       *               6              110                 2222     |
-Jnct  Level Step:   16        Up  Left Right  Addr      Up______  Down____ |
-   1   1   *                   0     3     4  0                   5555     |
-   3   2     *                 1     7     8  00        1111               |
+Jnct  Level Step:   13        Up  Left Right  Addr      Up______  Down____ |
+   1   1   *                   0     3     4  0         1111      7777     |
    5   2     *                 2    11    12  10                  3333     |
-   6   2     *                 2    13    14  11        7777               |
-   7   3       *               3              000                 8888     |
-   9   3       *               4              010                 6666     |
-  11   3       *               5              100                 4444     |
-  13   3       *               6              110                 2222     |
-Jnct  Level Step:   16        Up  Left Right  Addr      Up______  Down____ |
-   1   1   *                   0     3     4  0         1111               |
-   4   2     *                 1     9    10  01                  5555     |
-   6   2     *                 2    13    14  11        7777               |
-   7   3       *               3              000                 8888     |
-   9   3       *               4              010                 6666     |
-  11   3       *               5              100                 4444     |
-  12   3       *               5              101                 3333     |
-  13   3       *               6              110                 2222     |
-Jnct  Level Step:   16        Up  Left Right  Addr      Up______  Down____ |
-   1   1   *                   0     3     4  0         1111               |
-   2   1   *                   0     5     6  1         7777               |
    7   3       *               3              000                 8888     |
    9   3       *               4              010                 6666     |
   10   3       *               4              011                 5555     |
   11   3       *               5              100                 4444     |
-  12   3       *               5              101                 3333     |
   13   3       *               6              110                 2222     |
-Jnct  Level Step:   16        Up  Left Right  Addr      Up______  Down____ |
-   2   1   *                   0     5     6  1         7777      1111     |
-   7   3       *               3              000                 8888     |
-   9   3       *               4              010                 6666     |
-  10   3       *               4              011                 5555     |
-  11   3       *               5              100                 4444     |
-  12   3       *               5              101                 3333     |
-  13   3       *               6              110                 2222     |
-Jnct  Level Step:   16        Up  Left Right  Addr      Up______  Down____ |
-   1   1   *                   0     3     4  0                   7777     |
-   6   2     *                 2    13    14  11                  1111     |
-   7   3       *               3              000                 8888     |
-   9   3       *               4              010                 6666     |
-  10   3       *               4              011                 5555     |
-  11   3       *               5              100                 4444     |
-  12   3       *               5              101                 3333     |
-  13   3       *               6              110                 2222     |
-Jnct  Level Step:   16        Up  Left Right  Addr      Up______  Down____ |
+Jnct  Level Step:   13        Up  Left Right  Addr      Up______  Down____ |
+   2   1   *                   0     5     6  1                   1111     |
    3   2     *                 1     7     8  00                  7777     |
    7   3       *               3              000                 8888     |
    9   3       *               4              010                 6666     |
@@ -1384,8 +1350,16 @@ Jnct  Level Step:   16        Up  Left Right  Addr      Up______  Down____ |
   11   3       *               5              100                 4444     |
   12   3       *               5              101                 3333     |
   13   3       *               6              110                 2222     |
-  14   3       *               6              111                 1111     |
-Jnct  Level Step:   16        Up  Left Right  Addr      Up______  Down____ |
+Jnct  Level Step:   13        Up  Left Right  Addr      Up______  Down____ |
+   6   2     *                 2    13    14  11                  1111     |
+   7   3       *               3              000                 8888     |
+   8   3       *               3              001                 7777     |
+   9   3       *               4              010                 6666     |
+  10   3       *               4              011                 5555     |
+  11   3       *               5              100                 4444     |
+  12   3       *               5              101                 3333     |
+  13   3       *               6              110                 2222     |
+Jnct  Level Step:   13        Up  Left Right  Addr      Up______  Down____ |
    7   3       *               3              000                 8888     |
    8   3       *               3              001                 7777     |
    9   3       *               4              010                 6666     |
