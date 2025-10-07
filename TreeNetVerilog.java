@@ -85,10 +85,10 @@ class TreeNetVerilog extends Chip                                               
     messageDownPendingText   = new int[size];                                   // The text of the message
 
     address                  = new BitSet[size];                                // The guidance path address to this junction
-    addressMask              = new BitSet[size];                                // The mask for the corresponding address
+    addressMask              = new BitSet[size];                                // The mask for the corresponding address showing how wide the address is
 
-    Address                  = P.register("address",      addressWidth, size);  // Address for each junction
-    AddressMask              = P.register("addressMask",  addressWidth, size);  // Address mask for each junction
+    Address                  = P.register("address",      addressWidth, size);
+    AddressMask              = P.register("addressMask",  addressWidth, size);
     MessageUp                = P.register("messageUp", 1, size);
     MessageDown              = P.register("messageDown", 1, size);
     MessageDownPending       = P.register("messageDownPending", 1, size);
@@ -411,76 +411,105 @@ class TreeNetVerilog extends Chip                                               
   private Integer right (int N) {return N * 2 + 2 < size ? N * 2 + 2 : null;}   // Index of the right child of this junction if there is one
 
   void copyUp(int N)                                                            // Copy a child message upward into this junction with alternating left/right priority - pure Java version
-   {final Integer L  = left (N);                                                // Left child if any
-    final Integer R  = right(N);                                                // Right child if any
+   {final Integer L = left (N);                                                 // Left child if any
+    final Integer R = right(N);                                                 // Right child if any
     if (L == null || R == null) return;                                         // Assume a full tree
 
     final boolean up = messageUp[N];                                            // Message at this level if any
-    if (leftRightPriority && !up && messageUp[L])                               // Left might want to send a message up
-     {messageUp      [N] = messageUp      [L];
-      messageUpNumber[N] = messageUpNumber[L];
-      messageUpSource[N] = messageUpSource[L];
-      messageUpTarget[N] = messageUpTarget[L];
-      messageUpText  [N] = messageUpText  [L];
+    final boolean gl = !up && messageUp[L];                                     // Go left
+    final boolean gr = !up && messageUp[R];                                     // Go right
+    class Left
+     {Left()
+       {messageUp      [N] = messageUp      [L];
+        messageUpNumber[N] = messageUpNumber[L];
+        messageUpSource[N] = messageUpSource[L];
+        messageUpTarget[N] = messageUpTarget[L];
+        messageUpText  [N] = messageUpText  [L];
+       }
      }
-    else if (!leftRightPriority && !up && messageUp[R])                         // Right might want to send a message up
-     {messageUp      [N] = messageUp      [R];
-      messageUpNumber[N] = messageUpNumber[R];
-      messageUpSource[N] = messageUpSource[R];
-      messageUpTarget[N] = messageUpTarget[R];
-      messageUpText  [N] = messageUpText  [R];
+    class Right
+     {Right()
+       {messageUp      [N] = messageUp      [R];
+        messageUpNumber[N] = messageUpNumber[R];
+        messageUpSource[N] = messageUpSource[R];
+        messageUpTarget[N] = messageUpTarget[R];
+        messageUpText  [N] = messageUpText  [R];
+       }
      }
+    if      ( leftRightPriority && gl) new Left ();
+    else if (!leftRightPriority && gr) new Right();
    }
 
   void CopyUp(int N)                                                            // Copy a child message upward into this junction with alternating left/right priority - Java finite state machine
-   {final Integer L  = left (N);                                                // Left child if any
-    final Integer R  = right(N);                                                // Right child if any
+   {final Integer L = left (N);                                                 // Left child if any
+    final Integer R = right(N);                                                 // Right child if any
     if (L == null || R == null) return;                                         // Assume a full tree
 
     final boolean up = MessageUp.registerGet(N) > 0;                            // Message at this level if any
-    if (LeftRightPriority.registerGet()  > 0 && !up &&                          // Left might want to send a message up
-                MessageUp.registerGet(L) > 0)
-     {MessageUp      .copy(N, MessageUp      , L);
-      MessageUpNumber.copy(N, MessageUpNumber, L);
-      MessageUpSource.copy(N, MessageUpSource, L);
-      MessageUpTarget.copy(N, MessageUpTarget, L);
-      MessageUpText  .copy(N, MessageUpText  , L);
+    final boolean gl = !up && MessageUp.registerGet(L) > 0;                     // Left might want to send a message up
+    final boolean gr = !up && MessageUp.registerGet(R) > 0;                     // Right might want to send a message up
+    class Left
+     {Left()
+       {MessageUp      .copy(N, MessageUp      , L);
+        MessageUpNumber.copy(N, MessageUpNumber, L);
+        MessageUpSource.copy(N, MessageUpSource, L);
+        MessageUpTarget.copy(N, MessageUpTarget, L);
+        MessageUpText  .copy(N, MessageUpText  , L);
+       }
      }
-    else if (LeftRightPriority.registerGet() == 0 && !up &&                     // Right might want to send a message up
-                     MessageUp.registerGet(R) > 0)
-     {MessageUp      .copy(N, MessageUp      , R);
-      MessageUpNumber.copy(N, MessageUpNumber, R);
-      MessageUpSource.copy(N, MessageUpSource, R);
-      MessageUpTarget.copy(N, MessageUpTarget, R);
-      MessageUpText  .copy(N, MessageUpText  , R);
+    class Right
+     {Right()
+       {MessageUp      .copy(N, MessageUp      , R);
+        MessageUpNumber.copy(N, MessageUpNumber, R);
+        MessageUpSource.copy(N, MessageUpSource, R);
+        MessageUpTarget.copy(N, MessageUpTarget, R);
+        MessageUpText  .copy(N, MessageUpText  , R);
+       }
      }
+    if (LeftRightPriority.registerGet()  > 0 && gl) new Left();                 // Left might want to send a message up
+    else if (LeftRightPriority.registerGet() == 0 && gr) new Right();           // Right might want to send a message up
    }
 
   void CopyUp(Verilog v, int N)                                                 // Copy a child message upward into this junction with alternating left/right priority - generated Verilog version
-   {final Integer L  = left (N);                                                // Left child if any
-    final Integer R  = right(N);                                                // Right child if any
+   {final Integer L = left (N);                                                 // Left child if any
+    final Integer R = right(N);                                                 // Right child if any
     if (L == null || R == null) return;                                         // Assume a full tree
 
     final String up = MessageUp        .registerName(N);                        // Upward-seeking message available at this level
     final String lr = LeftRightPriority.registerName();                         // Left/right priority for choosing the next message if both children can supply a message
     final String lm = MessageUp.registerName(L);                                // Left child
     final String rm = MessageUp.registerName(R);                                // Right child
-    v.new If (lr +" && !"+up+" && "+lm)                                         // Left might want to send a message up
-     {void Then()
+    final String gl = "(" +lr + " && !"+up +" && " + lm+")";                    // Left might want to send a message up
+    final String gr = "(!"+lr + " && !"+up +" && " + rm+")";                    // Right might want to send a message up
+
+    class Left
+     {Left()
        {MessageUp      .copy(v, N, MessageUp      , L);
         MessageUpNumber.copy(v, N, MessageUpNumber, L);
         MessageUpSource.copy(v, N, MessageUpSource, L);
         MessageUpTarget.copy(v, N, MessageUpTarget, L);
         MessageUpText  .copy(v, N, MessageUpText  , L);
        }
+     }
+
+    class Right
+     {Right()
+       {MessageUp      .copy(v, N, MessageUp      , R);
+        MessageUpNumber.copy(v, N, MessageUpNumber, R);
+        MessageUpSource.copy(v, N, MessageUpSource, R);
+        MessageUpTarget.copy(v, N, MessageUpTarget, R);
+        MessageUpText  .copy(v, N, MessageUpText  , R);
+       }
+     };
+
+    v.new If (gl)                                                               // Left might want to send a message up
+     {void Then()
+       {new Left();
+       }
       void Else()
-       {v.new If ("!"+lr+" && !"+up+" && "+rm)                                  // Right might want to send a message up
+       {v.new If (gr)                                                           // Right might want to send a message up
          {void Then()
-           {MessageUp      .copy(v, N, MessageUp      , R);
-            MessageUpNumber.copy(v, N, MessageUpNumber, R);
-            MessageUpSource.copy(v, N, MessageUpSource, R);
-            MessageUpTarget.copy(v, N, MessageUpTarget, R);
-            MessageUpText  .copy(v, N, MessageUpText  , R);
+           {new Right();
            }
          };
        }
