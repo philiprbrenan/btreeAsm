@@ -418,7 +418,8 @@ class TreeNetVerilog extends Chip                                               
     final boolean up = messageUp[N];                                            // Message at this level if any
     final boolean gl = !up && messageUp[L];                                     // Go left
     final boolean gr = !up && messageUp[R];                                     // Go right
-    class Left
+
+    class Left                                                                  // Move the left child up
      {Left()
        {messageUp      [N] = messageUp      [L];
         messageUpNumber[N] = messageUpNumber[L];
@@ -427,7 +428,8 @@ class TreeNetVerilog extends Chip                                               
         messageUpText  [N] = messageUpText  [L];
        }
      }
-    class Right
+
+    class Right                                                                 // Move the right child up
      {Right()
        {messageUp      [N] = messageUp      [R];
         messageUpNumber[N] = messageUpNumber[R];
@@ -436,9 +438,8 @@ class TreeNetVerilog extends Chip                                               
         messageUpText  [N] = messageUpText  [R];
        }
      }
-//  if      ( leftRightPriority && gl) new Left ();
-//  else if (!leftRightPriority && gr) new Right();
-    if (leftRightPriority)
+
+    if (leftRightPriority)                                                      // Alternate priority of left or right child
      {if (gl) new Left(); else if (gr) new Right();
      }
     else
@@ -455,7 +456,7 @@ class TreeNetVerilog extends Chip                                               
     final boolean gl = !up && MessageUp.registerGet(L) > 0;                     // Left might want to send a message up
     final boolean gr = !up && MessageUp.registerGet(R) > 0;                     // Right might want to send a message up
 
-    class Left
+    class Left                                                                  // Move the left child up
      {Left()
        {MessageUp      .copy(N, MessageUp      , L);
         MessageUpNumber.copy(N, MessageUpNumber, L);
@@ -464,7 +465,8 @@ class TreeNetVerilog extends Chip                                               
         MessageUpText  .copy(N, MessageUpText  , L);
        }
      }
-    class Right
+
+    class Right                                                                 // Move the right child up
      {Right()
        {MessageUp      .copy(N, MessageUp      , R);
         MessageUpNumber.copy(N, MessageUpNumber, R);
@@ -474,7 +476,7 @@ class TreeNetVerilog extends Chip                                               
        }
      }
 
-    if (LeftRightPriority.registerGet() > 0)
+    if (LeftRightPriority.registerGet() > 0)                                    // Alternate priority of left or right child
      {if (gl) new Left(); else if (gr) new Right();
      }
     else
@@ -494,7 +496,7 @@ class TreeNetVerilog extends Chip                                               
     final String gl = "(!"+up +" && " + lm+")";                                 // Left might want to send a message up
     final String gr = "(!"+up +" && " + rm+")";                                 // Right might want to send a message up
 
-    class Left
+    class Left                                                                  // Move the left child up
      {Left()
        {MessageUp      .copy(v, N, MessageUp      , L);
         MessageUpNumber.copy(v, N, MessageUpNumber, L);
@@ -504,7 +506,7 @@ class TreeNetVerilog extends Chip                                               
        }
      }
 
-    class Right
+    class Right                                                                 // Move the right child up
      {Right()
        {MessageUp      .copy(v, N, MessageUp      , R);
         MessageUpNumber.copy(v, N, MessageUpNumber, R);
