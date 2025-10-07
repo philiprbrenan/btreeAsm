@@ -170,7 +170,8 @@ class TreeNetVerilog extends Chip                                               
 
   void transmit()                                                               // Transmit each message one step through the tree network
    {for (int i = 0; i < size; i++) copyUp (i);                                  // Copy a source message up one step so that it is closer to the target
-    for (int i = 1; i < size; i++) clearUp(i);                                  // Clear the source of an upward-moving message - the root cannot be such a source
+//  for (int i = 1; i < size; i++) clearUp(i);                                  // Clear the source of an upward-moving message - the root cannot be such a source
+    for (int i = size; i > 1; i--) clearUp(i-1);                                // Clear the source of an upward-moving message - the root cannot be such a source. clearing in reverse prevents a cleared field from being reused later in the same cycle
 
     messageDown      [0] = messageUp      [0];                                  // Transfer the message from the upward-seeking side of the tree to the downward-seeking side
     messageDownNumber[0] = messageUpNumber[0];
@@ -196,10 +197,12 @@ class TreeNetVerilog extends Chip                                               
      };
     P.new Instruction()
      {void action()
-       {for (int i = 1; i < size; i++) ClearUp(i);                              // Clear the source of an upward-moving message - the root cannot be such a source
+       {//for (int i = 1; i < size; i++) ClearUp(i);                              // Clear the source of an upward-moving message - the root cannot be such a source
+        for (int i = size; i > 1; i--) ClearUp(i-1);                                // Clear the source of an upward-moving message - the root cannot be such a source. clearing in reverse prevents a cleared field from being reused later in the same cycle
        }
       void verilog(Verilog v)
-       {for (int i = 1; i < size; i++) ClearUp(v, i);                           // Clear the source of an upward-moving message - the root cannot be such a source
+       {//for (int i = 1; i < size; i++) ClearUp(v, i);                           // Clear the source of an upward-moving message - the root cannot be such a source
+        for (int i = size; i > 1; i--) ClearUp(v, i-1);                                // Clear the source of an upward-moving message - the root cannot be such a source. clearing in reverse prevents a cleared field from being reused later in the same cycle
        }
      };
 
@@ -521,7 +524,7 @@ class TreeNetVerilog extends Chip                                               
     messageDownTarget [N] = messageDownPendingTarget[N];
     messageDownText   [N] = messageDownPendingText  [N];
     messageDownPending[N] = false;                                              // Move the message from pending to active now that downward simulation step is complete
-    messageDown       [parent(N)] = false;                                      // Remove the message from parent
+    //messageDown       [parent(N)] = false;                                      // Remove the message from parent
    }
 
   void ClearDown(int N)                                                         // Copy a pending message into this junction
@@ -1510,8 +1513,6 @@ Jnct  Level Step:   12        Up  Left Right  Addr      Up______  Down____ |
 
   static void newTests()                                                        // Tests being worked on
    {oldTests();
-    //test_oneV();  // 2194 2318 3530 3644 3780 5021
-    test_twoV();
    }
 
   public static void main(String[] args)                                        // Test if called as a program
