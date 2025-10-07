@@ -13,7 +13,8 @@ class TreeNetVerilog extends Chip                                               
   final Process   P = new Process("main");                                      // Process in which the network runs
   final BitSet  []address;                                                      // Address in branch path steering format
   final BitSet  []addressMask;                                                  // Mask for the corresponding address
-  final Process.Register Address;                                               // Address in branch path steering format
+  final Process.Register Address;                                               // Arrayed register of addresses in branch path steering format for each junction
+  final Process.Register AddressMask;                                           // Arrayed register of address masks for each junction
 
   final boolean []messageUp;                                                    // Message waiting to be sent upward through the tree network
   final boolean []messageDown;                                                  // Message waiting to be sent downward through the tree network
@@ -58,6 +59,8 @@ class TreeNetVerilog extends Chip                                               
   final Process.Register Step;                                                  // Address in branch path steering format
   final Process.Register putMessage = P.register("putMessage", 1);              // Result of putting a message
 
+  static final boolean javaOnly = !false;                                        // Ignore verilog if true - used during testing to establish Java base case
+
 //D1 Construction                                                               // Construct a tree network
 
   TreeNetVerilog(int Size)                                                      // Create the tree network.  The number of leaves will be 2**(Size-1)
@@ -85,7 +88,8 @@ class TreeNetVerilog extends Chip                                               
     address                  = new BitSet[size];                                // The guidance path address to this junction
     addressMask              = new BitSet[size];                                // The mask for the corresponding address
 
-    Address                  = P.register("address",   1, size);
+    Address                  = P.register("address",      addressWidth, size);  // Address for each junction
+    AddressMask              = P.register("addressMask",  addressWidth, size);  // Address mask for each junction
     MessageUp                = P.register("messageUp", 1, size);
     MessageDown              = P.register("messageUp", 1, size);
     MessageDownPending       = P.register("messageUp", 1, size);
@@ -195,7 +199,7 @@ class TreeNetVerilog extends Chip                                               
        {for (int i = 1; i < size; i++) ClearUp(i);                              // Clear the source of an upward-moving message - the root cannot be such a source
        }
       void verilog(Verilog v)
-       {
+       {for (int i = 1; i < size; i++) ClearUp(v, i);                           // Clear the source of an upward-moving message - the root cannot be such a source
        }
      };
 
@@ -206,18 +210,22 @@ class TreeNetVerilog extends Chip                                               
         MessageDownSource.copy(0, MessageUpSource, 0);
         MessageDownTarget.copy(0, MessageUpTarget, 0);
         MessageDownText  .copy(0, MessageUpText  , 0);
-      }
-     void verilog(Verilog v)
-      {
-      }
-    };
+       }
+      void verilog(Verilog v)
+       {MessageDown      .copy(v, 0, MessageUp      , 0);                       // Transfer the message from the upward-seeking side of the tree to the downward-seeking side
+        MessageDownNumber.copy(v, 0, MessageUpNumber, 0);
+        MessageDownSource.copy(v, 0, MessageUpSource, 0);
+        MessageDownTarget.copy(v, 0, MessageUpTarget, 0);
+        MessageDownText  .copy(v, 0, MessageUpText  , 0);
+       }
+     };
 
     P.new Instruction()
      {void action()
-       {MessageUp.registerSet(0, 0);                                                       // Remove the message from upward-seeking side now that it has been transferred to the downward-seeking side of the tree network
+       {MessageUp.registerSet(0, 0);                                            // Remove the message from upward-seeking side now that it has been transferred to the downward-seeking side of the tree network
        }
       void verilog(Verilog v)
-       {
+       {MessageUp.registerSet(v, 0, 0);                                         // Remove the message from upward-seeking side now that it has been transferred to the downward-seeking side of the tree network
        }
      };
 
@@ -226,7 +234,7 @@ class TreeNetVerilog extends Chip                                               
        {for(int i = 1; i < size; i++) CopyDown  (i);                            // Copy a source message down one step so that it is closer to the target
        }
       void verilog(Verilog v)
-       {
+       {for(int i = 1; i < size; i++) CopyDown  (v, i);                         // Copy a source message down one step so that it is closer to the target
        }
      };
     P.new Instruction()
@@ -234,7 +242,7 @@ class TreeNetVerilog extends Chip                                               
        {for(int i = 1; i < size; i++) ClearDown (i);                            // Clear the source of a downward-moving message - the root cannot be such a source
        }
       void verilog(Verilog v)
-       {
+       {for(int i = 1; i < size; i++) ClearDown (v, i);                         // Clear the source of a downward-moving message - the root cannot be such a source
        }
      };
     P.new Instruction()
@@ -242,7 +250,7 @@ class TreeNetVerilog extends Chip                                               
        {for(int i = 1; i < size; i++) ClearShort(i);                            // Clear the source of a short-circuited downward-moving message - the root cannot be such a source
        }
       void verilog(Verilog v)
-       {
+       {for(int i = 1; i < size; i++) ClearShort(v, i);                            // Clear the source of a short-circuited downward-moving message - the root cannot be such a source
        }
      };
     LeftRightPriority.Not();                                                    // Alternate left/right upward priority
@@ -339,9 +347,11 @@ class TreeNetVerilog extends Chip                                               
     for (int N = Index+1, i = addressLevel(Index); N > 1; N /= 2, --i)
      {if (N % 2 == 1) B.set(i-1);
      }
+    final int M = (1<<addressLevel(Index))-1;                                   // Mask for this address
     address    [Index] = B;                                                     // Path from zero to this address as a bit set
-    addressMask[Index] = intToBitSet((1<<addressLevel(Index))-1);               // Mask for this address
-    Address.RegisterSet(bitSetToInt(B), Index);                                 // Path from zero to this address as am int
+    addressMask[Index] = intToBitSet(M);                                        // Mask for this address
+    Address    .RegisterSet(bitSetToInt(B), Index);                             // Path from zero to this address as an int
+    AddressMask.RegisterSet(M, Index);                                          // Mask for this address
    }
 
   private boolean addressDown(int Source, int Target)                           // Is this an address that can be descended through towards the target
@@ -352,23 +362,12 @@ class TreeNetVerilog extends Chip                                               
     return s.equals(t);
    }
 
-  private Process.Register addressDown                                          // Is this an address that can be descended through towards the target
-   (Process.Register Source, Process.Register Target)
-   {final Process.Register r = P.register("addressDown", 1);
-    P.new Instruction()
-     {void action()
-       {if (addressDown(Source.registerGet(), Target.registerGet()))
-         {r.one();
-         }
-        else
-         {r.zero();
-         }
-       }
-      void verilog(Verilog v)
-       {
-       }
-     };
-    return r;
+  private String addressDown(int Source, String Target)                         // Is this an address that can be descended through towards the target
+   {final String s = Address.registerName(Source);
+    final String t = Address.registerName(Target);
+    final String S = AddressMask.registerName(Source);
+    final String T = AddressMask.registerName(Target);
+    return "("+s+" && "+S+") == ("+t+" && "+T+")";
    }
 
   private String addressPrint(int Index)                                        // Print an address
@@ -423,6 +422,20 @@ class TreeNetVerilog extends Chip                                               
      }
    }
 
+  private void ClearUp(Verilog v, int N)                                        // Clear source of messages sent upward through this junction
+   {final int parent = parent(N);
+
+    v.new If
+       (MessageUp      .registerName(N)      +" && "+                         // Same message in parent and child means we can remove the child message
+        MessageUp      .registerName(parent) +" && "+
+        MessageUpNumber.registerName(N)      +" == "+
+        MessageUpNumber.registerName(parent))
+     {void Then()
+       {MessageUp      .registerSet(v, 0, N);
+       }
+     };
+   }
+
   void copyUp(int N)                                                            // Copy a child message upward into this junction with alternating left/right priority
    {final Integer L  = left (N);                                                // Left child if any
     final Integer R  = right(N);                                                // Right child if any
@@ -470,27 +483,34 @@ class TreeNetVerilog extends Chip                                               
    }
 
   void CopyUp(Verilog v, int N)                                                 // Copy a child message upward into this junction with alternating left/right priority
-   {final boolean up = MessageUp.registerGet(N) > 0;                            // Message at this level if any
-    final Integer L  = left (N);                                                // Left child if any
+   {final Integer L  = left (N);                                                // Left child if any
     final Integer R  = right(N);                                                // Right child if any
-    if (LeftRightPriority.registerGet() > 0 && L != null)                       // Examine the left child for a message to be sent up. To avoid always giving messages on the left-hand side priority over the right-hand side we alternate between giving the left-hand side and the right-hand side priority
-     {if (!up && MessageUp.registerGet(L) > 0)                                  // Left might want to send a message up
+    if (L == null || R == null) return;                                         // Assume a full tree
+
+    final String up = MessageUp        .registerName(N);                        // Message at this level if any
+    final String lr = LeftRightPriority.registerName();                         // Message at this level if any
+    final String lm = MessageUp.registerName(L);
+    final String rm = MessageUp.registerName(R);
+    v.new If (lr +" && !"+up+" && "+lm)                                         // Left might want to send a message up
+     {void Then()
        {MessageUp      .copy(v, N, MessageUp      , L);
         MessageUpNumber.copy(v, N, MessageUpNumber, L);
         MessageUpSource.copy(v, N, MessageUpSource, L);
         MessageUpTarget.copy(v, N, MessageUpTarget, L);
         MessageUpText  .copy(v, N, MessageUpText  , L);
        }
-     }
-    else if (LeftRightPriority.registerGet() == 0 && R != null)                 // Examine the right child for a message to be sent up. To avoid always giving messages on the left-hand side priority over the right-hand side we alternate between giving the left-hand side and the right-hand side priority
-     {if (!up && MessageUp.registerGet(R) > 0)                                  // Right might want to send a message up
-       {MessageUp      .copy(v, N, MessageUp      , R);
-        MessageUpNumber.copy(v, N, MessageUpNumber, R);
-        MessageUpSource.copy(v, N, MessageUpSource, R);
-        MessageUpTarget.copy(v, N, MessageUpTarget, R);
-        MessageUpText  .copy(v, N, MessageUpText  , R);
+      void Else()
+       {v.new If ("!"+lr+" && !"+up+" && "+rm)                                  // Right might want to send a message up
+         {void Then()
+           {MessageUp      .copy(v, N, MessageUp      , R);
+            MessageUpNumber.copy(v, N, MessageUpNumber, R);
+            MessageUpSource.copy(v, N, MessageUpSource, R);
+            MessageUpTarget.copy(v, N, MessageUpTarget, R);
+            MessageUpText  .copy(v, N, MessageUpText  , R);
+           }
+         };
        }
-     }
+     };
    }
 
   void clearDown(int N)                                                         // Copy a parent message downward into this junction, or short-circuit an upward message if target is below
@@ -504,7 +524,7 @@ class TreeNetVerilog extends Chip                                               
     messageDown       [parent(N)] = false;                                      // Remove the message from parent
    }
 
-  void ClearDown(int N)                                                         // Copy a parent message downward into this junction, or short-circuit an upward message if target is below
+  void ClearDown(int N)                                                         // Copy a pending message into this junction
    {if (MessageDownPending.registerGet(N) == 0) return;                         // Skip if there is no downward-seeking message pending for this junction
     MessageDown       .copy(N, MessageDownPending      , N);
     MessageDownNumber .copy(N, MessageDownPendingNumber, N);
@@ -512,7 +532,21 @@ class TreeNetVerilog extends Chip                                               
     MessageDownTarget .copy(N, MessageDownPendingTarget, N);
     MessageDownText   .copy(N, MessageDownPendingText  , N);
     MessageDownPending.registerSet(0, N);                                       // Move the message from pending to active now that downward simulation step is complete
-    MessageDown       .registerSet(0, parent(N));                               // Remove the message from parent
+    //MessageDown       .registerSet(0, parent(N));                               // Remove the message from parent
+   }
+
+  void ClearDown(Verilog v, int N)                                              // Copy a pending message into this junction
+   {v.new If (MessageDownPending.registerName(N))
+     {void Then()
+       {MessageDown       .copy(v, N, MessageDownPending      , N);
+        MessageDownNumber .copy(v, N, MessageDownPendingNumber, N);
+        MessageDownSource .copy(v, N, MessageDownPendingSource, N);
+        MessageDownTarget .copy(v, N, MessageDownPendingTarget, N);
+        MessageDownText   .copy(v, N, MessageDownPendingText  , N);
+        MessageDownPending.registerSet(v, 0, N);                                // Move the message from pending to active now that downward simulation step is complete
+        //MessageDown       .registerSet(v, 0, parent(N));                        // Remove the message from parent
+       }
+     };
    }
 
   void clearShort(int N)                                                        // Clear any short-circuited source message from the parent
@@ -541,6 +575,22 @@ class TreeNetVerilog extends Chip                                               
      }
    }
 
+  void ClearShort(Verilog v, int N)                                                        // Clear any short-circuited source message from the parent
+   {final Integer L = left (N);
+    final Integer R = right(N);
+    if (L == null || R == null) return;                                         // Assume a full tree
+
+    v.new If
+     ("("+MessageDown      .registerName(L)+" && "+MessageUp      .registerName(N)+" && "+                          // Clear the upward-seeking message from the parent if it was transferred to a downward-seeking branch
+          MessageDownNumber.registerName(L)+" == "+MessageUpNumber.registerName(N)+") ||"+
+      "("+MessageDown      .registerName(R)+" && "+MessageUp      .registerName(N)+" && "+
+          MessageDownNumber.registerName(R)+" == "+MessageUpNumber.registerName(N)+")")
+     {void Then()
+       {MessageUp.registerSet(v, 0, N);
+       }
+     };
+   }
+
   void copyDown(int N)                                                          // Transmit messages down through this junction
    {final int P = parent(N);
     if (messageDown[P] && !messageDown[N] &&                                    // The parent wants to send us a message
@@ -550,6 +600,7 @@ class TreeNetVerilog extends Chip                                               
       messageDownPendingSource[N] = messageDownSource[P];
       messageDownPendingTarget[N] = messageDownTarget[P];
       messageDownPendingText  [N] = messageDownText  [P];
+                                    messageDown[P] = false;                     // Remove the message from the parent
      }
     else if (messageUp[P] &&  addressDown(N, messageUpTarget[P]))               // Short-circuit upward-seeking message if its target is on this branch
      {messageDownPending      [N] = true;
@@ -557,6 +608,7 @@ class TreeNetVerilog extends Chip                                               
       messageDownPendingSource[N] = messageUpSource[P];
       messageDownPendingTarget[N] = messageUpTarget[P];
       messageDownPendingText  [N] = messageUpText  [P];
+                                    messageUp[P] = false;                       // Remove the message from the parent
      }
    }
 
@@ -569,6 +621,7 @@ class TreeNetVerilog extends Chip                                               
       MessageDownPendingSource.copy(N, MessageDownSource, P);
       MessageDownPendingTarget.copy(N, MessageDownTarget, P);
       MessageDownPendingText  .copy(N, MessageDownText  , P);
+                                       MessageDown.registerSet(0, P);           // Remove the message from the parent
      }
     else if (MessageUp.registerGet(P) > 0 &&                                    // Short-circuit upward-seeking message if its target is on this branch
           addressDown(N, MessageUpTarget.registerGet(P)))                       // Could the upward-seeking message short-circuit down this branch to reach its target?
@@ -577,7 +630,40 @@ class TreeNetVerilog extends Chip                                               
       MessageDownPendingSource.copy(N, MessageUpSource, P);
       MessageDownPendingTarget.copy(N, MessageUpTarget, P);
       MessageDownPendingText  .copy(N, MessageUpText  , P);
+                                       MessageUp.registerSet(0, P);             // Remove the message from the parent
      }
+   }
+
+  void CopyDown(Verilog v, int N)                                               // Transmit messages down through this junction
+   {final int P = parent(N);
+    final String pd = MessageDown.registerName(P);                              // Message moving down
+    final String pu = MessageUp  .registerName(P);                              // Message moving up that we might be able to short circuit
+    final String cr = MessageDown.registerName(N);                              // Current message
+    final String ad = addressDown(N, MessageDownTarget.registerName(P));        // The message should go down through this junction. Cache the message for the moment to prevent overruns.
+    final String au = addressDown(N, MessageUpTarget  .registerName(P));        // Could the upward-seeking message short-circuit down this branch to reach its target?
+
+    v.new If (pd+" && !"+cr+" && "+ad)                                          // The parent wants to send us a message
+     {void Then()
+       {MessageDownPending      .registerSet(v, 1, N);
+        MessageDownPendingNumber.copy(v, N, MessageDownNumber, P);
+        MessageDownPendingSource.copy(v, N, MessageDownSource, P);
+        MessageDownPendingTarget.copy(v, N, MessageDownTarget, P);
+        MessageDownPendingText  .copy(v, N, MessageDownText  , P);
+                                            MessageDown.registerSet(v, 0, P);   // Remove the message from the parent
+       }
+      void Else()
+       {v.new If (pu+" && "+au)                                                 // Short-circuit upward-seeking message if its target is on this branch
+         {void Then()
+           {MessageDownPending      .registerSet(v, 1, N);
+            MessageDownPendingNumber.copy(v, N, MessageUpNumber, P);
+            MessageDownPendingSource.copy(v, N, MessageUpSource, P);
+            MessageDownPendingTarget.copy(v, N, MessageUpTarget, P);
+            MessageDownPendingText  .copy(v, N, MessageUpText  , P);
+                                                MessageUp.registerSet(v, 0, P); // Remove the message from the parent
+           }
+         };
+       }
+     };
    }
 
 //D1 Tests                                                                      // Test the tree network
@@ -646,7 +732,7 @@ Jnct  Level Step:    3        Up  Left Right  Addr      Up______  Down____ |
       Transmit();
      }
     maxSteps = ExecSteps;
-    chipRunJava();
+    if (javaOnly) chipRunJava(); else chipRun();
     return s;
    }
 
@@ -657,7 +743,7 @@ Jnct  Level Step:    3        Up  Left Right  Addr      Up______  Down____ |
     T.printCompact = false;
     T.PutMessage(5, 3, 1111);
 
-    final StringBuilder s = T.test_transmission(5, 60);
+    final StringBuilder s = T.test_transmission(5, 1000);
 
     //stop(s);
     ok(s, """
@@ -714,6 +800,7 @@ Jnct  Level Step:    5        Up  Left Right  Addr      Up______  Down____ |
     final TreeNetVerilog       T = new TreeNetVerilog(3);
     final StringBuilder s = new StringBuilder();
 
+    T.P.processTrace = true;
     T.putMessage(T.lastLeaf()-1, T.firstLeaf(),   1111);
     T.putMessage(T.lastLeaf(),   T.firstLeaf()+1, 2222);
 
@@ -754,6 +841,7 @@ Jnct  Level Step:    7        Up  Left Right  Addr      Up______  Down____ |
    {sayCurrentTestName();
     final TreeNetVerilog T = new TreeNetVerilog(3);
 
+    T.P.processTrace = true;
     T.PutMessage(T.lastLeaf()-1, T.firstLeaf(),   1111);
     T.PutMessage(T.lastLeaf(),   T.firstLeaf()+1, 2222);
 
@@ -793,6 +881,7 @@ Jnct  Level Step:    8        Up  Left Right  Addr      Up______  Down____ |
     T.printCompact  = false;
     final StringBuilder s = new StringBuilder();
 
+    T.P.processTrace = true;
     T.putMessage(T.firstLeaf(), T.lastLeaf(),  1111);
     T.putMessage(T.lastLeaf(),  T.firstLeaf(), 2222);
 
@@ -821,7 +910,8 @@ Jnct  Level Step:    2        Up  Left Right  Addr      Up______  Down____ |
    {sayCurrentTestName();
     final TreeNetVerilog T = new TreeNetVerilog(2);
 
-    T.printCompact  = false;
+    T.printCompact   = false;
+    T.P.processTrace = true;
     T.PutMessage(T.firstLeaf(), T.lastLeaf(),  1111);
     T.PutMessage(T.lastLeaf(),  T.firstLeaf(), 2222);
 
@@ -868,6 +958,7 @@ Jnct  Level Step:    8        Up  Left Right  Addr      Up______  Down____ |
     final TreeNetVerilog       T = new TreeNetVerilog(4);
     final StringBuilder s = new StringBuilder();
 
+    T.P.processTrace = true;
     T.putMessage(T.firstLeaf(), T.lastLeaf(),  1111);
     T.putMessage(T.lastLeaf(),  T.firstLeaf(), 2222);
 
@@ -910,10 +1001,11 @@ Jnct  Level Step:    8        Up  Left Right  Addr      Up______  Down____ |
    {sayCurrentTestName();
     final TreeNetVerilog       T = new TreeNetVerilog(4);
 
+    T.P.processTrace = true;
     T.PutMessage(T.firstLeaf(), T.lastLeaf(),  1111);
     T.PutMessage(T.lastLeaf(),  T.firstLeaf(), 2222);
 
-    final StringBuilder s = T.test_transmission(9, 100);
+    final StringBuilder s = T.test_transmission(9, 1000);
     //stop(s);
     ok(s, """
 Jnct  Level Step:    9        Up  Left Right  Addr      Up______  Down____ |
@@ -950,6 +1042,8 @@ Jnct  Level Step:    9        Up  Left Right  Addr      Up______  Down____ |
     final TreeNetVerilog       T = new TreeNetVerilog(4);
     final StringBuilder s = new StringBuilder();
     final int F = T.firstLeaf(), L = T.lastLeaf(), N = T.leaves();
+
+    T.P.processTrace = true;
     for (int i = 1; i <= N; i++) T.putMessage(F+i-1, L-i+1, 1000*i+100*i+10*i+i);
 
     for (T.step = 0; T.step < 16; ++T.step)
@@ -1101,6 +1195,7 @@ Jnct  Level Step:   15        Up  Left Right  Addr      Up______  Down____ |
     final TreeNetVerilog T = new TreeNetVerilog(4);
 
     final int F = T.firstLeaf(), L = T.lastLeaf(), N = T.leaves();
+    T.P.processTrace = true;
     for (int i = 1; i <= N; i++) T.PutMessage(F+i-1, L-i+1, 1000*i+100*i+10*i+i);
 
     final StringBuilder s = T.test_transmission(16, 200);
@@ -1249,6 +1344,7 @@ Jnct  Level Step:   16        Up  Left Right  Addr      Up______  Down____ |
     final TreeNetVerilog T = new TreeNetVerilog(4);
     final StringBuilder  s = new StringBuilder();
 
+    T.P.processTrace = true;
     T.putMessage(T.lastLeaf(),   T.lastLeaf()-1, 1111);
     T.putMessage(T.lastLeaf()-1, T.lastLeaf(),   2222);
     for (T.step = 0; T.step < 3; ++T.step)
@@ -1272,6 +1368,7 @@ Jnct  Level Step:    2        Up  Left Right  Addr      Up______  Down____ |
    {sayCurrentTestName();
     final TreeNetVerilog T = new TreeNetVerilog(4);
 
+    T.P.processTrace = true;
     T.PutMessage(T.lastLeaf(),   T.lastLeaf()-1, 1111);
     T.PutMessage(T.lastLeaf()-1, T.lastLeaf(),   2222);
 
@@ -1324,6 +1421,8 @@ Jnct  Level Step:   12        Up  Left Right  Addr      Up______  Down____ |
     final StringJoiner   t = new StringJoiner(", ");
     final int []     words = {1111, 2222, 3333, 4444, 5555, 6666};
 
+    T.P.processTrace = true;
+
     int i = 0;
     for (T.step = 0; T.step < Steps; ++T.step)
      {if (i < words.length && T.putMessage(Source, Target, words[i])) ++i;
@@ -1344,8 +1443,10 @@ Jnct  Level Step:   12        Up  Left Right  Addr      Up______  Down____ |
     final StringJoiner   t = new StringJoiner(", ");
     final int []     words = {1111, 2222, 3333, 4444, 5555, 6666};
     final Process.Register Result = T.P.register("result", 1);
-
     final Process.Register i = T.P.register("i", 8);
+
+    T.P.processTrace = true;
+
     for (T.step = 0; T.step < Steps; ++T.step)
      {T.P.new Instruction()
        {void action()
@@ -1409,7 +1510,8 @@ Jnct  Level Step:   12        Up  Left Right  Addr      Up______  Down____ |
 
   static void newTests()                                                        // Tests being worked on
    {oldTests();
-    //test_oneV();
+    //test_oneV();  // 2194 2318 3530 3644 3780 5021
+    test_twoV();
    }
 
   public static void main(String[] args)                                        // Test if called as a program
