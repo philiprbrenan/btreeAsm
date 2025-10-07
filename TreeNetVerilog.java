@@ -529,7 +529,6 @@ class TreeNetVerilog extends Chip                                               
       messageDownPendingSource[N] = messageDownSource[P];
       messageDownPendingTarget[N] = messageDownTarget[P];
       messageDownPendingText  [N] = messageDownText  [P];
-                                    //messageDown[P] = false;                   // Remove the message from the parent
      }
     else if (messageUp[P] &&  addressDown(N, messageUpTarget[P]))               // Short-circuit upward-seeking message if its target is on this branch
      {messageDownPending      [N] = true;
@@ -537,7 +536,6 @@ class TreeNetVerilog extends Chip                                               
       messageDownPendingSource[N] = messageUpSource[P];
       messageDownPendingTarget[N] = messageUpTarget[P];
       messageDownPendingText  [N] = messageUpText  [P];
-                                    //messageUp[P] = false;                     // Remove the message from the parent
      }
    }
 
@@ -551,7 +549,6 @@ class TreeNetVerilog extends Chip                                               
       MessageDownPendingSource.copy(N, MessageDownSource, P);
       MessageDownPendingTarget.copy(N, MessageDownTarget, P);
       MessageDownPendingText  .copy(N, MessageDownText  , P);
-                                     //MessageDown.registerSet(0, P);           // Remove the message from the parent
      }
     else if (MessageUp.registerGet(P) > 0 &&                                    // Short-circuit upward-seeking message if its target is on this branch
           addressDown(N, MessageUpTarget.registerGet(P)))                       // Could the upward-seeking message short-circuit down this branch to reach its target?
@@ -560,8 +557,7 @@ class TreeNetVerilog extends Chip                                               
       MessageDownPendingSource.copy(N, MessageUpSource, P);
       MessageDownPendingTarget.copy(N, MessageUpTarget, P);
       MessageDownPendingText  .copy(N, MessageUpText  , P);
-                                     //MessageUp.registerSet(0, P);             // Remove the message from the parent
-     }                                 ////
+     }
    }
 
   void CopyDown(Verilog v, int N)                                               // Transmit messages down through this junction
@@ -645,7 +641,6 @@ class TreeNetVerilog extends Chip                                               
           MessageDownPendingNumber.registerName(R)+" == "+MessageDownNumber.registerName(N)+")")
      {void Then()
        {MessageDown.registerSet(v, 0, N);
-        v.comment("AAAAA");
        }
       void Else()
        {v.new If                                                                // Clear any upward-seeking message from the parent if it was short circuited down to the left or right
@@ -655,7 +650,6 @@ class TreeNetVerilog extends Chip                                               
               MessageDownPendingNumber.registerName(R)+" == "+MessageUpNumber.registerName(N)+")")
          {void Then()
            {MessageUp.registerSet(v, 0, N);
-            v.comment("BBBB");
            }
          };
        }
