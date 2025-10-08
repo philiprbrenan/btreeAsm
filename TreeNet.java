@@ -364,12 +364,13 @@ class TreeNet extends Chip                                                      
     final Process.Register Source = P.register("Source", addressWidth);         // Source address
     final Process.Register Target = P.register("Target", addressWidth);         // Target address
     final Process.Register Text   = P.register("Text",   messageWidth);         // Text of message
-    MessageOutV(Process.Register Leaf)                                          // Get a message from the specified junction
+    Process.Register get(Process.Register Leaf)                                 // Get a message from the specified junction and return its validity
      {Valid  .CopyIs(MessageDown      , Leaf);                                  // Whether the message is valid
       Source .CopyIs(MessageDownSource, Leaf);                                  // Source address
       Target .CopyIs(MessageDownTarget, Leaf);                                  // Target address
       Text   .CopyIs(MessageDownText  , Leaf);                                  // Text of message
                      MessageDown.RegisterSet(0, Leaf);                          // Remove the message
+      return Valid;
      }
    }
 
@@ -1507,7 +1508,7 @@ Jnct  Level Step:   12        Up  Left Right  Addr      Up______  Down____ |
     final Process.Register source  = T.P.register("source",  T.addressWidth);
     final Process.Register target  = T.P.register("target",  T.addressWidth);
     final Process.Register text    = T.P.register("target",  T.messageWidth);
-    final Process.Register leaf    = T.P.register("leaf",    T.addressWidth);
+    final MessageOutV   messageOut = T.new MessageOutV();
 
     final int   Source = T.lastLeaf(), Target = T.firstLeaf(), Steps = 28;
 
@@ -1515,31 +1516,25 @@ Jnct  Level Step:   12        Up  Left Right  Addr      Up______  Down____ |
 
     source.RegisterSet(Source);
     target.RegisterSet(Target);
+
     for (int j = 0; j < words.length; j++) inputs.RegisterSet(words[j], j);
 
     for (T.step = 0; T.step < Steps; ++T.step)
      {test.Lt(i, words.length);
       T.P.new If (test)
        {void Then()
-         {text  .CopyIs(inputs, i);
-
-          final Process.Register r = T.PutMessage(source, target, text);
-
-          T.P.new If (r)
-           {void Then()
-             {i.Inc();
-             }
+         {text.CopyIs(inputs, i);
+          T.P.new If (T.PutMessage(source, target, text))
+           {void Then() {i.Inc();}
            };
          }
        };
 
       T.Transmit();
 
-      leaf.RegisterSet(Target);
-      final MessageOutV m = T.new MessageOutV(leaf);
-      T.P.new If (m.Valid)
+      T.P.new If (messageOut.get(target))
        {void Then()
-         {outputs.CopyIt(o, m.Text);
+         {outputs.CopyIt(o, messageOut.Text);
           o.Inc();
          }
        };
