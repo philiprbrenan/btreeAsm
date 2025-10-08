@@ -129,7 +129,7 @@ public class Test                                                               
       final byte[]        b = m.digest(text.getBytes("UTF-8"));
       return HexFormat.of().formatHex(b);
      }
-    catch(Exception e) {say("CCCC", e);}
+    catch(Exception e) {stop(e);}
     return null;
    }
 
@@ -273,6 +273,14 @@ public class Test                                                               
    }
 
   static int modZero(int i, int m) {return i % m  == 0 ? i : i + m - (i % m);}  // Next integer conguent to zero modulus the specified base
+
+  static int hexToInt(String hex)                                               // Convert a hexadecimal string to int
+   {return Integer.parseInt(hex.replaceAll("[^0-9A-Fa-f]", ""), 16);
+   }
+
+  static int decToInt(String dec)                                               // Convert a decimal string to int
+   {return Integer.parseInt(dec.replaceAll("[^0-9]", ""));
+   }
 
 //D2 Array routines                                                             // Routines operating on arrays
 
@@ -1449,6 +1457,12 @@ a   aa    AAA
      }
    }
 
+  static void test_hextoInt()
+   {ok(hexToInt("axxx"),  10);
+    ok(hexToInt("x1zbx"), 27);
+    ok(decToInt("1x1xx"), 11);
+   }
+
   static void oldTests()                                                        // Tests thought to be in good shape
    {test_log_two();
     test_power_two();
@@ -1468,6 +1482,7 @@ a   aa    AAA
     test_squeezeVerticalSpaces();
     test_modZero();
     test_bitSetToHex();
+    test_hextoInt();
    }
 
   static void newTests()                                                        // Tests being worked on
