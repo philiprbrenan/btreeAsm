@@ -89,7 +89,7 @@ class Btree extends Chip                                                        
     splitIr  = register("indexRight", btreeAddressSize);                        // Index in memory of the right stuck
     splitMk  = register("midKey",     bitsPerKey);                              // Mid key
 
-chipStop = true;
+    chipStop = true;
     createRootStuck();                                                          // Create the free chain
    }
 
@@ -1390,7 +1390,7 @@ chipStop = true;
 
 //D3 Merge                                                                      // Merge stucks in various ways
 
-    void merge(Stuck Source)                                                    // Concatenate the indicated stuck onto the end of the current one
+    Process.Register merge(Stuck Source)                                        // Concatenate the indicated stuck onto the end of the current one
      {if (coverageAnalysis) zz();
       final Process.Register sum = mergeSum;                                    // Sum of the lengths of the two stucks
       final Process.Register can = mergeCan;                                    // Can merge
@@ -1408,9 +1408,10 @@ chipStop = true;
          {MergeSuccess.Zero();
          }
        };
+      return MergeSuccess;
      }
 
-    void merge(Stuck Left, Stuck Right)                                         // Replace the current stuck with the concatenation of the two stucks indicated
+    Process.Register merge(Stuck Left, Stuck Right)                             // Replace the current stuck with the concatenation of the two stucks indicated
      {if (coverageAnalysis) zz();
       final Process.Register sum = mergeSum;                                    // Sum of the lengths of the two stucks
       final Process.Register can = mergeCan;                                    // Can merge
@@ -1418,7 +1419,7 @@ chipStop = true;
       P.new If (can.Le (sum, maxStuckSize))                                     // The merged result will still be small enough to fit in the target
        {void Then()
          {Clear();
-          merge(Left);
+          merge(Left);                                                          // Already checked that the result will fit
           merge(Right);
           MergeSuccess.One();
          }
@@ -1426,9 +1427,10 @@ chipStop = true;
          {MergeSuccess.Zero();
          }
        };
+      return MergeSuccess;
      }
 
-    void mergeButOne(Process.Register Key, Stuck Source)                        // Concatenate the indicated stuck with a past last data element onto the end of the current stuck with a past last data element with the specified key inserted over the central past last data element separating the two.
+    Process.Register mergeButOne(Process.Register Key, Stuck Source)            // Concatenate the indicated stuck with a past last data element onto the end of the current stuck with a past last data element with the specified key inserted over the central past last data element separating the two.
      {if (coverageAnalysis) zz();
       final Process.Register sum = mergeSum;                                    // Sum of the lengths of the two stucks
       final Process.Register can = mergeCan;                                    // Can merge
@@ -1449,9 +1451,10 @@ chipStop = true;
          {MergeSuccess.Zero();
          }
        };
+      return MergeSuccess;
      }
 
-    void mergeButOne(Stuck Left, Process.Register Key, Stuck Right)             // Concatenate the past last left and right stucks separated by the key over the past last data element of the left stuck into the target
+    Process.Register mergeButOne(Stuck Left, Process.Register Key, Stuck Right) // Concatenate the past last left and right stucks separated by the key over the past last data element of the left stuck into the target
      {if (coverageAnalysis) zz();
       final Process.Register sum = mergeSum;                                    // Sum of the lengths of the two stucks
       final Process.Register can = mergeCan;                                    // Can merge
@@ -1473,6 +1476,7 @@ chipStop = true;
          {MergeSuccess.Zero();
          }
        };
+      return MergeSuccess;
      }
 
 //D3 Is a Leaf                                                                  // Determine whether a stuck contains a leaf or a branch of a btree
@@ -1912,8 +1916,7 @@ chipStop = true;
          {void Leaf()
            {r.new IsLeaf()                                                      // Check that the children are leaves
              {void Leaf()
-               {p.merge(l, r);                                                  // Merge leaves into root
-                P.new If (p.MergeSuccess)                                       // Successful merge
+               {P.new If (p.merge(l, r))                                        // Merge leaves into root
                  {void Then()
                    {p.isLeaf.One();                                             // Mark the root as a leaf
                     p.stuckPut(true);                                           // Save the modified root back into the tree
@@ -1965,9 +1968,7 @@ chipStop = true;
          {void Leaf()
            {r.new IsLeaf()
              {void Leaf()
-               {l.merge(r);                                                     // Merge leaves into left child
-
-                P.new If (l.MergeSuccess)                                       // Modify the parent only if the merge succeeded
+               {P.new If (l.merge(r))                                           // Modify the parent only if the merge succeeded
                  {void Then()
                    {p.RemoveElementAt(LeftLeaf);                                // Remove the left child moving the right child down into its space
                     p.ElementAt(LeftLeaf);                                      // Get details of what was the right child
@@ -2028,8 +2029,7 @@ chipStop = true;
          {void Leaf()                                                           // Children are leaves
            {r.new IsLeaf()                                                      // Check that the children are leaves
              {void Leaf()                                                       // Children are leaves
-               {l.merge(r);                                                     // Merge leaves into left child
-                P.new If (l.MergeSuccess)
+               {P.new If (l.merge(r))                                           // Merge leaves into left child
                  {void Then()
                    {P.new Instruction()
                      {void action()
@@ -2109,8 +2109,7 @@ chipStop = true;
              {void Branch()
                {l.stuckGet(il);                                                 // Load left  branch from btree
                 r.stuckGet(ir);                                                 // Load right branch from btree
-                p.mergeButOne(l, mk, r);                                        // Merge left branch, splitting key, right branch into root
-                P.new If (p.MergeSuccess)
+                P.new If (p.mergeButOne(l, mk, r))                              // Merge left branch, splitting key, right branch into root
                  {void Then()
                    {p.stuckPut();                                               // Save the modified root back into the tree
                     free(il); free(ir);                                         // Free left and right leaves as they are no longer needed
