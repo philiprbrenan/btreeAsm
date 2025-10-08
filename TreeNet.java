@@ -1520,8 +1520,7 @@ Jnct  Level Step:   12        Up  Left Right  Addr      Up______  Down____ |
     for (int j = 0; j < words.length; j++) inputs.RegisterSet(words[j], j);
 
     for (T.step = 0; T.step < Steps; ++T.step)
-     {test.Lt(i, words.length);
-      T.P.new If (test)
+     {T.P.new If (test.Lt(i, words.length))
        {void Then()
          {text.CopyIs(inputs, i);
           T.P.new If (T.PutMessage(source, target, text))
