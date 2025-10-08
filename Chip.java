@@ -1181,12 +1181,13 @@ if __name__ == "__main__":
         v.assign(registerName(Index.registerFullName), Source);
        }
 
-      void RegisterSet(int Source, Register Index)                              // Load instruction
+      Register RegisterSet(int Source, Register Index)                          // Load instruction
        {if (coverageAnalysis) zz();
         new Instruction()
          {void action()           {registerSet(   Source, Index);};
           void verilog(Verilog v) {registerSet(v, Source, Index);};
          };
+        return this;
        }
 
 
@@ -1225,12 +1226,13 @@ if __name__ == "__main__":
          }
        }
 
-      void Copy(Register Source)                                                // Copy instruction
+      Register Copy(Register Source)                                                // Copy instruction
        {if (coverageAnalysis) zz();
         new Instruction()
          {void action()           {copy(Source);};
           void verilog(Verilog v) {copy(v, Source);};
          };
+        return this;
        }
 
 //D4 Integer Indexed Register to Register                                       // Copy an integer indexed element of an arrayed source register to a target register
@@ -1247,12 +1249,13 @@ if __name__ == "__main__":
         v.assign(registerFullName, Source.registerName(RegisterIndex));
        }
 
-      void Copy(Register Source, int RegisterIndex)                             // Copy instruction
+      Register Copy(Register Source, int RegisterIndex)                         // Copy instruction
        {if (coverageAnalysis) zz();
         new Instruction()
          {void action()           {copy(   Source, RegisterIndex);};
           void verilog(Verilog v) {copy(v, Source, RegisterIndex);};
          };
+        return this;
        }
 
 //D4 Register Indexed Register to Register                                      // Copy a register indexed element of an arrayed source register to a target register
@@ -1271,12 +1274,13 @@ if __name__ == "__main__":
         v.assign(registerFullName, Source.registerName(Index.registerFullName));
        }
 
-      void CopyIs(Register Source, Register Index)                              // Copy instruction
+      Register CopyIs(Register Source, Register Index)                          // Copy instruction
        {if (coverageAnalysis) zz();
         new Instruction()
          {void action()           {copyIs(   Source, Index);};
           void verilog(Verilog v) {copyIs(v, Source, Index);};
          };
+        return this;
        }
 
 //D4 Source Register Indexed by Register and Offset to Register
@@ -1296,12 +1300,13 @@ if __name__ == "__main__":
           Source.registerName(Index.registerFullName+"+"+Offset));
        }
 
-      void CopyIs(Register Source, Register Index, int Offset)                  // Copy instruction
+      Register CopyIs(Register Source, Register Index, int Offset)              // Copy instruction
        {if (coverageAnalysis) zz();
         new Instruction()
          {void action()           {copyIs(   Source, Index, Offset);};
           void verilog(Verilog v) {copyIs(v, Source, Index, Offset);};
          };
+        return this;
        }
 
 //D4 Register to Integer Indexed Register                                       // Copy a source register to an integer indexed element of an arrayed target register
@@ -1319,12 +1324,13 @@ if __name__ == "__main__":
         v.assign(registerName(RegisterIndex), Source.registerFullName);
        }
 
-      void Copy(int RegisterIndex, Register Source)                             // Copy instruction
+      Register Copy(int RegisterIndex, Register Source)                         // Copy instruction
        {if (coverageAnalysis) zz();
         new Instruction()
          {void action()           {copy(   RegisterIndex, Source);};
           void verilog(Verilog v) {copy(v, RegisterIndex, Source);};
          };
+        return this;
        }
 
 //D4 Register to register indexed Register                                      // Copy a source register to a register indexed element of this target register
@@ -1344,12 +1350,13 @@ if __name__ == "__main__":
         v.assign(registerName(Index.registerFullName), Source.registerFullName);
        }
 
-      void CopyIt(Register Index, Register Source)                              // Copy instruction
+      Register CopyIt(Register Index, Register Source)                          // Copy instruction
        {if (coverageAnalysis) zz();
         new Instruction()
          {void action()           {copyIt(   Index, Source);};
           void verilog(Verilog v) {copyIt(v, Index, Source);};
          };
+        return this;
        }
 
 //D4 Integer Indexed Register to Integer Indexed Register                       // Copy an element of an integer indexed source register to an integer indexed element of an arrayed target register
@@ -1367,12 +1374,13 @@ if __name__ == "__main__":
         v.assign(registerName(TargetIndex), Source.registerName(SourceIndex));
        }
 
-      void Copy(int TargetIndex, Register Source, int SourceIndex)              // Copy instruction
+      Register Copy(int TargetIndex, Register Source, int SourceIndex)          // Copy instruction
        {if (coverageAnalysis) zz();
         new Instruction()
          {void action()           {copy(   TargetIndex, Source, SourceIndex);};
           void verilog(Verilog v) {copy(v, TargetIndex, Source, SourceIndex);};
          };
+        return this;
        }
 
 //D3 Single to and from Arrayed                                                 // Copy an arrayed register into a single register and vice versa
@@ -1401,14 +1409,15 @@ if __name__ == "__main__":
        {final int A = Array.registerBits, S = Array.registerSize;               // Sizes
         final StringJoiner j = new StringJoiner(", ", "{", "}");                // Concatenate the source register elements
         for (int i = S-1; i >= 0;  i--) j.add(Array.registerName(i));           // Concatenate the elements of the source register from high to low
-        v.assign(registerFullName, ""+j);                                         // Assign concatenated source to target
+        v.assign(registerFullName, ""+j);                                       // Assign concatenated source to target
        }
 
-      void RegisterCopySingleFromArray(Process.Register Array)                  // Copy an arrayed register to a single register
+      Register RegisterCopySingleFromArray(Process.Register Array)              // Copy an arrayed register to a single register
        {new Instruction()
          {void action()           {registerCopySingleFromArray(   Array);}
           void verilog(Verilog v) {registerCopySingleFromArray(v, Array);}
          };
+        return this;
        }
 
       void registerCopyArrayFromSingle(Process.Register Single)                 // Copy a single register to an arrayed register
@@ -1438,11 +1447,12 @@ if __name__ == "__main__":
          }
        }
 
-      void RegisterCopyArrayFromSingle(Process.Register Single)                 // Copy a single register to an arrayed register
+      Register RegisterCopyArrayFromSingle(Process.Register Single)             // Copy a single register to an arrayed register
        {new Instruction()
          {void action()           {registerCopyArrayFromSingle(   Single);}
           void verilog(Verilog v) {registerCopyArrayFromSingle(v, Single);}
          };
+        return this;
        }
 
 //D3 Combine                                                                    // Or two registers together
@@ -1486,12 +1496,13 @@ if __name__ == "__main__":
          }
        }
 
-      void Combine(Register Source)                                             // Combine instruction
+      Register Combine(Register Source)                                         // Combine instruction
        {if (coverageAnalysis) zz();
         new Instruction()
          {void action()           {combine(Source);};
           void verilog(Verilog v) {combine(v, Source);};
          };
+        return this;
        }
 
       public String toString()                                                  // Print the register
@@ -1574,19 +1585,19 @@ if __name__ == "__main__":
       void le(Verilog v, Register a, int b) {v.assign(rn(), a.rn() +" <= "+ b +" ? 1 : 0");} // Set the target register to one if the test between the 'a' and 'b' register is true else 0
       void lt(Verilog v, Register a, int b) {v.assign(rn(), a.rn() +" <  "+ b +" ? 1 : 0");} // Set the target register to one if the test between the 'a' and 'b' register is true else 0
 
-      void Gt(Register a, Register b) {new Instruction() {void action() {gt(a, b);} void verilog(Verilog v) {gt(v, a, b);}};} // Set the target register to one if the test between the 'a' and 'b' register is true else 0 as an instruction
-      void Ge(Register a, Register b) {new Instruction() {void action() {ge(a, b);} void verilog(Verilog v) {ge(v, a, b);}};} // Set the target register to one if the test between the 'a' and 'b' register is true else 0 as an instruction
-      void Eq(Register a, Register b) {new Instruction() {void action() {eq(a, b);} void verilog(Verilog v) {eq(v, a, b);}};} // Set the target register to one if the test between the 'a' and 'b' register is true else 0 as an instruction
-      void Ne(Register a, Register b) {new Instruction() {void action() {ne(a, b);} void verilog(Verilog v) {ne(v, a, b);}};} // Set the target register to one if the test between the 'a' and 'b' register is true else 0 as an instruction
-      void Le(Register a, Register b) {new Instruction() {void action() {le(a, b);} void verilog(Verilog v) {le(v, a, b);}};} // Set the target register to one if the test between the 'a' and 'b' register is true else 0 as an instruction
-      void Lt(Register a, Register b) {new Instruction() {void action() {lt(a, b);} void verilog(Verilog v) {lt(v, a, b);}};} // Set the target register to one if the test between the 'a' and 'b' register is true else 0 as an instruction
+      Register Gt(Register a, Register b) {new Instruction() {void action() {gt(a, b);} void verilog(Verilog v) {gt(v, a, b);}}; return this;} // Set the target register to one if the test between the 'a' and 'b' register is true else 0 as an instruction
+      Register Ge(Register a, Register b) {new Instruction() {void action() {ge(a, b);} void verilog(Verilog v) {ge(v, a, b);}}; return this;} // Set the target register to one if the test between the 'a' and 'b' register is true else 0 as an instruction
+      Register Eq(Register a, Register b) {new Instruction() {void action() {eq(a, b);} void verilog(Verilog v) {eq(v, a, b);}}; return this;} // Set the target register to one if the test between the 'a' and 'b' register is true else 0 as an instruction
+      Register Ne(Register a, Register b) {new Instruction() {void action() {ne(a, b);} void verilog(Verilog v) {ne(v, a, b);}}; return this;} // Set the target register to one if the test between the 'a' and 'b' register is true else 0 as an instruction
+      Register Le(Register a, Register b) {new Instruction() {void action() {le(a, b);} void verilog(Verilog v) {le(v, a, b);}}; return this;} // Set the target register to one if the test between the 'a' and 'b' register is true else 0 as an instruction
+      Register Lt(Register a, Register b) {new Instruction() {void action() {lt(a, b);} void verilog(Verilog v) {lt(v, a, b);}}; return this;} // Set the target register to one if the test between the 'a' and 'b' register is true else 0 as an instruction
 
-      void Gt(Register a, int b)      {new Instruction() {void action() {gt(a, b);} void verilog(Verilog v) {gt(v, a, b);}};} // Set the target register to one if the test between the 'a' and 'b' register is true else 0 as an instruction
-      void Ge(Register a, int b)      {new Instruction() {void action() {ge(a, b);} void verilog(Verilog v) {ge(v, a, b);}};} // Set the target register to one if the test between the 'a' and 'b' register is true else 0 as an instruction
-      void Eq(Register a, int b)      {new Instruction() {void action() {eq(a, b);} void verilog(Verilog v) {eq(v, a, b);}};} // Set the target register to one if the test between the 'a' and 'b' register is true else 0 as an instruction
-      void Ne(Register a, int b)      {new Instruction() {void action() {ne(a, b);} void verilog(Verilog v) {ne(v, a, b);}};} // Set the target register to one if the test between the 'a' and 'b' register is true else 0 as an instruction
-      void Le(Register a, int b)      {new Instruction() {void action() {le(a, b);} void verilog(Verilog v) {le(v, a, b);}};} // Set the target register to one if the test between the 'a' and 'b' register is true else 0 as an instruction
-      void Lt(Register a, int b)      {new Instruction() {void action() {lt(a, b);} void verilog(Verilog v) {lt(v, a, b);}};} // Set the target register to one if the test between the 'a' and 'b' register is true else 0 as an instruction
+      Register Gt(Register a, int b)      {new Instruction() {void action() {gt(a, b);} void verilog(Verilog v) {gt(v, a, b);}}; return this;} // Set the target register to one if the test between the 'a' and 'b' register is true else 0 as an instruction
+      Register Ge(Register a, int b)      {new Instruction() {void action() {ge(a, b);} void verilog(Verilog v) {ge(v, a, b);}}; return this;} // Set the target register to one if the test between the 'a' and 'b' register is true else 0 as an instruction
+      Register Eq(Register a, int b)      {new Instruction() {void action() {eq(a, b);} void verilog(Verilog v) {eq(v, a, b);}}; return this;} // Set the target register to one if the test between the 'a' and 'b' register is true else 0 as an instruction
+      Register Ne(Register a, int b)      {new Instruction() {void action() {ne(a, b);} void verilog(Verilog v) {ne(v, a, b);}}; return this;} // Set the target register to one if the test between the 'a' and 'b' register is true else 0 as an instruction
+      Register Le(Register a, int b)      {new Instruction() {void action() {le(a, b);} void verilog(Verilog v) {le(v, a, b);}}; return this;} // Set the target register to one if the test between the 'a' and 'b' register is true else 0 as an instruction
+      Register Lt(Register a, int b)      {new Instruction() {void action() {lt(a, b);} void verilog(Verilog v) {lt(v, a, b);}}; return this;} // Set the target register to one if the test between the 'a' and 'b' register is true else 0 as an instruction
 
       void zero()                                                               // Zero a register in Java
        {R(); if (coverageAnalysis) zz();
@@ -1613,12 +1624,13 @@ if __name__ == "__main__":
          }
        }
 
-      void Zero()                                                               // Zero a register instruction
+      Register Zero()                                                           // Zero a register instruction
        {if (coverageAnalysis) zz();
         new Instruction()
          {void action()           {zero();};
           void verilog(Verilog v) {zero(v);};
          };
+        return this;
        }
 
       void zero(int i)                                                          // Zero an element of a register array in Java
@@ -1632,21 +1644,23 @@ if __name__ == "__main__":
         v.assign(rn(i), "0");
        }
 
-      void Zero(int Index)                                                      // Zero a register instruction
+      Register Zero(int Index)                                                  // Zero a register instruction
        {if (coverageAnalysis) zz();
         if (registerChecks) registerCheckArrayed();
         new Instruction()
          {void action()           {zero(   Index);};
           void verilog(Verilog v) {zero(v, Index);};
          };
+        return this;
        }
 
-      void One()                                                                // One a register instruction
+      Register One()                                                            // One a register instruction
        {if (coverageAnalysis) zz();
         new Instruction()
          {void action()           {one();};
           void verilog(Verilog v) {one(v);};
          };
+        return this;
        }
 
       void one(int i)                                                           // One an element of a register array in Java
@@ -1659,68 +1673,75 @@ if __name__ == "__main__":
         v.assign(rn(i), "1");
        }
 
-      void One(int Index)                                                       // One as an instruction
+      Register One(int Index)                                                   // One as an instruction
        {if (coverageAnalysis) zz();
         new Instruction()
          {void action()           {one(   Index);};
           void verilog(Verilog v) {one(v, Index);};
          };
+        return this;
        }
 
-      void Inc()                                                                // Increment a register instruction
+      Register Inc()                                                            // Increment a register instruction
        {if (coverageAnalysis) zz();
         new Instruction()
          {void action()           {inc();};
           void verilog(Verilog v) {inc(v);};
          };
+        return this;
        }
 
-      void Dec()                                                                // Decrement a register instruction
+      Register Dec()                                                            // Decrement a register instruction
        {new Instruction()
          {void action()           {dec();};
           void verilog(Verilog v) {dec(v);};
          };
+        return this;
        }
 
-      void Not()                                                                // Not as an instruction
+      Register Not()                                                            // Not as an instruction
        {new Instruction()
          {void action()           {not();};
           void verilog(Verilog v) {not(v);};
          };
+        return this;
        }
 
-      void Add(Register Source)                                                 // Add the value of a register to the specified register as an instruction
+      Register Add(Register Source)                                             // Add the value of a register to the specified register as an instruction
        {if (coverageAnalysis) zz();
         new Instruction()
          {void action()           {add(   Source);};
           void verilog(Verilog v) {add(v, Source);};
          };
+        return this;
        }
 
-      void Add1(Register Source)                                                // Add the value of a register plus one to the specified register as an instruction
+      Register Add1(Register Source)                                            // Add the value of a register plus one to the specified register as an instruction
        {if (coverageAnalysis) zz();
         new Instruction()
          {void action()           {add1(   Source);};
           void verilog(Verilog v) {add1(v, Source);};
          };
+        return this;
        }
 
-      void Average(Register Source1, Register Source2)                          // Average of two registers as an instruction
+      Register Average(Register Source1, Register Source2)                      // Average of two registers as an instruction
        {if (coverageAnalysis) zz();
         new Instruction()
          {void action()           {average(   Source1, Source2);};
           void verilog(Verilog v) {average(v, Source1, Source2);};
          };
+        return this;
        }
 
-      void sum(Process.Register...Source)                                       // Sum the source registers in Java
+      void sum(Register...Source)                                               // Sum the source registers in Java
        {R(); if (coverageAnalysis) zz();
         int sum = 0;
         for (int i = 0; i < Source.length; i++) sum += Source[i].registerGet();
         registerSet(sum);
        }
 
-      void sum(Verilog v, Process.Register...Source)                            // Sum the source registers in Verilog
+      void sum(Verilog v, Register...Source)                                    // Sum the source registers in Verilog
        {if (coverageAnalysis) zz();
         if (Source.length == 0) return;
 
@@ -1729,12 +1750,13 @@ if __name__ == "__main__":
         v.assign(registerFullName, ""+s);
        }
 
-      void Sum(Register...Source)                                               // Sum the source registers as an instruction
+      Register Sum(Register...Source)                                           // Sum the source registers as an instruction
        {if (coverageAnalysis) zz();
         new Instruction()
          {void action()           {sum(   Source);};
           void verilog(Verilog v) {sum(v, Source);};
          };
+        return this;
        }
      } // Register
 
@@ -1952,8 +1974,8 @@ if __name__ == "__main__":
 
     class Transaction                                                           // Transactions allow one process to request services from another process
      {final String transactionName;                                             // Name of the transaction
-      final Children<Process.Register> transactionInputRegisters  = new Children<>(); // The registers used to provide inputs to this transaction. As they are only going to be read during the transaction they can be owned by any process
-      final Children<Process.Register> transactionOutputRegisters = new Children<>(); // The registers used as outputs by this transaction. As they are going to be written into by the transaction they have to be owned by the process executing the transaction
+      final Children<Register> transactionInputRegisters  = new Children<>();   // The registers used to provide inputs to this transaction. As they are only going to be read during the transaction they can be owned by any process
+      final Children<Register> transactionOutputRegisters = new Children<>();   // The registers used as outputs by this transaction. As they are going to be written into by the transaction they have to be owned by the process executing the transaction
       int transactionRequestedAt = -1;                                          // The step at which the transaction started -  avoiding the use of a boxed type as no direct equivalent in verilog
       int transactionFinishedAt  = -1;                                          // The step at which the transaction finished
       int transactionRc;                                                        // Return code from executing transaction
@@ -1968,16 +1990,16 @@ if __name__ == "__main__":
         transactions.put(transactionName, this);
        }
 
-      void transactionInputRegisters(Process.Register...InputRegisters)         // The registers used to provide inputs to this transaction. As they are only going to be read during the transaction they can be owned by any process
+      void transactionInputRegisters(Register...InputRegisters)                 // The registers used to provide inputs to this transaction. As they are only going to be read during the transaction they can be owned by any process
        {N(); if (coverageAnalysis) zz();
         for(Process.Register r : InputRegisters)                                // Save input registers
          {transactionInputRegisters.put(r.registerFullName, r);
          }
        }
 
-      void transactionOutputRegisters(Process.Register...OutputRegisters)       // The registers used as outputs by this transaction. As they are going to be written into by the transaction they have to be owned by the process executing the transaction
+      void transactionOutputRegisters(Register...OutputRegisters)               // The registers used as outputs by this transaction. As they are going to be written into by the transaction they have to be owned by the process executing the transaction
        {N(); if (coverageAnalysis) zz();
-        for(Process.Register r : OutputRegisters)                               // Save output registers
+        for (Register r : OutputRegisters)                                      // Save output registers
          {if (r.registerProcess() != transactionProcess())                      // Check that the output registers are owned by the target process of the transaction as that process is the only process that can write into them
            {stop("Output transaction register:",
              r.registerFullName+" must be owned by process: "+
@@ -2606,15 +2628,12 @@ Chip: Test             step: 82, maxSteps: 100, running: 0
 
     a.RegisterSet(1);
 
-    b.Ge(a, 1);
-    P.new If (b)
+    P.new If (b.Ge(a, 1))
      {void Then() {B.RegisterSet(1);}
       void Else() {B.RegisterSet(2);}
      };
 
-    c.Lt(a, 1);
-
-    P.new If (c)
+    P.new If (c.Lt(a, 1))
      {void Then() {C.RegisterSet(3);}
       void Else() {C.RegisterSet(4);}
      };
