@@ -2497,8 +2497,7 @@ chipStop = true;
                     mergeLeavesNotTop  (S, s, S.StuckIndex);                    // Merge around key
                     mergeBranchesNotTop(S, s, S.StuckIndex);
 
-                    stuckIndex1.Copy(S.StuckIndex);                             // Try merging left of the key
-                    stuckIndex1.Dec();
+                    stuckIndex1.Copy(S.StuckIndex).Dec();                       // Try merging left of the key
                     mergeLeavesNotTop  (S, s, stuckIndex1);
                     mergeBranchesNotTop(S, s, stuckIndex1);
                    }
@@ -4163,7 +4162,7 @@ Chip: Btree            step: 89, maxSteps: 1000, running: 0
   static void test_mergeLeavesIntoRoot()
    {sayCurrentTestName();
     final Btree            b = new Btree(32, 4, 8, 8);
-    final Process          P = b.P; //b.new Process("findAndInsert");
+    final Process          P = b.P;
     final Process.Register k = P.register("k", b.bitsPerKey);
     final Process.Register d = P.register("d", b.bitsPerData);
     final Process.Register i = b.btreeIndex(P, "i");
@@ -4205,7 +4204,7 @@ Chip: Btree            step: 89, maxSteps: 1000, running: 0
   static void test_mergeLeavesNotTop()
    {sayCurrentTestName();
     final Btree            b = new Btree(32, 4, 8, 8);
-    final Process          P = b.P; //b.new Process("findAndInsert");
+    final Process          P = b.P;
     final Stuck            s = b.new Stuck(P, "findAndInsert");
     final Process.Register k = P.register("k", b.bitsPerKey);
     final Process.Register d = P.register("d", b.bitsPerData);
@@ -4246,7 +4245,7 @@ Chip: Btree            step: 89, maxSteps: 1000, running: 0
   static void test_mergeLeavesAtTop()
    {sayCurrentTestName();
     final Btree            b = new Btree(32, 4, 8, 8);
-    final Process          P = b.P; //b.new Process("findAndInsert");
+    final Process          P = b.P;
     final Stuck            p = b.new Stuck(P, "findAndInsert");
     final Process.Register i = b.btreeIndex(P, "i");
     P.processTrace = true;
@@ -4313,7 +4312,7 @@ Chip: Btree            step: 89, maxSteps: 1000, running: 0
   static void test_mergeBranchesIntoRoot()
    {sayCurrentTestName();
     final Btree            b = new Btree(32, 4, 8, 8);
-    final Process          P = b.P; //b.new Process("findAndInsert");
+    final Process          P = b.P;
     final Process.Register k = P.register("k", b.bitsPerKey);
     final Process.Register d = P.register("d", b.bitsPerData);
     final Process.Register i = b.btreeIndex(P, "i");
@@ -4373,7 +4372,7 @@ Chip: Btree            step: 89, maxSteps: 1000, running: 0
   static void test_mergeBranchesNotTop()
    {sayCurrentTestName();
     final Btree            b = test_put_reload();
-    final Process          P = b.P; //b.new Process("findAndInsert");
+    final Process          P = b.P;
     final Stuck            s = b.new Stuck(P, "findAndInsert");
     final Process.Register i = b.btreeIndex(P, "i");
     final Process.Register j = b.stuckIndex(P, "j");
@@ -4420,7 +4419,7 @@ Chip: Btree            step: 89, maxSteps: 1000, running: 0
   static void test_mergeBranchesAtTop()
    {sayCurrentTestName();
     final Btree            b = test_put_reload();
-    final Process          P = b.P; //b.new Process("findAndInsert");
+    final Process          P = b.P;
     final Stuck            s = b.new Stuck(P, "stuck");
     final Process.Register i = b.btreeIndex(P, "i");
     final Process.Register j = P.register("j", b.stuckAddressSize);
@@ -4524,7 +4523,7 @@ Merge     : 0
   static void test_findAndInsert()
    {sayCurrentTestName();
     final Btree            b = new Btree(32, 4, 8, 8);
-    final Process          P = b.P; //b.new Process("findAndInsert");
+    final Process          P = b.P;
     final Process.Register k = P.register("k", b.bitsPerKey);
     final Process.Register d = P.register("d", b.bitsPerData);
     final Process.Register i = b.btreeIndex(P, "i");
