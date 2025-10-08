@@ -176,8 +176,7 @@ chipStop = true;
        {gUsed.ExecuteTransaction(root);                                         // Get next free stuck from unallocated memory
         gUsed.WaitResultOfTransaction();                                        // Wait for next free stuck from unallocated memory
         nUsed.Copy(gUsed.transactionOutputRegisters.firstElement());            // Copy unused stuck index
-        avail.Lt(nUsed, size);                                                  // Whether any more stucks are available
-        P.new If (avail)                                                        // More stucks available
+        P.new If (avail.Lt(nUsed, size))                                                        // More stucks available
          {void Then()                                                           // There is another tsuck avauilable
            {ref.Copy(nUsed);                                                    // Refer to the latest free stuck
             nUsed.Inc();                                                        // Step to next unused stuck index
@@ -1396,8 +1395,7 @@ chipStop = true;
       final Process.Register sum = mergeSum;                                    // Sum of the lengths of the two stucks
       final Process.Register can = mergeCan;                                    // Can merge
       sum.Sum(Source.size, size);
-      can.Le (sum, maxStuckSize);
-      P.new If(can)
+      P.new If (can.Le (sum, maxStuckSize))                                     // The merged result will be small enmough to fit in the target
        {void Then()
          {final Stuck s = SourceCopyStuck;
           s.Copy(Source);
@@ -1417,8 +1415,7 @@ chipStop = true;
       final Process.Register sum = mergeSum;                                    // Sum of the lengths of the two stucks
       final Process.Register can = mergeCan;                                    // Can merge
       sum.Sum(Left.size, Right.size);
-      can.Le (sum, maxStuckSize);
-      P.new If (can)
+      P.new If (can.Le (sum, maxStuckSize))                                     // The merged result will still be small enough to fit in the target
        {void Then()
          {Clear();
           merge(Left);
@@ -1437,8 +1434,7 @@ chipStop = true;
       final Process.Register can = mergeCan;                                    // Can merge
       sum.Sum(Source.size, size);
       sum.Inc();
-      can.Lt (sum, maxStuckSize);
-      P.new If (can)
+      P.new If (can.Lt(sum, maxStuckSize))                                      // The merged result will be small enough to fit in the target
        {void Then()
          {PastLastElement();
           Push(Key, Data);
@@ -1461,8 +1457,7 @@ chipStop = true;
       final Process.Register can = mergeCan;                                    // Can merge
       sum.Sum(Left.size, Right.size);
       sum.Inc();
-      can.Lt (sum, maxStuckSize);
-      P.new If (can)
+      P.new If (can.Lt (sum, maxStuckSize))                                     // the merged result will be small enoughto fit in the target
        {void Then()
          {Copy(Left);
           SetPastLastKey(Key);
@@ -2329,9 +2324,7 @@ chipStop = true;
               P.Continue();
              }
             void Else()                                                         // Key does not exiust in leaf
-             {notFull.Lt(size, maxStuckSize);
-
-              P.new If (notFull)                                                // Leaf not full so we can insert into this leaf
+             {P.new If (notFull.Lt(size, maxStuckSize))                         // Leaf not full so we can insert into this leaf
                {void Then()                                                     // Position in leaf - we know it is not present and thatthere is room for the key, data pair in the leaf
                  {search_le_parallel(Key);                                      // Find insert position in leaf
                   InsertElementAt(StuckIndex, Key, Data);                       // Insert into leaf
@@ -2379,9 +2372,7 @@ chipStop = true;
 
         S.stuckGetRoot();                                                       // Start at the root now known to be a split branch
 
-        full.Ge(S.size, maxStuckSize-1);
-
-        P.new If (full)                                                         // If root branch is full split it using the dedicated method and restart
+        P.new If (full.Ge(S.size, maxStuckSize-1))                              // If root branch is full split it using the dedicated method and restart
          {void Then()
            {splitRootBranch(P);                                                 // Split the full branch root
             P.GOto(start);                                                      // Restart descent to make sure we are on the right path
@@ -2408,9 +2399,7 @@ chipStop = true;
 
             s.new IsLeaf()
              {void Leaf()                                                       // At a leaf - search for exact match
-               {full.Ge(s.size, maxStuckSize);
-
-                P.new If (full)
+               {P.new If (full.Ge(s.size, maxStuckSize))
                  {void Then()
                    {P.new If (found)
                      {void Then()                                               // Split the child leaf known not to be top under its parent
@@ -2427,9 +2416,7 @@ chipStop = true;
                }
 
               void Branch()                                                     // On a branch
-               {full.Ge(s.size, maxStuckSize-1);
-
-                P.new If (full)
+               {P.new If (full.Ge(s.size, maxStuckSize-1))
                  {void Then()                                                   // Full branch
                    {P.new If (found)                                            // Was the child found within its parent or is it top
                      {void Then()
@@ -2503,8 +2490,7 @@ chipStop = true;
                    {stuckIndex1.Copy(S.StuckIndex);                             // Try merging to the right of the key
                     stuckIndex1.Inc();
 
-                    within.Lt(stuckIndex1, S.size);
-                    P.new If (within)                                           // There is a sibling to the right
+                    P.new If (within.Lt(stuckIndex1, S.size))                   // There is a sibling to the right
                      {void Then()
                        {mergeLeavesNotTop  (S, s, stuckIndex1);
                         mergeBranchesNotTop(S, s, stuckIndex1);
@@ -2531,10 +2517,7 @@ chipStop = true;
               void Else()                                                       // At the top of the stuck
                {P.new If(S.size)
                  {void Then()
-                   {stuckIndex1.Copy(S.size);
-                    stuckIndex1.Dec();
-
-                    P.new If(stuckIndex1)
+                   {P.new If (stuckIndex1.Copy(S.size).Dec())
                      {void Then()
                        {stuckIndex1.Dec();
                         mergeLeavesNotTop  (S, s, stuckIndex1);                 // Try merging leaves not at top into parent
