@@ -70,7 +70,7 @@ module Test;                                                                    
                 begin
                   integer f;
                   f = $fopen("verilog/trace_verilog.txt", "a");
-                  $fdisplay(f, "Location: Chip.java:0826:<init>|  Chip.java:1619:<init>|  Chip.java:1618:Zero|  Chip.java:3009:test_register_set|  Chip.java:3046:oldTests|  Chip.java:3050:newTests|  Chip.java:3055:main|");
+                  $fdisplay(f, "Location: Chip.java:0826:<init>|  Chip.java:1630:<init>|  Chip.java:1629:Zero|  Chip.java:3028:test_register_set|  Chip.java:3065:oldTests|  Chip.java:3069:newTests|  Chip.java:3074:main|");
                   $fclose(f);
                 end
               end
@@ -84,7 +84,7 @@ module Test;                                                                    
                 begin
                   integer f;
                   f = $fopen("verilog/trace_verilog.txt", "a");
-                  $fdisplay(f, "Location: Chip.java:0826:<init>|  Chip.java:1187:<init>|  Chip.java:1186:RegisterSet|  Chip.java:3009:test_register_set|  Chip.java:3046:oldTests|  Chip.java:3050:newTests|  Chip.java:3055:main|");
+                  $fdisplay(f, "Location: Chip.java:0826:<init>|  Chip.java:1187:<init>|  Chip.java:1186:RegisterSet|  Chip.java:3028:test_register_set|  Chip.java:3065:oldTests|  Chip.java:3069:newTests|  Chip.java:3074:main|");
                   $fclose(f);
                 end
               end
@@ -98,7 +98,7 @@ module Test;                                                                    
                 begin
                   integer f;
                   f = $fopen("verilog/trace_verilog.txt", "a");
-                  $fdisplay(f, "Location: Chip.java:0826:<init>|  Chip.java:1673:<init>|  Chip.java:1672:Inc|  Chip.java:3010:test_register_set|  Chip.java:3046:oldTests|  Chip.java:3050:newTests|  Chip.java:3055:main|");
+                  $fdisplay(f, "Location: Chip.java:0826:<init>|  Chip.java:1688:<init>|  Chip.java:1687:Inc|  Chip.java:3029:test_register_set|  Chip.java:3065:oldTests|  Chip.java:3069:newTests|  Chip.java:3074:main|");
                   $fclose(f);
                 end
               end
@@ -106,7 +106,7 @@ module Test;                                                                    
                 begin
                   integer f;
                   f = $fopen("verilog/trace_verilog.txt", "a");
-                  $fdisplay(f, "Location: Chip.java:0826:<init>|  Chip.java:1673:<init>|  Chip.java:1672:Inc|  Chip.java:3011:test_register_set|  Chip.java:3046:oldTests|  Chip.java:3050:newTests|  Chip.java:3055:main|");
+                  $fdisplay(f, "Location: Chip.java:0826:<init>|  Chip.java:1688:<init>|  Chip.java:1687:Inc|  Chip.java:3030:test_register_set|  Chip.java:3065:oldTests|  Chip.java:3069:newTests|  Chip.java:3074:main|");
                   $fclose(f);
                 end
               end
@@ -114,7 +114,7 @@ module Test;                                                                    
                 begin
                   integer f;
                   f = $fopen("verilog/trace_verilog.txt", "a");
-                  $fdisplay(f, "Location: Chip.java:0826:<init>|  Chip.java:1673:<init>|  Chip.java:1672:Inc|  Chip.java:3012:test_register_set|  Chip.java:3046:oldTests|  Chip.java:3050:newTests|  Chip.java:3055:main|");
+                  $fdisplay(f, "Location: Chip.java:0826:<init>|  Chip.java:1688:<init>|  Chip.java:1687:Inc|  Chip.java:3031:test_register_set|  Chip.java:3065:oldTests|  Chip.java:3069:newTests|  Chip.java:3074:main|");
                   $fclose(f);
                 end
               end
@@ -128,7 +128,7 @@ module Test;                                                                    
                 begin
                   integer f;
                   f = $fopen("verilog/trace_verilog.txt", "a");
-                  $fdisplay(f, "Location: Chip.java:0826:<init>|  Chip.java:1187:<init>|  Chip.java:1186:RegisterSet|  Chip.java:3010:test_register_set|  Chip.java:3046:oldTests|  Chip.java:3050:newTests|  Chip.java:3055:main|");
+                  $fdisplay(f, "Location: Chip.java:0826:<init>|  Chip.java:1187:<init>|  Chip.java:1186:RegisterSet|  Chip.java:3029:test_register_set|  Chip.java:3065:oldTests|  Chip.java:3069:newTests|  Chip.java:3074:main|");
                   $fclose(f);
                 end
               end
@@ -142,7 +142,7 @@ module Test;                                                                    
                 begin
                   integer f;
                   f = $fopen("verilog/trace_verilog.txt", "a");
-                  $fdisplay(f, "Location: Chip.java:0826:<init>|  Chip.java:1187:<init>|  Chip.java:1186:RegisterSet|  Chip.java:3011:test_register_set|  Chip.java:3046:oldTests|  Chip.java:3050:newTests|  Chip.java:3055:main|");
+                  $fdisplay(f, "Location: Chip.java:0826:<init>|  Chip.java:1187:<init>|  Chip.java:1186:RegisterSet|  Chip.java:3030:test_register_set|  Chip.java:3065:oldTests|  Chip.java:3069:newTests|  Chip.java:3074:main|");
                   $fclose(f);
                 end
               end
@@ -156,7 +156,7 @@ module Test;                                                                    
                 begin
                   integer f;
                   f = $fopen("verilog/trace_verilog.txt", "a");
-                  $fdisplay(f, "Location: Chip.java:0826:<init>|  Chip.java:1187:<init>|  Chip.java:1186:RegisterSet|  Chip.java:3012:test_register_set|  Chip.java:3046:oldTests|  Chip.java:3050:newTests|  Chip.java:3055:main|");
+                  $fdisplay(f, "Location: Chip.java:0826:<init>|  Chip.java:1187:<init>|  Chip.java:1186:RegisterSet|  Chip.java:3031:test_register_set|  Chip.java:3065:oldTests|  Chip.java:3069:newTests|  Chip.java:3074:main|");
                   $fclose(f);
                 end
               end
