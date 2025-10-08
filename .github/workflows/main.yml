@@ -1,4 +1,4 @@
-# Test 2025-10-08 at 00:42:34
+# Test 2025-10-08 at 01:46:53
 
 name: Test
 run-name: btreeAsm
@@ -20,7 +20,7 @@ jobs:
 
     strategy:
       matrix:
-        task: [Btree, Children, Chip, Dt, StringToNumbers, Test, TreeNet, TreeNetVerilog, Verilog]
+        task: [Btree, Children, Chip, Dt, StringToNumbers, Test, TreeNet, Verilog]
 
     steps:
     - uses: actions/checkout@v4
@@ -38,7 +38,7 @@ jobs:
       run: |
         mkdir -p com/AppaApps/Silicon
         tree
-        cp Btree.java Children.java Chip.java Dt.java StringToNumbers.java Test.java TreeNet.java TreeNetVerilog.java Verilog.java com/AppaApps/Silicon
+        cp Btree.java Children.java Chip.java Dt.java StringToNumbers.java Test.java TreeNet.java Verilog.java com/AppaApps/Silicon
 
     - name: Java
       run: |
@@ -84,12 +84,6 @@ jobs:
       if: matrix.task == 'TreeNet'
       run: |
         java -XX:+UseZGC -cp Classes com/AppaApps/Silicon/TreeNet
-
-
-    - name: Test TreeNetVerilog
-      if: matrix.task == 'TreeNetVerilog'
-      run: |
-        java -XX:+UseZGC -cp Classes com/AppaApps/Silicon/TreeNetVerilog
 
 
     - name: Test Verilog
