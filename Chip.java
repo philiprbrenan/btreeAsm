@@ -7,6 +7,7 @@ package com.AppaApps.Silicon;                                                   
 // Tests for copy* methods  and check that they are actually needed
 // Try to make all method and variable names start with the name of their class where this is feasible
 // Need if for element of an arrayed register to elimninate overhead of copying it into a single register first
+// Rewrite boolean operations so they create and return a result register that can then be used in a "new If(...)"
 import java.util.*;
 
 class Chip extends Test                                                         // A chip designed to manipulate a B-tree stored in a memory block
