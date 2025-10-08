@@ -10,7 +10,7 @@ class TreeNet extends Chip                                                      
  {final static boolean javaOnly = false;                                        // Ignore verilog if true - used during testing to establish Java base case
   final int               size;                                                 // Total number of junctions in the binary tree, including root and leaves
   final int        addressWidth =  8;                                           // The width of a network address
-  final int        messageWidth = 32;                                           // The width of a network message
+  final int        messageWidth = 24;                                           // The width of a network message
   final Process               P = new Process("main");                          // Process in which the network runs
   final BitSet  []address;                                                      // Address in branch path steering format
   final BitSet  []addressMask;                                                  // Mask for the corresponding address
@@ -318,6 +318,33 @@ class TreeNet extends Chip                                                      
     return result;
    }
 
+  Process.Register PutMessage                                                   // Add a new message at the indicated leaf if possible and return true else false
+   (Process.Register Source, Process.Register Target, Process.Register Text)
+   {final Process.Register result = putMessage;
+    P.new Instruction()
+     {void action()
+       {PutMessage(result, Source.registerGet(), Target.registerGet(), Text.registerGet());
+       }
+      void verilog(Verilog v)
+       {v.new If (MessageUp.registerName(Source.registerName()))                // Return if message input still full
+         {void Then()
+           {result.zero(v);                                                     // The message was not added
+           }
+          void Else()                                                           // Room for another message
+           {MessageUp      .registerSet(v, 1,             Source);              // Add the message
+            MessageUpNumber.copyIt     (v, Source, MessageNumber);              // Generate a unique message number for each message
+            MessageUpSource.copyIt     (v, Source,        Source);              // Source address
+            MessageUpTarget.copyIt     (v, Source,        Target);              // Target address
+            MessageUpText  .copyIt     (v, Source,        Text);                // Text of message
+            MessageNumber  .inc(v);
+            result.one(v);                                                      // Successfully added message to tree network
+           }
+         };
+       }
+     };
+    return result;
+   }
+
   class MessageOut                                                              // Remove a message from the tree network and record its details
    {final boolean valid;                                                        // Whether the message is valid or not
     final int source;                                                           // Source address
@@ -334,9 +361,9 @@ class TreeNet extends Chip                                                      
 
   class MessageOutV                                                             // Remove a message from the tree network and record its details
    {final Process.Register Valid  = P.register("Valid",  1);                    // Whether the message is valid or not
-    final Process.Register Source = P.register("Source", 1);                    // Source address
-    final Process.Register Target = P.register("Target", 1);                    // Target address
-    final Process.Register Text   = P.register("Text",   1);                    // Text of message
+    final Process.Register Source = P.register("Source", addressWidth);         // Source address
+    final Process.Register Target = P.register("Target", addressWidth);         // Target address
+    final Process.Register Text   = P.register("Text",   messageWidth);         // Text of message
     MessageOutV(Process.Register Leaf)                                          // Get a message from the specified junction
      {Valid  .CopyIs(MessageDown      , Leaf);                                  // Whether the message is valid
       Source .CopyIs(MessageDownSource, Leaf);                                  // Source address
@@ -868,7 +895,7 @@ Jnct  Level Step:    3        Up  Left Right  Addr      Up______  Down____ |
    {sayCurrentTestName();
     final TreeNet  T = new TreeNet(3);
     T.P.processTrace = true;
-    T.printCompact = false;
+    T.printCompact   = false;
     T.PutMessage(5, 3, 1111);
 
     final StringBuilder s = T.test_transmission(4, 1000);
@@ -984,10 +1011,10 @@ Jnct  Level Step:    6        Up  Left Right  Addr      Up______  Down____ |
 
   static void test_swap()
    {sayCurrentTestName();
-    final TreeNet T = new TreeNet(2);
-    T.printCompact  = false;
+    final TreeNet       T = new TreeNet(2);
     final StringBuilder s = new StringBuilder();
 
+    T.printCompact   = false;
     T.P.processTrace = true;
     T.putMessage(T.firstLeaf(), T.lastLeaf(),  1111);
     T.putMessage(T.lastLeaf(),  T.firstLeaf(), 2222);
@@ -1100,7 +1127,6 @@ Jnct  Level Step:    6        Up  Left Right  Addr      Up______  Down____ |
   static void test_reverse2V()
    {sayCurrentTestName();
     final TreeNet  T = new TreeNet(4);
-
     T.P.processTrace = true;
     T.PutMessage(T.firstLeaf(), T.lastLeaf(),  1111);
     T.PutMessage(T.lastLeaf(),  T.firstLeaf(), 2222);
@@ -1255,10 +1281,10 @@ Jnct  Level Step:   12        Up  Left Right  Addr      Up______  Down____ |
 
   static void test_reverse8V()
    {sayCurrentTestName();
-    final TreeNet T = new TreeNet(4);
+    final TreeNet  T = new TreeNet(4);
+    T.P.processTrace = true;
 
     final int F = T.firstLeaf(), L = T.lastLeaf(), N = T.leaves();
-    T.P.processTrace = true;
     for (int i = 1; i <= N; i++) T.PutMessage(F+i-1, L-i+1, 1000*i+100*i+10*i+i);
 
     final StringBuilder s = T.test_transmission(13, 200);
@@ -1468,58 +1494,59 @@ Jnct  Level Step:   12        Up  Left Right  Addr      Up______  Down____ |
 
   static void test_sequenceV()
    {sayCurrentTestName();
-    final TreeNet        T = new TreeNet(4);
-    final int       Source = T.lastLeaf(), Target = T.firstLeaf(), Steps = 28;
-    final StringBuilder  s = new StringBuilder();
-    final StringJoiner   t = new StringJoiner(", ");
-    final int []     words = {1111, 2222, 3333, 4444, 5555, 6666};
-    final Process.Register Result = T.P.register("result", 1);
-    final Process.Register i = T.P.register("i", 8);
+    final int [] words = {1111, 2222, 3333, 4444, 5555, 6666};                  // The good news was sent from Aix La Chapelle unto Ghent
+
+    final TreeNet                T = new TreeNet(4);
+    final StringJoiner           t = new StringJoiner(", ");
+    final Process.Register  Result = T.P.register("result",  1);
+    final Process.Register       i = T.P.register("i",       8);
+    final Process.Register       o = T.P.register("o",       8);
+    final Process.Register inputs  = T.P.register("inputs",  T.messageWidth, words.length);
+    final Process.Register outputs = T.P.register("outputs", T.messageWidth, words.length);
+    final Process.Register test    = T.P.register("test",    1);
+    final Process.Register source  = T.P.register("source",  T.addressWidth);
+    final Process.Register target  = T.P.register("target",  T.addressWidth);
+    final Process.Register text    = T.P.register("target",  T.messageWidth);
+    final Process.Register leaf    = T.P.register("leaf",    T.addressWidth);
+
+    final int   Source = T.lastLeaf(), Target = T.firstLeaf(), Steps = 28;
 
     T.P.processTrace = true;
 
+    source.RegisterSet(Source);
+    target.RegisterSet(Target);
+    for (int j = 0; j < words.length; j++) inputs.RegisterSet(words[j], j);
+
     for (T.step = 0; T.step < Steps; ++T.step)
-     {T.P.new Instruction()
-       {void action()
-         {final int I = i.registerGet();
-          if (I < words.length)
-           {T.PutMessage(Result, Source, Target, words[I]);
-            if (Result.registerGet() > 0)
-             {i.inc();
+     {test.Lt(i, words.length);
+      T.P.new If (test)
+       {void Then()
+         {text  .CopyIs(inputs, i);
+
+          final Process.Register r = T.PutMessage(source, target, text);
+
+          T.P.new If (r)
+           {void Then()
+             {i.Inc();
              }
-           }
-//        say(T.printV()());
-         }
-        void verilog(Verilog v)
-         {
+           };
          }
        };
 
-      T.P.new Instruction()
-      {void action()
-        {s.append(T.printV());
-        }
-        void verilog(Verilog v)
-        {
-        }
-      };
       T.Transmit();
-      final Process.Register leaf = T.P.register("leaf", 8);
+
       leaf.RegisterSet(Target);
       final MessageOutV m = T.new MessageOutV(leaf);
-      T.P.new Instruction()
-      {void action()
-        {if (m.Valid.registerGet() > 0) t.add(""+m.Text.registerGet());
-        }
-        void verilog(Verilog v)
-        {
-        }
-      };
+      T.P.new If (m.Valid)
+       {void Then()
+         {outputs.CopyIt(o, m.Text);
+          o.Inc();
+         }
+       };
      }
     T.maxSteps = 2000;
-    T.chipRunJava();
-    //stop(t);
-    ok(t, "1111, 2222, 3333, 4444, 5555, 6666");
+    T.chipRun();
+    ok(outputs, "main_outputs_25 =  1111 2222 3333 4444 5555 6666");
    }
 
   static void oldTests()                                                        // Tests thought to be in good shape
@@ -1541,7 +1568,6 @@ Jnct  Level Step:   12        Up  Left Right  Addr      Up______  Down____ |
 
   static void newTests()                                                        // Tests being worked on
    {oldTests();
-    test_twoV();
    }
 
   public static void main(String[] args)                                        // Test if called as a program
