@@ -6,7 +6,7 @@ package com.AppaApps.Silicon;                                                   
 
 import java.util.*;
 
-class TreeNet extends Chip                                               // A tree network that connects leaf pairs via branches in logarithmic time, allowing us to compose a large chip as a networked collection of smaller chips.
+class TreeNet extends Chip                                                      // A tree network that connects leaf pairs via branches in logarithmic time, allowing us to compose a large chip as a networked collection of smaller chips. The network is driven by a CPU with specialized SIMD instructions to process each node in the network in parallel.
  {final static boolean javaOnly = false;                                        // Ignore verilog if true - used during testing to establish Java base case
   final int               size;                                                 // Total number of junctions in the binary tree, including root and leaves
   final int        addressWidth =  8;                                           // The width of a network address
@@ -62,7 +62,7 @@ class TreeNet extends Chip                                               // A tr
 
 //D1 Construction                                                               // Construct a tree network
 
-  TreeNet(int Size)                                                      // Create the tree network.  The number of leaves will be 2**(Size-1)
+  TreeNet(int Size)                                                             // Create the tree network.  The number of leaves will be 2**(Size-1)
    {super("TreeNet");
     size = powerTwo(Size) - 1;
     messageUp                = new boolean[size];                               // Message waiting to be sent upward through the tree network
