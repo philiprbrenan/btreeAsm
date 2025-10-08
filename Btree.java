@@ -2487,9 +2487,7 @@ chipStop = true;
              {void Then()
                {P.new If (S.StuckIndex)                                         // Found the key in the body of the stuck
                  {void Then()
-                   {stuckIndex1.Copy(S.StuckIndex);                             // Try merging to the right of the key
-                    stuckIndex1.Inc();
-
+                   {stuckIndex1.Copy(S.StuckIndex).Inc();                       // Try merging to the right of the key
                     P.new If (within.Lt(stuckIndex1, S.size))                   // There is a sibling to the right
                      {void Then()
                        {mergeLeavesNotTop  (S, s, stuckIndex1);
