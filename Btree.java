@@ -1858,7 +1858,7 @@ class Btree extends Chip                                                        
        {final int s = ParentIndex.registerGet();                                // Position of child being merged in the parent
         final int r = Parent.size.registerGet();                                // Size of parent stuck
 
-        if (r == 0 || (r == 1 && s == 0)) P.Goto(end);                          // Cannot be used on root or on empty branches
+        if (r == 0 || (r == 1 && s == 0)) P.Goto(end);                          // Cannot be used on empty branches or on the root
         else P.Continue();
        }
 
