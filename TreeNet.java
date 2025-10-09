@@ -547,14 +547,10 @@ class TreeNet extends Chip                                                      
     v.new If (lr)                                                               // Alternate priority
      {void Then()
        {v.new If (gl)                                                           // Left might want to send a message up
-         {void Then()
-           {new Left();
-           }
+         {void Then() {new Left();}
           void Else()
            {v.new If (gr)                                                       // Right might want to send a message up
-             {void Then()
-               {new Right();
-               }
+             {void Then() {new Right();}
              };
            }
          };
@@ -562,14 +558,10 @@ class TreeNet extends Chip                                                      
 
       void Else()
        {v.new If (gr)                                                           // Left might want to send a message up
-         {void Then()
-           {new Right();
-           }
+         {void Then() {new Right();}
           void Else()
            {v.new If (gl)                                                       // Right might want to send a message up
-             {void Then()
-               {new Left();
-               }
+             {void Then() {new Left();}
              };
            }
          };
@@ -1541,6 +1533,14 @@ Jnct  Level Step:   12        Up  Left Right  Addr      Up______  Down____ |
     T.maxSteps = 2000;
     T.chipRun();
     ok(outputs, "main_outputs_25 =  1111 2222 3333 4444 5555 6666");
+
+    final Chip.SiliconCompiler S = T.new SiliconCompiler()                      // Create silicon compiler files
+     {String description()
+       {return String.format("treeNet_%d_%d_%d",
+          T.size, T.addressWidth, T.messageWidth);
+       }
+     };
+    say("cd ~/btreeAsm; bash -x "+S.launchFile);
    }
 
   static void oldTests()                                                        // Tests thought to be in good shape
@@ -1561,7 +1561,8 @@ Jnct  Level Step:   12        Up  Left Right  Addr      Up______  Down____ |
    }
 
   static void newTests()                                                        // Tests being worked on
-   {oldTests();
+   {//oldTests();
+    test_sequenceV();
    }
 
   public static void main(String[] args)                                        // Test if called as a program
