@@ -179,7 +179,7 @@ To address these issues, we employ a double B-tree architecture. Each stuck of
 the double B-tree is implemented as a separate chip containing a single B-tree.
 B-trees are naturally suited to representing a stuck, as shown in **Dt.java**.
 The individual B-trees communicate through the star-topology [network](https://en.wikipedia.org/wiki/Computer_network) described
-in **StarNet.java**.
+in **TreeNet.java**.
 
 Constructing a double B-tree from multiple single B-trees reduces manufacturing
 costs by improving yield (since smaller [chips](https://en.wikipedia.org/wiki/Integrated_circuit) are less prone to defects) and
@@ -393,6 +393,23 @@ https://github.com/users/philiprbrenan/packages/container/package/btreeAsm
 Then: Package Settings -> Change visibility -> Public
 
 
+# Tree Network
+
+**TreeNet.java** contains details of a [tree](https://en.wikipedia.org/wiki/Tree_(data_structure)) [network](https://en.wikipedia.org/wiki/Computer_network) designed to connect a
+plurality of Single Btrees into a Double Btree.  The [tree](https://en.wikipedia.org/wiki/Tree_(data_structure)) [network](https://en.wikipedia.org/wiki/Computer_network) operates in
+logarithmic time over the number of leaves connected together.
+
+Using a [tree](https://en.wikipedia.org/wiki/Tree_(data_structure)) [network](https://en.wikipedia.org/wiki/Computer_network) architecture allows individual B-tree units to be
+manufactured separately and later arranged in two- or three-dimensional [arrays](https://en.wikipedia.org/wiki/Dynamic_array), where they can be interconnected to form double B-trees of virtually any size.
+
+Tree networks also provide natural decoupling between components, simplifying
+design, scaling, and fault isolation.
+
+Moreover, sub-networks of a [tree](https://en.wikipedia.org/wiki/Tree_(data_structure)) structure can be linked over large distances
+using photonic interconnects, enabling double B-tree systems that span much
+larger physical areas than would be practical with traditional metal
+interconnects.
+
 # Status
 
 - 2025-07-12 [Java](https://en.wikipedia.org/wiki/Java_(programming_language)) implementation of the [B-Tree](https://en.wikipedia.org/wiki/B-tree) [algorithm](https://en.wikipedia.org/wiki/Algorithm) 
@@ -404,3 +421,5 @@ Then: Package Settings -> Change visibility -> Public
 
 - 2025-08-24 Place and route of synthesized [Verilog](https://en.wikipedia.org/wiki/Verilog) using [Open Source Silicon Compiler](https://docs.siliconcompiler.com/en/latest/index.html) 
 - 2025-08-25 Run Silicon Compiler in a [Docker](https://en.wikipedia.org/wiki/Docker_(software)) container saved on ghcr.io
+
+- 2025-10-08 Synthesized Tree Network for inter-component connectivity
