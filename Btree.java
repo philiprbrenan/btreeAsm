@@ -2641,6 +2641,42 @@ class Btree extends Chip                                                        
      }
    }
 
+  public class FindNext extends Find                                            // Find next key, data pair  in the tree with a key greater than the supplied key
+   {FindNext(Process.Register Key)                                              // Key whose successor is to be found
+     {if (coverageAnalysis) zz();
+
+      BtreeIndex.Zero();                                                        // Start at the root
+
+      P.new Block()
+       {void code()
+         {stuckGet(BtreeIndex);                                                 // Load root
+          new IsLeaf()
+           {void Leaf()                                                         // At a leaf - search for exact match
+             {P.new If (size)
+               {void Then()
+                 {Found.One();
+                  Key     .Copy(keys, 0);
+                  FoundKey.Copy(keys, 0);
+                  Data    .Copy(data, 0);
+                  StuckIndex.Zero();
+                 }
+                void Else()
+                 {Found.Zero();
+                 }
+               };
+              P.GOto(end);                                                      // Key not present
+             }
+            void Branch()                                                       // On a branch - step to next level down
+             {search_le_parallel(Key);                                          // Search stuck for matching key
+              BtreeIndex.Copy(Data);                                            // Data found at index
+              P.GOto(start);                                                    // Key not present
+             }
+           };
+         }
+       };
+     }
+   }
+
 //D1 Tests                                                                      // Test the btree
 
   final static int[]random_32 = {12, 3, 27, 1, 23, 20, 8, 18, 2, 31, 25, 16, 13, 32, 11, 21, 5, 24, 4, 10, 26, 30, 9, 6, 29, 17, 28, 15, 14, 19, 7, 22};
@@ -4669,7 +4705,7 @@ Merge     : 0
 
     final FindFirst f = b.new FindFirst();
     b.maxSteps = 10_000;
-    b.chipRunJava();
+    b.chipRun();
     //stop(f.dump());
     ok(f.dump(), """
 Stuck: find size: 4, leaf: 1, index: 1
@@ -4695,7 +4731,7 @@ Merge     : 0
 
     final FindLast l = b.new FindLast();
     b.maxSteps = 2400;
-    b.chipRunJava();
+    b.chipRun();
     //stop(l.dump());
     ok(l.dump(), """
 Stuck: find size: 4, leaf: 1, index: 2
@@ -6886,7 +6922,9 @@ Merge     : 0
     //test_verilog_delete();
     //test_verilog_find();
     //test_verilog_put();
-    test_find();
+    test_findFirst();
+    test_findLast();
+    //test_find();
    }
 
   public static void main(String[] args)                                        // Test if called as a program
