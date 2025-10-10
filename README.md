@@ -395,9 +395,9 @@ Then: Package Settings -> Change visibility -> Public
 
 # Tree Network
 
-**TreeNet.java** contains details of a [tree](https://en.wikipedia.org/wiki/Tree_(data_structure)) [network](https://en.wikipedia.org/wiki/Computer_network) designed to connect a
-plurality of Single Btrees into a Double Btree.  The [tree](https://en.wikipedia.org/wiki/Tree_(data_structure)) [network](https://en.wikipedia.org/wiki/Computer_network) operates in
-logarithmic time over the number of leaves connected together.
+**TreeNet.java** contains details of a [tree](https://en.wikipedia.org/wiki/Tree_(data_structure)) [network](https://en.wikipedia.org/wiki/Computer_network) designed to connect a plurality
+of single B-trees into a double B-tree. The [tree](https://en.wikipedia.org/wiki/Tree_(data_structure)) [network](https://en.wikipedia.org/wiki/Computer_network) operates in
+logarithmic time with respect to the number of leaves connected together.
 
 Using a [tree](https://en.wikipedia.org/wiki/Tree_(data_structure)) [network](https://en.wikipedia.org/wiki/Computer_network) architecture allows individual B-tree units to be
 manufactured separately and later arranged in two- or three-dimensional [arrays](https://en.wikipedia.org/wiki/Dynamic_array), where they can be interconnected to form double B-trees of virtually any size.
@@ -407,8 +407,8 @@ design, scaling, and fault isolation.
 
 Moreover, sub-networks of a [tree](https://en.wikipedia.org/wiki/Tree_(data_structure)) structure can be linked over large distances
 using photonic interconnects, enabling double B-tree systems that span much
-larger physical areas than would be practical with traditional metal
-interconnects.
+larger physical areas and thus can contain much more data than would be
+practical with traditional metal interconnects.
 
 # Status
 
