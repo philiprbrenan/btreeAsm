@@ -29,6 +29,8 @@ public class Test                                                               
   final static boolean theShorterIsTheDaughter = true;                          // True for a shorter traceback during tests to get more counts on the page at a time in Geany
   final static boolean        coverageAnalysis = false;                         // Enables coverage checks
 
+  Test Test() {return this;}                                                    // Instance
+
 //D2 String routines                                                            // String routines
 
   static String binaryString(int n, int width)                                  // Convert a integer to a binary string of specified width
