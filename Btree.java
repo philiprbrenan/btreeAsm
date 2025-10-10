@@ -2643,9 +2643,9 @@ class Btree extends Chip                                                        
   public class FindNext extends Find                                            // Find next key, data pair in the tree with a key greater than the supplied key
    {FindNext(Process.Register SearchKey)                                        // Key whose successor is to be found
      {if (coverageAnalysis) zz();
-      final Process.Register ll  = P.register("lastLeft", btreeAddressSize);    // Where the last left turn was made
-      final Process.Register wl  = P.register("whetherLastLeft", 1);            // Where a last left turn was ever made
-      final Process.Register tt  = P.register("test",            1);            // Perform a test
+      final Process.Register ll = P.register("lastLeft", btreeAddressSize);     // Where the last left turn was made
+      final Process.Register wl = P.register("whetherLastLeft", 1);             // Where a last left turn was ever made
+      final Process.Register tt = P.register("test",            1);             // Perform a test
 
       Key.Copy(SearchKey);                                                      // Current search key
       BtreeIndex.Zero();                                                        // Start at the root
@@ -2677,7 +2677,7 @@ class Btree extends Chip                                                        
                   P.new If (tt.Lt(StuckIndex, maxStuckSize-1))                  // Room to move up in the body of the stuck
                    {void Then()                                                 // Room to move up
                      {StuckIndex.Inc();                                         // Move up
-                      ElementAt(StuckIndex);                                    // Down next branch
+                      ElementAt(StuckIndex);                                    // Down to next level
                      }
                     void Else()                                                 // Descend through topmost element
                      {PastLastElement();                                        // Top most
@@ -2716,6 +2716,84 @@ class Btree extends Chip                                                        
                {void Then()
                  {wl.One();                                                     // We have turned left at some point in this descent
                   ll.Copy(BtreeIndex);                                          // Last point at which we turned left
+                 }                                                              // Step down
+               };
+              BtreeIndex.Copy(Data);                                            // Step down
+              P.GOto(start);                                                    // Continue search for next key
+             }
+           };
+         }
+       };
+     }
+   }
+
+  public class FindPrev extends Find                                            // Find previous key, data pair in the tree with a key greater than the supplied key
+   {FindPrev(Process.Register SearchKey)                                        // Key whose predecessor is to be found
+     {if (coverageAnalysis) zz();
+      final Process.Register lr = P.register("lastRight", btreeAddressSize);    // Where the last right turn was made
+      final Process.Register tt = P.register("test",                     1);    // Perform a test
+
+      Key.Copy(SearchKey);                                                      // Current search key
+      BtreeIndex.Zero();                                                        // Start at the root
+      lr.Zero();                                                                // First right turn was at root
+
+      P.new Block()
+       {void code()
+         {stuckGet(BtreeIndex);                                                 // Load root
+          new IsLeaf()
+           {void Leaf()                                                         // At a leaf - search for exact match
+             {search_le_parallel(Key);                                          // Search stuck for matching key
+              P.new If (Found)                                                  // If a matching key was found we are going right
+               {void Then()
+                 {P.new If (StuckIndex)                                         // Room to move down in the body of the stuck
+                   {void Then()                                                 // Room to move down
+                     {StuckIndex.Dec();                                         // Move down
+                      ElementAt(StuckIndex);                                    // Get previous element
+                      FoundKey.Copy(Key);                                       // Copy the key that has been found
+                      P.GOto(end);                                              // Finished
+                     }
+                   };
+                 }
+               };
+
+              stuckGet(lr);                                                     // Reload last right trun and try one step further up
+              search_le_parallel(Key);                                          // Search last right turn stuck for matching key
+              P.new If (StuckIndex)                                             // Room to move down in the body of the stuck
+               {void Then()                                                     // Room to move down
+                 {StuckIndex.Dec();                                             // Move down
+                  ElementAt(StuckIndex);                                        // Down to next level
+                 }
+                void Else()                                                     // Descend through topmost element
+                 {Found.Zero();                                                 // Top most
+                  P.GOto(end);                                                  // Finished as ther are no oer fect branches ot move down
+                 };
+               };
+              BtreeIndex.Copy(Data);                                            // Root of sub tree
+              P.new Block()                                                     // Find first element of next sub-tree
+               {void code()
+                 {stuckGet(BtreeIndex);                                         // Root of sub tree
+                  new IsLeaf()
+                   {void Leaf()                                                 // At a leaf - search for exact match
+                     {Found.One();
+                      LastElement();
+                      FoundKey.Copy(Key);
+                      P.GOto(end);                                              // Found next element as first element of sub tree
+                     }
+                    void Branch()                                               // On a branch - step first right to next level down
+                     {PastLastElement();                                        // Get top most element
+                      BtreeIndex.Copy(Data);                                    // Go right
+                      P.GOto(start);                                            // Step down
+                     }
+                   };
+                 }
+               };
+              P.GOto(end);                                                      // Located next element as first element of the next sub tree in the stuck where we last turned right
+             }
+            void Branch()                                                       // On a branch - step to next level down
+             {search_le_parallel(Key);                                          // Search stuck for matching key
+              P.new If (StuckIndex)                                             // If a matching key was found we are going left
+               {void Then()                                                     // No matching key found so we are going right
+                 {lr.Copy(BtreeIndex);                                          // Last point at which we turned right
                  }                                                              // Step down
                };
               BtreeIndex.Copy(Data);                                            // Step down
@@ -4813,7 +4891,7 @@ Merge     : 0
     final FindNext  n31 = b.new FindNext(n30.FoundKey);
     final FindNext  n32 = b.new FindNext(n31.FoundKey);
     b.maxSteps = 3_520;
-    b.chipRunJava();
+    b.chipRun();
     //stop(b.step);
     //stop(f.dump());
     ok(f.dump(), """
@@ -4863,6 +4941,98 @@ Merge     : 0
     ok(n30.FoundKey.registerGet(), 31);  ok(n30.Found.registerGet(), 1);
     ok(n31.FoundKey.registerGet(), 32);  ok(n31.Found.registerGet(), 1);
                                          ok(n32.Found.registerGet(), 0);
+   }
+
+  static void test_findPrev()
+   {sayCurrentTestName();
+    final Btree   b = test_put_reload();
+    final Process P = b.P;
+    P.processTrace = true;
+
+    final FindLast  p32 = b.new FindLast();
+    final FindPrev  p31 = b.new FindPrev(p32.FoundKey);
+    final FindPrev  p30 = b.new FindPrev(p31.FoundKey);
+    final FindPrev  p29 = b.new FindPrev(p30.FoundKey);
+    final FindPrev  p28 = b.new FindPrev(p29.FoundKey);
+    final FindPrev  p27 = b.new FindPrev(p28.FoundKey);
+    final FindPrev  p26 = b.new FindPrev(p27.FoundKey);
+    final FindPrev  p25 = b.new FindPrev(p26.FoundKey);
+    final FindPrev  p24 = b.new FindPrev(p25.FoundKey);
+    final FindPrev  p23 = b.new FindPrev(p24.FoundKey);
+    final FindPrev  p22 = b.new FindPrev(p23.FoundKey);
+    final FindPrev  p21 = b.new FindPrev(p22.FoundKey);
+    final FindPrev  p20 = b.new FindPrev(p21.FoundKey);
+    final FindPrev  p19 = b.new FindPrev(p20.FoundKey);
+    final FindPrev  p18 = b.new FindPrev(p19.FoundKey);
+    final FindPrev  p17 = b.new FindPrev(p18.FoundKey);
+    final FindPrev  p16 = b.new FindPrev(p17.FoundKey);
+    final FindPrev  p15 = b.new FindPrev(p16.FoundKey);
+    final FindPrev  p14 = b.new FindPrev(p15.FoundKey);
+    final FindPrev  p13 = b.new FindPrev(p14.FoundKey);
+    final FindPrev  p12 = b.new FindPrev(p13.FoundKey);
+    final FindPrev  p11 = b.new FindPrev(p12.FoundKey);
+    final FindPrev  p10 = b.new FindPrev(p11.FoundKey);
+    final FindPrev  p9  = b.new FindPrev(p10.FoundKey);
+    final FindPrev  p8  = b.new FindPrev(p9 .FoundKey);
+    final FindPrev  p7  = b.new FindPrev(p8 .FoundKey);
+    final FindPrev  p6  = b.new FindPrev(p7 .FoundKey);
+    final FindPrev  p5  = b.new FindPrev(p6 .FoundKey);
+    final FindPrev  p4  = b.new FindPrev(p5 .FoundKey);
+    final FindPrev  p3  = b.new FindPrev(p4 .FoundKey);
+    final FindPrev  p2  = b.new FindPrev(p3 .FoundKey);
+    final FindPrev  p1  = b.new FindPrev(p2 .FoundKey);
+    final FindPrev  p   = b.new FindPrev(p1 .FoundKey);
+    b.maxSteps = 3_980;
+    b.chipRun();
+    //stop(b.step);
+    //stop(l.dump());
+    ok(p32.dump(), """
+Stuck: find size: 4, leaf: 1, index: 2
+ 0    29 =>   30
+ 1    30 =>   31
+ 2    31 =>   32
+ 3    32 =>   33
+Found     : 1
+Key       : 32
+FoundKey  : 32
+Data      : 33
+BtreeIndex: 2
+StuckIndex: 0
+Merge     : 0
+""");
+
+    ok(p31.FoundKey.registerGet(), 31);  ok(p31.Found.registerGet(), 1);
+    ok(p30.FoundKey.registerGet(), 30);  ok(p30.Found.registerGet(), 1);
+    ok(p29.FoundKey.registerGet(), 29);  ok(p29.Found.registerGet(), 1);
+    ok(p28.FoundKey.registerGet(), 28);  ok(p28.Found.registerGet(), 1);
+    ok(p27.FoundKey.registerGet(), 27);  ok(p27.Found.registerGet(), 1);
+    ok(p26.FoundKey.registerGet(), 26);  ok(p26.Found.registerGet(), 1);
+    ok(p25.FoundKey.registerGet(), 25);  ok(p25.Found.registerGet(), 1);
+    ok(p24.FoundKey.registerGet(), 24);  ok(p24.Found.registerGet(), 1);
+    ok(p23.FoundKey.registerGet(), 23);  ok(p23.Found.registerGet(), 1);
+    ok(p22.FoundKey.registerGet(), 22);  ok(p22.Found.registerGet(), 1);
+    ok(p21.FoundKey.registerGet(), 21);  ok(p21.Found.registerGet(), 1);
+    ok(p20.FoundKey.registerGet(), 20);  ok(p20.Found.registerGet(), 1);
+    ok(p19.FoundKey.registerGet(), 19);  ok(p19.Found.registerGet(), 1);
+    ok(p18.FoundKey.registerGet(), 18);  ok(p18.Found.registerGet(), 1);
+    ok(p17.FoundKey.registerGet(), 17);  ok(p17.Found.registerGet(), 1);
+    ok(p16.FoundKey.registerGet(), 16);  ok(p16.Found.registerGet(), 1);
+    ok(p15.FoundKey.registerGet(), 15);  ok(p15.Found.registerGet(), 1);
+    ok(p14.FoundKey.registerGet(), 14);  ok(p14.Found.registerGet(), 1);
+    ok(p13.FoundKey.registerGet(), 13);  ok(p13.Found.registerGet(), 1);
+    ok(p12.FoundKey.registerGet(), 12);  ok(p12.Found.registerGet(), 1);
+    ok(p11.FoundKey.registerGet(), 11);  ok(p11.Found.registerGet(), 1);
+    ok(p10.FoundKey.registerGet(), 10);  ok(p10.Found.registerGet(), 1);
+    ok(p9 .FoundKey.registerGet(),  9);  ok(p9 .Found.registerGet(), 1);
+    ok(p8 .FoundKey.registerGet(),  8);  ok(p8 .Found.registerGet(), 1);
+    ok(p7 .FoundKey.registerGet(),  7);  ok(p7 .Found.registerGet(), 1);
+    ok(p6 .FoundKey.registerGet(),  6);  ok(p6 .Found.registerGet(), 1);
+    ok(p5 .FoundKey.registerGet(),  5);  ok(p5 .Found.registerGet(), 1);
+    ok(p4 .FoundKey.registerGet(),  4);  ok(p4 .Found.registerGet(), 1);
+    ok(p3 .FoundKey.registerGet(),  3);  ok(p3 .Found.registerGet(), 1);
+    ok(p2 .FoundKey.registerGet(),  2);  ok(p2 .Found.registerGet(), 1);
+    ok(p1 .FoundKey.registerGet(),  1);  ok(p1 .Found.registerGet(), 1);
+                                         ok(p  .Found.registerGet(), 0);
    }
 
   static void test_findLast()
@@ -7045,6 +7215,8 @@ Merge     : 0
     test_findAndInsert();
     test_findFirst();
     test_findLast();
+    test_findNext();
+    test_findPrev();
     test_delete_ascending();
     test_delete_random();
     test_delete_descending();
@@ -7064,7 +7236,7 @@ Merge     : 0
     //test_verilog_delete();
     //test_verilog_find();
     //test_verilog_put();
-     test_findNext();
+    test_findNext();
    }
 
   public static void main(String[] args)                                        // Test if called as a program
