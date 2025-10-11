@@ -17,7 +17,7 @@ A [chip](https://en.wikipedia.org/wiki/Integrated_circuit) implements an [algori
 A [chip](https://en.wikipedia.org/wiki/Integrated_circuit) design exists in one of two states:
 
 - **Design**: The stage where the layout of the [chip](https://en.wikipedia.org/wiki/Integrated_circuit) is described in [Java](https://en.wikipedia.org/wiki/Java_(programming_language)) 
-- **Execution**: When the [chip](https://en.wikipedia.org/wiki/Integrated_circuit) runs a fixed set of parallel [processes](https://en.wikipedia.org/wiki/Process_management_(computing)) to perform work.  This is simulated in [Verilog](https://en.wikipedia.org/wiki/Verilog) 
+- **Execution**: When the [chip](https://en.wikipedia.org/wiki/Integrated_circuit) runs a fixed set of parallel [processes](https://en.wikipedia.org/wiki/Process_management_(computing)) to perform work.  This work is simulated in [Verilog](https://en.wikipedia.org/wiki/Verilog) 
 ## Process
 
 Each [process](https://en.wikipedia.org/wiki/Process_management_(computing)) is assigned a unique identifier at design time. A [process](https://en.wikipedia.org/wiki/Process_management_(computing)) includes:
@@ -180,29 +180,26 @@ the [process](https://en.wikipedia.org/wiki/Process_management_(computing)) unde
 
 # Double Btree Structure
 
-Each B-tree has its own dedicated [memory](https://en.wikipedia.org/wiki/Computer_memory), which can be of any reasonable size
+Each [B-Tree](https://en.wikipedia.org/wiki/B-tree) has its own dedicated [memory](https://en.wikipedia.org/wiki/Computer_memory), which can be of any reasonable size
 supported by the chip fabrication [process](https://en.wikipedia.org/wiki/Process_management_(computing)). However, as chip size increases, the
 likelihood of manufacturing defects grows and access to individual [memory](https://en.wikipedia.org/wiki/Computer_memory) elements becomes slower.
 
-To address these issues, we employ a double B-tree architecture. Each stuck of
-the double B-tree is implemented as a separate chip containing a single B-tree.
-B-trees are naturally suited to representing a stuck, as shown in **Dt.java**.
-The individual B-trees communicate through the star-topology [network](https://en.wikipedia.org/wiki/Computer_network) described
+To address these issues, we employ a double [B-Tree](https://en.wikipedia.org/wiki/B-tree) architecture. Each stuck of
+the double [B-Tree](https://en.wikipedia.org/wiki/B-tree) is implemented as a separate chip containing a single [B-Tree](https://en.wikipedia.org/wiki/B-tree) . [B-Tree](https://en.wikipedia.org/wiki/B-tree) are naturally suited to representing a stuck, as shown in **Dt.java**.
+The individual [B-Tree](https://en.wikipedia.org/wiki/B-tree) communicate through the star-topology [network](https://en.wikipedia.org/wiki/Computer_network) described
 in **TreeNet.java**.
 
-Constructing a double B-tree from multiple single B-trees reduces manufacturing
+Constructing a double [B-Tree](https://en.wikipedia.org/wiki/B-tree) from multiple single [B-Tree](https://en.wikipedia.org/wiki/B-tree) reduces manufacturing
 costs by improving yield (since smaller [chips](https://en.wikipedia.org/wiki/Integrated_circuit) are less prone to defects) and
-increases [memory](https://en.wikipedia.org/wiki/Computer_memory) access [speed](https://en.wikipedia.org/wiki/Speed) through parallelism, as each single B-tree
-controls its own independent block of [memory](https://en.wikipedia.org/wiki/Computer_memory). These advantages come at the
-expense of logarithmic [network](https://en.wikipedia.org/wiki/Computer_network) communication overhead between the single
-B-trees that together form the double B-tree.
+increases [memory](https://en.wikipedia.org/wiki/Computer_memory) access [speed](https://en.wikipedia.org/wiki/Speed) through parallelism, as each single [B-Tree](https://en.wikipedia.org/wiki/B-tree) controls its own independent block of [memory](https://en.wikipedia.org/wiki/Computer_memory). These advantages come at the
+expense of logarithmic [network](https://en.wikipedia.org/wiki/Computer_network) communication overhead between the single [B-Tree](https://en.wikipedia.org/wiki/B-tree) that together form the double [B-Tree](https://en.wikipedia.org/wiki/B-tree) .
 
 ---
 
 # Stuck Data Structure
 
-A **Stuck** serves as the **fundamental node representation** inside a **B-tree**.
-Instead of using pointers to dynamically allocated elements, each node of the B-tree contains a **Stuck** that stores its **keys and associated values (or child pointers)** in a fixed-size, contiguous block.
+A **Stuck** serves as the **fundamental node representation** inside a **btree**.
+Instead of using pointers to dynamically allocated elements, each node of the [B-Tree](https://en.wikipedia.org/wiki/B-tree) contains a **Stuck** that stores its **keys and associated values (or child pointers)** in a fixed-size, contiguous block.
 
 A **Stuck** is a **fixed-size stack-like array** designed to hold **key-data pairs** in **sorted order by key**.
 
@@ -262,8 +259,8 @@ A **Stuck** combines the **boundedness of a stack**, the **ordered nature of a s
 ## Role in a B-tree
 
 1. **Key Storage**
-   - Each B-tree node maintains its set of keys inside a Stuck.
-   - The Stuck keeps keys **sorted**, which is crucial for search, insert, and delete operations in a B-tree.
+   - Each [B-Tree](https://en.wikipedia.org/wiki/B-tree) node maintains its set of keys inside a Stuck.
+   - The Stuck keeps keys **sorted**, which is crucial for search, insert, and delete operations in a [B-Tree](https://en.wikipedia.org/wiki/B-tree) .
 
 2. **Efficient Search**
    - Because keys in a Stuck are ordered, **binary search** can be applied within the node.
@@ -271,7 +268,7 @@ A **Stuck** combines the **boundedness of a stack**, the **ordered nature of a s
 
 3. **Insert & Split Support**
    - When inserting a key into a node, the Stuck shifts entries to maintain sorted order.
-   - If the Stuck is full, the node **splits**: half the keys are promoted or moved to a new node, consistent with B-tree balancing rules.
+   - If the Stuck is full, the node **splits**: half the keys are promoted or moved to a new node, consistent with [B-Tree](https://en.wikipedia.org/wiki/B-tree) balancing rules.
 
 4. **Delete & Merge Support**
    - On deletion, the Stuck shifts entries downward to close gaps.
@@ -405,17 +402,17 @@ Then: Package Settings -> Change visibility -> Public
 # Tree Network
 
 **TreeNet.java** contains details of a [tree](https://en.wikipedia.org/wiki/Tree_(data_structure)) [network](https://en.wikipedia.org/wiki/Computer_network) designed to connect a plurality
-of single B-trees into a double B-tree. The [tree](https://en.wikipedia.org/wiki/Tree_(data_structure)) [network](https://en.wikipedia.org/wiki/Computer_network) operates in
+of single [B-Tree](https://en.wikipedia.org/wiki/B-tree) into a double [B-Tree](https://en.wikipedia.org/wiki/B-tree) . The [tree](https://en.wikipedia.org/wiki/Tree_(data_structure)) [network](https://en.wikipedia.org/wiki/Computer_network) operates in
 logarithmic time with respect to the number of leaves connected together.
 
-Using a [tree](https://en.wikipedia.org/wiki/Tree_(data_structure)) [network](https://en.wikipedia.org/wiki/Computer_network) architecture allows individual B-tree units to be
-manufactured separately and later arranged in two- or three-dimensional [arrays](https://en.wikipedia.org/wiki/Dynamic_array), where they can be interconnected to form double B-trees of virtually any size.
+Using a [tree](https://en.wikipedia.org/wiki/Tree_(data_structure)) [network](https://en.wikipedia.org/wiki/Computer_network) architecture allows individual [B-Tree](https://en.wikipedia.org/wiki/B-tree) units to be
+manufactured separately and later arranged in two- or three-dimensional [arrays](https://en.wikipedia.org/wiki/Dynamic_array), where they can be interconnected to form double [B-Tree](https://en.wikipedia.org/wiki/B-tree) of virtually any size.
 
 Tree networks also provide natural decoupling between components, simplifying
 design, scaling, and fault isolation.
 
 Moreover, sub-networks of a [tree](https://en.wikipedia.org/wiki/Tree_(data_structure)) structure can be linked over large distances
-using photonic interconnects, enabling double B-tree systems that span much
+using photonic interconnects, enabling double [B-Tree](https://en.wikipedia.org/wiki/B-tree) systems that span much
 larger physical areas and thus can contain much more data than would be
 practical with traditional metal interconnects.
 
