@@ -420,7 +420,7 @@ practical with traditional metal interconnects.
 - 2025-08-22 All generated [Verilog](https://en.wikipedia.org/wiki/Verilog) now uses non blocking assignment
 
 - 2025-08-24 Place and route of synthesized [Verilog](https://en.wikipedia.org/wiki/Verilog) using [Open Source Silicon Compiler](https://docs.siliconcompiler.com/en/latest/index.html) 
-- 2025-08-25 Ran [Open Source Silicon Compiler](https://docs.siliconcompiler.com/en/latest/index.html) on [Amazon Web Services](http://aws.amazon.com) in a [Docker](https://en.wikipedia.org/wiki/Docker_(software)) container saved via ipv6 on docker.io
+- 2025-08-25 Ran [Open Source Silicon Compiler](https://docs.siliconcompiler.com/en/latest/index.html) on [Amazon Web Services](http://aws.amazon.com) in a [Docker](https://en.wikipedia.org/wiki/Docker_(software)) container saved via [IPv6 address](https://en.wikipedia.org/wiki/IPv6) on docker.io
 
 - 2025-10-08 Synthesized Tree Network for inter-component connectivity
 
