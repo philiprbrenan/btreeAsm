@@ -2594,7 +2594,6 @@ class Btree extends Chip                                                        
                  {Found.One();                                                  // Show found
                   FirstElement();                                               // Get first key, data pair
                   FoundKey.Copy(keys, 0);                                       // Found key
-                  //StuckIndex.Zero();
                  }
                 void Else()
                  {Found.Zero();
