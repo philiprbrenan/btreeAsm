@@ -417,12 +417,13 @@ practical with traditional metal interconnects.
 
 - 2025-08-16 [Verilog](https://en.wikipedia.org/wiki/Verilog) synthesized for [test](https://en.wikipedia.org/wiki/Software_testing) cases in Chip.java using yosys
 
-- 2025-08-22 All [Verilog](https://en.wikipedia.org/wiki/Verilog) now uses non blocking assignment
+- 2025-08-22 All generated [Verilog](https://en.wikipedia.org/wiki/Verilog) now uses non blocking assignment
 
 - 2025-08-24 Place and route of synthesized [Verilog](https://en.wikipedia.org/wiki/Verilog) using [Open Source Silicon Compiler](https://docs.siliconcompiler.com/en/latest/index.html) 
-- 2025-08-25 Run Silicon Compiler in a [Docker](https://en.wikipedia.org/wiki/Docker_(software)) container saved on ghcr.io
+- 2025-08-25 Ran [Open Source Silicon Compiler](https://docs.siliconcompiler.com/en/latest/index.html) on [Amazon Web Services](http://aws.amazon.com) in a [Docker](https://en.wikipedia.org/wiki/Docker_(software)) container saved via ipv6 on docker.io
 
 - 2025-10-08 Synthesized Tree Network for inter-component connectivity
 
 - 2025-10-10 Synthesized FindFirst, FindLast, FindNext, FindPrev
-- 2025-10-11 Synthesized iterator
+
+- 2025-10-11 Synthesized reverse iterator using a non [recursive](https://en.wikipedia.org/wiki/Recursion) [tree](https://en.wikipedia.org/wiki/Tree_(data_structure)) traversal
