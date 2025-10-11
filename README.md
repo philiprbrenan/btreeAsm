@@ -157,11 +157,20 @@ problem:
 
 - The [Verilog](https://en.wikipedia.org/wiki/Verilog) is executed and checked to confirm that it produces the same [memory](https://en.wikipedia.org/wiki/Computer_memory) and [register](https://en.wikipedia.org/wiki/Processor_register) trace as the [Java](https://en.wikipedia.org/wiki/Java_(programming_language)) does
 
-This approach produces [Verilog](https://en.wikipedia.org/wiki/Verilog) much **more efficiently** and **reliably** than
-writing it by hand can.
+This approach produces [Verilog](https://en.wikipedia.org/wiki/Verilog) **much more efficiently** and **reliably** than
+writing it by hand. For example, I was able to implement a non-recursive
+reverse iterator over the [tree](https://en.wikipedia.org/wiki/Tree_(data_structure)) entirely in [Java](https://en.wikipedia.org/wiki/Java_(programming_language)), without writing any [Verilog](https://en.wikipedia.org/wiki/Verilog) by
+hand at all, and the generated [Verilog](https://en.wikipedia.org/wiki/Verilog) synthesized, placed, and routed
+correctly on the first attempt.
 
-As a consequence, no additional tests are required within the [Verilog](https://en.wikipedia.org/wiki/Verilog) itself;
-it is sufficient to [verify](https://en.wikipedia.org/wiki/Software_verification_and_validation) that the [Verilog](https://en.wikipedia.org/wiki/Verilog) implementation updates the [memory](https://en.wikipedia.org/wiki/Computer_memory) and [registers](https://en.wikipedia.org/wiki/Processor_register) on the chip in lockstep with the [Java](https://en.wikipedia.org/wiki/Java_(programming_language)) version to confirm that the [Verilog](https://en.wikipedia.org/wiki/Verilog) version accurately represents the [Java](https://en.wikipedia.org/wiki/Java_(programming_language)) version.
+However, similar to the MIT "Midnight Rewiring Society," if extra [instructions](https://en.wikipedia.org/wiki/Instruction_set_architecture) are needed, perhaps to increase parallelism, it is relatively easy to add a [Verilog](https://en.wikipedia.org/wiki/Verilog) implementation of an [instruction](https://en.wikipedia.org/wiki/Instruction_set_architecture) sequence written in [Java](https://en.wikipedia.org/wiki/Java_(programming_language)), which can
+then be reused from [Java](https://en.wikipedia.org/wiki/Java_(programming_language)) as needed.
+
+As a consequence of the matching of the [Java](https://en.wikipedia.org/wiki/Java_(programming_language)) and [Verilog](https://en.wikipedia.org/wiki/Verilog) traces, no additional
+tests are required within the [Verilog](https://en.wikipedia.org/wiki/Verilog) itself; it is sufficient to [verify](https://en.wikipedia.org/wiki/Software_verification_and_validation) that
+the [Verilog](https://en.wikipedia.org/wiki/Verilog) implementation updates the [memory](https://en.wikipedia.org/wiki/Computer_memory) and [registers](https://en.wikipedia.org/wiki/Processor_register) on the chip in
+lockstep with the [Java](https://en.wikipedia.org/wiki/Java_(programming_language)) version to confirm that the [Verilog](https://en.wikipedia.org/wiki/Verilog) version accurately
+implements the [Java](https://en.wikipedia.org/wiki/Java_(programming_language)) version.
 
 If the [Verilog](https://en.wikipedia.org/wiki/Verilog) trace and the [Java](https://en.wikipedia.org/wiki/Java_(programming_language)) trace do not match, the [instruction](https://en.wikipedia.org/wiki/Instruction_set_architecture) that is
 causing the mismatch can be located by setting "processTrace" to **true** for
