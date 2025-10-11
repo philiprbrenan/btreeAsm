@@ -423,3 +423,5 @@ practical with traditional metal interconnects.
 - 2025-08-25 Run Silicon Compiler in a [Docker](https://en.wikipedia.org/wiki/Docker_(software)) container saved on ghcr.io
 
 - 2025-10-08 Synthesized Tree Network for inter-component connectivity
+
+- 2025-10-10 Synthesized FindFirst, FindLast, FindNext, FindPrev
