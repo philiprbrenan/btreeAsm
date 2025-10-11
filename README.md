@@ -195,7 +195,7 @@ B-trees that together form the double B-tree.
 A **Stuck** serves as the **fundamental node representation** inside a **B-tree**.
 Instead of using pointers to dynamically allocated elements, each node of the B-tree contains a **Stuck** that stores its **keys and associated values (or child pointers)** in a fixed-size, contiguous block.
 
-A **Stuck** is a **fixed-size stack-like array** designed to hold **keyâdata pairs** in **sorted order by key**.
+A **Stuck** is a **fixed-size stack-like array** designed to hold **key-data pairs** in **sorted order by key**.
 
 ![Stuck Diagram](images/Stuck.png)
 
