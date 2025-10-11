@@ -5042,6 +5042,42 @@ Merge     : 0
                                          ok(p  .Found.registerGet(), 0);
    }
 
+  static void test_iterate()
+   {sayCurrentTestName();
+    final Btree   b = test_put_reload();
+    final Process P = b.P;
+    P.processTrace  = true;
+    final Process.Register k = P.register("key", b.bitsPerKey);
+    final StringJoiner     S = new StringJoiner(" ");
+
+    P.new Block()
+     {void code()
+       {final FindLast l = b.new FindLast();
+        P.GOZero(end, l.Found);
+        k.Copy(l.Key);
+        S.add(""+k.registerGet());
+        P.new Block()
+         {void code()
+           {final FindPrev p = b.new FindPrev(k);
+P.new Instruction()
+ {void action()
+   {say("AAAA", p.dump());
+   }
+ };
+            P.GOZero(end, p.Found);
+            k.Copy(p.Key);
+            S.add(""+k.registerGet());
+            P.GOto(start);
+           }
+         };
+       }
+     };
+    b.maxSteps = 3_600;
+    b.chipRun();
+    //stop(b.step);
+    stop(S);
+   }
+
   static void test_findLast()
    {sayCurrentTestName();
     final Btree   b = test_put_reload();
@@ -7279,7 +7315,7 @@ Merge     : 0
     //test_verilog_delete();
     //test_verilog_find();
     //test_verilog_put();
-    test_delete_ascending();
+    test_iterate();
    }
 
   public static void main(String[] args)                                        // Test if called as a program
