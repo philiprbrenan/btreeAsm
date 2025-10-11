@@ -2284,7 +2284,7 @@ class Btree extends Chip                                                        
 
       P.new Block()
        {void code()
-         {stuckGet(BtreeIndex);                                                 // Load current stuck
+         {stuckGet(BtreeIndex);                                                 // Load current stuck from memory
           new IsLeaf()
            {void Leaf()                                                         // At a leaf - search for exact match
              {search_eq_parallel(Key);                                          // Search
@@ -2457,7 +2457,7 @@ class Btree extends Chip                                                        
      {void code()
        {s.Zero();                                                               // Position in btree
 
-        S.stuckGetRoot();                                                       // Load current stuck
+        S.stuckGetRoot();                                                       // Load current stuck from memory
 
         S.new IsLeaf()                                                          // Root is a leaf - nothing to merge
          {void Leaf()
@@ -2485,7 +2485,7 @@ class Btree extends Chip                                                        
 
             P.new If (S.Found)                                                  // Found the key in the body of the stuck
              {void Then()
-               {P.new If (S.StuckIndex)                                         // Found the key in the body of the stuck
+               {P.new If (S.StuckIndex)                                         // Room in the body of the stuck to move down
                  {void Then()
                    {stuckIndex1.Copy(S.StuckIndex).Inc();                       // Try merging to the right of the key
                     P.new If (within.Lt(stuckIndex1, S.size))                   // There is a sibling to the right
@@ -2667,10 +2667,10 @@ class Btree extends Chip                                                        
              {search_le_parallel(Key);                                          // Search stuck for matching key
               P.new If (Found)                                                  // If a matching key was found we are going left
                {void Then()
-                 {StuckIndex.Inc();                                             // Move up to next element
-                  P.new If (tt.Lt(StuckIndex, size))                            // Next element in range
+                 {StuckIndex.Inc();                                             // Address putative next key, data pair
+                  P.new If (tt.Lt(StuckIndex, size))                            // Next key, data pair in body of stuck
                    {void Then()
-                     {ElementAt(StuckIndex);                                    // Get next element
+                     {ElementAt(StuckIndex);                                    // Get next key, data pair
                       FoundKey.Copy(Key);                                       // Copy the key that has been found
                       P.GOto(end);                                              // Finished
                      }
@@ -2682,7 +2682,7 @@ class Btree extends Chip                                                        
                  {stuckGet(ll);                                                 // Reload last left trun and try one step further up
                   search_le_parallel(Key);                                      // Search last left turn stuck for matching key
                   P.new If (tt.Lt(StuckIndex, maxStuckSize-1))                  // Room to move up in the body of the stuck
-                   {void Then()                                                 // Room to move up
+                   {void Then()
                      {StuckIndex.Inc();                                         // Move up
                       ElementAt(StuckIndex);                                    // Down to next level
                      }
@@ -2690,30 +2690,30 @@ class Btree extends Chip                                                        
                      {PastLastElement();                                        // Top most
                      }
                    };
-                  BtreeIndex.Copy(Data);                                        // Root of sub tree
+                  BtreeIndex.Copy(Data);                                        // Root of sub-tree
                   P.new Block()                                                 // Find first element of next sub-tree
                    {void code()
-                     {stuckGet(BtreeIndex);                                     // Root of sub tree
+                     {stuckGet(BtreeIndex);                                     // Root of sub-tree
                       new IsLeaf()
-                       {void Leaf()                                             // At a leaf - search for exact match
-                         {Found.One();
-                          FoundKey.Copy(keys, 0);
-                          Data    .Copy(data, 0);
-                          StuckIndex.Zero();
-                          P.GOto(end);                                          // Found next element as first element of sub tree
+                       {void Leaf()                                             // At a leaf - we need the first pair
+                         {Found.One();                                          // Show that we have found the next key, data pair
+                          FoundKey.Copy(keys, 0);                               // First key in stuck is the required key
+                          Data    .Copy(data, 0);                               // Data corresponding to key
+                          StuckIndex.Zero();                                    // We are at the start of the stuck
+                          P.GOto(end);                                          // Found next element as first element of sub-tree
                          }
                         void Branch()                                           // On a branch - step first left to next level down
-                         {BtreeIndex.Copy(data, 0);                             // Go first left
+                         {BtreeIndex.Copy(data, 0);                             // Go first left path in stuck
                           P.GOto(start);                                        // Step down
                          }
                        };
                      }
                    };
-                  P.GOto(end);                                                  // Located next element as first element of the next sub tree in the stuck where we last turned left
+                  P.GOto(end);                                                  // Located next element as first element of the next sub-tree in the stuck where we last turned left
                  }
                 void Else()                                                     // There was no previous left turn and we are on a leaf so it must be the right most left in the tree and we did not find a matching key so we must have reached the end of the tree
-                 {Found.Zero();                                                 // No more keys
-                  P.GOto(end);                                                  // Finished
+                 {Found.Zero();                                                 // No more key, data pairs in this traverse
+                  P.GOto(end);                                                  // Finished traverse
                  }
                };
              }
@@ -2723,10 +2723,10 @@ class Btree extends Chip                                                        
                {void Then()
                  {wl.One();                                                     // We have turned left at some point in this descent
                   ll.Copy(BtreeIndex);                                          // Last point at which we turned left
-                 }                                                              // Step down
+                 }
                };
               BtreeIndex.Copy(Data);                                            // Step down
-              P.GOto(start);                                                    // Continue search for next key
+              P.GOto(start);                                                    // Continue search for next key in traverse
              }
            };
          }
@@ -2734,77 +2734,76 @@ class Btree extends Chip                                                        
      }
    }
 
-  public class FindPrev extends Find                                            // Find previous key, data pair in the tree with a key greater than the supplied key
+  public class FindPrev extends Find                                            // Find previous key, data pair in the tree with a key less than the supplied key
    {FindPrev(Process.Register SearchKey)                                        // Key whose predecessor is to be found
      {if (coverageAnalysis) zz();
-      final Process.Register lr = P.register("lastRight", btreeAddressSize);    // Where the last right turn was made
-      final Process.Register tt = P.register("test",                     1);    // Perform a test
+      final Process.Register lr = P.register("lastRight", btreeAddressSize);    // Where the last right turn was made while traversing the tree
 
       Key.Copy(SearchKey);                                                      // Current search key
-      BtreeIndex.Zero();                                                        // Start at the root
+      BtreeIndex.Zero();                                                        // Start at the root of the tree
       lr.Zero();                                                                // First right turn was at root
 
       P.new Block()
        {void code()
-         {stuckGet(BtreeIndex);                                                 // Load root
+         {stuckGet(BtreeIndex);                                                 // Load current stuck from memory
           new IsLeaf()
-           {void Leaf()                                                         // At a leaf - search for exact match
-             {search_le_parallel(Key);                                          // Search stuck for matching key
-              P.new If (Found)                                                  // If a matching key was found we are going right
+           {void Leaf()                                                         // At a leaf
+             {search_le_parallel(Key);                                          // Search for the first stuck key greater than or equal to the search key
+              P.new If (Found)                                                  // A matching key was found
                {void Then()
                  {P.new If (StuckIndex)                                         // Room to move down in the body of the stuck
-                   {void Then()                                                 // Room to move down
+                   {void Then()
                      {StuckIndex.Dec();                                         // Move down
-                      ElementAt(StuckIndex);                                    // Get previous element
+                      ElementAt(StuckIndex);                                    // Get previous key, pair element
                       FoundKey.Copy(Key);                                       // Copy the key that has been found
-                      P.GOto(end);                                              // Finished
+                      P.GOto(end);                                              // Found the next key, data pair
                      }
                    };
                  }
                };
 
-              stuckGet(lr);                                                     // Reload last right trun and try one step further up
+              stuckGet(lr);                                                     // Reload last right turn and try one step further down
               search_le_parallel(Key);                                          // Search last right turn stuck for matching key
               P.new If (StuckIndex)                                             // Room to move down in the body of the stuck
-               {void Then()                                                     // Room to move down
+               {void Then()
                  {StuckIndex.Dec();                                             // Move down
-                  ElementAt(StuckIndex);                                        // Down to next level
+                  ElementAt(StuckIndex);                                        // Get previous key, data pair
                  }
-                void Else()                                                     // Descend through topmost element
-                 {Found.Zero();                                                 // Top most
-                  P.GOto(end);                                                  // Finished as ther are no oer fect branches ot move down
+                void Else()                                                     // No more paths to traverse
+                 {Found.Zero();                                                 // Not found
+                  P.GOto(end);                                                  // Finished traversal as there are no more paths to move down
                  };
                };
-              BtreeIndex.Copy(Data);                                            // Root of sub tree
-              P.new Block()                                                     // Find first element of next sub-tree
+              BtreeIndex.Copy(Data);                                            // Address left sub-tree
+              P.new Block()                                                     // Find last element of left sub-tree
                {void code()
-                 {stuckGet(BtreeIndex);                                         // Root of sub tree
+                 {stuckGet(BtreeIndex);                                         // Load root of left sub-tree from memory
                   new IsLeaf()
-                   {void Leaf()                                                 // At a leaf - search for exact match
-                     {Found.One();
-                      LastElement();
-                      FoundKey.Copy(Key);
-                      P.GOto(end);                                              // Found next element as first element of sub tree
+                   {void Leaf()                                                 // At a leaf and more left paths to traverse
+                     {Found.One();                                              // Found the previous key, data pair
+                      LastElement();                                            // Load largest key, data pair in leaf stuck
+                      FoundKey.Copy(Key);                                       // Previous key, data pair found
+                      P.GOto(end);                                              // Found previous element as first element of sub-tree
                      }
-                    void Branch()                                               // On a branch - step first right to next level down
-                     {PastLastElement();                                        // Get top most element
-                      BtreeIndex.Copy(Data);                                    // Go right
-                      P.GOto(start);                                            // Step down
+                    void Branch()                                               // On a branch - step left to next level down
+                     {PastLastElement();                                        // Get top most element in the body of stuck as the first path to traversed
+                      BtreeIndex.Copy(Data);                                    // Step down
+                      P.GOto(start);                                            // Continue traverse
                      }
                    };
                  }
                };
-              P.GOto(end);                                                      // Located next element as first element of the next sub tree in the stuck where we last turned right
+              P.GOto(end);                                                      // Located next element as last element of the next sub-tree where we last turned right
              }
-            void Branch()                                                       // On a branch - step to next level down
+            void Branch()                                                       // On a branch - step down
              {search_le_parallel(Key);                                          // Search stuck for matching key
-              P.new If (StuckIndex)                                             // If a matching key was found we are going left
-               {void Then()                                                     // No matching key found so we are going right
+              P.new If (StuckIndex)                                             // Still room for a path to be traversed from this stuck
+               {void Then()
                  {lr.Copy(BtreeIndex);                                          // Last point at which we turned right
-                 }                                                              // Step down
+                 }
                };
               BtreeIndex.Copy(Data);                                            // Step down
-              P.GOto(start);                                                    // Continue search for next key
+              P.GOto(start);                                                    // Continue search for previous key in traverse
              }
            };
          }
@@ -5044,9 +5043,9 @@ Merge     : 0
 
   static void test_iterate()
    {sayCurrentTestName();
-    final Btree   b = test_put_reload();
-    final Process P = b.P;
-    P.processTrace  = true;
+    final Btree            b = test_put_reload();
+    final Process          P = b.P;
+              P.processTrace = true;
     final Process.Register k = P.register("key", b.bitsPerKey);
     final StringJoiner     S = new StringJoiner(" ");
 
@@ -5055,21 +5054,13 @@ Merge     : 0
        {final FindLast l = b.new FindLast();
         P.GOZero(end, l.Found);
         k.Copy(l.Key);
-        P.new Instruction()
-         {void action()
-           {S.add(""+k.registerGet());
-           }
-         };
+        P.new Instruction()     {void action() {S.add(""+k.registerGet());}};
         P.new Block()
          {void code()
            {final FindPrev p = b.new FindPrev(k);
             P.GOZero(end, p.Found);
             k.Copy(p.Key);
-            P.new Instruction()
-             {void action()
-               {S.add(""+k.registerGet());
-               }
-             };
+            P.new Instruction() {void action() {S.add(""+k.registerGet());}};
             P.GOto(start);
            }
          };
@@ -5077,8 +5068,16 @@ Merge     : 0
      };
     b.maxSteps = 3_600;
     b.chipRun();
-    //stop(b.step);
+    //say(b.step);
     ok(S, "32 31 30 29 28 27 26 25 24 23 22 21 20 19 18 17 16 15 14 13 12 11 10 9 8 7 6 5 4 3 2 1");
+    final Chip.SiliconCompiler C = b.new SiliconCompiler()                      // Create silicon compiler files
+     {String description()
+       {return String.format("iterate_%d_%d_%d_%d_%d",
+          b.btreeSize.registerGet(),
+          b.size, b.maxStuckSize, b.bitsPerKey, b.bitsPerData);
+       }
+     };
+    say("cd ~/btreeAsm; bash -x "+C.launchFile);
    }
 
   static void test_findLast()
@@ -7299,6 +7298,7 @@ Merge     : 0
     test_findLast();
     test_findNext();
     test_findPrev();
+    test_iterate();
     test_delete_ascending();
     test_delete_random();
     test_delete_descending();
@@ -7318,7 +7318,7 @@ Merge     : 0
     //test_verilog_delete();
     //test_verilog_find();
     //test_verilog_put();
-    test_iterate();
+    test_findPrev();
    }
 
   public static void main(String[] args)                                        // Test if called as a program
