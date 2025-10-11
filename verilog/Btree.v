@@ -314,7 +314,6 @@ module Btree(                                                                   
   reg [3-1:0] main_StuckIndex_223;
   reg [1-1:0] main_MergeSuccess_224;
   reg [6-1:0] main_lastRight_225;
-  reg [1-1:0] main_test_226;
   integer main_pc;
   integer main_stop;
   integer main_returnCode;
@@ -753,7 +752,6 @@ module Btree(                                                                   
       main_StuckIndex_223              <= 0;
       main_MergeSuccess_224            <= 0;
       main_lastRight_225               <= 0;
-      main_test_226    <= 0;
       stuckIsLeaf_7_requestedAt        <= -1;
       stuckIsLeaf_8_requestedAt        <= -1;
       stuckIsLeaf_12_requestedAt       <= -1;
