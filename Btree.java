@@ -5055,18 +5055,21 @@ Merge     : 0
        {final FindLast l = b.new FindLast();
         P.GOZero(end, l.Found);
         k.Copy(l.Key);
-        S.add(""+k.registerGet());
+        P.new Instruction()
+         {void action()
+           {S.add(""+k.registerGet());
+           }
+         };
         P.new Block()
          {void code()
            {final FindPrev p = b.new FindPrev(k);
-P.new Instruction()
- {void action()
-   {say("AAAA", p.dump());
-   }
- };
             P.GOZero(end, p.Found);
             k.Copy(p.Key);
-            S.add(""+k.registerGet());
+            P.new Instruction()
+             {void action()
+               {S.add(""+k.registerGet());
+               }
+             };
             P.GOto(start);
            }
          };
@@ -5075,7 +5078,7 @@ P.new Instruction()
     b.maxSteps = 3_600;
     b.chipRun();
     //stop(b.step);
-    stop(S);
+    ok(S, "32 31 30 29 28 27 26 25 24 23 22 21 20 19 18 17 16 15 14 13 12 11 10 9 8 7 6 5 4 3 2 1");
    }
 
   static void test_findLast()
