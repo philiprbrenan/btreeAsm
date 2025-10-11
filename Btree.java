@@ -2578,7 +2578,7 @@ class Btree extends Chip                                                        
 
 //D1 Navigation                                                                 // Methods that enable navigation through the tree
 
-  public class FindFirst extends Find                                           // Find first key, data pair
+  public class FindFirst extends Find                                           // Find first key, data pair in the tree
    {FindFirst()
      {if (coverageAnalysis) zz();
 
@@ -2590,12 +2590,11 @@ class Btree extends Chip                                                        
           new IsLeaf()
            {void Leaf()                                                         // At a leaf - search for exact match
              {P.new If (size)                                                   // We might be on the root as a leaf which might be empty so we do have to check the size of the stuck
-               {void Then()
-                 {Found.One();
-                  Key     .Copy(keys, 0);
-                  FoundKey.Copy(keys, 0);
-                  Data    .Copy(data, 0);
-                  StuckIndex.Zero();
+               {void Then()                                                     // First key, data pair of this stuck is the first in the tree
+                 {Found.One();                                                  // Show found
+                  FirstElement();                                               // Get first key, data pair
+                  FoundKey.Copy(keys, 0);                                       // Found key
+                  //StuckIndex.Zero();
                  }
                 void Else()
                  {Found.Zero();
@@ -2613,7 +2612,7 @@ class Btree extends Chip                                                        
      }
    }
 
-  public class FindLast extends Find                                            // Find last key, data pair
+  public class FindLast extends Find                                            // Find last key, data pair in the tree
    {FindLast()
      {if (coverageAnalysis) zz();
 
@@ -2621,20 +2620,20 @@ class Btree extends Chip                                                        
 
       P.new Block()
        {void code()
-         {stuckGet(BtreeIndex);                                                 // Load root
+         {stuckGet(BtreeIndex);                                                 // Load root from memory
           new IsLeaf()
-           {void Leaf()                                                         // At a leaf - search for exact match
+           {void Leaf()                                                         // At a leaf
              {P.new If (size)                                                   // We might be on the root as a leaf which might be empty so we do have to check the size of the stuck
                {void Then()
-                 {Found.One();
-                  LastElement();                                                // Last element
-                  FoundKey.Copy(Key);
+                 {Found.One();                                                  // Non empty leaf so we will be able to return the last key, data pair in it
+                  LastElement();                                                // Details of last, key data pair in the stuck
+                  FoundKey.Copy(Key);                                           // Copy key into position
                  }
-                void Else()
-                 {Found.Zero();
+                void Else()                                                     // On first key, data pair of the first stuck in the tree
+                 {Found.Zero();                                                 // Nothing precedes this key, data pair
                  }
                };
-              P.GOto(end);                                                      // Key not present
+              P.GOto(end);                                                      // Return
              }
             void Branch()                                                       // On a branch - step to next level down
              {PastLastElement();                                                // Topmost element
@@ -2672,7 +2671,7 @@ class Btree extends Chip                                                        
                    {void Then()
                      {ElementAt(StuckIndex);                                    // Get next key, data pair
                       FoundKey.Copy(Key);                                       // Copy the key that has been found
-                      P.GOto(end);                                              // Finished
+                      P.GOto(end);                                              // Return
                      }
                    };
                  }
@@ -7318,7 +7317,11 @@ Merge     : 0
     //test_verilog_delete();
     //test_verilog_find();
     //test_verilog_put();
+    test_findFirst();
+    test_findLast();
+    test_findNext();
     test_findPrev();
+    test_iterate();
    }
 
   public static void main(String[] args)                                        // Test if called as a program
