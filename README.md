@@ -5,7 +5,8 @@
 Use [Java](https://en.wikipedia.org/wiki/Java_(programming_language)) to generate synthesizable [Verilog](https://en.wikipedia.org/wiki/Verilog) to layout a [B-Tree](https://en.wikipedia.org/wiki/B-tree) on the surface of
 a specialized [Silicon](https://en.wikipedia.org/wiki/Silicon) [chip](https://en.wikipedia.org/wiki/Integrated_circuit) so that the [B-Tree](https://en.wikipedia.org/wiki/B-tree) [find](https://en.wikipedia.org/wiki/Find_(Unix)), put and delete
 operations can be performed more quickly and efficiently than [software](https://en.wikipedia.org/wiki/Software) running
-on a generic processor .
+on a generic processor . Such a chip could act as an accelerator for database
+operations, a: [Database on a Chip](https://github.com/philiprbrenan/btreeAsm) .
 
 ![put](images/Btree.png)
 
@@ -185,14 +186,14 @@ supported by the chip fabrication [process](https://en.wikipedia.org/wiki/Proces
 likelihood of manufacturing defects grows and access to individual [memory](https://en.wikipedia.org/wiki/Computer_memory) elements becomes slower.
 
 To address these issues, we employ a double [B-Tree](https://en.wikipedia.org/wiki/B-tree) architecture. Each stuck of
-the double [B-Tree](https://en.wikipedia.org/wiki/B-tree) is implemented as a separate chip containing a single [B-Tree](https://en.wikipedia.org/wiki/B-tree) . [B-Tree](https://en.wikipedia.org/wiki/B-tree) are naturally suited to representing a stuck, as shown in **Dt.java**.
-The individual [B-Tree](https://en.wikipedia.org/wiki/B-tree) communicate through the star-topology [network](https://en.wikipedia.org/wiki/Computer_network) described
+the double [B-Tree](https://en.wikipedia.org/wiki/B-tree) is implemented as a separate chip containing a single [B-Tree](https://en.wikipedia.org/wiki/B-tree) . [B-Trees](https://en.wikipedia.org/wiki/B-tree) are naturally suited to representing a stuck, as shown in **Dt.java**.
+The individual [B-Trees](https://en.wikipedia.org/wiki/B-tree) communicate through the star-topology [network](https://en.wikipedia.org/wiki/Computer_network) described
 in **TreeNet.java**.
 
-Constructing a double [B-Tree](https://en.wikipedia.org/wiki/B-tree) from multiple single [B-Tree](https://en.wikipedia.org/wiki/B-tree) reduces manufacturing
+Constructing a double [B-Tree](https://en.wikipedia.org/wiki/B-tree) from multiple single [B-Trees](https://en.wikipedia.org/wiki/B-tree) reduces manufacturing
 costs by improving yield (since smaller [chips](https://en.wikipedia.org/wiki/Integrated_circuit) are less prone to defects) and
 increases [memory](https://en.wikipedia.org/wiki/Computer_memory) access [speed](https://en.wikipedia.org/wiki/Speed) through parallelism, as each single [B-Tree](https://en.wikipedia.org/wiki/B-tree) controls its own independent block of [memory](https://en.wikipedia.org/wiki/Computer_memory). These advantages come at the
-expense of logarithmic [network](https://en.wikipedia.org/wiki/Computer_network) communication overhead between the single [B-Tree](https://en.wikipedia.org/wiki/B-tree) that together form the double [B-Tree](https://en.wikipedia.org/wiki/B-tree) .
+expense of logarithmic [network](https://en.wikipedia.org/wiki/Computer_network) communication overhead between the single [B-Trees](https://en.wikipedia.org/wiki/B-tree) that together form the double [B-Tree](https://en.wikipedia.org/wiki/B-tree) .
 
 ---
 
@@ -402,11 +403,11 @@ Then: Package Settings -> Change visibility -> Public
 # Tree Network
 
 **TreeNet.java** contains details of a [tree](https://en.wikipedia.org/wiki/Tree_(data_structure)) [network](https://en.wikipedia.org/wiki/Computer_network) designed to connect a plurality
-of single [B-Tree](https://en.wikipedia.org/wiki/B-tree) into a double [B-Tree](https://en.wikipedia.org/wiki/B-tree) . The [tree](https://en.wikipedia.org/wiki/Tree_(data_structure)) [network](https://en.wikipedia.org/wiki/Computer_network) operates in
+of single [B-Trees](https://en.wikipedia.org/wiki/B-tree) into a double [B-Tree](https://en.wikipedia.org/wiki/B-tree) . The [tree](https://en.wikipedia.org/wiki/Tree_(data_structure)) [network](https://en.wikipedia.org/wiki/Computer_network) operates in
 logarithmic time with respect to the number of leaves connected together.
 
 Using a [tree](https://en.wikipedia.org/wiki/Tree_(data_structure)) [network](https://en.wikipedia.org/wiki/Computer_network) architecture allows individual [B-Tree](https://en.wikipedia.org/wiki/B-tree) units to be
-manufactured separately and later arranged in two- or three-dimensional [arrays](https://en.wikipedia.org/wiki/Dynamic_array), where they can be interconnected to form double [B-Tree](https://en.wikipedia.org/wiki/B-tree) of virtually any size.
+manufactured separately and later arranged in two- or three-dimensional [arrays](https://en.wikipedia.org/wiki/Dynamic_array), where they can be interconnected to form double [B-Trees](https://en.wikipedia.org/wiki/B-tree) of virtually any size.
 
 Tree networks also provide natural decoupling between components, simplifying
 design, scaling, and fault isolation.
@@ -416,6 +417,45 @@ using photonic interconnects, enabling double [B-Tree](https://en.wikipedia.org/
 larger physical areas and thus can contain much more data than would be
 practical with traditional metal interconnects.
 
+# HostâCoprocessor Interaction
+ [Database on a Chip](https://github.com/philiprbrenan/btreeAsm) is envisaged as an accelerating [coprocessor](https://en.wikipedia.org/wiki/Coprocessor) driven by a **host processor**.
+
+1. The **host processor** constructs one or more commands and writes them into
+an **input command buffer** in shared [memory](https://en.wikipedia.org/wiki/Computer_memory). 
+2. The host then performs a **doorbell write** to a memory-mapped [register](https://en.wikipedia.org/wiki/Processor_register) on
+the [coprocessor](https://en.wikipedia.org/wiki/Coprocessor) .
+
+   - The doorbell [write](https://en.wikipedia.org/wiki/Write_(system_call)) does not pass data.
+
+   - It simply **notifies** the [coprocessor](https://en.wikipedia.org/wiki/Coprocessor) that new commands are ready
+     by forming the address of the [register](https://en.wikipedia.org/wiki/Processor_register) in [memory](https://en.wikipedia.org/wiki/Computer_memory). 
+3. The [coprocessor](https://en.wikipedia.org/wiki/Coprocessor) reads and executes the commands from the input buffer.
+
+4. As it executes the command, the [coprocessor](https://en.wikipedia.org/wiki/Coprocessor) writes their results into the
+corresponding position in the **output buffer**.
+
+5. When all pending commands have finished, the [coprocessor](https://en.wikipedia.org/wiki/Coprocessor) performs its own
+**doorbell write** back to a [register](https://en.wikipedia.org/wiki/Processor_register) on the host side to signal that the
+**output buffer** is ready.
+
+The **input and output buffers are separate**.
+
+It is the **hostâs responsibility** to iterate:
+
+- Read and [process](https://en.wikipedia.org/wiki/Process_management_(computing)) the results in the output buffer.
+
+- Then prepare and [write](https://en.wikipedia.org/wiki/Write_(system_call)) new commands into the input buffer.
+
+Given [Amdahl's Law](https://en.wikipedia.org/wiki/Amdahl%27s_law), it would seem desirable to be able to package all of these commands
+into a fixed-length block format so that the construction of the input buffer
+can be performed in parallel as much as possible, and likewise the processing
+of the output buffer can also be parallelized.
+
+When these commands are executed **clear**, **delete**, and **put** can potentially
+modify the [B-Tree](https://en.wikipedia.org/wiki/B-tree) structure, so they **must run sequentially** to preserve consistency.
+
+All other commands **find**, **first**, **last**, **next**, **prev**, **size**
+are **read-only** and may be executed in parallel to the extent that the [coprocessor](https://en.wikipedia.org/wiki/Coprocessor) can assign them to processing units connected via the [tree](https://en.wikipedia.org/wiki/Tree_(data_structure)) [network](https://en.wikipedia.org/wiki/Computer_network). 
 # Status
 
 - 2025-07-12 [Java](https://en.wikipedia.org/wiki/Java_(programming_language)) implementation of the [B-Tree](https://en.wikipedia.org/wiki/B-tree) [algorithm](https://en.wikipedia.org/wiki/Algorithm) 
@@ -426,7 +466,7 @@ practical with traditional metal interconnects.
 - 2025-08-22 All generated [Verilog](https://en.wikipedia.org/wiki/Verilog) now uses non blocking assignment
 
 - 2025-08-24 Place and route of synthesized [Verilog](https://en.wikipedia.org/wiki/Verilog) using [Open Source Silicon Compiler](https://docs.siliconcompiler.com/en/latest/index.html) 
-- 2025-08-25 Ran [Open Source Silicon Compiler](https://docs.siliconcompiler.com/en/latest/index.html) on [Amazon Web Services](http://aws.amazon.com) in a [Docker](https://en.wikipedia.org/wiki/Docker_(software)) container saved via [IPv6 address](https://en.wikipedia.org/wiki/IPv6) on docker.io
+- 2025-08-25 Ran [Open Source Silicon Compiler](https://docs.siliconcompiler.com/en/latest/index.html) on [Amazon Web Services](http://aws.amazon.com) in a [Docker](https://en.wikipedia.org/wiki/Docker_(software)) container saved via an [IPv6 address](https://en.wikipedia.org/wiki/IPv6) on docker.io
 
 - 2025-10-08 Synthesized Tree Network for inter-component connectivity
 
