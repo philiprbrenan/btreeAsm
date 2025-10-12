@@ -418,61 +418,72 @@ larger physical areas and thus can contain much more data than would be
 practical with traditional metal interconnects.
 
 # Host and Coprocessor Interaction
- [Database on a Chip](https://github.com/philiprbrenan/btreeAsm) is envisaged as an accelerating [coprocessor](https://en.wikipedia.org/wiki/Coprocessor) driven by commands from a **host processor**.
+ [Database on a Chip](https://github.com/philiprbrenan/btreeAsm) is envisaged as an accelerating [coprocessor](https://en.wikipedia.org/wiki/Coprocessor) driven by commands from a
+**host processor**, which writes these commands into [registers](https://en.wikipedia.org/wiki/Processor_register) in [memory](https://en.wikipedia.org/wiki/Computer_memory) shared between the processors.
 
-Possible commands:
+## Possible Commands
 
 ```
-  clear
-  delete <key>
-  put    <key> <data>
+clear
+delete <key>
+put <key> <data>
 
-  find   <key>
-  first
-  last
-  next   <key>
-  prev   <key>
-  size
+find <key>
+first
+last
+next <key>
+prev <key>
+size
 ```
 
-Command execution proceeds as follows:
+The **find** operation requires significantly less [Silicon](https://en.wikipedia.org/wiki/Silicon) than either **put**
+or **delete** and is expected to be executed far more frequently and can be
+executed in parallel: consequently each **btree** should be equipped with
+multiple **find** sub-processors, each sub-processor connected via its own port
+to the host processor.
 
-1. The **host processor** constructs one or more commands and writes them into
-an **input command buffer** in shared [memory](https://en.wikipedia.org/wiki/Computer_memory). 
-2. The host then performs a **doorbell write** to a memory-mapped [register](https://en.wikipedia.org/wiki/Processor_register) on
-the [coprocessor](https://en.wikipedia.org/wiki/Coprocessor) .
+A **port** is a set of [registers](https://en.wikipedia.org/wiki/Processor_register) in [memory](https://en.wikipedia.org/wiki/Computer_memory) shared between the host processor
+and the [B-Tree](https://en.wikipedia.org/wiki/B-tree) [coprocessor](https://en.wikipedia.org/wiki/Coprocessor). The host signals that the data in the port is ready
+by performing a **doorbell write** to a [register](https://en.wikipedia.org/wiki/Processor_register) in that port. A doorbell [write](https://en.wikipedia.org/wiki/Write_(system_call)) forms the address of the [register](https://en.wikipedia.org/wiki/Processor_register) but does not actually [write](https://en.wikipedia.org/wiki/Write_(system_call)) data. The address
+formation alone signals the [coprocessor](https://en.wikipedia.org/wiki/Coprocessor) to start processing the data in the
+port.
 
-   - The doorbell [write](https://en.wikipedia.org/wiki/Write_(system_call)) does not pass data.
+Conversely, as the **clear**, **delete** and **put** operations can potentially
+modify the [B-Tree](https://en.wikipedia.org/wiki/B-tree), these operations can only be performed **one at a time** per [B-Tree](https://en.wikipedia.org/wiki/B-tree). Consequently there should be only one processor for each operation
+attached via a single port to each [B-Tree](https://en.wikipedia.org/wiki/B-tree). 
+To enable parallel deletes and puts, multiple [B-Trees](https://en.wikipedia.org/wiki/B-tree) should be used to store
+data rather than relying on a single central [tree](https://en.wikipedia.org/wiki/Tree_(data_structure)). A **root** [B-Tree](https://en.wikipedia.org/wiki/B-tree) directs
+incoming requests to the appropriate subtrees, distributing the data across
+multiple [sub](https://perldoc.perl.org/perlsub.html) [B-Trees](https://en.wikipedia.org/wiki/B-tree). Each [sub](https://perldoc.perl.org/perlsub.html) [B-Tree](https://en.wikipedia.org/wiki/B-tree) can [process](https://en.wikipedia.org/wiki/Process_management_(computing)) one delete or put request in
+parallel with the other [B-Trees](https://en.wikipedia.org/wiki/B-tree), allowing multiple operations to occur
+simultaneously across the database.
 
-   - It simply **notifies** the [coprocessor](https://en.wikipedia.org/wiki/Coprocessor) that new commands are ready
-     by forming the address of the [register](https://en.wikipedia.org/wiki/Processor_register) in [memory](https://en.wikipedia.org/wiki/Computer_memory). 
-3. The [coprocessor](https://en.wikipedia.org/wiki/Coprocessor) reads and executes the commands from the input buffer.
+To distribute keys across [sub](https://perldoc.perl.org/perlsub.html) [B-Trees](https://en.wikipedia.org/wiki/B-tree), the root [B-Tree](https://en.wikipedia.org/wiki/B-tree) should compute the [SHA-256](https://en.wikipedia.org/wiki/SHA-256) digest of incoming keys and use a preset set of bits from this digest to assign
+keys uniformly across subtrees. If keys are wider than 256 bits, it might be
+preferable to replace them with their [SHA-256](https://en.wikipedia.org/wiki/SHA-256) digests to avoid committing
+excessive amounts of [Silicon](https://en.wikipedia.org/wiki/Silicon) area to processing wide keys.
 
-4. As it executes the command, the [coprocessor](https://en.wikipedia.org/wiki/Coprocessor) writes their results into the
-corresponding position in the **output buffer**.
+The host processor is responsible for assigning work to the ports presented by
+the [coprocessor](https://en.wikipedia.org/wiki/Coprocessor). Where possible, the host should schedule work on multiple [find](https://en.wikipedia.org/wiki/Find_(Unix)) ports to [maximize](https://en.wikipedia.org/wiki/Maximum_and_minimum) throughput by using parallel lookups.
 
-5. When all pending commands have finished, the [coprocessor](https://en.wikipedia.org/wiki/Coprocessor) performs its own
-**doorbell write** back to a [register](https://en.wikipedia.org/wiki/Processor_register) on the host side to signal that the
-**output buffer** is ready.
+## Command Execution
 
-The **input** and **output** buffers are separate.
+1. The **host processor** constructs a command and writes it into an
+   appropriate input port on the [coprocessor](https://en.wikipedia.org/wiki/Coprocessor). 
+2. The host performs a **doorbell write** to a memory-mapped [register](https://en.wikipedia.org/wiki/Processor_register) on the
+   [coprocessor](https://en.wikipedia.org/wiki/Coprocessor), signaling that the port data is available.
 
-It is the **host's responsibility** to iterate:
+3. The [coprocessor](https://en.wikipedia.org/wiki/Coprocessor) reads and executes the request in the input port.
 
-- Read and [process](https://en.wikipedia.org/wiki/Process_management_(computing)) the results in the output buffer.
+4. The [coprocessor](https://en.wikipedia.org/wiki/Coprocessor) writes the execution results to the corresponding output
+   port.
 
-- Then prepare and [write](https://en.wikipedia.org/wiki/Write_(system_call)) new commands into the input buffer.
+5. When the command execution is complete, the [coprocessor](https://en.wikipedia.org/wiki/Coprocessor) performs its own
+   **doorbell write** to a [register](https://en.wikipedia.org/wiki/Processor_register) in the shared [memory](https://en.wikipedia.org/wiki/Computer_memory) of the output port,
+   signaling the host that results are ready.
 
-Given [Amdahl's Law](https://en.wikipedia.org/wiki/Amdahl%27s_law), it would seem desirable to be able to package all of these commands
-into a fixed-length block format so that the construction of the input buffer
-can be performed in parallel as much as possible, and likewise the processing
-of the output buffer can also be parallelized.
-
-When these commands are executed **clear**, **delete**, and **put** can potentially
-modify the [B-Tree](https://en.wikipedia.org/wiki/B-tree) structure, so they **must run sequentially** to preserve consistency.
-
-All other commands **find**, **first**, **last**, **next**, **prev**, **size**
-are **read-only** and may be executed in parallel to the extent that the [coprocessor](https://en.wikipedia.org/wiki/Coprocessor) can assign them to processing units connected via the [tree](https://en.wikipedia.org/wiki/Tree_(data_structure)) [network](https://en.wikipedia.org/wiki/Computer_network). 
+The **input** and **output** ports are separate. It is the **host's
+responsibility** to control the execution flow of commands sent to the [coprocessor](https://en.wikipedia.org/wiki/Coprocessor) and to retrieve the results provided.
 # Status
 
 - 2025-07-12 [Java](https://en.wikipedia.org/wiki/Java_(programming_language)) implementation of the [B-Tree](https://en.wikipedia.org/wiki/B-tree) [algorithm](https://en.wikipedia.org/wiki/Algorithm) 
