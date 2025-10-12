@@ -417,8 +417,20 @@ using photonic interconnects, enabling double [B-Tree](https://en.wikipedia.org/
 larger physical areas and thus can contain much more data than would be
 practical with traditional metal interconnects.
 
-# Host Coprocessor Interaction
- [Database on a Chip](https://github.com/philiprbrenan/btreeAsm) is envisaged as an accelerating [coprocessor](https://en.wikipedia.org/wiki/Coprocessor) driven by a **host processor**.
+# Host and Coprocessor Interaction
+ [Database on a Chip](https://github.com/philiprbrenan/btreeAsm) is envisaged as an accelerating [coprocessor](https://en.wikipedia.org/wiki/Coprocessor) driven by commands from a **host processor** such as:
+
+clear
+delete <key>
+put <key> <data>
+ [find](https://en.wikipedia.org/wiki/Find_(Unix)) <key>
+first
+last
+next <key>
+prev <key>
+size
+
+Command execution proceeds as follows:
 
 1. The **host processor** constructs one or more commands and writes them into
 an **input command buffer** in shared [memory](https://en.wikipedia.org/wiki/Computer_memory). 
@@ -438,7 +450,7 @@ corresponding position in the **output buffer**.
 **doorbell write** back to a [register](https://en.wikipedia.org/wiki/Processor_register) on the host side to signal that the
 **output buffer** is ready.
 
-The **input and output buffers are separate**.
+The **input** and **output** buffers are separate.
 
 It is the **host's responsibility** to iterate:
 
