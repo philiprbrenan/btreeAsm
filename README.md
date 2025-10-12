@@ -418,17 +418,22 @@ larger physical areas and thus can contain much more data than would be
 practical with traditional metal interconnects.
 
 # Host and Coprocessor Interaction
- [Database on a Chip](https://github.com/philiprbrenan/btreeAsm) is envisaged as an accelerating [coprocessor](https://en.wikipedia.org/wiki/Coprocessor) driven by commands from a **host processor** such as:
+ [Database on a Chip](https://github.com/philiprbrenan/btreeAsm) is envisaged as an accelerating [coprocessor](https://en.wikipedia.org/wiki/Coprocessor) driven by commands from a **host processor**.
 
-clear
-delete <key>
-put <key> <data>
- [find](https://en.wikipedia.org/wiki/Find_(Unix)) <key>
-first
-last
-next <key>
-prev <key>
-size
+Possible commands:
+
+```
+  clear
+  delete <key>
+  put    <key> <data>
+
+  find   <key>
+  first
+  last
+  next   <key>
+  prev   <key>
+  size
+```
 
 Command execution proceeds as follows:
 
