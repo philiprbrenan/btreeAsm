@@ -21,7 +21,6 @@ class Chip extends Test                                                         
   int                           step;                                           // Current simulation step being executed
   int                       maxSteps = 10;                                      // Maximum number of steps to execute in the simulation
   static       boolean         debug = false;                                   // Debug when true
-  final String         projectFolder = "btreeAsm";                              // Folder containing this project under home folder
   final String   openRoadDockerImage = "appaapps/openroad:latest";              // Docker image used to run OpenRoad
   final String         scDockerImage = "ghcr.io/philiprbrenan/sc-asic:latest";  // Docker image used to run Silicon compiler
   String           remoteMachineName = "s";                                     // Remote machine name as defined in .ssh/config where the OpenRoad build should be run
@@ -610,29 +609,31 @@ module %s(                                                                      
       e.append(String.format("""
 export PATH=/root/.local/bin:$PATH
 source /app/sc/bin/activate
-cd /workspace/%s
+cd %s
 python3 %s.py
 EOF
-""", Verilog.folder, chipName));
+""",
+      fn("/workspace", Verilog.folder), chipName));
       writeFile(execFile, e);
      }
 
     void writeLaunch()                                                          // Write launch file to run synthesis on a remote machine
-     {final String v = Verilog.folder;                                          // Verilog Working folder
-      final String f = fn(resultsFolder, description());                        // Folder in which the summary of the results of this run will be stored for posterity
+     {final String v  = Verilog.folder;                                         // Verilog Working folder
+      final String r  = fn(resultsFolder, description());                       // Folder in which the summary of the results of this run will be stored for posterity
+      final String de = fn("/workspace", execFile);                             // Docker copy of exec file
+
       launch.append(String.format("""
 # docker run --rm  -v "/home/phil/btreeAsm/:/workspace" ghcr.io/philiprbrenan/sc-asic:latest /bin/bash
-docker run --rm -v "%s:%s" -v "%s:%s" %s bash -c %s
+docker run --rm -v "%s:%s" %s bash -c "bash %s"
 cp "%s/build/$DESIGN/job0/$DESIGN.pkg.json" "%s"                                # Copy results out of docker to remote system
 cp "%s/build/$DESIGN/job0/$DESIGN.png"      "%s"
 cp "%s/build/$DESIGN/job0/job.log"          "%s"
 """,
-       fn("~", projectFolder, v),        fn("/workspace", v),
-       fn("~", projectFolder, execFile), fn("/workspace", execFile),
-       scDockerImage,
-       v, fne(f, chipName, "json"),
-       v, fne(f, chipName, "png"),
-       v, fne(f, chipName, "log"), "*"));
+       fn(pwd(), v), fn("/workspace", v),
+       scDockerImage, de,
+       v, fne(r, chipName, "json"),
+       v, fne(r, chipName, "png"),
+       v, fne(r, chipName, "log"), "*"));
       writeFile(launchFile, launch);
      }
 
@@ -662,7 +663,7 @@ cp "%s/build/$DESIGN/job0/job.log"          "%s"
 EOF
 rsync -r $REMOTE:~/$FOLDER/results/%s ~/$FOLDER/results                         # Copy results back to local system from remote system
 """,
-       remoteMachineName, projectFolder, chipName, v,
+       remoteMachineName, pwd(), chipName, v,
        "*", f,
        d, d,
        v, fne(f, chipName, "json"),
