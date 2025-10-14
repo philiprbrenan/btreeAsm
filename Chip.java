@@ -23,6 +23,7 @@ class Chip extends Test                                                         
   static       boolean         debug = false;                                   // Debug when true
   final String         projectFolder = "btreeAsm";                              // Folder containing this project under home folder
   final String   openRoadDockerImage = "appaapps/openroad:latest";              // Docker image used to run OpenRoad
+  final String         scDockerImage = "ghcr.io/philiprbrenan/sc-asic:latest";  // Docker image used to run Silicon compiler
   String           remoteMachineName = "s";                                     // Remote machine name as defined in .ssh/config where the OpenRoad build should be run
   final static boolean   registerChecks = false;                                // Checks whether a register should single or arrayed - as this checking occurs frequently it is useful to disable it to speed up development
   final static boolean coverageAnalysis = false;                                // Enables coverage checks
@@ -590,6 +591,7 @@ module %s(                                                                      
     final String       sdcFile = fne(Verilog.folder, chipName, Verilog.sdcExt); // Constraints file
     final String       logFile = fne(Verilog.folder, chipName, "log");          // Log file from Silicon Compiler
     final String    launchFile = fne(Verilog.folder, chipName, "sh");           // Launch file to run silicon compiler
+    final String      execFile = fne(Verilog.folder, chipName, "exec");         // This file is executed inside the docker container
     final StringBuilder python = new StringBuilder();
     final StringBuilder    sdc = new StringBuilder();
     final StringBuilder launch = new StringBuilder();
@@ -598,11 +600,43 @@ module %s(                                                                      
      {writePython();
       writeSdc();
       writeLaunch();
+      writeExec();
      }
 
     abstract String description();                                              // Produce a description of the chip
 
+    void writeExec()                                                            // The commands excuted inside the docker container
+     {final StringBuilder e = new StringBuilder();                              // Commands
+      e.append(String.format("""
+export PATH=/root/.local/bin:$PATH
+source /app/sc/bin/activate
+cd /workspace/%s
+python3 %s.py
+EOF
+""", Verilog.folder, chipName));
+      writeFile(execFile, e);
+     }
+
     void writeLaunch()                                                          // Write launch file to run synthesis on a remote machine
+     {final String v = Verilog.folder;                                          // Verilog Working folder
+      final String f = fn(resultsFolder, description());                        // Folder in which the summary of the results of this run will be stored for posterity
+      launch.append(String.format("""
+# docker run --rm  -v "/home/phil/btreeAsm/:/workspace" ghcr.io/philiprbrenan/sc-asic:latest /bin/bash
+docker run --rm -v "%s:%s" -v "%s:%s" %s bash -c %s
+cp "%s/build/$DESIGN/job0/$DESIGN.pkg.json" "%s"                                # Copy results out of docker to remote system
+cp "%s/build/$DESIGN/job0/$DESIGN.png"      "%s"
+cp "%s/build/$DESIGN/job0/job.log"          "%s"
+""",
+       fn("~", projectFolder, v),        fn("/workspace", v),
+       fn("~", projectFolder, execFile), fn("/workspace", execFile),
+       scDockerImage,
+       v, fne(f, chipName, "json"),
+       v, fne(f, chipName, "png"),
+       v, fne(f, chipName, "log"), "*"));
+      writeFile(launchFile, launch);
+     }
+
+    void writeLaunch2()                                                         // Write launch file to run synthesis on a remote machine
      {final String v = Verilog.folder;                                          // Verilog Working folder
       final String f = fn(resultsFolder, description());                        // Folder in which the summary of the results of this run will be stored for posterity
       final String d = openRoadDockerImage;                                     // Docker image containing OpenRoad
@@ -663,6 +697,31 @@ set_output_delay -min 1 -clock clock [get_ports %s]
      }
 
     void writePython()                                                          // Construct the silicon compiler python commands
+     {python.append(String.format("""
+#!/usr/bin/env python3
+
+from siliconcompiler import Design, ASIC
+from siliconcompiler.targets import skywater130_demo
+from siliconcompiler.flows import asicflow
+
+D = "%s"
+design = Design(D)
+
+design.set_dataroot(D, __file__)
+design.add_file(f"{D}.v", fileset='verilog')
+design.set_topmodule(D, fileset='verilog')
+
+project = ASIC(design)
+project.add_fileset(['verilog'])
+skywater130_demo(project)
+
+project.run()
+project.summary()
+""", chipName));
+     writeFile(pythonFile, python);
+    }
+
+    void writePython2()                                                          // Construct the silicon compiler python commands
      {python.append(String.format("""
 #!/usr/bin/env python3
 
@@ -2541,7 +2600,7 @@ Chip: Test             step: 82, maxSteps: 100, running: 0
        {return C.chipName;
        }
      };
-    say(S.launchFile);
+    say("bash -x "+S.launchFile);
     say(readFile(S.sourceFile).size());
    }
 
@@ -3066,7 +3125,8 @@ Chip: Test             step: 9, maxSteps: 10, running: 0
    }
 
   static void newTests()                                                        // Tests being worked on
-   {oldTests();
+   {//oldTests();
+    test_arithmeticFibonacci();
    }
 
   public static void main(String[] args)                                        // Test if called as a program
