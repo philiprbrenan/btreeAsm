@@ -598,8 +598,8 @@ module %s(                                                                      
     SiliconCompiler()                                                           // Construct the silicon compiler commands
      {writePython();
       writeSdc();
-      writeLaunch();
       writeExec();
+      writeLaunch();
      }
 
     abstract String description();                                              // Produce a description of the chip
@@ -618,22 +618,23 @@ EOF
      }
 
     void writeLaunch()                                                          // Write launch file to run synthesis on a remote machine
-     {final String v  = Verilog.folder;                                         // Verilog Working folder
-      final String r  = fn(resultsFolder, description());                       // Folder in which the summary of the results of this run will be stored for posterity
-      final String de = fn("/workspace", execFile);                             // Docker copy of exec file
+     {final String v = Verilog.folder;                                          // Verilog Working folder
+      final String r = fn(resultsFolder, description());                        // Folder in which the summary of the results of this run will be stored for posterity
+      final String c = chipName;                                                // Name of the chip
+      final String e = fn("/workspace", execFile);                              // Docker copy of exec file
 
       launch.append(String.format("""
 # docker run --rm  -v "/home/phil/btreeAsm/:/workspace" ghcr.io/philiprbrenan/sc-asic:latest /bin/bash
 docker run --rm -v "%s:%s" %s bash -c "bash %s"
-cp "%s/build/$DESIGN/job0/$DESIGN.pkg.json" "%s"                                # Copy results out of docker to remote system
-cp "%s/build/$DESIGN/job0/$DESIGN.png"      "%s"
-cp "%s/build/$DESIGN/job0/job.log"          "%s"
+cp "%s/build/%s/job0/%s.pkg.json" "%s"
+cp "%s/build/%s/job0/%s.png"      "%s"
+cp "%s/build/%s/job0/job.log"          "%s"
 """,
        fn(pwd(), v), fn("/workspace", v),
-       scDockerImage, de,
-       v, fne(r, chipName, "json"),
-       v, fne(r, chipName, "png"),
-       v, fne(r, chipName, "log"), "*"));
+       scDockerImage, e,
+       v, c, c, fne(r, chipName, "json"),
+       v, c, c, fne(r, chipName, "png"),
+       v, c,    fne(r, chipName, "log"), "*"));
       writeFile(launchFile, launch);
      }
 
