@@ -1181,6 +1181,8 @@ public class Test                                                               
 
 //D2 Command Execution                                                          // Execute a command and return its stdout and stderr
 
+  static String pwd() {return System.getProperty("user.dir");}                  // Current working folder
+
   static class ExecCommand
    {final String    command;
     final StringBuilder out = new StringBuilder();
