@@ -611,7 +611,6 @@ export PATH=/root/.local/bin:$PATH
 source /app/sc/bin/activate
 cd %s
 python3 %s.py
-EOF
 """,
       fn("/workspace", Verilog.folder), chipName));
       writeFile(execFile, e);
@@ -626,15 +625,17 @@ EOF
       launch.append(String.format("""
 # docker run --rm  -v "/home/phil/btreeAsm/:/workspace" ghcr.io/philiprbrenan/sc-asic:latest /bin/bash
 docker run --rm -v "%s:%s" %s bash -c "bash %s"
-cp "%s/build/%s/job0/%s.pkg.json" "%s"
-cp "%s/build/%s/job0/%s.png"      "%s"
-cp "%s/build/%s/job0/job.log"          "%s"
+cp "%s" "%s"
+cp "%s" "%s"
+cp "%s" "%s"
+cp "%s" "%s"
 """,
        fn(pwd(), v), fn("/workspace", v),
        scDockerImage, e,
-       v, c, c, fne(r, chipName, "json"),
-       v, c, c, fne(r, chipName, "png"),
-       v, c,    fne(r, chipName, "log"), "*"));
+       fne(pwd(), v, "build", c, "job0/write.gds/0/outputs", c, "pkg.json"), fne(r, chipName, "json"),
+       fne(pwd(), v, "build", c, "job0/write.gds/0/outputs", c, "gds"),      fne(r, chipName, "gds"),
+       fne(pwd(), v, "build", c, "job0/write.gds/0/outputs", c, "png"),      fne(r, chipName, "png"),
+       fne(pwd(), v, "build", c, "job0/job", "log"),                         fne(r, chipName, "log")));
       writeFile(launchFile, launch);
      }
 
