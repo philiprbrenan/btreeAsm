@@ -22,8 +22,9 @@ my $big     = 16*1024*1024;                                                     
 say STDERR timeStamp,  " push to github $repo";
 
 my @files = searchDirectoryTreesForMatchingFiles($home, @ext);                  # Files to upload
-   @files = grep {!m(/verilog/build/)} @files;                                  # Select files to upload
-   @files = grep {fileSize($_) < $big} @files;                                  # Ignore big files
+   @files = grep {!m(/verilog/build/)  } @files;                                # Select files to upload
+   @files = grep {!m(/siliconCompiler/)} @files;                                # Select files to upload
+   @files = grep {fileSize($_) < $big  } @files;                                # Ignore big files
 #say STDERR "AAAA ", dump(\@files); exit(1);
 my @java  = grep {fe($_) =~ m(java)is} @files;                                  # Java files
    @files = changedFiles $shaFile, @files;                                      # Filter out files that have not changed
