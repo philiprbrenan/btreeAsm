@@ -1,6 +1,7 @@
 |Test|
 
-[Read the docs](https://btreeasm.readthedocs.io/en/latest/README.html
+`Read the
+docs <https://btreeasm.readthedocs.io/en/latest/README.html>`__
 
 Goal
 ====
