@@ -536,3 +536,5 @@ responsibility** to control the execution flow of commands sent to the [coproces
 - 2025-10-10 Synthesized FindFirst, FindLast, FindNext, FindPrev
 
 - 2025-10-11 Synthesized reverse [Iterator](https://en.wikipedia.org/wiki/Iterator) using a non [recursive](https://en.wikipedia.org/wiki/Recursion) [tree](https://en.wikipedia.org/wiki/Tree_(data_structure)) traversal
+
+- 2025-10-21 Simplex [tree](https://en.wikipedia.org/wiki/Tree_(data_structure)) tested successfully, ready for connecting to [memory](https://en.wikipedia.org/wiki/Computer_memory) 
