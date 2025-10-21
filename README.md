@@ -427,6 +427,17 @@ due to the the need to unambiguously form the address of the location to be [rea
 
 ## Types of Tree Network
 
+In a **duplex** [tree](https://en.wikipedia.org/wiki/Tree_(data_structure)) [network](https://en.wikipedia.org/wiki/Computer_network) any leaf can send a message to any other leaf.
+
+In a **simplex** [tree](https://en.wikipedia.org/wiki/Tree_(data_structure)) [network](https://en.wikipedia.org/wiki/Computer_network), any leaf node can send a message to the root
+node and receive a response. This setup is particularly useful for [memory](https://en.wikipedia.org/wiki/Computer_memory) operations.
+
+- For a [memory](https://en.wikipedia.org/wiki/Computer_memory) **read** command, the leaf sends an address to the root, which
+manages the [memory](https://en.wikipedia.org/wiki/Computer_memory), and receives the value stored at that address.
+
+- For a [memory](https://en.wikipedia.org/wiki/Computer_memory) **write** command, the leaf sends both an address and a new
+value. The root updates the [memory](https://en.wikipedia.org/wiki/Computer_memory) at that location and sends back a
+confirmation that the [write](https://en.wikipedia.org/wiki/Write_(system_call)) operation has been successfully completed.
 
 ## Manufacturing [tree](https://en.wikipedia.org/wiki/Tree_(data_structure)) networks
 
