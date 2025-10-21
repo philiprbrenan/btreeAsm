@@ -39,7 +39,12 @@ if  (1)                                                                         
  {for my $s(@files)                                                             # Upload each selected file
    {my $c = readBinaryFile $s;                                                  # Load file
 
-    $c = expandWellKnownWordsAsUrlsInMdFormat $c if $s =~ m(README);            # Expand README
+    if ($s =~ m(README))                                                        # Expand README
+     {$c = expandWellKnownWordsAsUrlsInMdFormat $c if $s =~ m(README);
+      my $f = owf(undef, $c);
+      say STDERR qx(pandoc $f -f gfm -t rst -o docs/source/README.rst);         # Convert github markdown to rst for read the docs
+      exit;
+     }
 
     my $t = swapFilePrefix $s, $home;                                           # File on github
     my $w = writeFileUsingSavedToken($user, $repo, $t, $c);                     # Write file into github
@@ -47,7 +52,6 @@ if  (1)                                                                         
    }
  }
 
-# pandoc README.md -f gfm -t rst -o docs/source/README.rst
 
 writeFileUsingSavedToken($user, $repo, q(.config/geany/snippets.conf),          # Save the snippets file as this was the thing I missed most after a rebuild
                    readFile(q(/home/phil/.config/geany/snippets.conf)));
