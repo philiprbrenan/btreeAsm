@@ -3,10 +3,20 @@
 Goal
 ====
 
-Use [Java](https://en.wikipedia.org/wiki/Java_(programming_language)) to generate [synthesizable](https://en.wikipedia.org/wiki/Logic_synthesis) [Verilog](https://en.wikipedia.org/wiki/Verilog) to layout a [B-Tree](https://en.wikipedia.org/wiki/B-tree) on the
-surface of a specialized [Silicon](https://en.wikipedia.org/wiki/Silicon) [chip](https://en.wikipedia.org/wiki/Integrated_circuit) so that the [B-Tree](https://en.wikipedia.org/wiki/B-tree) [find](https://en.wikipedia.org/wiki/Find_(Unix)), put
-and delete operations can be performed more quickly and efficiently than [software](https://en.wikipedia.org/wiki/Software) running on a generic processor . Such a chip could act as an
-accelerator for database operations, a: [Database on a Chip](https://github.com/philiprbrenan/btreeAsm) .
+Use `Java <https://en.wikipedia.org/wiki/Java_(programming_language)>`__
+to generate
+`synthesizable <https://en.wikipedia.org/wiki/Logic_synthesis>`__
+`Verilog <https://en.wikipedia.org/wiki/Verilog>`__ to layout a
+`B-Tree <https://en.wikipedia.org/wiki/B-tree>`__ on the surface of a
+specialized `Silicon <https://en.wikipedia.org/wiki/Silicon>`__
+`chip <https://en.wikipedia.org/wiki/Integrated_circuit>`__ so that the
+`B-Tree <https://en.wikipedia.org/wiki/B-tree>`__
+`find <https://en.wikipedia.org/wiki/Find_(Unix)>`__, put and delete
+operations can be performed more quickly and efficiently than
+`software <https://en.wikipedia.org/wiki/Software>`__ running on a
+generic processor . Such a chip could act as an accelerator for database
+operations, a: `Database on a
+Chip <https://github.com/philiprbrenan/btreeAsm>`__ .
 
 .. image:: https://raw.githubusercontent.com/philiprbrenan/btreeAsm/refs/heads/main/images/Btree.png
    :alt: put
@@ -16,43 +26,88 @@ accelerator for database operations, a: [Database on a Chip](https://github.com/
 Chip
 ====
 
-A [chip](https://en.wikipedia.org/wiki/Integrated_circuit) implements an [algorithm](https://en.wikipedia.org/wiki/Algorithm) in [Silicon](https://en.wikipedia.org/wiki/Silicon). 
-A [chip](https://en.wikipedia.org/wiki/Integrated_circuit) design exists in one of two states:
+A `chip <https://en.wikipedia.org/wiki/Integrated_circuit>`__ implements
+an `algorithm <https://en.wikipedia.org/wiki/Algorithm>`__ in
+`Silicon <https://en.wikipedia.org/wiki/Silicon>`__. A
+`chip <https://en.wikipedia.org/wiki/Integrated_circuit>`__ design
+exists in one of two states:
 
--  **Design**: The stage where the layout of the [chip](https://en.wikipedia.org/wiki/Integrated_circuit) is
-   described in [Java](https://en.wikipedia.org/wiki/Java_(programming_language)) 
--  **Execution**: When the [chip](https://en.wikipedia.org/wiki/Integrated_circuit) runs a fixed set of parallel
-   [processes](https://en.wikipedia.org/wiki/Process_management_(computing)) to perform work. This work is simulated in [Verilog](https://en.wikipedia.org/wiki/Verilog) 
+-  **Design**: The stage where the layout of the
+   `chip <https://en.wikipedia.org/wiki/Integrated_circuit>`__ is
+   described in
+   `Java <https://en.wikipedia.org/wiki/Java_(programming_language)>`__
+-  **Execution**: When the
+   `chip <https://en.wikipedia.org/wiki/Integrated_circuit>`__ runs a
+   fixed set of parallel
+   `processes <https://en.wikipedia.org/wiki/Process_management_(computing)>`__
+   to perform work. This work is simulated in
+   `Verilog <https://en.wikipedia.org/wiki/Verilog>`__
+
 Process
 -------
 
-Each [process](https://en.wikipedia.org/wiki/Process_management_(computing)) is assigned a unique identifier at design time. A [process](https://en.wikipedia.org/wiki/Process_management_(computing)) includes:
+Each
+`process <https://en.wikipedia.org/wiki/Process_management_(computing)>`__
+is assigned a unique identifier at design time. A
+`process <https://en.wikipedia.org/wiki/Process_management_(computing)>`__
+includes:
 
--  A [program](https://en.wikipedia.org/wiki/Computer_program), which in turn is comprised of [instructions](https://en.wikipedia.org/wiki/Instruction_set_architecture). 
--  An optional block of [memory](https://en.wikipedia.org/wiki/Computer_memory) 
--  Optional local [registers](https://en.wikipedia.org/wiki/Processor_register) 
+-  A `program <https://en.wikipedia.org/wiki/Computer_program>`__, which
+   in turn is comprised of
+   `instructions <https://en.wikipedia.org/wiki/Instruction_set_architecture>`__.
+-  An optional block of
+   `memory <https://en.wikipedia.org/wiki/Computer_memory>`__
+-  Optional local
+   `registers <https://en.wikipedia.org/wiki/Processor_register>`__
+
 Access Rules
 ------------
 
-The [Verilog](https://en.wikipedia.org/wiki/Verilog) ``always`` blocks enforce access rule requirements for [processes](https://en.wikipedia.org/wiki/Process_management_(computing)): 
--  A [process](https://en.wikipedia.org/wiki/Process_management_(computing)) can **only write** to its own [memory](https://en.wikipedia.org/wiki/Computer_memory) and [registers](https://en.wikipedia.org/wiki/Processor_register). 
--  A [process](https://en.wikipedia.org/wiki/Process_management_(computing)) can **read** its own [registers](https://en.wikipedia.org/wiki/Processor_register) and the [registers](https://en.wikipedia.org/wiki/Processor_register) of **any**
-   other [process](https://en.wikipedia.org/wiki/Process_management_(computing)) .
+The `Verilog <https://en.wikipedia.org/wiki/Verilog>`__ ``always``
+blocks enforce access rule requirements for
+`processes <https://en.wikipedia.org/wiki/Process_management_(computing)>`__:
+
+-  A
+   `process <https://en.wikipedia.org/wiki/Process_management_(computing)>`__
+   can **only write** to its own
+   `memory <https://en.wikipedia.org/wiki/Computer_memory>`__ and
+   `registers <https://en.wikipedia.org/wiki/Processor_register>`__.
+-  A
+   `process <https://en.wikipedia.org/wiki/Process_management_(computing)>`__
+   can **read** its own
+   `registers <https://en.wikipedia.org/wiki/Processor_register>`__ and
+   the `registers <https://en.wikipedia.org/wiki/Processor_register>`__
+   of **any** other
+   `process <https://en.wikipedia.org/wiki/Process_management_(computing)>`__
+   .
 
 Memory
 ------
 
-The [memory](https://en.wikipedia.org/wiki/Computer_memory) associated with a [process](https://en.wikipedia.org/wiki/Process_management_(computing)) is comprised of one-dimensional,
-indexable [arrays](https://en.wikipedia.org/wiki/Dynamic_array): 
+The `memory <https://en.wikipedia.org/wiki/Computer_memory>`__
+associated with a
+`process <https://en.wikipedia.org/wiki/Process_management_(computing)>`__
+is comprised of one-dimensional, indexable
+`arrays <https://en.wikipedia.org/wiki/Dynamic_array>`__:
+
 -  Memory size is determined at **runtime**.
 
--  Memory contents persist even when the [chip](https://en.wikipedia.org/wiki/Integrated_circuit) is not executing.
+-  Memory contents persist even when the
+   `chip <https://en.wikipedia.org/wiki/Integrated_circuit>`__ is not
+   executing.
 
--  Memory is typically accessed over multiple [clock](https://en.wikipedia.org/wiki/Clock_generator) cycles by issuing
-   transactions that copy [memory](https://en.wikipedia.org/wiki/Computer_memory) elements to or from local [registers](https://en.wikipedia.org/wiki/Processor_register) for
+-  Memory is typically accessed over multiple
+   `clock <https://en.wikipedia.org/wiki/Clock_generator>`__ cycles by
+   issuing transactions that copy
+   `memory <https://en.wikipedia.org/wiki/Computer_memory>`__ elements
+   to or from local
+   `registers <https://en.wikipedia.org/wiki/Processor_register>`__ for
    faster access.
 
--  Each [memory](https://en.wikipedia.org/wiki/Computer_memory) is owned by a single [process](https://en.wikipedia.org/wiki/Process_management_(computing)) .
+-  Each `memory <https://en.wikipedia.org/wiki/Computer_memory>`__ is
+   owned by a single
+   `process <https://en.wikipedia.org/wiki/Process_management_(computing)>`__
+   .
 
 BlackBox Synthesis
 ~~~~~~~~~~~~~~~~~~
@@ -61,168 +116,343 @@ Memory is an ideal candidate for geometrical layout given its regular
 structure over a large number of elements. OpenRAM exploits this
 structure to synthesize large memories that can then be imbedded as
 black boxes in other designs which would otherwise overwhelem the place
-and route phases of [synthesis](https://en.wikipedia.org/wiki/Logic_synthesis). 
+and route phases of
+`synthesis <https://en.wikipedia.org/wiki/Logic_synthesis>`__.
+
 Registers
 ---------
 
-Registers are local blocks of [memory](https://en.wikipedia.org/wiki/Computer_memory) that:
+Registers are local blocks of
+`memory <https://en.wikipedia.org/wiki/Computer_memory>`__ that:
 
 -  Have a fixed size determined at **compile time**.
 
--  Are accessible within a **single [clock](https://en.wikipedia.org/wiki/Clock_generator) cycle**.
+-  Are accessible within a **single**
+   `clock <https://en.wikipedia.org/wiki/Clock_generator>`__ **cycle**.
 
--  Lose their values if the [chip](https://en.wikipedia.org/wiki/Integrated_circuit) is powered off.
+-  Lose their values if the
+   `chip <https://en.wikipedia.org/wiki/Integrated_circuit>`__ is
+   powered off.
 
--  Start set to zero when the [chip](https://en.wikipedia.org/wiki/Integrated_circuit) is powered on
+-  Start set to zero when the
+   `chip <https://en.wikipedia.org/wiki/Integrated_circuit>`__ is
+   powered on
 
 Single versus arrayed
 ~~~~~~~~~~~~~~~~~~~~~
 
-Registers can contain just a single element in a [register](https://en.wikipedia.org/wiki/Processor_register) or a
-predefined number of elements in an arrayed [register](https://en.wikipedia.org/wiki/Processor_register). Single and arrayed [registers](https://en.wikipedia.org/wiki/Processor_register) can be copied into other single and arrayed [registers](https://en.wikipedia.org/wiki/Processor_register), with
-either the whole [register](https://en.wikipedia.org/wiki/Processor_register) being copied or with specific elements being
-selected from arrayed [registers](https://en.wikipedia.org/wiki/Processor_register) with either integer and/or single [register](https://en.wikipedia.org/wiki/Processor_register) indices.
+Registers can contain just a single element in a
+`register <https://en.wikipedia.org/wiki/Processor_register>`__ or a
+predefined number of elements in an arrayed
+`register <https://en.wikipedia.org/wiki/Processor_register>`__. Single
+and arrayed
+`registers <https://en.wikipedia.org/wiki/Processor_register>`__ can be
+copied into other single and arrayed
+`registers <https://en.wikipedia.org/wiki/Processor_register>`__, with
+either the whole
+`register <https://en.wikipedia.org/wiki/Processor_register>`__ being
+copied or with specific elements being selected from arrayed
+`registers <https://en.wikipedia.org/wiki/Processor_register>`__ with
+either integer and/or single
+`register <https://en.wikipedia.org/wiki/Processor_register>`__ indices.
 
 Unknown values
 --------------
 
-When the chip is powered on, the values of bits in [memory](https://en.wikipedia.org/wiki/Computer_memory) are unknown. I
-considered these possibilities:
+When the chip is powered on, the values of bits in
+`memory <https://en.wikipedia.org/wiki/Computer_memory>`__ are unknown.
+I considered these possibilities:
 
-1. Track the unknown status of each [bit](https://en.wikipedia.org/wiki/Bit) in [memory](https://en.wikipedia.org/wiki/Computer_memory). 
-2. Track the unknown status of each [word](https://en.wikipedia.org/wiki/Doc_(computing)) in [memory](https://en.wikipedia.org/wiki/Computer_memory). 
-3. Set [memory](https://en.wikipedia.org/wiki/Computer_memory) to a known value so that there are no unknown values after
-   power on.
+1. Track the unknown status of each
+   `bit <https://en.wikipedia.org/wiki/Bit>`__ in
+   `memory <https://en.wikipedia.org/wiki/Computer_memory>`__.
+2. Track the unknown status of each
+   `word <https://en.wikipedia.org/wiki/Doc_(computing)>`__ in
+   `memory <https://en.wikipedia.org/wiki/Computer_memory>`__.
+3. Set `memory <https://en.wikipedia.org/wiki/Computer_memory>`__ to a
+   known value so that there are no unknown values after power on.
 
-I chose to set [memory](https://en.wikipedia.org/wiki/Computer_memory) to known values on power on because:
+I chose to set
+`memory <https://en.wikipedia.org/wiki/Computer_memory>`__ to known
+values on power on because:
 
--  Verilog does track whether each [bit](https://en.wikipedia.org/wiki/Bit) in [memory](https://en.wikipedia.org/wiki/Computer_memory) has a known value or
-   not so there seems to be no point in reinventing the wheel by
-   duplicating work already being done by Verilog.
+-  Verilog does track whether each
+   `bit <https://en.wikipedia.org/wiki/Bit>`__ in
+   `memory <https://en.wikipedia.org/wiki/Computer_memory>`__ has a
+   known value or not so there seems to be no point in reinventing the
+   wheel by duplicating work already being done by Verilog.
 
--  The Java execution [speed](https://en.wikipedia.org/wiki/Speed) which is already slow enough enough would be
-   slowed even further, yet any bugs it might catch would be caught a
-   few seconds later by the Verilog simulation so the extra execution
-   time buys very little compared to its cost.
+-  The Java execution `speed <https://en.wikipedia.org/wiki/Speed>`__
+   which is already slow enough enough would be slowed even further, yet
+   any bugs it might catch would be caught a few seconds later by the
+   Verilog simulation so the extra execution time buys very little
+   compared to its cost.
 
--  Memory is copied into [registers](https://en.wikipedia.org/wiki/Processor_register) and so [registers](https://en.wikipedia.org/wiki/Processor_register) would also have to
-   track whether their values were known or not leading to more
-   complexity in the Java [code](https://en.wikipedia.org/wiki/Computer_program), which should, instead, be focussed on
-   the [algorithms](https://en.wikipedia.org/wiki/Algorithm) used rather then their bitwise implementation.
+-  Memory is copied into
+   `registers <https://en.wikipedia.org/wiki/Processor_register>`__ and
+   so `registers <https://en.wikipedia.org/wiki/Processor_register>`__
+   would also have to track whether their values were known or not
+   leading to more complexity in the Java
+   `code <https://en.wikipedia.org/wiki/Computer_program>`__, which
+   should, instead, be focussed on the
+   `algorithms <https://en.wikipedia.org/wiki/Algorithm>`__ used rather
+   then their bitwise implementation.
 
 Program Execution
 -----------------
 
-Each [process](https://en.wikipedia.org/wiki/Process_management_(computing)) executes a single [program](https://en.wikipedia.org/wiki/Computer_program) composed of sequential [instructions](https://en.wikipedia.org/wiki/Instruction_set_architecture). A [chip](https://en.wikipedia.org/wiki/Integrated_circuit) may contain multiple [processes](https://en.wikipedia.org/wiki/Process_management_(computing)). 
-Processes can be driven by transactions, which are parameter lists of [registers](https://en.wikipedia.org/wiki/Processor_register) provided by the calling [processes](https://en.wikipedia.org/wiki/Process_management_(computing)). 
+Each
+`process <https://en.wikipedia.org/wiki/Process_management_(computing)>`__
+executes a single
+`program <https://en.wikipedia.org/wiki/Computer_program>`__ composed of
+sequential
+`instructions <https://en.wikipedia.org/wiki/Instruction_set_architecture>`__.
+A `chip <https://en.wikipedia.org/wiki/Integrated_circuit>`__ may
+contain multiple
+`processes <https://en.wikipedia.org/wiki/Process_management_(computing)>`__.
+Processes can be driven by transactions, which are parameter lists of
+`registers <https://en.wikipedia.org/wiki/Processor_register>`__
+provided by the calling
+`processes <https://en.wikipedia.org/wiki/Process_management_(computing)>`__.
 Processes are execute in a fixed, round-robin order set at design time,
-allowing the behavior of the [Verilog](https://en.wikipedia.org/wiki/Verilog) [code](https://en.wikipedia.org/wiki/Computer_program) to be validated by comparing
-the time evolution of memories and [registers](https://en.wikipedia.org/wiki/Processor_register) under [Verilog](https://en.wikipedia.org/wiki/Verilog) with the
-trace of the same under [Java](https://en.wikipedia.org/wiki/Java_(programming_language)). 
+allowing the behavior of the
+`Verilog <https://en.wikipedia.org/wiki/Verilog>`__
+`code <https://en.wikipedia.org/wiki/Computer_program>`__ to be
+validated by comparing the time evolution of memories and
+`registers <https://en.wikipedia.org/wiki/Processor_register>`__ under
+`Verilog <https://en.wikipedia.org/wiki/Verilog>`__ with the trace of
+the same under
+`Java <https://en.wikipedia.org/wiki/Java_(programming_language)>`__.
+
 Transactions
 ------------
 
-A [transaction](https://en.wikipedia.org/wiki/Database_transaction) enables one [process](https://en.wikipedia.org/wiki/Process_management_(computing)) to request work from another [process](https://en.wikipedia.org/wiki/Process_management_(computing)) using a parameter [list](https://en.wikipedia.org/wiki/Linked_list) comprised of [registers](https://en.wikipedia.org/wiki/Processor_register). 
+A `transaction <https://en.wikipedia.org/wiki/Database_transaction>`__
+enables one
+`process <https://en.wikipedia.org/wiki/Process_management_(computing)>`__
+to request work from another
+`process <https://en.wikipedia.org/wiki/Process_management_(computing)>`__
+using a parameter `list <https://en.wikipedia.org/wiki/Linked_list>`__
+comprised of
+`registers <https://en.wikipedia.org/wiki/Processor_register>`__.
 Processes handle transactions in round-robin polling mode, fixed at
-design time. Each [process](https://en.wikipedia.org/wiki/Process_management_(computing)): 
+design time. Each
+`process <https://en.wikipedia.org/wiki/Process_management_(computing)>`__:
+
 1. Polls its inbound transactions for work.
 
-2. When a [transaction](https://en.wikipedia.org/wiki/Database_transaction) is found:
+2. When a
+   `transaction <https://en.wikipedia.org/wiki/Database_transaction>`__
+   is found:
 
-   -  Copies data from the transaction's parameter [registers](https://en.wikipedia.org/wiki/Processor_register) into its
-      own [registers](https://en.wikipedia.org/wiki/Processor_register). 
-   -  Processes the data by executing the indicated [transaction](https://en.wikipedia.org/wiki/Database_transaction). 
+   -  Copies data from the transaction's parameter
+      `registers <https://en.wikipedia.org/wiki/Processor_register>`__
+      into its own
+      `registers <https://en.wikipedia.org/wiki/Processor_register>`__.
+   -  Processes the data by executing the indicated
+      `transaction <https://en.wikipedia.org/wiki/Database_transaction>`__.
    -  Writes the execution results into the transaction's output
-      [registers](https://en.wikipedia.org/wiki/Processor_register). 
-   -  Marks the [transaction](https://en.wikipedia.org/wiki/Database_transaction) as complete so that its results can be used
-      by the caller.
+      `registers <https://en.wikipedia.org/wiki/Processor_register>`__.
+   -  Marks the
+      `transaction <https://en.wikipedia.org/wiki/Database_transaction>`__
+      as complete so that its results can be used by the caller.
 
-3. The requesting [process](https://en.wikipedia.org/wiki/Process_management_(computing)) waits for the completion of a [transaction](https://en.wikipedia.org/wiki/Database_transaction) by
-   spinning on an [instruction](https://en.wikipedia.org/wiki/Instruction_set_architecture). 
-The output remains in the [transaction](https://en.wikipedia.org/wiki/Database_transaction) [registers](https://en.wikipedia.org/wiki/Processor_register) until they are
-overwritten by the next use of the same [transaction](https://en.wikipedia.org/wiki/Database_transaction). 
+3. The requesting
+   `process <https://en.wikipedia.org/wiki/Process_management_(computing)>`__
+   waits for the completion of a
+   `transaction <https://en.wikipedia.org/wiki/Database_transaction>`__
+   by spinning on an
+   `instruction <https://en.wikipedia.org/wiki/Instruction_set_architecture>`__.
+   The output remains in the
+   `transaction <https://en.wikipedia.org/wiki/Database_transaction>`__
+   `registers <https://en.wikipedia.org/wiki/Processor_register>`__
+   until they are overwritten by the next use of the same
+   `transaction <https://en.wikipedia.org/wiki/Database_transaction>`__.
+
 Deadlock Prevention
 -------------------
 
-To avoid deadlocks, [processes](https://en.wikipedia.org/wiki/Process_management_(computing)) may only request work from [processes](https://en.wikipedia.org/wiki/Process_management_(computing)) with
-lower [process](https://en.wikipedia.org/wiki/Process_management_(computing)) numbers.
+To avoid deadlocks,
+`processes <https://en.wikipedia.org/wiki/Process_management_(computing)>`__
+may only request work from
+`processes <https://en.wikipedia.org/wiki/Process_management_(computing)>`__
+with lower
+`process <https://en.wikipedia.org/wiki/Process_management_(computing)>`__
+numbers.
 
 Verilog Implementation
 ----------------------
 
-The [chip](https://en.wikipedia.org/wiki/Integrated_circuit) is implemented in [Verilog](https://en.wikipedia.org/wiki/Verilog). Each [process](https://en.wikipedia.org/wiki/Process_management_(computing)) is mapped to an
-``always`` block that:
+The `chip <https://en.wikipedia.org/wiki/Integrated_circuit>`__ is
+implemented in `Verilog <https://en.wikipedia.org/wiki/Verilog>`__. Each
+`process <https://en.wikipedia.org/wiki/Process_management_(computing)>`__
+is mapped to an ``always`` block that:
 
--  Executes [instructions](https://en.wikipedia.org/wiki/Instruction_set_architecture) comprising in-flight transactions or polls its
-   non-in-flight transactions for work.
+-  Executes
+   `instructions <https://en.wikipedia.org/wiki/Instruction_set_architecture>`__
+   comprising in-flight transactions or polls its non-in-flight
+   transactions for work.
 
--  Is triggered by a common [clock](https://en.wikipedia.org/wiki/Clock_generator) to ensure synchronous execution.
+-  Is triggered by a common
+   `clock <https://en.wikipedia.org/wiki/Clock_generator>`__ to ensure
+   synchronous execution.
 
--  Shares a common [clock](https://en.wikipedia.org/wiki/Clock_generator) cycle count (step number) across all [processes](https://en.wikipedia.org/wiki/Process_management_(computing)),    though each [process](https://en.wikipedia.org/wiki/Process_management_(computing)) has its own [program](https://en.wikipedia.org/wiki/Computer_program) counter.
+-  Shares a common
+   `clock <https://en.wikipedia.org/wiki/Clock_generator>`__ cycle count
+   (step number) across all
+   `processes <https://en.wikipedia.org/wiki/Process_management_(computing)>`__,
+   though each
+   `process <https://en.wikipedia.org/wiki/Process_management_(computing)>`__
+   has its own
+   `program <https://en.wikipedia.org/wiki/Computer_program>`__ counter.
 
 Programs are implemented using a ``case`` statement where:
 
--  Each [instruction](https://en.wikipedia.org/wiki/Instruction_set_architecture) corresponds to a case branch.
+-  Each
+   `instruction <https://en.wikipedia.org/wiki/Instruction_set_architecture>`__
+   corresponds to a case branch.
 
--  Each [process](https://en.wikipedia.org/wiki/Process_management_(computing)) has a [program](https://en.wikipedia.org/wiki/Computer_program) counter that selects the next [instruction](https://en.wikipedia.org/wiki/Instruction_set_architecture)    to be executed.
+-  Each
+   `process <https://en.wikipedia.org/wiki/Process_management_(computing)>`__
+   has a `program <https://en.wikipedia.org/wiki/Computer_program>`__
+   counter that selects the next
+   `instruction <https://en.wikipedia.org/wiki/Instruction_set_architecture>`__
+   to be executed.
 
-This is **not** a general-purpose processor. It is a specialized [chip](https://en.wikipedia.org/wiki/Integrated_circuit) with **statically optimized** execution paths for minimal
-time and power consumption.
+This is **not** a general-purpose processor. It is a specialized
+`chip <https://en.wikipedia.org/wiki/Integrated_circuit>`__ with
+**statically optimized** execution paths for minimal time and power
+consumption.
 
 Java and Verilog Simulation
 ---------------------------
 
-Writing [Verilog](https://en.wikipedia.org/wiki/Verilog) directly is time-consuming and error-prone. To mitigate
-this problem:
+Writing `Verilog <https://en.wikipedia.org/wiki/Verilog>`__ directly is
+time-consuming and error-prone. To mitigate this problem:
 
--  The [algorithm](https://en.wikipedia.org/wiki/Algorithm) is first written and debugged in [Java](https://en.wikipedia.org/wiki/Java_(programming_language)) using familiar
-   programming paradigms and tools.
+-  The `algorithm <https://en.wikipedia.org/wiki/Algorithm>`__ is first
+   written and debugged in
+   `Java <https://en.wikipedia.org/wiki/Java_(programming_language)>`__
+   using familiar programming paradigms and tools.
 
--  The [Java](https://en.wikipedia.org/wiki/Java_(programming_language)) is then **almost-automatically translated** into [Verilog](https://en.wikipedia.org/wiki/Verilog). 
--  The [Java](https://en.wikipedia.org/wiki/Java_(programming_language)) is executed to produce a trace showing how the [memory](https://en.wikipedia.org/wiki/Computer_memory) and
-   [registers](https://en.wikipedia.org/wiki/Processor_register) of the chip should evolve in time.
+-  The
+   `Java <https://en.wikipedia.org/wiki/Java_(programming_language)>`__
+   is then **almost-automatically translated** into
+   `Verilog <https://en.wikipedia.org/wiki/Verilog>`__.
 
--  The [Verilog](https://en.wikipedia.org/wiki/Verilog) is executed and checked to confirm that it produces the
-   same [memory](https://en.wikipedia.org/wiki/Computer_memory) and [register](https://en.wikipedia.org/wiki/Processor_register) trace as the [Java](https://en.wikipedia.org/wiki/Java_(programming_language)) does
+-  The
+   `Java <https://en.wikipedia.org/wiki/Java_(programming_language)>`__
+   is executed to produce a trace showing how the
+   `memory <https://en.wikipedia.org/wiki/Computer_memory>`__ and
+   `registers <https://en.wikipedia.org/wiki/Processor_register>`__ of
+   the chip should evolve in time.
 
-This approach produces [Verilog](https://en.wikipedia.org/wiki/Verilog) **much more efficiently** and
-**reliably** than writing it by hand. For example, I was able to
-implement a non-recursive reverse [Iterator](https://en.wikipedia.org/wiki/Iterator) over the [tree](https://en.wikipedia.org/wiki/Tree_(data_structure)) entirely in [Java](https://en.wikipedia.org/wiki/Java_(programming_language)), without writing any [Verilog](https://en.wikipedia.org/wiki/Verilog) by hand at all, and the generated [Verilog](https://en.wikipedia.org/wiki/Verilog) synthesized, placed, and routed correctly on the first attempt.
+-  The `Verilog <https://en.wikipedia.org/wiki/Verilog>`__ is executed
+   and checked to confirm that it produces the same
+   `memory <https://en.wikipedia.org/wiki/Computer_memory>`__ and
+   `register <https://en.wikipedia.org/wiki/Processor_register>`__ trace
+   as the
+   `Java <https://en.wikipedia.org/wiki/Java_(programming_language)>`__
+   does
 
-However, similar to the MIT "Midnight Rewiring Society," if extra [instructions](https://en.wikipedia.org/wiki/Instruction_set_architecture) are needed, perhaps to increase parallelism, it is
-relatively easy to add a [Verilog](https://en.wikipedia.org/wiki/Verilog) implementation of an [instruction](https://en.wikipedia.org/wiki/Instruction_set_architecture) sequence written in [Java](https://en.wikipedia.org/wiki/Java_(programming_language)), which can then be reused from [Java](https://en.wikipedia.org/wiki/Java_(programming_language)) as needed.
+This approach produces
+`Verilog <https://en.wikipedia.org/wiki/Verilog>`__ **much more
+efficiently** and **reliably** than writing it by hand. For example, I
+was able to implement a non-recursive reverse
+`Iterator <https://en.wikipedia.org/wiki/Iterator>`__ over the
+`tree <https://en.wikipedia.org/wiki/Tree_(data_structure)>`__ entirely
+in `Java <https://en.wikipedia.org/wiki/Java_(programming_language)>`__,
+without writing any `Verilog <https://en.wikipedia.org/wiki/Verilog>`__
+by hand at all, and the generated
+`Verilog <https://en.wikipedia.org/wiki/Verilog>`__ synthesized, placed,
+and routed correctly on the first attempt.
 
-As a consequence of the matching of the [Java](https://en.wikipedia.org/wiki/Java_(programming_language)) and [Verilog](https://en.wikipedia.org/wiki/Verilog) traces, no
-additional tests are required within the [Verilog](https://en.wikipedia.org/wiki/Verilog) itself; it is
-sufficient to [verify](https://en.wikipedia.org/wiki/Software_verification_and_validation) that the [Verilog](https://en.wikipedia.org/wiki/Verilog) implementation updates the [memory](https://en.wikipedia.org/wiki/Computer_memory) and [registers](https://en.wikipedia.org/wiki/Processor_register) on the chip in lockstep with the [Java](https://en.wikipedia.org/wiki/Java_(programming_language)) version to confirm
-that the [Verilog](https://en.wikipedia.org/wiki/Verilog) version accurately implements the [Java](https://en.wikipedia.org/wiki/Java_(programming_language)) version.
+However, similar to the MIT "Midnight Rewiring Society," if extra
+`instructions <https://en.wikipedia.org/wiki/Instruction_set_architecture>`__
+are needed, perhaps to increase parallelism, it is relatively easy to
+add a `Verilog <https://en.wikipedia.org/wiki/Verilog>`__ implementation
+of an
+`instruction <https://en.wikipedia.org/wiki/Instruction_set_architecture>`__
+sequence written in
+`Java <https://en.wikipedia.org/wiki/Java_(programming_language)>`__,
+which can then be reused from
+`Java <https://en.wikipedia.org/wiki/Java_(programming_language)>`__ as
+needed.
 
-If the [Verilog](https://en.wikipedia.org/wiki/Verilog) trace and the [Java](https://en.wikipedia.org/wiki/Java_(programming_language)) trace do not match, the [instruction](https://en.wikipedia.org/wiki/Instruction_set_architecture) that is causing the mismatch can be located by setting "processTrace" to
-**true** for the [process](https://en.wikipedia.org/wiki/Process_management_(computing)) under development to get a traceback
-identifying the [instruction](https://en.wikipedia.org/wiki/Instruction_set_architecture) that is executing differently in the [Java](https://en.wikipedia.org/wiki/Java_(programming_language)) version versus the [Verilog](https://en.wikipedia.org/wiki/Verilog) version.
+As a consequence of the matching of the
+`Java <https://en.wikipedia.org/wiki/Java_(programming_language)>`__ and
+`Verilog <https://en.wikipedia.org/wiki/Verilog>`__ traces, no
+additional tests are required within the
+`Verilog <https://en.wikipedia.org/wiki/Verilog>`__ itself; it is
+sufficient to
+`verify <https://en.wikipedia.org/wiki/Software_verification_and_validation>`__
+that the `Verilog <https://en.wikipedia.org/wiki/Verilog>`__
+implementation updates the
+`memory <https://en.wikipedia.org/wiki/Computer_memory>`__ and
+`registers <https://en.wikipedia.org/wiki/Processor_register>`__ on the
+chip in lockstep with the
+`Java <https://en.wikipedia.org/wiki/Java_(programming_language)>`__
+version to confirm that the
+`Verilog <https://en.wikipedia.org/wiki/Verilog>`__ version accurately
+implements the
+`Java <https://en.wikipedia.org/wiki/Java_(programming_language)>`__
+version.
+
+If the `Verilog <https://en.wikipedia.org/wiki/Verilog>`__ trace and the
+`Java <https://en.wikipedia.org/wiki/Java_(programming_language)>`__
+trace do not match, the
+`instruction <https://en.wikipedia.org/wiki/Instruction_set_architecture>`__
+that is causing the mismatch can be located by setting "processTrace" to
+**true** for the
+`process <https://en.wikipedia.org/wiki/Process_management_(computing)>`__
+under development to get a traceback identifying the
+`instruction <https://en.wikipedia.org/wiki/Instruction_set_architecture>`__
+that is executing differently in the
+`Java <https://en.wikipedia.org/wiki/Java_(programming_language)>`__
+version versus the `Verilog <https://en.wikipedia.org/wiki/Verilog>`__
+version.
 
 --------------
 
 Double Btree Structure
 ======================
 
-Each [B-Tree](https://en.wikipedia.org/wiki/B-tree) has its own dedicated [memory](https://en.wikipedia.org/wiki/Computer_memory), which can be of any reasonable
-size supported by the chip fabrication [process](https://en.wikipedia.org/wiki/Process_management_(computing)). However, as chip size
-increases, the likelihood of manufacturing defects grows and access to
-individual [memory](https://en.wikipedia.org/wiki/Computer_memory) elements becomes slower.
+Each `B-Tree <https://en.wikipedia.org/wiki/B-tree>`__ has its own
+dedicated `memory <https://en.wikipedia.org/wiki/Computer_memory>`__,
+which can be of any reasonable size supported by the chip fabrication
+`process <https://en.wikipedia.org/wiki/Process_management_(computing)>`__.
+However, as chip size increases, the likelihood of manufacturing defects
+grows and access to individual
+`memory <https://en.wikipedia.org/wiki/Computer_memory>`__ elements
+becomes slower.
 
-To address these issues, we employ a double [B-Tree](https://en.wikipedia.org/wiki/B-tree) architecture. Each
-stuck of the double [B-Tree](https://en.wikipedia.org/wiki/B-tree) is implemented as a separate chip containing a
-single [B-Tree](https://en.wikipedia.org/wiki/B-tree) . [B-Trees](https://en.wikipedia.org/wiki/B-tree) are naturally suited to representing a stuck, as
-shown in **Dt.java**. The individual [B-Trees](https://en.wikipedia.org/wiki/B-tree) communicate through the
-star-topology [network](https://en.wikipedia.org/wiki/Computer_network) described in **TreeNet.java**.
+To address these issues, we employ a double
+`B-Tree <https://en.wikipedia.org/wiki/B-tree>`__ architecture. Each
+stuck of the double `B-Tree <https://en.wikipedia.org/wiki/B-tree>`__ is
+implemented as a separate chip containing a single
+`B-Tree <https://en.wikipedia.org/wiki/B-tree>`__ .
+`B-Trees <https://en.wikipedia.org/wiki/B-tree>`__ are naturally suited
+to representing a stuck, as shown in **Dt.java**. The individual
+`B-Trees <https://en.wikipedia.org/wiki/B-tree>`__ communicate through
+the star-topology
+`network <https://en.wikipedia.org/wiki/Computer_network>`__ described
+in **TreeNet.java**.
 
-Constructing a double [B-Tree](https://en.wikipedia.org/wiki/B-tree) from multiple single [B-Trees](https://en.wikipedia.org/wiki/B-tree) reduces
-manufacturing costs by improving yield (since smaller [chips](https://en.wikipedia.org/wiki/Integrated_circuit) are less
-prone to defects) and increases [memory](https://en.wikipedia.org/wiki/Computer_memory) access [speed](https://en.wikipedia.org/wiki/Speed) through parallelism,
-as each single [B-Tree](https://en.wikipedia.org/wiki/B-tree) controls its own independent block of [memory](https://en.wikipedia.org/wiki/Computer_memory). These
-advantages come at the expense of logarithmic [network](https://en.wikipedia.org/wiki/Computer_network) communication
-overhead between the single [B-Trees](https://en.wikipedia.org/wiki/B-tree) that together form the double [B-Tree](https://en.wikipedia.org/wiki/B-tree) .
+Constructing a double `B-Tree <https://en.wikipedia.org/wiki/B-tree>`__
+from multiple single `B-Trees <https://en.wikipedia.org/wiki/B-tree>`__
+reduces manufacturing costs by improving yield (since smaller
+`chips <https://en.wikipedia.org/wiki/Integrated_circuit>`__ are less
+prone to defects) and increases
+`memory <https://en.wikipedia.org/wiki/Computer_memory>`__ access
+`speed <https://en.wikipedia.org/wiki/Speed>`__ through parallelism, as
+each single `B-Tree <https://en.wikipedia.org/wiki/B-tree>`__ controls
+its own independent block of
+`memory <https://en.wikipedia.org/wiki/Computer_memory>`__. These
+advantages come at the expense of logarithmic
+`network <https://en.wikipedia.org/wiki/Computer_network>`__
+communication overhead between the single
+`B-Trees <https://en.wikipedia.org/wiki/B-tree>`__ that together form
+the double `B-Tree <https://en.wikipedia.org/wiki/B-tree>`__ .
 
 --------------
 
@@ -231,9 +461,9 @@ Stuck Data Structure
 
 A **Stuck** serves as the **fundamental node representation** inside a
 **btree**. Instead of using pointers to dynamically allocated elements,
-each node of the [B-Tree](https://en.wikipedia.org/wiki/B-tree) contains a **Stuck** that stores its **keys and
-associated values (or child pointers)** in a fixed-size, contiguous
-block.
+each node of the `B-Tree <https://en.wikipedia.org/wiki/B-tree>`__
+contains a **Stuck** that stores its **keys and associated values (or
+child pointers)** in a fixed-size, contiguous block.
 
 A **Stuck** is a **fixed-size stack-like array** designed to hold
 **key-data pairs** in **sorted order by key**.
@@ -250,7 +480,8 @@ contiguous usage efficiently.
 Storage Layout
 --------------
 
--  Implemented as a **contiguous [array](https://en.wikipedia.org/wiki/Dynamic_array) of slots**.
+-  Implemented as a **contiguous**
+   `array <https://en.wikipedia.org/wiki/Dynamic_array>`__ **of slots**.
 -  Each slot contains:
 
    -  **Key field** (``K bits``)
@@ -312,9 +543,11 @@ Role in a B-tree
 
 1. **Key Storage**
 
-   -  Each [B-Tree](https://en.wikipedia.org/wiki/B-tree) node maintains its set of keys inside a Stuck.
+   -  Each `B-Tree <https://en.wikipedia.org/wiki/B-tree>`__ node
+      maintains its set of keys inside a Stuck.
    -  The Stuck keeps keys **sorted**, which is crucial for search,
-      insert, and delete operations in a [B-Tree](https://en.wikipedia.org/wiki/B-tree) .
+      insert, and delete operations in a
+      `B-Tree <https://en.wikipedia.org/wiki/B-tree>`__ .
 
 2. **Efficient Search**
 
@@ -327,8 +560,8 @@ Role in a B-tree
    -  When inserting a key into a node, the Stuck shifts entries to
       maintain sorted order.
    -  If the Stuck is full, the node **splits**: half the keys are
-      promoted or moved to a new node, consistent with [B-Tree](https://en.wikipedia.org/wiki/B-tree) balancing
-      rules.
+      promoted or moved to a new node, consistent with
+      `B-Tree <https://en.wikipedia.org/wiki/B-tree>`__ balancing rules.
 
 4. **Delete & Merge Support**
 
@@ -346,8 +579,12 @@ Role in a B-tree
 Why a Stuck is a Good Fit
 -------------------------
 
--  **Contiguous [memory](https://en.wikipedia.org/wiki/Computer_memory) layout** : cache-friendly.
--  **Fixed capacity** : simplifies [memory](https://en.wikipedia.org/wiki/Computer_memory) management.
+-  **Contiguous**
+   `memory <https://en.wikipedia.org/wiki/Computer_memory>`__ **layout**
+   : cache-friendly.
+-  **Fixed capacity** : simplifies
+   `memory <https://en.wikipedia.org/wiki/Computer_memory>`__
+   management.
 -  **Size field** : explicitly tracks how full the node is.
 -  **Ordered** : maintains the keys in order so they can be searched
    quickly
@@ -357,13 +594,18 @@ Why a Stuck is a Good Fit
 Silicon Compiler
 ================
 
-The [Verilog](https://en.wikipedia.org/wiki/Verilog) produced by **Btree.java** is transformed into a chip [mask](https://en.wikipedia.org/wiki/Integrated_circuit_layout) using [Silicon Compiler](https://docs.siliconcompiler.com/en/latest/index.html) .
+The `Verilog <https://en.wikipedia.org/wiki/Verilog>`__ produced by
+**Btree.java** is transformed into a chip
+`mask <https://en.wikipedia.org/wiki/Integrated_circuit_layout>`__ using
+`Silicon
+Compiler <https://docs.siliconcompiler.com/en/latest/index.html>`__ .
 
 Run Silicon Compiler
 --------------------
 
-Run [Silicon Compiler](https://docs.siliconcompiler.com/en/latest/index.html) on **Btree** on any machine with **docker** and
-**git** installed.
+Run `Silicon
+Compiler <https://docs.siliconcompiler.com/en/latest/index.html>`__ on
+**Btree** on any machine with **docker** and **git** installed.
 
 ::
 
@@ -373,19 +615,26 @@ Run [Silicon Compiler](https://docs.siliconcompiler.com/en/latest/index.html) on
 Create Silicon Compiler Docker Container
 ----------------------------------------
 
-The following notes explain how to create the [Docker](https://en.wikipedia.org/wiki/Docker_(software)) container
-referenced above to run [Silicon Compiler](https://docs.siliconcompiler.com/en/latest/index.html) .
+The following notes explain how to create the
+`Docker <https://en.wikipedia.org/wiki/Docker_(software)>`__ container
+referenced above to run `Silicon
+Compiler <https://docs.siliconcompiler.com/en/latest/index.html>`__ .
 
 OpenROAD
 ~~~~~~~~
 
-Prebuilt [Open Road](https://openroad-flow-scripts.readthedocs.io/en/latest/mainREADME.html) binaries are available for [Ubuntu](https://ubuntu.com/download/desktop) 22:
+Prebuilt `Open
+Road <https://openroad-flow-scripts.readthedocs.io/en/latest/mainREADME.html>`__
+binaries are available for
+`Ubuntu <https://ubuntu.com/download/desktop>`__ 22:
 
 ::
 
    [Docker](https://en.wikipedia.org/wiki/Docker_(software)) run -it --rm ubuntu:22.04 /bin/bash
 
-Install the following **deb** [file](https://en.wikipedia.org/wiki/Computer_file): 
+Install the following **deb**
+`file <https://en.wikipedia.org/wiki/Computer_file>`__:
+
 ::
 
    wget https://github.com/Precision-Innovations/OpenROAD/releases/download/2024-12-14/openroad_2.0-17598-ga008522d8_amd64-ubuntu-22.04.deb
@@ -397,7 +646,12 @@ Install the following **deb** [file](https://en.wikipedia.org/wiki/Computer_file
 Silicon compiler
 ~~~~~~~~~~~~~~~~
 
-Create a [Python](https://www.python.org/) virtual environment, activate it, [install](https://en.wikipedia.org/wiki/Installation_(computer_programs)) [Silicon Compiler](https://docs.siliconcompiler.com/en/latest/index.html) and confirm the installation:
+Create a `Python <https://www.python.org/>`__ virtual environment,
+activate it,
+`install <https://en.wikipedia.org/wiki/Installation_(computer_programs)>`__
+`Silicon
+Compiler <https://docs.siliconcompiler.com/en/latest/index.html>`__ and
+confirm the installation:
 
 ::
 
@@ -434,7 +688,9 @@ Install **Klayout** and confirm correct installation:
 Upload the container to Github containers
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-To save the configured container to [GitHub](https://github.com/philiprbrenan): 
+To save the configured container to
+`GitHub <https://github.com/philiprbrenan>`__:
+
 .. _1-log-in-to-ghcr:
 
 1. Log in to GHCR
@@ -449,7 +705,8 @@ To save the configured container to [GitHub](https://github.com/philiprbrenan):
 2. Create an image
 ^^^^^^^^^^^^^^^^^^
 
-Make an image from the [Docker](https://en.wikipedia.org/wiki/Docker_(software)) container:
+Make an image from the
+`Docker <https://en.wikipedia.org/wiki/Docker_(software)>`__ container:
 
 ::
 
@@ -460,7 +717,9 @@ Make an image from the [Docker](https://en.wikipedia.org/wiki/Docker_(software))
 3. Tag the image
 ^^^^^^^^^^^^^^^^
 
-Give the [Docker](https://en.wikipedia.org/wiki/Docker_(software)) image a name that [GitHub](https://github.com/philiprbrenan) can recognize:
+Give the `Docker <https://en.wikipedia.org/wiki/Docker_(software)>`__
+image a name that `GitHub <https://github.com/philiprbrenan>`__ can
+recognize:
 
 ::
 
@@ -471,7 +730,9 @@ Give the [Docker](https://en.wikipedia.org/wiki/Docker_(software)) image a name 
 4. Push the image
 ^^^^^^^^^^^^^^^^^
 
-Push the [Docker](https://en.wikipedia.org/wiki/Docker_(software)) image to [GitHub](https://github.com/philiprbrenan): 
+Push the `Docker <https://en.wikipedia.org/wiki/Docker_(software)>`__
+image to `GitHub <https://github.com/philiprbrenan>`__:
+
 ::
 
    [Docker](https://en.wikipedia.org/wiki/Docker_(software)) push ghcr.io/philiprbrenan/btreeasm:latest
@@ -481,7 +742,8 @@ Push the [Docker](https://en.wikipedia.org/wiki/Docker_(software)) image to [Git
 5. (Optional) Make the package public
 -------------------------------------
 
-Make the [Docker](https://en.wikipedia.org/wiki/Docker_(software)) image public:
+Make the `Docker <https://en.wikipedia.org/wiki/Docker_(software)>`__
+image public:
 
 ::
 
@@ -492,49 +754,90 @@ Then: Package Settings -> Change visibility -> Public
 Tree Network
 ============
 
-**TreeNet.java** contains details of a [tree](https://en.wikipedia.org/wiki/Tree_(data_structure)) [network](https://en.wikipedia.org/wiki/Computer_network) designed to connect
-a plurality of single [B-Trees](https://en.wikipedia.org/wiki/B-tree) into a double [B-Tree](https://en.wikipedia.org/wiki/B-tree) . The [tree](https://en.wikipedia.org/wiki/Tree_(data_structure)) [network](https://en.wikipedia.org/wiki/Computer_network) operates in logarithmic time with respect to the number of leaves
-connected together.
+**TreeNet.java** contains details of a
+`tree <https://en.wikipedia.org/wiki/Tree_(data_structure)>`__
+`network <https://en.wikipedia.org/wiki/Computer_network>`__ designed to
+connect a plurality of single
+`B-Trees <https://en.wikipedia.org/wiki/B-tree>`__ into a double
+`B-Tree <https://en.wikipedia.org/wiki/B-tree>`__ . The
+`tree <https://en.wikipedia.org/wiki/Tree_(data_structure)>`__
+`network <https://en.wikipedia.org/wiki/Computer_network>`__ operates in
+logarithmic time with respect to the number of leaves connected
+together.
 
-Using a [tree](https://en.wikipedia.org/wiki/Tree_(data_structure)) [network](https://en.wikipedia.org/wiki/Computer_network) allows commands, data, and results to be passed
-between the leaves of the [network](https://en.wikipedia.org/wiki/Computer_network) that defines the double [B-Tree](https://en.wikipedia.org/wiki/B-tree). Each
-leaf is either a processor requesting actions on the [B-Tree](https://en.wikipedia.org/wiki/B-tree) or a single [B-Tree](https://en.wikipedia.org/wiki/B-tree) itself responding to these requests. A message sent across the [network](https://en.wikipedia.org/wiki/Computer_network) from a processor to a single [B-Tree](https://en.wikipedia.org/wiki/B-tree) consists of a command and
-data, much like entering a command on the terminal command line. The
-responses from the single [B-Tree](https://en.wikipedia.org/wiki/B-tree) leaves are then returned to the
-processors via the [tree](https://en.wikipedia.org/wiki/Tree_(data_structure)) [network](https://en.wikipedia.org/wiki/Computer_network). Thus, a **find** processor might ask
-for the data associated with a specified key if it is present in the
-single [B-Tree](https://en.wikipedia.org/wiki/B-tree) targeted by the message.
+Using a `tree <https://en.wikipedia.org/wiki/Tree_(data_structure)>`__
+`network <https://en.wikipedia.org/wiki/Computer_network>`__ allows
+commands, data, and results to be passed between the leaves of the
+`network <https://en.wikipedia.org/wiki/Computer_network>`__ that
+defines the double `B-Tree <https://en.wikipedia.org/wiki/B-tree>`__.
+Each leaf is either a processor requesting actions on the
+`B-Tree <https://en.wikipedia.org/wiki/B-tree>`__ or a single
+`B-Tree <https://en.wikipedia.org/wiki/B-tree>`__ itself responding to
+these requests. A message sent across the
+`network <https://en.wikipedia.org/wiki/Computer_network>`__ from a
+processor to a single `B-Tree <https://en.wikipedia.org/wiki/B-tree>`__
+consists of a command and data, much like entering a command on the
+terminal command line. The responses from the single
+`B-Tree <https://en.wikipedia.org/wiki/B-tree>`__ leaves are then
+returned to the processors via the
+`tree <https://en.wikipedia.org/wiki/Tree_(data_structure)>`__
+`network <https://en.wikipedia.org/wiki/Computer_network>`__. Thus, a
+**find** processor might ask for the data associated with a specified
+key if it is present in the single
+`B-Tree <https://en.wikipedia.org/wiki/B-tree>`__ targeted by the
+message.
 
-This arrangement lets us get more work out of [memory](https://en.wikipedia.org/wiki/Computer_memory), which currently
-typically only responds to a small number of commands such as [read](https://en.wikipedia.org/wiki/Reading_(computer)), [write](https://en.wikipedia.org/wiki/Write_(system_call)), or clear. It also allows for a great deal more parallelism than
-conventional monolithic [memory](https://en.wikipedia.org/wiki/Computer_memory), because [memory](https://en.wikipedia.org/wiki/Computer_memory) requests can run in
-parallel and are only occasionally blocked when collisions between
-upward-traveling messages need to be resolved. Conventional memories can
-usually only [process](https://en.wikipedia.org/wiki/Process_management_(computing)) one or two requests at a time due to the the need
-to unambiguously form the address of the location to be [read](https://en.wikipedia.org/wiki/Reading_(computer)) or written.
+This arrangement lets us get more work out of
+`memory <https://en.wikipedia.org/wiki/Computer_memory>`__, which
+currently typically only responds to a small number of commands such as
+`read <https://en.wikipedia.org/wiki/Reading_(computer)>`__,
+`write <https://en.wikipedia.org/wiki/Write_(system_call)>`__, or clear.
+It also allows for a great deal more parallelism than conventional
+monolithic `memory <https://en.wikipedia.org/wiki/Computer_memory>`__,
+because `memory <https://en.wikipedia.org/wiki/Computer_memory>`__
+requests can run in parallel and are only occasionally blocked when
+collisions between upward-traveling messages need to be resolved.
+Conventional memories can usually only
+`process <https://en.wikipedia.org/wiki/Process_management_(computing)>`__
+one or two requests at a time due to the the need to unambiguously form
+the address of the location to be
+`read <https://en.wikipedia.org/wiki/Reading_(computer)>`__ or written.
 
 Types of Tree Network
 ---------------------
 
-Manufacturing [tree](https://en.wikipedia.org/wiki/Tree_(data_structure)) networks
----------------------------
+Manufacturing `tree <https://en.wikipedia.org/wiki/Tree_(data_structure)>`__ networks
+-------------------------------------------------------------------------------------
 
-Using a [tree](https://en.wikipedia.org/wiki/Tree_(data_structure)) [network](https://en.wikipedia.org/wiki/Computer_network) architecture allows individual [B-Tree](https://en.wikipedia.org/wiki/B-tree) units to be
-manufactured separately and later arranged in two- or three-dimensional [arrays](https://en.wikipedia.org/wiki/Dynamic_array), where they can be interconnected to form double [B-Trees](https://en.wikipedia.org/wiki/B-tree) of any
-size.
+Using a `tree <https://en.wikipedia.org/wiki/Tree_(data_structure)>`__
+`network <https://en.wikipedia.org/wiki/Computer_network>`__
+architecture allows individual
+`B-Tree <https://en.wikipedia.org/wiki/B-tree>`__ units to be
+manufactured separately and later arranged in two- or three-dimensional
+`arrays <https://en.wikipedia.org/wiki/Dynamic_array>`__, where they can
+be interconnected to form double
+`B-Trees <https://en.wikipedia.org/wiki/B-tree>`__ of any size.
 
 Tree networks also provide natural decoupling between components,
 simplifying design, scaling, and fault isolation.
 
-Moreover, sub-networks of a [tree](https://en.wikipedia.org/wiki/Tree_(data_structure)) structure can be linked over large
-distances using photonic interconnects, enabling double [B-Tree](https://en.wikipedia.org/wiki/B-tree) systems
-that span much larger physical areas and thus can contain much more data
-than would be practical with traditional metal interconnects.
+Moreover, sub-networks of a
+`tree <https://en.wikipedia.org/wiki/Tree_(data_structure)>`__ structure
+can be linked over large distances using photonic interconnects,
+enabling double `B-Tree <https://en.wikipedia.org/wiki/B-tree>`__
+systems that span much larger physical areas and thus can contain much
+more data than would be practical with traditional metal interconnects.
 
 Host and Coprocessor Interaction
 ================================
- [Database on a Chip](https://github.com/philiprbrenan/btreeAsm) is envisaged as an accelerating [coprocessor](https://en.wikipedia.org/wiki/Coprocessor) driven by commands from
-a **host processor**, which writes these commands into [registers](https://en.wikipedia.org/wiki/Processor_register) in [memory](https://en.wikipedia.org/wiki/Computer_memory) shared between the processors.
+
+`Database on a Chip <https://github.com/philiprbrenan/btreeAsm>`__ is
+envisaged as an accelerating
+`coprocessor <https://en.wikipedia.org/wiki/Coprocessor>`__ driven by
+commands from a **host processor**, which writes these commands into
+`registers <https://en.wikipedia.org/wiki/Processor_register>`__ in
+`memory <https://en.wikipedia.org/wiki/Computer_memory>`__ shared
+between the processors.
 
 Possible Commands
 -----------------
@@ -552,78 +855,148 @@ Possible Commands
    prev <key>
    size
 
-The **find** operation requires significantly less [Silicon](https://en.wikipedia.org/wiki/Silicon) than either
-**put** or **delete** and is expected to be executed far more frequently
-and can be executed in parallel: consequently each **btree** should be
-equipped with multiple **find** sub-processors, each sub-processor
-connected via its own port to the host processor.
+The **find** operation requires significantly less
+`Silicon <https://en.wikipedia.org/wiki/Silicon>`__ than either **put**
+or **delete** and is expected to be executed far more frequently and can
+be executed in parallel: consequently each **btree** should be equipped
+with multiple **find** sub-processors, each sub-processor connected via
+its own port to the host processor.
 
-A **port** is a set of [registers](https://en.wikipedia.org/wiki/Processor_register) in [memory](https://en.wikipedia.org/wiki/Computer_memory) shared between the host
-processor and the [B-Tree](https://en.wikipedia.org/wiki/B-tree) [coprocessor](https://en.wikipedia.org/wiki/Coprocessor). The host signals that the data in
-the port is ready by performing a **doorbell write** to a [register](https://en.wikipedia.org/wiki/Processor_register) in
-that port. A doorbell [write](https://en.wikipedia.org/wiki/Write_(system_call)) forms the address of the [register](https://en.wikipedia.org/wiki/Processor_register) but does
-not actually [write](https://en.wikipedia.org/wiki/Write_(system_call)) data. The address formation alone signals the [coprocessor](https://en.wikipedia.org/wiki/Coprocessor) to start processing the data in the port.
+A **port** is a set of
+`registers <https://en.wikipedia.org/wiki/Processor_register>`__ in
+`memory <https://en.wikipedia.org/wiki/Computer_memory>`__ shared
+between the host processor and the
+`B-Tree <https://en.wikipedia.org/wiki/B-tree>`__
+`coprocessor <https://en.wikipedia.org/wiki/Coprocessor>`__. The host
+signals that the data in the port is ready by performing a **doorbell
+write** to a
+`register <https://en.wikipedia.org/wiki/Processor_register>`__ in that
+port. A doorbell
+`write <https://en.wikipedia.org/wiki/Write_(system_call)>`__ forms the
+address of the
+`register <https://en.wikipedia.org/wiki/Processor_register>`__ but does
+not actually
+`write <https://en.wikipedia.org/wiki/Write_(system_call)>`__ data. The
+address formation alone signals the
+`coprocessor <https://en.wikipedia.org/wiki/Coprocessor>`__ to start
+processing the data in the port.
 
 Conversely, as the **clear**, **delete** and **put** operations can
-potentially modify the [B-Tree](https://en.wikipedia.org/wiki/B-tree), these operations can only be performed
-**one at a time** per [B-Tree](https://en.wikipedia.org/wiki/B-tree). Consequently there should be only one
-processor for each operation attached via a single port to each [B-Tree](https://en.wikipedia.org/wiki/B-tree). 
-To enable parallel deletes and puts, multiple [B-Trees](https://en.wikipedia.org/wiki/B-tree) should be used to
-store data rather than relying on a single central [tree](https://en.wikipedia.org/wiki/Tree_(data_structure)). A **root** [B-Tree](https://en.wikipedia.org/wiki/B-tree) directs incoming requests to the appropriate subtrees,
-distributing the data across multiple [sub](https://perldoc.perl.org/perlsub.html) [B-Trees](https://en.wikipedia.org/wiki/B-tree). Each [sub](https://perldoc.perl.org/perlsub.html) [B-Tree](https://en.wikipedia.org/wiki/B-tree) can [process](https://en.wikipedia.org/wiki/Process_management_(computing)) one delete or put request in parallel with the other [B-Trees](https://en.wikipedia.org/wiki/B-tree), allowing multiple operations to occur simultaneously across the
-database.
+potentially modify the
+`B-Tree <https://en.wikipedia.org/wiki/B-tree>`__, these operations can
+only be performed **one at a time** per
+`B-Tree <https://en.wikipedia.org/wiki/B-tree>`__. Consequently there
+should be only one processor for each operation attached via a single
+port to each `B-Tree <https://en.wikipedia.org/wiki/B-tree>`__. To
+enable parallel deletes and puts, multiple
+`B-Trees <https://en.wikipedia.org/wiki/B-tree>`__ should be used to
+store data rather than relying on a single central
+`tree <https://en.wikipedia.org/wiki/Tree_(data_structure)>`__. A
+**root** `B-Tree <https://en.wikipedia.org/wiki/B-tree>`__ directs
+incoming requests to the appropriate subtrees, distributing the data
+across multiple `sub <https://perldoc.perl.org/perlsub.html>`__
+`B-Trees <https://en.wikipedia.org/wiki/B-tree>`__. Each
+`sub <https://perldoc.perl.org/perlsub.html>`__
+`B-Tree <https://en.wikipedia.org/wiki/B-tree>`__ can
+`process <https://en.wikipedia.org/wiki/Process_management_(computing)>`__
+one delete or put request in parallel with the other
+`B-Trees <https://en.wikipedia.org/wiki/B-tree>`__, allowing multiple
+operations to occur simultaneously across the database.
 
-To distribute keys across [sub](https://perldoc.perl.org/perlsub.html) [B-Trees](https://en.wikipedia.org/wiki/B-tree), the root [B-Tree](https://en.wikipedia.org/wiki/B-tree) should compute the [SHA-256](https://en.wikipedia.org/wiki/SHA-256) digest of incoming keys and use a preset set of bits from this
-digest to assign keys uniformly across subtrees. If keys are wider than
-256 bits, it might be preferable to replace them with their [SHA-256](https://en.wikipedia.org/wiki/SHA-256) digests to avoid committing excessive amounts of [Silicon](https://en.wikipedia.org/wiki/Silicon) area to
-processing wide keys.
+To distribute keys across
+`sub <https://perldoc.perl.org/perlsub.html>`__
+`B-Trees <https://en.wikipedia.org/wiki/B-tree>`__, the root
+`B-Tree <https://en.wikipedia.org/wiki/B-tree>`__ should compute the
+`SHA-256 <https://en.wikipedia.org/wiki/SHA-256>`__ digest of incoming
+keys and use a preset set of bits from this digest to assign keys
+uniformly across subtrees. If keys are wider than 256 bits, it might be
+preferable to replace them with their
+`SHA-256 <https://en.wikipedia.org/wiki/SHA-256>`__ digests to avoid
+committing excessive amounts of
+`Silicon <https://en.wikipedia.org/wiki/Silicon>`__ area to processing
+wide keys.
 
 The host processor is responsible for assigning work to the ports
-presented by the [coprocessor](https://en.wikipedia.org/wiki/Coprocessor). Where possible, the host should schedule
-work on multiple [find](https://en.wikipedia.org/wiki/Find_(Unix)) ports to [maximize](https://en.wikipedia.org/wiki/Maximum_and_minimum) throughput by using parallel
-lookups.
+presented by the
+`coprocessor <https://en.wikipedia.org/wiki/Coprocessor>`__. Where
+possible, the host should schedule work on multiple
+`find <https://en.wikipedia.org/wiki/Find_(Unix)>`__ ports to
+`maximize <https://en.wikipedia.org/wiki/Maximum_and_minimum>`__
+throughput by using parallel lookups.
 
 Command Execution
 -----------------
 
 1. The **host processor** constructs a command and writes it into an
-   appropriate input port on the [coprocessor](https://en.wikipedia.org/wiki/Coprocessor). 
-2. The host performs a **doorbell write** to a memory-mapped [register](https://en.wikipedia.org/wiki/Processor_register) on
-   the [coprocessor](https://en.wikipedia.org/wiki/Coprocessor), signaling that the port data is available.
+   appropriate input port on the
+   `coprocessor <https://en.wikipedia.org/wiki/Coprocessor>`__.
 
-3. The [coprocessor](https://en.wikipedia.org/wiki/Coprocessor) reads and executes the request in the input port.
+2. The host performs a **doorbell write** to a memory-mapped
+   `register <https://en.wikipedia.org/wiki/Processor_register>`__ on
+   the `coprocessor <https://en.wikipedia.org/wiki/Coprocessor>`__,
+   signaling that the port data is available.
 
-4. The [coprocessor](https://en.wikipedia.org/wiki/Coprocessor) writes the execution results to the corresponding
-   output port.
+3. The `coprocessor <https://en.wikipedia.org/wiki/Coprocessor>`__ reads
+   and executes the request in the input port.
 
-5. When the command execution is complete, the [coprocessor](https://en.wikipedia.org/wiki/Coprocessor) performs its
-   own **doorbell write** to a [register](https://en.wikipedia.org/wiki/Processor_register) in the shared [memory](https://en.wikipedia.org/wiki/Computer_memory) of the
-   output port, signaling the host that results are ready.
+4. The `coprocessor <https://en.wikipedia.org/wiki/Coprocessor>`__
+   writes the execution results to the corresponding output port.
+
+5. When the command execution is complete, the
+   `coprocessor <https://en.wikipedia.org/wiki/Coprocessor>`__ performs
+   its own **doorbell write** to a
+   `register <https://en.wikipedia.org/wiki/Processor_register>`__ in
+   the shared `memory <https://en.wikipedia.org/wiki/Computer_memory>`__
+   of the output port, signaling the host that results are ready.
 
 The **input** and **output** ports are separate. It is the **host's
-responsibility** to control the execution flow of commands sent to the [coprocessor](https://en.wikipedia.org/wiki/Coprocessor) and to retrieve the results provided.
+responsibility** to control the execution flow of commands sent to the
+`coprocessor <https://en.wikipedia.org/wiki/Coprocessor>`__ and to
+retrieve the results provided.
 
 Status
 ======
 
--  2025-07-12 [Java](https://en.wikipedia.org/wiki/Java_(programming_language)) implementation of the [B-Tree](https://en.wikipedia.org/wiki/B-tree) [algorithm](https://en.wikipedia.org/wiki/Algorithm) 
--  2025-08-15 [Verilog](https://en.wikipedia.org/wiki/Verilog) trace matches [Java](https://en.wikipedia.org/wiki/Java_(programming_language)) trace
+-  2025-07-12
+   `Java <https://en.wikipedia.org/wiki/Java_(programming_language)>`__
+   implementation of the
+   `B-Tree <https://en.wikipedia.org/wiki/B-tree>`__
+   `algorithm <https://en.wikipedia.org/wiki/Algorithm>`__
 
--  2025-08-16 [Verilog](https://en.wikipedia.org/wiki/Verilog) synthesized for [test](https://en.wikipedia.org/wiki/Software_testing) cases in Chip.java using
-   yosys
+-  2025-08-15 `Verilog <https://en.wikipedia.org/wiki/Verilog>`__ trace
+   matches
+   `Java <https://en.wikipedia.org/wiki/Java_(programming_language)>`__
+   trace
 
--  2025-08-22 All generated [Verilog](https://en.wikipedia.org/wiki/Verilog) now uses non blocking assignment
+-  2025-08-16 `Verilog <https://en.wikipedia.org/wiki/Verilog>`__
+   synthesized for
+   `test <https://en.wikipedia.org/wiki/Software_testing>`__ cases in
+   Chip.java using yosys
 
--  2025-08-24 Place and route of synthesized [Verilog](https://en.wikipedia.org/wiki/Verilog) using
-   [Silicon Compiler](https://docs.siliconcompiler.com/en/latest/index.html) 
--  2025-08-25 Ran [Silicon Compiler](https://docs.siliconcompiler.com/en/latest/index.html) on [Amazon Web Services](http://aws.amazon.com) in a [Docker](https://en.wikipedia.org/wiki/Docker_(software)) container saved via
-   an [IPv6 address](https://en.wikipedia.org/wiki/IPv6) on docker.io
+-  2025-08-22 All generated
+   `Verilog <https://en.wikipedia.org/wiki/Verilog>`__ now uses non
+   blocking assignment
+
+-  2025-08-24 Place and route of synthesized
+   `Verilog <https://en.wikipedia.org/wiki/Verilog>`__ using `Silicon
+   Compiler <https://docs.siliconcompiler.com/en/latest/index.html>`__
+
+-  2025-08-25 Ran `Silicon
+   Compiler <https://docs.siliconcompiler.com/en/latest/index.html>`__
+   on `Amazon Web Services <http://aws.amazon.com>`__ in a
+   `Docker <https://en.wikipedia.org/wiki/Docker_(software)>`__
+   container saved via an `IPv6
+   address <https://en.wikipedia.org/wiki/IPv6>`__ on docker.io
 
 -  2025-10-08 Synthesized Tree Network for inter-component connectivity
 
 -  2025-10-10 Synthesized FindFirst, FindLast, FindNext, FindPrev
 
--  2025-10-11 Synthesized reverse [Iterator](https://en.wikipedia.org/wiki/Iterator) using a non [recursive](https://en.wikipedia.org/wiki/Recursion) [tree](https://en.wikipedia.org/wiki/Tree_(data_structure))    traversal
+-  2025-10-11 Synthesized reverse
+   `Iterator <https://en.wikipedia.org/wiki/Iterator>`__ using a non
+   `recursive <https://en.wikipedia.org/wiki/Recursion>`__
+   `tree <https://en.wikipedia.org/wiki/Tree_(data_structure)>`__
+   traversal
 
 .. |Test| image:: https://github.com/philiprbrenan/btreeAsm/workflows/Test/badge.svg
    :target: https://github.com/philiprbrenan/btreeAsm
