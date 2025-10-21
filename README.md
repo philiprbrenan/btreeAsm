@@ -1,12 +1,14 @@
 [![Test](https://github.com/philiprbrenan/btreeAsm/workflows/Test/badge.svg)](https://github.com/philiprbrenan/btreeAsm)
 
+[Read the docs](https://btreeasm.readthedocs.io/en/latest/README.html
+
 # Goal
 
 Use [Java](https://en.wikipedia.org/wiki/Java_(programming_language)) to generate [synthesizable](https://en.wikipedia.org/wiki/Logic_synthesis) [Verilog](https://en.wikipedia.org/wiki/Verilog) to layout a [B-Tree](https://en.wikipedia.org/wiki/B-tree) on the surface of
 a specialized [Silicon](https://en.wikipedia.org/wiki/Silicon) [chip](https://en.wikipedia.org/wiki/Integrated_circuit) so that the [B-Tree](https://en.wikipedia.org/wiki/B-tree) [find](https://en.wikipedia.org/wiki/Find_(Unix)), put and delete
 operations can be performed more quickly and efficiently than [software](https://en.wikipedia.org/wiki/Software) running
 on a generic processor . Such a chip could act as an accelerator for database
-operations, a: [Database on a Chip](https://github.com/philiprbrenan/btreeAsm) .
+operations, a:  [Database on a Chip](https://github.com/philiprbrenan/btreeAsm) .
 
 ![put](https://raw.githubusercontent.com/philiprbrenan/btreeAsm/refs/heads/main/images/Btree.png)
 
