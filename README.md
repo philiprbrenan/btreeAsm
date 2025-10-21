@@ -2,13 +2,13 @@
 
 # Goal
 
-Use [Java](https://en.wikipedia.org/wiki/Java_(programming_language)) to generate synthesizable [Verilog](https://en.wikipedia.org/wiki/Verilog) to layout a [B-Tree](https://en.wikipedia.org/wiki/B-tree) on the surface of
+Use [Java](https://en.wikipedia.org/wiki/Java_(programming_language)) to generate [synthesizable](https://en.wikipedia.org/wiki/Logic_synthesis) [Verilog](https://en.wikipedia.org/wiki/Verilog) to layout a [B-Tree](https://en.wikipedia.org/wiki/B-tree) on the surface of
 a specialized [Silicon](https://en.wikipedia.org/wiki/Silicon) [chip](https://en.wikipedia.org/wiki/Integrated_circuit) so that the [B-Tree](https://en.wikipedia.org/wiki/B-tree) [find](https://en.wikipedia.org/wiki/Find_(Unix)), put and delete
 operations can be performed more quickly and efficiently than [software](https://en.wikipedia.org/wiki/Software) running
 on a generic processor . Such a chip could act as an accelerator for database
 operations, a: [Database on a Chip](https://github.com/philiprbrenan/btreeAsm) .
 
-![put](images/Btree.png)
+![put](https://raw.githubusercontent.com/philiprbrenan/btreeAsm/refs/heads/main/images/Btree.png)
 
 ---
 
@@ -48,8 +48,7 @@ The [memory](https://en.wikipedia.org/wiki/Computer_memory) associated with a [p
 Memory is an ideal candidate for geometrical layout given its regular structure
 over a large number of elements.  OpenRAM exploits this structure to
 synthesize large memories that can then be imbedded as black boxes in other
-designs which would otherwise overwhelem the place and route phases of synthesis.
-
+designs which would otherwise overwhelem the place and route phases of [synthesis](https://en.wikipedia.org/wiki/Logic_synthesis). 
 ## Registers
 
 Registers are local blocks of [memory](https://en.wikipedia.org/wiki/Computer_memory) that:
@@ -90,7 +89,7 @@ by the Verilog simulation  so the extra execution time buys very little
 compared to its cost.
 
 - Memory is copied into [registers](https://en.wikipedia.org/wiki/Processor_register) and so [registers](https://en.wikipedia.org/wiki/Processor_register) would also have to track
-whether their values were known or not leading to more complexity in the Java [code](https://en.wikipedia.org/wiki/Computer_program), which should, instead, be focussed on the algorithms used rather then
+whether their values were known or not leading to more complexity in the Java [code](https://en.wikipedia.org/wiki/Computer_program), which should, instead, be focussed on the [algorithms](https://en.wikipedia.org/wiki/Algorithm) used rather then
 their bitwise implementation.
 
 
@@ -160,7 +159,7 @@ problem:
 
 This approach produces [Verilog](https://en.wikipedia.org/wiki/Verilog) **much more efficiently** and **reliably** than
 writing it by hand. For example, I was able to implement a non-recursive
-reverse iterator over the [tree](https://en.wikipedia.org/wiki/Tree_(data_structure)) entirely in [Java](https://en.wikipedia.org/wiki/Java_(programming_language)), without writing any [Verilog](https://en.wikipedia.org/wiki/Verilog) by
+reverse [Iterator](https://en.wikipedia.org/wiki/Iterator) over the [tree](https://en.wikipedia.org/wiki/Tree_(data_structure)) entirely in [Java](https://en.wikipedia.org/wiki/Java_(programming_language)), without writing any [Verilog](https://en.wikipedia.org/wiki/Verilog) by
 hand at all, and the generated [Verilog](https://en.wikipedia.org/wiki/Verilog) synthesized, placed, and routed
 correctly on the first attempt.
 
@@ -204,7 +203,7 @@ Instead of using pointers to dynamically allocated elements, each node of the [B
 
 A **Stuck** is a **fixed-size stack-like array** designed to hold **key-data pairs** in **sorted order by key**.
 
-![Stuck Diagram](images/Stuck.png)
+![Stuck Diagram](https://raw.githubusercontent.com/philiprbrenan/btreeAsm/refs/heads/main/images/Stuck.png)
 
 A **Stuck** combines the **boundedness of a stack**, the **ordered nature of a sorted array**, and the **explicit size field** to manage contiguous usage efficiently.
 
@@ -290,11 +289,11 @@ A **Stuck** combines the **boundedness of a stack**, the **ordered nature of a s
 
 # Silicon Compiler
 
-The [Verilog](https://en.wikipedia.org/wiki/Verilog) produced by **Btree.java** is transformed into a chip [mask](https://en.wikipedia.org/wiki/Integrated_circuit_layout) using [Open Source Silicon Compiler](https://docs.siliconcompiler.com/en/latest/index.html) .
+The [Verilog](https://en.wikipedia.org/wiki/Verilog) produced by **Btree.java** is transformed into a chip [mask](https://en.wikipedia.org/wiki/Integrated_circuit_layout) using [Silicon Compiler](https://docs.siliconcompiler.com/en/latest/index.html) .
 
 ## Run Silicon Compiler
 
-Run [Open Source Silicon Compiler](https://docs.siliconcompiler.com/en/latest/index.html) on **Btree** on any machine with **docker** and **git** installed.
+Run [Silicon Compiler](https://docs.siliconcompiler.com/en/latest/index.html) on **Btree** on any machine with **docker** and **git** installed.
 
 ```
 git clone git@github.com:philiprbrenan/btreeAsm.git  # Download repo
@@ -304,7 +303,7 @@ git clone git@github.com:philiprbrenan/btreeAsm.git  # Download repo
 ## Create Silicon Compiler Docker Container
 
 The following notes explain how to create the [Docker](https://en.wikipedia.org/wiki/Docker_(software)) container referenced above
-to run [Open Source Silicon Compiler](https://docs.siliconcompiler.com/en/latest/index.html) .
+to run [Silicon Compiler](https://docs.siliconcompiler.com/en/latest/index.html) .
 
 ### OpenROAD
 
@@ -324,7 +323,7 @@ openroad -V
 
 ### Silicon compiler
 
-Create a [Python](https://www.python.org/) virtual environment, activate it, [install](https://en.wikipedia.org/wiki/Installation_(computer_programs)) [Open Source Silicon Compiler](https://docs.siliconcompiler.com/en/latest/index.html) and
+Create a [Python](https://www.python.org/) virtual environment, activate it, [install](https://en.wikipedia.org/wiki/Installation_(computer_programs)) [Silicon Compiler](https://docs.siliconcompiler.com/en/latest/index.html) and
 confirm the installation:
 
 ```
@@ -402,12 +401,35 @@ Then: Package Settings -> Change visibility -> Public
 
 # Tree Network
 
-**TreeNet.java** contains details of a [tree](https://en.wikipedia.org/wiki/Tree_(data_structure)) [network](https://en.wikipedia.org/wiki/Computer_network) designed to connect a plurality
-of single [B-Trees](https://en.wikipedia.org/wiki/B-tree) into a double [B-Tree](https://en.wikipedia.org/wiki/B-tree) . The [tree](https://en.wikipedia.org/wiki/Tree_(data_structure)) [network](https://en.wikipedia.org/wiki/Computer_network) operates in
+**TreeNet.java** contains details of a [tree](https://en.wikipedia.org/wiki/Tree_(data_structure)) [network](https://en.wikipedia.org/wiki/Computer_network) designed to connect a
+plurality of single [B-Trees](https://en.wikipedia.org/wiki/B-tree) into a double [B-Tree](https://en.wikipedia.org/wiki/B-tree) . The [tree](https://en.wikipedia.org/wiki/Tree_(data_structure)) [network](https://en.wikipedia.org/wiki/Computer_network) operates in
 logarithmic time with respect to the number of leaves connected together.
 
+Using a [tree](https://en.wikipedia.org/wiki/Tree_(data_structure)) [network](https://en.wikipedia.org/wiki/Computer_network) allows commands, data, and results to be passed between
+the leaves of the [network](https://en.wikipedia.org/wiki/Computer_network) that defines the double [B-Tree](https://en.wikipedia.org/wiki/B-tree). Each leaf is either a
+processor requesting actions on the [B-Tree](https://en.wikipedia.org/wiki/B-tree) or a single [B-Tree](https://en.wikipedia.org/wiki/B-tree) itself responding
+to these requests. A message sent across the [network](https://en.wikipedia.org/wiki/Computer_network) from a processor to a
+single [B-Tree](https://en.wikipedia.org/wiki/B-tree) consists of a command and data, much like entering a command on
+the terminal command line. The responses from the single [B-Tree](https://en.wikipedia.org/wiki/B-tree) leaves are then
+returned to the processors via the [tree](https://en.wikipedia.org/wiki/Tree_(data_structure)) [network](https://en.wikipedia.org/wiki/Computer_network).  Thus, a **find** processor
+might ask for the data associated with a specified key if it is present in the
+single [B-Tree](https://en.wikipedia.org/wiki/B-tree) targeted by the message.
+
+This arrangement lets us get more work out of [memory](https://en.wikipedia.org/wiki/Computer_memory), which currently typically
+only responds to a small number of commands such as [read](https://en.wikipedia.org/wiki/Reading_(computer)), [write](https://en.wikipedia.org/wiki/Write_(system_call)), or clear. It
+also allows for a great deal more parallelism than conventional monolithic [memory](https://en.wikipedia.org/wiki/Computer_memory), because [memory](https://en.wikipedia.org/wiki/Computer_memory) requests can run in parallel and are only occasionally
+blocked when collisions between upward-traveling messages need to be resolved.
+Conventional memories can usually only [process](https://en.wikipedia.org/wiki/Process_management_(computing)) one or two requests at a time
+due to the the need to unambiguously form the address of the location to be [read](https://en.wikipedia.org/wiki/Reading_(computer)) or written.
+
+
+## Types of Tree Network
+
+
+## Manufacturing [tree](https://en.wikipedia.org/wiki/Tree_(data_structure)) networks
+
 Using a [tree](https://en.wikipedia.org/wiki/Tree_(data_structure)) [network](https://en.wikipedia.org/wiki/Computer_network) architecture allows individual [B-Tree](https://en.wikipedia.org/wiki/B-tree) units to be
-manufactured separately and later arranged in two- or three-dimensional [arrays](https://en.wikipedia.org/wiki/Dynamic_array), where they can be interconnected to form double [B-Trees](https://en.wikipedia.org/wiki/B-tree) of virtually any size.
+manufactured separately and later arranged in two- or three-dimensional [arrays](https://en.wikipedia.org/wiki/Dynamic_array), where they can be interconnected to form double [B-Trees](https://en.wikipedia.org/wiki/B-tree) of any size.
 
 Tree networks also provide natural decoupling between components, simplifying
 design, scaling, and fault isolation.
@@ -493,11 +515,11 @@ responsibility** to control the execution flow of commands sent to the [coproces
 
 - 2025-08-22 All generated [Verilog](https://en.wikipedia.org/wiki/Verilog) now uses non blocking assignment
 
-- 2025-08-24 Place and route of synthesized [Verilog](https://en.wikipedia.org/wiki/Verilog) using [Open Source Silicon Compiler](https://docs.siliconcompiler.com/en/latest/index.html) 
-- 2025-08-25 Ran [Open Source Silicon Compiler](https://docs.siliconcompiler.com/en/latest/index.html) on [Amazon Web Services](http://aws.amazon.com) in a [Docker](https://en.wikipedia.org/wiki/Docker_(software)) container saved via an [IPv6 address](https://en.wikipedia.org/wiki/IPv6) on docker.io
+- 2025-08-24 Place and route of synthesized [Verilog](https://en.wikipedia.org/wiki/Verilog) using [Silicon Compiler](https://docs.siliconcompiler.com/en/latest/index.html) 
+- 2025-08-25 Ran [Silicon Compiler](https://docs.siliconcompiler.com/en/latest/index.html) on [Amazon Web Services](http://aws.amazon.com) in a [Docker](https://en.wikipedia.org/wiki/Docker_(software)) container saved via an [IPv6 address](https://en.wikipedia.org/wiki/IPv6) on docker.io
 
 - 2025-10-08 Synthesized Tree Network for inter-component connectivity
 
 - 2025-10-10 Synthesized FindFirst, FindLast, FindNext, FindPrev
 
-- 2025-10-11 Synthesized reverse iterator using a non [recursive](https://en.wikipedia.org/wiki/Recursion) [tree](https://en.wikipedia.org/wiki/Tree_(data_structure)) traversal
+- 2025-10-11 Synthesized reverse [Iterator](https://en.wikipedia.org/wiki/Iterator) using a non [recursive](https://en.wikipedia.org/wiki/Recursion) [tree](https://en.wikipedia.org/wiki/Tree_(data_structure)) traversal
