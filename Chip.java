@@ -2349,7 +2349,7 @@ if __name__ == "__main__":
 
     void memoryProcessGenerate()                                                // Generate the code needed to support the transactions against this memory process
      {if (coverageAnalysis) zz();
-      new Instruction(true)                                               // Loop on this single instruction processing memory requests
+      new Instruction(true)                                                     // Loop on this single instruction processing memory requests
        {void action()                                                           // Process memory requests in Java
          {for (var t : transactions)                                            // All transactions
            {if (t.transactionExecutable())                                      // Executable transactions
