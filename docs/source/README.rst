@@ -1,5 +1,7 @@
 |Test|
 
+[Read the docs](https://btreeasm.readthedocs.io/en/latest/README.html
+
 Goal
 ====
 
