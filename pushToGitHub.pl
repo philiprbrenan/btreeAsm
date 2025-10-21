@@ -16,7 +16,7 @@ my $user    = q(philiprbrenan);                                                 
 my $home    = fpd q(/home/phil), $repo;                                         # Home folder
 my $shaFile = fpe $home, q(sha);                                                # Sh256 file sums for each known file to detect changes
 my $wf      = q(.github/workflows/main.yml);                                    # Work flow on Ubuntu
-my @ext     = qw(.java .jpg .json .md .pl .png .py .sdc .sh .v .zip);           # Extensions of files to upload to github
+my @ext     = qw(.java .jpg .json .md .pl .png .py .rst .sdc .sh .v .zip);      # Extensions of files to upload to github
 my $big     = 16*1024*1024;                                                     # A big file
 
 say STDERR timeStamp,  " push to github $repo";
@@ -45,6 +45,8 @@ if  (1)                                                                         
     lll "$w  $t";
    }
  }
+
+# pandoc README.md -f gfm -t rst -o docs/source/README.rst
 
 writeFileUsingSavedToken($user, $repo, q(.config/geany/snippets.conf),          # Save the snippets file as this was the thing I missed most after a rebuild
                    readFile(q(/home/phil/.config/geany/snippets.conf)));
