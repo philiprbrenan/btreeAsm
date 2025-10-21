@@ -1230,28 +1230,27 @@ if __name__ == "__main__":
 
 //D4 Load constant to register indexed Register                                 // Load a constant into a register indexed element of this target register
 
-      void registerSet(int Source, Register Index)                              // Load a constant into a register indexed element of this target register
+      void registerSet(int Value, Register Index)                               // Load a constant into a register indexed element of this target register
        {R(); if (coverageAnalysis) zz();
         if (registerChecks) Index .registerCheckSingle();
         if (registerChecks)        registerCheckArrayed();
         final int i = Index.registerGet();                                      // Index of source element
-        values[i] = intToBitSet(Source);                                        // Load the constant into the target
+        values[i] = intToBitSet(Value);                                         // Load the constant into the target
        }
 
-      void registerSet(Verilog v, int Source, Register Index)                   // Load a constant into this register which we can do because each and only each process can write to its own registers
+      void registerSet(Verilog v, int Value, Register Index)                    // Load a constant into this register which we can do because each and only each process can write to its own registers
        {if (coverageAnalysis) zz();
-        v.assign(registerName(Index.registerFullName), Source);
+        v.assign(registerName(Index.registerFullName), Value);
        }
 
-      Register RegisterSet(int Source, Register Index)                          // Load instruction
+      Register RegisterSet(int Value, Register Index)                           // Load instruction
        {if (coverageAnalysis) zz();
         new Instruction()
-         {void action()           {registerSet(   Source, Index);};
-          void verilog(Verilog v) {registerSet(v, Source, Index);};
+         {void action()           {registerSet(   Value, Index);};
+          void verilog(Verilog v) {registerSet(v, Value, Index);};
          };
         return this;
        }
-
 
 //D3 Copy                                                                       // Copy between registers
 
@@ -1288,7 +1287,7 @@ if __name__ == "__main__":
          }
        }
 
-      Register Copy(Register Source)                                                // Copy instruction
+      Register Copy(Register Source)                                            // Copy instruction
        {if (coverageAnalysis) zz();
         new Instruction()
          {void action()           {copy(Source);};
@@ -1765,6 +1764,15 @@ if __name__ == "__main__":
        {new Instruction()
          {void action()           {not();};
           void verilog(Verilog v) {not(v);};
+         };
+        return this;
+       }
+
+      Register Half()                                                           // Divide a register by two
+       {if (coverageAnalysis) zz();
+        new Instruction()
+         {void action()           {half( );};
+          void verilog(Verilog v) {half(v);};
          };
         return this;
        }
