@@ -43,7 +43,6 @@ if  (1)                                                                         
      {$c = expandWellKnownWordsAsUrlsInMdFormat $c if $s =~ m(README);
       my $f = owf(undef, $c);
       say STDERR qx(pandoc $f -f gfm -t rst -o docs/source/README.rst);         # Convert github markdown to rst for read the docs
-      exit;
      }
 
     my $t = swapFilePrefix $s, $home;                                           # File on github
