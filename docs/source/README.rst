@@ -1027,5 +1027,10 @@ Status
    `tree <https://en.wikipedia.org/wiki/Tree_(data_structure)>`__
    traversal
 
+-  2025-10-21 Simplex
+   `tree <https://en.wikipedia.org/wiki/Tree_(data_structure)>`__ tested
+   successfully, ready for connecting to
+   `memory <https://en.wikipedia.org/wiki/Computer_memory>`__
+
 .. |Test| image:: https://github.com/philiprbrenan/btreeAsm/workflows/Test/badge.svg
    :target: https://github.com/philiprbrenan/btreeAsm
