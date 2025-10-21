@@ -112,7 +112,7 @@ public class Test                                                               
    {final Properties              properties = new Properties();                // Properties parser
     final TreeMap<String, String> treeMap    = new TreeMap<> ();                // TreeMap to store key-value pairs
 
-    try (FileInputStream f = new FileInputStream(filename))                     // Read file
+    try (final FileInputStream f = new FileInputStream(filename))               // Read file
      {properties.load(f);                                                       // Load properties from the file
 
       for (String key : properties.stringPropertyNames())                       // Insert key-value pair into TreeMap
@@ -630,8 +630,8 @@ public class Test                                                               
       final Path B = Path.of(b);
 
       try
-       (Stream<String> sa = Files.lines(A);
-        Stream<String> sb = Files.lines(B)
+       (final Stream<String> sa = Files.lines(A);
+        final Stream<String> sb = Files.lines(B)
        )
        {final Iterator<String> ia = sa.iterator();
         final Iterator<String> ib = sb.iterator();
@@ -1196,7 +1196,8 @@ public class Test                                                               
         final Process p = b.start();
 
         final Thread o = new Thread(() ->
-         {try (BufferedReader reader = new BufferedReader(new InputStreamReader(p.getInputStream())))
+         {try (final BufferedReader reader =
+             new BufferedReader(new InputStreamReader(p.getInputStream())))
            {String line;
             while ((line = reader.readLine()) != null)
              {out.append(line).append(System.lineSeparator());
@@ -1208,7 +1209,8 @@ public class Test                                                               
          }); o.start();
 
         final Thread e = new Thread(() ->
-         {try (BufferedReader reader = new BufferedReader(new InputStreamReader(p.getErrorStream())))
+         {try (final BufferedReader reader =
+             new BufferedReader(new InputStreamReader(p.getErrorStream())))
            {String line;
             while ((line = reader.readLine()) != null)
              {err.append(line).append(System.lineSeparator());
