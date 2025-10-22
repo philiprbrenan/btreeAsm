@@ -165,8 +165,9 @@ reverse [Iterator](https://en.wikipedia.org/wiki/Iterator) over the [tree](https
 hand at all, and the generated [Verilog](https://en.wikipedia.org/wiki/Verilog) synthesized, placed, and routed
 correctly on the first attempt.
 
-However, similar to the MIT "Midnight Rewiring Society," if extra [instructions](https://en.wikipedia.org/wiki/Instruction_set_architecture) are needed, perhaps to increase parallelism, it is relatively easy to add a [Verilog](https://en.wikipedia.org/wiki/Verilog) implementation of an [instruction](https://en.wikipedia.org/wiki/Instruction_set_architecture) sequence written in [Java](https://en.wikipedia.org/wiki/Java_(programming_language)), which can
-then be reused from [Java](https://en.wikipedia.org/wiki/Java_(programming_language)) as needed.
+However, similar to the MIT **Midnight Computer Wiring Society** motto:
+*If you donât like how the machine works - change it*; if extra [instructions](https://en.wikipedia.org/wiki/Instruction_set_architecture) are needed, perhaps to increase parallelism, it is relatively easy to add a [Verilog](https://en.wikipedia.org/wiki/Verilog) implementation of an [instruction](https://en.wikipedia.org/wiki/Instruction_set_architecture) sequence written in [Java](https://en.wikipedia.org/wiki/Java_(programming_language)), which can
+then be reused from [Java](https://en.wikipedia.org/wiki/Java_(programming_language)) to generate [Verilog](https://en.wikipedia.org/wiki/Verilog) as needed.
 
 As a consequence of the matching of the [Java](https://en.wikipedia.org/wiki/Java_(programming_language)) and [Verilog](https://en.wikipedia.org/wiki/Verilog) traces, no additional
 tests are required within the [Verilog](https://en.wikipedia.org/wiki/Verilog) itself; it is sufficient to [verify](https://en.wikipedia.org/wiki/Software_verification_and_validation) that
