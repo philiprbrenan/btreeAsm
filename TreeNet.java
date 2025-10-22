@@ -1654,8 +1654,9 @@ Jnct  Level Step:   12        Up  Left Right  Addr      Up______  Down____ |
        }
      };
 
-    final int       Source = T.lastLeaf(), Target = 0, Steps = 28;
+    final int       Source = T.lastLeaf(), Target = 0, Steps = 15;
     final StringJoiner   t = new StringJoiner(", ");
+    final StringJoiner   w = new StringJoiner(", ");
     final int []     words = {1111, 2222, 3333, 4444, 5555, 6666};
 
     int i = 0;
@@ -1663,10 +1664,12 @@ Jnct  Level Step:   12        Up  Left Right  Addr      Up______  Down____ |
      {if (i < words.length && T.putMessage(Source, words[i])) ++i;
       T.transmit();
       final MessageOut m = T.new MessageOut(Source);
-      if (m.valid) t.add(""+m.text);
+      if (m.valid) {w.add(""+T.step); t.add(""+m.text);}
      }
     //stop(t);
     ok(t, "555, 1111, 1666, 2222, 2777, 3333");
+    //stop(w);
+    ok(w, "4, 6, 8, 10, 12, 14");
    }
 
   static void test_sequence_simplexV()
@@ -1753,7 +1756,8 @@ Jnct  Level Step:   12        Up  Left Right  Addr      Up______  Down____ |
    }
 
   static void newTests()                                                        // Tests being worked on
-   {oldTests();
+   {//oldTests();
+    test_sequence_simplex();
    }
 
   public static void main(String[] args)                                        // Test if called as a program
