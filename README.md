@@ -519,6 +519,7 @@ the [coprocessor](https://en.wikipedia.org/wiki/Coprocessor). Where possible, th
 
 The **input** and **output** ports are separate. It is the **host's
 responsibility** to control the execution flow of commands sent to the [coprocessor](https://en.wikipedia.org/wiki/Coprocessor) and to retrieve the results provided.
+
 # Status
 
 - 2025-07-12 [Java](https://en.wikipedia.org/wiki/Java_(programming_language)) implementation of the [B-Tree](https://en.wikipedia.org/wiki/B-tree) [algorithm](https://en.wikipedia.org/wiki/Algorithm) 
