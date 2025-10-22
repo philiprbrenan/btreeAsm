@@ -425,7 +425,6 @@ blocked when collisions between upward-traveling messages need to be resolved.
 Conventional memories can usually only [process](https://en.wikipedia.org/wiki/Process_management_(computing)) one or two requests at a time
 due to the the need to unambiguously form the address of the location to be [read](https://en.wikipedia.org/wiki/Reading_(computer)) or written.
 
-
 ## Types of Tree Network
 
 In a **duplex** [tree](https://en.wikipedia.org/wiki/Tree_(data_structure)) [network](https://en.wikipedia.org/wiki/Computer_network) any leaf can send a message to any other leaf.
@@ -439,6 +438,16 @@ manages the [memory](https://en.wikipedia.org/wiki/Computer_memory), and receive
 - For a [memory](https://en.wikipedia.org/wiki/Computer_memory) **write** command, the leaf sends both an address and a new
 value. The root updates the [memory](https://en.wikipedia.org/wiki/Computer_memory) at that location and sends back a
 confirmation that the [write](https://en.wikipedia.org/wiki/Write_(system_call)) operation has been successfully completed.
+
+Regardless of the type of [tree](https://en.wikipedia.org/wiki/Tree_(data_structure)), the messages sent between nodes always take the
+shortest possible path. Since there is only one such shortest path between any
+two nodes in a [tree](https://en.wikipedia.org/wiki/Tree_(data_structure)), a later message cannot overtake an earlier one. Thus,
+messages always arrive at their destination in the same order as they were sent
+from each node. Of course, if multiple sources are sending messages to the same
+target node, their messages might become interleaved. However, when classified
+by source node, they will still arrive at the target in the same order in which
+they were sent.
+
 
 ## Manufacturing [tree](https://en.wikipedia.org/wiki/Tree_(data_structure)) networks
 
