@@ -1,20 +1,6 @@
-REMOTE=s                                                                       # Remote user and machine definition from .ssh/config
-FOLDER=btreeAsm                                                                       # Folder containing project under user's home folder
-DESIGN=TreeNet                                                                       # The name of the chip being designed
-WORKSP=verilog                                                                       # Verilog workspace folder
-rsync -r ~/$FOLDER/* $REMOTE:~/$FOLDER                                            # Copy local project files to remote system
-ssh -S none $REMOTE << EOF                                                      # Execute the following commands on the remote system using a non shared ssh connection
-cd $FOLDER                                                                      # Project folder
-mkdir -p results/treeNet_15_8_24                                                                     # Results folder where the summary of the OpenRoad run will be saved
-docker pull appaapps/openroad:latest                                                                  # OpenRoad docker image
-# Start silicon compiler environment and run OpenRoad script in a docker container
-docker run --rm                                                                 \
-  -v ~/$FOLDER/:/root/$FOLDER                                                   \
-  -w /root/$FOLDER                                                              \
-  appaapps/openroad:latest                                                                            \
-  bash -ic "source /root/sc/bin/activate; python3 /root/$FOLDER/$WORKSP/$DESIGN.py"
-cp "verilog/build/$DESIGN/job0/$DESIGN.pkg.json" "results/treeNet_15_8_24/TreeNet.json"                                # Copy results out of docker to remote system
-cp "verilog/build/$DESIGN/job0/$DESIGN.png"      "results/treeNet_15_8_24/TreeNet.png"
-cp "verilog/build/$DESIGN/job0/job.log"          "results/treeNet_15_8_24/TreeNet.log"
-EOF
-rsync -r $REMOTE:~/$FOLDER/results/* ~/$FOLDER/results                         # Copy results back to local system from remote system
+# docker run --rm  -v "/home/phil/btreeAsm/:/workspace" ghcr.io/philiprbrenan/sc-asic:latest /bin/bash
+docker run --rm -v "/home/phil/btreeAsm/verilog:/workspace/verilog" ghcr.io/philiprbrenan/sc-asic:latest bash -c "bash /workspace/verilog/TreeNet.exec"
+cp "/home/phil/btreeAsm/verilog/build/TreeNet/job0/write.gds/0/outputs/TreeNet.pkg.json" "results/treeNet_15_8_24/TreeNet.json"
+cp "/home/phil/btreeAsm/verilog/build/TreeNet/job0/write.gds/0/outputs/TreeNet.gds" "results/treeNet_15_8_24/TreeNet.gds"
+cp "/home/phil/btreeAsm/verilog/build/TreeNet/job0/write.gds/0/outputs/TreeNet.png" "results/treeNet_15_8_24/TreeNet.png"
+cp "/home/phil/btreeAsm/verilog/build/TreeNet/job0/job.log" "results/treeNet_15_8_24/TreeNet.log"
