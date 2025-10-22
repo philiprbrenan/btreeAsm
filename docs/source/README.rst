@@ -848,6 +848,50 @@ node, their messages might become interleaved. However, when classified
 by source node, they will still arrive at the target in the same order
 in which they were sent.
 
+Transaction processing across a simplex `tree <https://en.wikipedia.org/wiki/Tree_(data_structure)>`__ `network <https://en.wikipedia.org/wiki/Computer_network>`__
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+One method of performing transactions across a simplex
+`tree <https://en.wikipedia.org/wiki/Tree_(data_structure)>`__
+`network <https://en.wikipedia.org/wiki/Computer_network>`__ is to use
+an input arrayed
+`register <https://en.wikipedia.org/wiki/Processor_register>`__ to hold
+the data to be sent from a leaf node to the root, and another output
+arrayed `register <https://en.wikipedia.org/wiki/Processor_register>`__
+to receive the corresponding results received at that leaf from the root
+node of the
+`tree <https://en.wikipedia.org/wiki/Tree_(data_structure)>`__
+`network <https://en.wikipedia.org/wiki/Computer_network>`__. The
+contents of the input
+`register <https://en.wikipedia.org/wiki/Processor_register>`__ are
+loaded sequentially into the
+`network <https://en.wikipedia.org/wiki/Computer_network>`__ at a leaf
+node. The input data elements are transmitted to the root of the
+`tree <https://en.wikipedia.org/wiki/Tree_(data_structure)>`__ where
+they are processed and the results are transmitted back across the
+`tree <https://en.wikipedia.org/wiki/Tree_(data_structure)>`__
+`network <https://en.wikipedia.org/wiki/Computer_network>`__ from the
+root to the orginal source node. The dimension of the arrayed input
+`register <https://en.wikipedia.org/wiki/Processor_register>`__ need not
+be the same as the dimension of the output arrayed
+`register <https://en.wikipedia.org/wiki/Processor_register>`__, but, we
+do need to know these dimensions in advance.
+
+Sends are performed sequentially. After a short delay, the results of
+these requests return in order. The first response cannot occur in less
+than twice the height of the
+`tree <https://en.wikipedia.org/wiki/Tree_(data_structure)>`__;
+therefore, any data arriving earlier indicates that an error has
+occurred.
+
+This technique allows the path width to
+`memory <https://en.wikipedia.org/wiki/Computer_memory>`__ to be reduced
+to any positive size smaller than the full width. In a simplex
+`tree <https://en.wikipedia.org/wiki/Tree_(data_structure)>`__, the
+return path does not need to match the width of the outgoing path
+although so far, in this project, the send and return paths have always
+had the same width.
+
 Manufacturing `tree <https://en.wikipedia.org/wiki/Tree_(data_structure)>`__ networks
 -------------------------------------------------------------------------------------
 
@@ -857,11 +901,10 @@ architecture allows individual
 `B-Tree <https://en.wikipedia.org/wiki/B-tree>`__ units to be
 manufactured separately and later arranged in two- or three-dimensional
 `arrays <https://en.wikipedia.org/wiki/Dynamic_array>`__, where they can
-be interconnected to form double
-`B-Trees <https://en.wikipedia.org/wiki/B-tree>`__ of any size.
-
-Tree networks also provide natural decoupling between components,
-simplifying design, scaling, and fault isolation.
+be interconnected to form large double
+`B-Trees <https://en.wikipedia.org/wiki/B-tree>`__. Tree networks also
+provide natural decoupling between components, simplifying design,
+scaling, and fault isolation.
 
 Moreover, sub-networks of a
 `tree <https://en.wikipedia.org/wiki/Tree_(data_structure)>`__ structure
