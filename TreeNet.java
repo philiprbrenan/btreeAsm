@@ -486,7 +486,7 @@ class TreeNet extends Chip                                                      
     AddressMask.RegisterSet(M, Index);                                          // Mask for this address
    }
 
-  private boolean addressDown(int Source, int Target)                           // Is this an address that can be descended through towards the target
+  private boolean addressDown(int Source, int Target)                           // Is this an address from which a message can descend towards the target
    {final BitSet s = (BitSet)address[Source].clone();
     final BitSet t = (BitSet)address[Target].clone();
     s.and(addressMask[Source]);
@@ -494,11 +494,11 @@ class TreeNet extends Chip                                                      
     return s.equals(t);
    }
 
-  private String AddressDown(int Source, String Target)                         // Is this an address that can be descended through towards the target
+  private String AddressDown(int Source, String Target)                         // Is this an address from which a message can descend towards the target
    {final String s = Address.registerName(Source);
     final String t = Address.registerName(Target);
     final String S = AddressMask.registerName(Source);
-    return "("+s+" & "+S+") == ("+t+" & "+S+")";
+    return "(("+s+" & "+S+") == ("+t+" & "+S+"))";
    }
 
   private String addressPrint(int Index)                                        // Print an address
@@ -539,9 +539,10 @@ class TreeNet extends Chip                                                      
     final Integer R = right(N);                                                 // Right child if any
     if (L == null || R == null) return;                                         // Assume a full tree
 
-    final boolean up = messageUp[N];                                            // Message at this level if any
-    final boolean gl = !up && messageUp[L];                                     // Go left
-    final boolean gr = !up && messageUp[R];                                     // Go right
+    final boolean
+      up = messageUp[N],                                                        // Message at this level if any
+      gl = !up && messageUp[L] && !addressDown(L, messageUpTarget[L]),          // Move up from left  possible and cannot short circuit from left  towards target
+      gr = !up && messageUp[R] && !addressDown(R, messageUpTarget[R]);          // Move up from right possible and cannot short circuit from right towards target                           // Go right
 
     class Left                                                                  // Move the left child up
      {Left()
@@ -577,8 +578,10 @@ class TreeNet extends Chip                                                      
     if (L == null || R == null) return;                                         // Assume a full tree
 
     final boolean up = MessageUp.registerGet(N) > 0;                            // Message at this level if any
-    final boolean gl = !up && MessageUp.registerGet(L) > 0;                     // Left might want to send a message up
-    final boolean gr = !up && MessageUp.registerGet(R) > 0;                     // Right might want to send a message up
+    final boolean gl = !up && MessageUp.registerGet(L) > 0                      // Left might want to send a message up
+                           && !addressDown(L, MessageUpTarget.registerGet(L));  // Move up from left  possible and cannot short circuit from left towards target
+    final boolean gr = !up && MessageUp.registerGet(R) > 0                      // Right might want to send a message up
+                           && !addressDown(R, MessageUpTarget.registerGet(R));  // Move up from left  possible and cannot short circuit from left towards target
 
     class Left                                                                  // Move the left child up
      {Left()
@@ -617,8 +620,12 @@ class TreeNet extends Chip                                                      
     final String lr = LeftRightPriority.registerName();                         // Left/right priority for choosing the next message if both children can supply a message
     final String lm = MessageUp.registerName(L);                                // Left child
     final String rm = MessageUp.registerName(R);                                // Right child
-    final String gl = "(!"+up +" && " + lm+")";                                 // Left might want to send a message up
-    final String gr = "(!"+up +" && " + rm+")";                                 // Right might want to send a message up
+
+    final String la = AddressDown(L, MessageUpTarget.registerName(L));          // Move up from left  possible and cannot short circuit from left towards target
+    final String ra = AddressDown(R, MessageUpTarget.registerName(R));          // Right child
+
+    final String gl = "(!"+up + " && " + lm+" && !"+la+")";                     // Left might want to send a message up
+    final String gr = "(!"+up + " && " + rm+" && !"+ra+")";                     // Right might want to send a message up
 
     class Left                                                                  // Move the left child up
      {Left()
