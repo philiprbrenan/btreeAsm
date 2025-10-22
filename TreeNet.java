@@ -11,6 +11,7 @@ class TreeNet extends Chip                                                      
   final int               size;                                                 // Total number of junctions in the binary tree, including root and leaves
   final int        addressWidth =  8;                                           // The width of a network address
   final int        messageWidth = 24;                                           // The width of a network message
+  final int         numberWidth = 16;                                           // The width of a network message number
   final Process               P = new Process("main");                          // Process in which the network runs
   final BitSet  []address;                                                      // Address in branch path steering format
   final BitSet  []addressMask;                                                  // Mask for the corresponding address
@@ -59,7 +60,8 @@ class TreeNet extends Chip                                                      
   final Process.Register LeftRightPriority;                                     // Alternate the priority of moving up on the left or right so that each child junction has equal access to its parent junction as a register
   final Process.Register MessageNumber;                                         // A unique number generator used to label used to check whether two messages at different positions in the tree are in fact the same messsage allowing one of the two to be removed depending on its diorection of travel.
   final Process.Register Step;                                                  // The current step in the simulation of the message flow
-  final Process.Register putMessage = P.register("putMessage", 1);              // The tree network execution step as a register
+  final Process.Register putMessage  = P.register("putMessage", 1);             // The tree network execution step as a register
+  final Process.Register topAsTarget = P.register("target", addressWidth);      // The top node as a target for a message sent through a simplex tree
 
 //D1 Construction                                                               // Construct a tree network
 
@@ -97,24 +99,25 @@ class TreeNet extends Chip                                                      
     MessageDown              = P.register("messageDown",                  1, size);
     MessageDownPending       = P.register("messageDownPending",           1, size);
 
-    MessageUpNumber          = P.register("MessageUpNumber",   addressWidth, size);
+    MessageUpNumber          = P.register("MessageUpNumber",    numberWidth, size);
     MessageUpSource          = P.register("MessageUpSource",   addressWidth, size);
     MessageUpTarget          = P.register("MessageUpTarget",   addressWidth, size);
     MessageUpText            = P.register("MessageUpText",     messageWidth, size);
 
-    MessageDownNumber        = P.register("MessageDownNumber", addressWidth, size);
+    MessageDownNumber        = P.register("MessageDownNumber",  numberWidth, size);
     MessageDownSource        = P.register("MessageDownSource", addressWidth, size);
     MessageDownTarget        = P.register("MessageDownTarget", addressWidth, size);
     MessageDownText          = P.register("MessageDownText",   messageWidth, size);
 
-    MessageDownPendingNumber = P.register("MessageDownPendingNumber", addressWidth, size);
+    MessageDownPendingNumber = P.register("MessageDownPendingNumber",  numberWidth, size);
     MessageDownPendingSource = P.register("MessageDownPendingSource", addressWidth, size);
     MessageDownPendingTarget = P.register("MessageDownPendingTarget", addressWidth, size);
     MessageDownPendingText   = P.register("MessageDownPendingText",   messageWidth, size);
 
     LeftRightPriority        = P.register("LeftRightPriority", 1);
-    MessageNumber            = P.register("MessageNumber",    32);
-    Step                     = P.register("Step",             32);
+    MessageNumber            = P.register("MessageNumber",  numberWidth);
+    Step                     = P.register("Step",           numberWidth);
+    topAsTarget.Zero();                                                         // The targeta ddress for the top of the tree
 
     for (int i = 0; i < size; i++) addressPath(i);                              // Create the addresses in the tree network
    }
@@ -311,7 +314,7 @@ class TreeNet extends Chip                                                      
     return true;                                                                // Successfully added message to tree network
    }
 
-  Process.Register putReplyV(Process.Register Target, Process.Register Text)    // Add a new message at the down side of top
+  Process.Register putReply(Process.Register Target, Process.Register Text)     // Add a new message at the down side of top
    {final Process.Register r = P.new Register("test", 1);
 
     r.Copy(MessageDown, 0);                                                     // Is there a downward going message waiting at the top
@@ -368,6 +371,10 @@ class TreeNet extends Chip                                                      
        }
      };
     return result;
+   }
+
+  Process.Register PutMessage(Process.Register Source, Process.Register Text)   // Send a message to the root of a simplex tree by adding a new message at the indicated leaf if possible and return true else false
+   {return PutMessage(Source, topAsTarget, Text);
    }
 
   Process.Register PutMessage                                                   // Add a new message at the indicated leaf if possible and return true else false
@@ -433,11 +440,13 @@ class TreeNet extends Chip                                                      
    {final Process.Register Valid  = P.register("Valid",  1);                    // Whether the message is valid or not
     final Process.Register Source = P.register("Source", addressWidth);         // Source address
     final Process.Register Target = P.register("Target", addressWidth);         // Target address
+    final Process.Register Number = P.register("Number",  numberWidth);         // Number of message
     final Process.Register Text   = P.register("Text",   messageWidth);         // Text of message
     Process.Register get(Process.Register Leaf)                                 // Get a message from the specified junction and return its validity
      {Valid  .CopyIs(MessageDown      , Leaf);                                  // Whether the message is valid
       Source .CopyIs(MessageDownSource, Leaf);                                  // Source address
       Target .CopyIs(MessageDownTarget, Leaf);                                  // Target address
+      Number .CopyIs(MessageDownNumber, Leaf);                                  // Number of message
       Text   .CopyIs(MessageDownText  , Leaf);                                  // Text of message
                      MessageDown.RegisterSet(0, Leaf);                          // Remove the message
       return Valid;
@@ -447,11 +456,13 @@ class TreeNet extends Chip                                                      
   class MessageOutSimplexV                                                      // Remove a message from the tree network and record its details
    {final Process.Register Valid  = P.register("Valid",  1);                    // Whether the message is valid or not
     final Process.Register Source = P.register("Source", addressWidth);         // Source address
+    final Process.Register Number = P.register("Number",  numberWidth);         // Number of message
     final Process.Register Text   = P.register("Text",   messageWidth);         // Text of message
     Process.Register get(int Leaf)                                              // Get a message from the specified junction and return its validity
-     {Valid  .Copy(MessageUp      , Leaf);                                    // Whether the message is valid
-      Source .Copy(MessageUpSource, Leaf);                                    // Source address
-      Text   .Copy(MessageUpText  , Leaf);                                    // Text of message
+     {Valid  .Copy(MessageUp      , Leaf);                                      // Whether the message is valid
+      Source .Copy(MessageUpSource, Leaf);                                      // Source address
+      Number .Copy(MessageUpNumber, Leaf);                                      // Number of message
+      Text   .Copy(MessageUpText  , Leaf);                                      // Text of message
       return Valid;
      }
     void release()                                                              // Release the message on the up side so a new one can flow in
@@ -1615,7 +1626,7 @@ Jnct  Level Step:   12        Up  Left Right  Addr      Up______  Down____ |
      }
     T.maxSteps = 2000;
     T.chipRun();
-    ok(outputs, "main_outputs_25 =  1111 2222 3333 4444 5555 6666");
+    ok(outputs, "main_outputs_26 =  1111 2222 3333 4444 5555 6666");
 
     final Chip.SiliconCompiler S = T.new SiliconCompiler()                      // Create silicon compiler files
      {String description()
@@ -1663,7 +1674,7 @@ Jnct  Level Step:   12        Up  Left Right  Addr      Up______  Down____ |
          {void Then()
            {final Process.Register text = P.register("text", messageWidth);
             text.Copy(M.Text).Half();
-            P.new If (putReplyV(M.Source, text))
+            P.new If (putReply(M.Source, text))
              {void Then()
                {M.release();
                }
@@ -1677,19 +1688,17 @@ Jnct  Level Step:   12        Up  Left Right  Addr      Up______  Down____ |
     final Process.Register  Result = T.P.register("result",  1);
     final Process.Register       i = T.P.register("i",       8);
     final Process.Register       o = T.P.register("o",       8);
-    final Process.Register inputs  = T.P.register("inputs",  T.messageWidth, words.length);
+    final Process.Register  inputs = T.P.register("inputs",  T.messageWidth, words.length);
     final Process.Register outputs = T.P.register("outputs", T.messageWidth, words.length);
-    final Process.Register test    = T.P.register("test",    1);
-    final Process.Register source  = T.P.register("source",  T.addressWidth);
-    final Process.Register target  = T.P.register("target",  T.addressWidth);
-    final Process.Register text    = T.P.register("text",    T.messageWidth);
+    final Process.Register    test = T.P.register("test",    1);
+    final Process.Register  source = T.P.register("source",  T.addressWidth);
+    final Process.Register    text = T.P.register("text",    T.messageWidth);
     final MessageOutV   messageOut = T.new MessageOutV();
-
-    final int Source = T.lastLeaf(), Target = T.firstLeaf(), Steps = 15;
+    final int                Steps = 15;
 
     T.P.processTrace = true;
 
-    source.RegisterSet(Source);
+    source.RegisterSet(T.lastLeaf());
 
     for (int j = 0; j < words.length; j++) inputs.RegisterSet(words[j], j);
 
@@ -1697,7 +1706,7 @@ Jnct  Level Step:   12        Up  Left Right  Addr      Up______  Down____ |
      {T.P.new If (test.Lt(i, words.length))
        {void Then()
          {text.CopyIs(inputs, i);
-          T.P.new If (T.PutMessage(source, target, text))
+          T.P.new If (T.PutMessage(source, text))
            {void Then() {i.Inc();}
            };
          }
@@ -1712,9 +1721,9 @@ Jnct  Level Step:   12        Up  Left Right  Addr      Up______  Down____ |
          }
        };
      }
-    T.maxSteps = 490;
+    T.maxSteps = 520;
     T.chipRun();
-    ok(outputs, "main_outputs_25 =  555 1111 1666 2222 2777 3333");
+    ok(outputs, "main_outputs_26 =  555 1111 1666 2222 2777 3333");
    }
 
   static void oldTests()                                                        // Tests thought to be in good shape
@@ -1733,12 +1742,11 @@ Jnct  Level Step:   12        Up  Left Right  Addr      Up______  Down____ |
     test_shortV();
     test_sequenceV();
     test_sequence_simplex();
+    test_sequence_simplexV();
    }
 
   static void newTests()                                                        // Tests being worked on
-   {//oldTests();
-    //test_sequenceV();
-    test_sequence_simplexV();
+   {oldTests();
    }
 
   public static void main(String[] args)                                        // Test if called as a program
