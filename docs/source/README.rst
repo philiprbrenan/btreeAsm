@@ -370,7 +370,8 @@ by hand at all, and the generated
 `Verilog <https://en.wikipedia.org/wiki/Verilog>`__ synthesized, placed,
 and routed correctly on the first attempt.
 
-However, similar to the MIT "Midnight Rewiring Society," if extra
+However, similar to the MIT **Midnight Computer Wiring Society** motto:
+*If you donÃ¢ÂÂt like how the machine works - change it*; if extra
 `instructions <https://en.wikipedia.org/wiki/Instruction_set_architecture>`__
 are needed, perhaps to increase parallelism, it is relatively easy to
 add a `Verilog <https://en.wikipedia.org/wiki/Verilog>`__ implementation
@@ -379,8 +380,8 @@ of an
 sequence written in
 `Java <https://en.wikipedia.org/wiki/Java_(programming_language)>`__,
 which can then be reused from
-`Java <https://en.wikipedia.org/wiki/Java_(programming_language)>`__ as
-needed.
+`Java <https://en.wikipedia.org/wiki/Java_(programming_language)>`__ to
+generate `Verilog <https://en.wikipedia.org/wiki/Verilog>`__ as needed.
 
 As a consequence of the matching of the
 `Java <https://en.wikipedia.org/wiki/Java_(programming_language)>`__ and
@@ -834,6 +835,18 @@ setup is particularly useful for
    location and sends back a confirmation that the
    `write <https://en.wikipedia.org/wiki/Write_(system_call)>`__
    operation has been successfully completed.
+
+Regardless of the type of
+`tree <https://en.wikipedia.org/wiki/Tree_(data_structure)>`__, the
+messages sent between nodes always take the shortest possible path.
+Since there is only one such shortest path between any two nodes in a
+`tree <https://en.wikipedia.org/wiki/Tree_(data_structure)>`__, a later
+message cannot overtake an earlier one. Thus, messages always arrive at
+their destination in the same order as they were sent from each node. Of
+course, if multiple sources are sending messages to the same target
+node, their messages might become interleaved. However, when classified
+by source node, they will still arrive at the target in the same order
+in which they were sent.
 
 Manufacturing `tree <https://en.wikipedia.org/wiki/Tree_(data_structure)>`__ networks
 -------------------------------------------------------------------------------------
