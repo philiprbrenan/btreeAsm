@@ -129,26 +129,26 @@ structure over a large number of elements. OpenRAM exploits this
 structure to synthesize large memories that can then be imbedded as
 black boxes in other designs which would otherwise overwhelem the place
 and route phases of
-``synthesis <https://en.wikipedia.org/wiki/Logic_synthesis>``\ \_\_.
+``synthesis <https://en.wikipedia.org/wiki/Logic_synthesis>``\\ \_\_.
 
 Registers
 ---------
 
 Registers are local blocks of
-``memory <https://en.wikipedia.org/wiki/Computer_memory>``\ \_\_ that:
+``memory <https://en.wikipedia.org/wiki/Computer_memory>``\\ \_\_ that:
 
 -  Have a fixed size determined at **compile time**.
 
 -  Are accessible within a **single**
-   ``clock <https://en.wikipedia.org/wiki/Clock_generator>``\ \_\_
+   ``clock <https://en.wikipedia.org/wiki/Clock_generator>``\\ \_\_
    **cycle**.
 
 -  Lose their values if the
-   ``chip <https://en.wikipedia.org/wiki/Integrated_circuit>``\ \_\_ is
+   ``chip <https://en.wikipedia.org/wiki/Integrated_circuit>``\\ \_\_ is
    powered off.
 
 -  Start set to zero when the
-   ``chip <https://en.wikipedia.org/wiki/Integrated_circuit>``\ \_\_ is
+   ``chip <https://en.wikipedia.org/wiki/Integrated_circuit>``\\ \_\_ is
    powered on
 
 Single versus arrayed
@@ -391,7 +391,8 @@ and the generated ``Verilog <https://en.wikipedia.org/wiki/Verilog>``\\
 \_\_ synthesized, placed, and routed correctly on the first attempt.
 
 However, similar to the MIT **Midnight Computer Wiring Society** motto:
-*If you donÃÂÃÂ¢ÃÂÃÂÃÂÃÂt like how the machine works - change it*; if extra
+*If you donÃÂÃÂÃÂÃÂ¢ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂt like how the machine works - change it*; if
+extra
 ``instructions <https://en.wikipedia.org/wiki/Instruction_set_architecture>``\\
 \_\_ are needed, perhaps to increase parallelism, it is relatively easy
 to add a ``Verilog <https://en.wikipedia.org/wiki/Verilog>``\\ \_\_
@@ -645,11 +646,11 @@ Run
 
 ::
 
-``Git <https://en.wikipedia.org/wiki/Git>``\ \_\_ clone
+``Git <https://en.wikipedia.org/wiki/Git>``\\ \_\_ clone
 git@github.com:philiprbrenan/btreeAsm.git # Download repo (cd btreeAsm;
-``Bash <https://en.wikipedia.org/wiki/Bash_(Unix_shell)>``\ \_\_
+``Bash <https://en.wikipedia.org/wiki/Bash_(Unix_shell)>``\\ \_\_
 Btree.sh) # Run repo in a
-``Docker <https://en.wikipedia.org/wiki/Docker_(software)>``\ \_\_
+``Docker <https://en.wikipedia.org/wiki/Docker_(software)>``\\ \_\_
 container
 
 Create Silicon Compiler Docker Container
@@ -666,26 +667,30 @@ OpenROAD
 ::
 
 Prebuilt
-``Open Road <https://openroad-flow-scripts.readthedocs.io/en/latest/mainREADME.html>``\ \_\_
-binaries are available for
-``Ubuntu <https://ubuntu.com/download/desktop>``\ \_\_ 22:
+``Open Road <https://openroad-flow-scripts.readthedocs.io/en/latest/mainREADME.html>``\\
+\_\_ binaries are available for
+``Ubuntu <https://ubuntu.com/download/desktop>``\\ \_\_ 22:
 
 ::
 
 ::
 
-     [Docker](https://en.wikipedia.org/wiki/Docker_(software)) run -it --rm ubuntu:22.04 /bin/bash
+::
+
+    [Docker](https://en.wikipedia.org/wiki/Docker_(software)) run -it --rm ubuntu:22.04 /bin/bash
 
 Install the following **deb**
-``file <https://en.wikipedia.org/wiki/Computer_file>``\ \_\_:
+``file <https://en.wikipedia.org/wiki/Computer_file>``\\ \_\_:
 
 ::
 
 ::
 
-     wget https://github.com/Precision-Innovations/OpenROAD/releases/download/2024-12-14/openroad_2.0-17598-ga008522d8_amd64-ubuntu-22.04.deb
-     [<b>sudo apt-get</b>](https://en.wikipedia.org/wiki/APT_(software)) [install](https://en.wikipedia.org/wiki/Installation_(computer_programs)) ...deb
-     openroad -V
+::
+
+    wget https://github.com/Precision-Innovations/OpenROAD/releases/download/2024-12-14/openroad_2.0-17598-ga008522d8_amd64-ubuntu-22.04.deb
+    [<b>sudo apt-get</b>](https://en.wikipedia.org/wiki/APT_(software)) [install](https://en.wikipedia.org/wiki/Installation_(computer_programs)) ...deb
+    openroad -V
 
 .. \_silicon-compiler-1:
 
@@ -700,15 +705,14 @@ environment, activate it,
 
 ::
 
-sudo
-``sudo apt-get <https://en.wikipedia.org/wiki/APT_(software)>``\ \_\_
-update sudo
-``sudo apt-get <https://en.wikipedia.org/wiki/APT_(software)>``\ \_\_
-``install <https://en.wikipedia.org/wiki/Installation_(computer_programs)>``\ \_\_
-python3-dev python3-pip python3-venv python3 -m venv ./sc source
+sudo ``sudo apt-get <https://en.wikipedia.org/wiki/APT_(software)>``\\
+\_\_ update sudo
+``sudo apt-get <https://en.wikipedia.org/wiki/APT_(software)>``\\ \_\_
+``install <https://en.wikipedia.org/wiki/Installation_(computer_programs)>``\\
+\_\_ python3-dev python3-pip python3-venv python3 -m venv ./sc source
 ./sc/bin/activate pip
-``install <https://en.wikipedia.org/wiki/Installation_(computer_programs)>``\ \_\_
---upgrade pip siliconcompiler pip show siliconcompiler python3 -c
+``install <https://en.wikipedia.org/wiki/Installation_(computer_programs)>``\\
+\_\_ --upgrade pip siliconcompiler pip show siliconcompiler python3 -c
 "import siliconcompiler;print(siliconcompiler.\\ **version**)"
 
 Yosys
@@ -721,10 +725,12 @@ Download **yosys** and confirm correct installation:
 
 ::
 
-     wget https://github.com/YosysHQ/oss-cad-suite-build/releases/download/2025-08-24/oss-cad-suite-linux-x64-20250824.tgz
-     [Tar](https://en.wikipedia.org/wiki/Tar_(computing)) -xvf
-     export PATH="$PATH:/root/oss-cad-suite/bin/"
-     yosys -V
+::
+
+    wget https://github.com/YosysHQ/oss-cad-suite-build/releases/download/2025-08-24/oss-cad-suite-linux-x64-20250824.tgz
+    [Tar](https://en.wikipedia.org/wiki/Tar_(computing)) -xvf
+    export PATH="$PATH:/root/oss-cad-suite/bin/"
+    yosys -V
 
 Klayout
 
@@ -741,7 +747,7 @@ Upload the container to Github containers
 ::
 
 To save the configured container to
-``GitHub <https://github.com/philiprbrenan>``\ \_\_:
+``GitHub <https://github.com/philiprbrenan>``\\ \_\_:
 
 .. \_1-log-in-to-ghcr:
 
@@ -751,50 +757,56 @@ To save the configured container to
 
 ::
 
-     echo <.githubToken.xxx> | [Docker](https://en.wikipedia.org/wiki/Docker_(software)) [login](https://en.wikipedia.org/wiki/Login) ghcr.io -u philiprbrenan --password-stdin
+::
+
+    echo <.githubToken.xxx> | [Docker](https://en.wikipedia.org/wiki/Docker_(software)) [login](https://en.wikipedia.org/wiki/Login) ghcr.io -u philiprbrenan --password-stdin
 
 .. \_2-create-an-image:
 
 2. Create an image ^^^^^^^^^^^^^^^^^^
 
 Make an image from the
-``Docker <https://en.wikipedia.org/wiki/Docker_(software)>``\ \_\_
+``Docker <https://en.wikipedia.org/wiki/Docker_(software)>``\\ \_\_
 container:
 
 ::
 
 ::
 
-     [Docker](https://en.wikipedia.org/wiki/Docker_(software)) commit <container> btreeasm:v1
+::
+
+    [Docker](https://en.wikipedia.org/wiki/Docker_(software)) commit <container> btreeasm:v1
 
 .. \_3-tag-the-image:
 
 3. Tag the image ^^^^^^^^^^^^^^^^
 
-Give the
-``Docker <https://en.wikipedia.org/wiki/Docker_(software)>``\ \_\_ image
-a name that ``GitHub <https://github.com/philiprbrenan>``\ \_\_ can
-recognize:
+Give the ``Docker <https://en.wikipedia.org/wiki/Docker_(software)>``\\
+\_\_ image a name that ``GitHub <https://github.com/philiprbrenan>``\\
+\_\_ can recognize:
 
 ::
 
 ::
 
-     [Docker](https://en.wikipedia.org/wiki/Docker_(software)) tag btreeasm:v1 ghcr.io/philiprbrenan/btreeasm:latest
+::
+
+    [Docker](https://en.wikipedia.org/wiki/Docker_(software)) tag btreeasm:v1 ghcr.io/philiprbrenan/btreeasm:latest
 
 .. \_4-push-the-image:
 
 4. Push the image ^^^^^^^^^^^^^^^^^
 
-Push the
-``Docker <https://en.wikipedia.org/wiki/Docker_(software)>``\ \_\_ image
-to ``GitHub <https://github.com/philiprbrenan>``\ \_\_:
+Push the ``Docker <https://en.wikipedia.org/wiki/Docker_(software)>``\\
+\_\_ image to ``GitHub <https://github.com/philiprbrenan>``\\ \_\_:
 
 ::
 
 ::
 
-     [Docker](https://en.wikipedia.org/wiki/Docker_(software)) push ghcr.io/philiprbrenan/btreeasm:latest
+::
+
+    [Docker](https://en.wikipedia.org/wiki/Docker_(software)) push ghcr.io/philiprbrenan/btreeasm:latest
 
 .. \_5-optional-make-the-package-public:
 
@@ -802,15 +814,16 @@ to ``GitHub <https://github.com/philiprbrenan>``\ \_\_:
 
 --------------
 
-Make the
-``Docker <https://en.wikipedia.org/wiki/Docker_(software)>``\ \_\_ image
-public:
+Make the ``Docker <https://en.wikipedia.org/wiki/Docker_(software)>``\\
+\_\_ image public:
 
 ::
 
 ::
 
-     https://github.com/users/philiprbrenan/packages/container/package/btreeAsm
+::
+
+    https://github.com/users/philiprbrenan/packages/container/package/btreeAsm
 
 Then: Package Settings -> Change visibility -> Public
 
@@ -818,92 +831,89 @@ Tree Network
 ============
 
 **TreeNet.java** contains details of a
-``tree <https://en.wikipedia.org/wiki/Tree_(data_structure)>``\ \_\_
-``network <https://en.wikipedia.org/wiki/Computer_network>``\ \_\_
+``tree <https://en.wikipedia.org/wiki/Tree_(data_structure)>``\\ \_\_
+``network <https://en.wikipedia.org/wiki/Computer_network>``\\ \_\_
 designed to connect a plurality of single
-``B-Trees <https://en.wikipedia.org/wiki/B-tree>``\ \_\_ into a double
-``B-Tree <https://en.wikipedia.org/wiki/B-tree>``\ \_\_ . The
-``tree <https://en.wikipedia.org/wiki/Tree_(data_structure)>``\ \_\_
-``network <https://en.wikipedia.org/wiki/Computer_network>``\ \_\_
+``B-Trees <https://en.wikipedia.org/wiki/B-tree>``\\ \_\_ into a double
+``B-Tree <https://en.wikipedia.org/wiki/B-tree>``\\ \_\_ . The
+``tree <https://en.wikipedia.org/wiki/Tree_(data_structure)>``\\ \_\_
+``network <https://en.wikipedia.org/wiki/Computer_network>``\\ \_\_
 operates in logarithmic time with respect to the number of leaves
 connected together.
 
-Using a
-``tree <https://en.wikipedia.org/wiki/Tree_(data_structure)>``\ \_\_
-``network <https://en.wikipedia.org/wiki/Computer_network>``\ \_\_
+Using a ``tree <https://en.wikipedia.org/wiki/Tree_(data_structure)>``\\
+\_\_ ``network <https://en.wikipedia.org/wiki/Computer_network>``\\ \_\_
 allows commands, data, and results to be passed between the leaves of
-the ``network <https://en.wikipedia.org/wiki/Computer_network>``\ \_\_
+the ``network <https://en.wikipedia.org/wiki/Computer_network>``\\ \_\_
 that defines the double
-``B-Tree <https://en.wikipedia.org/wiki/B-tree>``\ **. Each leaf is
+``B-Tree <https://en.wikipedia.org/wiki/B-tree>``\\ **. Each leaf is
 either a processor requesting actions on the
 ``B-Tree <https://en.wikipedia.org/wiki/B-tree>``** or a single
-``B-Tree <https://en.wikipedia.org/wiki/B-tree>``\ \_\_ itself
+``B-Tree <https://en.wikipedia.org/wiki/B-tree>``\\ \_\_ itself
 responding to these requests. A message sent across the
-``network <https://en.wikipedia.org/wiki/Computer_network>``\ \_\_ from
+``network <https://en.wikipedia.org/wiki/Computer_network>``\\ \_\_ from
 a processor to a single
-``B-Tree <https://en.wikipedia.org/wiki/B-tree>``\ \_\_ consists of a
+``B-Tree <https://en.wikipedia.org/wiki/B-tree>``\\ \_\_ consists of a
 command and data, much like entering a command on the terminal command
 line. The responses from the single
-``B-Tree <https://en.wikipedia.org/wiki/B-tree>``\ \_\_ leaves are then
+``B-Tree <https://en.wikipedia.org/wiki/B-tree>``\\ \_\_ leaves are then
 returned to the processors via the
-``tree <https://en.wikipedia.org/wiki/Tree_(data_structure)>``\ \_\_
-``network <https://en.wikipedia.org/wiki/Computer_network>``\ **. Thus,
-a [find](https://en.wikipedia.org/wiki/Find_(Unix)) processor might ask for the data associated with a specified key
-if it is present in the single
-``B-Tree <https://en.wikipedia.org/wiki/B-tree>``** targeted by the
-message.
+``tree <https://en.wikipedia.org/wiki/Tree_(data_structure)>``\\ \_\_
+``network <https://en.wikipedia.org/wiki/Computer_network>``\\ **. Thus,
+a** `find <https://en.wikipedia.org/wiki/Find_(Unix)>`__ **processor
+might ask for the data associated with a specified key if it is present
+in the single ``B-Tree <https://en.wikipedia.org/wiki/B-tree>``**
+targeted by the message.
 
 This arrangement lets us get more work out of
-``memory <https://en.wikipedia.org/wiki/Computer_memory>``\ **, which
+``memory <https://en.wikipedia.org/wiki/Computer_memory>``\\ **, which
 currently typically only responds to a small number of commands such as
 ``read <https://en.wikipedia.org/wiki/Reading_(computer)>``**,
-``write <https://en.wikipedia.org/wiki/Write_(system_call)>``\ **, or
+``write <https://en.wikipedia.org/wiki/Write_(system_call)>``\\ **, or
 clear. It also allows for a great deal more parallelism than
 conventional monolithic
 ``memory <https://en.wikipedia.org/wiki/Computer_memory>``**, because
-``memory <https://en.wikipedia.org/wiki/Computer_memory>``\ \_\_
+``memory <https://en.wikipedia.org/wiki/Computer_memory>``\\ \_\_
 requests can run in parallel and are only occasionally blocked when
 collisions between upward-traveling messages need to be resolved.
 Conventional memories can usually only
-``process <https://en.wikipedia.org/wiki/Process_management_(computing)>``\ \_\_
-one or two requests at a time due to the the need to unambiguously form
-the address of the location to be
-``read <https://en.wikipedia.org/wiki/Reading_(computer)>``\ \_\_ or
+``process <https://en.wikipedia.org/wiki/Process_management_(computing)>``\\
+\_\_ one or two requests at a time due to the the need to unambiguously
+form the address of the location to be
+``read <https://en.wikipedia.org/wiki/Reading_(computer)>``\\ \_\_ or
 written.
 
 Types of Tree Network
 ---------------------
 
 In a **duplex**
-``tree <https://en.wikipedia.org/wiki/Tree_(data_structure)>``\ \_\_
-``network <https://en.wikipedia.org/wiki/Computer_network>``\ \_\_ any
+``tree <https://en.wikipedia.org/wiki/Tree_(data_structure)>``\\ \_\_
+``network <https://en.wikipedia.org/wiki/Computer_network>``\\ \_\_ any
 leaf can send a message to any other leaf.
 
 In a **simplex**
-``tree <https://en.wikipedia.org/wiki/Tree_(data_structure)>``\ \_\_
-``network <https://en.wikipedia.org/wiki/Computer_network>``\ **, any
+``tree <https://en.wikipedia.org/wiki/Tree_(data_structure)>``\\ \_\_
+``network <https://en.wikipedia.org/wiki/Computer_network>``\\ **, any
 leaf node can send a message to the root node and receive a response.
 This setup is particularly useful for
 ``memory <https://en.wikipedia.org/wiki/Computer_memory>``** operations.
 
--  For a
-   ``memory <https://en.wikipedia.org/wiki/Computer_memory>``\ \_\_
-   **read** command, the leaf sends an address to the root, which
+-  For a ``memory <https://en.wikipedia.org/wiki/Computer_memory>``\\
+   \_\_ **read** command, the leaf sends an address to the root, which
    manages the
-   ``memory <https://en.wikipedia.org/wiki/Computer_memory>``\ \_\_, and
-   receives the value stored at that address.
+   ``memory <https://en.wikipedia.org/wiki/Computer_memory>``\\ \_\_,
+   and receives the value stored at that address.
 
--  For a
-   ``memory <https://en.wikipedia.org/wiki/Computer_memory>``\ \_\_
-   **write** command, the leaf sends both an address and a new value.
-   The root updates the
-   ``memory <https://en.wikipedia.org/wiki/Computer_memory>``\ \_\_ at
+-  For a ``memory <https://en.wikipedia.org/wiki/Computer_memory>``\\
+   \_\_ **write** command, the leaf sends both an address and a new
+   value. The root updates the
+   ``memory <https://en.wikipedia.org/wiki/Computer_memory>``\\ \_\_ at
    that location and sends back a confirmation that the
-   ``write <https://en.wikipedia.org/wiki/Write_(system_call)>``\ \_\_
+   ``write <https://en.wikipedia.org/wiki/Write_(system_call)>``\\ \_\_
    operation has been successfully completed.
 
 Regardless of the type of
-``tree <https://en.wikipedia.org/wiki/Tree_(data_structure)>``\ **, the
+``tree <https://en.wikipedia.org/wiki/Tree_(data_structure)>``\\ **, the
 messages sent between nodes always take the shortest possible path.
 Since there is only one such shortest path between any two nodes in a
 ``tree <https://en.wikipedia.org/wiki/Tree_(data_structure)>``**, a
@@ -914,87 +924,93 @@ same target node, their messages might become interleaved. However, when
 classified by source node, they will still arrive at the target in the
 same order in which they were sent.
 
-.. _transaction-processing-across-a-simplex-tree-httpsenwikipediaorgwikitree_data_structure__-network-httpsenwikipediaorgwikicomputer_network__:
+..
+*transaction-processing-across-a-simplex-tree-httpsenwikipediaorgwikitree_data_structure*\ \_-network-httpsenwikipediaorgwikicomputer_network\_\_:
 
-Transaction processing across a simplex ``tree <https://en.wikipedia.org/wiki/Tree_(data_structure)>``\ \_\_ ``network <https://en.wikipedia.org/wiki/Computer_network>``\ \_\_
--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+.. _transaction-processing-across-a-simplex-tree-httpsenwikipediaorgwikitree_data_structure-__-network-httpsenwikipediaorgwikicomputer_network-__:
+
+Transaction processing across a simplex ``tree <https://en.wikipedia.org/wiki/Tree_(data_structure)>``\\ \_\_ ``network <https://en.wikipedia.org/wiki/Computer_network>``\\ \_\_
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 One method of performing transactions across a simplex
-``tree <https://en.wikipedia.org/wiki/Tree_(data_structure)>``\ \_\_
-``network <https://en.wikipedia.org/wiki/Computer_network>``\ \_\_ is to
-use an input arrayed
-``register <https://en.wikipedia.org/wiki/Processor_register>``\ \_\_ to
-hold the data to be sent from a leaf node to the root, and another
+``tree <https://en.wikipedia.org/wiki/Tree_(data_structure)>``\\ \_\_
+``network <https://en.wikipedia.org/wiki/Computer_network>``\\ \_\_ is
+to use an input arrayed
+``register <https://en.wikipedia.org/wiki/Processor_register>``\\ \_\_
+to hold the data to be sent from a leaf node to the root, and another
 output arrayed
-``register <https://en.wikipedia.org/wiki/Processor_register>``\ \_\_ to
-receive the corresponding results received at that leaf from the root
+``register <https://en.wikipedia.org/wiki/Processor_register>``\\ \_\_
+to receive the corresponding results received at that leaf from the root
 node of the
-``tree <https://en.wikipedia.org/wiki/Tree_(data_structure)>``\ \_\_
-``network <https://en.wikipedia.org/wiki/Computer_network>``\ **. The
+``tree <https://en.wikipedia.org/wiki/Tree_(data_structure)>``\\ \_\_
+``network <https://en.wikipedia.org/wiki/Computer_network>``\\ **. The
 contents of the input
 ``register <https://en.wikipedia.org/wiki/Processor_register>``** are
 loaded sequentially into the
-``network <https://en.wikipedia.org/wiki/Computer_network>``\ \_\_ at a
+``network <https://en.wikipedia.org/wiki/Computer_network>``\\ \_\_ at a
 leaf node. The input data elements are transmitted to the root of the
-``tree <https://en.wikipedia.org/wiki/Tree_(data_structure)>``\ \_\_
+``tree <https://en.wikipedia.org/wiki/Tree_(data_structure)>``\\ \_\_
 where they are processed and the results are transmitted back across the
-``tree <https://en.wikipedia.org/wiki/Tree_(data_structure)>``\ \_\_
-``network <https://en.wikipedia.org/wiki/Computer_network>``\ \_\_ from
+``tree <https://en.wikipedia.org/wiki/Tree_(data_structure)>``\\ \_\_
+``network <https://en.wikipedia.org/wiki/Computer_network>``\\ \_\_ from
 the root to the orginal source node. The dimension of the arrayed input
-``register <https://en.wikipedia.org/wiki/Processor_register>``\ \_\_
+``register <https://en.wikipedia.org/wiki/Processor_register>``\\ \_\_
 need not be the same as the dimension of the output arrayed
-``register <https://en.wikipedia.org/wiki/Processor_register>``\ \_\_,
+``register <https://en.wikipedia.org/wiki/Processor_register>``\\ \_\_,
 but, we do need to know these dimensions in advance.
 
 Sends are performed sequentially. After a short delay, the results of
 these requests return in order. The first response cannot occur in less
 than twice the height of the
-``tree <https://en.wikipedia.org/wiki/Tree_(data_structure)>``\ \_\_;
+``tree <https://en.wikipedia.org/wiki/Tree_(data_structure)>``\\ \_\_;
 therefore, any data arriving earlier indicates that an error has
 occurred.
 
 This technique allows the path width to
-``memory <https://en.wikipedia.org/wiki/Computer_memory>``\ \_\_ to be
+``memory <https://en.wikipedia.org/wiki/Computer_memory>``\\ \_\_ to be
 reduced to any positive size smaller than the full width. In a simplex
-``tree <https://en.wikipedia.org/wiki/Tree_(data_structure)>``\ \_\_,
+``tree <https://en.wikipedia.org/wiki/Tree_(data_structure)>``\\ \_\_,
 the return path does not need to match the width of the outgoing path
 although so far, in this project, the send and return paths have always
 had the same width.
 
-.. _manufacturing-tree-httpsenwikipediaorgwikitree_data_structure__-networks:
+..
+*manufacturing-tree-httpsenwikipediaorgwikitree_data_structure*\ \_-networks:
 
-Manufacturing ``tree <https://en.wikipedia.org/wiki/Tree_(data_structure)>``\ \_\_ networks
--------------------------------------------------------------------------------------------
+.. _manufacturing-tree-httpsenwikipediaorgwikitree_data_structure-__-networks:
 
-Using a
-``tree <https://en.wikipedia.org/wiki/Tree_(data_structure)>``\ \_\_
-``network <https://en.wikipedia.org/wiki/Computer_network>``\ \_\_
+Manufacturing ``tree <https://en.wikipedia.org/wiki/Tree_(data_structure)>``\\ \_\_ networks
+--------------------------------------------------------------------------------------------
+
+Using a ``tree <https://en.wikipedia.org/wiki/Tree_(data_structure)>``\\
+\_\_ ``network <https://en.wikipedia.org/wiki/Computer_network>``\\ \_\_
 architecture allows individual
-``B-Tree <https://en.wikipedia.org/wiki/B-tree>``\ \_\_ units to be
+``B-Tree <https://en.wikipedia.org/wiki/B-tree>``\\ \_\_ units to be
 manufactured separately and later arranged in two- or three-dimensional
-``arrays <https://en.wikipedia.org/wiki/Dynamic_array>``\ **, where they
-can be interconnected to form large double
+``arrays <https://en.wikipedia.org/wiki/Dynamic_array>``\\ **, where
+they can be interconnected to form large double
 ``B-Trees <https://en.wikipedia.org/wiki/B-tree>``**. Tree networks also
 provide natural decoupling between components, simplifying design,
 scaling, and fault isolation.
 
 Moreover, sub-networks of a
-``tree <https://en.wikipedia.org/wiki/Tree_(data_structure)>``\ \_\_
+``tree <https://en.wikipedia.org/wiki/Tree_(data_structure)>``\\ \_\_
 structure can be linked over large distances using photonic
 interconnects, enabling double
-``B-Tree <https://en.wikipedia.org/wiki/B-tree>``\ \_\_ systems that
+``B-Tree <https://en.wikipedia.org/wiki/B-tree>``\\ \_\_ systems that
 span much larger physical areas and thus can contain much more data than
 would be practical with traditional metal interconnects.
 
 Host and Coprocessor Interaction
 ================================
 
-``Database on a Chip <https://github.com/philiprbrenan/btreeAsm>``\ \_\_
-is envisaged as an accelerating
-``coprocessor <https://en.wikipedia.org/wiki/Coprocessor>``\ \_\_ driven
-by commands from a **host processor**, which writes these commands into
-``registers <https://en.wikipedia.org/wiki/Processor_register>``\ \_\_
-in ``memory <https://en.wikipedia.org/wiki/Computer_memory>``\ \_\_
+``Database on a Chip <https://github.com/philiprbrenan/btreeAsm>``\\
+\_\_ is envisaged as an accelerating
+``coprocessor <https://en.wikipedia.org/wiki/Coprocessor>``\\ \_\_
+driven by commands from a **host processor**, which writes these
+commands into
+``registers <https://en.wikipedia.org/wiki/Processor_register>``\\ \_\_
+in ``memory <https://en.wikipedia.org/wiki/Computer_memory>``\\ \_\_
 shared between the processors.
 
 Possible Commands
@@ -1004,83 +1020,86 @@ Possible Commands
 
 ::
 
-     clear
-     delete <key>
-     put <key> <data>
+::
 
-     [find](https://en.wikipedia.org/wiki/Find_(Unix)) <key>
-     first
-     last
-     next <key>
-     prev <key>
-     size
+    clear
+    delete <key>
+    put <key> <data>
+
+    [find](https://en.wikipedia.org/wiki/Find_(Unix)) <key>
+    first
+    last
+    next <key>
+    prev <key>
+    size
 
 The **find** operation requires significantly less
-``Silicon <https://en.wikipedia.org/wiki/Silicon>``\ \_\_ than either
+``Silicon <https://en.wikipedia.org/wiki/Silicon>``\\ \_\_ than either
 **put** or **delete** and is expected to be executed far more frequently
 and can be executed in parallel: consequently each **btree** should be
 equipped with multiple **find** sub-processors, each sub-processor
 connected via its own port to the host processor.
 
 A **port** is a set of
-``registers <https://en.wikipedia.org/wiki/Processor_register>``\ \_\_
-in ``memory <https://en.wikipedia.org/wiki/Computer_memory>``\ \_\_
+``registers <https://en.wikipedia.org/wiki/Processor_register>``\\ \_\_
+in ``memory <https://en.wikipedia.org/wiki/Computer_memory>``\\ \_\_
 shared between the host processor and the
-``B-Tree <https://en.wikipedia.org/wiki/B-tree>``\ \_\_
-``coprocessor <https://en.wikipedia.org/wiki/Coprocessor>``\ **. The
-host signals that the data in the port is ready by performing a doorbell [write](https://en.wikipedia.org/wiki/Write_(system_call)) to a
-``register <https://en.wikipedia.org/wiki/Processor_register>``** in
-that port. A doorbell
-``write <https://en.wikipedia.org/wiki/Write_(system_call)>``\ \_\_
+``B-Tree <https://en.wikipedia.org/wiki/B-tree>``\\ \_\_
+``coprocessor <https://en.wikipedia.org/wiki/Coprocessor>``\\ **. The
+host signals that the data in the port is ready by performing a
+doorbell** `write <https://en.wikipedia.org/wiki/Write_(system_call)>`__
+**to a ``register <https://en.wikipedia.org/wiki/Processor_register>``**
+in that port. A doorbell
+``write <https://en.wikipedia.org/wiki/Write_(system_call)>``\\ \_\_
 forms the address of the
-``register <https://en.wikipedia.org/wiki/Processor_register>``\ \_\_
+``register <https://en.wikipedia.org/wiki/Processor_register>``\\ \_\_
 but does not actually
-``write <https://en.wikipedia.org/wiki/Write_(system_call)>``\ \_\_
+``write <https://en.wikipedia.org/wiki/Write_(system_call)>``\\ \_\_
 data. The address formation alone signals the
-``coprocessor <https://en.wikipedia.org/wiki/Coprocessor>``\ \_\_ to
+``coprocessor <https://en.wikipedia.org/wiki/Coprocessor>``\\ \_\_ to
 start processing the data in the port.
 
 Conversely, as the **clear**, **delete** and **put** operations can
 potentially modify the
-``B-Tree <https://en.wikipedia.org/wiki/B-tree>``\ **, these operations
+``B-Tree <https://en.wikipedia.org/wiki/B-tree>``\\ **, these operations
 can only be performed one at a time per
 ``B-Tree <https://en.wikipedia.org/wiki/B-tree>``**. Consequently there
 should be only one processor for each operation attached via a single
-port to each ``B-Tree <https://en.wikipedia.org/wiki/B-tree>``\ **. To
+port to each ``B-Tree <https://en.wikipedia.org/wiki/B-tree>``\\ **. To
 enable parallel deletes and puts, multiple
 ``B-Trees <https://en.wikipedia.org/wiki/B-tree>``** should be used to
 store data rather than relying on a single central
-``tree <https://en.wikipedia.org/wiki/Tree_(data_structure)>``\ **. A
+``tree <https://en.wikipedia.org/wiki/Tree_(data_structure)>``\\ **. A
 root ``B-Tree <https://en.wikipedia.org/wiki/B-tree>``** directs
 incoming requests to the appropriate subtrees, distributing the data
-across multiple ``sub <https://perldoc.perl.org/perlsub.html>``\ \_\_
-``B-Trees <https://en.wikipedia.org/wiki/B-tree>``\ **. Each
+across multiple ``sub <https://perldoc.perl.org/perlsub.html>``\\ \_\_
+``B-Trees <https://en.wikipedia.org/wiki/B-tree>``\\ **. Each
 ``sub <https://perldoc.perl.org/perlsub.html>``**
-``B-Tree <https://en.wikipedia.org/wiki/B-tree>``\ \_\_ can
-``process <https://en.wikipedia.org/wiki/Process_management_(computing)>``\ \_\_
-one delete or put request in parallel with the other
-``B-Trees <https://en.wikipedia.org/wiki/B-tree>``\ \_\_, allowing
+``B-Tree <https://en.wikipedia.org/wiki/B-tree>``\\ \_\_ can
+``process <https://en.wikipedia.org/wiki/Process_management_(computing)>``\\
+\_\_ one delete or put request in parallel with the other
+``B-Trees <https://en.wikipedia.org/wiki/B-tree>``\\ \_\_, allowing
 multiple operations to occur simultaneously across the database.
 
 To distribute keys across
-``sub <https://perldoc.perl.org/perlsub.html>``\ \_\_
-``B-Trees <https://en.wikipedia.org/wiki/B-tree>``\ **, the root
+``sub <https://perldoc.perl.org/perlsub.html>``\\ \_\_
+``B-Trees <https://en.wikipedia.org/wiki/B-tree>``\\ **, the root
 ``B-Tree <https://en.wikipedia.org/wiki/B-tree>``** should compute the
-``SHA-256 <https://en.wikipedia.org/wiki/SHA-256>``\ \_\_ digest of
+``SHA-256 <https://en.wikipedia.org/wiki/SHA-256>``\\ \_\_ digest of
 incoming keys and use a preset set of bits from this digest to assign
 keys uniformly across subtrees. If keys are wider than 256 bits, it
 might be preferable to replace them with their
-``SHA-256 <https://en.wikipedia.org/wiki/SHA-256>``\ \_\_ digests to
+``SHA-256 <https://en.wikipedia.org/wiki/SHA-256>``\\ \_\_ digests to
 avoid committing excessive amounts of
-``Silicon <https://en.wikipedia.org/wiki/Silicon>``\ \_\_ area to
+``Silicon <https://en.wikipedia.org/wiki/Silicon>``\\ \_\_ area to
 processing wide keys.
 
 The host processor is responsible for assigning work to the ports
 presented by the
-``coprocessor <https://en.wikipedia.org/wiki/Coprocessor>``\ **. Where
+``coprocessor <https://en.wikipedia.org/wiki/Coprocessor>``\\ **. Where
 possible, the host should schedule work on multiple
 ``find <https://en.wikipedia.org/wiki/Find_(Unix)>``** ports to
-``maximize <https://en.wikipedia.org/wiki/Maximum_and_minimum>``\ \_\_
+``maximize <https://en.wikipedia.org/wiki/Maximum_and_minimum>``\\ \_\_
 throughput by using parallel lookups.
 
 Command Execution
@@ -1088,66 +1107,67 @@ Command Execution
 
 1. The **host processor** constructs a command and writes it into an
    appropriate input port on the
-   ``coprocessor <https://en.wikipedia.org/wiki/Coprocessor>``\ \_\_.
+   ``coprocessor <https://en.wikipedia.org/wiki/Coprocessor>``\\ \_\_.
 
 2. The host performs a **doorbell write** to a memory-mapped
-   ``register <https://en.wikipedia.org/wiki/Processor_register>``\ \_\_
-   on the
-   ``coprocessor <https://en.wikipedia.org/wiki/Coprocessor>``\ \_\_,
+   ``register <https://en.wikipedia.org/wiki/Processor_register>``\\
+   \_\_ on the
+   ``coprocessor <https://en.wikipedia.org/wiki/Coprocessor>``\\ \_\_,
    signaling that the port data is available.
 
-3. The ``coprocessor <https://en.wikipedia.org/wiki/Coprocessor>``\ \_\_
-   reads and executes the request in the input port.
+3. The ``coprocessor <https://en.wikipedia.org/wiki/Coprocessor>``\\
+   \_\_ reads and executes the request in the input port.
 
-4. The ``coprocessor <https://en.wikipedia.org/wiki/Coprocessor>``\ \_\_
-   writes the execution results to the corresponding output port.
+4. The ``coprocessor <https://en.wikipedia.org/wiki/Coprocessor>``\\
+   \_\_ writes the execution results to the corresponding output port.
 
 5. When the command execution is complete, the
-   ``coprocessor <https://en.wikipedia.org/wiki/Coprocessor>``\ \_\_
+   ``coprocessor <https://en.wikipedia.org/wiki/Coprocessor>``\\ \_\_
    performs its own **doorbell write** to a
-   ``register <https://en.wikipedia.org/wiki/Processor_register>``\ \_\_
-   in the shared
-   ``memory <https://en.wikipedia.org/wiki/Computer_memory>``\ \_\_ of
+   ``register <https://en.wikipedia.org/wiki/Processor_register>``\\
+   \_\_ in the shared
+   ``memory <https://en.wikipedia.org/wiki/Computer_memory>``\\ \_\_ of
    the output port, signaling the host that results are ready.
 
 The **input** and **output** ports are separate. It is the **host's
 responsibility** to control the execution flow of commands sent to the
-``coprocessor <https://en.wikipedia.org/wiki/Coprocessor>``\ \_\_ and to
-retrieve the results provided.
+``coprocessor <https://en.wikipedia.org/wiki/Coprocessor>``\\ \_\_ and
+to retrieve the results provided.
 
 Status
 ======
 
 -  2025-07-12
-   ``Java <https://en.wikipedia.org/wiki/Java_(programming_language)>``\ \_\_
-   implementation of the
-   ``B-Tree <https://en.wikipedia.org/wiki/B-tree>``\ \_\_
-   ``algorithm <https://en.wikipedia.org/wiki/Algorithm>``\ \_\_
+   ``Java <https://en.wikipedia.org/wiki/Java_(programming_language)>``\\
+   \_\_ implementation of the
+   ``B-Tree <https://en.wikipedia.org/wiki/B-tree>``\\ \_\_
+   ``algorithm <https://en.wikipedia.org/wiki/Algorithm>``\\ \_\_
 
--  2025-08-15 ``Verilog <https://en.wikipedia.org/wiki/Verilog>``\ \_\_
+-  2025-08-15 ``Verilog <https://en.wikipedia.org/wiki/Verilog>``\\ \_\_
    trace matches
-   ``Java <https://en.wikipedia.org/wiki/Java_(programming_language)>``\ \_\_
-   trace
+   ``Java <https://en.wikipedia.org/wiki/Java_(programming_language)>``\\
+   \_\_ trace
 
--  2025-08-16 ``Verilog <https://en.wikipedia.org/wiki/Verilog>``\ \_\_
+-  2025-08-16 ``Verilog <https://en.wikipedia.org/wiki/Verilog>``\\ \_\_
    synthesized for
-   ``test <https://en.wikipedia.org/wiki/Software_testing>``\ \_\_ cases
-   in Chip.java using yosys
+   ``test <https://en.wikipedia.org/wiki/Software_testing>``\\ \_\_
+   cases in Chip.java using yosys
 
 -  2025-08-22 All generated
-   ``Verilog <https://en.wikipedia.org/wiki/Verilog>``\ \_\_ now uses
+   ``Verilog <https://en.wikipedia.org/wiki/Verilog>``\\ \_\_ now uses
    non blocking assignment
 
 -  2025-08-24 Place and route of synthesized
-   ``Verilog <https://en.wikipedia.org/wiki/Verilog>``\ \_\_ using
-   ``Silicon Compiler <https://docs.siliconcompiler.com/en/latest/index.html>``\ \_\_
+   ``Verilog <https://en.wikipedia.org/wiki/Verilog>``\\ \_\_ using
+   ``Silicon Compiler <https://docs.siliconcompiler.com/en/latest/index.html>``\\
+   \_\_
 
 -  2025-08-25 Ran
-   ``Silicon Compiler <https://docs.siliconcompiler.com/en/latest/index.html>``\ \_\_
-   on ``Amazon Web Services <http://aws.amazon.com>``\ \_\_ in a
-   ``Docker <https://en.wikipedia.org/wiki/Docker_(software)>``\ \_\_
+   ``Silicon Compiler <https://docs.siliconcompiler.com/en/latest/index.html>``\\
+   \_\_ on ``Amazon Web Services <http://aws.amazon.com>``\\ \_\_ in a
+   ``Docker <https://en.wikipedia.org/wiki/Docker_(software)>``\\ \_\_
    container saved via an
-   ``IPv6 address <https://en.wikipedia.org/wiki/IPv6>``\ \_\_ on
+   ``IPv6 address <https://en.wikipedia.org/wiki/IPv6>``\\ \_\_ on
    docker.io
 
 -  2025-10-08 Synthesized Tree Network for inter-component connectivity
@@ -1155,15 +1175,15 @@ Status
 -  2025-10-10 Synthesized FindFirst, FindLast, FindNext, FindPrev
 
 -  2025-10-11 Synthesized reverse
-   ``Iterator <https://en.wikipedia.org/wiki/Iterator>``\ \_\_ using a
-   non ``recursive <https://en.wikipedia.org/wiki/Recursion>``\ \_\_
-   ``tree <https://en.wikipedia.org/wiki/Tree_(data_structure)>``\ \_\_
+   ``Iterator <https://en.wikipedia.org/wiki/Iterator>``\\ \_\_ using a
+   non ``recursive <https://en.wikipedia.org/wiki/Recursion>``\\ \_\_
+   ``tree <https://en.wikipedia.org/wiki/Tree_(data_structure)>``\\ \_\_
    traversal
 
 -  2025-10-21 Simplex
-   ``tree <https://en.wikipedia.org/wiki/Tree_(data_structure)>``\ \_\_
+   ``tree <https://en.wikipedia.org/wiki/Tree_(data_structure)>``\\ \_\_
    tested successfully, ready for connecting to
-   ``memory <https://en.wikipedia.org/wiki/Computer_memory>``\ \_\_
+   ``memory <https://en.wikipedia.org/wiki/Computer_memory>``\\ \_\_
 
 .. \|Test\| image::
 https://github.com/philiprbrenan/btreeAsm/workflows/Test/badge.svg
