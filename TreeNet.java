@@ -2,7 +2,6 @@
 // A tree network that connects leaf pairs via branches in logarithmic time
 // Philip R Brenan at appaapps dot com, Appa Apps Ltd Inc., 2025
 //------------------------------------------------------------------------------
-// UMAA ECS Jan 15 https://umdearborn.my.site.com/application/TX_SiteLogin?startURL=
 package com.AppaApps.Silicon;                                                   // Btree as a silicon chip
 
 import java.util.*;
@@ -53,10 +52,11 @@ class TreeNet extends Chip                                                      
   final Process.Register MessageDownPendingTarget;                              // The address of the receiving target leaf of the pending message as a register
   final Process.Register MessageDownPendingText;                                // The text of the pending message as a register
 
-  final boolean      duplex;                                                    // The tree can be duplex or simplex: in a duplex tree any leaf can communicate with any other leaf. In a simplex tree the leaves can only communicate with the root.
+  final boolean     duplex;                                                     // The tree can be duplex or simplex: in a duplex tree any leaf can communicate with any other leaf. In a simplex tree the leaves can only communicate with the root.
   boolean leftRightPriority = true;                                             // Alternate the priority of moving up on the left or right so that each child junction has equal access to its parent junction
   boolean      printCompact = true;                                             // Print the network trace in a compact format if true
-  int                  step;                                                    // The tree network execution step
+  int        messageNumber;                                                     // A unique number generator used to label messages
+  int                 step;                                                     // The tree network execution step
   final Process.Register LeftRightPriority;                                     // Alternate the priority of moving up on the left or right so that each child junction has equal access to its parent junction as a register
   final Process.Register MessageNumber;                                         // A unique number generator used to label used to check whether two messages at different positions in the tree are in fact the same messsage allowing one of the two to be removed depending on its diorection of travel.
   final Process.Register Step;                                                  // The current step in the simulation of the message flow
@@ -291,7 +291,7 @@ class TreeNet extends Chip                                                      
     if (messageUp[Source]) return false;                                        // There is a message on the leaf already
     else
      {messageUp      [Source] = true;                                           // Add the message
-      messageUpNumber[Source] = step;                                           // Generate a unique message number for each message
+      messageUpNumber[Source] = messageNumber++;                                // Generate a unique message number for each message
       messageUpSource[Source] = Source;                                         // Source address
       messageUpTarget[Source] = Target;                                         // Target address
       messageUpText  [Source] = Text;                                           // Text of message
@@ -303,17 +303,46 @@ class TreeNet extends Chip                                                      
    {return putMessage(Source, 0, Text);
    }
 
+  boolean putReply(int Target, int Text)                                        // Add a new message at the down side of top
+   {if (messageDown  [0]) return false;                                         // There is already a message waiting to go
+    messageDown      [0] = true;                                                // Add the message
+    messageDownNumber[0] = messageNumber++;                                     // Generate a unique message number for each message
+    messageDownSource[0] = 0;                                                   // Source address
+    messageDownTarget[0] = Target;                                              // Target address
+    messageDownText  [0] = Text;                                                // Text of message
+
+    return true;                                                                // Successfully added message to tree network
+   }
+
+  Process.Register putReply(Process.Register Target, Process.Register Text)     // Add a new message at the down side of top
+   {final Process.Register r = P.new Register("test", 1);
+
+    r.Copy(MessageDown, 0);                                                     // Is there a downward going message waiting at the top
+    r.Not();                                                                    // Whether the message was put or not
+    P.new If (r)
+     {void Then()                                                               // Put the message onto the downward side of the top node
+       {MessageNumber.Inc();
+        MessageDown      .Copy(0, r);                                           // Add the message
+        MessageDownNumber.Copy(0, MessageNumber);                               // Generate a unique message number for each message
+        MessageDownSource.RegisterSet(0, 0);                                    // Source address
+        MessageDownTarget.Copy       (0, Target);                               // Target address
+        MessageDownText  .Copy       (0, Text);                                 // Text of message
+       }
+     };
+    return r;                                                                   // Return register  indicating whether the message was added to the down side or not
+   }
+
   void PutMessage(Process.Register Result, int Source, int Target, int Text)    // Add a new message at the indicated leaf if possible and return true else false
    {if (MessageUp.registerGet(Source) > 0)
      {Result.zero();                                                            // The message was not added
      }
     else
-     {MessageNumber  .inc();
-      MessageUp      .registerSet(1,             Source);                       // Add the message
+     {MessageUp      .registerSet(1,             Source);                       // Add the message
       MessageUpNumber.copy       (Source, MessageNumber);                       // Generate a unique message number for each message
       MessageUpSource.registerSet(Source       , Source);                       // Source address
       MessageUpTarget.registerSet(Target       , Source);                       // Target address
       MessageUpText  .registerSet(Text         , Source);                       // Text of message
+      MessageNumber  .inc();
       Result.one();                                                             // Successfully added message to tree network
      }
    }
@@ -330,11 +359,12 @@ class TreeNet extends Chip                                                      
            {result.zero(v);                                                     // The message was not added
            }
           void Else()
-           {MessageUp      .registerSet(v, 1,      Source);                     // Add the message
-            MessageUpNumber.copy       (v, Source, Step);                       // Generate a unique message number for each message
-            MessageUpSource.registerSet(v, Source, Source);                     // Source address
-            MessageUpTarget.registerSet(v, Target, Source);                     // Target address
-            MessageUpText  .registerSet(v, Text  , Source);                     // Text of message
+           {MessageUp      .registerSet(v, 1,             Source);              // Add the message
+            MessageUpNumber.copy       (v, Source, MessageNumber);              // Generate a unique message number for each message
+            MessageUpSource.registerSet(v, Source       , Source);              // Source address
+            MessageUpTarget.registerSet(v, Target       , Source);              // Target address
+            MessageUpText  .registerSet(v, Text         , Source);              // Text of message
+            MessageNumber  .inc(v);
             result.one(v);                                                      // Successfully added message to tree network
            }
          };
@@ -360,12 +390,12 @@ class TreeNet extends Chip                                                      
            {result.zero(v);                                                     // The message was not added
            }
           void Else()                                                           // Room for another message
-           {MessageNumber  .inc(v);
-            MessageUp      .registerSet(v, 1,             Source);              // Add the message
+           {MessageUp      .registerSet(v, 1,             Source);              // Add the message
             MessageUpNumber.copyIt     (v, Source, MessageNumber);              // Generate a unique message number for each message
             MessageUpSource.copyIt     (v, Source,        Source);              // Source address
             MessageUpTarget.copyIt     (v, Source,        Target);              // Target address
             MessageUpText  .copyIt     (v, Source,        Text);                // Text of message
+            MessageNumber  .inc(v);
             result.one(v);                                                      // Successfully added message to tree network
            }
          };
@@ -438,35 +468,6 @@ class TreeNet extends Chip                                                      
     void release()                                                              // Release the message on the up side so a new one can flow in
      {MessageUp.RegisterSet(0, Source);                                         // Remove the message
      }
-   }
-
-  boolean putReply(int MessageNumber, int Target, int Text)                     // Add a new message at the down side of top
-   {if (messageDown  [0]) return false;                                         // There is already a message waiting to go
-    messageDown      [0] = true;                                                // Add the message
-    messageDownNumber[0] = MessageNumber;                                       // Identify the message
-    messageDownSource[0] = 0;                                                   // Source address
-    messageDownTarget[0] = Target;                                              // Target address
-    messageDownText  [0] = Text;                                                // Text of message
-
-    return true;                                                                // Successfully added message to tree network
-   }
-
-  Process.Register putReply(Process.Register Target, Process.Register Text)     // Add a new message at the down side of top
-   {final Process.Register r = P.new Register("test", 1);
-
-    r.Copy(MessageDown, 0);                                                     // Is there a downward going message waiting at the top
-    r.Not();                                                                    // Whether the message was put or not
-    P.new If (r)
-     {void Then()                                                               // Put the message onto the downward side of the top node
-       {MessageNumber.Inc();
-        MessageDown      .Copy(0, r);                                           // Add the message
-        MessageDownNumber.Copy(0, MessageNumber);                               // Generate a unique message number for each message
-        MessageDownSource.RegisterSet(0, 0);                                    // Source address
-        MessageDownTarget.Copy       (0, Target);                               // Target address
-        MessageDownText  .Copy       (0, Text);                                 // Text of message
-       }
-     };
-    return r;                                                                   // Return register  indicating whether the message was added to the down side or not
    }
 
 //D1 Addressing                                                                 // Guidance path from the root to a branch or leaf
@@ -1042,7 +1043,7 @@ Jnct  Level Step:    4        Up  Left Right  Addr      Up______  Down____ |
     final TreeNet       T = new TreeNet(3);
     final StringBuilder s = new StringBuilder();
 
-    T.P.processTrace = true; T.printCompact = false;
+    T.P.processTrace = true;
     T.putMessage(T.lastLeaf()-1, T.firstLeaf(),   1111);
     T.putMessage(T.lastLeaf(),   T.firstLeaf()+1, 2222);
 
@@ -1649,14 +1650,14 @@ Jnct  Level Step:   12        Up  Left Right  Addr      Up______  Down____ |
     final TreeNet T = new TreeNet(4, false)
      {void transmitTop()
        {final MessageOutSimplex m = new MessageOutSimplex();
-        if (m.valid && putReply(m.number, m.source, m.text / 2)) m.release();
+        if (m.valid && putReply(m.source, m.text / 2)) m.release();
        }
      };
 
-    final int     Source = T.lastLeaf(), Steps = 15;
-    final StringJoiner t = new StringJoiner(", ");
-    final StringJoiner w = new StringJoiner(", ");
-    final int []   words = {1111, 2222, 3333, 4444, 5555, 6666};
+    final int       Source = T.lastLeaf(), Target = 0, Steps = 15;
+    final StringJoiner   t = new StringJoiner(", ");
+    final StringJoiner   w = new StringJoiner(", ");
+    final int []     words = {1111, 2222, 3333, 4444, 5555, 6666};
 
     int i = 0;
     for (T.step = 0; T.step < Steps; ++T.step)
@@ -1757,7 +1758,6 @@ Jnct  Level Step:   12        Up  Left Right  Addr      Up______  Down____ |
   static void newTests()                                                        // Tests being worked on
    {oldTests();
     //test_sequence_simplex();
-    test_oneV();
    }
 
   public static void main(String[] args)                                        // Test if called as a program
