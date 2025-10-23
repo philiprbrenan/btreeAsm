@@ -1694,10 +1694,9 @@ Jnct  Level Step:   12        Up  Left Right  Addr      Up______  Down____ |
        }
      };
 
-    final StringJoiner           t = new StringJoiner(", ");
-    final Process.Register  Result = T.P.register("result",  1);
     final Process.Register       i = T.P.register("i",       8);
     final Process.Register       o = T.P.register("o",       8);
+    final Process.Register       s = T.P.register("s",       8);
     final Process.Register  inputs = T.P.register("inputs",  T.messageWidth, words.length);
     final Process.Register outputs = T.P.register("outputs", T.messageWidth, words.length);
     final Process.Register    test = T.P.register("test",    1);
@@ -1712,26 +1711,30 @@ Jnct  Level Step:   12        Up  Left Right  Addr      Up______  Down____ |
 
     for (int j = 0; j < words.length; j++) inputs.RegisterSet(words[j], j);
 
-    for (T.step = 0; T.step < Steps; ++T.step)
-     {T.P.new If (test.Lt(i, words.length))
-       {void Then()
-         {text.CopyIs(inputs, i);
-          T.P.new If (T.PutMessage(source, text))
-           {void Then() {i.Inc();}
-           };
-         }
-       };
+    T.P.new Block()                                                           // Outer block contains branch code
+     {void code()
+       {T.P.new If (test.Lt(i, words.length))
+         {void Then()
+           {text.CopyIs(inputs, i);
+            T.P.new If (T.PutMessage(source, text))
+             {void Then() {i.Inc();}
+             };
+           }
+         };
 
-      T.Transmit();
+        T.Transmit();
 
-      T.P.new If (messageOut.get(source))
-       {void Then()
-         {outputs.CopyIt(o, messageOut.Text);
-          o.Inc();
-         }
-       };
-     }
-    T.maxSteps = 520;
+        T.P.new If (messageOut.get(source))
+         {void Then()
+           {outputs.CopyIt(o, messageOut.Text);
+            o.Inc();
+           }
+         };
+        s.Inc();
+        T.P.GONotZero(start, test.Lt(s, Steps));
+       }
+     };
+    T.maxSteps = 570;
     T.chipRun();
     ok(outputs, "main_outputs_26 =  555 1111 1666 2222 2777 3333");
    }
@@ -1756,8 +1759,9 @@ Jnct  Level Step:   12        Up  Left Right  Addr      Up______  Down____ |
    }
 
   static void newTests()                                                        // Tests being worked on
-   {oldTests();
+   {//oldTests();
     //test_sequence_simplex();
+    test_sequence_simplexV();
    }
 
   public static void main(String[] args)                                        // Test if called as a program
