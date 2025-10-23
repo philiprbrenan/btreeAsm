@@ -1601,19 +1601,19 @@ if __name__ == "__main__":
       void add (int      S) {R(); rs(rg()+S);       }                           // Add the source register to the current register in Java
       void average(Register S1, Register S2) {R(); rs((S1.rg()+S2.rg())/2);}    // Average of two registers
 
-      void gt (Register a, Register b) {R(); rs(a.rg() >  b.rg() ? 1 : 0);}     // Set the target register to one if the test between the 'a' and 'b' register is true else 0
-      void ge (Register a, Register b) {R(); rs(a.rg() >= b.rg() ? 1 : 0);}     // Set the target register to one if the test between the 'a' and 'b' register is true else 0
-      void eq (Register a, Register b) {R(); rs(a.rg() == b.rg() ? 1 : 0);}     // Set the target register to one if the test between the 'a' and 'b' register is true else 0
-      void ne (Register a, Register b) {R(); rs(a.rg() != b.rg() ? 1 : 0);}     // Set the target register to one if the test between the 'a' and 'b' register is true else 0
-      void le (Register a, Register b) {R(); rs(a.rg() <= b.rg() ? 1 : 0);}     // Set the target register to one if the test between the 'a' and 'b' register is true else 0
-      void lt (Register a, Register b) {R(); rs(a.rg() <  b.rg() ? 1 : 0);}     // Set the target register to one if the test between the 'a' and 'b' register is true else 0
+      void gt(Register a, Register b) {R(); rs(a.rg() >  b.rg() ? 1 : 0);}      // Set the target register to one if the test between the 'a' and 'b' register is true else 0
+      void ge(Register a, Register b) {R(); rs(a.rg() >= b.rg() ? 1 : 0);}      // Set the target register to one if the test between the 'a' and 'b' register is true else 0
+      void eq(Register a, Register b) {R(); rs(a.rg() == b.rg() ? 1 : 0);}      // Set the target register to one if the test between the 'a' and 'b' register is true else 0
+      void ne(Register a, Register b) {R(); rs(a.rg() != b.rg() ? 1 : 0);}      // Set the target register to one if the test between the 'a' and 'b' register is true else 0
+      void le(Register a, Register b) {R(); rs(a.rg() <= b.rg() ? 1 : 0);}      // Set the target register to one if the test between the 'a' and 'b' register is true else 0
+      void lt(Register a, Register b) {R(); rs(a.rg() <  b.rg() ? 1 : 0);}      // Set the target register to one if the test between the 'a' and 'b' register is true else 0
 
-      void gt (Register a, int b) {R(); rs(a.rg() >  b ? 1 : 0);}               // Set the target register to one if the test between the 'a' and 'b' register is true else 0
-      void ge (Register a, int b) {R(); rs(a.rg() >= b ? 1 : 0);}               // Set the target register to one if the test between the 'a' and 'b' register is true else 0
-      void eq (Register a, int b) {R(); rs(a.rg() == b ? 1 : 0);}               // Set the target register to one if the test between the 'a' and 'b' register is true else 0
-      void ne (Register a, int b) {R(); rs(a.rg() != b ? 1 : 0);}               // Set the target register to one if the test between the 'a' and 'b' register is true else 0
-      void le (Register a, int b) {R(); rs(a.rg() <= b ? 1 : 0);}               // Set the target register to one if the test between the 'a' and 'b' register is true else 0
-      void lt (Register a, int b) {R(); rs(a.rg() <  b ? 1 : 0);}               // Set the target register to one if the test between the 'a' and 'b' register is true else 0
+      void gt(Register a, int b) {R(); rs(a.rg() >  b ? 1 : 0);}                // Set the target register to one if the test between the 'a' and 'b' register is true else 0
+      void ge(Register a, int b) {R(); rs(a.rg() >= b ? 1 : 0);}                // Set the target register to one if the test between the 'a' and 'b' register is true else 0
+      void eq(Register a, int b) {R(); rs(a.rg() == b ? 1 : 0);}                // Set the target register to one if the test between the 'a' and 'b' register is true else 0
+      void ne(Register a, int b) {R(); rs(a.rg() != b ? 1 : 0);}                // Set the target register to one if the test between the 'a' and 'b' register is true else 0
+      void le(Register a, int b) {R(); rs(a.rg() <= b ? 1 : 0);}                // Set the target register to one if the test between the 'a' and 'b' register is true else 0
+      void lt(Register a, int b) {R(); rs(a.rg() <  b ? 1 : 0);}                // Set the target register to one if the test between the 'a' and 'b' register is true else 0
 
       void one (Verilog v)        {v.assign(rn(),         "1");}                // One a register in Verilog
       void inc (Verilog v)        {v.assign(rn(), rn()+" + 1");}                // Increment a register in Verilog
