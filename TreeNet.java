@@ -13,6 +13,7 @@ class TreeNet extends Chip                                                      
   final int        messageWidth = 24;                                           // The width of a network message
   final int         numberWidth = 16;                                           // The width of a network message number
   final Process               P = new Process("main");                          // Process in which the network runs
+  final Process []            Q;                                                // Processes in which each junction of the network run
   final BitSet  []address;                                                      // Address in branch path steering format
   final BitSet  []addressMask;                                                  // Mask for the corresponding address
   final Process.Register Address;                                               // Arrayed register of addresses in branch path steering format for each junction
@@ -71,6 +72,7 @@ class TreeNet extends Chip                                                      
    {super("TreeNet");
     size                     = powerTwo(Size) - 1;                              // The number of nodes in the network
     duplex                   = Duplex;                                          // The tree can be duplex or simplex: in a duplex tree any leaf can communicate with any other leaf. In a simplex tree the leaves can only communicate with the root.
+    Q                        = new Process[size];                               // The processes that each junction of the network run in
     messageUp                = new boolean[size];                               // Message waiting to be sent upward through the tree network
     messageDown              = new boolean[size];                               // Message waiting to be sent downward through the tree network
     messageDownPending       = new boolean[size];                               // A downward-seeking message is cached here during simulation to prevent overruns
@@ -120,6 +122,7 @@ class TreeNet extends Chip                                                      
     topAsTarget.Zero();                                                         // The targeta ddress for the top of the tree
 
     for (int i = 0; i < size; i++) addressPath(i);                              // Create the addresses in the tree network
+//  for (int i = 0; i < size; i++) Q[i] = new Process("j_"+i);                  // A process which executes the functionality of each junction of the tree network
    }
 
   public String print()                                                         // Print the tree network
@@ -1690,9 +1693,9 @@ Jnct  Level Step:   12        Up  Left Right  Addr      Up______  Down____ |
         M.get(0);
         P.new If (M.Valid)
          {void Then()
-           {final Process.Register text = P.register("text", messageWidth);
-            text.Copy(M.Text).Half();
-            P.new If (putReply(M.Source, text))
+           {//final Process.Register text = P.register("text", messageWidth);
+            //text.Copy(M.Text).Half();
+            P.new If (putReply(M.Source, P.register("text", messageWidth).Copy(M.Text).Half()))
              {void Then()
                {M.release();
                }
@@ -1765,7 +1768,7 @@ Jnct  Level Step:   12        Up  Left Right  Addr      Up______  Down____ |
 
   static void newTests()                                                        // Tests being worked on
    {oldTests();
-    //test_sequence_simplex();
+    test_oneV();
     //test_sequence_simplexV();
    }
 
