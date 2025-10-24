@@ -391,8 +391,8 @@ and the generated ``Verilog <https://en.wikipedia.org/wiki/Verilog>``\\
 \_\_ synthesized, placed, and routed correctly on the first attempt.
 
 However, similar to the MIT **Midnight Computer Wiring Society** motto:
-*If you donÃÂÃÂÃÂÃÂ¢ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂt like how the machine works - change it*; if
-extra
+*If you donÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ¢ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂt like how the machine works -
+change it*; if extra
 ``instructions <https://en.wikipedia.org/wiki/Instruction_set_architecture>``\\
 \_\_ are needed, perhaps to increase parallelism, it is relatively easy
 to add a ``Verilog <https://en.wikipedia.org/wiki/Verilog>``\\ \_\_
@@ -677,7 +677,9 @@ Prebuilt
 
 ::
 
-    [Docker](https://en.wikipedia.org/wiki/Docker_(software)) run -it --rm ubuntu:22.04 /bin/bash
+::
+
+   [Docker](https://en.wikipedia.org/wiki/Docker_(software)) run -it --rm ubuntu:22.04 /bin/bash
 
 Install the following **deb**
 ``file <https://en.wikipedia.org/wiki/Computer_file>``\\ \_\_:
@@ -688,9 +690,11 @@ Install the following **deb**
 
 ::
 
-    wget https://github.com/Precision-Innovations/OpenROAD/releases/download/2024-12-14/openroad_2.0-17598-ga008522d8_amd64-ubuntu-22.04.deb
-    [<b>sudo apt-get</b>](https://en.wikipedia.org/wiki/APT_(software)) [install](https://en.wikipedia.org/wiki/Installation_(computer_programs)) ...deb
-    openroad -V
+::
+
+   wget https://github.com/Precision-Innovations/OpenROAD/releases/download/2024-12-14/openroad_2.0-17598-ga008522d8_amd64-ubuntu-22.04.deb
+   [<b>sudo apt-get</b>](https://en.wikipedia.org/wiki/APT_(software)) [install](https://en.wikipedia.org/wiki/Installation_(computer_programs)) ...deb
+   openroad -V
 
 .. \_silicon-compiler-1:
 
@@ -727,10 +731,12 @@ Download **yosys** and confirm correct installation:
 
 ::
 
-    wget https://github.com/YosysHQ/oss-cad-suite-build/releases/download/2025-08-24/oss-cad-suite-linux-x64-20250824.tgz
-    [Tar](https://en.wikipedia.org/wiki/Tar_(computing)) -xvf
-    export PATH="$PATH:/root/oss-cad-suite/bin/"
-    yosys -V
+::
+
+   wget https://github.com/YosysHQ/oss-cad-suite-build/releases/download/2025-08-24/oss-cad-suite-linux-x64-20250824.tgz
+   [Tar](https://en.wikipedia.org/wiki/Tar_(computing)) -xvf
+   export PATH="$PATH:/root/oss-cad-suite/bin/"
+   yosys -V
 
 Klayout
 
@@ -759,7 +765,9 @@ To save the configured container to
 
 ::
 
-    echo <.githubToken.xxx> | [Docker](https://en.wikipedia.org/wiki/Docker_(software)) [login](https://en.wikipedia.org/wiki/Login) ghcr.io -u philiprbrenan --password-stdin
+::
+
+   echo <.githubToken.xxx> | [Docker](https://en.wikipedia.org/wiki/Docker_(software)) [login](https://en.wikipedia.org/wiki/Login) ghcr.io -u philiprbrenan --password-stdin
 
 .. \_2-create-an-image:
 
@@ -775,7 +783,9 @@ container:
 
 ::
 
-    [Docker](https://en.wikipedia.org/wiki/Docker_(software)) commit <container> btreeasm:v1
+::
+
+   [Docker](https://en.wikipedia.org/wiki/Docker_(software)) commit <container> btreeasm:v1
 
 .. \_3-tag-the-image:
 
@@ -791,7 +801,9 @@ Give the ``Docker <https://en.wikipedia.org/wiki/Docker_(software)>``\\
 
 ::
 
-    [Docker](https://en.wikipedia.org/wiki/Docker_(software)) tag btreeasm:v1 ghcr.io/philiprbrenan/btreeasm:latest
+::
+
+   [Docker](https://en.wikipedia.org/wiki/Docker_(software)) tag btreeasm:v1 ghcr.io/philiprbrenan/btreeasm:latest
 
 .. \_4-push-the-image:
 
@@ -806,7 +818,9 @@ Push the ``Docker <https://en.wikipedia.org/wiki/Docker_(software)>``\\
 
 ::
 
-    [Docker](https://en.wikipedia.org/wiki/Docker_(software)) push ghcr.io/philiprbrenan/btreeasm:latest
+::
+
+   [Docker](https://en.wikipedia.org/wiki/Docker_(software)) push ghcr.io/philiprbrenan/btreeasm:latest
 
 .. \_5-optional-make-the-package-public:
 
@@ -823,7 +837,9 @@ Make the ``Docker <https://en.wikipedia.org/wiki/Docker_(software)>``\\
 
 ::
 
-    https://github.com/users/philiprbrenan/packages/container/package/btreeAsm
+::
+
+   https://github.com/users/philiprbrenan/packages/container/package/btreeAsm
 
 Then: Package Settings -> Change visibility -> Public
 
@@ -860,10 +876,11 @@ line. The responses from the single
 returned to the processors via the
 ``tree <https://en.wikipedia.org/wiki/Tree_(data_structure)>``\\ \_\_
 ``network <https://en.wikipedia.org/wiki/Computer_network>``\\ **. Thus,
-a** `find <https://en.wikipedia.org/wiki/Find_(Unix)>`__ **processor
-might ask for the data associated with a specified key if it is present
-in the single ``B-Tree <https://en.wikipedia.org/wiki/B-tree>``**
-targeted by the message.
+a** ``find <https://en.wikipedia.org/wiki/Find_(Unix)>``\ \_\_
+**processor might ask for the data associated with a specified key if it
+is present in the single
+``B-Tree <https://en.wikipedia.org/wiki/B-tree>``** targeted by the
+message.
 
 This arrangement lets us get more work out of
 ``memory <https://en.wikipedia.org/wiki/Computer_memory>``\\ **, which
@@ -925,7 +942,11 @@ classified by source node, they will still arrive at the target in the
 same order in which they were sent.
 
 ..
-*transaction-processing-across-a-simplex-tree-httpsenwikipediaorgwikitree_data_structure*\ \_-network-httpsenwikipediaorgwikicomputer_network\_\_:
+*transaction-processing-across-a-simplex-tree-httpsenwikipediaorgwikitree_data_structure*\\
+\_-network-httpsenwikipediaorgwikicomputer_network\_\_:
+
+..
+\_transaction-processing-across-a-simplex-tree-httpsenwikipediaorgwikitree_data_structure-**-network-httpsenwikipediaorgwikicomputer_network-**:
 
 .. _transaction-processing-across-a-simplex-tree-httpsenwikipediaorgwikitree_data_structure-__-network-httpsenwikipediaorgwikicomputer_network-__:
 
@@ -974,8 +995,11 @@ the return path does not need to match the width of the outgoing path
 although so far, in this project, the send and return paths have always
 had the same width.
 
+.. *manufacturing-tree-httpsenwikipediaorgwikitree_data_structure*\\
+\_-networks:
+
 ..
-*manufacturing-tree-httpsenwikipediaorgwikitree_data_structure*\ \_-networks:
+\_manufacturing-tree-httpsenwikipediaorgwikitree_data_structure-\_\_-networks:
 
 .. _manufacturing-tree-httpsenwikipediaorgwikitree_data_structure-__-networks:
 
@@ -1022,16 +1046,18 @@ Possible Commands
 
 ::
 
-    clear
-    delete <key>
-    put <key> <data>
+::
 
-    [find](https://en.wikipedia.org/wiki/Find_(Unix)) <key>
-    first
-    last
-    next <key>
-    prev <key>
-    size
+   clear
+   delete <key>
+   put <key> <data>
+
+   [find](https://en.wikipedia.org/wiki/Find_(Unix)) <key>
+   first
+   last
+   next <key>
+   prev <key>
+   size
 
 The **find** operation requires significantly less
 ``Silicon <https://en.wikipedia.org/wiki/Silicon>``\\ \_\_ than either
@@ -1047,9 +1073,10 @@ shared between the host processor and the
 ``B-Tree <https://en.wikipedia.org/wiki/B-tree>``\\ \_\_
 ``coprocessor <https://en.wikipedia.org/wiki/Coprocessor>``\\ **. The
 host signals that the data in the port is ready by performing a
-doorbell** `write <https://en.wikipedia.org/wiki/Write_(system_call)>`__
-**to a ``register <https://en.wikipedia.org/wiki/Processor_register>``**
-in that port. A doorbell
+doorbell**
+``write <https://en.wikipedia.org/wiki/Write_(system_call)>``\ \_\_ **to
+a ``register <https://en.wikipedia.org/wiki/Processor_register>``** in
+that port. A doorbell
 ``write <https://en.wikipedia.org/wiki/Write_(system_call)>``\\ \_\_
 forms the address of the
 ``register <https://en.wikipedia.org/wiki/Processor_register>``\\ \_\_
