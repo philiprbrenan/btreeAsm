@@ -39,7 +39,7 @@ class Chip extends Test                                                         
     chipStop = false;                                                           // Show the program as running
     deleteFile(javaTraceFile);                                                  // Remove Java trace file
     for(step = 0; !chipStop && step < maxSteps; ++step)                         // Run each program
-     {for(Process p : processes) p.processStep();                               // Step each program
+     {for(Process p : processes) p.processStep();                               // Step each process in the program
       chipPrintJava();                                                          // Print chip state after each step
      }
     if (!chipStop)                                                              // Still running after too many steps
@@ -814,9 +814,9 @@ if __name__ == "__main__":
        }
      }
 
-    void processStep()                                                          // Execute one step in the program
+    void processStep()                                                          // Execute one step in the current process
      {if (coverageAnalysis) zz();
-      if (code.size() == 0) return;                                             // No code to run
+      //if (code.size() == 0) return;                                           // No code to run
       if (processPc >= code.size())                                             // Stop the run if we go off the end of the code
        {//err("Stopped by process", processName);
         processStop = chipStop = true;
@@ -839,7 +839,7 @@ if __name__ == "__main__":
     void processStop(Verilog v, int ReturnCode)                                 // Stop the chip in Verilog
      {if (coverageAnalysis) zz();
       v.assign(processRCName(), ReturnCode);
-      v.assign(processStopName(),       1);
+      v.assign(processStopName(),        1);
      }
 
     void ProcessStop(int ReturnCode)                                            // Process stop instruction
@@ -2010,7 +2010,7 @@ if __name__ == "__main__":
              }
             v.end();
            }
-          v.A("default: "+processStopName()+" "+v.assignOp()+" 1;");
+          v.A("default: "+processStopName()+" "+v.assignOp()+" 1;");            // Stop if any process falls off the end of the code
           v.endCase();
           v.end();
           v.end();
