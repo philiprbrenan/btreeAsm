@@ -83,18 +83,17 @@ module TreeNet;                                                                 
   reg [24-1:0] main_outputs_26[6];
   reg [1-1:0] main_test_27;
   reg [8-1:0] main_source_28;
-  reg [24-1:0] main_text_29;
-  reg [1-1:0] main_Valid_30;
-  reg [8-1:0] main_Source_31;
-  reg [8-1:0] main_Target_32;
-  reg [16-1:0] main_Number_33;
-  reg [24-1:0] main_Text_34;
-  reg [1-1:0] main_Valid_35;
-  reg [8-1:0] main_Source_36;
-  reg [16-1:0] main_Number_37;
-  reg [24-1:0] main_Text_38;
-  reg [24-1:0] main_text_39;
-  reg [1-1:0] main_test_40;
+  reg [1-1:0] main_Valid_29;
+  reg [8-1:0] main_Source_30;
+  reg [8-1:0] main_Target_31;
+  reg [16-1:0] main_Number_32;
+  reg [24-1:0] main_Text_33;
+  reg [1-1:0] main_Valid_34;
+  reg [8-1:0] main_Source_35;
+  reg [16-1:0] main_Number_36;
+  reg [24-1:0] main_Text_37;
+  reg [24-1:0] main_text_38;
+  reg [1-1:0] main_test_39;
   integer main_pc;
   integer main_stop;
   integer main_returnCode;
@@ -212,18 +211,17 @@ module TreeNet;                                                                 
       end
       main_test_27     <= 0;
       main_source_28   <= 0;
-      main_text_29     <= 0;
-      main_Valid_30    <= 0;
-      main_Source_31   <= 0;
-      main_Target_32   <= 0;
-      main_Number_33   <= 0;
-      main_Text_34     <= 0;
-      main_Valid_35    <= 0;
-      main_Source_36   <= 0;
-      main_Number_37   <= 0;
-      main_Text_38     <= 0;
-      main_text_39     <= 0;
-      main_test_40     <= 0;
+      main_Valid_29    <= 0;
+      main_Source_30   <= 0;
+      main_Target_31   <= 0;
+      main_Number_32   <= 0;
+      main_Text_33     <= 0;
+      main_Valid_34    <= 0;
+      main_Source_35   <= 0;
+      main_Number_36   <= 0;
+      main_Text_37     <= 0;
+      main_text_38     <= 0;
+      main_test_39     <= 0;
     end
     else if (memoryReset > 0) begin
     end
@@ -238,7 +236,7 @@ module TreeNet;                                                                 
                 begin
                   integer f;
                   f = $fopen("verilog/trace_verilog.txt", "a");
-                  $fdisplay(f, "Location: Chip.java:0888:<init>|  Chip.java:1691:<init>|  Chip.java:1690:Zero|  TreeNet.java:0120:<init>|  TreeNet.java:1680:<init>|  TreeNet.java:1679:test_sequence_simplexV|  TreeNet.java:1764:newTests|  TreeNet.java:1769:main|");
+                  $fdisplay(f, "Location: Chip.java:0888:<init>|  Chip.java:1721:<init>|  Chip.java:1720:Zero|  TreeNet.java:0120:<init>|  TreeNet.java:1685:<init>|  TreeNet.java:1684:test_sequence_simplexV|  TreeNet.java:1761:oldTests|  TreeNet.java:1765:newTests|  TreeNet.java:1772:main|");
                   $fclose(f);
                 end
               end
@@ -252,7 +250,7 @@ module TreeNet;                                                                 
                 begin
                   integer f;
                   f = $fopen("verilog/trace_verilog.txt", "a");
-                  $fdisplay(f, "Location: Chip.java:0888:<init>|  Chip.java:1226:<init>|  Chip.java:1225:RegisterSet|  TreeNet.java:0485:addressPath|  TreeNet.java:0122:<init>|  TreeNet.java:1680:<init>|  TreeNet.java:1679:test_sequence_simplexV|  TreeNet.java:1764:newTests|  TreeNet.java:1769:main|");
+                  $fdisplay(f, "Location: Chip.java:0888:<init>|  Chip.java:1226:<init>|  Chip.java:1225:RegisterSet|  TreeNet.java:0492:addressPath|  TreeNet.java:0122:<init>|  TreeNet.java:1685:<init>|  TreeNet.java:1684:test_sequence_simplexV|  TreeNet.java:1761:oldTests|  TreeNet.java:1765:newTests|  TreeNet.java:1772:main|");
                   $fclose(f);
                 end
               end
@@ -266,7 +264,7 @@ module TreeNet;                                                                 
                 begin
                   integer f;
                   f = $fopen("verilog/trace_verilog.txt", "a");
-                  $fdisplay(f, "Location: Chip.java:0888:<init>|  Chip.java:1226:<init>|  Chip.java:1225:RegisterSet|  TreeNet.java:0486:addressPath|  TreeNet.java:0122:<init>|  TreeNet.java:1680:<init>|  TreeNet.java:1679:test_sequence_simplexV|  TreeNet.java:1764:newTests|  TreeNet.java:1769:main|");
+                  $fdisplay(f, "Location: Chip.java:0888:<init>|  Chip.java:1226:<init>|  Chip.java:1225:RegisterSet|  TreeNet.java:0493:addressPath|  TreeNet.java:0122:<init>|  TreeNet.java:1685:<init>|  TreeNet.java:1684:test_sequence_simplexV|  TreeNet.java:1761:oldTests|  TreeNet.java:1765:newTests|  TreeNet.java:1772:main|");
                   $fclose(f);
                 end
               end
@@ -280,7 +278,7 @@ module TreeNet;                                                                 
                 begin
                   integer f;
                   f = $fopen("verilog/trace_verilog.txt", "a");
-                  $fdisplay(f, "Location: Chip.java:0888:<init>|  Chip.java:1226:<init>|  Chip.java:1225:RegisterSet|  TreeNet.java:0485:addressPath|  TreeNet.java:0122:<init>|  TreeNet.java:1680:<init>|  TreeNet.java:1679:test_sequence_simplexV|  TreeNet.java:1764:newTests|  TreeNet.java:1769:main|");
+                  $fdisplay(f, "Location: Chip.java:0888:<init>|  Chip.java:1226:<init>|  Chip.java:1225:RegisterSet|  TreeNet.java:0492:addressPath|  TreeNet.java:0122:<init>|  TreeNet.java:1685:<init>|  TreeNet.java:1684:test_sequence_simplexV|  TreeNet.java:1761:oldTests|  TreeNet.java:1765:newTests|  TreeNet.java:1772:main|");
                   $fclose(f);
                 end
               end
@@ -294,7 +292,7 @@ module TreeNet;                                                                 
                 begin
                   integer f;
                   f = $fopen("verilog/trace_verilog.txt", "a");
-                  $fdisplay(f, "Location: Chip.java:0888:<init>|  Chip.java:1226:<init>|  Chip.java:1225:RegisterSet|  TreeNet.java:0486:addressPath|  TreeNet.java:0122:<init>|  TreeNet.java:1680:<init>|  TreeNet.java:1679:test_sequence_simplexV|  TreeNet.java:1764:newTests|  TreeNet.java:1769:main|");
+                  $fdisplay(f, "Location: Chip.java:0888:<init>|  Chip.java:1226:<init>|  Chip.java:1225:RegisterSet|  TreeNet.java:0493:addressPath|  TreeNet.java:0122:<init>|  TreeNet.java:1685:<init>|  TreeNet.java:1684:test_sequence_simplexV|  TreeNet.java:1761:oldTests|  TreeNet.java:1765:newTests|  TreeNet.java:1772:main|");
                   $fclose(f);
                 end
               end
@@ -308,7 +306,7 @@ module TreeNet;                                                                 
                 begin
                   integer f;
                   f = $fopen("verilog/trace_verilog.txt", "a");
-                  $fdisplay(f, "Location: Chip.java:0888:<init>|  Chip.java:1226:<init>|  Chip.java:1225:RegisterSet|  TreeNet.java:0485:addressPath|  TreeNet.java:0122:<init>|  TreeNet.java:1680:<init>|  TreeNet.java:1679:test_sequence_simplexV|  TreeNet.java:1764:newTests|  TreeNet.java:1769:main|");
+                  $fdisplay(f, "Location: Chip.java:0888:<init>|  Chip.java:1226:<init>|  Chip.java:1225:RegisterSet|  TreeNet.java:0492:addressPath|  TreeNet.java:0122:<init>|  TreeNet.java:1685:<init>|  TreeNet.java:1684:test_sequence_simplexV|  TreeNet.java:1761:oldTests|  TreeNet.java:1765:newTests|  TreeNet.java:1772:main|");
                   $fclose(f);
                 end
               end
@@ -322,7 +320,7 @@ module TreeNet;                                                                 
                 begin
                   integer f;
                   f = $fopen("verilog/trace_verilog.txt", "a");
-                  $fdisplay(f, "Location: Chip.java:0888:<init>|  Chip.java:1226:<init>|  Chip.java:1225:RegisterSet|  TreeNet.java:0486:addressPath|  TreeNet.java:0122:<init>|  TreeNet.java:1680:<init>|  TreeNet.java:1679:test_sequence_simplexV|  TreeNet.java:1764:newTests|  TreeNet.java:1769:main|");
+                  $fdisplay(f, "Location: Chip.java:0888:<init>|  Chip.java:1226:<init>|  Chip.java:1225:RegisterSet|  TreeNet.java:0493:addressPath|  TreeNet.java:0122:<init>|  TreeNet.java:1685:<init>|  TreeNet.java:1684:test_sequence_simplexV|  TreeNet.java:1761:oldTests|  TreeNet.java:1765:newTests|  TreeNet.java:1772:main|");
                   $fclose(f);
                 end
               end
@@ -336,7 +334,7 @@ module TreeNet;                                                                 
                 begin
                   integer f;
                   f = $fopen("verilog/trace_verilog.txt", "a");
-                  $fdisplay(f, "Location: Chip.java:0888:<init>|  Chip.java:1226:<init>|  Chip.java:1225:RegisterSet|  TreeNet.java:0485:addressPath|  TreeNet.java:0122:<init>|  TreeNet.java:1680:<init>|  TreeNet.java:1679:test_sequence_simplexV|  TreeNet.java:1764:newTests|  TreeNet.java:1769:main|");
+                  $fdisplay(f, "Location: Chip.java:0888:<init>|  Chip.java:1226:<init>|  Chip.java:1225:RegisterSet|  TreeNet.java:0492:addressPath|  TreeNet.java:0122:<init>|  TreeNet.java:1685:<init>|  TreeNet.java:1684:test_sequence_simplexV|  TreeNet.java:1761:oldTests|  TreeNet.java:1765:newTests|  TreeNet.java:1772:main|");
                   $fclose(f);
                 end
               end
@@ -350,7 +348,7 @@ module TreeNet;                                                                 
                 begin
                   integer f;
                   f = $fopen("verilog/trace_verilog.txt", "a");
-                  $fdisplay(f, "Location: Chip.java:0888:<init>|  Chip.java:1226:<init>|  Chip.java:1225:RegisterSet|  TreeNet.java:0486:addressPath|  TreeNet.java:0122:<init>|  TreeNet.java:1680:<init>|  TreeNet.java:1679:test_sequence_simplexV|  TreeNet.java:1764:newTests|  TreeNet.java:1769:main|");
+                  $fdisplay(f, "Location: Chip.java:0888:<init>|  Chip.java:1226:<init>|  Chip.java:1225:RegisterSet|  TreeNet.java:0493:addressPath|  TreeNet.java:0122:<init>|  TreeNet.java:1685:<init>|  TreeNet.java:1684:test_sequence_simplexV|  TreeNet.java:1761:oldTests|  TreeNet.java:1765:newTests|  TreeNet.java:1772:main|");
                   $fclose(f);
                 end
               end
@@ -364,7 +362,7 @@ module TreeNet;                                                                 
                 begin
                   integer f;
                   f = $fopen("verilog/trace_verilog.txt", "a");
-                  $fdisplay(f, "Location: Chip.java:0888:<init>|  Chip.java:1226:<init>|  Chip.java:1225:RegisterSet|  TreeNet.java:0485:addressPath|  TreeNet.java:0122:<init>|  TreeNet.java:1680:<init>|  TreeNet.java:1679:test_sequence_simplexV|  TreeNet.java:1764:newTests|  TreeNet.java:1769:main|");
+                  $fdisplay(f, "Location: Chip.java:0888:<init>|  Chip.java:1226:<init>|  Chip.java:1225:RegisterSet|  TreeNet.java:0492:addressPath|  TreeNet.java:0122:<init>|  TreeNet.java:1685:<init>|  TreeNet.java:1684:test_sequence_simplexV|  TreeNet.java:1761:oldTests|  TreeNet.java:1765:newTests|  TreeNet.java:1772:main|");
                   $fclose(f);
                 end
               end
@@ -378,7 +376,7 @@ module TreeNet;                                                                 
                 begin
                   integer f;
                   f = $fopen("verilog/trace_verilog.txt", "a");
-                  $fdisplay(f, "Location: Chip.java:0888:<init>|  Chip.java:1226:<init>|  Chip.java:1225:RegisterSet|  TreeNet.java:0486:addressPath|  TreeNet.java:0122:<init>|  TreeNet.java:1680:<init>|  TreeNet.java:1679:test_sequence_simplexV|  TreeNet.java:1764:newTests|  TreeNet.java:1769:main|");
+                  $fdisplay(f, "Location: Chip.java:0888:<init>|  Chip.java:1226:<init>|  Chip.java:1225:RegisterSet|  TreeNet.java:0493:addressPath|  TreeNet.java:0122:<init>|  TreeNet.java:1685:<init>|  TreeNet.java:1684:test_sequence_simplexV|  TreeNet.java:1761:oldTests|  TreeNet.java:1765:newTests|  TreeNet.java:1772:main|");
                   $fclose(f);
                 end
               end
@@ -392,7 +390,7 @@ module TreeNet;                                                                 
                 begin
                   integer f;
                   f = $fopen("verilog/trace_verilog.txt", "a");
-                  $fdisplay(f, "Location: Chip.java:0888:<init>|  Chip.java:1226:<init>|  Chip.java:1225:RegisterSet|  TreeNet.java:0485:addressPath|  TreeNet.java:0122:<init>|  TreeNet.java:1680:<init>|  TreeNet.java:1679:test_sequence_simplexV|  TreeNet.java:1764:newTests|  TreeNet.java:1769:main|");
+                  $fdisplay(f, "Location: Chip.java:0888:<init>|  Chip.java:1226:<init>|  Chip.java:1225:RegisterSet|  TreeNet.java:0492:addressPath|  TreeNet.java:0122:<init>|  TreeNet.java:1685:<init>|  TreeNet.java:1684:test_sequence_simplexV|  TreeNet.java:1761:oldTests|  TreeNet.java:1765:newTests|  TreeNet.java:1772:main|");
                   $fclose(f);
                 end
               end
@@ -406,7 +404,7 @@ module TreeNet;                                                                 
                 begin
                   integer f;
                   f = $fopen("verilog/trace_verilog.txt", "a");
-                  $fdisplay(f, "Location: Chip.java:0888:<init>|  Chip.java:1226:<init>|  Chip.java:1225:RegisterSet|  TreeNet.java:0486:addressPath|  TreeNet.java:0122:<init>|  TreeNet.java:1680:<init>|  TreeNet.java:1679:test_sequence_simplexV|  TreeNet.java:1764:newTests|  TreeNet.java:1769:main|");
+                  $fdisplay(f, "Location: Chip.java:0888:<init>|  Chip.java:1226:<init>|  Chip.java:1225:RegisterSet|  TreeNet.java:0493:addressPath|  TreeNet.java:0122:<init>|  TreeNet.java:1685:<init>|  TreeNet.java:1684:test_sequence_simplexV|  TreeNet.java:1761:oldTests|  TreeNet.java:1765:newTests|  TreeNet.java:1772:main|");
                   $fclose(f);
                 end
               end
@@ -420,7 +418,7 @@ module TreeNet;                                                                 
                 begin
                   integer f;
                   f = $fopen("verilog/trace_verilog.txt", "a");
-                  $fdisplay(f, "Location: Chip.java:0888:<init>|  Chip.java:1226:<init>|  Chip.java:1225:RegisterSet|  TreeNet.java:0485:addressPath|  TreeNet.java:0122:<init>|  TreeNet.java:1680:<init>|  TreeNet.java:1679:test_sequence_simplexV|  TreeNet.java:1764:newTests|  TreeNet.java:1769:main|");
+                  $fdisplay(f, "Location: Chip.java:0888:<init>|  Chip.java:1226:<init>|  Chip.java:1225:RegisterSet|  TreeNet.java:0492:addressPath|  TreeNet.java:0122:<init>|  TreeNet.java:1685:<init>|  TreeNet.java:1684:test_sequence_simplexV|  TreeNet.java:1761:oldTests|  TreeNet.java:1765:newTests|  TreeNet.java:1772:main|");
                   $fclose(f);
                 end
               end
@@ -434,7 +432,7 @@ module TreeNet;                                                                 
                 begin
                   integer f;
                   f = $fopen("verilog/trace_verilog.txt", "a");
-                  $fdisplay(f, "Location: Chip.java:0888:<init>|  Chip.java:1226:<init>|  Chip.java:1225:RegisterSet|  TreeNet.java:0486:addressPath|  TreeNet.java:0122:<init>|  TreeNet.java:1680:<init>|  TreeNet.java:1679:test_sequence_simplexV|  TreeNet.java:1764:newTests|  TreeNet.java:1769:main|");
+                  $fdisplay(f, "Location: Chip.java:0888:<init>|  Chip.java:1226:<init>|  Chip.java:1225:RegisterSet|  TreeNet.java:0493:addressPath|  TreeNet.java:0122:<init>|  TreeNet.java:1685:<init>|  TreeNet.java:1684:test_sequence_simplexV|  TreeNet.java:1761:oldTests|  TreeNet.java:1765:newTests|  TreeNet.java:1772:main|");
                   $fclose(f);
                 end
               end
@@ -448,7 +446,7 @@ module TreeNet;                                                                 
                 begin
                   integer f;
                   f = $fopen("verilog/trace_verilog.txt", "a");
-                  $fdisplay(f, "Location: Chip.java:0888:<init>|  Chip.java:1226:<init>|  Chip.java:1225:RegisterSet|  TreeNet.java:0485:addressPath|  TreeNet.java:0122:<init>|  TreeNet.java:1680:<init>|  TreeNet.java:1679:test_sequence_simplexV|  TreeNet.java:1764:newTests|  TreeNet.java:1769:main|");
+                  $fdisplay(f, "Location: Chip.java:0888:<init>|  Chip.java:1226:<init>|  Chip.java:1225:RegisterSet|  TreeNet.java:0492:addressPath|  TreeNet.java:0122:<init>|  TreeNet.java:1685:<init>|  TreeNet.java:1684:test_sequence_simplexV|  TreeNet.java:1761:oldTests|  TreeNet.java:1765:newTests|  TreeNet.java:1772:main|");
                   $fclose(f);
                 end
               end
@@ -462,7 +460,7 @@ module TreeNet;                                                                 
                 begin
                   integer f;
                   f = $fopen("verilog/trace_verilog.txt", "a");
-                  $fdisplay(f, "Location: Chip.java:0888:<init>|  Chip.java:1226:<init>|  Chip.java:1225:RegisterSet|  TreeNet.java:0486:addressPath|  TreeNet.java:0122:<init>|  TreeNet.java:1680:<init>|  TreeNet.java:1679:test_sequence_simplexV|  TreeNet.java:1764:newTests|  TreeNet.java:1769:main|");
+                  $fdisplay(f, "Location: Chip.java:0888:<init>|  Chip.java:1226:<init>|  Chip.java:1225:RegisterSet|  TreeNet.java:0493:addressPath|  TreeNet.java:0122:<init>|  TreeNet.java:1685:<init>|  TreeNet.java:1684:test_sequence_simplexV|  TreeNet.java:1761:oldTests|  TreeNet.java:1765:newTests|  TreeNet.java:1772:main|");
                   $fclose(f);
                 end
               end
@@ -476,7 +474,7 @@ module TreeNet;                                                                 
                 begin
                   integer f;
                   f = $fopen("verilog/trace_verilog.txt", "a");
-                  $fdisplay(f, "Location: Chip.java:0888:<init>|  Chip.java:1226:<init>|  Chip.java:1225:RegisterSet|  TreeNet.java:0485:addressPath|  TreeNet.java:0122:<init>|  TreeNet.java:1680:<init>|  TreeNet.java:1679:test_sequence_simplexV|  TreeNet.java:1764:newTests|  TreeNet.java:1769:main|");
+                  $fdisplay(f, "Location: Chip.java:0888:<init>|  Chip.java:1226:<init>|  Chip.java:1225:RegisterSet|  TreeNet.java:0492:addressPath|  TreeNet.java:0122:<init>|  TreeNet.java:1685:<init>|  TreeNet.java:1684:test_sequence_simplexV|  TreeNet.java:1761:oldTests|  TreeNet.java:1765:newTests|  TreeNet.java:1772:main|");
                   $fclose(f);
                 end
               end
@@ -490,7 +488,7 @@ module TreeNet;                                                                 
                 begin
                   integer f;
                   f = $fopen("verilog/trace_verilog.txt", "a");
-                  $fdisplay(f, "Location: Chip.java:0888:<init>|  Chip.java:1226:<init>|  Chip.java:1225:RegisterSet|  TreeNet.java:0486:addressPath|  TreeNet.java:0122:<init>|  TreeNet.java:1680:<init>|  TreeNet.java:1679:test_sequence_simplexV|  TreeNet.java:1764:newTests|  TreeNet.java:1769:main|");
+                  $fdisplay(f, "Location: Chip.java:0888:<init>|  Chip.java:1226:<init>|  Chip.java:1225:RegisterSet|  TreeNet.java:0493:addressPath|  TreeNet.java:0122:<init>|  TreeNet.java:1685:<init>|  TreeNet.java:1684:test_sequence_simplexV|  TreeNet.java:1761:oldTests|  TreeNet.java:1765:newTests|  TreeNet.java:1772:main|");
                   $fclose(f);
                 end
               end
@@ -504,7 +502,7 @@ module TreeNet;                                                                 
                 begin
                   integer f;
                   f = $fopen("verilog/trace_verilog.txt", "a");
-                  $fdisplay(f, "Location: Chip.java:0888:<init>|  Chip.java:1226:<init>|  Chip.java:1225:RegisterSet|  TreeNet.java:0485:addressPath|  TreeNet.java:0122:<init>|  TreeNet.java:1680:<init>|  TreeNet.java:1679:test_sequence_simplexV|  TreeNet.java:1764:newTests|  TreeNet.java:1769:main|");
+                  $fdisplay(f, "Location: Chip.java:0888:<init>|  Chip.java:1226:<init>|  Chip.java:1225:RegisterSet|  TreeNet.java:0492:addressPath|  TreeNet.java:0122:<init>|  TreeNet.java:1685:<init>|  TreeNet.java:1684:test_sequence_simplexV|  TreeNet.java:1761:oldTests|  TreeNet.java:1765:newTests|  TreeNet.java:1772:main|");
                   $fclose(f);
                 end
               end
@@ -518,7 +516,7 @@ module TreeNet;                                                                 
                 begin
                   integer f;
                   f = $fopen("verilog/trace_verilog.txt", "a");
-                  $fdisplay(f, "Location: Chip.java:0888:<init>|  Chip.java:1226:<init>|  Chip.java:1225:RegisterSet|  TreeNet.java:0486:addressPath|  TreeNet.java:0122:<init>|  TreeNet.java:1680:<init>|  TreeNet.java:1679:test_sequence_simplexV|  TreeNet.java:1764:newTests|  TreeNet.java:1769:main|");
+                  $fdisplay(f, "Location: Chip.java:0888:<init>|  Chip.java:1226:<init>|  Chip.java:1225:RegisterSet|  TreeNet.java:0493:addressPath|  TreeNet.java:0122:<init>|  TreeNet.java:1685:<init>|  TreeNet.java:1684:test_sequence_simplexV|  TreeNet.java:1761:oldTests|  TreeNet.java:1765:newTests|  TreeNet.java:1772:main|");
                   $fclose(f);
                 end
               end
@@ -532,7 +530,7 @@ module TreeNet;                                                                 
                 begin
                   integer f;
                   f = $fopen("verilog/trace_verilog.txt", "a");
-                  $fdisplay(f, "Location: Chip.java:0888:<init>|  Chip.java:1226:<init>|  Chip.java:1225:RegisterSet|  TreeNet.java:0485:addressPath|  TreeNet.java:0122:<init>|  TreeNet.java:1680:<init>|  TreeNet.java:1679:test_sequence_simplexV|  TreeNet.java:1764:newTests|  TreeNet.java:1769:main|");
+                  $fdisplay(f, "Location: Chip.java:0888:<init>|  Chip.java:1226:<init>|  Chip.java:1225:RegisterSet|  TreeNet.java:0492:addressPath|  TreeNet.java:0122:<init>|  TreeNet.java:1685:<init>|  TreeNet.java:1684:test_sequence_simplexV|  TreeNet.java:1761:oldTests|  TreeNet.java:1765:newTests|  TreeNet.java:1772:main|");
                   $fclose(f);
                 end
               end
@@ -546,7 +544,7 @@ module TreeNet;                                                                 
                 begin
                   integer f;
                   f = $fopen("verilog/trace_verilog.txt", "a");
-                  $fdisplay(f, "Location: Chip.java:0888:<init>|  Chip.java:1226:<init>|  Chip.java:1225:RegisterSet|  TreeNet.java:0486:addressPath|  TreeNet.java:0122:<init>|  TreeNet.java:1680:<init>|  TreeNet.java:1679:test_sequence_simplexV|  TreeNet.java:1764:newTests|  TreeNet.java:1769:main|");
+                  $fdisplay(f, "Location: Chip.java:0888:<init>|  Chip.java:1226:<init>|  Chip.java:1225:RegisterSet|  TreeNet.java:0493:addressPath|  TreeNet.java:0122:<init>|  TreeNet.java:1685:<init>|  TreeNet.java:1684:test_sequence_simplexV|  TreeNet.java:1761:oldTests|  TreeNet.java:1765:newTests|  TreeNet.java:1772:main|");
                   $fclose(f);
                 end
               end
@@ -560,7 +558,7 @@ module TreeNet;                                                                 
                 begin
                   integer f;
                   f = $fopen("verilog/trace_verilog.txt", "a");
-                  $fdisplay(f, "Location: Chip.java:0888:<init>|  Chip.java:1226:<init>|  Chip.java:1225:RegisterSet|  TreeNet.java:0485:addressPath|  TreeNet.java:0122:<init>|  TreeNet.java:1680:<init>|  TreeNet.java:1679:test_sequence_simplexV|  TreeNet.java:1764:newTests|  TreeNet.java:1769:main|");
+                  $fdisplay(f, "Location: Chip.java:0888:<init>|  Chip.java:1226:<init>|  Chip.java:1225:RegisterSet|  TreeNet.java:0492:addressPath|  TreeNet.java:0122:<init>|  TreeNet.java:1685:<init>|  TreeNet.java:1684:test_sequence_simplexV|  TreeNet.java:1761:oldTests|  TreeNet.java:1765:newTests|  TreeNet.java:1772:main|");
                   $fclose(f);
                 end
               end
@@ -574,7 +572,7 @@ module TreeNet;                                                                 
                 begin
                   integer f;
                   f = $fopen("verilog/trace_verilog.txt", "a");
-                  $fdisplay(f, "Location: Chip.java:0888:<init>|  Chip.java:1226:<init>|  Chip.java:1225:RegisterSet|  TreeNet.java:0486:addressPath|  TreeNet.java:0122:<init>|  TreeNet.java:1680:<init>|  TreeNet.java:1679:test_sequence_simplexV|  TreeNet.java:1764:newTests|  TreeNet.java:1769:main|");
+                  $fdisplay(f, "Location: Chip.java:0888:<init>|  Chip.java:1226:<init>|  Chip.java:1225:RegisterSet|  TreeNet.java:0493:addressPath|  TreeNet.java:0122:<init>|  TreeNet.java:1685:<init>|  TreeNet.java:1684:test_sequence_simplexV|  TreeNet.java:1761:oldTests|  TreeNet.java:1765:newTests|  TreeNet.java:1772:main|");
                   $fclose(f);
                 end
               end
@@ -588,7 +586,7 @@ module TreeNet;                                                                 
                 begin
                   integer f;
                   f = $fopen("verilog/trace_verilog.txt", "a");
-                  $fdisplay(f, "Location: Chip.java:0888:<init>|  Chip.java:1226:<init>|  Chip.java:1225:RegisterSet|  TreeNet.java:0485:addressPath|  TreeNet.java:0122:<init>|  TreeNet.java:1680:<init>|  TreeNet.java:1679:test_sequence_simplexV|  TreeNet.java:1764:newTests|  TreeNet.java:1769:main|");
+                  $fdisplay(f, "Location: Chip.java:0888:<init>|  Chip.java:1226:<init>|  Chip.java:1225:RegisterSet|  TreeNet.java:0492:addressPath|  TreeNet.java:0122:<init>|  TreeNet.java:1685:<init>|  TreeNet.java:1684:test_sequence_simplexV|  TreeNet.java:1761:oldTests|  TreeNet.java:1765:newTests|  TreeNet.java:1772:main|");
                   $fclose(f);
                 end
               end
@@ -602,7 +600,7 @@ module TreeNet;                                                                 
                 begin
                   integer f;
                   f = $fopen("verilog/trace_verilog.txt", "a");
-                  $fdisplay(f, "Location: Chip.java:0888:<init>|  Chip.java:1226:<init>|  Chip.java:1225:RegisterSet|  TreeNet.java:0486:addressPath|  TreeNet.java:0122:<init>|  TreeNet.java:1680:<init>|  TreeNet.java:1679:test_sequence_simplexV|  TreeNet.java:1764:newTests|  TreeNet.java:1769:main|");
+                  $fdisplay(f, "Location: Chip.java:0888:<init>|  Chip.java:1226:<init>|  Chip.java:1225:RegisterSet|  TreeNet.java:0493:addressPath|  TreeNet.java:0122:<init>|  TreeNet.java:1685:<init>|  TreeNet.java:1684:test_sequence_simplexV|  TreeNet.java:1761:oldTests|  TreeNet.java:1765:newTests|  TreeNet.java:1772:main|");
                   $fclose(f);
                 end
               end
@@ -616,7 +614,7 @@ module TreeNet;                                                                 
                 begin
                   integer f;
                   f = $fopen("verilog/trace_verilog.txt", "a");
-                  $fdisplay(f, "Location: Chip.java:0888:<init>|  Chip.java:1226:<init>|  Chip.java:1225:RegisterSet|  TreeNet.java:0485:addressPath|  TreeNet.java:0122:<init>|  TreeNet.java:1680:<init>|  TreeNet.java:1679:test_sequence_simplexV|  TreeNet.java:1764:newTests|  TreeNet.java:1769:main|");
+                  $fdisplay(f, "Location: Chip.java:0888:<init>|  Chip.java:1226:<init>|  Chip.java:1225:RegisterSet|  TreeNet.java:0492:addressPath|  TreeNet.java:0122:<init>|  TreeNet.java:1685:<init>|  TreeNet.java:1684:test_sequence_simplexV|  TreeNet.java:1761:oldTests|  TreeNet.java:1765:newTests|  TreeNet.java:1772:main|");
                   $fclose(f);
                 end
               end
@@ -630,7 +628,7 @@ module TreeNet;                                                                 
                 begin
                   integer f;
                   f = $fopen("verilog/trace_verilog.txt", "a");
-                  $fdisplay(f, "Location: Chip.java:0888:<init>|  Chip.java:1226:<init>|  Chip.java:1225:RegisterSet|  TreeNet.java:0486:addressPath|  TreeNet.java:0122:<init>|  TreeNet.java:1680:<init>|  TreeNet.java:1679:test_sequence_simplexV|  TreeNet.java:1764:newTests|  TreeNet.java:1769:main|");
+                  $fdisplay(f, "Location: Chip.java:0888:<init>|  Chip.java:1226:<init>|  Chip.java:1225:RegisterSet|  TreeNet.java:0493:addressPath|  TreeNet.java:0122:<init>|  TreeNet.java:1685:<init>|  TreeNet.java:1684:test_sequence_simplexV|  TreeNet.java:1761:oldTests|  TreeNet.java:1765:newTests|  TreeNet.java:1772:main|");
                   $fclose(f);
                 end
               end
@@ -644,7 +642,7 @@ module TreeNet;                                                                 
                 begin
                   integer f;
                   f = $fopen("verilog/trace_verilog.txt", "a");
-                  $fdisplay(f, "Location: Chip.java:0888:<init>|  Chip.java:1226:<init>|  Chip.java:1225:RegisterSet|  TreeNet.java:0485:addressPath|  TreeNet.java:0122:<init>|  TreeNet.java:1680:<init>|  TreeNet.java:1679:test_sequence_simplexV|  TreeNet.java:1764:newTests|  TreeNet.java:1769:main|");
+                  $fdisplay(f, "Location: Chip.java:0888:<init>|  Chip.java:1226:<init>|  Chip.java:1225:RegisterSet|  TreeNet.java:0492:addressPath|  TreeNet.java:0122:<init>|  TreeNet.java:1685:<init>|  TreeNet.java:1684:test_sequence_simplexV|  TreeNet.java:1761:oldTests|  TreeNet.java:1765:newTests|  TreeNet.java:1772:main|");
                   $fclose(f);
                 end
               end
@@ -658,7 +656,7 @@ module TreeNet;                                                                 
                 begin
                   integer f;
                   f = $fopen("verilog/trace_verilog.txt", "a");
-                  $fdisplay(f, "Location: Chip.java:0888:<init>|  Chip.java:1226:<init>|  Chip.java:1225:RegisterSet|  TreeNet.java:0486:addressPath|  TreeNet.java:0122:<init>|  TreeNet.java:1680:<init>|  TreeNet.java:1679:test_sequence_simplexV|  TreeNet.java:1764:newTests|  TreeNet.java:1769:main|");
+                  $fdisplay(f, "Location: Chip.java:0888:<init>|  Chip.java:1226:<init>|  Chip.java:1225:RegisterSet|  TreeNet.java:0493:addressPath|  TreeNet.java:0122:<init>|  TreeNet.java:1685:<init>|  TreeNet.java:1684:test_sequence_simplexV|  TreeNet.java:1761:oldTests|  TreeNet.java:1765:newTests|  TreeNet.java:1772:main|");
                   $fclose(f);
                 end
               end
@@ -672,7 +670,7 @@ module TreeNet;                                                                 
                 begin
                   integer f;
                   f = $fopen("verilog/trace_verilog.txt", "a");
-                  $fdisplay(f, "Location: Chip.java:0888:<init>|  Chip.java:1206:<init>|  Chip.java:1205:RegisterSet|  TreeNet.java:1710:test_sequence_simplexV|  TreeNet.java:1764:newTests|  TreeNet.java:1769:main|");
+                  $fdisplay(f, "Location: Chip.java:0888:<init>|  Chip.java:1206:<init>|  Chip.java:1205:RegisterSet|  TreeNet.java:1714:test_sequence_simplexV|  TreeNet.java:1761:oldTests|  TreeNet.java:1765:newTests|  TreeNet.java:1772:main|");
                   $fclose(f);
                 end
               end
@@ -686,7 +684,7 @@ module TreeNet;                                                                 
                 begin
                   integer f;
                   f = $fopen("verilog/trace_verilog.txt", "a");
-                  $fdisplay(f, "Location: Chip.java:0888:<init>|  Chip.java:1226:<init>|  Chip.java:1225:RegisterSet|  TreeNet.java:1712:test_sequence_simplexV|  TreeNet.java:1764:newTests|  TreeNet.java:1769:main|");
+                  $fdisplay(f, "Location: Chip.java:0888:<init>|  Chip.java:1226:<init>|  Chip.java:1225:RegisterSet|  TreeNet.java:1716:test_sequence_simplexV|  TreeNet.java:1761:oldTests|  TreeNet.java:1765:newTests|  TreeNet.java:1772:main|");
                   $fclose(f);
                 end
               end
@@ -700,7 +698,7 @@ module TreeNet;                                                                 
                 begin
                   integer f;
                   f = $fopen("verilog/trace_verilog.txt", "a");
-                  $fdisplay(f, "Location: Chip.java:0888:<init>|  Chip.java:1226:<init>|  Chip.java:1225:RegisterSet|  TreeNet.java:1712:test_sequence_simplexV|  TreeNet.java:1764:newTests|  TreeNet.java:1769:main|");
+                  $fdisplay(f, "Location: Chip.java:0888:<init>|  Chip.java:1226:<init>|  Chip.java:1225:RegisterSet|  TreeNet.java:1716:test_sequence_simplexV|  TreeNet.java:1761:oldTests|  TreeNet.java:1765:newTests|  TreeNet.java:1772:main|");
                   $fclose(f);
                 end
               end
@@ -714,7 +712,7 @@ module TreeNet;                                                                 
                 begin
                   integer f;
                   f = $fopen("verilog/trace_verilog.txt", "a");
-                  $fdisplay(f, "Location: Chip.java:0888:<init>|  Chip.java:1226:<init>|  Chip.java:1225:RegisterSet|  TreeNet.java:1712:test_sequence_simplexV|  TreeNet.java:1764:newTests|  TreeNet.java:1769:main|");
+                  $fdisplay(f, "Location: Chip.java:0888:<init>|  Chip.java:1226:<init>|  Chip.java:1225:RegisterSet|  TreeNet.java:1716:test_sequence_simplexV|  TreeNet.java:1761:oldTests|  TreeNet.java:1765:newTests|  TreeNet.java:1772:main|");
                   $fclose(f);
                 end
               end
@@ -728,7 +726,7 @@ module TreeNet;                                                                 
                 begin
                   integer f;
                   f = $fopen("verilog/trace_verilog.txt", "a");
-                  $fdisplay(f, "Location: Chip.java:0888:<init>|  Chip.java:1226:<init>|  Chip.java:1225:RegisterSet|  TreeNet.java:1712:test_sequence_simplexV|  TreeNet.java:1764:newTests|  TreeNet.java:1769:main|");
+                  $fdisplay(f, "Location: Chip.java:0888:<init>|  Chip.java:1226:<init>|  Chip.java:1225:RegisterSet|  TreeNet.java:1716:test_sequence_simplexV|  TreeNet.java:1761:oldTests|  TreeNet.java:1765:newTests|  TreeNet.java:1772:main|");
                   $fclose(f);
                 end
               end
@@ -742,7 +740,7 @@ module TreeNet;                                                                 
                 begin
                   integer f;
                   f = $fopen("verilog/trace_verilog.txt", "a");
-                  $fdisplay(f, "Location: Chip.java:0888:<init>|  Chip.java:1226:<init>|  Chip.java:1225:RegisterSet|  TreeNet.java:1712:test_sequence_simplexV|  TreeNet.java:1764:newTests|  TreeNet.java:1769:main|");
+                  $fdisplay(f, "Location: Chip.java:0888:<init>|  Chip.java:1226:<init>|  Chip.java:1225:RegisterSet|  TreeNet.java:1716:test_sequence_simplexV|  TreeNet.java:1761:oldTests|  TreeNet.java:1765:newTests|  TreeNet.java:1772:main|");
                   $fclose(f);
                 end
               end
@@ -756,7 +754,7 @@ module TreeNet;                                                                 
                 begin
                   integer f;
                   f = $fopen("verilog/trace_verilog.txt", "a");
-                  $fdisplay(f, "Location: Chip.java:0888:<init>|  Chip.java:1226:<init>|  Chip.java:1225:RegisterSet|  TreeNet.java:1712:test_sequence_simplexV|  TreeNet.java:1764:newTests|  TreeNet.java:1769:main|");
+                  $fdisplay(f, "Location: Chip.java:0888:<init>|  Chip.java:1226:<init>|  Chip.java:1225:RegisterSet|  TreeNet.java:1716:test_sequence_simplexV|  TreeNet.java:1761:oldTests|  TreeNet.java:1765:newTests|  TreeNet.java:1772:main|");
                   $fclose(f);
                 end
               end
@@ -770,7 +768,7 @@ module TreeNet;                                                                 
                 begin
                   integer f;
                   f = $fopen("verilog/trace_verilog.txt", "a");
-                  $fdisplay(f, "Location: Chip.java:0888:<init>|  Chip.java:1661:<init>|  Chip.java:1661:Lt|  TreeNet.java:1716:code|  Chip.java:0906:<init>|  TreeNet.java:1715:<init>|  TreeNet.java:1714:test_sequence_simplexV|  TreeNet.java:1764:newTests|  TreeNet.java:1769:main|");
+                  $fdisplay(f, "Location: Chip.java:0888:<init>|  Chip.java:1691:<init>|  Chip.java:1691:Lt|  TreeNet.java:1720:code|  Chip.java:0906:<init>|  TreeNet.java:1719:<init>|  TreeNet.java:1718:test_sequence_simplexV|  TreeNet.java:1761:oldTests|  TreeNet.java:1765:newTests|  TreeNet.java:1772:main|");
                   $fclose(f);
                 end
               end
@@ -778,7 +776,7 @@ module TreeNet;                                                                 
           end
           39: begin
             if (main_test_27 == 0) begin
-              main_pc          <= 46;
+              main_pc          <= 45;
             end
             else begin
               main_pc          <= main_pc + 1;
@@ -788,27 +786,13 @@ module TreeNet;                                                                 
                 begin
                   integer f;
                   f = $fopen("verilog/trace_verilog.txt", "a");
-                  $fdisplay(f, "Location: Chip.java:0991:<init>|  Chip.java:0990:<init>|  TreeNet.java:1717:<init>|  TreeNet.java:1716:code|  Chip.java:0906:<init>|  TreeNet.java:1715:<init>|  TreeNet.java:1714:test_sequence_simplexV|  TreeNet.java:1764:newTests|  TreeNet.java:1769:main|");
+                  $fdisplay(f, "Location: Chip.java:0991:<init>|  Chip.java:0990:<init>|  TreeNet.java:1721:<init>|  TreeNet.java:1720:code|  Chip.java:0906:<init>|  TreeNet.java:1719:<init>|  TreeNet.java:1718:test_sequence_simplexV|  TreeNet.java:1761:oldTests|  TreeNet.java:1765:newTests|  TreeNet.java:1772:main|");
                   $fclose(f);
                 end
               end
             endcase
           end
           40: begin
-            main_text_29     <= main_inputs_25[main_i_22];
-            main_pc          <= main_pc + 1;
-            case (main_pc)
-              40: begin
-                begin
-                  integer f;
-                  f = $fopen("verilog/trace_verilog.txt", "a");
-                  $fdisplay(f, "Location: Chip.java:0888:<init>|  Chip.java:1341:<init>|  Chip.java:1340:CopyIs|  TreeNet.java:1718:Then|  Chip.java:0998:<init>|  TreeNet.java:1717:<init>|  TreeNet.java:1716:code|  Chip.java:0906:<init>|  TreeNet.java:1715:<init>|  TreeNet.java:1714:test_sequence_simplexV|  TreeNet.java:1764:newTests|  TreeNet.java:1769:main|");
-                  $fclose(f);
-                end
-              end
-            endcase
-          end
-          41: begin
             if (main_messageUp_4[main_source_28]) begin
               main_putMessage_0                <= 0;
             end
@@ -817,49 +801,62 @@ module TreeNet;                                                                 
               main_MessageUpNumber_7[main_source_28]           <= main_MessageNumber_20;
               main_MessageUpSource_8[main_source_28]           <= main_source_28;
               main_MessageUpTarget_9[main_source_28]           <= main_target_1;
-              main_MessageUpText_10[main_source_28]            <= main_text_29;
+              main_MessageUpText_10[main_source_28]            <= main_inputs_25[main_i_22];
               main_MessageNumber_20            <= main_MessageNumber_20 + 1;
               main_putMessage_0                <= 1;
             end
             main_pc          <= main_pc + 1;
             case (main_pc)
+              40: begin
+                begin
+                  integer f;
+                  f = $fopen("verilog/trace_verilog.txt", "a");
+                  $fdisplay(f, "Location: Chip.java:0888:<init>|  TreeNet.java:0391:<init>|  TreeNet.java:0390:PutMessage|  TreeNet.java:0378:PutMessage|  TreeNet.java:1722:Then|  Chip.java:0998:<init>|  TreeNet.java:1721:<init>|  TreeNet.java:1720:code|  Chip.java:0906:<init>|  TreeNet.java:1719:<init>|  TreeNet.java:1718:test_sequence_simplexV|  TreeNet.java:1761:oldTests|  TreeNet.java:1765:newTests|  TreeNet.java:1772:main|");
+                  $fclose(f);
+                end
+              end
+            endcase
+          end
+          41: begin
+            if (main_putMessage_0 == 0) begin
+              main_pc          <= 44;
+            end
+            else begin
+              main_pc          <= main_pc + 1;
+            end
+            case (main_pc)
               41: begin
                 begin
                   integer f;
                   f = $fopen("verilog/trace_verilog.txt", "a");
-                  $fdisplay(f, "Location: Chip.java:0888:<init>|  TreeNet.java:0384:<init>|  TreeNet.java:0383:PutMessage|  TreeNet.java:0377:PutMessage|  TreeNet.java:1719:Then|  Chip.java:0998:<init>|  TreeNet.java:1717:<init>|  TreeNet.java:1716:code|  Chip.java:0906:<init>|  TreeNet.java:1715:<init>|  TreeNet.java:1714:test_sequence_simplexV|  TreeNet.java:1764:newTests|  TreeNet.java:1769:main|");
+                  $fdisplay(f, "Location: Chip.java:0991:<init>|  Chip.java:0990:<init>|  TreeNet.java:1723:<init>|  TreeNet.java:1722:Then|  Chip.java:0998:<init>|  TreeNet.java:1721:<init>|  TreeNet.java:1720:code|  Chip.java:0906:<init>|  TreeNet.java:1719:<init>|  TreeNet.java:1718:test_sequence_simplexV|  TreeNet.java:1761:oldTests|  TreeNet.java:1765:newTests|  TreeNet.java:1772:main|");
                   $fclose(f);
                 end
               end
             endcase
           end
           42: begin
-            if (main_putMessage_0 == 0) begin
-              main_pc          <= 45;
-            end
-            else begin
-              main_pc          <= main_pc + 1;
-            end
+            main_i_22        <= main_i_22 + 1;
+            main_pc          <= main_pc + 1;
             case (main_pc)
               42: begin
                 begin
                   integer f;
                   f = $fopen("verilog/trace_verilog.txt", "a");
-                  $fdisplay(f, "Location: Chip.java:0991:<init>|  Chip.java:0990:<init>|  TreeNet.java:1720:<init>|  TreeNet.java:1719:Then|  Chip.java:0998:<init>|  TreeNet.java:1717:<init>|  TreeNet.java:1716:code|  Chip.java:0906:<init>|  TreeNet.java:1715:<init>|  TreeNet.java:1714:test_sequence_simplexV|  TreeNet.java:1764:newTests|  TreeNet.java:1769:main|");
+                  $fdisplay(f, "Location: Chip.java:0888:<init>|  Chip.java:1779:<init>|  Chip.java:1778:Inc|  TreeNet.java:1723:Then|  Chip.java:0998:<init>|  TreeNet.java:1723:<init>|  TreeNet.java:1722:Then|  Chip.java:0998:<init>|  TreeNet.java:1721:<init>|  TreeNet.java:1720:code|  Chip.java:0906:<init>|  TreeNet.java:1719:<init>|  TreeNet.java:1718:test_sequence_simplexV|  TreeNet.java:1761:oldTests|  TreeNet.java:1765:newTests|  TreeNet.java:1772:main|");
                   $fclose(f);
                 end
               end
             endcase
           end
           43: begin
-            main_i_22        <= main_i_22 + 1;
-            main_pc          <= main_pc + 1;
+            main_pc          <= 44;
             case (main_pc)
               43: begin
                 begin
                   integer f;
                   f = $fopen("verilog/trace_verilog.txt", "a");
-                  $fdisplay(f, "Location: Chip.java:0888:<init>|  Chip.java:1749:<init>|  Chip.java:1748:Inc|  TreeNet.java:1720:Then|  Chip.java:0998:<init>|  TreeNet.java:1720:<init>|  TreeNet.java:1719:Then|  Chip.java:0998:<init>|  TreeNet.java:1717:<init>|  TreeNet.java:1716:code|  Chip.java:0906:<init>|  TreeNet.java:1715:<init>|  TreeNet.java:1714:test_sequence_simplexV|  TreeNet.java:1764:newTests|  TreeNet.java:1769:main|");
+                  $fdisplay(f, "Location: Chip.java:1000:<init>|  Chip.java:0999:<init>|  TreeNet.java:1723:<init>|  TreeNet.java:1722:Then|  Chip.java:0998:<init>|  TreeNet.java:1721:<init>|  TreeNet.java:1720:code|  Chip.java:0906:<init>|  TreeNet.java:1719:<init>|  TreeNet.java:1718:test_sequence_simplexV|  TreeNet.java:1761:oldTests|  TreeNet.java:1765:newTests|  TreeNet.java:1772:main|");
                   $fclose(f);
                 end
               end
@@ -872,26 +869,13 @@ module TreeNet;                                                                 
                 begin
                   integer f;
                   f = $fopen("verilog/trace_verilog.txt", "a");
-                  $fdisplay(f, "Location: Chip.java:1000:<init>|  Chip.java:0999:<init>|  TreeNet.java:1720:<init>|  TreeNet.java:1719:Then|  Chip.java:0998:<init>|  TreeNet.java:1717:<init>|  TreeNet.java:1716:code|  Chip.java:0906:<init>|  TreeNet.java:1715:<init>|  TreeNet.java:1714:test_sequence_simplexV|  TreeNet.java:1764:newTests|  TreeNet.java:1769:main|");
+                  $fdisplay(f, "Location: Chip.java:1000:<init>|  Chip.java:0999:<init>|  TreeNet.java:1721:<init>|  TreeNet.java:1720:code|  Chip.java:0906:<init>|  TreeNet.java:1719:<init>|  TreeNet.java:1718:test_sequence_simplexV|  TreeNet.java:1761:oldTests|  TreeNet.java:1765:newTests|  TreeNet.java:1772:main|");
                   $fclose(f);
                 end
               end
             endcase
           end
           45: begin
-            main_pc          <= 46;
-            case (main_pc)
-              45: begin
-                begin
-                  integer f;
-                  f = $fopen("verilog/trace_verilog.txt", "a");
-                  $fdisplay(f, "Location: Chip.java:1000:<init>|  Chip.java:0999:<init>|  TreeNet.java:1717:<init>|  TreeNet.java:1716:code|  Chip.java:0906:<init>|  TreeNet.java:1715:<init>|  TreeNet.java:1714:test_sequence_simplexV|  TreeNet.java:1764:newTests|  TreeNet.java:1769:main|");
-                  $fclose(f);
-                end
-              end
-            endcase
-          end
-          46: begin
             if (main_LeftRightPriority_19) begin
               if ((!main_messageUp_4[0] && main_messageUp_4[1] && !((main_address_2[1] & main_addressMask_3[1]) == (main_address_2[main_MessageUpTarget_9[1]] & main_addressMask_3[1])))) begin
                 main_messageUp_4[0]              <= main_messageUp_4[1];
@@ -1146,17 +1130,17 @@ module TreeNet;                                                                 
             end
             main_pc          <= main_pc + 1;
             case (main_pc)
-              46: begin
+              45: begin
                 begin
                   integer f;
                   f = $fopen("verilog/trace_verilog.txt", "a");
-                  $fdisplay(f, "Location: Chip.java:0888:<init>|  TreeNet.java:0205:<init>|  TreeNet.java:0204:Transmit|  TreeNet.java:1725:code|  Chip.java:0906:<init>|  TreeNet.java:1715:<init>|  TreeNet.java:1714:test_sequence_simplexV|  TreeNet.java:1764:newTests|  TreeNet.java:1769:main|");
+                  $fdisplay(f, "Location: Chip.java:0888:<init>|  TreeNet.java:0205:<init>|  TreeNet.java:0204:Transmit|  TreeNet.java:1728:code|  Chip.java:0906:<init>|  TreeNet.java:1719:<init>|  TreeNet.java:1718:test_sequence_simplexV|  TreeNet.java:1761:oldTests|  TreeNet.java:1765:newTests|  TreeNet.java:1772:main|");
                   $fclose(f);
                 end
               end
             endcase
           end
-          47: begin
+          46: begin
             if (main_messageUp_4[14] && main_messageUp_4[6] && main_MessageUpNumber_7[14] == main_MessageUpNumber_7[6]) begin
               main_messageUp_4[14]             <= 0;
             end
@@ -1201,288 +1185,301 @@ module TreeNet;                                                                 
             end
             main_pc          <= main_pc + 1;
             case (main_pc)
+              46: begin
+                begin
+                  integer f;
+                  f = $fopen("verilog/trace_verilog.txt", "a");
+                  $fdisplay(f, "Location: Chip.java:0888:<init>|  TreeNet.java:0213:<init>|  TreeNet.java:0212:Transmit|  TreeNet.java:1728:code|  Chip.java:0906:<init>|  TreeNet.java:1719:<init>|  TreeNet.java:1718:test_sequence_simplexV|  TreeNet.java:1761:oldTests|  TreeNet.java:1765:newTests|  TreeNet.java:1772:main|");
+                  $fclose(f);
+                end
+              end
+            endcase
+          end
+          47: begin
+            main_Valid_34    <= main_messageUp_4[0];
+            main_pc          <= main_pc + 1;
+            case (main_pc)
               47: begin
                 begin
                   integer f;
                   f = $fopen("verilog/trace_verilog.txt", "a");
-                  $fdisplay(f, "Location: Chip.java:0888:<init>|  TreeNet.java:0213:<init>|  TreeNet.java:0212:Transmit|  TreeNet.java:1725:code|  Chip.java:0906:<init>|  TreeNet.java:1715:<init>|  TreeNet.java:1714:test_sequence_simplexV|  TreeNet.java:1764:newTests|  TreeNet.java:1769:main|");
+                  $fdisplay(f, "Location: Chip.java:0888:<init>|  Chip.java:1316:<init>|  Chip.java:1315:Copy|  TreeNet.java:0469:get|  TreeNet.java:1687:TransmitTop|  TreeNet.java:0240:Transmit|  TreeNet.java:1728:code|  Chip.java:0906:<init>|  TreeNet.java:1719:<init>|  TreeNet.java:1718:test_sequence_simplexV|  TreeNet.java:1761:oldTests|  TreeNet.java:1765:newTests|  TreeNet.java:1772:main|");
                   $fclose(f);
                 end
               end
             endcase
           end
           48: begin
-            main_Valid_35    <= main_messageUp_4[0];
+            main_Source_35   <= main_MessageUpSource_8[0];
             main_pc          <= main_pc + 1;
             case (main_pc)
               48: begin
                 begin
                   integer f;
                   f = $fopen("verilog/trace_verilog.txt", "a");
-                  $fdisplay(f, "Location: Chip.java:0888:<init>|  Chip.java:1316:<init>|  Chip.java:1315:Copy|  TreeNet.java:0462:get|  TreeNet.java:1682:TransmitTop|  TreeNet.java:0240:Transmit|  TreeNet.java:1725:code|  Chip.java:0906:<init>|  TreeNet.java:1715:<init>|  TreeNet.java:1714:test_sequence_simplexV|  TreeNet.java:1764:newTests|  TreeNet.java:1769:main|");
+                  $fdisplay(f, "Location: Chip.java:0888:<init>|  Chip.java:1316:<init>|  Chip.java:1315:Copy|  TreeNet.java:0470:get|  TreeNet.java:1687:TransmitTop|  TreeNet.java:0240:Transmit|  TreeNet.java:1728:code|  Chip.java:0906:<init>|  TreeNet.java:1719:<init>|  TreeNet.java:1718:test_sequence_simplexV|  TreeNet.java:1761:oldTests|  TreeNet.java:1765:newTests|  TreeNet.java:1772:main|");
                   $fclose(f);
                 end
               end
             endcase
           end
           49: begin
-            main_Source_36   <= main_MessageUpSource_8[0];
+            main_Number_36   <= main_MessageUpNumber_7[0];
             main_pc          <= main_pc + 1;
             case (main_pc)
               49: begin
                 begin
                   integer f;
                   f = $fopen("verilog/trace_verilog.txt", "a");
-                  $fdisplay(f, "Location: Chip.java:0888:<init>|  Chip.java:1316:<init>|  Chip.java:1315:Copy|  TreeNet.java:0463:get|  TreeNet.java:1682:TransmitTop|  TreeNet.java:0240:Transmit|  TreeNet.java:1725:code|  Chip.java:0906:<init>|  TreeNet.java:1715:<init>|  TreeNet.java:1714:test_sequence_simplexV|  TreeNet.java:1764:newTests|  TreeNet.java:1769:main|");
+                  $fdisplay(f, "Location: Chip.java:0888:<init>|  Chip.java:1316:<init>|  Chip.java:1315:Copy|  TreeNet.java:0471:get|  TreeNet.java:1687:TransmitTop|  TreeNet.java:0240:Transmit|  TreeNet.java:1728:code|  Chip.java:0906:<init>|  TreeNet.java:1719:<init>|  TreeNet.java:1718:test_sequence_simplexV|  TreeNet.java:1761:oldTests|  TreeNet.java:1765:newTests|  TreeNet.java:1772:main|");
                   $fclose(f);
                 end
               end
             endcase
           end
           50: begin
-            main_Number_37   <= main_MessageUpNumber_7[0];
+            main_Text_37     <= main_MessageUpText_10[0];
             main_pc          <= main_pc + 1;
             case (main_pc)
               50: begin
                 begin
                   integer f;
                   f = $fopen("verilog/trace_verilog.txt", "a");
-                  $fdisplay(f, "Location: Chip.java:0888:<init>|  Chip.java:1316:<init>|  Chip.java:1315:Copy|  TreeNet.java:0464:get|  TreeNet.java:1682:TransmitTop|  TreeNet.java:0240:Transmit|  TreeNet.java:1725:code|  Chip.java:0906:<init>|  TreeNet.java:1715:<init>|  TreeNet.java:1714:test_sequence_simplexV|  TreeNet.java:1764:newTests|  TreeNet.java:1769:main|");
+                  $fdisplay(f, "Location: Chip.java:0888:<init>|  Chip.java:1316:<init>|  Chip.java:1315:Copy|  TreeNet.java:0472:get|  TreeNet.java:1687:TransmitTop|  TreeNet.java:0240:Transmit|  TreeNet.java:1728:code|  Chip.java:0906:<init>|  TreeNet.java:1719:<init>|  TreeNet.java:1718:test_sequence_simplexV|  TreeNet.java:1761:oldTests|  TreeNet.java:1765:newTests|  TreeNet.java:1772:main|");
                   $fclose(f);
                 end
               end
             endcase
           end
           51: begin
-            main_Text_38     <= main_MessageUpText_10[0];
-            main_pc          <= main_pc + 1;
-            case (main_pc)
-              51: begin
-                begin
-                  integer f;
-                  f = $fopen("verilog/trace_verilog.txt", "a");
-                  $fdisplay(f, "Location: Chip.java:0888:<init>|  Chip.java:1316:<init>|  Chip.java:1315:Copy|  TreeNet.java:0465:get|  TreeNet.java:1682:TransmitTop|  TreeNet.java:0240:Transmit|  TreeNet.java:1725:code|  Chip.java:0906:<init>|  TreeNet.java:1715:<init>|  TreeNet.java:1714:test_sequence_simplexV|  TreeNet.java:1764:newTests|  TreeNet.java:1769:main|");
-                  $fclose(f);
-                end
-              end
-            endcase
-          end
-          52: begin
-            if (main_Valid_35 == 0) begin
-              main_pc          <= 69;
-            end
-            else begin
-              main_pc          <= main_pc + 1;
-            end
-            case (main_pc)
-              52: begin
-                begin
-                  integer f;
-                  f = $fopen("verilog/trace_verilog.txt", "a");
-                  $fdisplay(f, "Location: Chip.java:0991:<init>|  Chip.java:0990:<init>|  TreeNet.java:1684:<init>|  TreeNet.java:1683:TransmitTop|  TreeNet.java:0240:Transmit|  TreeNet.java:1725:code|  Chip.java:0906:<init>|  TreeNet.java:1715:<init>|  TreeNet.java:1714:test_sequence_simplexV|  TreeNet.java:1764:newTests|  TreeNet.java:1769:main|");
-                  $fclose(f);
-                end
-              end
-            endcase
-          end
-          53: begin
-            main_text_39     <= main_Text_38;
-            main_pc          <= main_pc + 1;
-            case (main_pc)
-              53: begin
-                begin
-                  integer f;
-                  f = $fopen("verilog/trace_verilog.txt", "a");
-                  $fdisplay(f, "Location: Chip.java:0888:<init>|  Chip.java:1293:<init>|  Chip.java:1292:Copy|  TreeNet.java:1686:Then|  Chip.java:0998:<init>|  TreeNet.java:1684:<init>|  TreeNet.java:1683:TransmitTop|  TreeNet.java:0240:Transmit|  TreeNet.java:1725:code|  Chip.java:0906:<init>|  TreeNet.java:1715:<init>|  TreeNet.java:1714:test_sequence_simplexV|  TreeNet.java:1764:newTests|  TreeNet.java:1769:main|");
-                  $fclose(f);
-                end
-              end
-            endcase
-          end
-          54: begin
-            main_text_39     <= main_text_39 >> 1;
-            main_pc          <= main_pc + 1;
-            case (main_pc)
-              54: begin
-                begin
-                  integer f;
-                  f = $fopen("verilog/trace_verilog.txt", "a");
-                  $fdisplay(f, "Location: Chip.java:0888:<init>|  Chip.java:1774:<init>|  Chip.java:1773:Half|  TreeNet.java:1686:Then|  Chip.java:0998:<init>|  TreeNet.java:1684:<init>|  TreeNet.java:1683:TransmitTop|  TreeNet.java:0240:Transmit|  TreeNet.java:1725:code|  Chip.java:0906:<init>|  TreeNet.java:1715:<init>|  TreeNet.java:1714:test_sequence_simplexV|  TreeNet.java:1764:newTests|  TreeNet.java:1769:main|");
-                  $fclose(f);
-                end
-              end
-            endcase
-          end
-          55: begin
-            main_test_40     <= main_messageDown_5[0];
-            main_pc          <= main_pc + 1;
-            case (main_pc)
-              55: begin
-                begin
-                  integer f;
-                  f = $fopen("verilog/trace_verilog.txt", "a");
-                  $fdisplay(f, "Location: Chip.java:0888:<init>|  Chip.java:1316:<init>|  Chip.java:1315:Copy|  TreeNet.java:0320:putReply|  TreeNet.java:1687:Then|  Chip.java:0998:<init>|  TreeNet.java:1684:<init>|  TreeNet.java:1683:TransmitTop|  TreeNet.java:0240:Transmit|  TreeNet.java:1725:code|  Chip.java:0906:<init>|  TreeNet.java:1715:<init>|  TreeNet.java:1714:test_sequence_simplexV|  TreeNet.java:1764:newTests|  TreeNet.java:1769:main|");
-                  $fclose(f);
-                end
-              end
-            endcase
-          end
-          56: begin
-            main_test_40     <= main_test_40 != 0 ? 0 : 1;
-            main_pc          <= main_pc + 1;
-            case (main_pc)
-              56: begin
-                begin
-                  integer f;
-                  f = $fopen("verilog/trace_verilog.txt", "a");
-                  $fdisplay(f, "Location: Chip.java:0888:<init>|  Chip.java:1765:<init>|  Chip.java:1764:Not|  TreeNet.java:0321:putReply|  TreeNet.java:1687:Then|  Chip.java:0998:<init>|  TreeNet.java:1684:<init>|  TreeNet.java:1683:TransmitTop|  TreeNet.java:0240:Transmit|  TreeNet.java:1725:code|  Chip.java:0906:<init>|  TreeNet.java:1715:<init>|  TreeNet.java:1714:test_sequence_simplexV|  TreeNet.java:1764:newTests|  TreeNet.java:1769:main|");
-                  $fclose(f);
-                end
-              end
-            endcase
-          end
-          57: begin
-            if (main_test_40 == 0) begin
-              main_pc          <= 65;
-            end
-            else begin
-              main_pc          <= main_pc + 1;
-            end
-            case (main_pc)
-              57: begin
-                begin
-                  integer f;
-                  f = $fopen("verilog/trace_verilog.txt", "a");
-                  $fdisplay(f, "Location: Chip.java:0991:<init>|  Chip.java:0990:<init>|  TreeNet.java:0323:<init>|  TreeNet.java:0322:putReply|  TreeNet.java:1687:Then|  Chip.java:0998:<init>|  TreeNet.java:1684:<init>|  TreeNet.java:1683:TransmitTop|  TreeNet.java:0240:Transmit|  TreeNet.java:1725:code|  Chip.java:0906:<init>|  TreeNet.java:1715:<init>|  TreeNet.java:1714:test_sequence_simplexV|  TreeNet.java:1764:newTests|  TreeNet.java:1769:main|");
-                  $fclose(f);
-                end
-              end
-            endcase
-          end
-          58: begin
-            main_MessageNumber_20            <= main_MessageNumber_20 + 1;
-            main_pc          <= main_pc + 1;
-            case (main_pc)
-              58: begin
-                begin
-                  integer f;
-                  f = $fopen("verilog/trace_verilog.txt", "a");
-                  $fdisplay(f, "Location: Chip.java:0888:<init>|  Chip.java:1749:<init>|  Chip.java:1748:Inc|  TreeNet.java:0324:Then|  Chip.java:0998:<init>|  TreeNet.java:0323:<init>|  TreeNet.java:0322:putReply|  TreeNet.java:1687:Then|  Chip.java:0998:<init>|  TreeNet.java:1684:<init>|  TreeNet.java:1683:TransmitTop|  TreeNet.java:0240:Transmit|  TreeNet.java:1725:code|  Chip.java:0906:<init>|  TreeNet.java:1715:<init>|  TreeNet.java:1714:test_sequence_simplexV|  TreeNet.java:1764:newTests|  TreeNet.java:1769:main|");
-                  $fclose(f);
-                end
-              end
-            endcase
-          end
-          59: begin
-            main_messageDown_5[0]            <= main_test_40;
-            main_pc          <= main_pc + 1;
-            case (main_pc)
-              59: begin
-                begin
-                  integer f;
-                  f = $fopen("verilog/trace_verilog.txt", "a");
-                  $fdisplay(f, "Location: Chip.java:0888:<init>|  Chip.java:1391:<init>|  Chip.java:1390:Copy|  TreeNet.java:0325:Then|  Chip.java:0998:<init>|  TreeNet.java:0323:<init>|  TreeNet.java:0322:putReply|  TreeNet.java:1687:Then|  Chip.java:0998:<init>|  TreeNet.java:1684:<init>|  TreeNet.java:1683:TransmitTop|  TreeNet.java:0240:Transmit|  TreeNet.java:1725:code|  Chip.java:0906:<init>|  TreeNet.java:1715:<init>|  TreeNet.java:1714:test_sequence_simplexV|  TreeNet.java:1764:newTests|  TreeNet.java:1769:main|");
-                  $fclose(f);
-                end
-              end
-            endcase
-          end
-          60: begin
-            main_MessageDownNumber_11[0]     <= main_MessageNumber_20;
-            main_pc          <= main_pc + 1;
-            case (main_pc)
-              60: begin
-                begin
-                  integer f;
-                  f = $fopen("verilog/trace_verilog.txt", "a");
-                  $fdisplay(f, "Location: Chip.java:0888:<init>|  Chip.java:1391:<init>|  Chip.java:1390:Copy|  TreeNet.java:0326:Then|  Chip.java:0998:<init>|  TreeNet.java:0323:<init>|  TreeNet.java:0322:putReply|  TreeNet.java:1687:Then|  Chip.java:0998:<init>|  TreeNet.java:1684:<init>|  TreeNet.java:1683:TransmitTop|  TreeNet.java:0240:Transmit|  TreeNet.java:1725:code|  Chip.java:0906:<init>|  TreeNet.java:1715:<init>|  TreeNet.java:1714:test_sequence_simplexV|  TreeNet.java:1764:newTests|  TreeNet.java:1769:main|");
-                  $fclose(f);
-                end
-              end
-            endcase
-          end
-          61: begin
-            main_MessageDownSource_12[0]     <= 0;
-            main_pc          <= main_pc + 1;
-            case (main_pc)
-              61: begin
-                begin
-                  integer f;
-                  f = $fopen("verilog/trace_verilog.txt", "a");
-                  $fdisplay(f, "Location: Chip.java:0888:<init>|  Chip.java:1226:<init>|  Chip.java:1225:RegisterSet|  TreeNet.java:0327:Then|  Chip.java:0998:<init>|  TreeNet.java:0323:<init>|  TreeNet.java:0322:putReply|  TreeNet.java:1687:Then|  Chip.java:0998:<init>|  TreeNet.java:1684:<init>|  TreeNet.java:1683:TransmitTop|  TreeNet.java:0240:Transmit|  TreeNet.java:1725:code|  Chip.java:0906:<init>|  TreeNet.java:1715:<init>|  TreeNet.java:1714:test_sequence_simplexV|  TreeNet.java:1764:newTests|  TreeNet.java:1769:main|");
-                  $fclose(f);
-                end
-              end
-            endcase
-          end
-          62: begin
-            main_MessageDownTarget_13[0]     <= main_Source_36;
-            main_pc          <= main_pc + 1;
-            case (main_pc)
-              62: begin
-                begin
-                  integer f;
-                  f = $fopen("verilog/trace_verilog.txt", "a");
-                  $fdisplay(f, "Location: Chip.java:0888:<init>|  Chip.java:1391:<init>|  Chip.java:1390:Copy|  TreeNet.java:0328:Then|  Chip.java:0998:<init>|  TreeNet.java:0323:<init>|  TreeNet.java:0322:putReply|  TreeNet.java:1687:Then|  Chip.java:0998:<init>|  TreeNet.java:1684:<init>|  TreeNet.java:1683:TransmitTop|  TreeNet.java:0240:Transmit|  TreeNet.java:1725:code|  Chip.java:0906:<init>|  TreeNet.java:1715:<init>|  TreeNet.java:1714:test_sequence_simplexV|  TreeNet.java:1764:newTests|  TreeNet.java:1769:main|");
-                  $fclose(f);
-                end
-              end
-            endcase
-          end
-          63: begin
-            main_MessageDownText_14[0]       <= main_text_39;
-            main_pc          <= main_pc + 1;
-            case (main_pc)
-              63: begin
-                begin
-                  integer f;
-                  f = $fopen("verilog/trace_verilog.txt", "a");
-                  $fdisplay(f, "Location: Chip.java:0888:<init>|  Chip.java:1391:<init>|  Chip.java:1390:Copy|  TreeNet.java:0329:Then|  Chip.java:0998:<init>|  TreeNet.java:0323:<init>|  TreeNet.java:0322:putReply|  TreeNet.java:1687:Then|  Chip.java:0998:<init>|  TreeNet.java:1684:<init>|  TreeNet.java:1683:TransmitTop|  TreeNet.java:0240:Transmit|  TreeNet.java:1725:code|  Chip.java:0906:<init>|  TreeNet.java:1715:<init>|  TreeNet.java:1714:test_sequence_simplexV|  TreeNet.java:1764:newTests|  TreeNet.java:1769:main|");
-                  $fclose(f);
-                end
-              end
-            endcase
-          end
-          64: begin
-            main_pc          <= 65;
-            case (main_pc)
-              64: begin
-                begin
-                  integer f;
-                  f = $fopen("verilog/trace_verilog.txt", "a");
-                  $fdisplay(f, "Location: Chip.java:1000:<init>|  Chip.java:0999:<init>|  TreeNet.java:0323:<init>|  TreeNet.java:0322:putReply|  TreeNet.java:1687:Then|  Chip.java:0998:<init>|  TreeNet.java:1684:<init>|  TreeNet.java:1683:TransmitTop|  TreeNet.java:0240:Transmit|  TreeNet.java:1725:code|  Chip.java:0906:<init>|  TreeNet.java:1715:<init>|  TreeNet.java:1714:test_sequence_simplexV|  TreeNet.java:1764:newTests|  TreeNet.java:1769:main|");
-                  $fclose(f);
-                end
-              end
-            endcase
-          end
-          65: begin
-            if (main_test_40 == 0) begin
+            if (main_Valid_34 == 0) begin
               main_pc          <= 68;
             end
             else begin
               main_pc          <= main_pc + 1;
             end
             case (main_pc)
+              51: begin
+                begin
+                  integer f;
+                  f = $fopen("verilog/trace_verilog.txt", "a");
+                  $fdisplay(f, "Location: Chip.java:0991:<init>|  Chip.java:0990:<init>|  TreeNet.java:1689:<init>|  TreeNet.java:1688:TransmitTop|  TreeNet.java:0240:Transmit|  TreeNet.java:1728:code|  Chip.java:0906:<init>|  TreeNet.java:1719:<init>|  TreeNet.java:1718:test_sequence_simplexV|  TreeNet.java:1761:oldTests|  TreeNet.java:1765:newTests|  TreeNet.java:1772:main|");
+                  $fclose(f);
+                end
+              end
+            endcase
+          end
+          52: begin
+            main_text_38     <= main_Text_37;
+            main_pc          <= main_pc + 1;
+            case (main_pc)
+              52: begin
+                begin
+                  integer f;
+                  f = $fopen("verilog/trace_verilog.txt", "a");
+                  $fdisplay(f, "Location: Chip.java:0888:<init>|  Chip.java:1293:<init>|  Chip.java:1292:Copy|  TreeNet.java:1691:Then|  Chip.java:0998:<init>|  TreeNet.java:1689:<init>|  TreeNet.java:1688:TransmitTop|  TreeNet.java:0240:Transmit|  TreeNet.java:1728:code|  Chip.java:0906:<init>|  TreeNet.java:1719:<init>|  TreeNet.java:1718:test_sequence_simplexV|  TreeNet.java:1761:oldTests|  TreeNet.java:1765:newTests|  TreeNet.java:1772:main|");
+                  $fclose(f);
+                end
+              end
+            endcase
+          end
+          53: begin
+            main_text_38     <= main_text_38 >> 1;
+            main_pc          <= main_pc + 1;
+            case (main_pc)
+              53: begin
+                begin
+                  integer f;
+                  f = $fopen("verilog/trace_verilog.txt", "a");
+                  $fdisplay(f, "Location: Chip.java:0888:<init>|  Chip.java:1804:<init>|  Chip.java:1803:Half|  TreeNet.java:1691:Then|  Chip.java:0998:<init>|  TreeNet.java:1689:<init>|  TreeNet.java:1688:TransmitTop|  TreeNet.java:0240:Transmit|  TreeNet.java:1728:code|  Chip.java:0906:<init>|  TreeNet.java:1719:<init>|  TreeNet.java:1718:test_sequence_simplexV|  TreeNet.java:1761:oldTests|  TreeNet.java:1765:newTests|  TreeNet.java:1772:main|");
+                  $fclose(f);
+                end
+              end
+            endcase
+          end
+          54: begin
+            main_test_39     <= main_messageDown_5[0];
+            main_pc          <= main_pc + 1;
+            case (main_pc)
+              54: begin
+                begin
+                  integer f;
+                  f = $fopen("verilog/trace_verilog.txt", "a");
+                  $fdisplay(f, "Location: Chip.java:0888:<init>|  Chip.java:1316:<init>|  Chip.java:1315:Copy|  TreeNet.java:0320:putReply|  TreeNet.java:1692:Then|  Chip.java:0998:<init>|  TreeNet.java:1689:<init>|  TreeNet.java:1688:TransmitTop|  TreeNet.java:0240:Transmit|  TreeNet.java:1728:code|  Chip.java:0906:<init>|  TreeNet.java:1719:<init>|  TreeNet.java:1718:test_sequence_simplexV|  TreeNet.java:1761:oldTests|  TreeNet.java:1765:newTests|  TreeNet.java:1772:main|");
+                  $fclose(f);
+                end
+              end
+            endcase
+          end
+          55: begin
+            main_test_39     <= main_test_39 != 0 ? 0 : 1;
+            main_pc          <= main_pc + 1;
+            case (main_pc)
+              55: begin
+                begin
+                  integer f;
+                  f = $fopen("verilog/trace_verilog.txt", "a");
+                  $fdisplay(f, "Location: Chip.java:0888:<init>|  Chip.java:1795:<init>|  Chip.java:1794:Not|  TreeNet.java:0321:putReply|  TreeNet.java:1692:Then|  Chip.java:0998:<init>|  TreeNet.java:1689:<init>|  TreeNet.java:1688:TransmitTop|  TreeNet.java:0240:Transmit|  TreeNet.java:1728:code|  Chip.java:0906:<init>|  TreeNet.java:1719:<init>|  TreeNet.java:1718:test_sequence_simplexV|  TreeNet.java:1761:oldTests|  TreeNet.java:1765:newTests|  TreeNet.java:1772:main|");
+                  $fclose(f);
+                end
+              end
+            endcase
+          end
+          56: begin
+            if (main_test_39 == 0) begin
+              main_pc          <= 64;
+            end
+            else begin
+              main_pc          <= main_pc + 1;
+            end
+            case (main_pc)
+              56: begin
+                begin
+                  integer f;
+                  f = $fopen("verilog/trace_verilog.txt", "a");
+                  $fdisplay(f, "Location: Chip.java:0991:<init>|  Chip.java:0990:<init>|  TreeNet.java:0323:<init>|  TreeNet.java:0322:putReply|  TreeNet.java:1692:Then|  Chip.java:0998:<init>|  TreeNet.java:1689:<init>|  TreeNet.java:1688:TransmitTop|  TreeNet.java:0240:Transmit|  TreeNet.java:1728:code|  Chip.java:0906:<init>|  TreeNet.java:1719:<init>|  TreeNet.java:1718:test_sequence_simplexV|  TreeNet.java:1761:oldTests|  TreeNet.java:1765:newTests|  TreeNet.java:1772:main|");
+                  $fclose(f);
+                end
+              end
+            endcase
+          end
+          57: begin
+            main_MessageNumber_20            <= main_MessageNumber_20 + 1;
+            main_pc          <= main_pc + 1;
+            case (main_pc)
+              57: begin
+                begin
+                  integer f;
+                  f = $fopen("verilog/trace_verilog.txt", "a");
+                  $fdisplay(f, "Location: Chip.java:0888:<init>|  Chip.java:1779:<init>|  Chip.java:1778:Inc|  TreeNet.java:0324:Then|  Chip.java:0998:<init>|  TreeNet.java:0323:<init>|  TreeNet.java:0322:putReply|  TreeNet.java:1692:Then|  Chip.java:0998:<init>|  TreeNet.java:1689:<init>|  TreeNet.java:1688:TransmitTop|  TreeNet.java:0240:Transmit|  TreeNet.java:1728:code|  Chip.java:0906:<init>|  TreeNet.java:1719:<init>|  TreeNet.java:1718:test_sequence_simplexV|  TreeNet.java:1761:oldTests|  TreeNet.java:1765:newTests|  TreeNet.java:1772:main|");
+                  $fclose(f);
+                end
+              end
+            endcase
+          end
+          58: begin
+            main_messageDown_5[0]            <= main_test_39;
+            main_pc          <= main_pc + 1;
+            case (main_pc)
+              58: begin
+                begin
+                  integer f;
+                  f = $fopen("verilog/trace_verilog.txt", "a");
+                  $fdisplay(f, "Location: Chip.java:0888:<init>|  Chip.java:1421:<init>|  Chip.java:1420:Copy|  TreeNet.java:0325:Then|  Chip.java:0998:<init>|  TreeNet.java:0323:<init>|  TreeNet.java:0322:putReply|  TreeNet.java:1692:Then|  Chip.java:0998:<init>|  TreeNet.java:1689:<init>|  TreeNet.java:1688:TransmitTop|  TreeNet.java:0240:Transmit|  TreeNet.java:1728:code|  Chip.java:0906:<init>|  TreeNet.java:1719:<init>|  TreeNet.java:1718:test_sequence_simplexV|  TreeNet.java:1761:oldTests|  TreeNet.java:1765:newTests|  TreeNet.java:1772:main|");
+                  $fclose(f);
+                end
+              end
+            endcase
+          end
+          59: begin
+            main_MessageDownNumber_11[0]     <= main_MessageNumber_20;
+            main_pc          <= main_pc + 1;
+            case (main_pc)
+              59: begin
+                begin
+                  integer f;
+                  f = $fopen("verilog/trace_verilog.txt", "a");
+                  $fdisplay(f, "Location: Chip.java:0888:<init>|  Chip.java:1421:<init>|  Chip.java:1420:Copy|  TreeNet.java:0326:Then|  Chip.java:0998:<init>|  TreeNet.java:0323:<init>|  TreeNet.java:0322:putReply|  TreeNet.java:1692:Then|  Chip.java:0998:<init>|  TreeNet.java:1689:<init>|  TreeNet.java:1688:TransmitTop|  TreeNet.java:0240:Transmit|  TreeNet.java:1728:code|  Chip.java:0906:<init>|  TreeNet.java:1719:<init>|  TreeNet.java:1718:test_sequence_simplexV|  TreeNet.java:1761:oldTests|  TreeNet.java:1765:newTests|  TreeNet.java:1772:main|");
+                  $fclose(f);
+                end
+              end
+            endcase
+          end
+          60: begin
+            main_MessageDownSource_12[0]     <= 0;
+            main_pc          <= main_pc + 1;
+            case (main_pc)
+              60: begin
+                begin
+                  integer f;
+                  f = $fopen("verilog/trace_verilog.txt", "a");
+                  $fdisplay(f, "Location: Chip.java:0888:<init>|  Chip.java:1226:<init>|  Chip.java:1225:RegisterSet|  TreeNet.java:0327:Then|  Chip.java:0998:<init>|  TreeNet.java:0323:<init>|  TreeNet.java:0322:putReply|  TreeNet.java:1692:Then|  Chip.java:0998:<init>|  TreeNet.java:1689:<init>|  TreeNet.java:1688:TransmitTop|  TreeNet.java:0240:Transmit|  TreeNet.java:1728:code|  Chip.java:0906:<init>|  TreeNet.java:1719:<init>|  TreeNet.java:1718:test_sequence_simplexV|  TreeNet.java:1761:oldTests|  TreeNet.java:1765:newTests|  TreeNet.java:1772:main|");
+                  $fclose(f);
+                end
+              end
+            endcase
+          end
+          61: begin
+            main_MessageDownTarget_13[0]     <= main_Source_35;
+            main_pc          <= main_pc + 1;
+            case (main_pc)
+              61: begin
+                begin
+                  integer f;
+                  f = $fopen("verilog/trace_verilog.txt", "a");
+                  $fdisplay(f, "Location: Chip.java:0888:<init>|  Chip.java:1421:<init>|  Chip.java:1420:Copy|  TreeNet.java:0328:Then|  Chip.java:0998:<init>|  TreeNet.java:0323:<init>|  TreeNet.java:0322:putReply|  TreeNet.java:1692:Then|  Chip.java:0998:<init>|  TreeNet.java:1689:<init>|  TreeNet.java:1688:TransmitTop|  TreeNet.java:0240:Transmit|  TreeNet.java:1728:code|  Chip.java:0906:<init>|  TreeNet.java:1719:<init>|  TreeNet.java:1718:test_sequence_simplexV|  TreeNet.java:1761:oldTests|  TreeNet.java:1765:newTests|  TreeNet.java:1772:main|");
+                  $fclose(f);
+                end
+              end
+            endcase
+          end
+          62: begin
+            main_MessageDownText_14[0]       <= main_text_38;
+            main_pc          <= main_pc + 1;
+            case (main_pc)
+              62: begin
+                begin
+                  integer f;
+                  f = $fopen("verilog/trace_verilog.txt", "a");
+                  $fdisplay(f, "Location: Chip.java:0888:<init>|  Chip.java:1421:<init>|  Chip.java:1420:Copy|  TreeNet.java:0329:Then|  Chip.java:0998:<init>|  TreeNet.java:0323:<init>|  TreeNet.java:0322:putReply|  TreeNet.java:1692:Then|  Chip.java:0998:<init>|  TreeNet.java:1689:<init>|  TreeNet.java:1688:TransmitTop|  TreeNet.java:0240:Transmit|  TreeNet.java:1728:code|  Chip.java:0906:<init>|  TreeNet.java:1719:<init>|  TreeNet.java:1718:test_sequence_simplexV|  TreeNet.java:1761:oldTests|  TreeNet.java:1765:newTests|  TreeNet.java:1772:main|");
+                  $fclose(f);
+                end
+              end
+            endcase
+          end
+          63: begin
+            main_pc          <= 64;
+            case (main_pc)
+              63: begin
+                begin
+                  integer f;
+                  f = $fopen("verilog/trace_verilog.txt", "a");
+                  $fdisplay(f, "Location: Chip.java:1000:<init>|  Chip.java:0999:<init>|  TreeNet.java:0323:<init>|  TreeNet.java:0322:putReply|  TreeNet.java:1692:Then|  Chip.java:0998:<init>|  TreeNet.java:1689:<init>|  TreeNet.java:1688:TransmitTop|  TreeNet.java:0240:Transmit|  TreeNet.java:1728:code|  Chip.java:0906:<init>|  TreeNet.java:1719:<init>|  TreeNet.java:1718:test_sequence_simplexV|  TreeNet.java:1761:oldTests|  TreeNet.java:1765:newTests|  TreeNet.java:1772:main|");
+                  $fclose(f);
+                end
+              end
+            endcase
+          end
+          64: begin
+            if (main_test_39 == 0) begin
+              main_pc          <= 67;
+            end
+            else begin
+              main_pc          <= main_pc + 1;
+            end
+            case (main_pc)
+              64: begin
+                begin
+                  integer f;
+                  f = $fopen("verilog/trace_verilog.txt", "a");
+                  $fdisplay(f, "Location: Chip.java:0991:<init>|  Chip.java:0990:<init>|  TreeNet.java:1693:<init>|  TreeNet.java:1692:Then|  Chip.java:0998:<init>|  TreeNet.java:1689:<init>|  TreeNet.java:1688:TransmitTop|  TreeNet.java:0240:Transmit|  TreeNet.java:1728:code|  Chip.java:0906:<init>|  TreeNet.java:1719:<init>|  TreeNet.java:1718:test_sequence_simplexV|  TreeNet.java:1761:oldTests|  TreeNet.java:1765:newTests|  TreeNet.java:1772:main|");
+                  $fclose(f);
+                end
+              end
+            endcase
+          end
+          65: begin
+            main_messageUp_4[main_Source_35]                 <= 0;
+            main_pc          <= main_pc + 1;
+            case (main_pc)
               65: begin
                 begin
                   integer f;
                   f = $fopen("verilog/trace_verilog.txt", "a");
-                  $fdisplay(f, "Location: Chip.java:0991:<init>|  Chip.java:0990:<init>|  TreeNet.java:1688:<init>|  TreeNet.java:1687:Then|  Chip.java:0998:<init>|  TreeNet.java:1684:<init>|  TreeNet.java:1683:TransmitTop|  TreeNet.java:0240:Transmit|  TreeNet.java:1725:code|  Chip.java:0906:<init>|  TreeNet.java:1715:<init>|  TreeNet.java:1714:test_sequence_simplexV|  TreeNet.java:1764:newTests|  TreeNet.java:1769:main|");
+                  $fdisplay(f, "Location: Chip.java:0888:<init>|  Chip.java:1249:<init>|  Chip.java:1248:RegisterSet|  TreeNet.java:0476:release|  TreeNet.java:1694:Then|  Chip.java:0998:<init>|  TreeNet.java:1693:<init>|  TreeNet.java:1692:Then|  Chip.java:0998:<init>|  TreeNet.java:1689:<init>|  TreeNet.java:1688:TransmitTop|  TreeNet.java:0240:Transmit|  TreeNet.java:1728:code|  Chip.java:0906:<init>|  TreeNet.java:1719:<init>|  TreeNet.java:1718:test_sequence_simplexV|  TreeNet.java:1761:oldTests|  TreeNet.java:1765:newTests|  TreeNet.java:1772:main|");
                   $fclose(f);
                 end
               end
             endcase
           end
           66: begin
-            main_messageUp_4[main_Source_36]                 <= 0;
-            main_pc          <= main_pc + 1;
+            main_pc          <= 67;
             case (main_pc)
               66: begin
                 begin
                   integer f;
                   f = $fopen("verilog/trace_verilog.txt", "a");
-                  $fdisplay(f, "Location: Chip.java:0888:<init>|  Chip.java:1249:<init>|  Chip.java:1248:RegisterSet|  TreeNet.java:0469:release|  TreeNet.java:1689:Then|  Chip.java:0998:<init>|  TreeNet.java:1688:<init>|  TreeNet.java:1687:Then|  Chip.java:0998:<init>|  TreeNet.java:1684:<init>|  TreeNet.java:1683:TransmitTop|  TreeNet.java:0240:Transmit|  TreeNet.java:1725:code|  Chip.java:0906:<init>|  TreeNet.java:1715:<init>|  TreeNet.java:1714:test_sequence_simplexV|  TreeNet.java:1764:newTests|  TreeNet.java:1769:main|");
+                  $fdisplay(f, "Location: Chip.java:1000:<init>|  Chip.java:0999:<init>|  TreeNet.java:1693:<init>|  TreeNet.java:1692:Then|  Chip.java:0998:<init>|  TreeNet.java:1689:<init>|  TreeNet.java:1688:TransmitTop|  TreeNet.java:0240:Transmit|  TreeNet.java:1728:code|  Chip.java:0906:<init>|  TreeNet.java:1719:<init>|  TreeNet.java:1718:test_sequence_simplexV|  TreeNet.java:1761:oldTests|  TreeNet.java:1765:newTests|  TreeNet.java:1772:main|");
                   $fclose(f);
                 end
               end
@@ -1495,40 +1492,27 @@ module TreeNet;                                                                 
                 begin
                   integer f;
                   f = $fopen("verilog/trace_verilog.txt", "a");
-                  $fdisplay(f, "Location: Chip.java:1000:<init>|  Chip.java:0999:<init>|  TreeNet.java:1688:<init>|  TreeNet.java:1687:Then|  Chip.java:0998:<init>|  TreeNet.java:1684:<init>|  TreeNet.java:1683:TransmitTop|  TreeNet.java:0240:Transmit|  TreeNet.java:1725:code|  Chip.java:0906:<init>|  TreeNet.java:1715:<init>|  TreeNet.java:1714:test_sequence_simplexV|  TreeNet.java:1764:newTests|  TreeNet.java:1769:main|");
+                  $fdisplay(f, "Location: Chip.java:1000:<init>|  Chip.java:0999:<init>|  TreeNet.java:1689:<init>|  TreeNet.java:1688:TransmitTop|  TreeNet.java:0240:Transmit|  TreeNet.java:1728:code|  Chip.java:0906:<init>|  TreeNet.java:1719:<init>|  TreeNet.java:1718:test_sequence_simplexV|  TreeNet.java:1761:oldTests|  TreeNet.java:1765:newTests|  TreeNet.java:1772:main|");
                   $fclose(f);
                 end
               end
             endcase
           end
           68: begin
-            main_pc          <= 69;
+            main_messageUp_4[0]              <= 0;
+            main_pc          <= main_pc + 1;
             case (main_pc)
               68: begin
                 begin
                   integer f;
                   f = $fopen("verilog/trace_verilog.txt", "a");
-                  $fdisplay(f, "Location: Chip.java:1000:<init>|  Chip.java:0999:<init>|  TreeNet.java:1684:<init>|  TreeNet.java:1683:TransmitTop|  TreeNet.java:0240:Transmit|  TreeNet.java:1725:code|  Chip.java:0906:<init>|  TreeNet.java:1715:<init>|  TreeNet.java:1714:test_sequence_simplexV|  TreeNet.java:1764:newTests|  TreeNet.java:1769:main|");
+                  $fdisplay(f, "Location: Chip.java:0888:<init>|  TreeNet.java:0244:<init>|  TreeNet.java:0243:Transmit|  TreeNet.java:1728:code|  Chip.java:0906:<init>|  TreeNet.java:1719:<init>|  TreeNet.java:1718:test_sequence_simplexV|  TreeNet.java:1761:oldTests|  TreeNet.java:1765:newTests|  TreeNet.java:1772:main|");
                   $fclose(f);
                 end
               end
             endcase
           end
           69: begin
-            main_messageUp_4[0]              <= 0;
-            main_pc          <= main_pc + 1;
-            case (main_pc)
-              69: begin
-                begin
-                  integer f;
-                  f = $fopen("verilog/trace_verilog.txt", "a");
-                  $fdisplay(f, "Location: Chip.java:0888:<init>|  TreeNet.java:0244:<init>|  TreeNet.java:0243:Transmit|  TreeNet.java:1725:code|  Chip.java:0906:<init>|  TreeNet.java:1715:<init>|  TreeNet.java:1714:test_sequence_simplexV|  TreeNet.java:1764:newTests|  TreeNet.java:1769:main|");
-                  $fclose(f);
-                end
-              end
-            endcase
-          end
-          70: begin
             if (main_messageDown_5[0] && !main_messageDown_5[1] && ((main_address_2[1] & main_addressMask_3[1]) == (main_address_2[main_MessageDownTarget_13[0]] & main_addressMask_3[1]))) begin
               main_messageDownPending_6[1]     <= 1;
               main_MessageDownPendingNumber_15[1]              <= main_MessageDownNumber_11[0];
@@ -1629,17 +1613,17 @@ module TreeNet;                                                                 
             end
             main_pc          <= main_pc + 1;
             case (main_pc)
-              70: begin
+              69: begin
                 begin
                   integer f;
                   f = $fopen("verilog/trace_verilog.txt", "a");
-                  $fdisplay(f, "Location: Chip.java:0888:<init>|  TreeNet.java:0253:<init>|  TreeNet.java:0252:Transmit|  TreeNet.java:1725:code|  Chip.java:0906:<init>|  TreeNet.java:1715:<init>|  TreeNet.java:1714:test_sequence_simplexV|  TreeNet.java:1764:newTests|  TreeNet.java:1769:main|");
+                  $fdisplay(f, "Location: Chip.java:0888:<init>|  TreeNet.java:0253:<init>|  TreeNet.java:0252:Transmit|  TreeNet.java:1728:code|  Chip.java:0906:<init>|  TreeNet.java:1719:<init>|  TreeNet.java:1718:test_sequence_simplexV|  TreeNet.java:1761:oldTests|  TreeNet.java:1765:newTests|  TreeNet.java:1772:main|");
                   $fclose(f);
                 end
               end
             endcase
           end
-          71: begin
+          70: begin
             if ((main_messageDownPending_6[1] && main_messageDown_5[0] && main_MessageDownPendingNumber_15[1] == main_MessageDownNumber_11[0]) ||(main_messageDownPending_6[2] && main_messageDown_5[0] && main_MessageDownPendingNumber_15[2] == main_MessageDownNumber_11[0])) begin
               main_messageDown_5[0]            <= 0;
             end
@@ -1698,17 +1682,17 @@ module TreeNet;                                                                 
             end
             main_pc          <= main_pc + 1;
             case (main_pc)
-              71: begin
+              70: begin
                 begin
                   integer f;
                   f = $fopen("verilog/trace_verilog.txt", "a");
-                  $fdisplay(f, "Location: Chip.java:0888:<init>|  TreeNet.java:0261:<init>|  TreeNet.java:0260:Transmit|  TreeNet.java:1725:code|  Chip.java:0906:<init>|  TreeNet.java:1715:<init>|  TreeNet.java:1714:test_sequence_simplexV|  TreeNet.java:1764:newTests|  TreeNet.java:1769:main|");
+                  $fdisplay(f, "Location: Chip.java:0888:<init>|  TreeNet.java:0261:<init>|  TreeNet.java:0260:Transmit|  TreeNet.java:1728:code|  Chip.java:0906:<init>|  TreeNet.java:1719:<init>|  TreeNet.java:1718:test_sequence_simplexV|  TreeNet.java:1761:oldTests|  TreeNet.java:1765:newTests|  TreeNet.java:1772:main|");
                   $fclose(f);
                 end
               end
             endcase
           end
-          72: begin
+          71: begin
             if (main_messageDownPending_6[1]) begin
               main_messageDown_5[1]            <= main_messageDownPending_6[1];
               main_MessageDownNumber_11[1]     <= main_MessageDownPendingNumber_15[1];
@@ -1823,202 +1807,202 @@ module TreeNet;                                                                 
             end
             main_pc          <= main_pc + 1;
             case (main_pc)
+              71: begin
+                begin
+                  integer f;
+                  f = $fopen("verilog/trace_verilog.txt", "a");
+                  $fdisplay(f, "Location: Chip.java:0888:<init>|  TreeNet.java:0269:<init>|  TreeNet.java:0268:Transmit|  TreeNet.java:1728:code|  Chip.java:0906:<init>|  TreeNet.java:1719:<init>|  TreeNet.java:1718:test_sequence_simplexV|  TreeNet.java:1761:oldTests|  TreeNet.java:1765:newTests|  TreeNet.java:1772:main|");
+                  $fclose(f);
+                end
+              end
+            endcase
+          end
+          72: begin
+            main_LeftRightPriority_19        <= main_LeftRightPriority_19 != 0 ? 0 : 1;
+            main_pc          <= main_pc + 1;
+            case (main_pc)
               72: begin
                 begin
                   integer f;
                   f = $fopen("verilog/trace_verilog.txt", "a");
-                  $fdisplay(f, "Location: Chip.java:0888:<init>|  TreeNet.java:0269:<init>|  TreeNet.java:0268:Transmit|  TreeNet.java:1725:code|  Chip.java:0906:<init>|  TreeNet.java:1715:<init>|  TreeNet.java:1714:test_sequence_simplexV|  TreeNet.java:1764:newTests|  TreeNet.java:1769:main|");
+                  $fdisplay(f, "Location: Chip.java:0888:<init>|  Chip.java:1795:<init>|  Chip.java:1794:Not|  TreeNet.java:0286:Transmit|  TreeNet.java:1728:code|  Chip.java:0906:<init>|  TreeNet.java:1719:<init>|  TreeNet.java:1718:test_sequence_simplexV|  TreeNet.java:1761:oldTests|  TreeNet.java:1765:newTests|  TreeNet.java:1772:main|");
                   $fclose(f);
                 end
               end
             endcase
           end
           73: begin
-            main_LeftRightPriority_19        <= main_LeftRightPriority_19 != 0 ? 0 : 1;
+            main_Valid_29    <= main_messageDown_5[main_source_28];
             main_pc          <= main_pc + 1;
             case (main_pc)
               73: begin
                 begin
                   integer f;
                   f = $fopen("verilog/trace_verilog.txt", "a");
-                  $fdisplay(f, "Location: Chip.java:0888:<init>|  Chip.java:1765:<init>|  Chip.java:1764:Not|  TreeNet.java:0286:Transmit|  TreeNet.java:1725:code|  Chip.java:0906:<init>|  TreeNet.java:1715:<init>|  TreeNet.java:1714:test_sequence_simplexV|  TreeNet.java:1764:newTests|  TreeNet.java:1769:main|");
+                  $fdisplay(f, "Location: Chip.java:0888:<init>|  Chip.java:1371:<init>|  Chip.java:1370:CopyIs|  TreeNet.java:0453:get|  TreeNet.java:1730:code|  Chip.java:0906:<init>|  TreeNet.java:1719:<init>|  TreeNet.java:1718:test_sequence_simplexV|  TreeNet.java:1761:oldTests|  TreeNet.java:1765:newTests|  TreeNet.java:1772:main|");
                   $fclose(f);
                 end
               end
             endcase
           end
           74: begin
-            main_Valid_30    <= main_messageDown_5[main_source_28];
+            main_Source_30   <= main_MessageDownSource_12[main_source_28];
             main_pc          <= main_pc + 1;
             case (main_pc)
               74: begin
                 begin
                   integer f;
                   f = $fopen("verilog/trace_verilog.txt", "a");
-                  $fdisplay(f, "Location: Chip.java:0888:<init>|  Chip.java:1341:<init>|  Chip.java:1340:CopyIs|  TreeNet.java:0446:get|  TreeNet.java:1727:code|  Chip.java:0906:<init>|  TreeNet.java:1715:<init>|  TreeNet.java:1714:test_sequence_simplexV|  TreeNet.java:1764:newTests|  TreeNet.java:1769:main|");
+                  $fdisplay(f, "Location: Chip.java:0888:<init>|  Chip.java:1371:<init>|  Chip.java:1370:CopyIs|  TreeNet.java:0454:get|  TreeNet.java:1730:code|  Chip.java:0906:<init>|  TreeNet.java:1719:<init>|  TreeNet.java:1718:test_sequence_simplexV|  TreeNet.java:1761:oldTests|  TreeNet.java:1765:newTests|  TreeNet.java:1772:main|");
                   $fclose(f);
                 end
               end
             endcase
           end
           75: begin
-            main_Source_31   <= main_MessageDownSource_12[main_source_28];
+            main_Target_31   <= main_MessageDownTarget_13[main_source_28];
             main_pc          <= main_pc + 1;
             case (main_pc)
               75: begin
                 begin
                   integer f;
                   f = $fopen("verilog/trace_verilog.txt", "a");
-                  $fdisplay(f, "Location: Chip.java:0888:<init>|  Chip.java:1341:<init>|  Chip.java:1340:CopyIs|  TreeNet.java:0447:get|  TreeNet.java:1727:code|  Chip.java:0906:<init>|  TreeNet.java:1715:<init>|  TreeNet.java:1714:test_sequence_simplexV|  TreeNet.java:1764:newTests|  TreeNet.java:1769:main|");
+                  $fdisplay(f, "Location: Chip.java:0888:<init>|  Chip.java:1371:<init>|  Chip.java:1370:CopyIs|  TreeNet.java:0455:get|  TreeNet.java:1730:code|  Chip.java:0906:<init>|  TreeNet.java:1719:<init>|  TreeNet.java:1718:test_sequence_simplexV|  TreeNet.java:1761:oldTests|  TreeNet.java:1765:newTests|  TreeNet.java:1772:main|");
                   $fclose(f);
                 end
               end
             endcase
           end
           76: begin
-            main_Target_32   <= main_MessageDownTarget_13[main_source_28];
+            main_Number_32   <= main_MessageDownNumber_11[main_source_28];
             main_pc          <= main_pc + 1;
             case (main_pc)
               76: begin
                 begin
                   integer f;
                   f = $fopen("verilog/trace_verilog.txt", "a");
-                  $fdisplay(f, "Location: Chip.java:0888:<init>|  Chip.java:1341:<init>|  Chip.java:1340:CopyIs|  TreeNet.java:0448:get|  TreeNet.java:1727:code|  Chip.java:0906:<init>|  TreeNet.java:1715:<init>|  TreeNet.java:1714:test_sequence_simplexV|  TreeNet.java:1764:newTests|  TreeNet.java:1769:main|");
+                  $fdisplay(f, "Location: Chip.java:0888:<init>|  Chip.java:1371:<init>|  Chip.java:1370:CopyIs|  TreeNet.java:0456:get|  TreeNet.java:1730:code|  Chip.java:0906:<init>|  TreeNet.java:1719:<init>|  TreeNet.java:1718:test_sequence_simplexV|  TreeNet.java:1761:oldTests|  TreeNet.java:1765:newTests|  TreeNet.java:1772:main|");
                   $fclose(f);
                 end
               end
             endcase
           end
           77: begin
-            main_Number_33   <= main_MessageDownNumber_11[main_source_28];
+            main_Text_33     <= main_MessageDownText_14[main_source_28];
             main_pc          <= main_pc + 1;
             case (main_pc)
               77: begin
                 begin
                   integer f;
                   f = $fopen("verilog/trace_verilog.txt", "a");
-                  $fdisplay(f, "Location: Chip.java:0888:<init>|  Chip.java:1341:<init>|  Chip.java:1340:CopyIs|  TreeNet.java:0449:get|  TreeNet.java:1727:code|  Chip.java:0906:<init>|  TreeNet.java:1715:<init>|  TreeNet.java:1714:test_sequence_simplexV|  TreeNet.java:1764:newTests|  TreeNet.java:1769:main|");
+                  $fdisplay(f, "Location: Chip.java:0888:<init>|  Chip.java:1371:<init>|  Chip.java:1370:CopyIs|  TreeNet.java:0457:get|  TreeNet.java:1730:code|  Chip.java:0906:<init>|  TreeNet.java:1719:<init>|  TreeNet.java:1718:test_sequence_simplexV|  TreeNet.java:1761:oldTests|  TreeNet.java:1765:newTests|  TreeNet.java:1772:main|");
                   $fclose(f);
                 end
               end
             endcase
           end
           78: begin
-            main_Text_34     <= main_MessageDownText_14[main_source_28];
+            main_messageDown_5[main_source_28]               <= 0;
             main_pc          <= main_pc + 1;
             case (main_pc)
               78: begin
                 begin
                   integer f;
                   f = $fopen("verilog/trace_verilog.txt", "a");
-                  $fdisplay(f, "Location: Chip.java:0888:<init>|  Chip.java:1341:<init>|  Chip.java:1340:CopyIs|  TreeNet.java:0450:get|  TreeNet.java:1727:code|  Chip.java:0906:<init>|  TreeNet.java:1715:<init>|  TreeNet.java:1714:test_sequence_simplexV|  TreeNet.java:1764:newTests|  TreeNet.java:1769:main|");
+                  $fdisplay(f, "Location: Chip.java:0888:<init>|  Chip.java:1249:<init>|  Chip.java:1248:RegisterSet|  TreeNet.java:0458:get|  TreeNet.java:1730:code|  Chip.java:0906:<init>|  TreeNet.java:1719:<init>|  TreeNet.java:1718:test_sequence_simplexV|  TreeNet.java:1761:oldTests|  TreeNet.java:1765:newTests|  TreeNet.java:1772:main|");
                   $fclose(f);
                 end
               end
             endcase
           end
           79: begin
-            main_messageDown_5[main_source_28]               <= 0;
-            main_pc          <= main_pc + 1;
+            if (main_Valid_29 == 0) begin
+              main_pc          <= 83;
+            end
+            else begin
+              main_pc          <= main_pc + 1;
+            end
             case (main_pc)
               79: begin
                 begin
                   integer f;
                   f = $fopen("verilog/trace_verilog.txt", "a");
-                  $fdisplay(f, "Location: Chip.java:0888:<init>|  Chip.java:1249:<init>|  Chip.java:1248:RegisterSet|  TreeNet.java:0451:get|  TreeNet.java:1727:code|  Chip.java:0906:<init>|  TreeNet.java:1715:<init>|  TreeNet.java:1714:test_sequence_simplexV|  TreeNet.java:1764:newTests|  TreeNet.java:1769:main|");
+                  $fdisplay(f, "Location: Chip.java:0991:<init>|  Chip.java:0990:<init>|  TreeNet.java:1731:<init>|  TreeNet.java:1730:code|  Chip.java:0906:<init>|  TreeNet.java:1719:<init>|  TreeNet.java:1718:test_sequence_simplexV|  TreeNet.java:1761:oldTests|  TreeNet.java:1765:newTests|  TreeNet.java:1772:main|");
                   $fclose(f);
                 end
               end
             endcase
           end
           80: begin
-            if (main_Valid_30 == 0) begin
-              main_pc          <= 84;
-            end
-            else begin
-              main_pc          <= main_pc + 1;
-            end
+            main_outputs_26[main_o_23]       <= main_Text_33;
+            main_pc          <= main_pc + 1;
             case (main_pc)
               80: begin
                 begin
                   integer f;
                   f = $fopen("verilog/trace_verilog.txt", "a");
-                  $fdisplay(f, "Location: Chip.java:0991:<init>|  Chip.java:0990:<init>|  TreeNet.java:1728:<init>|  TreeNet.java:1727:code|  Chip.java:0906:<init>|  TreeNet.java:1715:<init>|  TreeNet.java:1714:test_sequence_simplexV|  TreeNet.java:1764:newTests|  TreeNet.java:1769:main|");
+                  $fdisplay(f, "Location: Chip.java:0888:<init>|  Chip.java:1447:<init>|  Chip.java:1446:CopyIt|  TreeNet.java:1732:Then|  Chip.java:0998:<init>|  TreeNet.java:1731:<init>|  TreeNet.java:1730:code|  Chip.java:0906:<init>|  TreeNet.java:1719:<init>|  TreeNet.java:1718:test_sequence_simplexV|  TreeNet.java:1761:oldTests|  TreeNet.java:1765:newTests|  TreeNet.java:1772:main|");
                   $fclose(f);
                 end
               end
             endcase
           end
           81: begin
-            main_outputs_26[main_o_23]       <= main_Text_34;
+            main_o_23        <= main_o_23 + 1;
             main_pc          <= main_pc + 1;
             case (main_pc)
               81: begin
                 begin
                   integer f;
                   f = $fopen("verilog/trace_verilog.txt", "a");
-                  $fdisplay(f, "Location: Chip.java:0888:<init>|  Chip.java:1417:<init>|  Chip.java:1416:CopyIt|  TreeNet.java:1729:Then|  Chip.java:0998:<init>|  TreeNet.java:1728:<init>|  TreeNet.java:1727:code|  Chip.java:0906:<init>|  TreeNet.java:1715:<init>|  TreeNet.java:1714:test_sequence_simplexV|  TreeNet.java:1764:newTests|  TreeNet.java:1769:main|");
+                  $fdisplay(f, "Location: Chip.java:0888:<init>|  Chip.java:1779:<init>|  Chip.java:1778:Inc|  TreeNet.java:1733:Then|  Chip.java:0998:<init>|  TreeNet.java:1731:<init>|  TreeNet.java:1730:code|  Chip.java:0906:<init>|  TreeNet.java:1719:<init>|  TreeNet.java:1718:test_sequence_simplexV|  TreeNet.java:1761:oldTests|  TreeNet.java:1765:newTests|  TreeNet.java:1772:main|");
                   $fclose(f);
                 end
               end
             endcase
           end
           82: begin
-            main_o_23        <= main_o_23 + 1;
-            main_pc          <= main_pc + 1;
+            main_pc          <= 83;
             case (main_pc)
               82: begin
                 begin
                   integer f;
                   f = $fopen("verilog/trace_verilog.txt", "a");
-                  $fdisplay(f, "Location: Chip.java:0888:<init>|  Chip.java:1749:<init>|  Chip.java:1748:Inc|  TreeNet.java:1730:Then|  Chip.java:0998:<init>|  TreeNet.java:1728:<init>|  TreeNet.java:1727:code|  Chip.java:0906:<init>|  TreeNet.java:1715:<init>|  TreeNet.java:1714:test_sequence_simplexV|  TreeNet.java:1764:newTests|  TreeNet.java:1769:main|");
+                  $fdisplay(f, "Location: Chip.java:1000:<init>|  Chip.java:0999:<init>|  TreeNet.java:1731:<init>|  TreeNet.java:1730:code|  Chip.java:0906:<init>|  TreeNet.java:1719:<init>|  TreeNet.java:1718:test_sequence_simplexV|  TreeNet.java:1761:oldTests|  TreeNet.java:1765:newTests|  TreeNet.java:1772:main|");
                   $fclose(f);
                 end
               end
             endcase
           end
           83: begin
-            main_pc          <= 84;
+            main_s_24        <= main_s_24 + 1;
+            main_pc          <= main_pc + 1;
             case (main_pc)
               83: begin
                 begin
                   integer f;
                   f = $fopen("verilog/trace_verilog.txt", "a");
-                  $fdisplay(f, "Location: Chip.java:1000:<init>|  Chip.java:0999:<init>|  TreeNet.java:1728:<init>|  TreeNet.java:1727:code|  Chip.java:0906:<init>|  TreeNet.java:1715:<init>|  TreeNet.java:1714:test_sequence_simplexV|  TreeNet.java:1764:newTests|  TreeNet.java:1769:main|");
+                  $fdisplay(f, "Location: Chip.java:0888:<init>|  Chip.java:1779:<init>|  Chip.java:1778:Inc|  TreeNet.java:1736:code|  Chip.java:0906:<init>|  TreeNet.java:1719:<init>|  TreeNet.java:1718:test_sequence_simplexV|  TreeNet.java:1761:oldTests|  TreeNet.java:1765:newTests|  TreeNet.java:1772:main|");
                   $fclose(f);
                 end
               end
             endcase
           end
           84: begin
-            main_s_24        <= main_s_24 + 1;
+            main_test_27     <= main_s_24 <  15 ? 1 : 0;
             main_pc          <= main_pc + 1;
             case (main_pc)
               84: begin
                 begin
                   integer f;
                   f = $fopen("verilog/trace_verilog.txt", "a");
-                  $fdisplay(f, "Location: Chip.java:0888:<init>|  Chip.java:1749:<init>|  Chip.java:1748:Inc|  TreeNet.java:1733:code|  Chip.java:0906:<init>|  TreeNet.java:1715:<init>|  TreeNet.java:1714:test_sequence_simplexV|  TreeNet.java:1764:newTests|  TreeNet.java:1769:main|");
+                  $fdisplay(f, "Location: Chip.java:0888:<init>|  Chip.java:1691:<init>|  Chip.java:1691:Lt|  TreeNet.java:1737:code|  Chip.java:0906:<init>|  TreeNet.java:1719:<init>|  TreeNet.java:1718:test_sequence_simplexV|  TreeNet.java:1761:oldTests|  TreeNet.java:1765:newTests|  TreeNet.java:1772:main|");
                   $fclose(f);
                 end
               end
             endcase
           end
           85: begin
-            main_test_27     <= main_s_24 <  15 ? 1 : 0;
-            main_pc          <= main_pc + 1;
-            case (main_pc)
-              85: begin
-                begin
-                  integer f;
-                  f = $fopen("verilog/trace_verilog.txt", "a");
-                  $fdisplay(f, "Location: Chip.java:0888:<init>|  Chip.java:1661:<init>|  Chip.java:1661:Lt|  TreeNet.java:1734:code|  Chip.java:0906:<init>|  TreeNet.java:1715:<init>|  TreeNet.java:1714:test_sequence_simplexV|  TreeNet.java:1764:newTests|  TreeNet.java:1769:main|");
-                  $fclose(f);
-                end
-              end
-            endcase
-          end
-          86: begin
             if (main_test_27 >  0) begin
               main_pc          <= 38;
             end
@@ -2026,11 +2010,11 @@ module TreeNet;                                                                 
               main_pc          <= main_pc + 1;
             end
             case (main_pc)
-              86: begin
+              85: begin
                 begin
                   integer f;
                   f = $fopen("verilog/trace_verilog.txt", "a");
-                  $fdisplay(f, "Location: Chip.java:0965:<init>|  Chip.java:0964:GONotZero|  TreeNet.java:1734:code|  Chip.java:0906:<init>|  TreeNet.java:1715:<init>|  TreeNet.java:1714:test_sequence_simplexV|  TreeNet.java:1764:newTests|  TreeNet.java:1769:main|");
+                  $fdisplay(f, "Location: Chip.java:0965:<init>|  Chip.java:0964:GONotZero|  TreeNet.java:1737:code|  Chip.java:0906:<init>|  TreeNet.java:1719:<init>|  TreeNet.java:1718:test_sequence_simplexV|  TreeNet.java:1761:oldTests|  TreeNet.java:1765:newTests|  TreeNet.java:1772:main|");
                   $fclose(f);
                 end
               end
@@ -2050,7 +2034,7 @@ module TreeNet;                                                                 
       $fwrite(o, "Chip: %-16s step: %1d, maxSteps: %1d, running: %1d\n", "TreeNet", step, maxSteps, !stop);
       $fwrite(o, "  Processes:\n");
 
-      $fwrite(o, "    Process: %1d - %-21s instructions: %1d, pc: %1d, rc: %1d\n", 0, "main", 87, main_pc, main_returnCode);
+      $fwrite(o, "    Process: %1d - %-21s instructions: %1d, pc: %1d, rc: %1d\n", 0, "main", 86, main_pc, main_returnCode);
       $fwrite(o, "      Registers :\n");
       $fwrite(o, "        %-50s = %1d\n",  "main_putMessage_0", main_putMessage_0);
       $fwrite(o, "        %-50s = %1d\n",  "main_target_1", main_target_1);
@@ -2329,18 +2313,17 @@ module TreeNet;                                                                 
       $fwrite(o, "        %-44s[%4d] = %1d\n",  "main_outputs_26", 5, main_outputs_26[5]);
       $fwrite(o, "        %-50s = %1d\n",  "main_test_27", main_test_27);
       $fwrite(o, "        %-50s = %1d\n",  "main_source_28", main_source_28);
-      $fwrite(o, "        %-50s = %1d\n",  "main_text_29", main_text_29);
-      $fwrite(o, "        %-50s = %1d\n",  "main_Valid_30", main_Valid_30);
-      $fwrite(o, "        %-50s = %1d\n",  "main_Source_31", main_Source_31);
-      $fwrite(o, "        %-50s = %1d\n",  "main_Target_32", main_Target_32);
-      $fwrite(o, "        %-50s = %1d\n",  "main_Number_33", main_Number_33);
-      $fwrite(o, "        %-50s = %1d\n",  "main_Text_34", main_Text_34);
-      $fwrite(o, "        %-50s = %1d\n",  "main_Valid_35", main_Valid_35);
-      $fwrite(o, "        %-50s = %1d\n",  "main_Source_36", main_Source_36);
-      $fwrite(o, "        %-50s = %1d\n",  "main_Number_37", main_Number_37);
-      $fwrite(o, "        %-50s = %1d\n",  "main_Text_38", main_Text_38);
-      $fwrite(o, "        %-50s = %1d\n",  "main_text_39", main_text_39);
-      $fwrite(o, "        %-50s = %1d\n",  "main_test_40", main_test_40);
+      $fwrite(o, "        %-50s = %1d\n",  "main_Valid_29", main_Valid_29);
+      $fwrite(o, "        %-50s = %1d\n",  "main_Source_30", main_Source_30);
+      $fwrite(o, "        %-50s = %1d\n",  "main_Target_31", main_Target_31);
+      $fwrite(o, "        %-50s = %1d\n",  "main_Number_32", main_Number_32);
+      $fwrite(o, "        %-50s = %1d\n",  "main_Text_33", main_Text_33);
+      $fwrite(o, "        %-50s = %1d\n",  "main_Valid_34", main_Valid_34);
+      $fwrite(o, "        %-50s = %1d\n",  "main_Source_35", main_Source_35);
+      $fwrite(o, "        %-50s = %1d\n",  "main_Number_36", main_Number_36);
+      $fwrite(o, "        %-50s = %1d\n",  "main_Text_37", main_Text_37);
+      $fwrite(o, "        %-50s = %1d\n",  "main_text_38", main_text_38);
+      $fwrite(o, "        %-50s = %1d\n",  "main_test_39", main_test_39);
       $fclose(o);
     end
   endtask
