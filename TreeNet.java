@@ -274,7 +274,7 @@ class TreeNet extends Chip                                                      
        }
      };
     if (duplex)
-     {P.new Instruction()                                                         // Clear the source of a short-circuited downward-moving message - the root cannot be such a source
+     {P.new Instruction()                                                       // Clear the source of a short-circuited downward-moving message - the root cannot be such a source
        {void action()
          {for(int i = 1; i < size; i++) ClearShort(i);
          }
@@ -373,16 +373,23 @@ class TreeNet extends Chip                                                      
     return result;
    }
 
-  Process.Register PutMessage(Process.Register Source, Process.Register Text)   // Send a message to the root of a simplex tree by adding a new message at the indicated leaf if possible and return true else false
-   {return PutMessage(Source, topAsTarget, Text);
+  Process.Register PutMessage                                                   // Send a message to the root of a simplex tree by adding a new message at the indicated leaf if possible and return true else false. The message to be sent is from an indexed element of an arrayed register
+   (Process.Register Source, Process.Register Text, Process.Register Index)
+   {return PutMessage(Source, topAsTarget, Text, Index);
    }
 
   Process.Register PutMessage                                                   // Add a new message at the indicated leaf if possible and return true else false
-   (Process.Register Source, Process.Register Target, Process.Register Text)
+   (Process.Register Source, Process.Register Target,
+    Process.Register Text,   Process.Register Index)
    {final Process.Register result = putMessage;
+    Source.registerCheckSingle();
+    Target.registerCheckSingle();
+    Index .registerCheckSingle();
+    Text.registerCheckArrayed();
+
     P.new Instruction()
      {void action()
-       {PutMessage(result, Source.registerGet(), Target.registerGet(), Text.registerGet());
+       {PutMessage(result, Source.registerGet(), Target.registerGet(), Text.registerGet(Index.registerGet()));
        }
       void verilog(Verilog v)
        {v.new If (MessageUp.registerName(Source.registerName()))                // Return if message input still full
@@ -394,7 +401,7 @@ class TreeNet extends Chip                                                      
             MessageUpNumber.copyIt     (v, Source, MessageNumber);              // Generate a unique message number for each message
             MessageUpSource.copyIt     (v, Source,        Source);              // Source address
             MessageUpTarget.copyIt     (v, Source,        Target);              // Target address
-            MessageUpText  .copyIt     (v, Source,        Text);                // Text of message
+            MessageUpText  .copy       (v, Source,        Text, Index);         // Text of message indexed
             MessageNumber  .inc(v);
             result.one(v);                                                      // Successfully added message to tree network
            }
@@ -1592,7 +1599,7 @@ Jnct  Level Step:   12        Up  Left Right  Addr      Up______  Down____ |
 
     final TreeNet                T = new TreeNet(4);
     final StringJoiner           t = new StringJoiner(", ");
-    final Process.Register  Result = T.P.register("result",  1);
+    //final Process.Register  Result = T.P.register("result",  1);
     final Process.Register       i = T.P.register("i",       8);
     final Process.Register       o = T.P.register("o",       8);
     final Process.Register inputs  = T.P.register("inputs",  T.messageWidth, words.length);
@@ -1600,7 +1607,6 @@ Jnct  Level Step:   12        Up  Left Right  Addr      Up______  Down____ |
     final Process.Register test    = T.P.register("test",    1);
     final Process.Register source  = T.P.register("source",  T.addressWidth);
     final Process.Register target  = T.P.register("target",  T.addressWidth);
-    final Process.Register text    = T.P.register("text",    T.messageWidth);
     final MessageOutV   messageOut = T.new MessageOutV();
 
     final int   Source = T.lastLeaf(), Target = T.firstLeaf(), Steps = 28;
@@ -1615,8 +1621,7 @@ Jnct  Level Step:   12        Up  Left Right  Addr      Up______  Down____ |
     for (T.step = 0; T.step < Steps; ++T.step)
      {T.P.new If (test.Lt(i, words.length))
        {void Then()
-         {text.CopyIs(inputs, i);
-          T.P.new If (T.PutMessage(source, target, text))
+         {T.P.new If (T.PutMessage(source, target, inputs, i))
            {void Then() {i.Inc();}
            };
          }
@@ -1633,7 +1638,7 @@ Jnct  Level Step:   12        Up  Left Right  Addr      Up______  Down____ |
      }
     T.maxSteps = 2000;
     T.chipRun();
-    ok(outputs, "main_outputs_26 =  1111 2222 3333 4444 5555 6666");
+    ok(outputs, "main_outputs_25 =  1111 2222 3333 4444 5555 6666");
 
     final Chip.SiliconCompiler S = T.new SiliconCompiler()                      // Create silicon compiler files
      {String description()
@@ -1701,7 +1706,6 @@ Jnct  Level Step:   12        Up  Left Right  Addr      Up______  Down____ |
     final Process.Register outputs = T.P.register("outputs", T.messageWidth, words.length);
     final Process.Register    test = T.P.register("test",    1);
     final Process.Register  source = T.P.register("source",  T.addressWidth);
-    final Process.Register    text = T.P.register("text",    T.messageWidth);
     final MessageOutV   messageOut = T.new MessageOutV();
     final int                Steps = 15;
 
@@ -1711,12 +1715,11 @@ Jnct  Level Step:   12        Up  Left Right  Addr      Up______  Down____ |
 
     for (int j = 0; j < words.length; j++) inputs.RegisterSet(words[j], j);
 
-    T.P.new Block()                                                           // Outer block contains branch code
+    T.P.new Block()
      {void code()
        {T.P.new If (test.Lt(i, words.length))
          {void Then()
-           {text.CopyIs(inputs, i);
-            T.P.new If (T.PutMessage(source, text))
+           {T.P.new If (T.PutMessage(source, inputs, i))
              {void Then() {i.Inc();}
              };
            }
@@ -1759,9 +1762,9 @@ Jnct  Level Step:   12        Up  Left Right  Addr      Up______  Down____ |
    }
 
   static void newTests()                                                        // Tests being worked on
-   {//oldTests();
+   {oldTests();
     //test_sequence_simplex();
-    test_sequence_simplexV();
+    //test_sequence_simplexV();
    }
 
   public static void main(String[] args)                                        // Test if called as a program
