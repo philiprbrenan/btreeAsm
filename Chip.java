@@ -1319,6 +1319,36 @@ if __name__ == "__main__":
         return this;
        }
 
+//D4 Register Indexed Register to Register Indexed Register                     // Copy a register indexed element of an arrayed source register to register indexed element of a target register
+
+      void copy(Register TargetIndex, Register Source, Register SourceIndex)    // Copy a register indexed element of an arrayed source register to register indexed element of a target register
+       {R(); if (coverageAnalysis) zz();
+        if (registerChecks) registerCheckSize(Source);                          // Make sure the target register is big enough
+        if (registerChecks) Source.registerCheckArrayed();
+        if (registerChecks) TargetIndex.registerCheckSingle();
+        if (registerChecks) SourceIndex.registerCheckSingle();
+        final int i = SourceIndex.registerGet();
+        values[TargetIndex.registerGet()]                                       // Copy the source value into the target
+          = (BitSet)Source.values[SourceIndex.registerGet()].clone();
+       }
+
+      void copy(Verilog v,                                                      // Copy a register indexed element of an arrayed source register into this target register
+        Register TargetIndex, Register Source, Register SourceIndex)
+       {if (coverageAnalysis) zz();
+        v.assign
+         (       registerName(TargetIndex.registerFullName),
+          Source.registerName(SourceIndex.registerFullName));
+       }
+
+      Register Copy(Register TargetIndex, Register Source, Register SourceIndex)// Copy instruction
+       {if (coverageAnalysis) zz();
+        new Instruction()
+         {void action()           {copy(   TargetIndex, Source, SourceIndex);};
+          void verilog(Verilog v) {copy(v, TargetIndex, Source, SourceIndex);};
+         };
+        return this;
+       }
+
 //D4 Register Indexed Register to Register                                      // Copy a register indexed element of an arrayed source register to a target register
 
       void copyIs(Register Source, Register Index)                              // Copy a register indexed source register into this target register.
@@ -3034,6 +3064,50 @@ Chip: Test             step: 6, maxSteps: 10, running: 0
 """);
    }
 
+  static void test_register_arrays()
+   {var C = chip("Test");
+    var p = C.new Process("process");
+    p.processTrace = true;
+    var a = p.new Register("a", 8, 4);
+    var b = p.new Register("b", 8, 4);
+    var i = p.new Register("i", 8);
+    var j = p.new Register("j", 8);
+
+    a.RegisterSet(1, 0);
+    a.RegisterSet(2, 1);
+    a.RegisterSet(3, 2);
+    a.RegisterSet(4, 3);
+    b.RegisterSet(11, 0);
+    b.RegisterSet(22, 1);
+    b.RegisterSet(33, 2);
+    b.RegisterSet(44, 3);
+    i.registerSet(1);
+    j.registerSet(2);
+    b.Copy(j, a, i);
+    j.Inc(); i.Inc();
+    b.Copy(j, a, i);
+    C.maxSteps = 20;
+    C.chipRun();
+
+    //stop(C);
+    ok(C, """
+Chip: Test             step: 13, maxSteps: 20, running: 0
+  Processes:
+    Process: 0 - process               instructions: 12, pc: 12, rc: 0
+      Registers :
+        process_a_0                                 [   0] = 1
+        process_a_0                                 [   1] = 2
+        process_a_0                                 [   2] = 3
+        process_a_0                                 [   3] = 4
+        process_b_1                                 [   0] = 1
+        process_b_1                                 [   1] = 2
+        process_b_1                                 [   2] = 33
+        process_b_1                                 [   3] = 44
+        process_i_2                                        = 1
+        process_j_3                                        = 1
+""");
+   }
+
   static void test_copyArrayToSingle()
    {var C = chip("Test");
     var p = C.new Process("main");
@@ -3129,6 +3203,7 @@ Chip: Test             step: 9, maxSteps: 10, running: 0
     test_combine();
     test_sum();
     test_register_array();
+    test_register_arrays();
     test_register_array_one();
     test_copyArrayToSingle();
     test_register_hex();
@@ -3136,8 +3211,7 @@ Chip: Test             step: 9, maxSteps: 10, running: 0
    }
 
   static void newTests()                                                        // Tests being worked on
-   {//oldTests();
-    test_arithmeticFibonacci();
+   {oldTests();
    }
 
   public static void main(String[] args)                                        // Test if called as a program
