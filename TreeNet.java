@@ -1602,43 +1602,46 @@ Jnct  Level Step:   12        Up  Left Right  Addr      Up______  Down____ |
     //final Process.Register  Result = T.P.register("result",  1);
     final Process.Register       i = T.P.register("i",       8);
     final Process.Register       o = T.P.register("o",       8);
+    final Process.Register       s = T.P.register("s",       8);
     final Process.Register inputs  = T.P.register("inputs",  T.messageWidth, words.length);
     final Process.Register outputs = T.P.register("outputs", T.messageWidth, words.length);
     final Process.Register test    = T.P.register("test",    1);
     final Process.Register source  = T.P.register("source",  T.addressWidth);
     final Process.Register target  = T.P.register("target",  T.addressWidth);
     final MessageOutV   messageOut = T.new MessageOutV();
-
-    final int   Source = T.lastLeaf(), Target = T.firstLeaf(), Steps = 28;
+    final int                Steps = 28;
 
     T.P.processTrace = true;
 
-    source.RegisterSet(Source);
-    target.RegisterSet(Target);
+    source.RegisterSet(T.lastLeaf());
+    target.RegisterSet(T.firstLeaf());
 
     for (int j = 0; j < words.length; j++) inputs.RegisterSet(words[j], j);
 
-    for (T.step = 0; T.step < Steps; ++T.step)
-     {T.P.new If (test.Lt(i, words.length))
-       {void Then()
-         {T.P.new If (T.PutMessage(source, target, inputs, i))
-           {void Then() {i.Inc();}
-           };
-         }
-       };
+    T.P.new Block()
+     {void code()
+       {T.P.new If (test.Lt(i, words.length))
+         {void Then()
+           {T.P.new If (T.PutMessage(source, target, inputs, i))
+             {void Then() {i.Inc();}
+             };
+           }
+         };
 
-      T.Transmit();
+        T.Transmit();
 
-      T.P.new If (messageOut.get(target))
-       {void Then()
-         {outputs.CopyIt(o, messageOut.Text);
-          o.Inc();
-         }
-       };
-     }
+        T.P.new If (messageOut.get(target))
+         {void Then()
+           {outputs.CopyIt(o, messageOut.Text);
+            o.Inc();
+           }
+         };
+        T.P.GONotZero(start, test.Lt(s.Inc(), Steps));
+       }
+     };
     T.maxSteps = 2000;
     T.chipRun();
-    ok(outputs, "main_outputs_25 =  1111 2222 3333 4444 5555 6666");
+    ok(outputs, "main_outputs_26 =  1111 2222 3333 4444 5555 6666");
 
     final Chip.SiliconCompiler S = T.new SiliconCompiler()                      // Create silicon compiler files
      {String description()
@@ -1733,8 +1736,7 @@ Jnct  Level Step:   12        Up  Left Right  Addr      Up______  Down____ |
             o.Inc();
            }
          };
-        s.Inc();
-        T.P.GONotZero(start, test.Lt(s, Steps));
+        T.P.GONotZero(start, test.Lt(s.Inc(), Steps));
        }
      };
     T.maxSteps = 570;
