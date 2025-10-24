@@ -391,8 +391,9 @@ and the generated ``Verilog <https://en.wikipedia.org/wiki/Verilog>``\\
 \_\_ synthesized, placed, and routed correctly on the first attempt.
 
 However, similar to the MIT **Midnight Computer Wiring Society** motto:
-*If you donÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ¢ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂt like how
-the machine works - change it*; if extra
+*If you
+donÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ¢ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂt
+like how the machine works - change it*; if extra
 ``instructions <https://en.wikipedia.org/wiki/Instruction_set_architecture>``\\
 \_\_ are needed, perhaps to increase parallelism, it is relatively easy
 to add a ``Verilog <https://en.wikipedia.org/wiki/Verilog>``\\ \_\_
@@ -679,8 +680,8 @@ Prebuilt
 
 ::
 
-`Docker <https://en.wikipedia.org/wiki/Docker_(software)>`__ run -it
---rm ubuntu:22.04 /bin/bash
+``Docker <https://en.wikipedia.org/wiki/Docker_(software)>``\ \_\_ run
+-it --rm ubuntu:22.04 /bin/bash
 
 Install the following **deb**
 ``file <https://en.wikipedia.org/wiki/Computer_file>``\\ \_\_:
@@ -695,8 +696,8 @@ Install the following **deb**
 
 wget
 https://github.com/Precision-Innovations/OpenROAD/releases/download/2024-12-14/openroad_2.0-17598-ga008522d8_amd64-ubuntu-22.04.deb
-`sudo apt-get <https://en.wikipedia.org/wiki/APT_(software)>`__
-`install <https://en.wikipedia.org/wiki/Installation_(computer_programs)>`__
+``sudo apt-get <https://en.wikipedia.org/wiki/APT_(software)>``\ \_\_
+``install <https://en.wikipedia.org/wiki/Installation_(computer_programs)>``\ \_\_
 ...deb openroad -V
 
 .. \_silicon-compiler-1:
@@ -738,8 +739,8 @@ Download **yosys** and confirm correct installation:
 
 wget
 https://github.com/YosysHQ/oss-cad-suite-build/releases/download/2025-08-24/oss-cad-suite-linux-x64-20250824.tgz
-`Tar <https://en.wikipedia.org/wiki/Tar_(computing)>`__ -xvf export
-PATH="$PATH:/root/oss-cad-suite/bin/" yosys -V
+``Tar <https://en.wikipedia.org/wiki/Tar_(computing)>``\ \_\_ -xvf
+export PATH="$PATH:/root/oss-cad-suite/bin/" yosys -V
 
 Klayout
 
@@ -771,9 +772,9 @@ To save the configured container to
 ::
 
 echo <.githubToken.xxx> \|
-`Docker <https://en.wikipedia.org/wiki/Docker_(software)>`__
-`login <https://en.wikipedia.org/wiki/Login>`__ ghcr.io -u philiprbrenan
---password-stdin
+``Docker <https://en.wikipedia.org/wiki/Docker_(software)>``\ \_\_
+``login <https://en.wikipedia.org/wiki/Login>``\ \_\_ ghcr.io -u
+philiprbrenan --password-stdin
 
 .. \_2-create-an-image:
 
@@ -791,8 +792,8 @@ container:
 
 ::
 
-`Docker <https://en.wikipedia.org/wiki/Docker_(software)>`__ commit
-btreeasm:v1
+``Docker <https://en.wikipedia.org/wiki/Docker_(software)>``\ \_\_
+commit btreeasm:v1
 
 .. \_3-tag-the-image:
 
@@ -810,7 +811,7 @@ Give the ``Docker <https://en.wikipedia.org/wiki/Docker_(software)>``\\
 
 ::
 
-`Docker <https://en.wikipedia.org/wiki/Docker_(software)>`__ tag
+``Docker <https://en.wikipedia.org/wiki/Docker_(software)>``\ \_\_ tag
 btreeasm:v1 ghcr.io/philiprbrenan/btreeasm:latest
 
 .. \_4-push-the-image:
@@ -828,7 +829,7 @@ Push the ``Docker <https://en.wikipedia.org/wiki/Docker_(software)>``\\
 
 ::
 
-`Docker <https://en.wikipedia.org/wiki/Docker_(software)>`__ push
+``Docker <https://en.wikipedia.org/wiki/Docker_(software)>``\ \_\_ push
 ghcr.io/philiprbrenan/btreeasm:latest
 
 .. \_5-optional-make-the-package-public:
@@ -960,6 +961,9 @@ same order in which they were sent.
 ..
 \_transaction-processing-across-a-simplex-tree-httpsenwikipediaorgwikitree_data_structure-**-network-httpsenwikipediaorgwikicomputer_network-**:
 
+..
+\_transaction-processing-across-a-simplex-tree-httpsenwikipediaorgwikitree_data_structure-**-network-httpsenwikipediaorgwikicomputer_network-**:
+
 .. _transaction-processing-across-a-simplex-tree-httpsenwikipediaorgwikitree_data_structure-__-network-httpsenwikipediaorgwikicomputer_network-__:
 
 Transaction processing across a simplex ``tree <https://en.wikipedia.org/wiki/Tree_(data_structure)>``\\ \_\_ ``network <https://en.wikipedia.org/wiki/Computer_network>``\\ \_\_
@@ -1016,6 +1020,9 @@ had the same width.
 ..
 \_manufacturing-tree-httpsenwikipediaorgwikitree_data_structure-\_\_-networks:
 
+..
+\_manufacturing-tree-httpsenwikipediaorgwikitree_data_structure-\_\_-networks:
+
 .. _manufacturing-tree-httpsenwikipediaorgwikitree_data_structure-__-networks:
 
 Manufacturing ``tree <https://en.wikipedia.org/wiki/Tree_(data_structure)>``\\ \_\_ networks
@@ -1065,8 +1072,8 @@ Possible Commands
 
 clear delete put
 
-`find <https://en.wikipedia.org/wiki/Find_(Unix)>`__ first last next
-prev size
+``find <https://en.wikipedia.org/wiki/Find_(Unix)>``\ \_\_ first last
+next prev size
 
 The **find** operation requires significantly less
 ``Silicon <https://en.wikipedia.org/wiki/Silicon>``\\ \_\_ than either
