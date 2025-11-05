@@ -7312,7 +7312,7 @@ Merge     : 0
    }
 
   static void newTests()                                                        // Tests being worked on
-   {oldTests();
+   {//oldTests();
     //test_verilog_delete();
     //test_verilog_find();
     //test_verilog_put();
@@ -7321,6 +7321,7 @@ Merge     : 0
     //test_findNext();
     //test_findPrev();
     //test_iterate();
+    test_put_merge();
    }
 
   public static void main(String[] args)                                        // Test if called as a program
