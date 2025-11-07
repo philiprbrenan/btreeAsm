@@ -107,18 +107,39 @@ evolution of memories and [registers](https://en.wikipedia.org/wiki/Processor_re
 under [Java](https://en.wikipedia.org/wiki/Java_(programming_language)). 
 ## Transactions
 
-A [transaction](https://en.wikipedia.org/wiki/Database_transaction) enables one [process](https://en.wikipedia.org/wiki/Process_management_(computing)) to request work from another [process](https://en.wikipedia.org/wiki/Process_management_(computing)) using a
-parameter [list](https://en.wikipedia.org/wiki/Linked_list) comprised of [registers](https://en.wikipedia.org/wiki/Processor_register). 
-Processes handle transactions in round-robin polling mode, fixed at design
-time. Each [process](https://en.wikipedia.org/wiki/Process_management_(computing)): 
-1. Polls its inbound transactions for work.
+### Transactions Between Processes
 
-2. When a [transaction](https://en.wikipedia.org/wiki/Database_transaction) is found:
+A **transaction** allows one [process](https://en.wikipedia.org/wiki/Process_management_(computing)) to request work from another [process](https://en.wikipedia.org/wiki/Process_management_(computing)) by
+providing a **parameter list** composed of [registers](https://en.wikipedia.org/wiki/Processor_register). The [transaction](https://en.wikipedia.org/wiki/Database_transaction) [registers](https://en.wikipedia.org/wiki/Processor_register) are categorized as follows:
 
-   - Copies data from the transaction's parameter [registers](https://en.wikipedia.org/wiki/Processor_register) into its own [registers](https://en.wikipedia.org/wiki/Processor_register). 
-   - Processes the data by executing the indicated [transaction](https://en.wikipedia.org/wiki/Database_transaction). 
-   - Writes the execution results into the transaction's output [registers](https://en.wikipedia.org/wiki/Processor_register). 
-   - Marks the [transaction](https://en.wikipedia.org/wiki/Database_transaction) as complete so that its results can be used by the caller.
+- **Input registers** â owned by the calling [process](https://en.wikipedia.org/wiki/Process_management_(computing)). - **Output registers** â owned by the called [process](https://en.wikipedia.org/wiki/Process_management_(computing)). 
+---
+
+### Transaction Handling
+
+Processes handle transactions in a **round-robin polling mode**, determined at
+design time. Each [process](https://en.wikipedia.org/wiki/Process_management_(computing)) follows this sequence:
+
+1. **Poll inbound transactions**
+   The [process](https://en.wikipedia.org/wiki/Process_management_(computing)) checks its inbound transactions for pending work.
+   A [transaction](https://en.wikipedia.org/wiki/Database_transaction) indicates that work is pending by setting its
+   **`requested_at`** [register](https://en.wikipedia.org/wiki/Processor_register) to a step value **greater than** its
+   **`finished_at`** [register](https://en.wikipedia.org/wiki/Processor_register). 
+2. **When a [transaction](https://en.wikipedia.org/wiki/Database_transaction) with work is found:**
+
+   - **Read input data**
+     Copy data from the transactionâs input [registers](https://en.wikipedia.org/wiki/Processor_register) into the processâs own
+     [registers](https://en.wikipedia.org/wiki/Processor_register). This is allowed because any [process](https://en.wikipedia.org/wiki/Process_management_(computing)) can [read](https://en.wikipedia.org/wiki/Reading_(computer)) any [register](https://en.wikipedia.org/wiki/Processor_register). 
+   - **Execute the transaction**
+     Perform the requested operation using the copied data.
+
+   - **Write output data**
+     Store the results of the execution into the transactionâs output [registers](https://en.wikipedia.org/wiki/Processor_register).      This is permitted because the target [process](https://en.wikipedia.org/wiki/Process_management_(computing)) owns the output [registers](https://en.wikipedia.org/wiki/Processor_register). 
+   - **Mark the [transaction](https://en.wikipedia.org/wiki/Database_transaction) as complete**
+     Update the **`finished_at`** [register](https://en.wikipedia.org/wiki/Processor_register) to the current step value. This value
+     will now be greater than the **`requested_at`** [register](https://en.wikipedia.org/wiki/Processor_register), signaling that
+     the [transaction](https://en.wikipedia.org/wiki/Database_transaction) has completed and its results are available to the caller.
+
 
 3. The requesting [process](https://en.wikipedia.org/wiki/Process_management_(computing)) waits for the completion of a [transaction](https://en.wikipedia.org/wiki/Database_transaction) by spinning on an [instruction](https://en.wikipedia.org/wiki/Instruction_set_architecture). 
 The output remains in the [transaction](https://en.wikipedia.org/wiki/Database_transaction) [registers](https://en.wikipedia.org/wiki/Processor_register) until they are overwritten by
